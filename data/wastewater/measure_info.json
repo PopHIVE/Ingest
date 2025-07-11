@@ -1,0 +1,60 @@
+{
+  "wastewater_{variant}": {
+    "full_name": "wastewater_{variant}",
+    "measure": "wastewater_{variant}",
+    "short_name": "Wastewater: {variant}",
+    "long_name": "Wastewater Viral Activity Level of {variant.short_name}",
+    "category": "rsv",
+    "short_description": "Wastewater Viral Activity Level of {variant.short_name}.",
+    "long_description": "Wastewater Viral Activity Level (VAL) of {variant.short_name}. The viral activity level is the scaled number of standard deviations above a dynamic baseline. The baseline is the 10th percentile of the log-transformed and normalized concentration values, which is calculated within a {variant.norm_frequency}. This is then scaled, where e is the mathmatical constant, and x is the number of standard deviations: $VAL = e^{x}$ These values are categorized as very low, low, moderate, high, or very high using the following breakpoints: {variant.breakpoints}.",
+    "statement": "The viral activity level of {variant.short_name} in wastewater is {value}.",
+    "measure_type": "scaled_log_standard_deviation",
+    "unit": "linear scaling of log standard deviations above a baseline",
+    "time_resolution": "week",
+    "variants": {
+      "rsv": {
+        "default": "rsv",
+        "short_name": "RSV",
+        "norm_frequency": "18 month timeframe every year",
+        "breakpoints": "4, 8, 12, and 20",
+        "sources": [
+          {
+            "name": "National Wastewater Surveillance System",
+            "url": "https://www.cdc.gov/nwss",
+            "location": "Wastewater RSV State and Territory Trends",
+            "location_url": "https://www.cdc.gov/nwss/rv/RSV-statetrend.html"
+          }
+        ]
+      },
+      "flua": {
+        "default": "flua",
+        "short_name": "Influenza A",
+        "norm_frequency": "18 month timeframe every year",
+        "breakpoints": "1.6, 4.5, 12.2, and 20.1",
+        "sources": [
+          {
+            "name": "National Wastewater Surveillance System",
+            "url": "https://www.cdc.gov/nwss",
+            "location": "Wastewater Influenza A State and Territory Trends",
+            "location_url": "https://www.cdc.gov/nwss/rv/InfluenzaA-statetrend.html"
+          }
+        ]
+      },
+      "covid": {
+        "default": "covid",
+        "short_name": "COVID-19",
+        "norm_frequency": "12 month timeframe every 6 months",
+        "breakpoints": "1.5, 3, 4.5, and 8",
+        "location_url": "https://www.cdc.gov/nwss/rv/COVID19-statetrend.html",
+        "sources": [
+          {
+            "name": "National Wastewater Surveillance System",
+            "url": "https://www.cdc.gov/nwss",
+            "location": "Wastewater COVID-19 State and Territory Trends",
+            "location_url": "https://www.cdc.gov/nwss/rv/COVID19-statetrend.html"
+          }
+        ]
+      }
+    }
+  }
+}

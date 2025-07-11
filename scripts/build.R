@@ -4,8 +4,8 @@
 library(dcf)
 library(tidyverse)
 
-##RUN ONCE 
-# dcf_init('pophive')
+##RUN ONCE from parent directory (not within an existing project) 
+# dcf_init('PopHIVE_DataStandards')
 #########
 
 ###########
