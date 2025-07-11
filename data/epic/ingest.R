@@ -17,11 +17,11 @@ if (!is.null(raw)) {
       function(a, b) merge(a, b, all = TRUE, sort = FALSE),
       data[c("all_encounters", "covid", "flu", "rsv")]
     ),
-    "standard/weekly.csv.xz",
+    "standard/weekly.csv.gz",
     ","
   )
-  vroom::vroom_write(data$self_harm, "standard/state_no_time.csv.xz", ",")
-  vroom::vroom_write(data$obesity_county, "standard/county_no_time.csv.xz", ",")
-  vroom::vroom_write(data$rsv_tests, "standard/no_geo.csv.xz", ",")
-  vroom::vroom_write(data$vaccine_mmr, "standard/children.csv.xz", ",")
+  vroom::vroom_write(data$self_harm, "standard/state_no_time.csv.gz", ",")
+  vroom::vroom_write(data$obesity_county, "standard/county_no_time.csv.gz", ",")
+  vroom::vroom_write(data$rsv_tests, "standard/no_geo.csv.gz", ",")
+  vroom::vroom_write(data$vaccine_mmr, "standard/children.csv.gz", ",")
 }
