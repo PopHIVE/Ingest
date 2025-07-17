@@ -29,7 +29,7 @@ if (!identical(process$raw_state, raw_state)) {
           )
     ) %>%
     rename( n_deaths_cocaine = "Cocaine (T40.5)" ,
-            n_deaths_heroine = "Heroin (T40.1)" ,
+            n_deaths_heroin = "Heroin (T40.1)" ,
             n_deaths_methadone = "Methadone (T40.3)",
             n_deaths_any_opiod = "Natural, semi-synthetic, & synthetic opioids, incl. methadone (T40.2-T40.4)",
             n_deaths_all_cause = "Number of Deaths" ,
