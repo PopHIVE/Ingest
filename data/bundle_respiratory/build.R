@@ -1,4 +1,4 @@
-#TO DO: ensure all weekdates start with Sunday
+#TO DO: 
 ##do any processing of variables (e.g., calculate percent, google standardization in the ingest.R scripts)
 #move reformatting of the FIPS codes to 5 digit character to the ingest.R
 
