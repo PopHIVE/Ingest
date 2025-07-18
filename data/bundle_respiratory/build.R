@@ -67,110 +67,67 @@ overall_trends %>%
   arrow::write_parquet(., "dist/covid/overall_trends.parquet")
 
 
-##this works but is inefficient
-# View(combined %>% filter(geography=='06'))
-# 
-# epic <- vroom::vroom('../epic/standard/weekly.csv.gz', show_col_types = FALSE, guess_max = Inf) %>%
-#   rename(date = time,
-#          fips = geography) %>%
-#   mutate(pct_rsv = n_rsv /n_all_encounters,
-#          pct_flu = n_flu /n_all_encounters,
-#          pct_covid = n_covid /n_all_encounters,
-#          source = 'Epic Cosmos, ED',
-#          geography = fips(fips, to = "Name")
-#         ) 
-# 
-# gtrends <- vroom::vroom('../gtrends/standard/data.csv.gz', show_col_types = FALSE, guess_max = Inf) %>%
-#   rename(date = time,
-#          fips = geography) %>%
-#     dplyr::select(fips, date, gtrends_rsv_vaccine, gtrends_rsv) %>%
-#   mutate(source = 'Google Health Trends',
-#          geography = fips(fips, to = "Name"))
-# 
-# nrevss <- vroom::vroom('../NREVSS/standard/data.csv.gz', show_col_types = FALSE, guess_max = Inf) %>%
-#   rename(date = time,
-#          fips = geography) %>%
-#   mutate(source = 'NREVSS'
-#          )
-# 
-# nssp <- vroom::vroom('../nssp/standard/data.csv.gz', show_col_types = FALSE, guess_max = Inf) %>%
-#   rename(date = time,
-#          fips = geography) %>%
-#   mutate(source = 'CDC NSSP',
-#          geography = fips(fips, to = "Name"),
-#          geography = if_else(fips == 0, 'United States', geography)) 
-# 
-# respnet <- vroom::vroom('../respnet/standard/data.csv.gz', show_col_types = FALSE, guess_max = Inf) %>%
-#   rename(date = time,
-#          fips = geography) %>%
-#   mutate(source = 'CDC RespNET',
-#          geography = fips(fips, to = "Name"),
-#          geography = if_else(fips == 0, 'United States', geography)
-#          )
-# 
-# wastewater <- vroom::vroom('../wastewater/standard/data.csv.gz', show_col_types = FALSE, guess_max = Inf) %>%
-#   rename(date = time,
-#          fips = geography) %>%
-#   mutate(source = 'CDC NWWS',
-#          geography = fips(fips, to = "Name")
-#          ) 
-# 
-# #############################
-# ###RSV overall trends
-# #############################
-# 
-# epic_rsv <- epic %>%
-#   mutate(suppressed_flag = if_else(n_rsv == 5, 1, 0)) %>%
-#   dplyr::select(geography, date, source, pct_rsv, suppressed_flag) %>%
-#   rename(value = pct_rsv)
-# 
-# gtrends_rsv = gtrends %>%
-#   mutate(suppressed_flag = 0 ,
-#          month=lubridate::month(date),
-#          season = if_else(month>=7 & month <=10,1,0),
-#          rsv_novax2 = gtrends_rsv - season*(4.41-1.69)*gtrends_rsv_vaccine - (1-season)*3.41*gtrends_rsv_vaccine,  #2.655 based on the regression below
-#          rsv_novax2 = if_else(rsv_novax2<0,0,rsv_novax2),
-#          value = rsv_novax2) %>%
-#   dplyr::select(geography, date, source, value, suppressed_flag) 
-#   
-# nssp_rsv_state <- nssp %>%
-#   filter(geography %in% state_names) %>%
-#   rename(value=percent_visits_rsv) %>%
-#   mutate(suppressed_flag = 0) %>%
-#   dplyr::select(geography, date, source, value, suppressed_flag) 
-# 
-# respnet_rsv <- respnet %>%
-#   rename(value=rate_rsv) %>%
-#   filter(age == 'Total') %>%
-#   mutate(suppressed_flag = 0) %>%
-#   dplyr::select(geography, date, source, value, suppressed_flag) 
-# 
-#   wastewater_rsv <- wastewater %>%
-#     rename(value=wastewater_rsv) %>%
-#   mutate(suppressed_flag = 0) %>%
-#     dplyr::select(geography, date, source, value, suppressed_flag) 
-# 
-#   overall_trends_rsv <- bind_rows(epic_rsv, 
-#                               gtrends_rsv, 
-#                               nssp_rsv_state, 
-#                               respnet_rsv, 
-#                               wastewater_rsv
-#                               ) %>%
-#     arrange(source, geography, date) %>%
-#     group_by(source, geography) %>%
-#    mutate(value_smooth = zoo::rollapplyr(
-#       value,
-#       3,
-#       mean,
-#       partial = T,
-#       na.rm = T
-#     ),
-#     value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
-#     value_smooth = value_smooth - min(value_smooth, na.rm = T),
-#     value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
-#    ) %>%
-#     ungroup() %>%
-#     dplyr::select(geography, date, source, value,value_smooth,value_smooth_scale, suppressed_flag) 
-#   
-#   write_parquet(overall_trends_rsv, './dist/rsv/overall_trends.parquet')
-#   
+#NREVSS data
+#nrevss_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/positive_tests.parquet')
+key <- readRDS('../../resources/hhs_regions.rds') %>%
+  mutate(geography = gsub('Region ', 'hhs_',Group.1)
+  ) %>%
+  dplyr::select(x, geography)
+
+d <- vroom::vroom('../NREVSS/standard/data.csv.gz') %>%
+  rename(value = nrevss,
+         date = time) %>%
+  mutate(epiyr = lubridate::year(date), 
+         year = lubridate::year(date),
+         epiyr = if_else(nrevss_week<=26,year - 1 ,nrevss_week),
+         epiwk  = if_else( nrevss_week<=26, nrevss_week+52, nrevss_week  ),
+         week = nrevss_week,
+         epiwk=epiwk-26,
+         source = 'CDC NREVSS'
+         ) %>%
+  left_join(key, by='geography') %>%
+  dplyr::select(-geography) %>%
+  rename(geography=x) %>%
+  mutate(scaled_cases = value/max(value)*100) %>%
+  dplyr::select(source, geography, date, scaled_cases, value, epiyr, epiwk, week, year)
+  
+arrow::write_parquet(d, "dist/covid/positive_tests.parquet")
+
+#RSV testing data
+#epic_testing_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/rsv_testing_pct.parquet')
+d2 <- vroom::vroom('../epic/standard/no_geo.csv.gz') %>%
+  rename(n_pneumonia= n_rsv_tests,
+         value = rsv_tests,
+         date= time
+         ) %>%
+  mutate(source = 'Epic Cosmos, ED',
+         suppressed_flag = if_else(n_pneumonia == '10 or fewer',1,0),
+         geography = 'United States'
+         )%>%
+  dplyr::select(source, geography,age, date, value, n_pneumonia, suppressed_flag ) %>%
+  filter(!is.na(age)) 
+  
+arrow::write_parquet(d2, "dist/covid/rsv_testing_pct.parquet")
+
+##ED visits by county
+#ed_county_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/ed_visits_by_county.parquet')
+
+d3 <- vroom::vroom('../nssp/standard/data.csv.gz') %>%
+  filter(!(geography %in% state_fips)) %>%
+  rename( week_end = time) %>%
+  mutate(fips = as.numeric(geography),
+         source = 'CDC NSSP') 
+
+d3 %>%
+  dplyr::select(source, week_end, percent_visits_rsv) %>%
+  arrow::write_parquet(., "dist/rsv/ed_visits_by_county.parquet")
+
+d3 %>%
+  dplyr::select(source, week_end, percent_visits_flu) %>%
+  arrow::write_parquet(., "dist/flu/ed_visits_by_county.parquet")
+
+d3 %>%
+  dplyr::select(source, week_end, percent_visits_covid) %>%
+  arrow::write_parquet(., "dist/covid/ed_visits_by_county.parquet")
+
+
