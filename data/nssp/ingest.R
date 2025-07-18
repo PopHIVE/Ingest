@@ -29,12 +29,15 @@ if (!identical(process$raw_state, raw_state)) {
            geography = fips ,
            percent_visits_flu = percent_visits_influenza
            )%>%
+    mutate(geography = geography,
+           geography = sprintf("%05d", geography),
+           geography = substr(geography,1,2)) %>%
     dplyr::select(geography,time, percent_visits_rsv, percent_visits_flu, percent_visits_covid)
 
   #####################
   # Reformat COUNTY Level
   ######################
-  
+    #for states without county info fill in with state-level from data_state_merge
     data_state_merge <- vroom::vroom("./raw/rdmq-nq56.csv.xz", show_col_types = FALSE) %>%
       filter(county == 'All') %>%
       rename(
@@ -51,21 +54,29 @@ if (!identical(process$raw_state, raw_state)) {
         percent_visits_rsv_state,
         percent_visits_covid_state,
         percent_visits_flu_state
-      )
+      ) %>%
+      mutate(state_fips = sprintf("%05d", fips),
+             state_fips = substr(state_fips,1,2)
+      ) %>%
+      dplyr::select(-fips)
     
     data_county <- vroom::vroom("./raw/rdmq-nq56.csv.xz", show_col_types = FALSE) %>%
       filter(county != 'All') %>%
       rename(state = geography) %>%
+      mutate(state_fips = sprintf("%05d", fips),
+             state_fips = substr(fips,1,2)
+             ) %>%
       dplyr::select(
         state,
         county,
         fips,
+        state_fips,
         week_end,
         percent_visits_rsv,
         percent_visits_covid,
         percent_visits_influenza
       ) %>%
-      left_join(data_state_merge, by = c('week_end', 'fips')) %>%
+      left_join(data_state_merge, by = c('week_end', 'state_fips')) %>%
       mutate(
         percent_visits_covid = if_else(
           is.na(percent_visits_covid),
@@ -117,19 +128,20 @@ if (!identical(process$raw_state, raw_state)) {
           )
         )
       ) %>%
+      as.data.frame() %>%
+      mutate(geography = sprintf("%05d", fips)) %>%
+      rename(time=week_end) %>%
       dplyr::select(
-        fips,
-        week_end,
+        geography,
+        time,
         percent_visits_covid,
         percent_visits_flu,
         percent_visits_rsv
-      ) %>%
-      as.data.frame() %>%
-      rename(geography=fips,
-             time=week_end)
+      )
   
   
-  data <- bind_rows(data_state, data_county)
+  data <- bind_rows(data_state, data_county) %>%
+    mutate(time = lubridate::floor_date(time, 'week'))
   
   vroom::vroom_write(
     data,

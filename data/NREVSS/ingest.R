@@ -20,7 +20,7 @@ if (!identical(process$raw_state, raw_state)) {
   data$posted <- as.Date(data$posted, "%m/%d/%Y")
   data <- data[data$level != "National" & data$posted == max(data$posted), ]
   data$geography <- sub("Region ", "hhs_", data$level, fixed = TRUE)
-  data$time <- as.Date(data$mmwrweek_end, "%m/%d/%Y")
+  data$time <- lubridate::floor_date(as.Date(data$mmwrweek_end, "%m/%d/%Y"), 'week')
   data$nrevss <- data$pcr_detections
 
   report_time <- MMWRweek::MMWRweek(as.Date(data$mmwrweek_end, "%m/%d/%Y"))

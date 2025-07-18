@@ -92,6 +92,7 @@ if (!identical(process1$raw_state, raw_state1)) {
     full_join(data3, by= c('age', 'time', 'geography')) 
 
   data_combined = bind_rows(data1, data2_3_combo) %>%
+    rename(fips=geography) %>%
     mutate(rate_covid = if_else(time < '2020-03-01',0, rate_covid),
            rate_rsv = if_else(is.na(rate_rsv),0, rate_rsv), #do NOT fill in flu here
            
@@ -104,8 +105,11 @@ if (!identical(process1$raw_state, raw_state1)) {
                                                               if_else(age=="Overall",'Total',                      
                                                               
                                                               'other'               
-                                                      )))))))
-           ) 
+                                                      ))))))),
+          geography = sprintf("%02d", fips),
+          time = lubridate::floor_date(time)
+           ) %>%
+    dplyr::select(time, geography, age, starts_with('rate'))
   
 
   #Write standard data

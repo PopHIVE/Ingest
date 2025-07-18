@@ -77,6 +77,8 @@ if (!identical(process$raw_state, raw_state)) {
     data$geography
   ]
 
+  data$time <- lubridate::floor_date(as.Date(data$time), 'week') 
+  
   vroom::vroom_write(data, "standard/data.csv.gz", ",")
 
   process$raw_state <- raw_state

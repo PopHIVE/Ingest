@@ -4,6 +4,8 @@
 library(dcf)
 library(tidyverse)
 
+dcf_build()
+
 ##RUN ONCE from parent directory (not within an existing project) 
 # dcf_init('PopHIVE_DataStandards')
 #########
@@ -36,4 +38,10 @@ library(tidyverse)
 # dcf_process("epic")
 # dcf_process("brfss")
 # dcf_process("respnet")
-dcf_build()
+
+## Add bundles
+### dcf::dcf_add_bundle("bundle_respiratory")
+
+##Process bundle
+### dcf::dcf_process("bundle_respiratory", "..")
+

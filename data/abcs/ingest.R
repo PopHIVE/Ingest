@@ -33,6 +33,7 @@ if (!identical(process$raw_state, raw_state)) {
     ungroup() %>%
     tidyr::complete(sero, State, fill = list(pct = 0)) %>%
     mutate(geography= fips(State, to='FIPS'),
+           geography = sprintf("%02d", geography),
            time = as.Date('2019-01-01'),
            age='Total',
            N_cases = if_else(is.na(N_cases),0, N_cases)
@@ -75,7 +76,7 @@ if (!identical(process$raw_state, raw_state)) {
     summarize(N_IPD = sum(N_IPD)) %>%
     ungroup() %>%
     mutate(time = as.Date(paste(year,'01','01',sep='-')),
-           geography=0) %>%
+           geography='00') %>%
     rename(age= agec2,
            serotype=st) %>%
     dplyr::select( age, serotype, geography, time, N_IPD)
