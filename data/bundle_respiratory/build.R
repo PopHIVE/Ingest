@@ -66,8 +66,9 @@ overall_trends %>%
   filter(grepl('covid',variable) & !is.na(value)) %>%
   arrow::write_parquet(., "dist/covid/overall_trends.parquet")
 
-
+###################
 #NREVSS data
+###################
 #nrevss_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/positive_tests.parquet')
 key <- readRDS('../../resources/hhs_regions.rds') %>%
   mutate(geography = gsub('Region ', 'hhs_',Group.1)
@@ -93,7 +94,10 @@ d <- vroom::vroom('../NREVSS/standard/data.csv.gz') %>%
   
 arrow::write_parquet(d, "dist/covid/positive_tests.parquet")
 
+#################
 #RSV testing data
+#################
+
 #epic_testing_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/rsv_testing_pct.parquet')
 d2 <- vroom::vroom('../epic/standard/no_geo.csv.gz') %>%
   rename(n_pneumonia= n_rsv_tests,
@@ -130,4 +134,89 @@ d3 %>%
   dplyr::select(source,fips, week_end, percent_visits_covid) %>%
   arrow::write_parquet(., "dist/covid/ed_visits_by_county.parquet")
 
+#############
+## Age, state
+#############
 
+age_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/trends_by_age.parquet')
+
+bundle_files_age  <- list( '../epic/standard/weekly.csv.gz',
+                           '../respnet/standard/data.csv.gz'
+)
+
+start_time <- "2020"
+
+#test <-  vroom::vroom('../gtrends/standard/data.csv.gz') 
+
+
+data_age <- lapply(bundle_files_age, function(file) {
+  d <- vroom::vroom(file, show_col_types = FALSE)
+  if ("age" %in% colnames(d)) {
+  }
+  d[!is.na(d$time) & as.character(d$time) > start_time, ]
+})
+
+combined_age <- Reduce(
+  function(a, b) merge(a, b, by = c("geography", "time", "age"), all = TRUE),
+  data
+)
+
+colnames(combined_age) <- sub("n_", "epic_", colnames(combined_age), fixed = TRUE)
+
+trends_age <- combined_age %>%
+  filter(geography %in% state_fips ) %>%
+  rename(fips= geography) %>%
+  mutate( geography = fips(fips, to = "Name"),
+          geography = if_else(fips == '00', 'United States', geography)
+          ) %>%
+  dplyr::select(-fips) %>%
+  reshape2::melt(., id.vars = c('geography', 'time', 'age'))  %>%
+  rename(date = time) %>%
+  mutate( source = if_else(grepl('epic', variable), 'Epic Cosmos (ED)', 'CDC RSV-NET (Hospitalization)'
+                      )
+          )
+
+trend_age_all <- trends_age %>%
+  filter(variable=='epic_all_encounters') %>%
+  dplyr::select(geography, age, date, source, value) %>%
+  rename(epic_all = value )
+
+trends_age2 <- trends_age %>%
+  left_join(trend_age_all, by=c('geography','age','date','source')) %>%
+  filter(!is.na(value) & !is.na(age)) %>%
+  filter(variable!='epic_all_encounters') %>%
+  rename(raw=value) %>%
+  mutate(suppressed_flag = if_else(source=='Epic Cosmos (ED)' & raw==5,1,0),
+          value = if_else(source=='Epic Cosmos (ED)', raw/epic_all*100,
+                          raw)
+         ) %>%
+  dplyr::select(date, geography, age, source, suppressed_flag, value,variable) %>%
+  arrange(geography, age, source, date) %>%
+  group_by(geography, age, source) %>%
+  mutate(
+    value_smooth = zoo::rollapplyr(
+      value,
+      3,
+      mean,
+      partial = T,
+      na.rm = T
+    ),
+    value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
+    value_smooth = value_smooth - min(value_smooth, na.rm = T),
+    value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
+  )
+
+trends_age2 %>% 
+  filter(grepl('rsv',variable) & !is.na(value)) %>%
+  dplyr::select(-variable) %>%
+  arrow::write_parquet(., "dist/rsv/trends_by_age.parquet")
+
+trends_age2 %>% 
+  filter(grepl('flu',variable) & !is.na(value)) %>%
+  dplyr::select(-variable) %>%
+  arrow::write_parquet(., "dist/flu/trends_by_age.parquet")
+
+trends_age2 %>% 
+  filter(grepl('covid',variable) & !is.na(value)) %>%
+  dplyr::select(-variable) %>%
+  arrow::write_parquet(., "dist/covid/trends_by_age.parquet")
