@@ -215,3 +215,48 @@ d3 <- vroom::vroom('../gtrends/standard/data_dma.csv.gz') %>%
   dplyr::select(-term)
 
   arrow::write_parquet(d3, "dist/rsv/google_dma.parquet")
+  
+###############################################
+# Pneumococcus
+################################################
+  #abc_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/pneumococcus/serotype_trends.parquet')
+  
+d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
+    filter(geography=='00') %>%
+    rename(value = N_IPD) %>%
+    mutate(year = lubridate::year(time)
+           ) %>%
+    dplyr::select(serotype, year, age, value)
+  
+  arrow::write_parquet(d4, "dist/pneumococcus/serotype_trends.parquet")
+
+  #abc_view_geo <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/pneumococcus/by_geography.parquet')
+  d5 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
+    filter(geography!='00') %>%
+    rename(value = pct_IPD,
+           value_N = N_IPD,
+           fips=geography) %>%
+    mutate(year = lubridate::year(time),
+           geography = fips(fips, to = "Abbreviation")
+    ) %>%
+    dplyr::select(serotype, geography, year,  value, value_N)
+    
+  arrow::write_parquet(d5, "dist/pneumococcus/by_geography.parquet")
+  
+  d4_2019_2020 <- d4 %>% filter(year %in% c(2019,2020) & age == "50+ years") %>%
+    group_by(serotype) %>%
+    summarize(value=sum(value)) %>%
+    ungroup()
+  
+  uad <- read_csv(
+    '../abcs/standard/uad.csv.gz'
+  ) %>%
+    full_join(d4_2019_2020, by = 'serotype'
+              )%>%
+    filter(!is.na(N_SSUAD) & !is.na(value)) %>%
+    mutate(year = '2019-2020') %>%
+    dplyr::select(geography, year, serotype, N_SSUAD, value) %>%
+    rename( ipd = value, pneumonia = N_SSUAD)
+  
+  arrow::write_parquet(uad, "dist/pneumococcus/comparison.parquet")
+  

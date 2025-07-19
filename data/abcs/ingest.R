@@ -90,6 +90,21 @@ if (!identical(process$raw_state, raw_state)) {
     ","
   )
   
+  uad <- read_csv(
+    '../abcs/raw/ramirez_ofid_2025_ofae727.csv'
+  )  %>%
+    mutate(N_SSUAD = over65 + a50_64_with_indication + a50_64_no_indication,
+           time=as.Date('2020-01-01'),
+           geography= 'KY-TN-CT-IL') %>%
+    rename(serotype=st) %>%
+    dplyr::select(geography, time,serotype, N_SSUAD)
+
+  vroom::vroom_write(
+    uad,
+    "standard/uad.csv.gz",
+    ","
+  )
+  
   # record processed raw state
   process$raw_state <- raw_state
   dcf::dcf_process_record(updated = process)
