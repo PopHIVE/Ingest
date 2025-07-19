@@ -43,5 +43,5 @@ dcf_build()
 ### dcf::dcf_add_bundle("bundle_respiratory")
 
 ##Process bundle
-### dcf::dcf_process("bundle_respiratory", "..")
+### dcf::dcf_process("bundle_respiratory", ".")
 

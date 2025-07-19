@@ -25,9 +25,34 @@ if (!identical(process$raw_state, raw_state)) {
 
   report_time <- MMWRweek::MMWRweek(as.Date(data$mmwrweek_end, "%m/%d/%Y"))
   data$nrevss_week <- report_time$MMWRweek
+  data$nrevss_year <- report_time$MMWRyear
 
+  key <- readRDS('../../resources/hhs_regions.rds') %>%
+    mutate(geography = gsub('Region ', 'hhs_',Group.1)
+    ) %>%
+    dplyr::select(x, geography)
+  
+  d <- data %>%
+    rename(value = nrevss,
+           date = time) %>%
+    mutate(epiyr = lubridate::year(date), 
+           year = nrevss_year,
+           epiyr = if_else(nrevss_week<=26,year - 1 ,nrevss_week),
+           epiwk  = if_else( nrevss_week<=26, nrevss_week+52, nrevss_week  ),
+           week = nrevss_week,
+           epiwk=epiwk-26,
+           source = 'CDC NREVSS'
+    ) %>%
+    left_join(key, by='geography') %>%
+    dplyr::select(-geography) %>%
+    rename(geography=x) %>%
+    mutate(scaled_cases = value/max(value)*100) %>%
+    dplyr::select(source, geography, date, scaled_cases, pcr_detections, epiyr, epiwk, week, year) %>%
+    rename(time=date)
+  
+  
   vroom::vroom_write(
-    data[, c("geography", "time", "nrevss_week", "nrevss")],
+    d,
     "standard/data.csv.gz",
     ","
   )

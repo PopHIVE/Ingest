@@ -12,7 +12,7 @@ library(tidycensus)
 #overall_trends_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/overall_trends.parquet')
 
 #############################
-##Read in all of the datasets
+##Read in all of the datasets with state-level info
 #############################
 state_fips <- c(0, as.numeric(unique(tidycensus::fips_codes$state_code)))
 state_fips <- stringr::str_pad(gsub("\\D", "", state_fips), width = 2, pad = "0")
@@ -21,7 +21,6 @@ state_names <- c('United States', state.name)
 
 bundle_files  <- list( '../epic/standard/weekly.csv.gz',
                        '../gtrends/standard/data.csv.gz',
-                       '../NREVSS/standard/data.csv.gz',
                        '../nssp/standard/data.csv.gz',
                        '../respnet/standard/data.csv.gz',
                        '../wastewater/standard/data.csv.gz'
@@ -66,33 +65,17 @@ overall_trends %>%
   filter(grepl('covid',variable) & !is.na(value)) %>%
   arrow::write_parquet(., "dist/covid/overall_trends.parquet")
 
+
 ###################
 #NREVSS data
 ###################
 #nrevss_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/positive_tests.parquet')
-key <- readRDS('../../resources/hhs_regions.rds') %>%
-  mutate(geography = gsub('Region ', 'hhs_',Group.1)
-  ) %>%
-  dplyr::select(x, geography)
 
 d <- vroom::vroom('../NREVSS/standard/data.csv.gz') %>%
-  rename(value = nrevss,
-         date = time) %>%
-  mutate(epiyr = lubridate::year(date), 
-         year = lubridate::year(date),
-         epiyr = if_else(nrevss_week<=26,year - 1 ,nrevss_week),
-         epiwk  = if_else( nrevss_week<=26, nrevss_week+52, nrevss_week  ),
-         week = nrevss_week,
-         epiwk=epiwk-26,
-         source = 'CDC NREVSS'
-         ) %>%
-  left_join(key, by='geography') %>%
-  dplyr::select(-geography) %>%
-  rename(geography=x) %>%
-  mutate(scaled_cases = value/max(value)*100) %>%
-  dplyr::select(source, geography, date, scaled_cases, value, epiyr, epiwk, week, year)
-  
-arrow::write_parquet(d, "dist/covid/positive_tests.parquet")
+  rename(value = pcr_detections,
+         date = time) 
+
+arrow::write_parquet(d, "dist/rsv/positive_tests.parquet")
 
 #################
 #RSV testing data
@@ -111,9 +94,11 @@ d2 <- vroom::vroom('../epic/standard/no_geo.csv.gz') %>%
   dplyr::select(source, geography,age, date, value, n_pneumonia, suppressed_flag ) %>%
   filter(!is.na(age)) 
   
-arrow::write_parquet(d2, "dist/covid/rsv_testing_pct.parquet")
+arrow::write_parquet(d2, "dist/rsv/rsv_testing_pct.parquet")
 
+#########################
 ##ED visits by county
+##########################
 #ed_county_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/ed_visits_by_county.parquet')
 
 d3 <- vroom::vroom('../nssp/standard/data.csv.gz') %>%
@@ -220,3 +205,13 @@ trends_age2 %>%
   filter(grepl('covid',variable) & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/covid/trends_by_age.parquet")
+
+
+##############################
+### Google DMA
+#############################
+d3 <- vroom::vroom('../gtrends/standard/data_dma.csv.gz') %>%
+  filter(term=='gtrends_rsv') %>%
+  dplyr::select(-term)
+
+  arrow::write_parquet(d3, "dist/rsv/google_dma.parquet")
