@@ -7,6 +7,7 @@ library(arrow)
 library(cdlTools)
 library(lubridate)
 library(reshape2)
+library(tidyverse)
 library(tidycensus)
 
 #overall_trends_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/overall_trends.parquet')
@@ -143,7 +144,7 @@ data_age <- lapply(bundle_files_age, function(file) {
 
 combined_age <- Reduce(
   function(a, b) merge(a, b, by = c("geography", "time", "age"), all = TRUE),
-  data
+  data_age
 )
 
 colnames(combined_age) <- sub("n_", "epic_", colnames(combined_age), fixed = TRUE)

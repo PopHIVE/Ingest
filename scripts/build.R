@@ -43,5 +43,6 @@ dcf_build()
 ### dcf::dcf_add_bundle("bundle_respiratory")
 
 ##Process bundle
+#For bundle projects, you can list the standard files you're using in process.json, and then you can read that in with dcf_process_record
 ### dcf::dcf_process("bundle_respiratory", ".")
 
