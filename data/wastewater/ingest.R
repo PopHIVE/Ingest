@@ -4,9 +4,9 @@
 
 base_url <- "https://www.cdc.gov/wcms/vizdata/NCEZID_DIDRI/"
 files <- c(
-  rsv = "RSVStateLevelDownloadCSV.csv",
-  flua = "FluA/FluAStateMapDownloadCSV.csv",
-  covid = "SC2StateLevelDownloadCSV.csv"
+  rsv = "rsv/nwssrsvstateactivitylevel.csv",
+  flua = "FluA/nwssfluastateactivitylevelDL.csv",
+  covid = "SC2/nwsssc2stateactivitylevelDL.csv"
 )
 for (file in names(files)) {
   url <- paste0(base_url, files[[file]])
@@ -84,3 +84,4 @@ if (!identical(process$raw_state, raw_state)) {
   process$raw_state <- raw_state
   dcf::dcf_process_record(updated = process)
 }
+
