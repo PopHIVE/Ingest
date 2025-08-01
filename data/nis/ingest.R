@@ -23,7 +23,52 @@ if (!identical(process$raw_state, raw_state)) {
      filter(grepl('MMR',Vaccine)|grepl('Varicella',Vaccine)|  grepl('DTaP',Vaccine)|  grepl('Hep A',Vaccine)|  
               grepl('Hep B',Vaccine)| grepl('Hib',Vaccine)|  grepl('PCV',Vaccine) |
               grepl('Combined 7',Vaccine) |  grepl('Polio',Vaccine) | grepl('Rotavirus',Vaccine) 
-     ) 
+     ) %>%
+     filter(
+       Geography %in%
+         c(state.name, 'District of Columbia', 'United States') &
+         birth_year %in%
+         c(
+           '2011',
+           '2012',
+           '2013',
+           '2014',
+           '2015',
+           '2016',
+           '2017',
+           '2018',
+           '2019',
+           '2020',
+           '2021',
+           '2022',
+           '2023',
+           '2024',
+           '2025'
+         ) &
+         dim1 == 'Age'
+     )%>%
+     mutate(
+       vax_order = as.numeric(as.factor(Vaccine)),
+       Vaccine_dose = as.factor(paste(Vaccine, Dose)),
+       Vaccine_dose = gsub('NA', '', Vaccine_dose),
+       Vaccine_dose = trimws(Vaccine_dose)
+     ) %>%
+     rename(pct_uptake = vax_uptake) %>%
+     separate(ci, into = c("pct_uptake_lcl", "pct_uptake_ucl"), sep = " to ", convert = TRUE) %>%
+     dplyr::select(Geography, birth_year, age, Vaccine_dose, pct_uptake,pct_uptake_lcl,pct_uptake_ucl,samp_size_vax) %>%
+     rename(statename = Geography, vaccine = Vaccine_dose,   sample_size=samp_size_vax) %>%
+     mutate(geography = cdlTools::fips(statename, to='FIPS'),
+            geography = if_else(statename=='United States', 0,geography),
+            geography = sprintf("%02d", geography),
+            
+            age_months = if_else(grepl('Month', age), as.numeric(gsub("\\D", "", age)),
+                              if_else(grepl('Day',age),0, 
+                                      NA_real_)),
+            age_days = age_months * (365/12), 
+            time= as.Date(paste(birth_year,'01','01', sep='-')) + age_days
+                          ) %>%
+     dplyr::select(-statename, -age_months, -age_days)
+   
      
      
      vroom::vroom_write(
