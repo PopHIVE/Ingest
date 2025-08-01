@@ -7,4 +7,6 @@ schoolvaxview_exempt <- vroom::vroom('../schoolvaxview/standard/data.csv.gz')
 
 nis <- vroom::vroom('../nis/standard/data.csv.gz')
 
-epic <- vroom::vroom('../epic/standard/children.csv.gz')
+epic <- vroom::vroom('../epic/standard/children.csv.gz') %>%
+  rename(N_epic = n_vaccine_mmr,
+         mmr_pct_epic = mmr_receipt)
