@@ -52,18 +52,62 @@ overall_trends <- reshape2::melt(combined, id.vars = c('geography', 'time')) %>%
   filter(geography %in% state_fips ) %>%
   rename(fips= geography) %>%
   mutate( geography = fips(fips, to = "Name"),
-         geography = if_else(fips == '00', 'United States', geography))
+         geography = if_else(fips == '00', 'United States', geography)) %>%
+  arrange(geography,  time) %>%
+  group_by(fips,  variable, geography) %>%
+  mutate(value_smooth = zoo::rollapplyr(
+    value,
+    3,
+    mean,
+    partial = T,
+    na.rm = T
+  ),
+  value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
+  value_smooth = value_smooth - min(value_smooth, na.rm = T),
+  value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
+  ) %>%
+  ungroup()
 
 overall_trends %>% 
   filter(grepl('rsv',variable) & !is.na(value)) %>%
+  filter(variable %in% c('epic_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv' )) %>%
+  mutate( source = if_else(variable=='epic_rsv', 'Epic Cosmos, ED',
+                    if_else(variable=='gtrends_rsv_adjusted', 'Google Health Trends',
+                            if_else(variable=='percent_visits_rsv', 'CDC NSSP',
+                                    if_else(variable=='rate_rsv', 'CDC RespNET',
+                                            if_else(variable=='wastewater_rsv', 'CDC NWSS', 
+                                                    NA_character_
+                    )))))
+          ) %>%
+  dplyr::select(-variable, -fips) %>%
     arrow::write_parquet(., "dist/rsv/overall_trends.parquet")
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
+  filter(variable %in% c('epic_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua' )) %>%
+  mutate( source = if_else(variable=='epic_flu', 'Epic Cosmos, ED',
+                                   if_else(variable=='percent_visits_flu', 'CDC NSSP',
+                                           if_else(variable=='rate_flu', 'CDC RespNET',
+                                                   if_else(variable=='wastewater_flua', 'CDC NWSS', 
+                                                           NA_character_
+                                                           
+                                                   ))))
+  ) %>%
+  dplyr::select(-variable,-fips) %>%
   arrow::write_parquet(., "dist/flu/overall_trends.parquet")
 
 overall_trends %>% 
   filter(grepl('covid',variable) & !is.na(value)) %>%
+  filter(variable %in% c('epic_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid' )) %>%
+  mutate( source = if_else(variable=='epic_covid', 'Epic Cosmos, ED',
+                                   if_else(variable=='percent_visits_covid', 'CDC NSSP',
+                                           if_else(variable=='rate_covid', 'CDC RespNET',
+                                                   if_else(variable=='wastewater_covid', 'CDC NWSS', 
+                                                           NA_character_
+                                                           
+                                                   ))))
+  ) %>%
+  dplyr::select(-variable,-fips) %>%
   arrow::write_parquet(., "dist/covid/overall_trends.parquet")
 
 
@@ -124,7 +168,7 @@ d3 %>%
 ## Age, state
 #############
 
-age_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/trends_by_age.parquet')
+#age_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/trends_by_age.parquet')
 
 bundle_files_age  <- list( '../epic/standard/weekly.csv.gz',
                            '../respnet/standard/data.csv.gz'
@@ -158,7 +202,7 @@ trends_age <- combined_age %>%
   dplyr::select(-fips) %>%
   reshape2::melt(., id.vars = c('geography', 'time', 'age'))  %>%
   rename(date = time) %>%
-  mutate( source = if_else(grepl('epic', variable), 'Epic Cosmos (ED)', 'CDC RSV-NET (Hospitalization)'
+  mutate( source = if_else(grepl('epic', variable), 'Epic Cosmos (ED)', 'CDC Resp-NET (Hospitalization)'
                       )
           )
 

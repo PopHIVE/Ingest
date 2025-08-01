@@ -140,8 +140,7 @@ if (!identical(process$raw_state, raw_state)) {
       )
   
   
-  data <- bind_rows(data_state, data_county) %>%
-    mutate(time = lubridate::floor_date(time, 'week'))
+  data <- bind_rows(data_state, data_county) 
   
   vroom::vroom_write(
     data,

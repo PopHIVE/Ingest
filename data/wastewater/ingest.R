@@ -76,9 +76,37 @@ if (!identical(process$raw_state, raw_state)) {
   data$geography <- structure(state_ids$STATEFP, names = state_ids$STATE_NAME)[
     data$geography
   ]
-
-  data$time <- lubridate::floor_date(as.Date(data$time), 'week') 
   
+  state_ids <- dcf::dcf_load_census(
+    out_dir = "../../resources",
+    state_only = TRUE
+  )
+  
+  nat_ave <- data %>%
+    left_join(state_ids, by=c('geography'='GEOID'))%>%
+    group_by(time) %>%
+    mutate(wgt_covid = (Total*!is.na(wastewater_covid))/sum(Total*!is.na(wastewater_covid), na.rm=T), #population weight
+           wgt_rsv = (Total*!is.na(wastewater_rsv))/sum(Total*!is.na(wastewater_rsv), na.rm=T), #population weight
+           wgt_flua = (Total*!is.na(wastewater_flua))/sum(Total*!is.na(wastewater_flua), na.rm=T), #population weight
+           wgt_part_covid = wgt_covid*wastewater_covid,
+           wgt_part_rsv = wgt_rsv*wastewater_rsv,
+           wgt_part_flua = wgt_flua*wastewater_flua
+           ) %>% 
+    summarize(wastewater_covid = sum(wgt_part_covid, na.rm=T),
+              wastewater_rsv= sum(wgt_part_rsv, na.rm=T),
+              wastewater_flua= sum(wgt_part_flua, na.rm=T),
+              wgt_check_rsv =sum(wgt_rsv, na.rm=T),
+              wgt_check_flua =sum(wgt_flua, na.rm=T),
+              wgt_check_covid =sum(wgt_covid, na.rm=T)
+              ) %>%
+    mutate(wastewater_covid = if_else(wgt_check_covid==1,  wastewater_covid,NA_real_),
+           wastewater_flua = if_else(wgt_check_flua==1, wastewater_flua,NA_real_),
+           wastewater_rsv = if_else(wgt_check_rsv==1,  wastewater_rsv,NA_real_)
+           ) %>%
+    dplyr::select(time, wastewater_covid,wastewater_flua,wastewater_rsv) %>%
+    mutate(geography = '00')
+
+  data_combined <- bind_rows(data,nat_ave )
   vroom::vroom_write(data, "standard/data.csv.gz", ",")
 
   process$raw_state <- raw_state

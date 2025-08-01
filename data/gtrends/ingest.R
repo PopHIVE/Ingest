@@ -57,18 +57,31 @@ if (!identical(process$raw_state, raw_state)) {
   )
   
   data$geography <- structure(
-    state_ids$GEOID,
-    names = state_ids$region_name
+    c('00',state_ids$GEOID),
+    names = c('United States',state_ids$region_name)
   )[structure(
-    c(state.name, "District of Columbia"),
-    names = c(state.abb, "DC")
-  )[sub(
+    c(state.name, "District of Columbia", 'United States'),
+    names = c(state.abb, "DC","US")
+  )
+  [sub(
     "US-",
     "",
     data$geography,
     fixed = TRUE
   )]]
 
+  data$time <- as.character(as.Date(data$time)+ 6) # week end date
+  
+  data <- data %>%
+    ungroup() %>%
+    mutate( month = lubridate::month(as.Date(time)),
+            season = if_else(month>=7 & month <=10,1,0),
+            gtrends_rsv_adjusted = gtrends_rsv - season*(4.41-1.69)*gtrends_rsv_vaccine - (1-season)*3.41*gtrends_rsv_vaccine,  #2.655 based on the regression below
+            gtrends_rsv_adjusted = if_else(gtrends_rsv_adjusted<0,0,gtrends_rsv_adjusted),
+            gtrends_rsv_adjusted = gtrends_rsv_adjusted / max(gtrends_rsv_adjusted, na.rm=T)
+    ) %>%
+    dplyr::select(-month, -season)
+  
   vroom::vroom_write(data, "standard/data.csv.gz", ",")
 
   # record processed raw state
@@ -173,7 +186,11 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     ungroup() %>%
     dplyr::select(date, fips, search_volume_scale,term) %>%
-    rename(value = search_volume_scale) 
+    rename(value = search_volume_scale) %>%
+    rename(time=date)
+  
+  g1_metro$time  <- as.character(as.Date(g1_metro$time)+ 6) # week end date
+  
   
   vroom::vroom_write(g1_metro, "standard/data_dma.csv.gz", ",")
   

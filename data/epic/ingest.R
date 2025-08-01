@@ -1,6 +1,8 @@
+
 # Process staging data
 
 raw <- dcf::dcf_process_epic_staging()
+
 
 # if there was staging data, make new standard version from it
 
@@ -8,7 +10,14 @@ if (!is.null(raw)) {
   files <- list.files("raw", "\\.csv\\.xz", full.names = TRUE)
   data <- lapply(files, function(file) {
     d <- vroom::vroom(file, show_col_types = FALSE, guess_max = Inf)
-    dcf::dcf_standardize_epic(d)
+    d2 <- dcf::dcf_standardize_epic(d)
+    
+    if ("geography" %in% names(d2)) {
+    d2 <- d2 %>%
+      mutate(geography = if_else(geography=='0','00', geography) 
+      )
+    }
+    return(d2)
   })
   names(data) <- sub("\\..*", "", basename(files))
 
