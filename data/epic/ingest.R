@@ -1,10 +1,11 @@
 
 # Process staging data
 
+
+
+# if there was staging data, make new standard version from it..this function will automaticaly save relevant file
 raw <- dcf::dcf_process_epic_staging()
 
-
-# if there was staging data, make new standard version from it
 
 if (!is.null(raw)) {
   files <- list.files("raw", "\\.csv\\.xz", full.names = TRUE)
@@ -17,6 +18,12 @@ if (!is.null(raw)) {
       mutate(geography = if_else(geography=='0','00', geography) 
       )
     }
+    if ("n_obesity_state" %in% names(d2)) {
+      d2 <- d2 %>%
+        rename(n_patients = n_obesity_state) 
+        
+    }
+    
     return(d2)
   })
   names(data) <- sub("\\..*", "", basename(files))
@@ -29,7 +36,15 @@ if (!is.null(raw)) {
     "standard/weekly.csv.gz",
     ","
   )
-  vroom::vroom_write(data$self_harm, "standard/state_no_time.csv.gz", ",")
+  
+  vroom::vroom_write(
+    Reduce(
+      function(a, b) merge(a, b, all = TRUE, sort = FALSE),
+      data[c("self_harm", "obesity_state")]
+    ),
+    "standard/state_no_time.csv.gz",
+    ","
+  )
   vroom::vroom_write(data$obesity_county, "standard/county_no_time.csv.gz", ",")
   vroom::vroom_write(data$rsv_tests, "standard/no_geo.csv.gz", ",")
   vroom::vroom_write(data$vaccine_mmr, "standard/children.csv.gz", ",")
