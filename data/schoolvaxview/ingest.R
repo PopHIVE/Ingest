@@ -17,7 +17,8 @@ if (!identical(process$raw_state, raw_state)) {
     rename(vaccine = "Vaccine/Exemption") %>%
     mutate(
       vaccine = tolower(vaccine),
-      vax = if_else(
+      vax = if_else(is.na(Dose), vaccine,
+        if_else(
         Dose == 'Any Exemption',
         'full_exempt',
         if_else(
@@ -29,6 +30,7 @@ if (!identical(process$raw_state, raw_state)) {
             vaccine
           )
         )
+      )
       ),
       vax = if_else(
         vaccine == "dtp, dtap, or dt",

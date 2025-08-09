@@ -35,7 +35,9 @@ chronic <- open_dataset('./raw/dttw-5yxu.parquet') %>%
          value_ucl= Confidence_limit_High,
          value = Data_value,
          ) %>%
-  mutate(time = as.Date(paste0(Year,'-01-','01'))) %>%
+  mutate(time = as.Date(paste0(Year,'-01-','01')),
+         geography = if_else(grepl('All States and DC', Locationdesc),'00',geography)
+         ) %>% #all states + DC
   dplyr::select(time,age, geography, Topic, Response,Sample_Size, Data_value_type, value, value_lcl, value_ucl)%>%
     collect() 
        

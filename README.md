@@ -1,4 +1,4 @@
-## Using these data
+# Using these data
 
 The data shown on PopHIVE.org are found in ./Data/Webslim/. These files are mostly stored in parquet format. If using R, these can be downloaded using the arrow package in R. For example:
 
@@ -53,7 +53,128 @@ Yes! Much of the data are drawn from publicly available Federal datasets obtaine
 | Childhood Immunizations | [CDC National Immunization Survey](https://data.cdc.gov/Child-Vaccinations/Vaccination-Coverage-among-Young-Children-0-35-Mon/fhky-rtsk/about_data "The National Immunization Survey is conducted by the CDC. Participants are enrolled by contacting parents or guardians randomly by telephone and then obtaining the relevant vaccination information from the child's vaccination provider. The data are statistically adjusted in an attempt to correct for biases in who responds to the survey.")  | Estimates of immunization coverage by vaccine, age, and state, and by insurance status.                                                        | [Immunization rates](https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/childhood_immunizations/rates_by_insurance.parquet "The National Immunization Survey is conducted by the CDC. Participants are enrolled by contacting parents or guardians randomly by telephone and then obtaining the relevant vaccination information from the child’s vaccination provider. The data are statistically adjusted in an attempt to correct for biases in who responds to the survey")                                                                                                                                                                                                                                | \-                                     |
 | Chronic diseases        | [Epic Cosmos](https://cosmos.epic.com/ "Cosmos is a dataset created in collaboration with a community of Epic health systems representing more than 300 million patient records from over 1633 hospitals and 37,900 clinics from all 50 states, D.C., Canada, Lebanon, and Saudi Arabia. Summary statistics were obtained using the SlicerDicer tool in Epic Cosmos. and are presented here for non-commercial purposes. For immunization data, we use a subset of data from users who have a recent history of primary care visits at a healthcare facility using Epic.")  | Percentage of 'active users' in Epic Cosmos who have a history of measurements indicating diabetes (Hemoglobin A1C ≥7%)
 
-## Legal Disclaimer
+# Guide to adding data and rebuilding the bundle
+
+## Steps for adding new datasets
+
+###Create the data source folder
+
+Run 
+```r{} 
+dcf_add_source("DATASETNAME")
+```
+
+### Convert raw files to standard format
+Edit the ingest.R file. As an example, here we add a file from data.gov using dcf_download_cdc(). The goal is to download a raw file and convert to the [standard format](https://dissc-yale.github.io/dcf/articles/standards.html) 
+
+```r{}
+
+process <- dcf::dcf_process_record()
+raw_state <- dcf::dcf_download_cdc(
+  "kvib-3txy",
+  "raw",
+  process$raw_state
+)
+
+
+if (!identical(process$raw_state, raw_state)) {
+
+#read in raw, filter, and do any formatting needed
+data1 <- vroom::vroom('raw/kvib-3txy.csv.xz') %>%
+    filter(Type=='Unadjusted Rate' & Sex=='Overall' & `Race/Ethnicity`=='Overall') %>%
+    rename(virus= 'Surveillance Network',
+           age = 'Age group',
+           state = Site,
+           time= 'Week Ending Date' ) %>%
+    mutate( virus = if_else(grepl('COVID', toupper(virus)),'rate_covid',
+                        if_else(grepl('RSV', toupper(virus)),'rate_rsv',   
+                            if_else(grepl('FLU', toupper(virus)),'rate_flu',           
+                                    'rate_any'                          
+                                  )))
+    ) %>%
+    dcast( .,  time + age + state ~ virus, value.var = 'Weekly Rate') %>%
+    mutate( rate_flu = if_else(is.na(rate_flu),0, rate_flu), #do not fill in below
+            geography = if_else(state=='Overall', 0,
+                                cdlTools::fips(state, to='FIPS'))
+          
+            ) %>%
+    filter(age =='Overall') %>%
+    dplyr::select(-state)
+
+
+  #Write standard data
+  vroom::vroom_write(
+    data1,
+    "standard/data.csv.gz",
+    ","
+  )
+  
+  # record processed raw state
+  process$raw_state <- raw_state
+  dcf::dcf_process_record(updated = process)
+  
+
+```
+
+### Edit the measure_info.json
+Each variable should have an entry. for example:
+
+"rate_any": {
+    "id": "rate_any",
+    "short_name": "Number of laboratory confirmed cases of RSV, influenza or COVID-19 per 100,000 people",
+    "long_name": "",
+    "category": "",
+    "short_description": "",
+    "long_description": "",
+    "statement": "",
+    "measure_type": "Incidence",
+    "unit": "Cases per 100,000 people",
+    "time_resolution": "Week",
+    "restrictions": "",
+    "sources": [],
+    "citations": []
+  }
+  
+### Create a bundle
+
+Groups of related datasets are combined into a bundle. For example run:
+```{r}
+dcf::dcf_process("bundle_respiratory", ".")
+```
+This creates a bundle folder for respiratory in the data folder
+
+### Edit the bundle
+
+Open the build.R file. This is where datasets should be combined and formatted into final 'production' formats. Output files are saved into the dist/ folder in whatever format is needed (e.g., parquet)
+
+### Edit the process.json 
+
+Any standard format files that are used in the bundle should be referenced in process.json. For example:
+
+  "source_files": [
+    "epic/standard/weekly.csv.gz",
+    "gtrends/standard/data.csv.gz",
+    "wastewater/standard/data.csv.gz",
+    "abcs/standard/data.csv.gz",
+    "abcs/standard/uad.csv.gz",
+    "NREVSS/standard/data.csv.gz",
+    "nssp/standard/data.csv.gz",
+    "respnet/standard/data.csv.gz"
+  ]
+  
+### Update and build the data
+From the parent directory, run:
+
+```{r}
+dcf_build()
+```
+
+  
+  
+  
+
+
+# Legal Disclaimer
 
 These data and PopHIVE statistical outputs are provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors, contributors, or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the data or the use or other dealings in the data.
 

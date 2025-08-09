@@ -46,7 +46,11 @@ dcf_build()
 
 
 ##Process bundle
-#For bundle projects, you can list the standard files you're using in process.json, and then you can read that in with dcf_process_record
-dcf_build()
+#run these from the relevant bundle directory
+# dcf::dcf_process("bundle_respiratory", ".")
+# dcf::dcf_process("bundle_childhood_immunizations", ".")
+# dcf::dcf_process("chronic_diseases", ".")
 
-dcf::dcf_process("bundle_respiratory", ".")
+dcf::dcf_build()
+
+
