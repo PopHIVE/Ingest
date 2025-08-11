@@ -97,7 +97,7 @@ brfss_most_recent <- brfss_long %>%
 epic_brfss_combined <- bind_rows(epic_state,brfss_most_recent) %>%
   mutate(age = gsub(' Years','',age))
 
-write_parquet(epic_brfss_combined,'./dist/prevalence_by_geography_and_source.csv.parquet' )
+write_parquet(epic_brfss_combined,'./dist/prevalence_by_geography_and_source.parquet' )
 
 
 
