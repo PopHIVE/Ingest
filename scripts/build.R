@@ -25,6 +25,9 @@ dcf_build()
 #dcf_add_source("abcs")
 #dcf_add_source("abcs")
 #dcf_add_source("nchs_mortality")
+#dcf::dcf_add_source("delphi_nhsn")
+#dcf::dcf_add_source("delphi_hospital_claims")
+#dcf::dcf_add_source("delphi_doctors_claims")
 
 #dcf_add_source("schoolvaxview")
 

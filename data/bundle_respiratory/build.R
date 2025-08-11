@@ -51,11 +51,13 @@ colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
 overall_trends <- reshape2::melt(combined, id.vars = c('geography', 'time')) %>%
   filter(geography %in% state_fips ) %>%
   rename(fips= geography) %>%
-  mutate( geography = fips(fips, to = "Name"),
+  mutate( geography = cdlTools::fips(fips, to = "Name"),
          geography = if_else(fips == '00', 'United States', geography)) %>%
   arrange(geography,  time) %>%
   group_by(fips,  variable, geography) %>%
-  mutate(value_smooth = zoo::rollapplyr(
+  mutate(
+    value = if_else(geography=='Alaska' & grepl('epic',variable),NA_real_,value),
+    value_smooth = zoo::rollapplyr(
     value,
     3,
     mean,
