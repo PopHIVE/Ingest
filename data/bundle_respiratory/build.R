@@ -80,7 +80,7 @@ overall_trends %>%
                     )))))
           ) %>%
   dplyr::select(-variable, -fips) %>%
-    arrow::write_parquet(., "dist/rsv/overall_trends.parquet")
+    arrow::write_parquet(., "dist/rsv_overall_trends.parquet")
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
@@ -94,7 +94,7 @@ overall_trends %>%
                                                    ))))
   ) %>%
   dplyr::select(-variable,-fips) %>%
-  arrow::write_parquet(., "dist/flu/overall_trends.parquet")
+  arrow::write_parquet(., "dist/flu_overall_trends.parquet")
 
 overall_trends %>% 
   filter(grepl('covid',variable) & !is.na(value)) %>%
@@ -108,7 +108,7 @@ overall_trends %>%
                                                    ))))
   ) %>%
   dplyr::select(-variable,-fips) %>%
-  arrow::write_parquet(., "dist/covid/overall_trends.parquet")
+  arrow::write_parquet(., "dist/covid_overall_trends.parquet")
 
 
 ###################
@@ -120,7 +120,7 @@ d <- vroom::vroom('../NREVSS/standard/data.csv.gz') %>%
   rename(value = pcr_detections,
          date = time) 
 
-arrow::write_parquet(d, "dist/rsv/positive_tests.parquet")
+arrow::write_parquet(d, "dist/rsv_positive_tests.parquet")
 
 #################
 #RSV testing data
@@ -139,7 +139,7 @@ d2 <- vroom::vroom('../epic/standard/no_geo.csv.gz') %>%
   dplyr::select(source, geography,age, date, value, n_pneumonia, suppressed_flag ) %>%
   filter(!is.na(age)) 
   
-arrow::write_parquet(d2, "dist/rsv/rsv_testing_pct.parquet")
+arrow::write_parquet(d2, "dist/rsv_testing_pct.parquet")
 
 #########################
 ##ED visits by county
@@ -154,15 +154,15 @@ d3 <- vroom::vroom('../nssp/standard/data.csv.gz') %>%
 
 d3 %>%
   dplyr::select(source, fips,week_end, percent_visits_rsv) %>%
-  arrow::write_parquet(., "dist/rsv/ed_visits_by_county.parquet")
+  arrow::write_parquet(., "dist/rsv_ed_visits_by_county.parquet")
 
 d3 %>%
   dplyr::select(source, fips, week_end, percent_visits_flu) %>%
-  arrow::write_parquet(., "dist/flu/ed_visits_by_county.parquet")
+  arrow::write_parquet(., "dist/flu_ed_visits_by_county.parquet")
 
 d3 %>%
   dplyr::select(source,fips, week_end, percent_visits_covid) %>%
-  arrow::write_parquet(., "dist/covid/ed_visits_by_county.parquet")
+  arrow::write_parquet(., "dist/covid_ed_visits_by_county.parquet")
 
 #############
 ## Age, state
@@ -239,17 +239,17 @@ trends_age2 <- trends_age %>%
 trends_age2 %>% 
   filter(grepl('rsv',variable) & !is.na(value)) %>%
   dplyr::select(-variable) %>%
-  arrow::write_parquet(., "dist/rsv/trends_by_age.parquet")
+  arrow::write_parquet(., "dist/rsv_trends_by_age.parquet")
 
 trends_age2 %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
   dplyr::select(-variable) %>%
-  arrow::write_parquet(., "dist/flu/trends_by_age.parquet")
+  arrow::write_parquet(., "dist/flu_trends_by_age.parquet")
 
 trends_age2 %>% 
   filter(grepl('covid',variable) & !is.na(value)) %>%
   dplyr::select(-variable) %>%
-  arrow::write_parquet(., "dist/covid/trends_by_age.parquet")
+  arrow::write_parquet(., "dist/covid_trends_by_age.parquet")
 
 
 ##############################
@@ -259,7 +259,7 @@ d3 <- vroom::vroom('../gtrends/standard/data_dma.csv.gz') %>%
   filter(term=='gtrends_rsv') %>%
   dplyr::select(-term)
 
-  arrow::write_parquet(d3, "dist/rsv/google_dma.parquet")
+  arrow::write_parquet(d3, "dist/rsv_google_dma.parquet")
   
 ###############################################
 # Pneumococcus
@@ -273,7 +273,7 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
            ) %>%
     dplyr::select(serotype, year, age, value)
   
-  arrow::write_parquet(d4, "dist/pneumococcus/serotype_trends.parquet")
+  arrow::write_parquet(d4, "dist/pneumococcus_serotype_trends.parquet")
 
   #abc_view_geo <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/pneumococcus/by_geography.parquet')
   d5 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
@@ -286,7 +286,7 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
     ) %>%
     dplyr::select(serotype, geography, year,  value, value_N)
     
-  arrow::write_parquet(d5, "dist/pneumococcus/by_geography.parquet")
+  arrow::write_parquet(d5, "dist/pneumococcus_by_geography.parquet")
   
   d4_2019_2020 <- d4 %>% filter(year %in% c(2019,2020) & age == "50+ years") %>%
     group_by(serotype) %>%
@@ -303,5 +303,5 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
     dplyr::select(geography, year, serotype, N_SSUAD, value) %>%
     rename( ipd = value, pneumonia = N_SSUAD)
   
-  arrow::write_parquet(uad, "dist/pneumococcus/comparison.parquet")
+  arrow::write_parquet(uad, "dist/pneumococcus_comparison.parquet")
   
