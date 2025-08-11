@@ -24,7 +24,10 @@ bundle_files  <- list( '../epic/standard/weekly.csv.gz',
                        '../gtrends/standard/data.csv.gz',
                        '../nssp/standard/data.csv.gz',
                        '../respnet/standard/data.csv.gz',
-                       '../wastewater/standard/data.csv.gz'
+                       '../wastewater/standard/data.csv.gz',
+                       '../delphi_doctors_claims/standard/data.csv.gz',
+                       '../delphi_hospital_claims/standard/data.csv.gz',
+                       '../delphi_nhsn/standard/data.csv.gz'
 )
                  
 start_time <- "2020"
