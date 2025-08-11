@@ -4,15 +4,27 @@ library(cdlTools)
 library(arrow)
 library(reshape2)
 
-process <- dcf::dcf_process_record()
-raw_state <- dcf::dcf_download_cdc(
+#State level, including type of drug
+process1 <- dcf::dcf_process_record()
+raw_state1 <- dcf::dcf_download_cdc(
   "xkb8-kh2a",
   "raw",
-  process$raw_state,
+  process1$raw_state,
   parquet=T
 )
 
-if (!identical(process$raw_state, raw_state)) {
+#County-level
+process2 <- dcf::dcf_process_record()
+raw_state2 <- dcf::dcf_download_cdc(
+  "gb4e-yj24",
+  "raw",
+  process2$raw_state,
+  parquet=T
+)
+
+
+
+if (!identical(process1$raw_state, raw_state1)) {
   
   #type of overdose counts by state (12 month backward total)
   data_type <- open_dataset('./raw/xkb8-kh2a.parquet') %>%
@@ -92,7 +104,7 @@ if (!identical(process$raw_state, raw_state)) {
  data <- data_type %>%
    full_join(data_completeness, by=c('geography', 'time')) %>%
    full_join(data_pct_specified, by=c('geography', 'time')) 
-   
+ 
   vroom::vroom_write(
     data,
     "standard/data.csv.gz",
@@ -100,7 +112,37 @@ if (!identical(process$raw_state, raw_state)) {
   )
   
   # record processed raw state
-  process$raw_state <- raw_state
-  dcf::dcf_process_record(updated = process)
+  process1$raw_state <- raw_state1
+  dcf::dcf_process_record(updated = process1)
     
+}
+
+##############################
+#2nd county-level dataset
+##############################
+
+if (!identical(process2$raw_state, raw_state2)) {
+  
+  #type of overdose counts by state (12 month backward total)
+  data2 <- open_dataset('./raw/gb4e-yj24.parquet') %>%
+    collect() %>%
+    mutate( time = as.Date(MonthEndingDate, '%m/%d/%Y'),
+            geography=paste0(STATEFIPS, COUNTYFIPS)
+    ) %>%
+    rename(n_deaths_overdose='Provisional Drug Overdose Deaths',
+           pct_pending_invest = 'Percentage Of Records Pending Investigation',
+           ) %>%
+    dplyr::select(geography, time, n_deaths_overdose)
+ 
+  
+  vroom::vroom_write(
+    data2,
+    "standard/data_county.csv.gz",
+    ","
+  )
+  
+  # record processed raw state
+  process2$raw_state <- raw_state2
+  dcf::dcf_process_record(updated = process2)
+  
 }
