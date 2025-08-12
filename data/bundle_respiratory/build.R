@@ -24,13 +24,15 @@ bundle_files  <- list( '../epic/standard/weekly.csv.gz',
                        '../gtrends/standard/data.csv.gz',
                        '../nssp/standard/data.csv.gz',
                        '../respnet/standard/data.csv.gz',
-                       '../wastewater/standard/data.csv.gz',
-                       '../delphi_doctors_claims/standard/data.csv.gz',
-                       '../delphi_hospital_claims/standard/data.csv.gz',
-                       '../delphi_nhsn/standard/data.csv.gz'
+                       '../wastewater/standard/data.csv.gz' #,
+                       #'../delphi_doctors_claims/standard/data.csv.gz',
+                       #'../delphi_hospital_claims/standard/data.csv.gz',
+                       #'../delphi_nhsn/standard/data.csv.gz'
 )
                  
 start_time <- "2020"
+
+
 
 #test <-  vroom::vroom('../gtrends/standard/data.csv.gz') 
      
@@ -50,6 +52,9 @@ combined <- Reduce(
   data
 )
 colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
+
+#output_table <- combined %>%
+  
 
 overall_trends <- reshape2::melt(combined, id.vars = c('geography', 'time')) %>%
   filter(geography %in% state_fips ) %>%
