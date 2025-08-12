@@ -42,9 +42,9 @@ if (!identical(process$raw_state, raw_state)) {
       id_cols = c(geography, time)
       ) %>%
     rename(
-      n_covid = confirmed_admissions_covid_ew,
-      n_flu = confirmed_admissions_flu_ew,
-      n_rsv = confirmed_admissions_rsv_ew,
+      delphi_nhsn_covid = confirmed_admissions_covid_ew, #n_covid
+      delphi_nhsn_flu = confirmed_admissions_flu_ew, #n_flu
+      delphi_nhsn_rsv = confirmed_admissions_rsv_ew, #n_rsv
     )
   
  

@@ -59,7 +59,7 @@ if (!identical(process$raw_state, raw_state)) {
       id_cols = c(geography, time)
     ) %>%
     rename(
-      smooth_covid = smoothed_cli,
+      delphi_doc_covid_smooth = smoothed_cli,
     )
   
   
