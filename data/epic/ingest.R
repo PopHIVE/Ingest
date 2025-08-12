@@ -18,11 +18,26 @@ if (!is.null(raw)) {
       mutate(geography = if_else(geography=='0','00', geography) 
       )
     }
+    
     if ("n_obesity_state" %in% names(d2)) {
       d2 <- d2 %>%
         rename(n_patients = n_obesity_state) 
-        
     }
+
+    if ("age" %in% names(d2)) {
+    d2 <- d2 %>%
+      mutate(age = stringr::str_replace(age, "^Less than\\s+(\\d+)", "<\\1 Years"),
+             age = stringr::str_replace(age, "^(\\d+) or more$", "≥\\1 Years"),
+             age = stringr::str_replace(age, "^≥\\s*(\\d+) and <\\s*(\\d+)$", "\\1-\\2 Years"),
+             age = if_else( age=="18-25 Years", "18-24 Years",
+                            if_else( age=="25-35 Years" , "25-34 Years",
+                                     if_else( age=="35-45 Years", "35-44 Years",
+                                              if_else( age=="45-55 Years", "45-54 Years",
+                                                       if_else( age=="55-65 Years", "55-64 Years",age
+                            )))))
+          
+             )
+       }
     
     return(d2)
   })

@@ -149,3 +149,6 @@ pop_unstra_hhs <- pop_unstra %>%
 vroom::vroom_write(pop_unstra_hhs, "resources/pop_hhs.csv.gz", ",")
 vroom::vroom_write(pop_stra, "resources/pop_state_age.csv.gz", ",")
 vroom::vroom_write(pop_unstra, "resources/pop_state.csv.gz", ",")
+
+
+##Pop using the groupings from 

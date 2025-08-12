@@ -3,7 +3,9 @@
 library(tidyverse)
 library(arrow)
 
-pop <- dcf::dcf_load_census(year=2021, out_dir='./resources',overwrite=F)
+pop <- dcf::dcf_load_census(year=2021, out_dir='./resources',overwrite=F) %>%
+  mutate(`<18 Years` = `<10 Years` +   `10-18 Years`) %>%
+  dplyr::select(-`<10 Years`, -`10-18 Years`)
 
 firstup <- function(x) {
   substr(x, 1, 1) <- toupper(substr(x, 1, 1))
@@ -63,19 +65,23 @@ pop_combined <- pop_long_state %>%
 
 
 epic_state <- vroom::vroom('../epic/standard/state_no_time.csv.gz') %>%
-  dplyr::select(geography, age,hemoglobin_a1c_7,bmi_30_49.8 ,n_patients) %>%
-  rename(pct_Obesity = bmi_30_49.8,
-         pct_Diabetes = hemoglobin_a1c_7,
-         fips=geography) %>%
+  rename(pct_Diabetes = 'percentage_with_base_patient_followed_by_hemoglobin_a1c_6.5%_or_more_within_10_years_(%)')%>%
+filter(!is.na(pct_Diabetes) ) %>%
+  dplyr::select(geography, age,pct_Diabetes,bmi_30_49.8 ,n_patients) %>%
+  rename(
+          pct_Obesity = bmi_30_49.8,
+         fips=geography
+         ) %>%
   mutate( geography = cdlTools::fips(fips, to = 'Name' ),
-          geography = if_else(fips=='00','United States', geography)) %>%
+          geography = if_else(fips=='00','United States', geography),
+          age = if_else(age=='≥65 Years','65+ Years', age)) %>%
   pivot_longer(
             cols = c(starts_with("pct_")),
             names_to = c("outcome_name"),
             names_prefix  = "pct_",
             values_to = "value"
           ) %>%
-  left_join(pop_combined, by=c('age'='age','geography'='geography')) %>%
+ left_join(pop_combined, by=c('age'='age','geography'='geography')) %>%
   mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, as.numeric(n_patients)/pop_2021 * 100 ),
          source='Epic Cosmos'
          ) %>%
@@ -83,7 +89,8 @@ epic_state <- vroom::vroom('../epic/standard/state_no_time.csv.gz') %>%
                 ,pct_captured,n_patients
                 ) %>%
   filter(!is.na(age)) %>% #small number of records missing age; filter those out here
-  rename(sample_size=n_patients)
+  rename(sample_size=n_patients) %>%
+  filter( fips!='52')
 
 write_parquet(epic_state,'./dist/epic_prevalence_by_geography.parquet' )
 
@@ -106,7 +113,11 @@ epic_county <- vroom::vroom('../epic/standard/county_no_time.csv.gz') %>%
   rename(pct_Obesity = bmi_30_49.8,
          pct_Diabetes = 'percentage_with_base_patient_followed_by_hemoglobin_a1c_6.5%_or_more_within_10_years_(%)',
          n_patients = n_obesity_county) %>%
-  dplyr::select(geography, age,pct_Obesity,pct_Diabetes ,n_patients) %>%
+  dplyr::select(geography, age,pct_Obesity,pct_Diabetes ,n_patients
+                ) %>%
+  filter(!is.na(pct_Diabetes) ) %>%
+  mutate(  age = if_else(age=='≥65 Years','65+ Years', age)
+           ) %>%
   pivot_longer(
     cols = c(starts_with("pct_")),
     names_to = c("outcome_name"),
