@@ -53,8 +53,44 @@ combined <- Reduce(
 )
 colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
 
-#output_table <- combined %>%
-  
+############################
+############################
+#Experimental: try to just create one big output table
+output_table <- combined %>%
+  pivot_longer(
+    cols = where(is.numeric),
+    names_to = "metric",
+    values_to = "value"
+  ) %>%
+  arrange(geography, metric, time) %>%
+  group_by(geography, metric) %>%
+  mutate(
+    value_smooth = zoo::rollapplyr(value, 3, mean, partial = TRUE, na.rm = TRUE),
+    value_smooth_scale = value_smooth / max(value_smooth, na.rm = TRUE) * 100
+  ) %>%
+  ungroup() %>%
+  pivot_wider(
+    names_from = metric,
+    values_from = c(value, value_smooth, value_smooth_scale),
+    names_sep = "_"
+  )
+vroom::vroom_write(
+  output_table,
+  "dist/TEST_mega.csv.gz",
+  ","
+)
+arrow::write_parquet(output_table,
+                     "dist/TEST_mega.parquet")
+
+#jsonlite::write_json(output_table, "dist/TEST_mega.json", simplifyVector =T)
+
+####################################
+####################################
+
+###########################
+# output_table <- combined %>%
+#   arrange(geography, time) %>%
+#   pivot_longer()
 
 overall_trends <- reshape2::melt(combined, id.vars = c('geography', 'time')) %>%
   filter(geography %in% state_fips ) %>%
