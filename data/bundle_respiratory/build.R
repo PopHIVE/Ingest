@@ -82,15 +82,12 @@ vroom::vroom_write(
 arrow::write_parquet(output_table,
                      "dist/TEST_mega.parquet")
 
-#jsonlite::write_json(output_table, "dist/TEST_mega.json", simplifyVector =T)
+jsonlite::write_json(output_table, gzfile("dist/TEST_mega.json.gz"), dataframe = "columns")  #way too big
 
 ####################################
 ####################################
+####################################
 
-###########################
-# output_table <- combined %>%
-#   arrange(geography, time) %>%
-#   pivot_longer()
 
 overall_trends <- reshape2::melt(combined, id.vars = c('geography', 'time')) %>%
   filter(geography %in% state_fips ) %>%
