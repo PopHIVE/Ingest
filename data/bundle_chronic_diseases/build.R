@@ -101,8 +101,8 @@ brfss_most_recent <- brfss_long %>%
   filter(year == max(year, na.rm=T)) %>%
   dplyr::select(-year)
 
-epic_brfss_combined <- bind_rows(epic_state,brfss_most_recent) %>%
-  mutate(age = gsub(' Years','',age))
+epic_brfss_combined <- bind_rows(epic_state,brfss_most_recent)
+
 
 write_parquet(epic_brfss_combined,'./dist/prevalence_by_geography_and_source.parquet' )
 
