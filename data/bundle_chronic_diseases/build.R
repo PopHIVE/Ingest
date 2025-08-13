@@ -135,3 +135,4 @@ epic_county <- vroom::vroom('../epic/standard/county_no_time.csv.gz') %>%
   rename(sample_size=n_patients)
 
 write_parquet(epic_county,'./dist/epic_prevalence_by_geography_county.parquet' )
+

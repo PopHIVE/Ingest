@@ -50,7 +50,10 @@ wide1 <- chronic %>%
           ) %>%
   rename(sample_size=Sample_Size) %>%
   reshape2::melt(.,id.vars=c('time','age','geography','Topic')) %>%
-    reshape2::dcast(., time+age+geography~Topic+variable) 
+    reshape2::dcast(., time+age+geography~Topic+variable) %>%
+  mutate( age = if_else( age=='Overall', 'Total', age),
+          age = if_else( age != 'Total', paste(age, 'Years', sep=' '), age)
+          )
 
 vroom::vroom_write(wide1, "standard/data.csv.gz", ",")
 
