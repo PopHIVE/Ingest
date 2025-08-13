@@ -46,7 +46,7 @@ if (!is.null(raw)) {
   vroom::vroom_write(
     Reduce(
       function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-      data[c("all_encounters", "covid", "flu", "rsv")]
+      data[c("all_encounters", "covid", "flu", "rsv","rsv_tests")]
     ),
     "standard/weekly.csv.gz",
     ","
