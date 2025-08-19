@@ -18,6 +18,17 @@ if (!is.null(raw)) {
       )
     }
     
+    if ("time" %in% names(d2)) {
+      
+      d2 <- d2 %>%
+        mutate(time = as.Date(time),
+               weekday = weekdays(time),
+             time = if_else(weekday=='Sunday', time+6, time), #week end date
+             time = as.character(time)
+      ) %>%
+        dplyr::select(-weekday) 
+    }
+    
     if ("n_obesity_state" %in% names(d2)) {
       d2 <- d2 %>%
         rename(n_patients = n_obesity_state) 
@@ -50,7 +61,8 @@ if (!is.null(raw)) {
   # add epic_ prefix to all columns except geography, time, age
   merged_weekly <- merged_weekly %>%
     rename_with(~ paste0("epic_", .x), 
-                .cols = -c(geography, time, age))
+                .cols = -c(geography, time, age)) 
+    
   
   vroom::vroom_write(
     merged_weekly,
