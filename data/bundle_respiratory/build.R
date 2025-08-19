@@ -56,53 +56,54 @@ combined <- Reduce(
 combined <- combined %>%
   dplyr::select(-`positive_rsv_tests_(%)` ,-rsv_tests,-n_rsv_tests)
 
-colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
+#colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
 
 
 
 ############################
 ############################
 #Experimental: try to just create one big output table
-output_table <- combined %>%
-  pivot_longer(
-    cols = where(is.numeric),
-    names_to = "metric",
-    values_to = "value"
-  ) %>%
-  arrange(geography, metric, time) %>%
-  group_by(geography, metric) %>%
-  mutate(
-    value_smooth = zoo::rollapplyr(value, 3, mean, partial = TRUE, na.rm = TRUE),
-    value_smooth_scale = value_smooth / max(value_smooth, na.rm = TRUE) * 100
-  ) %>%
-  ungroup() %>%
-  pivot_wider(
-    names_from = metric,
-    values_from = c(value, value_smooth, value_smooth_scale),
-    names_sep = "_"
-  )
-vroom::vroom_write(
-  output_table,
-  "dist/TEST_mega.csv.gz",
-  ","
-)
-arrow::write_parquet(output_table,
-                     "dist/TEST_mega.parquet")
-
-jsonlite::write_json(output_table, gzfile("dist/TEST_mega.json.gz"), dataframe = "columns")  #way too big
+# output_table <- combined %>%
+#   pivot_longer(
+#     cols = where(is.numeric),
+#     names_to = "metric",
+#     values_to = "value"
+#   ) %>%
+#   arrange(geography, metric, time) %>%
+#   group_by(geography, metric) %>%
+#   mutate(
+#     value_smooth = zoo::rollapplyr(value, 3, mean, partial = TRUE, na.rm = TRUE),
+#     value_smooth_scale = value_smooth / max(value_smooth, na.rm = TRUE) * 100
+#   ) %>%
+#   ungroup() %>%
+#   pivot_wider(
+#     names_from = metric,
+#     values_from = c(value, value_smooth, value_smooth_scale),
+#     names_sep = "_"
+#   )
+# vroom::vroom_write(
+#   output_table,
+#   "dist/TEST_mega.csv.gz",
+#   ","
+# )
+# arrow::write_parquet(output_table,
+#                      "dist/TEST_mega.parquet")
+# 
+# jsonlite::write_json(output_table, gzfile("dist/TEST_mega.json.gz"), dataframe = "columns")  #way too big
 
 ####################################
 ####################################
 ####################################
 
 
-overall_trends <- reshape2::melt(combined, id.vars = c('geography', 'time')) %>%
+overall_trends <-   combined %>%
   filter(geography %in% state_fips ) %>%
   rename(fips= geography) %>%
   mutate( geography = cdlTools::fips(fips, to = "Name"),
-         geography = if_else(fips == '00', 'United States', geography)) %>%
+          geography = if_else(fips == '00', 'United States', geography)) %>%
+  reshape2::melt(., id.vars = c('geography', 'time','fips')) %>%
   arrange(geography,  time) %>%
-  group_by(fips,  variable, geography) %>%
+  group_by(geography,  variable) %>%
   mutate(
     value = if_else(geography=='Alaska' & grepl('epic',variable),NA_real_,value),
     value_smooth = zoo::rollapplyr(
@@ -135,7 +136,7 @@ overall_trends %>%
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
   filter(variable %in% c('epic_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua' )) %>%
-  mutate( source = if_else(variable=='epic_flu', 'Epic Cosmos, ED',
+  mutate( source = if_else(variable=='epic_n_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
                                                    if_else(variable=='wastewater_flua', 'CDC NWSS', 
@@ -148,8 +149,8 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('covid',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid' )) %>%
-  mutate( source = if_else(variable=='epic_covid', 'Epic Cosmos, ED',
+  filter(variable %in% c('epic_n_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid' )) %>%
+  mutate( source = if_else(variable=='epic_n_covid', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_covid', 'CDC NSSP',
                                            if_else(variable=='rate_covid', 'CDC RespNET',
                                                    if_else(variable=='wastewater_covid', 'CDC NWSS', 
@@ -243,7 +244,7 @@ combined_age <- Reduce(
   data_age
 )
 
-colnames(combined_age) <- sub("n_", "epic_", colnames(combined_age), fixed = TRUE)
+#colnames(combined_age) <- sub("n_", "epic_", colnames(combined_age), fixed = TRUE)
 
 trends_age <- combined_age %>%
   filter(geography %in% state_fips ) %>%
@@ -259,14 +260,14 @@ trends_age <- combined_age %>%
           )
 
 trend_age_all <- trends_age %>%
-  filter(variable=='epic_all_encounters') %>%
+  filter(variable=='epic_n_all_encounters') %>%
   dplyr::select(geography, age, date, source, value) %>%
   rename(epic_all = value )
 
 trends_age2 <- trends_age %>%
   left_join(trend_age_all, by=c('geography','age','date','source')) %>%
   filter(!is.na(value) & !is.na(age)) %>%
-  filter(variable!='epic_all_encounters') %>%
+  filter(variable!='epic_n_all_encounters') %>%
   rename(raw=value) %>%
   mutate(suppressed_flag = if_else(source=='Epic Cosmos (ED)' & raw==5,1,0),
           value = if_else(source=='Epic Cosmos (ED)', raw/epic_all*100,

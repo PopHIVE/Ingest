@@ -1,5 +1,4 @@
 library(tidyverse)
-library(RSocrata)
 library(cdlTools)
 library(dcf)
 #

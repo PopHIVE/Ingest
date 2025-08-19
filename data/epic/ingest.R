@@ -6,7 +6,6 @@
 # if there was staging data, make new standard version from it..this function will automaticaly save relevant file
 raw <- dcf::dcf_process_epic_staging()
 
-
 if (!is.null(raw)) {
   files <- list.files("raw", "\\.csv\\.xz", full.names = TRUE)
   data <- lapply(files, function(file) {
@@ -43,11 +42,18 @@ if (!is.null(raw)) {
   })
   names(data) <- sub("\\..*", "", basename(files))
 
+  merged_weekly <- Reduce(
+    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
+    data[c("all_encounters", "covid", "flu", "rsv", "rsv_tests")]
+  )
+  
+  # add epic_ prefix to all columns except geography, time, age
+  merged_weekly <- merged_weekly %>%
+    rename_with(~ paste0("epic_", .x), 
+                .cols = -c(geography, time, age))
+  
   vroom::vroom_write(
-    Reduce(
-      function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-      data[c("all_encounters", "covid", "flu", "rsv","rsv_tests")]
-    ),
+    merged_weekly,
     "standard/weekly.csv.gz",
     ","
   )

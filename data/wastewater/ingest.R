@@ -78,7 +78,7 @@ if (!identical(process$raw_state, raw_state)) {
   ]
   
   state_ids <- dcf::dcf_load_census(
-    out_dir = "../../resources",
+    out_dir = "../../resources", 
     state_only = TRUE
   )
   
