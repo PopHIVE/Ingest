@@ -6,7 +6,7 @@ flowchart LR
     s0("`<h4><a href="https://data.cdc.gov" target="_blank" rel="noreferrer">Center for Disease Control and Prevention</a></h4><br/><ul><br/><li><code><a href="https://data.cdc.gov/resource/qvzb-qs6p/" target="_blank" rel="noreferrer">Serotype Data for Invasive Pneumococcal Disease Cases by Age Group from Active Bacterial Core surveillance</a></code></li></ul>`")
     s1("`<h4><a href="https://cosmos.epic.com/" target="_blank" rel="noreferrer">Epic Cosmos</a></h4>`")
     s2("`<h4><a href="https://trends.google.com" target="_blank" rel="noreferrer">Google Trends</a></h4><br/><ul><br/><li><code><a href="https://github.com/DISSC-yale/gtrends_collection" target="_blank" rel="noreferrer">Yale Data-Intensive Social Sciences, Google Trends Collection Framework</a></code></li></ul>`")
-    s3("`<h4><a href="https://www.cdc.gov/nchs/nvss/vsrr/drug-overdose-data.htm" target="_blank" rel="noreferrer">Center for Disease Control and Prevention (NCHS)</a></h4><br/><ul><br/><li><code><a href="https://data.cdc.gov/National-Center-for-Health-Statistics/VSRR-Provisional-Drug-Overdose-Death-Counts/xkb8-kh2a/about_data" target="_blank" rel="noreferrer">VSRR Provisional Drug Overdose Death counts</a></code></li></ul><br/><ul><br/><li><code><a href="https://data.cdc.gov/National-Center-for-Health-Statistics/VSRR-Provisional-Drug-Overdose-Death-Counts/xkb8-kh2a/about_data" target="_blank" rel="noreferrer">VSRR Provisional Drug Overdose Death Counts</a></code></li></ul>`")
+    s3("`<h4><a href="https://www.cdc.gov/nchs/nvss/vsrr/drug-overdose-data.htm" target="_blank" rel="noreferrer">Center for Disease Control and Prevention (NCHS)</a></h4><br/><ul><br/><li><code><a href="https://data.cdc.gov/National-Center-for-Health-Statistics/VSRR-Provisional-Drug-Overdose-Death-Counts/xkb8-kh2a/about_data" target="_blank" rel="noreferrer">VSRR Provisional Drug Overdose Death Counts</a></code></li></ul><br/><ul><br/><li><code><a href="https://data.cdc.gov/National-Center-for-Health-Statistics/VSRR-Provisional-Drug-Overdose-Death-Counts/xkb8-kh2a/about_data" target="_blank" rel="noreferrer">VSRR Provisional Drug Overdose Death counts</a></code></li></ul>`")
     s4("`<h4><a href="https://www.cdc.gov/nwss" target="_blank" rel="noreferrer">National Wastewater Surveillance System</a></h4><br/><ul><br/><li><code><a href="https://www.cdc.gov/nwss/rv/COVID19-statetrend.html" target="_blank" rel="noreferrer">Wastewater COVID-19 State and Territory Trends</a></code></li></ul><br/><ul><br/><li><code><a href="https://www.cdc.gov/nwss/rv/InfluenzaA-statetrend.html" target="_blank" rel="noreferrer">Wastewater Influenza A State and Territory Trends</a></code></li></ul><br/><ul><br/><li><code><a href="https://www.cdc.gov/nwss/rv/RSV-statetrend.html" target="_blank" rel="noreferrer">Wastewater RSV State and Territory Trends</a></code></li></ul>`")
     subgraph abcs["`abcs`"]
         direction LR
@@ -47,42 +47,42 @@ flowchart LR
     end
     subgraph gtrends["`gtrends`"]
         direction LR
-        n12["`data.csv.gz<ul><br/><li><code>missing_info: gtrends_rsv_adjusted</code></li></ul>`"]:::warn
-        n13["`data_dma.csv.gz<ul><br/><li><code>geography_missing</code></li></ul>`"]:::warn
-        n13["`data_dma.csv.gz<ul><br/><li><code>missing_info: fips</code></li></ul>`"]:::warn
-        n13["`data_dma.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
-        n13["`data_dma.csv.gz<ul><br/><li><code>missing_info: term</code></li></ul>`"]:::warn
+        n12["`data_dma.csv.gz<ul><br/><li><code>geography_missing</code></li></ul>`"]:::warn
+        n12["`data_dma.csv.gz<ul><br/><li><code>missing_info: fips</code></li></ul>`"]:::warn
+        n12["`data_dma.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n12["`data_dma.csv.gz<ul><br/><li><code>missing_info: term</code></li></ul>`"]:::warn
+        n13["`data.csv.gz<ul><br/><li><code>missing_info: gtrends_rsv_adjusted</code></li></ul>`"]:::warn
     end
     subgraph nchs_mortality["`nchs_mortality`"]
         direction LR
-        n14["`data.csv.gz`"]:::pass
-        n15["`data_county.csv.gz`"]:::pass
+        n14["`data_county.csv.gz`"]:::pass
+        n15["`data.csv.gz`"]:::pass
     end
     subgraph nis["`nis`"]
         direction LR
-        n16["`data.csv.gz<ul><br/><li><code>missing_info: birth_year</code></li></ul>`"]:::warn
-        n16["`data.csv.gz<ul><br/><li><code>missing_info: age</code></li></ul>`"]:::warn
-        n16["`data.csv.gz<ul><br/><li><code>missing_info: vaccine</code></li></ul>`"]:::warn
-        n16["`data.csv.gz<ul><br/><li><code>missing_info: pct_uptake</code></li></ul>`"]:::warn
-        n16["`data.csv.gz<ul><br/><li><code>missing_info: pct_uptake_lcl</code></li></ul>`"]:::warn
-        n16["`data.csv.gz<ul><br/><li><code>missing_info: pct_uptake_ucl</code></li></ul>`"]:::warn
-        n16["`data.csv.gz<ul><br/><li><code>missing_info: sample_size</code></li></ul>`"]:::warn
-        n17["`data_insurance.csv.gz<ul><br/><li><code>time_missing</code></li></ul>`"]:::warn
-        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: insurance</code></li></ul>`"]:::warn
-        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: birth_year</code></li></ul>`"]:::warn
-        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: vaccine</code></li></ul>`"]:::warn
-        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
-        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: value_lcl</code></li></ul>`"]:::warn
-        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: value_ucl</code></li></ul>`"]:::warn
-        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: sample_size</code></li></ul>`"]:::warn
-        n18["`data_urban.csv.gz<ul><br/><li><code>time_missing</code></li></ul>`"]:::warn
-        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: urban</code></li></ul>`"]:::warn
-        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: birth_year</code></li></ul>`"]:::warn
-        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: vaccine</code></li></ul>`"]:::warn
-        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
-        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: value_lcl</code></li></ul>`"]:::warn
-        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: value_ucl</code></li></ul>`"]:::warn
-        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: sample_size</code></li></ul>`"]:::warn
+        n16["`data_insurance.csv.gz<ul><br/><li><code>time_missing</code></li></ul>`"]:::warn
+        n16["`data_insurance.csv.gz<ul><br/><li><code>missing_info: insurance</code></li></ul>`"]:::warn
+        n16["`data_insurance.csv.gz<ul><br/><li><code>missing_info: birth_year</code></li></ul>`"]:::warn
+        n16["`data_insurance.csv.gz<ul><br/><li><code>missing_info: vaccine</code></li></ul>`"]:::warn
+        n16["`data_insurance.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n16["`data_insurance.csv.gz<ul><br/><li><code>missing_info: value_lcl</code></li></ul>`"]:::warn
+        n16["`data_insurance.csv.gz<ul><br/><li><code>missing_info: value_ucl</code></li></ul>`"]:::warn
+        n16["`data_insurance.csv.gz<ul><br/><li><code>missing_info: sample_size</code></li></ul>`"]:::warn
+        n17["`data_urban.csv.gz<ul><br/><li><code>time_missing</code></li></ul>`"]:::warn
+        n17["`data_urban.csv.gz<ul><br/><li><code>missing_info: urban</code></li></ul>`"]:::warn
+        n17["`data_urban.csv.gz<ul><br/><li><code>missing_info: birth_year</code></li></ul>`"]:::warn
+        n17["`data_urban.csv.gz<ul><br/><li><code>missing_info: vaccine</code></li></ul>`"]:::warn
+        n17["`data_urban.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n17["`data_urban.csv.gz<ul><br/><li><code>missing_info: value_lcl</code></li></ul>`"]:::warn
+        n17["`data_urban.csv.gz<ul><br/><li><code>missing_info: value_ucl</code></li></ul>`"]:::warn
+        n17["`data_urban.csv.gz<ul><br/><li><code>missing_info: sample_size</code></li></ul>`"]:::warn
+        n18["`data.csv.gz<ul><br/><li><code>missing_info: birth_year</code></li></ul>`"]:::warn
+        n18["`data.csv.gz<ul><br/><li><code>missing_info: age</code></li></ul>`"]:::warn
+        n18["`data.csv.gz<ul><br/><li><code>missing_info: vaccine</code></li></ul>`"]:::warn
+        n18["`data.csv.gz<ul><br/><li><code>missing_info: pct_uptake</code></li></ul>`"]:::warn
+        n18["`data.csv.gz<ul><br/><li><code>missing_info: pct_uptake_lcl</code></li></ul>`"]:::warn
+        n18["`data.csv.gz<ul><br/><li><code>missing_info: pct_uptake_ucl</code></li></ul>`"]:::warn
+        n18["`data.csv.gz<ul><br/><li><code>missing_info: sample_size</code></li></ul>`"]:::warn
     end
     subgraph NREVSS["`NREVSS`"]
         direction LR
@@ -104,20 +104,20 @@ flowchart LR
     end
     subgraph schoolvaxview["`schoolvaxview`"]
         direction LR
-        n22["`data.csv.gz<ul><br/><li><code>geography_nas</code></li></ul>`"]:::warn
-        n22["`data.csv.gz<ul><br/><li><code>missing_info: grade</code></li></ul>`"]:::warn
-        n22["`data.csv.gz<ul><br/><li><code>missing_info: N</code></li></ul>`"]:::warn
-        n22["`data.csv.gz<ul><br/><li><code>missing_info: vax</code></li></ul>`"]:::warn
-        n22["`data.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
-        n22["`data.csv.gz<ul><br/><li><code>missing_info: percent_surveyed</code></li></ul>`"]:::warn
-        n22["`data.csv.gz<ul><br/><li><code>missing_info: survey_type</code></li></ul>`"]:::warn
-        n23["`data_exemptions.csv.gz<ul><br/><li><code>geography_nas</code></li></ul>`"]:::warn
-        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: grade</code></li></ul>`"]:::warn
-        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: N</code></li></ul>`"]:::warn
-        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: vax</code></li></ul>`"]:::warn
-        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
-        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: percent_surveyed</code></li></ul>`"]:::warn
-        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: survey_type</code></li></ul>`"]:::warn
+        n22["`data_exemptions.csv.gz<ul><br/><li><code>geography_nas</code></li></ul>`"]:::warn
+        n22["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: grade</code></li></ul>`"]:::warn
+        n22["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: N</code></li></ul>`"]:::warn
+        n22["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: vax</code></li></ul>`"]:::warn
+        n22["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n22["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: percent_surveyed</code></li></ul>`"]:::warn
+        n22["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: survey_type</code></li></ul>`"]:::warn
+        n23["`data.csv.gz<ul><br/><li><code>geography_nas</code></li></ul>`"]:::warn
+        n23["`data.csv.gz<ul><br/><li><code>missing_info: grade</code></li></ul>`"]:::warn
+        n23["`data.csv.gz<ul><br/><li><code>missing_info: N</code></li></ul>`"]:::warn
+        n23["`data.csv.gz<ul><br/><li><code>missing_info: vax</code></li></ul>`"]:::warn
+        n23["`data.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n23["`data.csv.gz<ul><br/><li><code>missing_info: percent_surveyed</code></li></ul>`"]:::warn
+        n23["`data.csv.gz<ul><br/><li><code>missing_info: survey_type</code></li></ul>`"]:::warn
     end
     subgraph wastewater["`wastewater`"]
         direction LR
@@ -136,8 +136,8 @@ flowchart LR
     subgraph bundle_chronic_diseases["`bundle_chronic_diseases`"]
         direction LR
         n32["`brfss_prevalence_by_geography.parquet`"]
-        n33["`epic_prevalence_by_geography.parquet`"]
-        n34["`epic_prevalence_by_geography_county.parquet`"]
+        n33["`epic_prevalence_by_geography_county.parquet`"]
+        n34["`epic_prevalence_by_geography.parquet`"]
         n35["`prevalence_by_geography_and_source.parquet`"]
     end
     subgraph bundle_respiratory["`bundle_respiratory`"]
@@ -165,20 +165,20 @@ flowchart LR
     s1 --> n9
     s1 --> n10
     s1 --> n11
-    s2 --> n12
+    s2 --> n13
     s3 --> n14
     s3 --> n15
     s4 --> n24
-    n22 --> bundle_childhood_immunizations
     n23 --> bundle_childhood_immunizations
-    n16 --> bundle_childhood_immunizations
+    n22 --> bundle_childhood_immunizations
     n18 --> bundle_childhood_immunizations
     n17 --> bundle_childhood_immunizations
+    n16 --> bundle_childhood_immunizations
     n7 --> bundle_childhood_immunizations
     n3 --> bundle_chronic_diseases
     n10 --> bundle_chronic_diseases
     n11 --> bundle_respiratory
-    n12 --> bundle_respiratory
+    n13 --> bundle_respiratory
     n24 --> bundle_respiratory
     n1 --> bundle_respiratory
     n2 --> bundle_respiratory
