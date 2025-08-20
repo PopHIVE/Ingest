@@ -108,9 +108,6 @@ flowchart LR
         n48["`rsv_positive_tests.parquet`"]
         n49["`rsv_testing_pct.parquet`"]
         n50["`rsv_trends_by_age.parquet`"]
-        n51["`TEST_mega.csv.gz`"]
-        n52["`TEST_mega.json.gz`"]
-        n53["`TEST_mega.parquet`"]
     end
     s0 --> n1
     s0 --> n2
