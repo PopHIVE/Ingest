@@ -260,16 +260,18 @@ trends_age <- combined_age %>%
           )
 
 trend_age_all <- trends_age %>%
-  filter(variable=='epic_n_all_encounters') %>%
+  filter(variable=='epic_n_all_encounters' & !is.na(value) & !is.na(age)) %>%
   dplyr::select(geography, age, date, source, value) %>%
-  rename(epic_all = value )
+  rename(epic_all = value ) %>%
+  mutate(epic_all = as.numeric(epic_all))
 
 trends_age2 <- trends_age %>%
   left_join(trend_age_all, by=c('geography','age','date','source')) %>%
   filter(!is.na(value) & !is.na(age)) %>%
   filter(variable!='epic_n_all_encounters') %>%
   rename(raw=value) %>%
-  mutate(suppressed_flag = if_else(source=='Epic Cosmos (ED)' & raw==5,1,0),
+  mutate( raw = as.numeric(raw),
+        suppressed_flag = if_else(source=='Epic Cosmos (ED)' & raw==5,1,0),
           value = if_else(source=='Epic Cosmos (ED)', raw/epic_all*100,
                           raw)
          ) %>%
