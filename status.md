@@ -11,7 +11,7 @@ flowchart LR
     subgraph abcs["`abcs`"]
         direction LR
         n1["`data.csv.gz`"]:::pass
-        n2["`uad.csv.gz`"]:::pass
+        n2["`uad.csv.gz<ul><br/><li><code>missing_info: N_SSUAD</code></li></ul>`"]:::warn
     end
     subgraph brfss["`brfss`"]
         direction LR
@@ -19,28 +19,39 @@ flowchart LR
     end
     subgraph delphi_doctors_claims["`delphi_doctors_claims`"]
         direction LR
-        n4["`data.csv.gz`"]:::pass
+        n4["`data.csv.gz<ul><br/><li><code>missing_info: delphi_doc_covid_smooth</code></li></ul>`"]:::warn
     end
     subgraph delphi_hospital_claims["`delphi_hospital_claims`"]
         direction LR
-        n5["`data.csv.gz`"]:::pass
+        n5["`data.csv.gz<ul><br/><li><code>missing_info: delphi_hospital_covid_smooth</code></li></ul>`"]:::warn
     end
     subgraph delphi_nhsn["`delphi_nhsn`"]
         direction LR
-        n6["`data.csv.gz`"]:::pass
+        n6["`data.csv.gz<ul><br/><li><code>missing_info: delphi_nhsn_covid</code></li></ul>`"]:::warn
+        n6["`data.csv.gz<ul><br/><li><code>missing_info: delphi_nhsn_flu</code></li></ul>`"]:::warn
+        n6["`data.csv.gz<ul><br/><li><code>missing_info: delphi_nhsn_rsv</code></li></ul>`"]:::warn
     end
     subgraph epic["`epic`"]
         direction LR
-        n7["`children.csv.gz`"]:::pass
-        n8["`county_no_time.csv.gz`"]:::pass
-        n9["`no_geo.csv.gz`"]:::pass
-        n10["`state_no_time.csv.gz`"]:::pass
-        n11["`weekly.csv.gz`"]:::pass
+        n7["`children.csv.gz<ul><br/><li><code>time_missing</code></li></ul>`"]:::warn
+        n8["`county_no_time.csv.gz<ul><br/><li><code>time_missing</code></li></ul>`"]:::warn
+        n8["`county_no_time.csv.gz<ul><br/><li><code>missing_info: percentage_with_base_patient_followed_by_hemoglobin_a1c_6.5%_or_more_within_10_years_(%)</code></li></ul>`"]:::warn
+        n9["`no_geo.csv.gz<ul><br/><li><code>missing_info: positive_rsv_tests_(%)</code></li></ul>`"]:::warn
+        n10["`state_no_time.csv.gz<ul><br/><li><code>time_missing</code></li></ul>`"]:::warn
+        n10["`state_no_time.csv.gz<ul><br/><li><code>missing_info: n_self_harm</code></li></ul>`"]:::warn
+        n10["`state_no_time.csv.gz<ul><br/><li><code>missing_info: n_patients</code></li></ul>`"]:::warn
+        n10["`state_no_time.csv.gz<ul><br/><li><code>missing_info: percentage_with_base_patient_followed_by_hemoglobin_a1c_6.5%_or_more_within_10_years_(%)</code></li></ul>`"]:::warn
+        n11["`weekly.csv.gz<ul><br/><li><code>missing_info: epic_positive_rsv_tests_(%)</code></li></ul>`"]:::warn
+        n11["`weekly.csv.gz<ul><br/><li><code>missing_info: epic_rsv_tests</code></li></ul>`"]:::warn
+        n11["`weekly.csv.gz<ul><br/><li><code>missing_info: epic_n_rsv_tests</code></li></ul>`"]:::warn
     end
     subgraph gtrends["`gtrends`"]
         direction LR
-        n12["`data.csv.gz`"]:::pass
-        n13["`data_dma.csv.gz`"]:::pass
+        n12["`data.csv.gz<ul><br/><li><code>missing_info: gtrends_rsv_adjusted</code></li></ul>`"]:::warn
+        n13["`data_dma.csv.gz<ul><br/><li><code>geography_missing</code></li></ul>`"]:::warn
+        n13["`data_dma.csv.gz<ul><br/><li><code>missing_info: fips</code></li></ul>`"]:::warn
+        n13["`data_dma.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n13["`data_dma.csv.gz<ul><br/><li><code>missing_info: term</code></li></ul>`"]:::warn
     end
     subgraph nchs_mortality["`nchs_mortality`"]
         direction LR
@@ -49,13 +60,39 @@ flowchart LR
     end
     subgraph nis["`nis`"]
         direction LR
-        n16["`data.csv.gz`"]:::pass
-        n17["`data_insurance.csv.gz`"]:::pass
-        n18["`data_urban.csv.gz`"]:::pass
+        n16["`data.csv.gz<ul><br/><li><code>missing_info: birth_year</code></li></ul>`"]:::warn
+        n16["`data.csv.gz<ul><br/><li><code>missing_info: age</code></li></ul>`"]:::warn
+        n16["`data.csv.gz<ul><br/><li><code>missing_info: vaccine</code></li></ul>`"]:::warn
+        n16["`data.csv.gz<ul><br/><li><code>missing_info: pct_uptake</code></li></ul>`"]:::warn
+        n16["`data.csv.gz<ul><br/><li><code>missing_info: pct_uptake_lcl</code></li></ul>`"]:::warn
+        n16["`data.csv.gz<ul><br/><li><code>missing_info: pct_uptake_ucl</code></li></ul>`"]:::warn
+        n16["`data.csv.gz<ul><br/><li><code>missing_info: sample_size</code></li></ul>`"]:::warn
+        n17["`data_insurance.csv.gz<ul><br/><li><code>time_missing</code></li></ul>`"]:::warn
+        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: insurance</code></li></ul>`"]:::warn
+        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: birth_year</code></li></ul>`"]:::warn
+        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: vaccine</code></li></ul>`"]:::warn
+        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: value_lcl</code></li></ul>`"]:::warn
+        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: value_ucl</code></li></ul>`"]:::warn
+        n17["`data_insurance.csv.gz<ul><br/><li><code>missing_info: sample_size</code></li></ul>`"]:::warn
+        n18["`data_urban.csv.gz<ul><br/><li><code>time_missing</code></li></ul>`"]:::warn
+        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: urban</code></li></ul>`"]:::warn
+        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: birth_year</code></li></ul>`"]:::warn
+        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: vaccine</code></li></ul>`"]:::warn
+        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: value_lcl</code></li></ul>`"]:::warn
+        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: value_ucl</code></li></ul>`"]:::warn
+        n18["`data_urban.csv.gz<ul><br/><li><code>missing_info: sample_size</code></li></ul>`"]:::warn
     end
     subgraph NREVSS["`NREVSS`"]
         direction LR
-        n19["`data.csv.gz`"]:::pass
+        n19["`data.csv.gz<ul><br/><li><code>missing_info: source</code></li></ul>`"]:::warn
+        n19["`data.csv.gz<ul><br/><li><code>missing_info: scaled_cases</code></li></ul>`"]:::warn
+        n19["`data.csv.gz<ul><br/><li><code>missing_info: pcr_detections</code></li></ul>`"]:::warn
+        n19["`data.csv.gz<ul><br/><li><code>missing_info: epiyr</code></li></ul>`"]:::warn
+        n19["`data.csv.gz<ul><br/><li><code>missing_info: epiwk</code></li></ul>`"]:::warn
+        n19["`data.csv.gz<ul><br/><li><code>missing_info: week</code></li></ul>`"]:::warn
+        n19["`data.csv.gz<ul><br/><li><code>missing_info: year</code></li></ul>`"]:::warn
     end
     subgraph nssp["`nssp`"]
         direction LR
@@ -67,8 +104,20 @@ flowchart LR
     end
     subgraph schoolvaxview["`schoolvaxview`"]
         direction LR
-        n22["`data.csv.gz`"]:::pass
-        n23["`data_exemptions.csv.gz`"]:::pass
+        n22["`data.csv.gz<ul><br/><li><code>geography_nas</code></li></ul>`"]:::warn
+        n22["`data.csv.gz<ul><br/><li><code>missing_info: grade</code></li></ul>`"]:::warn
+        n22["`data.csv.gz<ul><br/><li><code>missing_info: N</code></li></ul>`"]:::warn
+        n22["`data.csv.gz<ul><br/><li><code>missing_info: vax</code></li></ul>`"]:::warn
+        n22["`data.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n22["`data.csv.gz<ul><br/><li><code>missing_info: percent_surveyed</code></li></ul>`"]:::warn
+        n22["`data.csv.gz<ul><br/><li><code>missing_info: survey_type</code></li></ul>`"]:::warn
+        n23["`data_exemptions.csv.gz<ul><br/><li><code>geography_nas</code></li></ul>`"]:::warn
+        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: grade</code></li></ul>`"]:::warn
+        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: N</code></li></ul>`"]:::warn
+        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: vax</code></li></ul>`"]:::warn
+        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: percent_surveyed</code></li></ul>`"]:::warn
+        n23["`data_exemptions.csv.gz<ul><br/><li><code>missing_info: survey_type</code></li></ul>`"]:::warn
     end
     subgraph wastewater["`wastewater`"]
         direction LR
