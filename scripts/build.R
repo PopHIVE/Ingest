@@ -59,7 +59,6 @@ dcf_build()
 # dcf::dcf_process("bundle_childhood_immunizations", ".")
 # dcf::dcf_process("chronic_diseases", ".")
 
-dcf::dcf_build()
 
 #dcf::dcf_status_diagram()
 
