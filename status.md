@@ -73,9 +73,7 @@ flowchart LR
     end
     subgraph NREVSS["`NREVSS`"]
         direction LR
-        n19["`data.csv.gz<ul><br/><li><code>missing_info: epiwk</code></li></ul>`"]:::warn
-        n19["`data.csv.gz<ul><br/><li><code>missing_info: week</code></li></ul>`"]:::warn
-        n19["`data.csv.gz<ul><br/><li><code>missing_info: year</code></li></ul>`"]:::warn
+        n19["`data.csv.gz`"]:::pass
     end
     subgraph nssp["`nssp`"]
         direction LR
@@ -175,4 +173,7 @@ flowchart LR
     n19 --> bundle_respiratory
     n20 --> bundle_respiratory
     n21 --> bundle_respiratory
+    nNA --> bundle_respiratory
+    nNA --> bundle_respiratory
+    nNA --> bundle_respiratory
 ```
