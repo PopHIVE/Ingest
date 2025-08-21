@@ -1,3 +1,9 @@
+# Check the data status
+https://dissc-yale.github.io/dcf/report/?repo=PopHIVE/Ingest
+
+# See the data flows and relationships
+https://github.com/PopHIVE/Ingest/blob/main/status.md
+
 # Using these data
 
 The data shown on PopHIVE.org are found in ./Data/Webslim/. These files are mostly stored in parquet format. If using R, these can be downloaded using the arrow package in R. For example:

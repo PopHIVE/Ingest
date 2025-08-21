@@ -67,7 +67,12 @@ if (!identical(process$raw_state, raw_state)) {
             age_days = age_months * (365/12), 
             time= as.Date(paste(birth_year,'01','01', sep='-')) + age_days
                           ) %>%
-     dplyr::select(-statename, -age_months, -age_days)
+     dplyr::select(-statename, -age_months, -age_days) %>%
+     rename(vax_uptake_overall = pct_uptake,  
+            vax_uptake_overall_lcl = pct_uptake_lcl,
+            vax_uptake_overall_ucl = pct_uptake_ucl,
+            sample_size_overall = sample_size
+     )
    
      
      
@@ -120,8 +125,13 @@ if (!identical(process$raw_state, raw_state)) {
          )
        ) %>%
        dplyr::select(Geography, urban, birth_year, Vaccine_dose, vax_uptake, value_lcl,value_ucl,sample_size) %>%
-       rename(geography = Geography, vaccine = Vaccine_dose, value = vax_uptake)
-   
+       rename(geography = Geography, vaccine = Vaccine_dose,
+              vax_uptake_urban = vax_uptake,  
+              vax_uptake_urban_lcl = value_lcl,
+              vax_uptake_urban_ucl = value_ucl,
+              sample_size_urban = sample_size
+       )
+     
      vroom::vroom_write(
        data_urban,
        "standard/data_urban.csv.gz",
@@ -172,7 +182,12 @@ if (!identical(process$raw_state, raw_state)) {
     
   ) %>%
   dplyr::select(Geography, insurance, birth_year, Vaccine_dose, vax_uptake, value_lcl, value_ucl, sample_size) %>%
-  rename(geography = Geography, vaccine = Vaccine_dose, value = vax_uptake)
+  rename(geography = Geography, vaccine = Vaccine_dose,
+         vax_uptake_insurance = vax_uptake,  
+         vax_uptake_insurance_lcl = value_lcl,
+         vax_uptake_insurance_ucl = value_ucl,
+         sample_size_insurance = sample_size
+         )
      
      vroom::vroom_write(
        data_insurance,

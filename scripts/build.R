@@ -44,6 +44,7 @@ dcf_build()
 # dcf_process("respnet")
 # dcf_process("delphi_doctors_claims")
 # dcf_process("delphi_nhsn")
+# dcf_process("nis")
 
 
 ## Add bundles
@@ -59,5 +60,7 @@ dcf_build()
 # dcf::dcf_process("chronic_diseases", ".")
 
 dcf::dcf_build()
+
+#dcf::dcf_status_diagram()
 
 #dcf::dcf_init() sets up github actions

@@ -10,12 +10,27 @@ vroom::vroom('../schoolvaxview/standard/data_exemptions.csv.gz') %>%
   arrow::write_parquet( "dist/schoolvaxview_exemptions.parquet")
 
 vroom::vroom('../nis/standard/data.csv.gz') %>%
+    rename( pct_uptake = vax_uptake_overall,
+            pct_uptake_lcl = vax_uptake_overall_lcl,
+            pct_uptake_ucl = vax_uptake_overall_ucl,
+            sample_size = sample_size_overall
+            ) %>%
     arrow::write_parquet( "dist/nis_overall.parquet")
 
 vroom::vroom('../nis/standard/data_urban.csv.gz') %>%
+  rename( pct_uptake = vax_uptake_urban,
+          pct_uptake_lcl = vax_uptake_urban_lcl,
+          pct_uptake_ucl = vax_uptake_urban_ucl,
+          sample_size = sample_size_urban
+  ) %>%
     arrow::write_parquet( "dist/nis_urban.parquet")
 
 nis_insurance <- vroom::vroom('../nis/standard/data_insurance.csv.gz') %>%
+  rename( pct_uptake = vax_uptake_insurance,
+          pct_uptake_lcl = vax_uptake_insurance_lcl,
+          pct_uptake_ucl = vax_uptake_insurance_ucl,
+          sample_size = sample_size_insurance
+  ) %>%
     arrow::write_parquet( "dist/nis_insurance.parquet")
 
 epic <- vroom::vroom('../epic/standard/children.csv.gz') %>%
@@ -39,9 +54,9 @@ nis <- vroom::vroom('../nis/standard/data.csv.gz'
   filter(
     vaccine == '≥1 Dose MMR' & age == "35 Months" & birth_year == 2021
   ) %>%
-  rename(value_nis = pct_uptake,
-         value_nis_lcl=pct_uptake_lcl,
-         value_nis_ucl=pct_uptake_ucl) %>%
+  rename(value_nis = vax_uptake_overall,
+         value_nis_lcl=vax_uptake_overall_lcl,
+         value_nis_ucl=vax_uptake_overall_ucl) %>%
   dplyr::select(value_nis,value_nis_lcl,value_nis_ucl, geography)
 
 vax_epic <- vroom::vroom('../epic/standard/children.csv.gz'
