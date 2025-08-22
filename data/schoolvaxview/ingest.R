@@ -50,7 +50,8 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(geography = cdlTools::fips(statename, to='FIPS'),
            time = paste(substr(year,1,4),'09','01', sep='-') #set date to start of academic year (Sept 1,YYYY)
            ) %>%
-    dplyr::select(time, geography, grade, N, vax, value, percent_surveyed, survey_type)
+    dplyr::select(time, geography, grade, N, vax, value, percent_surveyed, survey_type) %>%
+    distinct()
   
   
   exemptions <- data %>%
