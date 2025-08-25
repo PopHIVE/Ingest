@@ -29,6 +29,7 @@ dcf_build()
 #dcf::dcf_add_source("delphi_hospital_claims")
 #dcf::dcf_add_source("delphi_doctors_claims")
 #dcf::dcf_add_source("wonder_provisional_mortality")
+#dcf::dcf_add_source("cms_mmd")
 
 #dcf_add_source("schoolvaxview")
 

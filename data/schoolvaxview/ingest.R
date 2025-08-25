@@ -47,11 +47,19 @@ if (!identical(process$raw_state, raw_state)) {
       survey_type = 'Survey Type',
       statename = Geography
     ) %>%
+    filter(statename %in% c(state.name, 'District of Columbia', 'United States')) %>%
     mutate(geography = cdlTools::fips(statename, to='FIPS'),
-           time = paste(substr(year,1,4),'09','01', sep='-') #set date to start of academic year (Sept 1,YYYY)
+           geography = if_else(statename=='United States',0,geography),
+           geography = sprintf("%02d", geography),
+           time = paste(substr(year,1,4),'09','01', sep='-'), #set date to start of academic year (Sept 1,YYYY)
+           vax = if_else(
+             grepl('1 dose', Dose), NA_character_, vax  #removes the 1 dose varicella category
+           )
            ) %>%
+    filter(vax != '') %>%
     dplyr::select(time, geography, grade, N, vax, value, percent_surveyed, survey_type) %>%
-    distinct()
+    distinct() 
+    
   
   
   exemptions <- data %>%
