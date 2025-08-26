@@ -1,24 +1,20 @@
 ##Notes: written with Gemini 2.5 Pro and Claude Sonnet 4
-## Data from https://data.cms.gov/tools/mapping-medicare-disparities-by-population
+## Data from https://data.cms.gov/tools/mapping-medicare-disparities-by-population Mapping Medicare Disparities
 
 # --- 1. Setup: Install and Load Packages ---
 library(httr2)
 library(dplyr)
-library(readr)
+library(vroom)  # Changed from readr to vroom
 library(glue)
-
-
-process <- dcf::dcf_process_record()
-
 
 # --- 2. Configuration ---
 base_url <- "https://data.cms.gov/data-api/v1/mmd-tool/"
-output_dir <- "raw"
+output_dir <- "raw/staging"
 
 # Create the output directory if it doesn't already exist
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
-years <- 2020:2022
+years <- 2020:2023
 
 # Geography levels configuration
 geography_levels <- list(
@@ -27,169 +23,14 @@ geography_levels <- list(
   'county' = 'c'
 )
 
-# --- 3. Function to Discover Available Condition Codes ---
-# discover_condition_codes <- function(year = 2022, geography = 'c') {
-#   message(glue("Discovering available condition codes for {year} at {geography} level..."))
-#   
-#   year_short <- substr(as.character(year), 3, 4)
-#   
-#   # Determine the correct _source pattern based on the year
-#   if (year >= 2021) {
-#     source_string <- glue("prev_final_long_fltr12_racecat_all_sexcat_all_{year_short}_f")
-#   } else {
-#     source_string <- glue("prev_final_long_fltr12_year_{year_short}_racecat_all_sexcat_all")
-#   }
-#   
-#   # Get a small sample to examine available conditions
-#   params <- list(
-#     `_source` = source_string,
-#     population = 'f',
-#     year = year_short,
-#     geography = geography,
-#     measure = 'v',
-#     domain = 'p',
-#     `_size` = 1000  # Small sample to check structure
-#   )
-#   
-#   tryCatch({
-#     req <- request(base_url) %>%
-#       req_url_query(!!!params)
-#     
-#     resp <- req_perform(req)
-#     data_list <- resp_body_json(resp)
-#     
-#     if (length(data_list) == 0) {
-#       message("No data returned for condition discovery.")
-#       return(NULL)
-#     }
-#     
-#     df <- bind_rows(data_list)
-#     
-#     # Check what fields are available
-#     message("Available fields in the data:")
-#     print(names(df))
-#     
-#     # Look for condition-related fields
-#     condition_fields <- names(df)[grepl("condition|cond", names(df), ignore.case = TRUE)]
-#     message(glue("Condition-related fields: {paste(condition_fields, collapse = ', ')}"))
-#     
-#     if (length(condition_fields) > 0) {
-#       for (field in condition_fields) {
-#         unique_values <- unique(df[[field]])
-#         message(glue("\nUnique values in '{field}':"))
-#         print(unique_values)
-#       }
-#     }
-#     
-#     return(df)
-#     
-#   }, error = function(e) {
-#     message(glue("Failed to discover condition codes. Error: {e$message}"))
-#     return(NULL)
-#   })
-# }
-
-# --- 4. Function to Get All Data with Pagination ---
-download_all_data_paginated <- function(condition_code, year, geography_level, page_size = 50000) {
-  
-  year_short <- substr(as.character(year), 3, 4)
-  
-  # Determine the correct _source pattern based on the year
-  if (year >= 2021) {
-    source_string <- glue("prev_final_long_fltr12_racecat_all_sexcat_all_{year_short}_f")
-  } else {
-    source_string <- glue("prev_final_long_fltr12_year_{year_short}_racecat_all_sexcat_all")
-  }
-  
-  all_data <- list()
-  offset <- 0
-  page <- 1
-  
-  repeat {
-    message(glue("      Downloading page {page} (offset: {offset})..."))
-    
-    params <- list(
-      `_source` = source_string,
-      population = 'f',
-      year = year_short,
-      geography = geography_level,
-      measure = 'v',
-      domain = 'p',
-      condition = condition_code,
-      `_size` = page_size,
-      `_offset` = offset
-    )
-    
-    tryCatch({
-      req <- request(base_url) %>%
-        req_url_query(!!!params)
-      
-      resp <- req_perform(req)
-      data_list <- resp_body_json(resp)
-      
-      if (length(data_list) == 0) {
-        message(glue("      No more data returned. Stopping pagination."))
-        break
-      }
-      
-      df_page <- bind_rows(data_list)
-      all_data[[page]] <- df_page
-      
-      message(glue("      Page {page}: {nrow(df_page)} records"))
-      
-      # If we got fewer records than requested, we've reached the end
-      if (nrow(df_page) < page_size) {
-        message(glue("      Reached end of data (got {nrow(df_page)} < {page_size} records)"))
-        break
-      }
-      
-      offset <- offset + page_size
-      page <- page + 1
-      
-      # Safety check to prevent infinite loops
-      if (page > 50) {
-        message("      Stopping after 50 pages for safety")
-        break
-      }
-      
-      Sys.sleep(1) # Be respectful between pages
-      
-    }, error = function(e) {
-      message(glue("      Error on page {page}: {e$message}"))
-      break
-    })
-  }
-  
-  if (length(all_data) > 0) {
-    combined_data <- bind_rows(all_data)
-    message(glue("      Total records retrieved: {nrow(combined_data)}"))
-    return(combined_data)
-  } else {
-    return(NULL)
-  }
-}
-
-# --- 5. Discover Condition Codes ---
-# message("=== STEP 1: DISCOVERING CONDITION CODES ===")
-# sample_data <- discover_condition_codes(2022, 'c')  # Use county level for discovery
-# 
-# # Pause for user input
-# message("\n=== MANUAL STEP REQUIRED ===")
-# message("Please examine the output above to identify:")
-# message("1. The correct field name for conditions")
-# message("2. The available condition codes")
-# message("3. Update the conditions list below based on what you found")
-# message("\nPress Enter to continue when ready, or Ctrl+C to stop and update the code...")
-# readline()
-
-# --- 6. Define Conditions ---
+# --- 3. Define All Conditions ---
 conditions <- list(
   'acute_myocardial_infarction' = '2',
   'alzheimers' = '1',
   'anemia' = '147',
   'asthma' = '4',
   'atrial_fibrilation' = '11',
-  'colorectal_breast_prostate_lung_cancer' = '5', #breast=78, colorectal=79, lung=80, prostate=81, endometrial=149,
+  'colorectal_breast_prostate_lung_cancer' = '5',
   'chronic_kidney' = '12', 
   'copd' = '13', 
   'depression' = '14', 
@@ -208,25 +49,142 @@ conditions <- list(
   'stroke_ischemic_attack' = '23'
 )
 
-# --- 7. Main Download Logic ---
-message("\n=== STEP 2: DOWNLOADING DATA ===")
-message("--- Starting Comprehensive Chronic Condition Data Download ---")
+# --- 4. Year-Specific Source Pattern Function ---
+get_source_string <- function(year) {
+  year_short <- substr(as.character(year), 3, 4)
+  
+  if (year >= 2023) {
+    # 2023+ pattern ends with _p instead of _f
+    return(glue("prev_final_long_fltr12_racecat_all_sexcat_all_{year_short}_p"))
+  } else if (year >= 2021) {
+    # 2021-2022 pattern ends with _f
+    return(glue("prev_final_long_fltr12_racecat_all_sexcat_all_{year_short}_f"))
+  } else {
+    # 2020 and earlier pattern
+    return(glue("prev_final_long_fltr12_year_{year_short}_racecat_all_sexcat_all"))
+  }
+}
 
+# --- 5. Download Function ---
+download_all_data_paginated <- function(condition_code, year, geography_level, page_size = 50000) {
+  
+  year_short <- substr(as.character(year), 3, 4)
+  source_string <- get_source_string(year)
+  
+  message(glue("      Using source pattern: {source_string}"))
+  
+  all_data <- list()
+  offset <- 0
+  page <- 1
+  
+  repeat {
+    message(glue("      Downloading page {page} (offset: {offset})..."))
+    
+    # Base parameters that work for all years
+    params <- list(
+      `_source` = source_string,
+      population = 'f',
+      year = year_short,
+      geography = geography_level,
+      measure = 'v',
+      condition = condition_code,
+      fltr = '1',
+      `_size` = page_size,
+      `_offset` = offset
+    )
+    
+    # Add domain parameter for 2021+
+    if (year >= 2021) {
+      params$domain <- 'p'
+    }
+    
+    # Add demographic filters to get all combinations
+    params$sexcat <- '.|IS NULL'
+    params$agecat <- '.|IS NULL'
+    params$dual <- '.|IS NULL'
+    params$eligcat <- '.|IS NULL'
+    params$racecat <- '.|IS NULL'
+    
+    tryCatch({
+      req <- request(base_url) %>%
+        req_url_query(!!!params)
+      
+      resp <- req_perform(req)
+      data_list <- resp_body_json(resp)
+      
+      if (length(data_list) == 0) {
+        message(glue("      No more data returned. Stopping pagination."))
+        break
+      }
+      
+      df_page <- bind_rows(data_list)
+      all_data[[page]] <- df_page
+      
+      message(glue("      Page {page}: {nrow(df_page)} records"))
+      
+      if (nrow(df_page) < page_size) {
+        message(glue("      Reached end of data (got {nrow(df_page)} < {page_size} records)"))
+        break
+      }
+      
+      offset <- offset + page_size
+      page <- page + 1
+      
+      if (page > 50) {
+        message("      Stopping after 50 pages for safety")
+        break
+      }
+      
+      Sys.sleep(1)
+      
+    }, error = function(e) {
+      if (grepl("404", e$message)) {
+        message(glue("      404 Error - data may not be available for this combination"))
+      } else {
+        message(glue("      Error on page {page}: {e$message}"))
+      }
+      break
+    })
+  }
+  
+  if (length(all_data) > 0) {
+    combined_data <- bind_rows(all_data)
+    message(glue("      Total records retrieved: {nrow(combined_data)}"))
+    return(combined_data)
+  } else {
+    return(NULL)
+  }
+}
+
+# --- 6. Main Download Logic for All Combinations ---
+message("=== STARTING COMPREHENSIVE DOWNLOAD ===")
+message("--- All Conditions × All Years × All Geography Levels ---")
+message(glue("Total combinations to process: {length(conditions)} × {length(years)} × {length(geography_levels)} = {length(conditions) * length(years) * length(geography_levels)}"))
+
+# Calculate total combinations for progress tracking
+total_combinations <- length(conditions) * length(years) * length(geography_levels)
+current_combination <- 0
 all_data <- list()
 
+# Triple nested loop: Conditions × Years × Geography Levels
 for (condition_name in names(conditions)) {
   condition_code <- conditions[[condition_name]]
   
-  message(glue("\nProcessing Condition: {condition_name} (Code: {condition_code})"))
+  message(glue("\n🏥 Processing Condition: {condition_name} (Code: {condition_code})"))
+  message(glue("   [{match(condition_name, names(conditions))}/{length(conditions)}] conditions"))
   
   for (year in years) {
-    message(glue("  Year: {year}"))
+    message(glue("\n  📅 Year: {year}"))
+    message(glue("     [{match(year, years)}/{length(years)}] years for {condition_name}"))
     
     for (geo_name in names(geography_levels)) {
       geo_code <- geography_levels[[geo_name]]
+      current_combination <- current_combination + 1
       
-      message(glue("    Geography level: {geo_name} ({geo_code})"))
+      message(glue("\n    🌍 Geography: {geo_name} ({geo_code})"))
+      message(glue("       Progress: {current_combination}/{total_combinations} ({round(100*current_combination/total_combinations, 1)}%)"))
       
+      # Download data for this specific combination
       data <- download_all_data_paginated(condition_code, year, geo_code)
       
       if (!is.null(data) && nrow(data) > 0) {
@@ -236,92 +194,94 @@ for (condition_name in names(conditions)) {
         data$data_year <- year
         data$geography_level <- geo_name
         
-        # Save individual condition/year/geography file
+        # Save individual file with xz compression
         filename <- glue("{condition_name}_{year}_{geo_name}_all_combinations.csv.xz")
         filepath <- file.path(output_dir, filename)
+        vroom_write(data, filepath, delim = ",")
         
-        #write_csv(data, filepath)
-      
-        vroom::vroom_write(
-          data,
-          filepath,
-          ","
-        )
+        # Get file size for reporting
+        file_size <- file.size(filepath)
+        file_size_mb <- round(file_size / 1024^2, 2)
         
-        message(glue("    > Success! {nrow(data)} records saved to {filepath}"))
+        message(glue("    ✅ Success! {nrow(data)} records saved to {filename} ({file_size_mb} MB compressed)"))
         
-        # Print summary
+        # Print summary statistics
         if ("agecat" %in% names(data)) {
-          message(glue("      - Age categories: {length(unique(data$agecat))}"))
+          age_cats <- length(unique(data$agecat[!is.na(data$agecat)]))
+          message(glue("       - Age categories: {age_cats}"))
         }
         if ("sexcat" %in% names(data)) {
-          message(glue("      - Sex categories: {length(unique(data$sexcat))}"))
+          sex_cats <- length(unique(data$sexcat[!is.na(data$sexcat)]))
+          message(glue("       - Sex categories: {sex_cats}"))
         }
         if ("racecat" %in% names(data)) {
-          message(glue("      - Race/ethnicity categories: {length(unique(data$racecat))}"))
+          race_cats <- length(unique(data$racecat[!is.na(data$racecat)]))
+          message(glue("       - Race/ethnicity categories: {race_cats}"))
         }
         if ("geography" %in% names(data)) {
-          message(glue("      - Geographic units: {length(unique(data$geography))}"))
+          geo_units <- length(unique(data$geography[!is.na(data$geography)]))
+          message(glue("       - Geographic units: {geo_units}"))
         }
         
-        # Store for combined dataset
-        all_data[[glue("{condition_name}_{year}_{geo_name}")]] <- data
+        # Store for combined datasets
+        key <- glue("{condition_name}_{year}_{geo_name}")
+        all_data[[key]] <- data
         
       } else {
-        message(glue("    > No data available for {geo_name} level"))
+        message(glue("    ❌ No data available for {condition_name} {year} {geo_name}"))
       }
       
-      Sys.sleep(1) # Be respectful between geography levels
+      # Be respectful to the server
+      Sys.sleep(1)
     }
     
-    Sys.sleep(2) # Be respectful between years
+    # Longer pause between years
+    Sys.sleep(2)
   }
+  
+  # Even longer pause between conditions
+  Sys.sleep(3)
 }
 
-# --- 8. Create Combined Datasets ---
+# --- 7. Create Combined Datasets ---
 if (length(all_data) > 0) {
-  message("\n--- Creating combined datasets ---")
+  message("\n=== CREATING COMBINED DATASETS ===")
   
   # Create overall combined dataset
+  message("Creating overall combined dataset...")
   combined_df <- bind_rows(all_data)
-  combined_filename <- file.path(output_dir, "all_conditions_all_years_all_geographies_combined.csv.xz")
-  #write_csv(combined_df, combined_filename)
-  vroom::vroom_write(
-    combined_df,
-    combined_filename,
-    ","
-  )
+  combined_filename <- file.path( "./raw/ALL_CONDITIONS_ALL_YEARS_ALL_GEOGRAPHIES_COMBINED.csv.xz")
+  vroom_write(combined_df, combined_filename, delim = ",")
   
-  message(glue("Overall combined dataset with {nrow(combined_df)} total records saved to {combined_filename}"))
+  combined_size_mb <- round(file.size(combined_filename) / 1024^2, 2)
+  message(glue("✅ Overall combined dataset: {format(nrow(combined_df), big.mark=',')} records → {basename(combined_filename)} ({combined_size_mb} MB compressed)"))
   
-  # Create separate combined datasets by geography level
-  for (geo_name in names(geography_levels)) {
-    geo_data <- combined_df[combined_df$geography_level == geo_name, ]
-    
-    if (nrow(geo_data) > 0) {
-      geo_filename <- file.path(output_dir, glue("all_conditions_all_years_{geo_name}_combined.csv.xz"))
-     # write_csv(geo_data, geo_filename)
-      vroom::vroom_write(
-        geo_data,
-        geo_filename,
-        ","
-      )
-      message(glue("{geo_name} combined dataset with {nrow(geo_data)} records saved to {geo_filename}"))
-    }
-  }
   
-  # Final summary
-  message("\n=== FINAL SUMMARY ===")
-  message(glue("- Total records: {nrow(combined_df)}"))
-  message(glue("- Conditions: {length(unique(combined_df$condition_name))} ({paste(head(unique(combined_df$condition_name), 3), collapse = ', ')}{if(length(unique(combined_df$condition_name)) > 3) '...' else ''})"))
-  message(glue("- Years: {paste(unique(combined_df$data_year), collapse = ', ')}"))
-  message(glue("- Geography levels: {paste(unique(combined_df$geography_level), collapse = ', ')}"))
+  # --- 8. Final Comprehensive Summary ---
+  #message("\n" + paste(rep("=", 80), collapse=""))
+  message("=== FINAL COMPREHENSIVE SUMMARY ===")
+  message(paste(rep("=", 80), collapse=""))
   
-  # Count CSV files safely
-  csv_files <- list.files(output_dir, pattern = ".*\\.csv$")
-  message(glue("- Files created: {length(csv_files)}"))
+  message(glue("📊 OVERALL STATISTICS"))
+  message(glue("   Total records downloaded: {format(nrow(combined_df), big.mark=',')}"))
+  message(glue("   Conditions processed: {length(unique(combined_df$condition_name))} of {length(conditions)}"))
+  message(glue("   Years covered: {paste(sort(unique(combined_df$data_year)), collapse = ', ')}"))
+  message(glue("   Geography levels: {paste(unique(combined_df$geography_level), collapse = ', ')}"))
   
-  # Show breakdown by geography level
+  # Files created summary with compression info
+  csv_files <- list.files(output_dir, pattern = ".*\\.csv\\.xz$")
+  individual_files <- sum(grepl("_all_combinations\\.csv\\.xz$", csv_files))
+  combined_files <- sum(grepl("_COMBINED\\.csv\\.xz$", csv_files))
+  
+  # Calculate total compressed size
+  total_size_bytes <- sum(sapply(file.path(output_dir, csv_files), file.size))
+  total_size_mb <- round(total_size_bytes / 1024^2, 2)
+  
+  message(glue("   Files created: {length(csv_files)} total ({individual_files} individual + {combined_files} combined)"))
+  message(glue("   Total compressed size: {total_size_mb} MB"))
+  
+  # Breakdown by geography level
+  message(glue("\n📍 RECORDS BY GEOGRAPHY LEVEL:"))
   geo_summary <- combined_df %>%
     group_by(geography_level) %>%
     summarise(
@@ -329,31 +289,53 @@ if (length(all_data) > 0) {
       conditions = n_distinct(condition_name),
       years = n_distinct(data_year),
       .groups = 'drop'
-    )
+    ) %>%
+    arrange(desc(records))
   
-  message("\nRecords by geography level:")
   for (i in 1:nrow(geo_summary)) {
     row <- geo_summary[i, ]
-    message(glue("- {row$geography_level}: {row$records} records, {row$conditions} conditions, {row$years} years"))
+    message(glue("   {row$geography_level}: {format(row$records, big.mark=',')} records ({row$conditions} conditions × {row$years} years)"))
   }
   
-  # Show breakdown by demographics if available
+  # Breakdown by condition (top 10)
+  message(glue("\n🏥 TOP 10 CONDITIONS BY RECORD COUNT:"))
+  condition_summary <- combined_df %>%
+    group_by(condition_name) %>%
+    summarise(records = n(), .groups = 'drop') %>%
+    arrange(desc(records)) %>%
+    slice_head(n = 10)
+  
+  for (i in 1:nrow(condition_summary)) {
+    row <- condition_summary[i, ]
+    message(glue("   {i}. {row$condition_name}: {format(row$records, big.mark=',')} records"))
+  }
+  
+  # Demographics summary
   if ("agecat" %in% names(combined_df)) {
-    age_cats <- unique(combined_df$agecat[!is.na(combined_df$agecat)])
-    message(glue("- Age categories: {length(age_cats)} ({paste(head(age_cats, 5), collapse = ', ')}{if(length(age_cats) > 5) '...' else ''})"))
+    age_cats <- length(unique(combined_df$agecat[!is.na(combined_df$agecat)]))
+    message(glue("\n👥 DEMOGRAPHIC BREAKDOWNS:"))
+    message(glue("   Age categories: {age_cats}"))
   }
   
   if ("sexcat" %in% names(combined_df)) {
-    sex_cats <- unique(combined_df$sexcat[!is.na(combined_df$sexcat)])
-    message(glue("- Sex categories: {length(sex_cats)} ({paste(sex_cats, collapse = ', ')})"))
+    sex_cats <- length(unique(combined_df$sexcat[!is.na(combined_df$sexcat)]))
+    message(glue("   Sex categories: {sex_cats}"))
   }
   
   if ("racecat" %in% names(combined_df)) {
-    race_cats <- unique(combined_df$racecat[!is.na(combined_df$racecat)])
-    message(glue("- Race/ethnicity categories: {length(race_cats)} ({paste(head(race_cats, 3), collapse = ', ')}{if(length(race_cats) > 3) '...' else ''})"))
+    race_cats <- length(unique(combined_df$racecat[!is.na(combined_df$racecat)]))
+    message(glue("   Race/ethnicity categories: {race_cats}"))
   }
+  
+  message(paste(rep("=", 80), collapse=""))
+  message(glue("💾 COMPRESSION: All files saved as .csv.xz format for optimal storage efficiency"))
 }
 
-message("\n--- All downloads complete! ---")
+message("\n🎉 ALL DOWNLOADS COMPLETE! 🎉")
+message(glue("Check the '{output_dir}' directory for all your compressed data files."))
 
-dcf::dcf_process_record(updated = process)
+test <- vroom::vroom('./raw/ALL_CONDITIONS_ALL_YEARS_ALL_GEOGRAPHIES_COMBINED.csv.xz') %>%
+  filter(geography_level=='state') %>%
+  mutate(statename = cdlTools::fips(fips, to='Name') 
+         )
+  mutate
