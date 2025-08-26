@@ -13,6 +13,10 @@ library(future)
 library(furrr)
 library(progressr)
 
+update=F
+
+if(update==T){
+
 # Setup parallel processing
 plan(multisession, workers = 4)  # Adjust based on your system
 
@@ -550,4 +554,6 @@ if (!is.null(test_result)) {
   
 } else {
   message("❌ Test failed. Please check the API connection and try again.")
+}
+
 }
