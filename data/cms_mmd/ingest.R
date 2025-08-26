@@ -8,8 +8,8 @@ update=F
 
 if(update==T){
   # =============================================================================
-  # CMS MMD Tool - OPTIMIZED Complete Demographic Download Script (FIXED)
-  # Fast downloads with adaptive rate limiting and proper error handling
+  # CMS MMD Tool - OPTIMIZED Complete Demographic Download Script (CORRECTED)
+  # With correct condition codes and demographic labels
   # =============================================================================
   
   library(httr2)
@@ -28,8 +28,69 @@ if(update==T){
   log_file <- file.path(output_dir, "download_log.txt")
   cat("CMS MMD Download Log - Started:", as.character(Sys.time()), "\n", file = log_file, append = FALSE)
   
-  message("🚀 CMS MMD Tool - OPTIMIZED Complete Demographic Download (2020-2023) - FIXED")
+  message("🚀 CMS MMD Tool - OPTIMIZED Complete Demographic Download (2020-2023) - CORRECTED")
   message(glue("Output directory: {output_dir}"))
+  
+  # =============================================================================
+  # DEMOGRAPHIC LABELS AND CONDITION MAPPINGS
+  # =============================================================================
+  
+  # Age labels
+  age_labels <- list(
+    "0" = "Under_65",
+    "1" = "65_to_74", 
+    "2" = "75_to_84",
+    "3" = "85_plus",
+    "4" = "65_plus",
+    "all" = "All_Ages"
+  )
+  
+  # Race labels
+  race_labels <- list(
+    "1" = "White",
+    "2" = "Black", 
+    "4" = "Asian_Pacific_Islander",
+    "5" = "Hispanic",
+    "6" = "American_Indian_Native_American",
+    "all" = "All_Races"
+  )
+  
+  # Sex labels
+  sex_labels <- list(
+    "1" = "Male",
+    "2" = "Female",
+    "all" = "All_Sexes"
+  )
+  
+  # CORRECT condition mappings
+  conditions_map <- list(
+    list(code = "2", name = "acute_myocardial_infarction"),
+    list(code = "1", name = "alzheimers"),
+    list(code = "147", name = "anemia"),
+    list(code = "4", name = "asthma"),
+    list(code = "11", name = "atrial_fibrilation"),
+    list(code = "5", name = "colorectal_breast_prostate_lung_cancer"),
+    list(code = "12", name = "chronic_kidney"),
+    list(code = "13", name = "copd"),
+    list(code = "14", name = "depression"),
+    list(code = "15", name = "diabetes"),
+    list(code = "153", name = "glaucoma"),
+    list(code = "16", name = "heart_failure_non_ischemic"),
+    list(code = "152", name = "hip_pelvic_fracture"),
+    list(code = "18", name = "hyperlidipemia"),
+    list(code = "17", name = "hypertension"),
+    list(code = "19", name = "ischemic_heart_disease"),
+    list(code = "20", name = "obesity"),
+    list(code = "21", name = "osteoporosis"),
+    list(code = "155", name = "parkinsons"),
+    list(code = "3", name = "rheumoatoid_arthritis"),
+    list(code = "22", name = "schizophrenia_and_psycotic"),
+    list(code = "23", name = "stroke_ischemic_attack")
+  )
+  
+  message(glue("📋 Will process {length(conditions_map)} conditions with correct codes"))
+  message("📝 Age categories: Under_65, 65_to_74, 75_to_84, 85_plus, 65_plus, All_Ages")
+  message("📝 Race categories: White, Black, Asian_Pacific_Islander, Hispanic, American_Indian_Native_American, All_Races")
   
   # =============================================================================
   # ADAPTIVE RATE LIMITING CLASS
@@ -37,7 +98,7 @@ if(update==T){
   
   RateLimiter <- R6::R6Class("RateLimiter",
                              public = list(
-                               delay = 0.1,        # Start with very fast requests
+                               delay = 0.1,        # Start with fast requests
                                min_delay = 0.05,   # Minimum delay (50ms)
                                max_delay = 2.0,    # Maximum delay (2 seconds)
                                success_count = 0,  # Track consecutive successes
@@ -85,7 +146,7 @@ if(update==T){
   rate_limiter <- RateLimiter$new()
   
   # =============================================================================
-  # FIXED DOWNLOAD FUNCTION WITH PROPER RETRY LOGIC
+  # ENHANCED DOWNLOAD FUNCTION WITH DEMOGRAPHIC LABELS
   # =============================================================================
   
   download_cms_data_safe <- function(condition_code, age_code, race_code, sex_code = NULL,
@@ -178,7 +239,7 @@ if(update==T){
       `_size` = page_size
     )
     
-    # FIXED: Use a proper for loop instead of next/break
+    # Retry loop
     for (attempt in 1:max_retries) {
       
       # Apply rate limiting
@@ -197,10 +258,13 @@ if(update==T){
           if (length(data_list) > 0) {
             df <- bind_rows(data_list)
             
-            # Add metadata
+            # Add metadata with LABELS
             df$age_code <- age_code
+            df$age_label <- age_labels[[as.character(age_code)]]
             df$race_code <- race_code
+            df$race_label <- race_labels[[as.character(race_code)]]
             df$sex_code <- ifelse(is.null(sex_code), "all", sex_code)
+            df$sex_label <- sex_labels[[ifelse(is.null(sex_code), "all", sex_code)]]
             df$year <- year
             df$source_pattern <- source_pattern
             df$download_timestamp <- Sys.time()
@@ -246,7 +310,7 @@ if(update==T){
         return(result)
       } else if (result == "retry" && attempt < max_retries) {
         # Retry needed and attempts remaining
-        # message(glue("Retrying attempt {attempt + 1} for condition={condition_code}, age={age_code}, race={race_code}, sex={ifelse(is.null(sex_code), 'all', sex_code)}, year={year}"))
+        # Continue to next attempt
       } else {
         # Max retries reached or other issue
         return(NULL)
@@ -257,7 +321,7 @@ if(update==T){
   }
   
   # =============================================================================
-  # SIMPLIFIED BATCH DOWNLOAD FUNCTION
+  # BATCH DOWNLOAD FUNCTION
   # =============================================================================
   
   download_condition_batch_safe <- function(combinations, condition_code, condition_name) {
@@ -276,10 +340,12 @@ if(update==T){
           year = combo$year
         )
         
-        p(sprintf("Age:%s Race:%s Sex:%s Year:%s", 
-                  combo$age, combo$race, 
-                  ifelse(is.null(combo$sex), "all", combo$sex), 
-                  combo$year))
+        # Create readable progress message
+        age_label <- age_labels[[as.character(combo$age)]]
+        race_label <- race_labels[[as.character(combo$race)]]
+        sex_label <- sex_labels[[ifelse(is.null(combo$sex), "all", combo$sex)]]
+        
+        p(sprintf("%s %s-%s-%s", combo$year, age_label, race_label, sex_label))
         
         if (!is.null(result)) {
           result$condition_name <- condition_name
@@ -298,7 +364,7 @@ if(update==T){
   }
   
   # =============================================================================
-  # OPTIMIZED CONDITION DOWNLOAD FUNCTION (SIMPLIFIED)
+  # CONDITION DOWNLOAD FUNCTION
   # =============================================================================
   
   download_full_condition_optimized_safe <- function(condition_code, condition_name, years = 2020:2023, 
@@ -392,8 +458,29 @@ if(update==T){
       message(glue("      Average rate: {round(successful_downloads / as.numeric(total_time), 1)} combinations/minute"))
     }
     
+    # Show demographic breakdown
     if (length(all_data) > 0) {
       combined_data <- bind_rows(all_data)
+      
+      # Summary by demographic labels
+      demo_summary <- combined_data %>%
+        group_by(age_label, race_label, sex_label) %>%
+        summarise(
+          combinations = n(),
+          total_records = n(),
+          .groups = 'drop'
+        ) %>%
+        arrange(age_label, race_label, sex_label) %>%
+        head(10)  # Show top 10
+      
+      message("      Top demographic combinations found:")
+      for (i in 1:min(nrow(demo_summary), 5)) {
+        age_lab <- demo_summary$age_label[i]
+        race_lab <- demo_summary$race_label[i]
+        sex_lab <- demo_summary$sex_label[i]
+        rec_count <- format(demo_summary$total_records[i], big.mark = ",")
+        message(glue("        {age_lab} + {race_lab} + {sex_lab}: {rec_count} records"))
+      }
       
       if (save_individual) {
         filename <- file.path(output_dir, glue("{condition_name}_2020_2023_FULL_DEMOGRAPHICS.csv.xz"))
@@ -416,43 +503,22 @@ if(update==T){
   }
   
   # =============================================================================
-  # OPTIMIZED ALL CONDITIONS DOWNLOAD (SIMPLIFIED)
+  # ALL CONDITIONS DOWNLOAD WITH CORRECT CODES
   # =============================================================================
   
   download_all_conditions_optimized_safe <- function(years = 2020:2023) {
     
     message(glue("🚀 OPTIMIZED: Starting download of ALL CONDITIONS for years {min(years)}-{max(years)}..."))
-    message("📈 Using adaptive rate limiting and safe error handling")
+    message("📈 Using CORRECT condition codes and demographic labels")
     
-    conditions <- list(
-      list(code = "1", name = "alzheimer_dementia"),
-      list(code = "2", name = "arthritis"), 
-      list(code = "3", name = "asthma"),
-      list(code = "4", name = "atrial_fibrillation"),
-      list(code = "5", name = "cancer_breast"), 
-      list(code = "6", name = "cancer_colorectal"),
-      list(code = "7", name = "cancer_lung"),
-      list(code = "8", name = "cancer_prostate"),
-      list(code = "9", name = "chronic_kidney_disease"),
-      list(code = "10", name = "copd"),
-      list(code = "11", name = "depression"),
-      list(code = "12", name = "diabetes"),
-      list(code = "13", name = "heart_failure"),
-      list(code = "14", name = "hyperlipidemia"),
-      list(code = "15", name = "hypertension"),
-      list(code = "16", name = "ischemic_heart_disease"),
-      list(code = "17", name = "osteoporosis"),
-      list(code = "18", name = "stroke")
-    )
+    total_combinations_expected <- length(conditions_map) * length(years) * 6 * 6 * 3
     
-    total_combinations_expected <- length(conditions) * length(years) * 6 * 6 * 3
-    
-    message(glue("📋 Will download {length(conditions)} conditions"))
+    message(glue("📋 Will download {length(conditions_map)} conditions"))
     message(glue("📊 Expected total combinations: {format(total_combinations_expected, big.mark = ',')}"))
     
     all_condition_data <- list()
     overall_stats <- list(
-      total_conditions = length(conditions),
+      total_conditions = length(conditions_map),
       successful_conditions = 0,
       total_combinations = 0,
       successful_combinations = 0,
@@ -462,11 +528,11 @@ if(update==T){
     
     start_time <- Sys.time()
     
-    for (i in seq_along(conditions)) {
-      condition <- conditions[[i]]
+    for (i in seq_along(conditions_map)) {
+      condition <- conditions_map[[i]]
       
       message(glue("\n{paste(rep('=', 100), collapse = '')}"))
-      message(glue("CONDITION {i}/{length(conditions)}: {condition$name}"))
+      message(glue("CONDITION {i}/{length(conditions_map)}: {condition$name} (code: {condition$code})"))
       message(glue("{paste(rep('=', 100), collapse = '')}"))
       
       result <- download_full_condition_optimized_safe(
@@ -474,7 +540,7 @@ if(update==T){
         condition_name = condition$name,
         years = years,
         save_individual = TRUE,
-        batch_size = 50  # Conservative batch size for stability
+        batch_size = 50
       )
       
       if (!is.null(result)) {
@@ -494,10 +560,10 @@ if(update==T){
       elapsed_time <- difftime(Sys.time(), start_time, units = "mins")
       if (i > 0) {
         estimated_time_per_condition <- as.numeric(elapsed_time) / i
-        remaining_conditions <- length(conditions) - i
+        remaining_conditions <- length(conditions_map) - i
         estimated_remaining_time <- estimated_time_per_condition * remaining_conditions
         
-        message(glue("⏱️  Overall Progress: {i}/{length(conditions)} conditions completed"))
+        message(glue("⏱️  Overall Progress: {i}/{length(conditions_map)} conditions completed"))
         message(glue("   Elapsed: {round(elapsed_time, 1)} minutes"))
         message(glue("   Estimated remaining: {round(estimated_remaining_time, 1)} minutes"))
         message(glue("   Current API rate: {round(rate_limiter$delay, 3)}s delay"))
@@ -508,7 +574,7 @@ if(update==T){
     total_time <- difftime(end_time, start_time, units = "mins")
     
     message(glue("\n{paste(rep('=', 120), collapse = '')}"))
-    message(glue("🎉 OPTIMIZED DOWNLOAD COMPLETED! ({min(years)}-{max(years)})"))
+    message(glue("🎉 CORRECTED DOWNLOAD COMPLETED! ({min(years)}-{max(years)})"))
     message(glue("{paste(rep('=', 120), collapse = '')}"))
     
     formatted_successful_combinations <- format(overall_stats$successful_combinations, big.mark = ",")
@@ -530,45 +596,77 @@ if(update==T){
     
     # Create combined file
     if (length(all_condition_data) > 0) {
-      message("\n💾 Creating combined file...")
+      message("\n💾 Creating combined file with labeled demographics...")
       
       combined_all <- bind_rows(all_condition_data)
-      combined_filename <- file.path(output_dir, glue("ALL_CONDITIONS_{min(years)}_{max(years)}_FULL_DEMOGRAPHICS.csv.xz"))
+      combined_filename <- file.path(output_dir, glue("ALL_CONDITIONS_{min(years)}_{max(years)}_FULL_DEMOGRAPHICS_LABELED.csv.xz"))
       vroom_write(combined_all, combined_filename, delim = ",")
       
       combined_size_mb <- round(file.size(combined_filename) / 1024^2, 2)
       message(glue("   💾 Combined file: {basename(combined_filename)} ({combined_size_mb} MB)"))
+      
+      # Show final breakdown
+      final_demo_summary <- combined_all %>%
+        group_by(condition_name, age_label, race_label) %>%
+        summarise(
+          total_records = n(),
+          .groups = 'drop'
+        ) %>%
+        arrange(desc(total_records)) %>%
+        head(10)
+      
+      message("\n📈 Top condition-demographic combinations:")
+      for (i in 1:min(nrow(final_demo_summary), 5)) {
+        cond <- final_demo_summary$condition_name[i]
+        age_lab <- final_demo_summary$age_label[i]
+        race_lab <- final_demo_summary$race_label[i]
+        rec_count <- format(final_demo_summary$total_records[i], big.mark = ",")
+        message(glue("   {cond} + {age_lab} + {race_lab}: {rec_count} records"))
+      }
     }
     
     return(overall_stats)
   }
   
   # =============================================================================
-  # RUN THE FIXED OPTIMIZED DOWNLOAD
+  # RUN THE CORRECTED DOWNLOAD
   # =============================================================================
   
-  message("🎬 Starting FIXED OPTIMIZED CMS MMD download for 2020-2023...")
-  message("🔧 Fixed retry logic to avoid break/next errors")
-  message("⚡ Using adaptive rate limiting with safe error handling")
+  message("🎬 Starting CORRECTED CMS MMD download for 2020-2023...")
+  message("✅ Using correct condition codes from your specification")
+  message("🏷️  Adding proper demographic labels")
   
-  # Quick test
-  message("\n🧪 Running quick test...")
-  test_result <- download_full_condition_optimized_safe("12", "diabetes_test", years = 2023, save_individual = FALSE, batch_size = 20)
+  # Quick test with correct condition code
+  message("\n🧪 Running quick test with diabetes (code 15)...")
+  test_result <- download_full_condition_optimized_safe("15", "diabetes_test", years = 2023, save_individual = FALSE, batch_size = 20)
   
   if (!is.null(test_result)) {
     message(glue("✅ Test successful! {test_result$successful_downloads} combinations in {round(test_result$time_minutes, 1)} minutes"))
     if (test_result$time_minutes > 0) {
       message(glue("   Rate: {round(test_result$successful_downloads / test_result$time_minutes, 1)} combinations/minute"))
     }
-    message("\n🚀 Proceeding with optimized full download...\n")
+    
+    # Show sample of what we got
+    if (nrow(test_result$data) > 0) {
+      sample_data <- test_result$data %>%
+        select(condition_name, age_label, race_label, sex_label, year) %>%
+        distinct() %>%
+        head(5)
+      
+      message("\n📊 Sample demographic combinations found:")
+      for (i in 1:nrow(sample_data)) {
+        message(glue("   {sample_data$condition_name[i]} - {sample_data$age_label[i]} + {sample_data$race_label[i]} + {sample_data$sex_label[i]} ({sample_data$year[i]})"))
+      }
+    }
+    
+    message("\n🚀 Proceeding with corrected full download...\n")
     
     final_stats <- download_all_conditions_optimized_safe(years = 2020:2023)
     
-    message("\n🎉 OPTIMIZED DOWNLOAD COMPLETE!")
+    message("\n🎉 CORRECTED DOWNLOAD COMPLETE!")
     message(glue("Check the '{output_dir}' directory for all downloaded files."))
     
   } else {
     message("❌ Test failed. Please check the API connection and try again.")
   }
-
 }
