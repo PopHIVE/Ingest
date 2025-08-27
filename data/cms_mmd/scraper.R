@@ -251,5 +251,4 @@ for(j in 4:length(all_conditions)){
 }
 plan(sequential) # Clean up
 
-all_data <- bind_rows(condition_data)
 
