@@ -1,38 +1,203 @@
-## Code written by Claude Sonnet 4 and Gemini 2.5 Pro, with guidance from Dan Weinberger
-## Data from the Medicare/CMS Mapping Medicare Disparities Tool: https://data.cms.gov/tools/mapping-medicare-disparities-by-population
+#This code was written using Claude Sonnet 4, Gemini 2.5 Pro, with Guidance from Dan Weinberger
+# The script downloads chronic disease prevalence data from CMS/Medicare from the Mapping Medicare Disparities tool: https://data.cms.gov/tools/mapping-medicare-disparities-by-population
 
+library(httr2)
+library(dplyr)
+library(glue)
+library(purrr)
+library(future)
+library(furrr)
+library(readr)
 
-update=F
+base_url <- "https://data.cms.gov/data-api/v1/mmd-tool/"
+output_dir <- "raw/staging"
+dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+age_labels <- list("0" = "Under_65", "1" = "65_to_74", "2" = "75_to_84", "3" = "85_plus", "4" = "65_plus", "all" = "All_Ages")
+race_labels <- list("1" = "White", "2" = "Black", "4" = "Asian_Pacific_Islander", "5" = "Hispanic", "6" = "American_Indian_Native_American", "all" = "All_Races")
+sex_labels <- list("1" = "Male", "2" = "Female", "all" = "All_Sexes")
+geography_labels <- list("n" = "National", "s" = "State", "c" = "County")
+conditions_map <- list(
+  list(code = "15", name = "diabetes"),
+  list(code = "17", name = "hypertension"),
+  list(code = "23", name = "stroke_ischemic_attack")
+)
+# =============================================================================
+# OPTIMIZED DOWNLOAD FUNCTION - SELF-CONTAINED FOR PARALLELISM
+# =============================================================================
 
-if(update==T){
-  # =============================================================================
-  # FULL SCALE CMS MMD DOWNLOADER - YOUR ACTUAL CONDITIONS + ALL DEMOGRAPHICS
-  # =============================================================================
+full_scale_download_condition_optimized <- function(condition_code, condition_name, years = 2023) {
   
-  library(httr2)
-  library(dplyr)
-  library(glue)
-  library(purrr)
+  message(glue("\n💥💥💥 STARTING PARALLEL DOWNLOAD: {condition_name} (code: {condition_code}) 💥💥💥"))
+  start_time <- Sys.time()
   
-  # Setup
-  base_url <- "https://data.cms.gov/data-api/v1/mmd-tool/"
-  output_dir <- "raw/cms_mmd_full_scale"
-  dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+
+  safe_label_lookup <- function(code, label_list, default = "Unknown") {
+    if (is.null(code) || is.na(code) || code == "") return(default)
+    code_str <- as.character(code)
+    result <- label_list[[code_str]]
+    if (is.null(result)) return(default)
+    return(as.character(result))
+  }
   
-  message("🚀🚀🚀 CMS MMD TOOL - FULL SCALE ALL CONDITIONS + ALL DEMOGRAPHICS 🚀🚀🚀")
-  message(glue("📁 Output directory: {output_dir}"))
+  parse_cms_json_enhanced <- function(json_list) {
+    if (length(json_list) == 0) return(tibble())
+    tibble(
+      year = map_chr(json_list, ~ as.character(.x$year %||% NA_character_)),
+      geography = map_chr(json_list, ~ as.character(.x$geography %||% NA_character_)),
+      fips = map_chr(json_list, ~ as.character(.x$fips %||% NA_character_)),
+      measure = map_chr(json_list, ~ as.character(.x$measure %||% NA_character_)),
+      condition = map_chr(json_list, ~ as.character(.x$condition %||% NA_character_)),
+      prevalence_rate = map_dbl(json_list, ~ as.numeric(.x$rate %||% NA_real_)),
+      agecat = map_chr(json_list, ~ as.character(.x$agecat %||% NA_character_)),
+      racecat = map_chr(json_list, ~ as.character(.x$racecat %||% NA_character_)),
+      sexcat = map_chr(json_list, ~ as.character(.x$sexcat %||% NA_character_)),
+      dual = map_chr(json_list, ~ as.character(.x$dual %||% NA_character_)),
+      eligcat = map_chr(json_list, ~ as.character(.x$eligcat %||% NA_character_)),
+      fltr = map_chr(json_list, ~ as.character(.x$fltr %||% NA_character_)),
+      dencat = map_chr(json_list, ~ as.character(.x$dencat %||% NA_character_))
+    )
+  }
   
-  # Labels
-  age_labels <- list("0" = "Under_65", "1" = "65_to_74", "2" = "75_to_84", "3" = "85_plus", "4" = "65_plus", "all" = "All_Ages")
-  race_labels <- list("1" = "White", "2" = "Black", "4" = "Asian_Pacific_Islander", "5" = "Hispanic", "6" = "American_Indian_Native_American", "all" = "All_Races")
-  sex_labels <- list("1" = "Male", "2" = "Female", "all" = "All_Sexes")
-  geography_labels <- list("n" = "National", "s" = "State", "c" = "County")
+  # --- 1. Generate all combinations ---
+  all_combinations <- expand.grid(
+    year = years,
+    race = c("1", "2", "4", "5", "6", "all"),
+    sex = c("1", "2", "all"),
+    age = c("0", "1", "2", "3", "4", "all"),
+    geography = c("c", "s", "n"),
+    stringsAsFactors = FALSE
+  ) %>%
+    mutate(
+      condition_code_requested = condition_code,
+      condition_name = condition_name
+    )
   
-  # =============================================================================
-  # YOUR ACTUAL CMS CONDITIONS
-  # =============================================================================
+  total_combinations <- nrow(all_combinations)
+  message(glue("   📊 Preparing to make {format(total_combinations, big.mark = ',')} API requests in parallel..."))
   
-  conditions_map <- list(
+  # --- 2. Define a function to process a SINGLE combination ---
+  fetch_combo_data <- function(combo_row) {
+    year_short <- substr(as.character(combo_row$year), 3, 4)
+    suffix <- if (combo_row$year >= 2023) "_p" else if (combo_row$year >= 2021) "_f" else ""
+    
+    source_pattern <- case_when(
+      combo_row$race == "1" & combo_row$sex != "all" ~ glue("prev_final_long_fltr12_racecat_1_sexcat_{combo_row$sex}_{year_short}{suffix}"),
+      combo_row$race == "1" & combo_row$sex == "all" ~ glue("prev_final_long_fltr12_racecat_1_sexcat_all_{year_short}{suffix}"),
+      combo_row$race == "all" & combo_row$sex != "all" ~ glue("prev_final_long_fltr12_racecat_all_sexcat_{combo_row$sex}_{year_short}{suffix}"),
+      combo_row$race == "all" & combo_row$sex == "all" ~ glue("prev_final_long_fltr12_racecat_all_sexcat_all_{year_short}{suffix}"),
+      combo_row$sex == "all" ~ glue("prev_final_long_fltr12_racecat_{combo_row$race}_{year_short}{suffix}"),
+      TRUE ~ glue("prev_final_long_fltr12_racecat_{combo_row$race}_sexcat_{combo_row$sex}_{year_short}{suffix}")
+    )
+    
+    req_params <- list(
+      `_source` = source_pattern,
+      year = year_short,
+      geography = combo_row$geography,
+      measure = "v",
+      condition = combo_row$condition_code_requested,
+      sexcat = if (combo_row$sex == "all") '.|IS NULL' else combo_row$sex,
+      agecat = if (combo_row$age == "all") '.|IS NULL' else combo_row$age,
+      racecat = if (combo_row$race == "all") '.|IS NULL' else combo_row$race,
+      dual = ".|IS NULL",
+      eligcat = ".|IS NULL",
+      fltr = "1",
+      `_size` = 500000
+    )
+    
+    # Use a tryCatch block for more granular error handling within each future
+    tryCatch({
+      resp <- request(base_url) %>% 
+        req_url_query(!!!req_params) %>%
+        req_timeout(15) %>%
+        req_retry(max_tries = 3, is_transient = ~ resp_status(.x) %in% c(429, 500, 503)) %>%
+        req_perform()
+      
+      if (resp_status(resp) == 200) {
+        json_data <- resp_body_json(resp)
+        if (length(json_data) > 0) {
+          df <- parse_cms_json_enhanced(json_data)
+          if(nrow(df) > 0) {
+            df <- df %>% mutate(
+              age_label = safe_label_lookup(combo_row$age, age_labels),
+              race_label = safe_label_lookup(combo_row$race, race_labels),
+              sex_label = safe_label_lookup(combo_row$sex, sex_labels),
+              geography_label = safe_label_lookup(combo_row$geography, geography_labels),
+              condition_name = combo_row$condition_name
+            )
+            return(df)
+          }
+        }
+      }
+      return(tibble()) # Return empty tibble if no data or non-200 status
+    }, error = function(e) {
+      # This will catch errors within a single API call (e.g., parsing)
+      # You could log this if needed: message("Error in combo: ", e$message)
+      return(tibble()) # Return empty on error
+    })
+  }
+  
+  # --- 3. Execute in Parallel ---
+  combinations_list <- split(all_combinations, seq(nrow(all_combinations)))
+  
+  # The `.options` here help ensure packages are available on the workers.
+  # This is another layer of robustness.
+  combined_data <- future_map_dfr(
+    combinations_list, 
+    fetch_combo_data, 
+    .progress = TRUE, 
+    .options = furrr_options(seed = TRUE, packages = c("httr2", "dplyr", "purrr", "glue", "jsonlite"))
+  )
+  
+  # --- 4. Final Processing and Summary ---
+  if (nrow(combined_data) > 0) {
+    # ... (the rest of the function for summarizing and saving is the same) ...
+    message(glue("   🔧 De-duplicating results..."))
+    original_rows <- nrow(combined_data)
+    combined_data <- combined_data %>%
+      distinct(year, geography, fips, condition, agecat, racecat, sexcat, .keep_all = TRUE)
+    deduped_rows <- original_rows - nrow(combined_data)
+    if (deduped_rows > 0) {
+      message(glue("   🔧 Removed {deduped_rows} duplicate records"))
+    }
+    
+    total_time <- difftime(Sys.time(), start_time, units = "mins")
+    total_records <- nrow(combined_data)
+    
+    message(glue("\n   ✅ PARALLEL DOWNLOAD SUCCESS: {condition_name}"))
+    message(glue("      📈 {format(total_records, big.mark = ',')} total records retrieved"))
+    message(glue("      ⏱️  Total time: {round(total_time, 1)} minutes"))
+    
+    filename <- file.path(output_dir, glue("{condition_name}_{min(years)}_{max(years)}_FULL_SCALE.csv.xz"))
+    #write_csv(combined_data, filename)
+    
+    vroom::vroom_write(combined_data,filename)
+      
+    file_size_mb <- round(file.size(filename) / 1024^2, 2)
+    message(glue("      💾 Saved to {basename(filename)} ({file_size_mb} MB)"))
+    
+    return(combined_data)
+  }
+  
+  message(glue("   ❌ DOWNLOAD FAILED OR RETURNED NO DATA: {condition_name}"))
+  return(NULL)
+}
+
+# =============================================================================
+# RUN THE OPTIMIZED DOWNLOAD
+# =============================================================================
+# workers <- max(1, future::availableCores() - 1)
+# message(glue("⚙️  Setting up parallel plan with {workers} workers..."))
+# plan(multisession, workers = workers)
+# 
+# # Now, running this should work without the error
+# diabetes_data <- full_scale_download_condition_optimized(
+#   condition_code = "17",
+#   condition_name = "hypertension",
+#   years = c(2020:2023)
+# )
+# plan(sequential) # Clean up
+
+all_conditions <- list(
     list(code = "15", name = "diabetes"),
     list(code = "17", name = "hypertension"),
     list(code = "18", name = "hyperlidipemia"),
@@ -55,399 +220,36 @@ if(update==T){
     list(code = "3", name = "rheumoatoid_arthritis"),
     list(code = "22", name = "schizophrenia_and_psycotic"),
     list(code = "23", name = "stroke_ischemic_attack")
-  )
+)
+
+condition_data <- vector("list", length(all_conditions))
+
+for(j in 4:length(all_conditions)){
+  print(paste(j, '/', length(all_conditions)))
+  print(all_conditions[[j]]$name)
+  print(all_conditions[[j]]$code)
   
-  message(glue("📋 Processing {length(conditions_map)} conditions with codes: {paste(sapply(conditions_map, function(x) x$code), collapse=', ')}"))
-  
-  safe_label_lookup <- function(code, label_list, default = "Unknown") {
-    if (is.null(code) || is.na(code) || code == "") return(default)
-    code_str <- as.character(code)
-    result <- label_list[[code_str]]
-    if (is.null(result)) return(default)
-    return(as.character(result))
+  # Wait between conditions (increase this if still getting blocked)
+  if(j > 4) {
+    wait_time <- 60 # 1 minute between conditions
+    message(glue("⏳ Waiting {wait_time} seconds to respect rate limits..."))
+    Sys.sleep(wait_time)
   }
   
-  # =============================================================================
-  # ENHANCED JSON PARSER
-  # =============================================================================
-  
-  parse_cms_json_enhanced <- function(json_list) {
-    if (length(json_list) == 0) return(data.frame())
-    
-    data.frame(
-      year = map_chr(json_list, ~ as.character(.x$year %||% "")),
-      geography = map_chr(json_list, ~ as.character(.x$geography %||% "")),
-      fips = map_chr(json_list, ~ as.character(.x$fips %||% "")),
-      measure = map_chr(json_list, ~ as.character(.x$measure %||% "")),
-      condition = map_chr(json_list, ~ as.character(.x$condition %||% "")),
-      prevalence_rate = map_dbl(json_list, ~ as.numeric(.x$rate %||% NA)),
-      agecat = map_chr(json_list, ~ as.character(.x$agecat %||% "")),
-      racecat = map_chr(json_list, ~ as.character(.x$racecat %||% "")),
-      sexcat = map_chr(json_list, ~ as.character(.x$sexcat %||% "")),
-      dual = map_chr(json_list, ~ as.character(.x$dual %||% "")),
-      eligcat = map_chr(json_list, ~ as.character(.x$eligcat %||% "")),
-      fltr = map_chr(json_list, ~ as.character(.x$fltr %||% "")),
-      dencat = map_chr(json_list, ~ as.character(.x$dencat %||% "")),
-      stringsAsFactors = FALSE
+  workers <- max(1, future::availableCores() - 1)
+  message(glue("⚙️  Setting up parallel plan with {workers} workers..."))
+  plan(multisession, workers = workers)
+
+  condition_data[[j]] <- full_scale_download_condition_optimized(
+      condition_code = all_conditions[[j]]$code, 
+      condition_name = all_conditions[[j]]$name, 
+      years = c(2020:2023)
     )
-  }
+
+  plan(sequential) # Clean up
   
-  # =============================================================================
-  # FULL SCALE DOWNLOAD FUNCTION - ALL DEMOGRAPHICS
-  # =============================================================================
-  
-  full_scale_download_condition <- function(condition_code, condition_name, years = 2023) {
-    
-    message(glue("\n💥💥💥 FULL SCALE: {condition_name} (code: {condition_code}) 💥💥💥"))
-    
-    all_data <- list()
-    successful_requests <- 0
-    start_time <- Sys.time()
-    total_requests <- 0
-    
-    # ALL DEMOGRAPHIC COMBINATIONS
-    race_codes <- c("1", "2", "4", "5", "6", "all")  # All races
-    sex_codes <- c("1", "2", "all")  # Male, Female, All
-    age_codes <- c("0", "1", "2", "3", "4", "all")  # All age groups
-    geo_codes <- c("c", "s", "n")  # County, State, National
-    
-    # Generate all combinations
-    all_combinations <- expand.grid(
-      year = years,
-      race = race_codes,
-      sex = sex_codes,
-      age = age_codes,
-      geography = geo_codes,
-      stringsAsFactors = FALSE
-    )
-    
-    total_combinations <- nrow(all_combinations)
-    message(glue("   📊 Processing {format(total_combinations, big.mark = ',')} demographic combinations..."))
-    
-    # Process in batches to show progress
-    batch_size <- 50
-    batches <- split(1:nrow(all_combinations), ceiling(seq_len(nrow(all_combinations)) / batch_size))
-    
-    for (batch_num in seq_along(batches)) {
-      batch_indices <- batches[[batch_num]]
-      
-      message(glue("   🔄 Batch {batch_num}/{length(batches)} ({length(batch_indices)} combinations)..."))
-      
-      for (i in batch_indices) {
-        combo <- all_combinations[i, ]
-        
-        year_short <- substr(as.character(combo$year), 3, 4)
-        suffix <- if (combo$year >= 2023) "_p" else if (combo$year >= 2021) "_f" else ""
-        
-        # Build source pattern based on race and sex
-        if (combo$race == "1" && combo$sex == "all") {
-          source_pattern <- glue("prev_final_long_fltr12_racecat_1_sexcat_all_{year_short}{suffix}")
-        } else if (combo$race == "1" && combo$sex != "all") {
-          source_pattern <- glue("prev_final_long_fltr12_racecat_1_sexcat_{combo$sex}_{year_short}{suffix}")
-        } else if (combo$race == "all" && combo$sex == "all") {
-          source_pattern <- glue("prev_final_long_fltr12_racecat_all_sexcat_all_{year_short}{suffix}")
-        } else if (combo$race == "all" && combo$sex != "all") {
-          source_pattern <- glue("prev_final_long_fltr12_racecat_all_sexcat_{combo$sex}_{year_short}{suffix}")
-        } else if (combo$sex == "all") {
-          source_pattern <- glue("prev_final_long_fltr12_racecat_{combo$race}_{year_short}{suffix}")
-        } else {
-          source_pattern <- glue("prev_final_long_fltr12_racecat_{combo$race}_sexcat_{combo$sex}_{year_short}{suffix}")
-        }
-        
-        # Set up parameters
-        agecat_param <- if (combo$age == "all") '.|IS NULL' else combo$age
-        racecat_param <- if (combo$race == "all") '.|IS NULL' else combo$race
-        sexcat_param <- if (combo$sex == "all") '.|IS NULL' else combo$sex
-        
-        # API request
-        tryCatch({
-          total_requests <- total_requests + 1
-          Sys.sleep(0.015)  # Fast but respectful rate limiting
-          
-          resp <- request(base_url) %>% 
-            req_url_query(
-              `_source` = source_pattern,
-              year = year_short,
-              geography = combo$geography,
-              measure = "v",
-              condition = condition_code,
-              sexcat = sexcat_param,
-              agecat = agecat_param,
-              racecat = racecat_param,
-              dual = ".|IS NULL",
-              eligcat = ".|IS NULL",
-              fltr = "1",
-              `_size` = 500000
-            ) %>%
-            req_timeout(8) %>%
-            req_perform()
-          
-          if (resp$status_code == 200) {
-            json_data <- resp_body_json(resp)
-            
-            if (length(json_data) > 0) {
-              df <- parse_cms_json_enhanced(json_data)
-              
-              if (is.data.frame(df) && nrow(df) > 0) {
-                # Add comprehensive metadata
-                df$age_code <- combo$age
-                df$age_label <- safe_label_lookup(combo$age, age_labels)
-                df$race_code <- combo$race
-                df$race_label <- safe_label_lookup(combo$race, race_labels)
-                df$sex_code <- combo$sex
-                df$sex_label <- safe_label_lookup(combo$sex, sex_labels)
-                df$geography_code <- combo$geography
-                df$geography_label <- safe_label_lookup(combo$geography, geography_labels)
-                df$year_requested <- combo$year
-                df$condition_name <- condition_name
-                df$condition_code_requested <- condition_code
-                df$source_pattern <- source_pattern
-                df$request_id <- i
-                df$batch_id <- batch_num
-                df$download_timestamp <- as.character(Sys.time())
-                
-                all_data[[length(all_data) + 1]] <- df
-                successful_requests <- successful_requests + 1
-              }
-            }
-          }
-          
-        }, error = function(e) {
-          # Continue processing
-        })
-      }
-      
-      # Batch progress report
-      batch_success_rate <- round(successful_requests / total_requests * 100, 1)
-      elapsed <- difftime(Sys.time(), start_time, units = "mins")
-      rate_per_min <- round(total_requests / as.numeric(elapsed), 0)
-      
-      message(glue("      ✅ Batch {batch_num} complete: {successful_requests} successful ({batch_success_rate}%, {rate_per_min}/min)"))
-    }
-    
-    # Combine and deduplicate results
-    if (length(all_data) > 0) {
-      message(glue("   🔧 Combining {length(all_data)} data frames..."))
-      
-     # combined_data <- do.call(rbind, all_data)
-      combined_data <- bind_rows(all_data)
-      
-      # Remove duplicates
-      if (nrow(combined_data) > 1) {
-        combined_data$unique_key <- paste(
-          combined_data$year, combined_data$geography, combined_data$fips,
-          combined_data$condition, combined_data$agecat, combined_data$racecat,
-          combined_data$sexcat, sep = "_"
-        )
-        
-        original_rows <- nrow(combined_data)
-        combined_data <- combined_data[!duplicated(combined_data$unique_key), ]
-        combined_data$unique_key <- NULL
-        
-        if (original_rows > nrow(combined_data)) {
-          message(glue("   🔧 Removed {original_rows - nrow(combined_data)} duplicate records"))
-        }
-      }
-      
-      # Final analysis
-      total_time <- difftime(Sys.time(), start_time, units = "mins")
-      total_records <- nrow(combined_data)
-      final_rate <- round(successful_requests / as.numeric(total_time), 0)
-      non_na_rates <- sum(!is.na(combined_data$prevalence_rate))
-      
-      # Comprehensive breakdowns
-      geo_summary <- combined_data %>% 
-        group_by(geography_label) %>% 
-        summarise(count = n(), non_na = sum(!is.na(prevalence_rate)), 
-                  avg_rate = round(mean(prevalence_rate, na.rm = TRUE), 2), .groups = 'drop')
-      
-      race_summary <- combined_data %>% 
-        group_by(race_label) %>% 
-        summarise(count = n(), non_na = sum(!is.na(prevalence_rate)), 
-                  avg_rate = round(mean(prevalence_rate, na.rm = TRUE), 2), .groups = 'drop')
-      
-      sex_summary <- combined_data %>% 
-        group_by(sex_label) %>% 
-        summarise(count = n(), non_na = sum(!is.na(prevalence_rate)), 
-                  avg_rate = round(mean(prevalence_rate, na.rm = TRUE), 2), .groups = 'drop')
-      
-      message(glue("   ✅ FULL SCALE SUCCESS: {condition_name}"))
-      message(glue("      📊 {successful_requests}/{total_requests} requests successful ({round(successful_requests/total_requests*100, 1)}%)"))
-      message(glue("      📈 {format(total_records, big.mark = ',')} total records"))
-      message(glue("      📊 {format(non_na_rates, big.mark = ',')} records with prevalence data"))
-      message(glue("      ⏱️  {round(total_time, 1)} minutes ({format(final_rate, big.mark = ',')} req/min)"))
-      
-      message("      📍 GEOGRAPHY BREAKDOWN:")
-      for (i in 1:nrow(geo_summary)) {
-        geo <- geo_summary[i, ]
-        message(glue("         {geo$geography_label}: {format(geo$count, big.mark = ',')} records (avg: {geo$avg_rate}%)"))
-      }
-      
-      message("      👥 RACE BREAKDOWN:")
-      for (i in 1:nrow(race_summary)) {
-        race <- race_summary[i, ]
-        message(glue("         {race$race_label}: {format(race$count, big.mark = ',')} records (avg: {race$avg_rate}%)"))
-      }
-      
-      message("      ⚧ SEX BREAKDOWN:")
-      for (i in 1:nrow(sex_summary)) {
-        sex <- sex_summary[i, ]
-        message(glue("         {sex$sex_label}: {format(sex$count, big.mark = ',')} records (avg: {sex$avg_rate}%)"))
-      }
-      
-      # Save file
-      filename <- file.path(output_dir, glue("{condition_name}_{min(years)}_{max(years)}_FULL_SCALE.csv"))
-      write.csv(combined_data, filename, row.names = FALSE)
-      
-      if (file.exists(filename)) {
-        file_size_mb <- round(file.size(filename) / 1024^2, 2)
-        message(glue("      💾 {basename(filename)} ({file_size_mb} MB)"))
-      }
-      
-      return(combined_data)
-    }
-    
-    message(glue("   ❌ FULL SCALE FAILED: {condition_name}"))
-    return(NULL)
-  }
-  
-  # =============================================================================
-  # FULL SCALE MULTI-CONDITION PROCESSOR
-  # =============================================================================
-  
-  full_scale_multi_condition_download <- function(conditions, years = 2023) {
-    
-    message(glue("\n🚀🚀🚀 FULL SCALE MULTI-CONDITION DOWNLOAD 🚀🚀🚀"))
-    message(glue("📋 Processing {length(conditions)} conditions"))
-    message(glue("📅 Years: {paste(years, collapse=', ')}"))
-    message(glue("👥 All race/sex/age/geography combinations"))
-    
-    overall_start <- Sys.time()
-    all_results <- list()
-    total_records <- 0
-    summary_stats <- data.frame()
-    
-    for (i in seq_along(conditions)) {
-      cond <- conditions[[i]]
-      
-      message(glue("\n💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥"))
-      message(glue("💥 CONDITION {i}/{length(conditions)}: {cond$name} (code: {cond$code})"))
-      message(glue("💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥"))
-      
-      condition_start <- Sys.time()
-      result <- full_scale_download_condition(cond$code, cond$name, years)
-      condition_time <- difftime(Sys.time(), condition_start, units = "mins")
-      
-      if (!is.null(result)) {
-        all_results[[cond$name]] <- result
-        condition_records <- nrow(result)
-        total_records <- total_records + condition_records
-        
-        # Add to summary stats
-        summary_stats <- rbind(summary_stats, data.frame(
-          condition_name = cond$name,
-          condition_code = cond$code,
-          records = condition_records,
-          time_minutes = round(as.numeric(condition_time), 2),
-          records_per_minute = round(condition_records / as.numeric(condition_time), 0)
-        ))
-        
-        message(glue("💥 ✅ {cond$name}: {format(condition_records, big.mark = ',')} records ({round(condition_time, 1)} min)"))
-      } else {
-        message(glue("💥 ❌ {cond$name}: Failed"))
-        
-        summary_stats <- rbind(summary_stats, data.frame(
-          condition_name = cond$name,
-          condition_code = cond$code,
-          records = 0,
-          time_minutes = round(as.numeric(condition_time), 2),
-          records_per_minute = 0
-        ))
-      }
-      
-      # Progress update
-      remaining <- length(conditions) - i
-      elapsed_total <- difftime(Sys.time(), overall_start, units = "mins")
-      avg_time_per_condition <- as.numeric(elapsed_total) / i
-      estimated_remaining <- remaining * avg_time_per_condition
-      
-      message(glue("💥 Progress: {i}/{length(conditions)} complete"))
-      message(glue("💥 Estimated time remaining: {round(estimated_remaining, 1)} minutes"))
-    }
-    
-    total_time <- difftime(Sys.time(), overall_start, units = "hours")
-    
-    message(glue("\n🚀🚀🚀 FULL SCALE MULTI-CONDITION COMPLETE 🚀🚀🚀"))
-    message(glue("✅ Completed: {length(all_results)}/{length(conditions)} conditions"))
-    message(glue("📊 Total records: {format(total_records, big.mark = ',')}"))
-    message(glue("⏱️  Total time: {round(total_time, 2)} hours"))
-    
-    # Show summary statistics
-    if (nrow(summary_stats) > 0) {
-      message("\n📈 CONDITION SUMMARY STATISTICS:")
-      summary_stats <- summary_stats[order(-summary_stats$records), ]
-      
-      for (i in 1:nrow(summary_stats)) {
-        stat <- summary_stats[i, ]
-        message(glue("   {stat$condition_name}: {format(stat$records, big.mark = ',')} records ({stat$time_minutes} min)"))
-      }
-      
-      # Save summary
-      summary_file <- file.path(output_dir, glue("SUMMARY_STATISTICS_{min(years)}_{max(years)}.csv"))
-      write.csv(summary_stats, summary_file, row.names = FALSE)
-      message(glue("\n💾 Summary saved: {basename(summary_file)}"))
-    }
-    
-    # Create master combined file
-    if (length(all_results) > 0) {
-      message("\n💾 Creating master combined file...")
-      #combined_all <- do.call(rbind, all_results)
-      combined_all <- bind_rows(all_results)
-      
-      combined_filename <- file.path(output_dir, glue("ALL_CONDITIONS_{min(years)}_{max(years)}_MASTER.csv"))
-      write.csv(combined_all, combined_filename, row.names = FALSE)
-      
-      combined_size_mb <- round(file.size(combined_filename) / 1024^2, 2)
-      message(glue("💾 Master file: {basename(combined_filename)} ({combined_size_mb} MB)"))
-      
-      # Final master statistics
-      message(glue("\n🎯 MASTER FILE STATISTICS:"))
-      message(glue("   📊 Total records: {format(nrow(combined_all), big.mark = ',')}"))
-      message(glue("   🏥 Conditions: {length(unique(combined_all$condition_name))}"))
-      message(glue("   📍 Geographic levels: {paste(unique(combined_all$geography_label), collapse=', ')}"))
-      message(glue("   👥 Race categories: {length(unique(combined_all$race_label[!is.na(combined_all$race_label)]))}"))
-      message(glue("   ⚧ Sex categories: {length(unique(combined_all$sex_label[!is.na(combined_all$sex_label)]))}"))
-      message(glue("   📈 Records with prevalence data: {format(sum(!is.na(combined_all$prevalence_rate)), big.mark = ',')}"))
-    }
-    
-    return(all_results)
-  }
-  
-  # =============================================================================
-  # RUN FULL SCALE DOWNLOAD FOR ALL YOUR CONDITIONS
-  # =============================================================================
-  
-  message(glue("\n🎯 STARTING FULL SCALE DOWNLOAD FOR ALL {length(conditions_map)} CONDITIONS..."))
-  message("🚨 WARNING: This will take several hours and make thousands of API requests!")
-  message("📊 Expected: ~324 requests per condition × 22 conditions = ~7,128 total requests")
-  
-  # Show condition list
-  message("\n📋 CONDITIONS TO PROCESS:")
-  for (i in seq_along(conditions_map)) {
-    cond <- conditions_map[[i]]
-    message(glue("   {i}. {cond$name} (code: {cond$code})"))
-  }
-  
-  # Estimate time
-  estimated_hours <- (length(conditions_map) * 324 * 0.02) / 60  # 0.02 seconds per request
-  message(glue("⏰ Estimated time: ~{round(estimated_hours, 1)} hours"))
-  
-  # Ask for confirmation (comment out if running automatically)
-  # readline("Press Enter to continue or Ctrl+C to cancel...")
-  
-  # Start the full scale download
-  full_results <- full_scale_multi_condition_download(conditions_map, years = 2023)
-  
-  message("\n🎉🎉🎉 FULL SCALE DOWNLOAD COMPLETE! 🎉🎉🎉")
-  message("🎯 You now have comprehensive CMS MMD data for all YOUR conditions and demographics!")
-  }
+}
+plan(sequential) # Clean up
+
+all_data <- bind_rows(condition_data)
+
