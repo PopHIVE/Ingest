@@ -229,7 +229,8 @@ if(update==T){
     if (length(all_data) > 0) {
       message(glue("   🔧 Combining {length(all_data)} data frames..."))
       
-      combined_data <- do.call(rbind, all_data)
+     # combined_data <- do.call(rbind, all_data)
+      combined_data <- bind_rows(all_data)
       
       # Remove duplicates
       if (nrow(combined_data) > 1) {
@@ -400,7 +401,8 @@ if(update==T){
     # Create master combined file
     if (length(all_results) > 0) {
       message("\n💾 Creating master combined file...")
-      combined_all <- do.call(rbind, all_results)
+      #combined_all <- do.call(rbind, all_results)
+      combined_all <- bind_rows(all_results)
       
       combined_filename <- file.path(output_dir, glue("ALL_CONDITIONS_{min(years)}_{max(years)}_MASTER.csv"))
       write.csv(combined_all, combined_filename, row.names = FALSE)
