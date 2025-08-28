@@ -16,11 +16,8 @@ age_labels <- list("0" = "Under_65", "1" = "65_to_74", "2" = "75_to_84", "3" = "
 race_labels <- list("1" = "White", "2" = "Black", "4" = "Asian_Pacific_Islander", "5" = "Hispanic", "6" = "American_Indian_Native_American", "all" = "All_Races")
 sex_labels <- list("1" = "Male", "2" = "Female", "all" = "All_Sexes")
 geography_labels <- list("n" = "National", "s" = "State", "c" = "County")
-conditions_map <- list(
-  list(code = "15", name = "diabetes"),
-  list(code = "17", name = "hypertension"),
-  list(code = "23", name = "stroke_ischemic_attack")
-)
+
+
 # =============================================================================
 # OPTIMIZED DOWNLOAD FUNCTION - SELF-CONTAINED FOR PARALLELISM
 # =============================================================================
@@ -219,22 +216,28 @@ all_conditions <- list(
     list(code = "155", name = "parkinsons"),
     list(code = "3", name = "rheumoatoid_arthritis"),
     list(code = "22", name = "schizophrenia_and_psycotic"),
-    list(code = "23", name = "stroke_ischemic_attack")
+    list(code = "23", name = "stroke_ischemic_attack"),
+    #these are from the Behavioral health condition page 
+    list(code = "42", name = "adhd"),
+    list(code = "136", name = "alcohol_use_disorder"),
+    list(code = "43", name = "anxiety"),
+    list(code = "45", name = "bipolar"),
+    list(code = "14", name = "depression"),
+    list(code = "49", name = "depressive_disorder"),
+    list(code = "137", name = "drug_use_disorder"),
+    list(code = "65", name = "ptsd"),
+    list(code = "41", name = "schizophrenia"),
+    list(code = "22", name = "schizophrenia_other_psychotic"),
+    list(code = "69", name = "tobacco_use_disorder"),
+    list(code = "109", name = "opioid_use_disorder_overarching"),
+    list(code = "110", name = "opioid_use_disorder_dx_px_based")
 )
 
-condition_data <- vector("list", length(all_conditions))
 
-for(j in 5:length(all_conditions)){
+for(j in 23:length(all_conditions)){
   print(paste(j, '/', length(all_conditions)))
   print(all_conditions[[j]]$name)
   print(all_conditions[[j]]$code)
-  
-  # Wait between conditions (increase this if still getting blocked)
-  if(j > 5) {
-    wait_time <- 60 # 1 minute between conditions
-    message(glue("⏳ Waiting {wait_time} seconds to respect rate limits..."))
-    Sys.sleep(wait_time)
-  }
   
   #workers <- max(1, future::availableCores() - 1)
   workers <- 3 # Use fewer workers
@@ -249,6 +252,11 @@ for(j in 5:length(all_conditions)){
     )
 
   plan(sequential) # Clean up
+
+    # Wait between conditions (increase this if still getting blocked)
+  wait_time <- 60 # 1 minute between conditions
+  message(glue("⏳ Waiting {wait_time} seconds to respect rate limits..."))
+  Sys.sleep(wait_time)
   
 }
 plan(sequential) # Clean up

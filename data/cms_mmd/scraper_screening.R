@@ -77,13 +77,8 @@ full_scale_download_condition_optimized <- function(condition_code, condition_na
     year_short <- substr(as.character(combo_row$year), 3, 4)
     suffix <- if (combo_row$year >= 2023) "_p" else if (combo_row$year >= 2021) "_f" else ""
     
-    # Updated source pattern for preventive care - note the different structure
-    source_pattern <- case_when(
-      combo_row$race == "all" & combo_row$sex == "all" ~ glue("precare_final_long_eligcat_all_dual_all_{year_short}{suffix}"),
-      combo_row$race == "all" & combo_row$sex != "all" ~ glue("precare_final_long_eligcat_all_dual_{combo_row$sex}_{year_short}{suffix}"),
-      combo_row$race != "all" & combo_row$sex == "all" ~ glue("precare_final_long_eligcat_{combo_row$race}_dual_all_{year_short}{suffix}"),
-      TRUE ~ glue("precare_final_long_eligcat_{combo_row$race}_dual_{combo_row$sex}_{year_short}{suffix}")
-    )
+    # Keep source pattern consistent - don't vary it by race/sex
+    source_pattern <- glue("precare_final_long_eligcat_all_dual_all_{year_short}{suffix}")
     
     # Updated request parameters for preventive care
     req_params <- list(
