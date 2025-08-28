@@ -95,16 +95,40 @@ filter(!is.na(pct_Diabetes) ) %>%
 write_parquet(epic_state,'./dist/epic_prevalence_by_geography.parquet' )
 
 
+## CMS state
+cms_state <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>%
+  filter(geography_level %in% c('n','s')) %>%
+  dplyr::select(geography, time, age, cms_obesity, cms_diabetes) %>%
+  mutate(source='Medicare_CMS') %>%
+  rename(
+    fips=geography
+  ) %>%
+  mutate( geography = cdlTools::fips(fips, to = 'Name' ),
+          geography = if_else(fips=='00','United States', geography),
+          age = if_else(age=='≥65 Years','65+ Years', age)) %>%
+  pivot_longer(
+    cols = c(starts_with("cms_")),
+    names_to = c("outcome_name"),
+    names_prefix  = "cms_",
+    values_to = "value"
+  )  %>%
+  mutate(age = if_else( age=='65_plus', "65+ Years",
+                  if_else(age=='85_plus', "85+ Years",
+                if_else( age=="All_Ages", 'Total', paste(age, 'Years'))))
+         ) %>%
+  filter(time == max(time, na.rm=T)) %>% #only take most recent year
+  dplyr::select(-time)
+
 ## Combined file
 
 brfss_most_recent <- brfss_long %>%
   filter(year == max(year, na.rm=T)) %>%
   dplyr::select(-year)
 
-epic_brfss_combined <- bind_rows(epic_state,brfss_most_recent)
+epic_brfss_cms_combined <- bind_rows(epic_state,brfss_most_recent,cms_state)
 
 
-write_parquet(epic_brfss_combined,'./dist/prevalence_by_geography_and_source.parquet' )
+write_parquet(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_source.parquet' )
 
 
 
@@ -136,3 +160,24 @@ epic_county <- vroom::vroom('../epic/standard/county_no_time.csv.gz') %>%
 
 write_parquet(epic_county,'./dist/epic_prevalence_by_geography_county.parquet' )
 
+## CMS county
+cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>%
+  filter(geography_level %in% c('c')) %>%
+  dplyr::select(geography, time, age, cms_obesity, cms_diabetes) %>%
+  mutate(source='Medicare_CMS') %>%
+  mutate( age = if_else(age=='≥65 Years','65+ Years', age)) %>%
+  pivot_longer(
+    cols = c(starts_with("cms_")),
+    names_to = c("outcome_name"),
+    names_prefix  = "cms_",
+    values_to = "value"
+  )  %>%
+  mutate(age = if_else( age=='65_plus', "65+ Years",
+                        if_else(age=='85_plus', "85+ Years",
+                                if_else( age=="All_Ages", 'Total', paste(age, 'Years'))))
+  ) %>%
+  filter(time == max(time, na.rm=T)) %>% #only take most recent year
+  dplyr::select(-time)
+
+epic_cms_county_combine <- bind_rows(cms_county,epic_county)
+write_parquet(epic_cms_county_combine,'./dist/epic_prevalence_by_geography_county_and_source.parquet' )
