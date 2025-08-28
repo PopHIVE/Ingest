@@ -192,6 +192,7 @@ flowchart LR
     n8 --> bundle_childhood_immunizations
     n3 --> bundle_chronic_diseases
     n11 --> bundle_chronic_diseases
+    n4 --> bundle_chronic_diseases
     n12 --> bundle_respiratory
     n14 --> bundle_respiratory
     n25 --> bundle_respiratory
