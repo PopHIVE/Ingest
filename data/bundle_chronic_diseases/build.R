@@ -116,20 +116,36 @@ cms_state <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>
                   if_else(age=='85_plus', "85+ Years",
                 if_else( age=="All_Ages", 'Total', paste(age, 'Years'))))
          ) %>%
-  filter(time == max(time, na.rm=T)) %>% #only take most recent year
-  dplyr::select(-time)%>%
   mutate(outcome_name = tools::toTitleCase(outcome_name))
 
+
 ## Combined file
+
+cms_state_most_recent <- cms_state %>%
+  filter(time == max(time, na.rm=T)) %>% #only take most recent year
+  dplyr::select(-time)
 
 brfss_most_recent <- brfss_long %>%
   filter(year == max(year, na.rm=T)) %>%
   dplyr::select(-year)
 
-epic_brfss_cms_combined <- bind_rows(epic_state,brfss_most_recent,cms_state)
+epic_brfss_cms_combined <- bind_rows(epic_state,brfss_most_recent,cms_state_most_recent)
 
 
 write_parquet(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_source.parquet' )
+
+
+#Combine CMS and BRFSS but maintain time
+
+brfss_cms_combined_year <- cms_state %>%
+  mutate(year = lubridate::year(time)) %>%
+  dplyr::select(-time) %>%
+  bind_rows(brfss_most_recent) %>%
+  filter(age %in% c('Total',"65+ Years" )) #age groups where the datasets overlap
+
+write_parquet(brfss_cms_combined_year,'./dist/prevalence_by_geography_year_and_source.parquet' )
+
+
 
 
 
