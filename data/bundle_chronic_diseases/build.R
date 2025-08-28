@@ -90,10 +90,35 @@ filter(!is.na(pct_Diabetes) ) %>%
                 ) %>%
   filter(!is.na(age)) %>% #small number of records missing age; filter those out here
   rename(sample_size=n_patients) %>%
-  filter( fips!='52')
+  filter( fips!='52') 
 
 write_parquet(epic_state,'./dist/epic_prevalence_by_geography.parquet' )
 
+
+## CMS state
+cms_state <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>%
+  filter(geography_level %in% c('n','s')) %>%
+  dplyr::select(geography, time, age, cms_obesity, cms_diabetes) %>%
+  mutate(source='Medicare_CMS') %>%
+  rename(
+    fips=geography
+  ) %>%
+  mutate( geography = cdlTools::fips(fips, to = 'Name' ),
+          geography = if_else(fips=='00','United States', geography),
+          age = if_else(age=='≥65 Years','65+ Years', age)) %>%
+  pivot_longer(
+    cols = c(starts_with("cms_")),
+    names_to = c("outcome_name"),
+    names_prefix  = "cms_",
+    values_to = "value"
+  )  %>%
+  mutate(age = if_else( age=='65_plus', "65+ Years",
+                  if_else(age=='85_plus', "85+ Years",
+                if_else( age=="All_Ages", 'Total', paste(age, 'Years'))))
+         ) %>%
+  filter(time == max(time, na.rm=T)) %>% #only take most recent year
+  dplyr::select(-time)%>%
+  mutate(outcome_name = tools::toTitleCase(outcome_name))
 
 ## Combined file
 
@@ -101,10 +126,10 @@ brfss_most_recent <- brfss_long %>%
   filter(year == max(year, na.rm=T)) %>%
   dplyr::select(-year)
 
-epic_brfss_combined <- bind_rows(epic_state,brfss_most_recent)
+epic_brfss_cms_combined <- bind_rows(epic_state,brfss_most_recent,cms_state)
 
 
-write_parquet(epic_brfss_combined,'./dist/prevalence_by_geography_and_source.parquet' )
+write_parquet(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_source.parquet' )
 
 
 
@@ -136,3 +161,62 @@ epic_county <- vroom::vroom('../epic/standard/county_no_time.csv.gz') %>%
 
 write_parquet(epic_county,'./dist/epic_prevalence_by_geography_county.parquet' )
 
+## CMS county
+cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>%
+  filter(geography_level %in% c('c')) %>%
+  dplyr::select(geography, time, age, cms_obesity, cms_diabetes) %>%
+  mutate(source='Medicare_CMS') %>%
+  mutate( age = if_else(age=='≥65 Years','65+ Years', age)) %>%
+  pivot_longer(
+    cols = c(starts_with("cms_")),
+    names_to = c("outcome_name"),
+    names_prefix  = "cms_",
+    values_to = "value"
+  )  %>%
+  mutate(age = if_else( age=='65_plus', "65+ Years",
+                        if_else(age=='85_plus', "85+ Years",
+                                if_else( age=="All_Ages", 'Total', paste(age, 'Years'))))
+  ) %>%
+  filter(time == max(time, na.rm=T)) %>% #only take most recent year
+  dplyr::select(-time)%>%
+  mutate(outcome_name = tools::toTitleCase(outcome_name))
+
+epic_cms_county_combine <- bind_rows(cms_county,epic_county)
+write_parquet(epic_cms_county_combine,'./dist/epic_prevalence_by_geography_county_and_source.parquet' )
+
+# 
+# wide_state_compare <- epic_brfss_cms_combined %>%
+#   filter(!is.na(geography)) %>%
+#   pivot_wider(id_cols = c(geography,  age), names_from=c(source,outcome_name), values_from=value)
+# 
+# a <- wide_state_compare %>%
+#   filter(age=="65+ Years") %>%
+# ggplot()+
+#   geom_point(aes(x=Medicare_CMS_Obesity, y= `Epic Cosmos_Obesity`) )+
+#   xlim(8,50) +
+#   ylim(8,50)+
+#   theme_minimal()+
+#   ggtitle('Obesity in Epic Cosmos vs Medicare')+
+#   geom_abline(slope=1, intercept=0, lty=2)
+# 
+# b <- wide_state_compare %>%
+#   filter(age=="65+ Years") %>%
+# ggplot()+
+#   geom_point(aes(x=Medicare_CMS_Obesity, y= `CDC BRFSS_Obesity`) )+
+#   xlim(8,50) +
+#   ylim(8,50)+
+#   theme_minimal()+
+#   ggtitle('Obesity in BRFSS vs Medicare')+
+#   geom_abline(slope=1, intercept=0, lty=2)
+# 
+# c <- wide_state_compare %>%
+#   filter(age=="65+ Years") %>%
+#   ggplot()+
+#   geom_point(aes(y=`Epic Cosmos_Obesity`, x= `CDC BRFSS_Obesity`) )+
+#   xlim(8,50) +
+#   ylim(8,50)+
+#   theme_minimal()+
+#   ggtitle('Obesity in Cosmos vs Medicare')+
+#   geom_abline(slope=1, intercept=0, lty=2)
+# 
+# gridExtra::grid.arrange(a,b,c, nrow=1)
