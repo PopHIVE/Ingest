@@ -224,23 +224,25 @@ all_conditions <- list(
 
 condition_data <- vector("list", length(all_conditions))
 
-for(j in 4:length(all_conditions)){
+for(j in 5:length(all_conditions)){
   print(paste(j, '/', length(all_conditions)))
   print(all_conditions[[j]]$name)
   print(all_conditions[[j]]$code)
   
   # Wait between conditions (increase this if still getting blocked)
-  if(j > 4) {
+  if(j > 5) {
     wait_time <- 60 # 1 minute between conditions
     message(glue("⏳ Waiting {wait_time} seconds to respect rate limits..."))
     Sys.sleep(wait_time)
   }
   
-  workers <- max(1, future::availableCores() - 1)
+  #workers <- max(1, future::availableCores() - 1)
+  workers <- 3 # Use fewer workers
+  
   message(glue("⚙️  Setting up parallel plan with {workers} workers..."))
   plan(multisession, workers = workers)
 
-  condition_data[[j]] <- full_scale_download_condition_optimized(
+  condition_data <- full_scale_download_condition_optimized(
       condition_code = all_conditions[[j]]$code, 
       condition_name = all_conditions[[j]]$name, 
       years = c(2020:2023)
@@ -251,4 +253,13 @@ for(j in 4:length(all_conditions)){
 }
 plan(sequential) # Clean up
 
+##Combine together
+files <- list.files(output_dir, full.names = TRUE)
+
+df <- files %>%
+  lapply(vroom::vroom) %>%
+  bind_rows()
+
+# write to parquet
+arrow::write_parquet(df, "./raw/combined.parquet")
 
