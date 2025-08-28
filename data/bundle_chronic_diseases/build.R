@@ -184,14 +184,39 @@ cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %
 epic_cms_county_combine <- bind_rows(cms_county,epic_county)
 write_parquet(epic_cms_county_combine,'./dist/epic_prevalence_by_geography_county_and_source.parquet' )
 
-
-wide_state_compare <- epic_brfss_cms_combined %>%
-  pivot_wider(id_cols = c(geography, fips, age), names_from=c(source,outcome_name), values_from=value)
-
-wide_state_compare %>%
-  filter(age=="65+ Years") %>%
-ggplot(wide_state_compare)+
-  geom_point(aes(x=Medicare_CMS_Obesity, y= `Epic Cosmos_Obesity`) )
-
-ggplot(wide_state_compare)+
-  geom_point(aes(x=Medicare_CMS_Obesity, y= `CDC BRFSS_Obesity`) )
+# 
+# wide_state_compare <- epic_brfss_cms_combined %>%
+#   filter(!is.na(geography)) %>%
+#   pivot_wider(id_cols = c(geography,  age), names_from=c(source,outcome_name), values_from=value)
+# 
+# a <- wide_state_compare %>%
+#   filter(age=="65+ Years") %>%
+# ggplot()+
+#   geom_point(aes(x=Medicare_CMS_Obesity, y= `Epic Cosmos_Obesity`) )+
+#   xlim(8,50) +
+#   ylim(8,50)+
+#   theme_minimal()+
+#   ggtitle('Obesity in Epic Cosmos vs Medicare')+
+#   geom_abline(slope=1, intercept=0, lty=2)
+# 
+# b <- wide_state_compare %>%
+#   filter(age=="65+ Years") %>%
+# ggplot()+
+#   geom_point(aes(x=Medicare_CMS_Obesity, y= `CDC BRFSS_Obesity`) )+
+#   xlim(8,50) +
+#   ylim(8,50)+
+#   theme_minimal()+
+#   ggtitle('Obesity in BRFSS vs Medicare')+
+#   geom_abline(slope=1, intercept=0, lty=2)
+# 
+# c <- wide_state_compare %>%
+#   filter(age=="65+ Years") %>%
+#   ggplot()+
+#   geom_point(aes(y=`Epic Cosmos_Obesity`, x= `CDC BRFSS_Obesity`) )+
+#   xlim(8,50) +
+#   ylim(8,50)+
+#   theme_minimal()+
+#   ggtitle('Obesity in Cosmos vs Medicare')+
+#   geom_abline(slope=1, intercept=0, lty=2)
+# 
+# gridExtra::grid.arrange(a,b,c, nrow=1)
