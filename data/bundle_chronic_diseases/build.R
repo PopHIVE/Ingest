@@ -90,7 +90,7 @@ filter(!is.na(pct_Diabetes) ) %>%
                 ) %>%
   filter(!is.na(age)) %>% #small number of records missing age; filter those out here
   rename(sample_size=n_patients) %>%
-  filter( fips!='52')
+  filter( fips!='52') 
 
 write_parquet(epic_state,'./dist/epic_prevalence_by_geography.parquet' )
 
@@ -117,7 +117,8 @@ cms_state <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>
                 if_else( age=="All_Ages", 'Total', paste(age, 'Years'))))
          ) %>%
   filter(time == max(time, na.rm=T)) %>% #only take most recent year
-  dplyr::select(-time)
+  dplyr::select(-time)%>%
+  mutate(outcome_name = tools::toTitleCase(outcome_name))
 
 ## Combined file
 
@@ -177,7 +178,20 @@ cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %
                                 if_else( age=="All_Ages", 'Total', paste(age, 'Years'))))
   ) %>%
   filter(time == max(time, na.rm=T)) %>% #only take most recent year
-  dplyr::select(-time)
+  dplyr::select(-time)%>%
+  mutate(outcome_name = tools::toTitleCase(outcome_name))
 
 epic_cms_county_combine <- bind_rows(cms_county,epic_county)
 write_parquet(epic_cms_county_combine,'./dist/epic_prevalence_by_geography_county_and_source.parquet' )
+
+
+wide_state_compare <- epic_brfss_cms_combined %>%
+  pivot_wider(id_cols = c(geography, fips, age), names_from=c(source,outcome_name), values_from=value)
+
+wide_state_compare %>%
+  filter(age=="65+ Years") %>%
+ggplot(wide_state_compare)+
+  geom_point(aes(x=Medicare_CMS_Obesity, y= `Epic Cosmos_Obesity`) )
+
+ggplot(wide_state_compare)+
+  geom_point(aes(x=Medicare_CMS_Obesity, y= `CDC BRFSS_Obesity`) )
