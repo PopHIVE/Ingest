@@ -215,8 +215,8 @@ all_conditions <- list(
     list(code = "21", name = "osteoporosis"),
     list(code = "155", name = "parkinsons"),
     list(code = "3", name = "rheumoatoid_arthritis"),
-    list(code = "22", name = "schizophrenia_and_psycotic"),
     list(code = "23", name = "stroke_ischemic_attack"),
+    
     #these are from the Behavioral health condition page 
     list(code = "42", name = "adhd"),
     list(code = "136", name = "alcohol_use_disorder"),
