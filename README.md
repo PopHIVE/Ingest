@@ -6,7 +6,7 @@ https://github.com/PopHIVE/Ingest/blob/main/status.md
 
 # Using these data
 
-The data shown on PopHIVE.org are found in ./Data/Webslim/. These files are mostly stored in parquet format. If using R, these can be downloaded using the arrow package in R. For example:
+The data shown on PopHIVE.org are found in the 'bundle' folder in the /data folder. These files are mostly stored in parquet format. If using R, these can be downloaded using the arrow package in R. For example:
 
 library(arrow)
 
