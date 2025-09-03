@@ -82,3 +82,10 @@ if (!is.null(raw)) {
   vroom::vroom_write(data$rsv_tests, "standard/no_geo.csv.gz", ",")
   vroom::vroom_write(data$vaccine_mmr, "standard/children.csv.gz", ",")
 }
+
+#Test
+# merged_weekly %>%
+#   filter(geography=='00' & age=='Total') %>%
+#   mutate(time=as.Date(time)) %>%
+# ggplot(aes(x=time, y=epic_n_rsv))+
+#   geom_line()
