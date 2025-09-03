@@ -39,12 +39,19 @@ if (!is.null(raw)) {
       mutate(age = stringr::str_replace(age, "^Less than\\s+(\\d+)", "<\\1 Years"),
              age = stringr::str_replace(age, "^(\\d+) or more$", "≥\\1 Years"),
              age = stringr::str_replace(age, "^≥\\s*(\\d+) and <\\s*(\\d+)$", "\\1-\\2 Years"),
-             age = if_else( age=="18-25 Years", "18-24 Years",
+             age = if_else( 
+               age=="1-5 Years", "1-4 Years",
+               if_else( age=="5-18 Years", "5-17 Years",
+                        if_else(age=="18-25 Years", "18-24 Years",
+                                if_else(age=="18-50 Years", "18-49 Years",
                             if_else( age=="25-35 Years" , "25-34 Years",
                                      if_else( age=="35-45 Years", "35-44 Years",
                                               if_else( age=="45-55 Years", "45-54 Years",
-                                                       if_else( age=="55-65 Years", "55-64 Years",age
-                            )))))
+                                                       if_else( age=="50-65 Years", "50-64 Years",
+                                                       if_else( age=="55-65 Years", "55-64 Years",
+                                                                if_else( age=="≥65 Years", "65+ Years",
+                                                                         age
+                            ))))))))))
           
              )
        }
