@@ -91,8 +91,25 @@ if (!is.null(raw)) {
 }
 
 #Test
+merged_weekly %>%
+  filter(geography=='00' & age=='Total') %>%
+  mutate(time=as.Date(time)) %>%
+ggplot(aes(x=time, y=epic_n_rsv))+
+  geom_line()
+merged_weekly %>%
+  filter(geography=='00' & age=='Total') %>%
+  mutate(time=as.Date(time)) %>%
+  ggplot(aes(x=time, y=epic_n_flu))+
+  geom_line()
+
 # merged_weekly %>%
 #   filter(geography=='00' & age=='Total') %>%
 #   mutate(time=as.Date(time)) %>%
-# ggplot(aes(x=time, y=epic_n_rsv))+
+#   ggplot(aes(x=time, y=epic_n_covid))+
+#   geom_line()
+# 
+# merged_weekly %>%
+#   filter(geography=='00' & age=='Total') %>%
+#   mutate(time=as.Date(time)) %>%
+#   ggplot(aes(x=time, y=epic_n_all_encounters))+
 #   geom_line()
