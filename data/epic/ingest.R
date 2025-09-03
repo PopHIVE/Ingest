@@ -68,7 +68,16 @@ if (!is.null(raw)) {
   # add epic_ prefix to all columns except geography, time, age
   merged_weekly <- merged_weekly %>%
     rename_with(~ paste0("epic_", .x), 
-                .cols = -c(geography, time, age)) 
+                .cols = -c(geography, time, age))%>%
+    arrange(geography, age, time) %>%
+    group_by(geography, age) %>%
+    mutate(time= as.Date(time),
+           epic_n_all_encounters_lag1 = lag(epic_n_all_encounters,1),
+           remove = if_else(epic_n_all_encounters/epic_n_all_encounters_lag1<0.5 &
+                              time == max(time, na.rm=T),1,0)
+    ) %>%
+    filter(remove != 1) %>%
+    dplyr::select(-remove, -epic_n_all_encounters_lag1)
     
   
   vroom::vroom_write(
@@ -91,23 +100,23 @@ if (!is.null(raw)) {
 }
 
 #Test
-merged_weekly %>%
-  filter(geography=='00' & age=='Total') %>%
-  mutate(time=as.Date(time)) %>%
-ggplot(aes(x=time, y=epic_n_rsv))+
-  geom_line()
-merged_weekly %>%
-  filter(geography=='00' & age=='Total') %>%
-  mutate(time=as.Date(time)) %>%
-  ggplot(aes(x=time, y=epic_n_flu))+
-  geom_line()
-
 # merged_weekly %>%
 #   filter(geography=='00' & age=='Total') %>%
 #   mutate(time=as.Date(time)) %>%
-#   ggplot(aes(x=time, y=epic_n_covid))+
+# ggplot(aes(x=time, y=epic_n_rsv))+
+#   geom_line()
+# merged_weekly %>%
+#   filter(geography=='00' & age=='Total') %>%
+#   mutate(time=as.Date(time)) %>%
+#   ggplot(aes(x=time, y=epic_n_flu))+
 #   geom_line()
 # 
+# # merged_weekly %>%
+# #   filter(geography=='00' & age=='Total') %>%
+# #   mutate(time=as.Date(time)) %>%
+# #   ggplot(aes(x=time, y=epic_n_covid))+
+# #   geom_line()
+# # 
 # merged_weekly %>%
 #   filter(geography=='00' & age=='Total') %>%
 #   mutate(time=as.Date(time)) %>%
