@@ -292,17 +292,17 @@ trends_age2 <- trends_age %>%
   )
 
 trends_age2 %>% 
-  filter(grepl('rsv',variable) & !is.na(value)) %>%
+  filter(variable == 'epic_n_rsv' & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/rsv_trends_by_age.parquet")
 
 trends_age2 %>% 
-  filter(grepl('flu',variable) & !is.na(value)) %>%
+  filter(variable == 'epic_n_flu' & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/flu_trends_by_age.parquet")
 
 trends_age2 %>% 
-  filter(grepl('covid',variable) & !is.na(value)) %>%
+  filter(variable == 'epic_n_covid' & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/covid_trends_by_age.parquet")
 
