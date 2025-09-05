@@ -1,7 +1,7 @@
 library(dcf)
 library(tidyverse)
 library(cdlTools)
-
+library(tidyr)
 #
 # Download
 #
@@ -79,7 +79,8 @@ if (!identical(process$raw_state, raw_state)) {
            geography='00') %>%
     rename(age= agec2,
            serotype=st) %>%
-    dplyr::select( age, serotype, geography, time, N_IPD)
+    dplyr::select( age, serotype, geography, time, N_IPD)%>%
+    tidyr::complete(serotype,age,time,geography, fill=list(N_IPD=0))
   
   
   data <- bind_rows(data_nat, data_state)
