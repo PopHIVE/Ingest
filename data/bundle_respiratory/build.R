@@ -115,7 +115,7 @@ overall_trends <-   combined %>%
   ),
   value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
   
-  value_smooth = if_else(grepl('delphi',variable), value, value_smooth), #For Delphi, do not apply additional smoothing since data are pre-smoothed
+  value_smooth = if_else(grepl('delphi_hospital',variable)|grepl('delphi_doctor',variable), value, value_smooth), #For Delphi, do not apply additional smoothing since data are pre-smoothed
   
   value_smooth = value_smooth - min(value_smooth, na.rm = T),
   value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
