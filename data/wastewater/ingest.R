@@ -107,7 +107,7 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(geography = '00')
 
   data_combined <- bind_rows(data,nat_ave )
-  vroom::vroom_write(data, "standard/data.csv.gz", ",")
+  vroom::vroom_write(data_combined, "standard/data.csv.gz", ",")
 
   process$raw_state <- raw_state
   dcf::dcf_process_record(updated = process)
