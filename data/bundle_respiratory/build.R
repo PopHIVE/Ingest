@@ -114,6 +114,9 @@ overall_trends <-   combined %>%
     na.rm = T
   ),
   value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
+  
+  value_smooth = if_else(grepl('delphi',variable), value, value_smooth), #For Delphi, do not apply additional smoothing since data are pre-smoothed
+  
   value_smooth = value_smooth - min(value_smooth, na.rm = T),
   value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
   ) %>%
@@ -121,42 +124,50 @@ overall_trends <-   combined %>%
 
 overall_trends %>% 
   filter(grepl('rsv',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv' )) %>%
-  mutate( source = if_else(variable=='epic_rsv', 'Epic Cosmos, ED',
+  filter(variable %in% c('epic_n_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv','delphi_nhsn_rsv' )) %>%
+  mutate( source = if_else(variable=='epic_n_rsv', 'Epic Cosmos, ED',
                     if_else(variable=='gtrends_rsv_adjusted', 'Google Health Trends',
                             if_else(variable=='percent_visits_rsv', 'CDC NSSP',
                                     if_else(variable=='rate_rsv', 'CDC RespNET',
                                             if_else(variable=='wastewater_rsv', 'CDC NWSS', 
-                                                    NA_character_
-                    )))))
+                                                    if_else(variable=='delphi_nhsn_rsv', 'CDC NHSN', 
+                                                                                                                                                                  NA_character_
+                    ))))))
           ) %>%
   dplyr::select(-variable, -fips) %>%
     arrow::write_parquet(., "dist/rsv_overall_trends.parquet")
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua' )) %>%
+  filter(variable %in% c('epic_n_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' )) %>%
   mutate( source = if_else(variable=='epic_n_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
                                                    if_else(variable=='wastewater_flua', 'CDC NWSS', 
+                                                           if_else(variable=='delphi_nhsn_flu', 'CDC NHSN', 
+                                                                   
                                                            NA_character_
                                                            
-                                                   ))))
+                                                   )))))
   ) %>%
   dplyr::select(-variable,-fips) %>%
   arrow::write_parquet(., "dist/flu_overall_trends.parquet")
 
 overall_trends %>% 
   filter(grepl('covid',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_n_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid' )) %>%
+  filter(variable %in% c('epic_n_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid','delphi_nhsn_covid','delphi_hospital_covid_smooth','delphi_doc_covid_smooth' )) %>%
   mutate( source = if_else(variable=='epic_n_covid', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_covid', 'CDC NSSP',
                                            if_else(variable=='rate_covid', 'CDC RespNET',
-                                                   if_else(variable=='wastewater_covid', 'CDC NWSS', 
+                                                   if_else(variable=='wastewater_covid', 'CDC NWSS',
+                                                           if_else(variable=='delphi_nhsn_covid', 'CDC NHSN', 
+                                                                   if_else(variable=='delphi_hospital_covid_smooth', 'Delphi Hospital Claims', 
+                                                                           if_else(variable=='delphi_doc_covid_smooth', 'Delphi Doctor Claims' ,
+                                                                             
+                                                                   
                                                            NA_character_
                                                            
-                                                   ))))
+                                                   )))))))
   ) %>%
   dplyr::select(-variable,-fips) %>%
   arrow::write_parquet(., "dist/covid_overall_trends.parquet")
