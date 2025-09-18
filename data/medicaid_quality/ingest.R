@@ -1,7 +1,7 @@
 library(httr)
 library(jsonlite)
 library(dplyr)
-
+library(tidyverse)
 
 get_medicaid_data_complete <- function(dataset_id, limit = 1000) {
   
@@ -81,11 +81,21 @@ data_ids <-  list("e85033c7-367e-467e-9e81-8e85048102b8",#2023
 
 df_ls <- lapply(data_ids, get_medicaid_data_complete)
 
+names(df_ls) <- paste0('year',2014:2023)
+
+#save the raw files
+lapply(names(df_ls), function(X) vroom::vroom_write(df_ls[[X]], paste0('./raw/',X, '.csv.gz') ))
+
 df_all <- bind_rows(df_ls)
+
+vroom::vroom_write(df_all, './raw/all_years.csv.gz')
+###########################################################################
+###########################################################################
+
+df_all <- vroom::vroom( './raw/all_years.csv.gz')
 
 df_all <- df_all %>%
   rename(year= core_set_year) %>%
   mutate(year = if_else(is.na(year), ffy,year))
 
-vroom::vroom_write(df_all,'./raw/data.csv.gz')
 
