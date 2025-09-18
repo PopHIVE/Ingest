@@ -83,4 +83,9 @@ df_ls <- lapply(data_ids, get_medicaid_data_complete)
 
 df_all <- bind_rows(df_ls)
 
+df_all <- df_all %>%
+  rename(year= core_set_year) %>%
+  mutate(year = if_else(is.na(year), ffy,year))
+
 vroom::vroom_write(df_all,'./raw/data.csv.gz')
+
