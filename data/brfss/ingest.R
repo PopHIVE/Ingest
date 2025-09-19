@@ -25,7 +25,9 @@ raw_state <- dcf::dcf_download_cdc(
 if (!identical(process$raw_state, raw_state)) {
   
 chronic <- open_dataset('./raw/dttw-5yxu.parquet') %>%
-  filter(Topic %in% c('Diabetes','BMI Categories')) %>%
+  filter(Topic %in% c('Diabetes','BMI Categories',
+                      "Binge Drinking"
+                            )) %>%
   filter( Break_Out_Category  %in% c( "Age Group",'Overall') & (Response %in% c('Yes')| grepl('Obese', Response)) & 
             Data_value_unit=='%') %>%
            filter(Locationdesc  !='All States, DC and Territories (median) **') %>%
@@ -45,8 +47,9 @@ chronic <- open_dataset('./raw/dttw-5yxu.parquet') %>%
 wide1 <- chronic %>%
   dplyr::select(time,age, geography, Topic, Sample_Size,  value, value_lcl, value_ucl) %>%
   mutate( Topic = if_else(Topic=='BMI Categories','pct_obesity', 
-                if_else(Topic=='Diabetes','pct_diabetes', NA_character_ 
-                      )) 
+                if_else(Topic=='Diabetes','pct_diabetes',
+                        if_else(Topic=="Binge Drinking",'pct_binge_drinking',NA_character_ 
+                      ))) 
           ) %>%
   rename(sample_size=Sample_Size) %>%
   reshape2::melt(.,id.vars=c('time','age','geography','Topic')) %>%

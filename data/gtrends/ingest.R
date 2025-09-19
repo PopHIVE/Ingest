@@ -3,7 +3,7 @@
 #
 
 base_url <- "https://github.com/DISSC-yale/gtrends_collection/raw/refs/heads/main/data/term="
-terms <- c("Naloxone", "overdose", "rsv", "%252Fg%252F11j30ybfx6")
+terms <- c("Naloxone", "overdose","narcan","drug+overdose", "rsv", "%252Fg%252F11j30ybfx6")
 for (term in terms) {
   term_dir <- paste0("raw/term=", term)
   dir.create(term_dir, showWarnings = FALSE)

@@ -55,6 +55,7 @@ dcf_build()
 ### dcf::dcf_add_bundle("bundle_respiratory")
 ### dcf::dcf_add_bundle("bundle_chronic_diseases")
 ### dcf::dcf_add_bundle("bundle_childhood_immunizations")
+### dcf::dcf_add_bundle("bundle_injury_overdose")
 
 
 ##Process bundle
