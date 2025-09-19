@@ -2,13 +2,24 @@
 # Process staging data
 
 # if there was staging data, make new standard version from it..this function will automaticaly save relevant file
-raw <- dcf::dcf_process_epic_staging(cleanup=F)
+raw <- dcf::dcf_process_epic_staging(cleanup=T)
 
 if (!is.null(raw)) {
   files <- list.files("raw", "\\.csv\\.xz", full.names = TRUE)
   data <- lapply(files, function(file) {
     d <- vroom::vroom(file, show_col_types = FALSE, guess_max = Inf)
+    
+    if(grepl('self_harm',file)){
+      d <- d %>%
+        rename( n_all_encounters = n_self_harm,
+                pct_self_harm = "percent_with_self-harm_dx_(%)")
+    }
+    
     d2 <- dcf::dcf_standardize_epic(d)
+    
+    if('month' %in% names(d)){
+      d2$time = paste0(d2$time, '-01')
+    }
     
     if ("geography" %in% names(d2)) {
     d2 <- d2 %>%
@@ -84,10 +95,37 @@ if (!is.null(raw)) {
     ","
   )
   
+  #Monthly data
+  merged_monthly <- Reduce(
+    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
+    data[c("self_harm")]
+  )
+  
+  # add epic_ prefix to all columns except geography, time, age
+  merged_monthly <- merged_monthly %>%
+    rename_with(~ paste0("epic_", .x), 
+                .cols = -c(geography, time, age))%>%
+    arrange(geography, age, time) %>%
+    group_by(geography, age) %>%
+    mutate(time= as.Date(time),
+           epic_n_all_encounters_lag1 = lag(epic_n_all_encounters,1),
+           remove = if_else(epic_n_all_encounters/epic_n_all_encounters_lag1<0.5 &
+                              time == max(time, na.rm=T),1,0)
+    ) %>%
+    filter(remove != 1) %>%
+    dplyr::select(-remove, -epic_n_all_encounters_lag1)
+  
+  
+  vroom::vroom_write(
+    merged_monthly,
+    "standard/monthly.csv.gz",
+    ","
+  )
+  
   vroom::vroom_write(
     Reduce(
       function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-      data[c("self_harm", "obesity_state")]
+      data[c("obesity_state")]
     ),
     "standard/state_no_time.csv.gz",
     ","
