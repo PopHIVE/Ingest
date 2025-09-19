@@ -56,15 +56,18 @@ drugs_month <- nchs %>%
   full_join(google, by=c('geography','time')) %>%
   rename(date = time,
          ) %>%
-  left_join(all_fips, by='geography') 
+  left_join(all_fips, by='geography') %>%
+  arrange(geography, date) %>%
+  group_by(geography) %>%
+  mutate(gtrends_narcan_cum12 = zoo::rollsum(gtrends_narcan, k=12, na.pad=T))
 
 
 #The nchs data are 12 month cumulative sum.
 drugs_month %>%
   filter(geography_name=='New York' ) %>%
   ggplot()+
-  geom_line(aes(x=date, y=gtrends_naloxone/max(gtrends_naloxone)))+
-  geom_line(aes(x=date, y=gtrends_narcan/max(gtrends_narcan)), color='red')+
+ # geom_line(aes(x=date, y=gtrends_naloxone/max(gtrends_naloxone)))+
+  geom_line(aes(x=date, y=gtrends_narcan_cum12/max(gtrends_narcan_cum12, na.rm=T)), color='red')+
   geom_line(aes(x=date, y=n_deaths_overdose/max(n_deaths_overdose, na.rm=T)), color='blue')+
       #geom_line(aes(x=date, y=gtrends_drug_overdose/max(gtrends_drug_overdose)), color='blue')+
   theme_classic()+

@@ -1,10 +1,8 @@
 
 # Process staging data
 
-
-
 # if there was staging data, make new standard version from it..this function will automaticaly save relevant file
-raw <- dcf::dcf_process_epic_staging()
+raw <- dcf::dcf_process_epic_staging(cleanup=F)
 
 if (!is.null(raw)) {
   files <- list.files("raw", "\\.csv\\.xz", full.names = TRUE)
