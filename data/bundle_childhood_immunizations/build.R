@@ -100,13 +100,28 @@ vaxview2 <- vroom::vroom('../schoolvaxview/standard/data.csv.gz') %>%
   distinct() 
 
 
-vaxview2 <- vaxview %>%
-  mutate(source = 'CDC SchoolVaxView')
-
-nis2 <- nis %>%
+nis2 <- vroom::vroom('../nis/standard/data.csv.gz') %>%
+   mutate( age_months = if_else(grepl('Month', age), as.numeric(gsub("\\D", "", age)),
+                               if_else(grepl('Day',age),0, 
+                                       NA_real_)),
+          age_days = age_months * (365/12) +2, 
+          time= as.Date(paste(birth_year,'01','01', sep='-')) + age_days,
+          year= as.character(year(time))
+  ) %>%
+  rename(value =vax_uptake_overall,
+         value_lcl = vax_uptake_overall_lcl,
+         value_ucl = vax_uptake_overall_ucl,
+         sample_size = sample_size_overall) %>%
+  dplyr::select(year, geography,vaccine, age,value, value_lcl, value_ucl, sample_size )%>%
   mutate(source = 'CDC NIS')
 
+
 combo_school_NIS <- bind_rows(nis2, vaxview2) %>%
-  left_join(all_fips, by='geography')
+  left_join(all_fips, by='geography') %>%
+  rename(fips=geography,
+         geography = geography_name) %>%
+  dplyr::select(-fips, -state ) %>%
+  relocate(year, geography, vaccine)
+  
 
 write_parquet(combo_school_NIS, "./dist/overall_rates_by_source.parquet")
