@@ -3,6 +3,8 @@ library(arrow)
 # read data from data source projects
 # and write to this project's `dist` directory
 
+all_fips <-vroom::vroom('../../resources/all_fips.csv.gz')
+
 vroom::vroom('../schoolvaxview/standard/data.csv.gz')%>%
   arrow::write_parquet( "dist/schoolvaxview_overall.parquet")
 
@@ -46,8 +48,7 @@ vaxview <- vroom::vroom('../schoolvaxview/standard/data.csv.gz') %>%
   rename(value_vaxview = value,
          vaxview_survey_type = survey_type) %>%
   dplyr::select(value_vaxview, geography,vaxview_survey_type) %>%
-  mutate(value_vaxview = as.numeric(value_vaxview),
-         geography = sprintf("%02d", geography))
+  mutate(value_vaxview = as.numeric(value_vaxview))
 
 nis <- vroom::vroom('../nis/standard/data.csv.gz'
         ) %>%
@@ -74,3 +75,38 @@ vax_compare <- nis %>%
   dplyr::select(geography, value_nis, value_nis_ucl,value_nis_lcl,value_vaxview, value_epic,vaxview_survey_type,N_patients_epic) %>%
   filter(geography!='NA' & !is.na(value_nis))
 arrow::write_parquet(vax_compare, "dist/state_compare.parquet")
+
+#compare nis and vaxview by year
+vaxview2 <- vroom::vroom('../schoolvaxview/standard/data.csv.gz') %>%
+  filter(value!='NReq') %>%
+  mutate(age = '5 years',
+         vaccine = if_else(vax== 'polio', 'Polio',
+                           if_else(vax== 'dtap', 'DTaP',
+                                   if_else(vax== 'varicella', 'Varicella',
+                                           if_else(vax== 'hep_b', 'Hep B', 
+                                                   if_else(vax== 'mmr', 'MMR', 
+                                                    if_else(vax=='full_exempt', 'Full Exemption',
+                                                            if_else(vax=='personal_exempt', 'Personal Exemption',
+                                                                    if_else(vax=='medical_exempt', 'Medical Exemption',
+                                                           NA_character_)))))))),
+         #  time = paste(substr(year,1,4),'09','01', sep='-') #set date to start of academic year (Sept 1,YYYY)
+         year = substr(time,1,4),
+         value = as.numeric(value)
+  ) %>%
+  rename(sample_size = N) %>%
+  dplyr::select(year, geography, age, vaccine, value, sample_size, percent_surveyed, survey_type) %>%
+  mutate(source = 'CDC SchoolVaxView') %>%
+  filter(year>=2016 & !is.na(vaccine) & !grepl('Exempt',vaccine) )%>%
+  distinct() 
+
+
+vaxview2 <- vaxview %>%
+  mutate(source = 'CDC SchoolVaxView')
+
+nis2 <- nis %>%
+  mutate(source = 'CDC NIS')
+
+combo_school_NIS <- bind_rows(nis2, vaxview2) %>%
+  left_join(all_fips, by='geography')
+
+write_parquet(combo_school_NIS, "./dist/overall_rates_by_source.parquet")
