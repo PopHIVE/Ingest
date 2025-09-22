@@ -134,6 +134,8 @@ epic_brfss_cms_combined <- bind_rows(epic_state,brfss_most_recent,cms_state_most
 
 write_parquet(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_source.parquet' )
 
+write_csv(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_source.csv' )
+
 
 #Combine CMS and BRFSS but maintain time
 
