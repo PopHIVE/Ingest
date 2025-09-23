@@ -300,21 +300,21 @@ trends_age <- combined_age %>%
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_rsv','rate_rsv') & !is.na(value)) %>%
-  filter(date >= max(date) +365*2 ) %>%
+  filter(date >= max(date) -365*2 ) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/rsv_trends_by_age.parquet")
 
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_flu', 'rate_flu') & !is.na(value)) %>%
-  filter(date >= max(date) +365*2 ) %>%
+  filter(date >= max(date) -365*2 ) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/flu_trends_by_age.parquet")
 
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_covid','rate_covid') & !is.na(value)) %>%
-  filter(date >= max(date) +365*2 ) %>%
+  filter(date >= max(date) -365*2 ) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/covid_trends_by_age.parquet")
 
