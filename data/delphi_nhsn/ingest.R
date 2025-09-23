@@ -53,7 +53,7 @@ if (!identical(process$raw_state, raw_state)) {
       delphi_nhsn_flu = confirmed_admissions_flu_ew, #n_flu
       delphi_nhsn_rsv = confirmed_admissions_rsv_ew, #n_rsv
     ) %>%
-    mutate(time =  if_else( weekdays(time)=='Sunday', weekdays+6, weekdays)
+    mutate(time =  if_else( weekdays(time)=='Sunday', time+6, time)
            ) 
     
        
