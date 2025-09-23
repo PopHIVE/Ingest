@@ -57,6 +57,7 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(epiyr = lubridate::year(date), 
            year = nrevss_year,
            epiyr = if_else(nrevss_week<=26,year - 1 ,year),
+           epiyr = paste0(epiyr,'-', epiyr+1),
            epiwk  = if_else( nrevss_week<=26, nrevss_week+52, nrevss_week  ),
            week = nrevss_week,
            epiwk=epiwk-26,
@@ -68,7 +69,7 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(scaled_cases = value/max(value)*100,
            geography = if_else(level=='United States', 'United States', geography)) %>%
     dplyr::select(source, geography, date, scaled_cases, pcr_detections, epiyr, epiwk, week, year) %>%
-    rename(time=date)
+    rename(time=date) 
   
 
   
