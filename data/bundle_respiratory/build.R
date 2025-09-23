@@ -127,8 +127,8 @@ overall_trends <-   combined %>%
 
 overall_trends %>% 
   filter(grepl('rsv',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_n_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv','delphi_nhsn_rsv' )) %>%
-  mutate( source = if_else(variable=='epic_n_rsv', 'Epic Cosmos, ED',
+  filter(variable %in% c('epic_pct_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv','delphi_nhsn_rsv' )) %>%
+  mutate( source = if_else(variable=='epic_pct_rsv', 'Epic Cosmos, ED',
                     if_else(variable=='gtrends_rsv_adjusted', 'Google Health Trends',
                             if_else(variable=='percent_visits_rsv', 'CDC NSSP',
                                     if_else(variable=='rate_rsv', 'CDC RespNET',
@@ -142,8 +142,8 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_n_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' )) %>%
-  mutate( source = if_else(variable=='epic_n_flu', 'Epic Cosmos, ED',
+  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' )) %>%
+  mutate( source = if_else(variable=='epic_pct_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
                                                    if_else(variable=='wastewater_flua', 'CDC NWSS', 
@@ -158,8 +158,8 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('covid',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_n_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid','delphi_nhsn_covid','delphi_hospital_covid_smooth','delphi_doc_covid_smooth' )) %>%
-  mutate( source = if_else(variable=='epic_n_covid', 'Epic Cosmos, ED',
+  filter(variable %in% c('epic_pct_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid','delphi_nhsn_covid','delphi_hospital_covid_smooth','delphi_doc_covid_smooth' )) %>%
+  mutate( source = if_else(variable=='epic_pct_covid', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_covid', 'CDC NSSP',
                                            if_else(variable=='rate_covid', 'CDC RespNET',
                                                    if_else(variable=='wastewater_covid', 'CDC NWSS',
@@ -269,7 +269,7 @@ trends_age <- combined_age %>%
   dplyr::select(-fips) %>%
   reshape2::melt(., id.vars = c('geography', 'time', 'age'))  %>%
   rename(date = time) %>%
-  mutate( source = if_else(grepl('epic', variable), 'Epic Cosmos (ED)', 'CDC Resp-NET (Hospitalization)'
+  mutate( source = if_else(grepl('epic', variable), 'Epic Cosmos (ED)', 'CDC RSV-NET (Hospitalization)'
                       )
           )
 
@@ -278,6 +278,29 @@ trend_age_all <- trends_age %>%
   dplyr::select(geography, age, date, source, value) %>%
   rename(epic_all = value ) %>%
   mutate(epic_all = as.numeric(epic_all))
+
+#respnet data
+trends_age_respnet <- trends_age %>%
+  filter(source== "CDC RSV-NET (Hospitalization)" & 
+           geography %in% c('California','Connecticut','Colorado',
+                            'Georgia','Maryland','Minnesota','New Mexico','New York',
+                            'North Carolina','Ohio','Oregon', 'Tennessee','Utah')) %>%
+  arrange(geography, age, source, variable, date) %>%
+  group_by(geography, age, source, variable) %>%
+  mutate(
+    value_smooth = zoo::rollapplyr(
+      value,
+      3,
+      mean,
+      partial = T,
+      na.rm = T
+    ),
+    value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
+    value_smooth = value_smooth - min(value_smooth, na.rm = T),
+    value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
+  ) %>%
+  ungroup()
+
 
 trends_age2 <- trends_age %>%
   left_join(trend_age_all, by=c('geography','age','date','source')) %>%
@@ -303,20 +326,22 @@ trends_age2 <- trends_age %>%
     value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
     value_smooth = value_smooth - min(value_smooth, na.rm = T),
     value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
-  )
+  ) %>%
+  bind_rows(.,trends_age_respnet)
+
 
 trends_age2 %>% 
-  filter(variable == 'epic_n_rsv' & !is.na(value)) %>%
+  filter(variable %in% c('epic_n_rsv','rate_rsv') & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/rsv_trends_by_age.parquet")
 
 trends_age2 %>% 
-  filter(variable == 'epic_n_flu' & !is.na(value)) %>%
+  filter(variable %in% c('epic_n_flu', 'rate_flu') & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/flu_trends_by_age.parquet")
 
 trends_age2 %>% 
-  filter(variable == 'epic_n_covid' & !is.na(value)) %>%
+  filter(variable %in% c('epic_n_covid','rate_covid') & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/covid_trends_by_age.parquet")
 
