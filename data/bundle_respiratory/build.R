@@ -97,7 +97,7 @@ combined <- combined %>%
 
 
 overall_trends <-   combined %>%
-  filter( (time >= max(time) - 365*2) ) %>%
+  filter( (time >= max(time) - 365*2) & geography %in% state_fips) %>%
   rename(fips= geography) %>%
   mutate( geography = cdlTools::fips(fips, to = "Name"),
           geography = if_else(fips == '00', 'United States', geography)) %>%

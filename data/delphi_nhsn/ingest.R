@@ -36,7 +36,7 @@ if (!identical(process$raw_state, raw_state)) {
            geography = if_else(geo_value=='us','00', geography),
            remove = if_else(
              (grepl('rsv', signal)|grepl('flu', signal)) & 
-               time_value<'2024-10-31',
+               time_value < as.Date('2024-10-31'),
              1,
              0)
     ) %>%
