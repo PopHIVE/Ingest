@@ -262,6 +262,7 @@ combined_age <- Reduce(
 
 trends_age <- combined_age %>%
   filter(geography %in% state_fips ) %>%
+  filter(time >= max(time) -365*2 ) %>%
   rename(fips= geography) %>%
   mutate( geography = fips(fips, to = "Name"),
           geography = if_else(fips == '00', 'United States', geography)
@@ -278,6 +279,7 @@ trends_age <- combined_age %>%
        # suppressed_flag = if_else(source=='Epic Cosmos (ED)' & raw==5,1,0),
           
          ) %>%
+  ungroup() %>%
   dplyr::select(date, geography, age, source,  value,variable) %>%
   arrange(geography, age, source,variable, date) %>%
   group_by(geography, age, source,variable) %>%
@@ -300,21 +302,18 @@ trends_age <- combined_age %>%
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_rsv','rate_rsv') & !is.na(value)) %>%
-  filter(date >= max(date) -365*2 ) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/rsv_trends_by_age.parquet")
 
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_flu', 'rate_flu') & !is.na(value)) %>%
-  filter(date >= max(date) -365*2 ) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/flu_trends_by_age.parquet")
 
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_covid','rate_covid') & !is.na(value)) %>%
-  filter(date >= max(date) -365*2 ) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/covid_trends_by_age.parquet")
 
