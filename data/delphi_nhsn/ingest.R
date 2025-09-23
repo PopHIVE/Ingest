@@ -33,8 +33,14 @@ raw_state <- as.list(tools::md5sum(list.files(
 if (!identical(process$raw_state, raw_state)) {
   data <- vroom::vroom('./raw/data.csv.xz') %>%
     mutate(geography = sprintf("%02d",cdlTools::fips(geo_value, to='fips') ),
-           geography = if_else(geo_value=='us','00', geography)
+           geography = if_else(geo_value=='us','00', geography),
+           remove = if_else(
+             (grepl('rsv', signal)|grepl('flu', signal)) & 
+               time_value<'2024-10-31',
+             1,
+             0)
     ) %>%
+    filter(remove==0) %>%
     rename(time = time_value) %>%
     dplyr::select(geography, time,signal, value) %>%
     pivot_wider(
@@ -48,7 +54,9 @@ if (!identical(process$raw_state, raw_state)) {
       delphi_nhsn_rsv = confirmed_admissions_rsv_ew, #n_rsv
     ) %>%
     mutate(time =  if_else( weekdays(time)=='Sunday', weekdays+6, weekdays)
-    )
+           ) 
+    
+       
  
   vroom::vroom_write(data, "standard/data.csv.gz", ",")
   
