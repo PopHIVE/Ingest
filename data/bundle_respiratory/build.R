@@ -97,7 +97,7 @@ combined <- combined %>%
 
 
 overall_trends <-   combined %>%
-  filter(geography %in% state_fips ) %>%
+  filter( (time >= max(time) - 365*2) ) %>%
   rename(fips= geography) %>%
   mutate( geography = cdlTools::fips(fips, to = "Name"),
           geography = if_else(fips == '00', 'United States', geography)) %>%
@@ -121,7 +121,9 @@ overall_trends <-   combined %>%
   value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
   ) %>%
   ungroup() %>%
-  rename(date = time)
+  rename(date = time) %>%
+  arrange(variable,geography, date) %>%
+  filter( geography %in% c(state.name,'District of Columbia','United States'))
 
 overall_trends %>% 
   filter(grepl('rsv',variable) & !is.na(value)) %>%
