@@ -120,7 +120,8 @@ overall_trends <-   combined %>%
   value_smooth = value_smooth - min(value_smooth, na.rm = T),
   value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
   ) %>%
-  ungroup()
+  ungroup() %>%
+  rename(date = time)
 
 overall_trends %>% 
   filter(grepl('rsv',variable) & !is.na(value)) %>%
