@@ -279,8 +279,8 @@ trends_age <- combined_age %>%
           
          ) %>%
   dplyr::select(date, geography, age, source,  value,variable) %>%
-  arrange(geography, age, source, date) %>%
-  group_by(geography, age, source) %>%
+  arrange(geography, age, source,variable, date) %>%
+  group_by(geography, age, source,variable) %>%
   mutate(
     value_smooth = zoo::rollapplyr(
       value,
@@ -297,18 +297,21 @@ trends_age <- combined_age %>%
 #need to add in suppressed flag!!
 
 
-trends_age2 %>% 
-  filter(variable %in% c('epic_n_rsv','rate_rsv') & !is.na(value)) %>%
+trends_age %>% 
+  ungroup() %>%
+  filter(variable %in% c('epic_pct_rsv','rate_rsv') & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/rsv_trends_by_age.parquet")
 
-trends_age2 %>% 
-  filter(variable %in% c('epic_n_flu', 'rate_flu') & !is.na(value)) %>%
+trends_age %>% 
+  ungroup() %>%
+  filter(variable %in% c('epic_pct_flu', 'rate_flu') & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/flu_trends_by_age.parquet")
 
-trends_age2 %>% 
-  filter(variable %in% c('epic_n_covid','rate_covid') & !is.na(value)) %>%
+trends_age %>% 
+  ungroup() %>%
+  filter(variable %in% c('epic_pct_covid','rate_covid') & !is.na(value)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/covid_trends_by_age.parquet")
 
