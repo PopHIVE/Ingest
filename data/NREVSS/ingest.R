@@ -56,7 +56,7 @@ if (!identical(process$raw_state, raw_state)) {
            date = time) %>%
     mutate(epiyr = lubridate::year(date), 
            year = nrevss_year,
-           epiyr = if_else(nrevss_week<=26,year - 1 ,nrevss_week),
+           epiyr = if_else(nrevss_week<=26,year - 1 ,year),
            epiwk  = if_else( nrevss_week<=26, nrevss_week+52, nrevss_week  ),
            week = nrevss_week,
            epiwk=epiwk-26,
