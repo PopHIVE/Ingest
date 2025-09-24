@@ -31,33 +31,32 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(geography = geography,
            geography = sprintf("%05d", geography),
            geography = substr(geography,1,2)) %>%
-    dplyr::select(geography,time, percent_visits_rsv, percent_visits_flu, percent_visits_covid)
+    dplyr::select(geography,time, percent_visits_rsv, percent_visits_flu, percent_visits_covid) %>%
+    mutate(
+      percent_visits_rsv  = if_else(geography=='56' & time >= '2024-07-01', NA_real_,percent_visits_rsv ), 
+      percent_visits_flu  = if_else(geography=='56' & time >= '2024-07-01', NA_real_,percent_visits_flu ) ,
+      percent_visits_covid  = if_else(geography=='56' & time >= '2024-07-01', NA_real_,percent_visits_covid ) 
+                 ) #Wyoming stops reporting in July 2024
 
   #####################
   # Reformat COUNTY Level
   ######################
     #for states without county info fill in with state-level from data_state_merge
-    data_state_merge <- vroom::vroom("./raw/rdmq-nq56.csv.xz", show_col_types = FALSE) %>%
-      filter(county == 'All') %>%
+    data_state_merge <- data_state %>%
       rename(
         percent_visits_rsv_state = percent_visits_rsv,
         percent_visits_covid_state = percent_visits_covid,
-        percent_visits_flu_state = percent_visits_influenza
+        percent_visits_flu_state = percent_visits_flu  
       ) %>%
-      mutate( state=geography,
-        geography = fips(geography, to='fips')
-             )%>%
       dplyr::select(
-        fips,
-        week_end,
+        geography,
+        time,
         percent_visits_rsv_state,
         percent_visits_covid_state,
         percent_visits_flu_state
       ) %>%
-      mutate(state_fips = sprintf("%05d", fips),
-             state_fips = substr(state_fips,1,2)
-      ) %>%
-      dplyr::select(-fips)
+      rename(state_fips = geography,
+             week_end = time)
     
     data_county <- vroom::vroom("./raw/rdmq-nq56.csv.xz", show_col_types = FALSE) %>%
       filter(county != 'All') %>%
@@ -75,7 +74,8 @@ if (!identical(process$raw_state, raw_state)) {
         percent_visits_covid,
         percent_visits_influenza
       ) %>%
-      left_join(data_state_merge, by = c('week_end', 'state_fips')) %>%
+     left_join(data_state_merge, by = c('week_end', 'state_fips')) %>%
+      rename(fips_code = fips) %>%
       mutate(
         percent_visits_covid = if_else(
           is.na(percent_visits_covid),
@@ -92,8 +92,9 @@ if (!identical(process$raw_state, raw_state)) {
           percent_visits_rsv_state,
           percent_visits_rsv
         ),
+        
         #fix CT county coding
-        fips = if_else(
+        fips_code = if_else(
           state == 'Connecticut' & county == 'Fairfield',
           '09001',
           if_else(
@@ -117,7 +118,7 @@ if (!identical(process$raw_state, raw_state)) {
                       if_else(
                         state == 'Connecticut' & county == 'Windham',
                         '09015',
-                        fips
+                        fips_code
                       )
                     )
                   )
@@ -127,8 +128,13 @@ if (!identical(process$raw_state, raw_state)) {
           )
         )
       ) %>%
+      mutate(
+        percent_visits_rsv  = if_else(state_fips=='56' & week_end >= '2024-07-01', NA_real_,percent_visits_rsv ), 
+        percent_visits_flu  = if_else(state_fips=='56' & week_end >= '2024-07-01', NA_real_,percent_visits_flu) ,
+        percent_visits_covid  = if_else(state_fips=='56' & week_end >= '2024-07-01', NA_real_,percent_visits_covid ) 
+      ) %>% #Wyoming stops reporting in July 2024
       as.data.frame() %>%
-      rename(geography = fips) %>%
+      rename(geography = fips_code) %>%
       rename(time=week_end) %>%
       dplyr::select(
         geography,
