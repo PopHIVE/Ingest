@@ -62,7 +62,7 @@ if (!identical(process$raw_state, raw_state)) {
     data_county <- vroom::vroom("./raw/rdmq-nq56.csv.xz", show_col_types = FALSE) %>%
       filter(county != 'All') %>%
       rename(state = geography) %>%
-      mutate(state_fips = sprintf("%05d", fips),
+      mutate(fips = sprintf("%05d", fips),
              state_fips = substr(fips,1,2)
              ) %>%
       dplyr::select(
@@ -95,28 +95,28 @@ if (!identical(process$raw_state, raw_state)) {
         #fix CT county coding
         fips = if_else(
           state == 'Connecticut' & county == 'Fairfield',
-          9001,
+          '09001',
           if_else(
             state == 'Connecticut' & county == 'Hartford',
-            9003,
+            '09003',
             if_else(
               state == 'Connecticut' & county == 'Litchfield',
-              9005,
+              '09005',
               if_else(
                 state == 'Connecticut' & county == 'Middlesex',
-                9007,
+                '09007',
                 if_else(
                   state == 'Connecticut' & county == 'New Haven',
-                  9009,
+                  '09009',
                   if_else(
                     state == 'Connecticut' & county == 'New London',
-                    9011,
+                    '09011',
                     if_else(
                       state == 'Connecticut' & county == 'Tolland',
-                      9013,
+                      '09013',
                       if_else(
                         state == 'Connecticut' & county == 'Windham',
-                        9015,
+                        '09015',
                         fips
                       )
                     )
@@ -128,7 +128,7 @@ if (!identical(process$raw_state, raw_state)) {
         )
       ) %>%
       as.data.frame() %>%
-      mutate(geography = sprintf("%05d", fips)) %>%
+      rename(geography = fips) %>%
       rename(time=week_end) %>%
       dplyr::select(
         geography,
