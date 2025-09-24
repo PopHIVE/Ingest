@@ -76,9 +76,9 @@ if (!is.null(raw)) {
   
   # add epic_ prefix to all columns except geography, time, age
   merged_weekly <- merged_weekly %>%
-    mutate(pct_rsv = n_rsv/n_all_encounters,
-           pct_flu = n_flu/n_all_encounters,
-           pct_covid = n_covid/n_all_encounters,
+    mutate(pct_rsv = 100*n_rsv/n_all_encounters,
+           pct_flu = 100*n_flu/n_all_encounters,
+           pct_covid = 100*n_covid/n_all_encounters,
            ) %>%
     rename_with(~ paste0("epic_", .x), 
                 .cols = -c(geography, time, age))%>%
