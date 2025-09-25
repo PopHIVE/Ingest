@@ -132,7 +132,7 @@ if (!identical(process2$raw_state, raw_state2)) {
     rename(n_deaths_overdose='Provisional Drug Overdose Deaths',
            pct_pending_invest = 'Percentage Of Records Pending Investigation',
            ) %>%
-    dplyr::select(geography, time, n_deaths_overdose)
+    dplyr::select(geography, time, n_deaths_overdose,pct_pending_invest)
  
   
   vroom::vroom_write(

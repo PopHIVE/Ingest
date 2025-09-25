@@ -25,14 +25,25 @@ cms_all_age_year <- cms %>%
 
 #nchs_mortality
 
-nchs_county <- vroom::vroom('../../data/nchs_mortality/standard/data_county.csv.gz') 
-nchs_state <- vroom::vroom('../../data/nchs_mortality/standard/data.csv.gz') 
-
-nchs <- bind_rows(nchs_state, nchs_county) %>%
+nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
+ # mutate(geography = sprintf("%02d", geography)) %>%
+  left_join(all_fips, by='geography') %>%
   rename(nchs_pct_complete = pct_complete,
-         nchs_pct_pending_invest = pct_pending_invest)
+         nchs_pct_pending_invest = pct_pending_invest) %>%
+  relocate(geography_name, state, geography)
 
+write_parquet(nchs_od_state,'./dist/overdose_deaths_state.parquet' )
 
+nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') %>%
+ # mutate(geography = sprintf("%05d", geography)) %>%
+  right_join(all_fips, by='geography') %>%
+  rename(
+         nchs_pct_pending_invest = pct_pending_invest)%>%
+  relocate(geography_name, state, geography)
+
+write_parquet(nchs_od_county,'./dist/overdose_deaths_county.parquet' )
+
+nchs <- bind_rows(nchs_od_state, nchs_od_county)
 
 #epic
 
@@ -53,6 +64,7 @@ google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
 
 #drug
 drugs_month <- nchs %>%
+  dplyr::select(-geography_name) %>%
   full_join(google, by=c('geography','time')) %>%
   rename(date = time,
          ) %>%
