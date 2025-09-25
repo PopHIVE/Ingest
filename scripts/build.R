@@ -49,6 +49,7 @@ dcf_build()
 # dcf_process("delphi_nhsn")
 # dcf_process("nis")
 # dcf_process("cms_mmd")
+# dcf_process("schoolvaxview")
 
 
 ## Add bundles
