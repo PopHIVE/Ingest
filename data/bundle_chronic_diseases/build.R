@@ -12,6 +12,8 @@ firstup <- function(x) {
   return(x)
 }
 
+all_fips = vroom::vroom('../../resources/all_fips.csv.gz')
+
 #read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/chronic_diseases/brfss_cosmos_prevalence_compared.parquet')
 
 
@@ -201,4 +203,22 @@ cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %
 
 epic_cms_county_combine <- bind_rows(cms_county,epic_county)
 write_parquet(epic_cms_county_combine,'./dist/epic_prevalence_by_geography_county_and_source.parquet' )
+
+
+##NCHS
+nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
+  mutate(geography = sprintf("%02d", geography)) %>%
+  left_join(all_fips, by='geography') %>%
+  dplyr::select(-state) %>%
+  relocate(geography_name, geography)
+
+write_parquet(nchs_od_state,'./dist/overdose_deaths_state.parquet' )
+
+nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') %>%
+  mutate(geography = sprintf("%05d", geography)) %>%
+  right_join(all_fips, by='geography') %>%
+  dplyr::select(-state) %>%
+  relocate(geography_name, geography)
+
+write_parquet(nchs_od_county,'./dist/overdose_deaths_county.parquet' )
 
