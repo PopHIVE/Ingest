@@ -31,6 +31,7 @@ dcf_build()
 #dcf::dcf_add_source("wonder_provisional_mortality")
 #dcf::dcf_add_source("cms_mmd")
 #dcf::dcf_add_source("medicaid_quality")
+#dcf::dcf_add_source("vaers")
 
 
 #dcf_add_source("schoolvaxview")
