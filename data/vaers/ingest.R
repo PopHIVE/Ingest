@@ -2,6 +2,12 @@
 library(tidyverse)
 library(arrow)
 
+#https://vaers.hhs.gov/eSubDownload/index.jsp?fn=2025VAERSDATA.csv
+#https://vaers.hhs.gov/eSubDownload/index.jsp?fn=2025VAERSSYMPTOMS.csv
+#https://vaers.hhs.gov/eSubDownload/index.jsp?fn=2025VAERSVAX.csv
+
+
+test <- read_csv("https://vaers.hhs.gov/eSubDownload/index.jsp?fn=2025VAERSVAX.csv")
 #The files in '/raw/staging' are the raw files downloaded from the VAERS website. These are very large (up to 500MB). Here we ingest the files, combine into a single mega file for each, and then break up into small parquet files
 
 all.staging <- list.files('./raw/staging')
