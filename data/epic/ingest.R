@@ -1,4 +1,4 @@
-
+library(tidyverse)
 # Process staging data
 
 # if there was staging data, make new standard version from it..this function will automaticaly save relevant file
@@ -79,6 +79,9 @@ if (!is.null(raw)) {
     mutate(pct_rsv = 100*n_rsv/n_all_encounters,
            pct_flu = 100*n_flu/n_all_encounters,
            pct_covid = 100*n_covid/n_all_encounters,
+           suppressed_flag_rsv = if_else(n_rsv<10,1,0),
+           suppressed_flag_flu = if_else(n_flu<10,1,0),
+           suppressed_flag_covid = if_else(n_covid<10,1,0),
            ) %>%
     rename_with(~ paste0("epic_", .x), 
                 .cols = -c(geography, time, age))%>%
