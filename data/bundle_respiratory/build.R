@@ -125,6 +125,24 @@ overall_trends <-   combined %>%
   arrange(variable,geography, date) %>%
   filter( geography %in% c(state.name,'District of Columbia','United States'))
 
+suppressed_rsv <- combined %>%
+  dplyr::select(geography, time,  epic_suppressed_flag_rsv) %>%
+  rename(suppressed_flag = epic_suppressed_flag_rsv) %>%
+  mutate(source = 'Epic Cosmos, ED') %>%
+  rename(date = time) 
+
+suppressed_flu <- combined %>%
+  dplyr::select(geography, time,  epic_suppressed_flag_flu) %>%
+  rename(suppressed_flag = epic_suppressed_flag_flu) %>%
+  mutate(source = 'Epic Cosmos, ED') %>%
+  rename(date = time) 
+  
+suppressed_covid <- combined %>%
+  dplyr::select(geography, time,  epic_suppressed_flag_covid) %>%
+  rename(suppressed_flag = epic_suppressed_flag_covid) %>%
+  mutate(source = 'Epic Cosmos, ED') %>%
+  rename(date = time) 
+
 overall_trends %>% 
   filter(grepl('rsv',variable) & !is.na(value)) %>%
   filter(variable %in% c('epic_pct_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv','delphi_nhsn_rsv' )) %>%
@@ -137,6 +155,8 @@ overall_trends %>%
                                                                                                                                                                   NA_character_
                     ))))))
           ) %>%
+  left_join(suppressed_rsv, by=c('geography','date','source')) %>%
+  mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
   dplyr::select(-variable, -fips) %>%
     arrow::write_parquet(., "dist/rsv_overall_trends.parquet")
 
@@ -153,6 +173,8 @@ overall_trends %>%
                                                            
                                                    )))))
   ) %>%
+  left_join(suppressed_flu, by=c('geography','date','source')) %>%
+  mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
   dplyr::select(-variable,-fips) %>%
   arrow::write_parquet(., "dist/flu_overall_trends.parquet")
 
@@ -172,6 +194,8 @@ overall_trends %>%
                                                            
                                                    )))))))
   ) %>%
+  left_join(suppressed_covid, by=c('geography','date','source')) %>%
+  mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
   dplyr::select(-variable,-fips) %>%
   arrow::write_parquet(., "dist/covid_overall_trends.parquet")
 
@@ -297,23 +321,46 @@ trends_age <- combined_age %>%
   ) 
 
 #need to add in suppressed flag!!
+suppressed_rsv_age <- combined_age %>%
+  dplyr::select(geography, time,age,  epic_suppressed_flag_rsv) %>%
+  rename(suppressed_flag = epic_suppressed_flag_rsv) %>%
+  mutate(variable = 'epic_pct_rsv ') %>%
+  rename(date = time) 
+
+suppressed_flu_age <- combined_age %>%
+  dplyr::select(geography, time,age,  epic_suppressed_flag_flu) %>%
+  rename(suppressed_flag = epic_suppressed_flag_flu) %>%
+  mutate(variable = 'epic_pct_flu ') %>%
+  rename(date = time) 
+
+suppressed_covid_age <- combined_age %>%
+  dplyr::select(geography, time,age,  epic_suppressed_flag_covid) %>%
+  rename(suppressed_flag = epic_suppressed_flag_covid) %>%
+  mutate(variable = 'epic_pct_covid ') %>%
+  rename(date = time) 
 
 
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_rsv','rate_rsv') & !is.na(value)) %>%
+  left_join(suppressed_rsv_age, by=c('geography','date','age','variable')) %>%
+  mutate(suppressed_flag = if_else(is.na(suppressed_flag),0,suppressed_flag)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/rsv_trends_by_age.parquet")
 
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_flu', 'rate_flu') & !is.na(value)) %>%
+  left_join(suppressed_flu_age, by=c('geography','date','age','variable')) %>%
+  mutate(suppressed_flag = if_else(is.na(suppressed_flag),0,suppressed_flag)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/flu_trends_by_age.parquet")
 
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_covid','rate_covid') & !is.na(value)) %>%
+  left_join(suppressed_covid_age, by=c('geography','date','age','variable')) %>%
+  mutate(suppressed_flag = if_else(is.na(suppressed_flag),0,suppressed_flag)) %>%
   dplyr::select(-variable) %>%
   arrow::write_parquet(., "dist/covid_trends_by_age.parquet")
 
