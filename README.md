@@ -1,18 +1,27 @@
-# Check the data status
-https://dissc-yale.github.io/dcf/report/?repo=PopHIVE/Ingest
+## Where can I learn more about the data and processing
+Documentation for our databases can be found on our [Process documentation](https://pophive.github.io/processing-documentation/) page
 
-# See the data flows and relationships
+## See the data flows and relationships
 https://github.com/PopHIVE/Ingest/blob/main/status.md
 
-# Using these data
+## Check the data status
+https://dissc-yale.github.io/dcf/report/?repo=PopHIVE/Ingest
 
-The data shown on PopHIVE.org are found in the 'bundle' folder in the /data folder. These files are mostly stored in parquet format. If using R, these can be downloaded using the arrow package in R. For example:
+## Using these data
+
+The data shown on PopHIVE.org are found in the Ingest project project in the ./Data/bundle_*/dist/ subfolders. The files are stored in either parquet or compressed csv format. If using R, parquet files can be downloaded using the arrow package in R. For example:
 
 library(arrow)
 
-url1 \<- '<https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/ed_visits_by_county.parquet>'
+url1 <- 'https://github.com/PopHIVE/Ingest/raw/refs/heads/main/data/bundle_respiratory/dist/covid_overall_trends.parquet'
 
-ds1 \<- read_parquet(url1)
+ds1 <- read_parquet(url1)
+
+compressed csv can be downloaded with vroom::vroom() in R:
+
+url2 <- 'https://github.com/PopHIVE/Ingest/raw/refs/heads/main/data/nchs_mortality/standard/data_county.csv.gz'
+
+ds2 <- vroom::vroom(url2)
 
 In general, the data closest to the source data are found in the 'value' column. Some datasets also include a 3 week moving average (value_smooth), and a smoothed value, scaled to between 0-100 (value_smooth_scale). The data in 'value' are generally drawn directly from the source data. Exceptions include:
 
