@@ -25,8 +25,7 @@ raw_state <- dcf::dcf_download_cdc(
 if (!identical(process$raw_state, raw_state)) {
   
 chronic <- open_dataset('./raw/dttw-5yxu.parquet') %>%
-  filter(Topic %in% c('Diabetes','BMI Categories',
-                      "Binge Drinking"
+  filter(Topic %in% c('Diabetes','BMI Categories'
                             )) %>%
   filter( Break_Out_Category  %in% c( "Age Group",'Overall') & (Response %in% c('Yes')| grepl('Obese', Response)) & 
             Data_value_unit=='%') %>%

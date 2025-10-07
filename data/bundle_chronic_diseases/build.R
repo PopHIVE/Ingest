@@ -38,7 +38,9 @@ brfss_long <- brfss %>%
          year= lubridate::year(time),
          source='CDC BRFSS'
          ) %>%
-  dplyr::select(geography, year,age, source, outcome_name, value, value_lcl, value_ucl,sample_size )
+  dplyr::select(geography, year,age, source, outcome_name, value, value_lcl, value_ucl,sample_size )%>%
+  filter( outcome_name %in% c("Diabetes", "Obesity")
+  ) 
 
 write_parquet(brfss_long,'./dist/brfss_prevalence_by_geography.parquet' )
 
@@ -131,7 +133,10 @@ brfss_most_recent <- brfss_long %>%
   filter(year == max(year, na.rm=T)) %>%
   dplyr::select(-year)
 
-epic_brfss_cms_combined <- bind_rows(epic_state,brfss_most_recent,cms_state_most_recent)
+epic_brfss_cms_combined <- bind_rows(epic_state,brfss_most_recent,cms_state_most_recent)%>% 
+  mutate( age = gsub('_to_','-', age),
+          age = gsub('Under_','<', age)) %>%
+  dplyr::select(-fips)
 
 
 write_parquet(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_source.parquet' )
