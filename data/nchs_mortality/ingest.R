@@ -22,6 +22,13 @@ raw_state2 <- dcf::dcf_download_cdc(
   parquet=T
 )
 
+process3 <- dcf::dcf_process_record()
+raw_state3 <- dcf::dcf_download_cdc(
+  "489q-934x",
+  "raw",
+  process3$raw_state,
+  parquet=T
+)
 
 
 if (!identical(process1$raw_state, raw_state1)) {
@@ -144,5 +151,54 @@ if (!identical(process2$raw_state, raw_state2)) {
   # record processed raw state
   process2$raw_state <- raw_state2
   dcf::dcf_process_record(updated = process2)
+  
+}
+
+if (!identical(process3$raw_state, raw_state3)) {
+  
+  data_type <- open_dataset('./raw/489q-934x.parquet') %>%
+    rename(time_period = 'Time Period',
+           type_rate = 'Rate Type',
+           cause_of_death = 'Cause of Death',
+           year_q = "Year and Quarter",
+           Rate_overall = 'Overall Rate'
+           ) %>%
+    filter(time_period == "3-month period" & type_rate == 'Age-adjusted'  ) %>%
+    collect() %>%
+    pivot_longer( cols= starts_with('Rate')) %>%
+    mutate(state = map_lgl(name, ~ any(str_detect(.x, c('Rate_overall',state.name))))
+           )%>%
+    filter(state ==T ) %>%
+    mutate(geography_name =  gsub('Rate ', '', name)) %>%
+    mutate( geography_name = if_else(geography_name=='Rate_overall', 'United State', geography_name),
+            qtr = str_extract(year_q, "(?<=\\s).*"),
+            month = if_else(qtr=='Q1', '01',
+                            if_else(qtr=='Q2', '04',
+                                    if_else(qtr=='Q3', '07',
+                                            if_else(qtr=='Q4', '10', '99'
+                                            )))),
+            time = as.Date(
+              paste(substr(year_q,1,4), month, '01', sep='-')
+            )
+            ) %>%
+    dplyr::select(geography_name,time, cause_of_death, value ) %>%
+    pivot_wider(id_cols = c(geography_name,time),names_from = cause_of_death, values_from = value, names_prefix='rate_') %>%
+    rename_with(
+      ~ str_to_lower(.) %>%
+        str_replace_all("[\\s,-]+", "_") %>%
+        str_replace_all("[^a-z0-9_]", ""),
+      .cols = starts_with("rate_")
+    )
+    
+  
+  vroom::vroom_write(
+    data_type,
+    "standard/data_state_21_causes.csv.gz",
+    ","
+  )
+    
+  # record processed raw state
+  process3$raw_state <- raw_state3
+  dcf::dcf_process_record(updated = process3)
   
 }
