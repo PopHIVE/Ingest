@@ -206,7 +206,10 @@ cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %
   dplyr::select(-time)%>%
   mutate(outcome_name = tools::toTitleCase(outcome_name))
 
-epic_cms_county_combine <- bind_rows(cms_county,epic_county)
+epic_cms_county_combine <- bind_rows(cms_county,epic_county) %>%
+  mutate( age = gsub('_to_','-', age),
+          age = gsub('Under_','<', age)) 
+
 write_parquet(epic_cms_county_combine,'./dist/epic_prevalence_by_geography_county_and_source.parquet' )
 
 
