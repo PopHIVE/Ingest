@@ -33,6 +33,7 @@ dcf_build()
 #dcf::dcf_add_source("medicaid_quality")
 #dcf::dcf_add_source("vaers")
 #dcf::dcf_add_source("narms")
+dcf::dcf_add_source("wisqars")
 
 
 #dcf_add_source("schoolvaxview")
