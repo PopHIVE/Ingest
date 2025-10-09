@@ -136,7 +136,8 @@ brfss_most_recent <- brfss_long %>%
 epic_brfss_cms_combined <- bind_rows(epic_state,brfss_most_recent,cms_state_most_recent)%>% 
   mutate( age = gsub('_to_','-', age),
           age = gsub('Under_','<', age)) %>%
-  dplyr::select(-fips)
+  dplyr::select(-fips) %>%
+  filter(geography %in% c('United States','District of Colombia',state.name))
 
 
 write_parquet(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_source.parquet' )
