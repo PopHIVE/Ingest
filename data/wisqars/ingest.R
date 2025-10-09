@@ -61,8 +61,47 @@ import_wisqars <- function(staging_file,
   # Save the tidy main data to a new CSV (if needed)
   clean_data_path <- paste0(raw_path,file_name, ".csv.gz")
   vroom::vroom_write(main_data, clean_data_path)
-  
-  
 }
 
+# separate the metadata and data, move to raw
+
 lapply(all_files,import_wisqars)
+
+
+a1 <- vroom::vroom('./raw/intentional_age_2023.csv.gz') %>%
+  rename(age = 'Age Group') %>%
+  mutate(Mechanism = str_to_lower(
+    str_replace_all(Mechanism, "[^a-zA-Z0-9]+", "_")
+  )) %>%
+  filter(Mechanism =='firearm') %>%
+  ungroup() %>%
+  pivot_wider(id_cols= c(age,Year, State), names_prefix='rate_intentional_',names_from=Mechanism, values_from=`Crude Rate`) 
+
+a2 <- vroom::vroom('./raw/unintentional_age_2023.csv.gz') %>%
+  rename(age = 'Age Group') %>%
+  mutate(Mechanism = str_to_lower(
+    str_replace_all(Mechanism, "[^a-zA-Z0-9]+", "_")
+  )) %>%
+  group_by(Mechanism) %>%
+  mutate( n_group =n(),
+          n_nonmiss = sum(!is.na(`Crude Rate`)),
+          keep = n_nonmiss > 100) %>% #remove if missing more than half
+  filter(keep==1) %>%
+  ungroup() %>%
+  pivot_wider(id_cols= c(age, Year, State), names_prefix='rate_unintentional_',names_from=Mechanism, values_from=`Crude Rate`) 
+
+geocodes <- vroom::vroom('../../resources/all_fips.csv.gz') %>%
+  filter(geography_name %in% state.name)
+
+b1 <- a1 %>%
+  full_join(a2, by=c('age', 'Year', 'State')) %>%
+  mutate(time = paste0(Year,'-01-01')
+         ) %>%
+  rename(geography_name = State) %>%
+  left_join(geocodes ,by='geography_name') %>%
+  relocate(geography, age, time) %>%
+  dplyr::select(-state, -geography_name)
+
+vroom::vroom_write(b1, './standard/data.csv.gz')
+
+
