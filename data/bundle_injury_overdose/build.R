@@ -8,11 +8,9 @@ all_fips <- vroom::vroom('../../resources/all_fips.csv.gz') %>%
 
 #brfss
 
-brfss <- vroom::vroom('../../data/brfss/standard/data.csv.gz')
+#a1 <- vroom::vroom('../../data/brfss/standard/data.csv.gz')
 
-#WISQARS data
-
-wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz')
+##cms_mmd
 
 #CMS data is annual, not by month
 cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') %>%
