@@ -1,12 +1,11 @@
+#Medicare FFS uses the CCW algorithms https://www2.ccwdata.org/documents/10280/19139421/chr-chronic-condition-algorithms.pdfcms
 library(tidyverse)
-library(tidycensus)
-# read data from data source projects
-library(tidyverse)
-
+library(arrow)
+### FIPS codes
 all_fips <- vroom::vroom('../../resources/all_fips.csv.gz') %>%
   mutate(geography = as.numeric(geography))
 
-#WISQARS data
+#### WISQARS data
 
 wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz')
 
@@ -18,13 +17,11 @@ cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') 
   mutate(geography=as.numeric(geography)) 
 
 cms_all_age_year <- cms %>%
-  filter(age =='All_Ages')
-
+  filter(age =='Total')
 
 wisqars_od <- wisqars %>%
-  dplyr::select(geography, age, time, rate_unintentional_drug_poisoning )
-
-
+  dplyr::select(geography, age, time, rate_unintentional_drug_poisoning ) %>%
+  mutate(geography = as.numeric(geography))
 
 nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
  # mutate(geography = sprintf("%02d", geography)) %>%
@@ -37,7 +34,7 @@ write_parquet(nchs_od_state,'./dist/overdose_deaths_state.parquet' )
 
 nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') %>%
  # mutate(geography = sprintf("%05d", geography)) %>%
-  right_join(all_fips, by='geography') %>%
+  full_join(all_fips, by='geography') %>%
   rename(
          nchs_pct_pending_invest = pct_pending_invest)%>%
   relocate(geography_name, state, geography)
@@ -67,11 +64,18 @@ google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
 
 ## Month trends in overdoses
 
+#need to standardize the age naming; age groups do not really align; main interest is <65 and 65+
+# ggplot(cms) +geom_line(aes(x=age, y=cms_opioid_use_disorder_overarching, group=geography))
+
+drugs_month_age <- wisqars_od %>%
+  left_join(cms, by=c('age', 'geography','time'))
+
 ### google trends
 ### NCHS deaths in previous 12 month
 drugs_month <- nchs %>%
   dplyr::select(-geography_name) %>%
   full_join(google, by=c('geography','time')) %>%
+  full_join(cms_all_age_year, by=c('geography','time')) %>%
   rename(date = time,
   ) %>%
   left_join(all_fips, by='geography') %>%
@@ -102,4 +106,53 @@ drugs_month %>%
 
 ## Map of OD by month; county,--just take every 12th observation,
 ##NCHS deathsm CMS opioid use disorder
-#nchs_od_county
+library(usmap)
+pop = vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
+  dplyr::select(Total, GEOID) %>%
+  rename(geography = GEOID) %>%
+  mutate(geography = as.numeric(geography))
+
+nchs_od_month_pull <- nchs %>%
+  left_join(pop, by='geography') %>%
+  mutate(month=month(time),
+         max_date = max(time, na.rm=T),
+         max_month = month(max_date),
+         year= year(time),
+         overdose_rate = n_deaths_overdose / Total*100000) 
+
+nchs_od_month_pull %>%
+  filter(year==2025) %>%
+  filter(month==max_month) %>%
+  rename(states= geography_name) %>%
+plot_usmap(data=., regions='state', values = "overdose_rate", color = NA) + 
+  scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
+  theme(legend.position = "right")
+
+
+
+cms %>%
+  filter(time==max(time, na.rm=T) & age=='<65 Years') %>%
+  rename(fips=geography) %>%
+plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
+  scale_fill_continuous(name = "Opioid use disorder prevalence, <65 years CMS", label = scales::comma) + 
+  theme(legend.position = "right")
+
+#County maps
+cms %>%
+  filter(time==max(time) & age=='65+ Years') %>%
+  rename(fips=geography) %>%
+  plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
+  scale_fill_continuous(name = "Prevalence", label = scales::comma) + 
+  theme(legend.position = "right")+
+  ggtitle('Opioid use disorder prevalence, 65+ years Medicare FFS')
+        
+
+nchs_od_month_pull %>%
+  filter(time=='2024-12-31' & !(geography_name %in% c(state.name, 'District of Columbia'))) %>%
+  rename(fips = geography) %>%
+  plot_usmap(data=., regions='counties', values = "overdose_rate", color = NA) + 
+  scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
+  theme(legend.position = "right")+
+  ggtitle('Overdose deaths/100000 (NCHS)')
+
+

@@ -1,13 +1,3 @@
-#Queries
-#Unntentional by state and age and Mechanism, 2023:
-#https://wisqars.cdc.gov/reports/?o=MORT&y1=2023&y2=2023&t=0&i=1&m=20810&g=00&me=0&s=0&r=0&ry=2&e=0&yp=65&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=NONE
-
-#Violence related by state and age and mechanism, 2023
-#https://wisqars.cdc.gov/reports/?o=MORT&y1=2023&y2=2023&t=0&i=8&m=20810&g=00&me=0&s=0&r=0&ry=2&e=0&yp=65&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=NONE
-
-#NVDRS intent, age, state
-#https://wisqars.cdc.gov/nvdrs/?rt=3&rt2=0&y=2022&g=00&i=0&m=20810&s=0&r=0&e=0&rl=0&pc=0&pr=0&h=0&ml=0&a=ALL&a1=0&a2=199&g1=0&g2=199&r1=NVDRS-INTENT&r2=AGEGP&r3=STATE&r4=NONE
-
 # Load necessary libraries
 library(jsonlite) # For writing JSON files
 library(tidyverse)    # For data tidying

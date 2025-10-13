@@ -1,3 +1,4 @@
+#Note raw data downloaded from the CMS MMD dashboard uinsg the scraper_chronic_behavioral.R and scraper_screening.R files
 library(tidyverse)
 library(arrow)
 
@@ -52,7 +53,15 @@ if (!identical(process$raw_state, raw_state)) {
     )
   
   data <- data1 %>%
-    full_join(data2, by=c('geography', 'geography_level', 'time','age'))
+    full_join(data2, by=c('geography', 'geography_level', 'time','age')) %>%
+    mutate( age = gsub('_plus','+', age),
+            age = gsub('All_Ages','Total', age),
+            age = gsub('_to_','-', age),
+            age = gsub('Under_','<', age),
+            age = paste0(age, ' Years'),
+            age = gsub('Total Years', 'Total', age)
+            
+            )
     
     
   vroom::vroom_write(data, "standard/data_state_county_age.csv.gz", ",")
