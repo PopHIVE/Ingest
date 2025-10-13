@@ -134,7 +134,10 @@ if (!identical(process2$raw_state, raw_state2)) {
   data2 <- open_dataset('./raw/gb4e-yj24.parquet') %>%
     collect() %>%
     mutate( time = as.Date(MonthEndingDate, '%m/%d/%Y'),
-            geography=paste0(STATEFIPS, COUNTYFIPS)
+            STATEFIPS = sprintf("%02d", STATEFIPS),
+            COUNTYFIPS = sprintf("%03d", COUNTYFIPS),
+            geography=paste0(STATEFIPS, COUNTYFIPS),
+            geography = as.numeric(geography)
     ) %>%
     rename(n_deaths_overdose='Provisional Drug Overdose Deaths',
            pct_pending_invest = 'Percentage Of Records Pending Investigation',
@@ -170,7 +173,7 @@ if (!identical(process3$raw_state, raw_state3)) {
            )%>%
     filter(state ==T ) %>%
     mutate(geography_name =  gsub('Rate ', '', name)) %>%
-    mutate( geography_name = if_else(geography_name=='Rate_overall', 'United State', geography_name),
+    mutate( geography_name = if_else(geography_name=='Rate_overall', 'United States', geography_name),
             qtr = str_extract(year_q, "(?<=\\s).*"),
             month = if_else(qtr=='Q1', '01',
                             if_else(qtr=='Q2', '04',
