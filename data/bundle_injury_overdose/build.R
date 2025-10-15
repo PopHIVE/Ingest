@@ -2,26 +2,34 @@
 library(tidyverse)
 library(arrow)
 ### FIPS codes
-all_fips <- vroom::vroom('../../resources/all_fips.csv.gz') %>%
-  mutate(geography = as.numeric(geography))
+all_fips <- vroom::vroom('../../resources/all_fips.csv.gz') 
+
+pop <- vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
+  dplyr::select(GEOID, Total) %>%
+  rename(geography=GEOID,
+         pop=Total)
 
 #### WISQARS data
 
-wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz')
+wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
+  mutate(time = time %m+% years(1)  - 1 ) #define based on end of period
 
 #CMS data is annual, not by month
 cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') %>%
   dplyr::select(geography, time, age,cms_alcohol_use_disorder, cms_drug_use_disorder,
                 cms_opioid_use_disorder_dx_px_based, cms_opioid_use_disorder_overarching,
-                cms_tobacco_use_disorder )%>%
-  mutate(geography=as.numeric(geography)) 
+                cms_tobacco_use_disorder ) %>%
+  mutate(time = time %m+% years(1)  - 1 ) #define based on end of period
 
-cms_all_age_year <- cms %>%
-  filter(age =='Total')
+
+
+cms_65plus_year <- cms %>%
+  filter(age =='65+ Years') %>%
+  mutate(time_end = time + 1) 
 
 wisqars_od <- wisqars %>%
-  dplyr::select(geography, age, time, rate_unintentional_drug_poisoning ) %>%
-  mutate(geography = as.numeric(geography))
+  mutate(time_end = time + 1) %>%
+  dplyr::select(geography, age, time_end, rate_drug_poisoning ) 
 
 nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
  # mutate(geography = sprintf("%02d", geography)) %>%
@@ -52,8 +60,7 @@ nchs <- bind_rows(nchs_od_state, nchs_od_county)
 google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
   rename(gtrends_drug_overdose ="gtrends_drug+overdose") %>%
   dplyr::select(geography, time, gtrends_naloxone,gtrends_narcan, gtrends_overdose,gtrends_drug_overdose)%>%
-  mutate(geography=as.numeric(geography),
-         time = lubridate::floor_date(time, unit='month'))%>%
+  mutate(time = lubridate::floor_date(time, unit='month'))%>%
   group_by(geography, time) %>%
   summarise(across(
     c(gtrends_naloxone, gtrends_narcan, gtrends_overdose, gtrends_drug_overdose),
@@ -75,26 +82,61 @@ drugs_month_age <- wisqars_od %>%
 drugs_month <- nchs %>%
   dplyr::select(-geography_name) %>%
   full_join(google, by=c('geography','time')) %>%
-  full_join(cms_all_age_year, by=c('geography','time')) %>%
+  full_join(cms_65plus_year, by=c('geography'='geography','time'='time_end')) %>%
+  full_join(wisqars_od %>% filter(age=='Total'), by=c('geography'='geography','time'='time_end')) %>%
   rename(date = time,
   ) %>%
+  dplyr::select(geography, date, n_deaths_overdose,n_deaths_all_cause, rate_drug_poisoning,gtrends_narcan,cms_drug_use_disorder,cms_opioid_use_disorder_overarching  ) %>%
   left_join(all_fips, by='geography') %>%
   arrange(geography, date) %>%
   group_by(geography) %>%
-  mutate(gtrends_narcan_cum12 = zoo::rollsum(gtrends_narcan, k=12, na.pad=T))
+  left_join(pop, by='geography') %>%
+  mutate(gtrends_narcan_cum12 = zoo::rollsum(gtrends_narcan, k=12, na.pad=T),
+         od_death_rate = n_deaths_overdose / pop * 100000
+         )
+
+drugs_month_source <- drugs_month %>%
+  dplyr::select(date, geography,geography_name,gtrends_narcan_cum12, od_death_rate,rate_drug_poisoning,cms_opioid_use_disorder_overarching ) %>%
+  pivot_longer( cols=c(gtrends_narcan_cum12, od_death_rate,rate_drug_poisoning,cms_opioid_use_disorder_overarching)) %>%
+  mutate( source = if_else( name== 'gtrends_narcan_cum12', "Google Health Trends",
+                            if_else( name== 'od_death_rate', "CDC/NCHS",
+                                     if_else( name== 'rate_drug_poisoning', "CDC/WISQARS",
+                                              if_else( name== 'cms_opioid_use_disorder_overarching', "Medicare",NA_character_
+                            ))))
+  )
+
+drugs_month_source %>% 
+  ungroup() %>%
+    filter(geography_name %in% c('United States', 'District of Columbia', state.name)) %>%
+  dplyr::select(geography_name,date, source, value ) %>%
+  rename(geography = geography_name) %>%
+  filter(!is.na(value)) %>%
+  vroom::vroom_write(., './dist/overdose_by_geography_and_source.parquet')
+
+drugs_month_source %>% 
+  ungroup() %>%
+  filter(!(geography_name %in% c('United States', 'District of Columbia', state.name))) %>%
+  dplyr::select(geography_name,date, source, value ) %>%
+  rename(geography = geography_name) %>%
+  filter(!is.na(value)) %>%
+  vroom::vroom_write(., './dist/overdose_by_geography_and_source_county.parquet')
+
+
+
 
 
 ###Time series of drug overdose deaths and naloxone searches by state
 
-#The nchs data are 12 month cumulative sum.
+#The nchs + WISQARS, google data are 12 month cumulative sum .(e.g., 2023-01-01 is the total for 2022 calendar year)
 drugs_month %>%
   filter(geography_name=='New York' ) %>%
   ggplot()+
   # geom_line(aes(x=date, y=gtrends_naloxone/max(gtrends_naloxone)))+
   geom_line(aes(x=date, y=gtrends_narcan_cum12/max(gtrends_narcan_cum12, na.rm=T)), color='red')+
-  geom_line(aes(x=date, y=n_deaths_overdose/max(n_deaths_overdose, na.rm=T)), color='blue')+
-  #geom_line(aes(x=date, y=gtrends_drug_overdose/max(gtrends_drug_overdose)), color='blue')+
-  theme_classic()+
+  geom_line(aes(x=date, y=od_death_rate/max(od_death_rate, na.rm=T)), color='blue')+
+  geom_point(aes(x=date, y=rate_drug_poisoning/max(rate_drug_poisoning, na.rm=T)), color='black')+
+  geom_point(aes(x=date, y=cms_opioid_use_disorder_overarching/max(cms_opioid_use_disorder_overarching, na.rm=T)), color='orange')+
+    theme_classic()+
   ylim(0,NA)
 
 drugs_month %>%
