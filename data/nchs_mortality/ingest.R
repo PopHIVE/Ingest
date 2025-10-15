@@ -45,7 +45,8 @@ if (!identical(process1$raw_state, raw_state1)) {
     mutate( 
             geography = if_else(State=='US', 0,
                                fips(State, to='FIPS')
-          )
+          ),
+          geography = sprintf("%02d", geography)
     ) %>%
     rename( n_deaths_cocaine = "Cocaine (T40.5)" ,
             n_deaths_heroin = "Heroin (T40.1)" ,
@@ -78,7 +79,9 @@ if (!identical(process1$raw_state, raw_state1)) {
     mutate( 
       geography = if_else(State=='US', 0,
                           fips(State, to='FIPS')
-      )
+      ),
+      geography = sprintf("%02d", geography)
+      
     ) %>%
     rename( # pct_drug_specified = "Percent with drugs specified",
     ) %>%
@@ -93,6 +96,7 @@ if (!identical(process1$raw_state, raw_state1)) {
     mutate( State = if_else(State=='YC','NY', State), #combines NYC and NY state
             geography = if_else(State=='US', 0,
                                 fips(State, to='FIPS') ),
+            geography = sprintf("%02d", geography),
               wgt = if_else(`State Name`=='New York', (19.87-8.258)/19.87,
                          if_else(`State Name`=='New York City', 8.258/19.87,
                                  1

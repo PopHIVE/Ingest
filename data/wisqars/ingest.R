@@ -154,7 +154,7 @@ if (!identical(process$raw_state, raw_state)) {
   files <- list.files("raw", pattern = "\\.csv\\.xz$", full.names = TRUE)
   
   # read and combine, adding source info
-  combined <- files %>%
+  data <- files %>%
     set_names() %>%
     map_dfr(~ vroom::vroom(.x, show_col_types = FALSE) %>%
               mutate(source = basename(.x)), .id = NULL) %>%
@@ -172,6 +172,7 @@ if (!identical(process$raw_state, raw_state)) {
       deaths = as.numeric(deaths),
       state = replace_na(state, "00"),
       agegrp = replace_na(agegrp, "Total"),
+      agegrp = gsub('Years',' Years',agegrp),
       Mechlbl = str_to_lower(
         str_replace_all(Mechlbl, "[^a-zA-Z0-9]+", "_")
       ),
@@ -182,14 +183,15 @@ if (!identical(process$raw_state, raw_state)) {
       time=paste0(year, '-01-01')
           ) %>%
     rename(geography = state,
-           rate = CrudeRate
+           rate = CrudeRate,
+           age= agegrp
            ) %>%
     filter(grepl('firearm',Mechlbl) | type=='accident') %>%
     dplyr::group_by(type,Mechlbl) |>
-    dplyr::filter(sum(!is.na(rate)) > 100, agegrp != "Unknown") |>
+    dplyr::filter(sum(!is.na(rate)) > 100, age != "Unknown") |>
     ungroup()|>
     tidyr::pivot_wider(
-      id_cols = c("geography", "time", "agegrp"),
+      id_cols = c("geography", "time", "age"),
       #names_prefix = "wisqars_",
       names_from = c("Mechlbl"),
       values_from = c("rate", "deaths")
