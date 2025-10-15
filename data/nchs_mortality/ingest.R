@@ -136,8 +136,7 @@ if (!identical(process2$raw_state, raw_state2)) {
     mutate( time = as.Date(MonthEndingDate, '%m/%d/%Y'),
             STATEFIPS = sprintf("%02d", STATEFIPS),
             COUNTYFIPS = sprintf("%03d", COUNTYFIPS),
-            geography=paste0(STATEFIPS, COUNTYFIPS),
-            geography = as.numeric(geography)
+            geography=paste0(STATEFIPS, COUNTYFIPS)
     ) %>%
     rename(n_deaths_overdose='Provisional Drug Overdose Deaths',
            pct_pending_invest = 'Percentage Of Records Pending Investigation',

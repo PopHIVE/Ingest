@@ -1,138 +1,202 @@
-#Queries
-#Unntentional by state and age and Mechanism, 2023:
-#https://wisqars.cdc.gov/reports/?o=MORT&y1=2023&y2=2023&t=0&i=1&m=20810&g=00&me=0&s=0&r=0&ry=2&e=0&yp=65&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=NONE
+library(tidyverse)
+library(dcf)
+#
+# Download
+#
+agegrps <- list(c(0,14),
+                c(15,24), 
+                c(25,44), 
+                c(45,64) ,
+                c(65,199)
+)
 
-#unintentional by state and mechanism, 2023
-#https://wisqars.cdc.gov/reports/?o=MORT&y1=2023&y2=2023&t=0&d=&i=1&m=20810&g=00&me=0&s=0&r=0&ry=2&e=0&yp=65&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=NONE&r3=STATE&r4=NONE
+#Use custom age groups
+#violence, stratified by age and state
 
-#Violence related by state and age and mechanism, 2018-2023
-#https://wisqars.cdc.gov/reports/?o=MORT&y1=2018&y2=2023&t=0&d=&i=8&m=20890&g=00&me=0&s=0&r=0&ry=2&e=0&yp=65&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR
-#Violence related by state and mechanism, all ages 2023
-#https://wisqars.cdc.gov/reports/?o=MORT&y1=2023&y2=2023&t=0&d=&i=8&m=20810&g=00&me=0&s=0&r=0&ry=2&e=0&yp=65&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=NONE&r3=STATE&r4=NONE
-
-#NVDRS intent, age, state
-#https://wisqars.cdc.gov/nvdrs/?rt=3&rt2=0&y=2022&g=00&i=0&m=20810&s=0&r=0&e=0&rl=0&pc=0&pr=0&h=0&ml=0&a=ALL&a1=0&a2=199&g1=0&g2=199&r1=NVDRS-INTENT&r2=AGEGP&r3=STATE&r4=NONE
-
-# Load necessary libraries
-library(jsonlite) # For writing JSON files
-library(tidyverse)    # For data tidying
-
-staging_path = './raw/staging/'
-all_files <- list.files(staging_path, full.names = T)
-
-import_wisqars <- function(staging_file,
-                           staging_path = './raw/staging/',
-                           raw_path = './raw/') {
-  file_name  <- gsub(staging_path, '', staging_file)
-  file_name <- gsub('.csv', '', file_name)
-  
-  data <- read_csv(staging_file)
-  
-  # Find the start of metadata
-  # Assuming the metadata starts when most columns have NA or empty values
-  metadata_start_index <- which(rowSums(is.na(data) |
-                                          data == "") > (ncol(data) - 3))[1]
-  
-  # Separate the main data and metadata
-  main_data <- data[1:(metadata_start_index - 1), ]
-  metadata <- data[metadata_start_index:nrow(data), ]
-  
-  # Reset row names for main_data and metadata
-  rownames(main_data) <- NULL
-  rownames(metadata) <- NULL
-  
-  # Convert metadata to a list and save to a JSON file
-  metadata_list <- lapply(1:nrow(metadata), function(i) {
-    row_data <- metadata[i, ]
-    row_data <- row_data[!is.na(row_data)]
-    return(list(row_data))
+wisqars_downloader <- function(max_year=2023) {
+  lapply(agegrps, function(X) {
+    raw_file <-
+      paste0("raw/violence_state_age_", X[1], "_", X[2], ".csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      intent = "violence",
+      group_by = c("MECH", "STATE", "YEAR"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      race_reporting = 'none' #this allows going back before 2018
+    )
+    
+    ds <- vroom::vroom(raw_file)
+    ds$agegrp = paste0(X[1], '-' , X[2], 'Years')
+    vroom::vroom_write(ds, raw_file)
   })
   
-  # Flatten list structure and remove empty elements
-  metadata_clean <- lapply(metadata_list, function(x)
-    unlist(x))
-  metadata_clean <- metadata_clean[sapply(metadata_clean, length) > 0]
+  #accident, stratified by age and state
+  lapply(agegrps, function(X) {
+    raw_file <-
+      paste0("raw/accident_state_age_", X[1], "_", X[2], ".csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      intent = "unintentional",
+      group_by = c("MECH", "STATE", "YEAR"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      race_reporting = 'none' #this allows going back before 2018
+    )
+    
+    ds <- vroom::vroom(raw_file)
+    ds$agegrp = paste0(X[1], '-' , X[2], 'Years')
+    vroom::vroom_write(ds, raw_file)
+  })
   
-  # Convert to a named list using the first column for keys and all subsequent columns for values
-  metadata_named_list <- setNames(lapply(metadata_clean, function(x)
-    x[-1]),
-    sapply(metadata_clean, function(x)
-      x[1]))
   
-  # Save the metadata to a JSON file
-  metadata_json_path <- paste0(raw_path,file_name, ".json")
-  write_json(metadata_named_list, metadata_json_path, pretty = TRUE)
+  #violence, stratified by age
+  lapply(agegrps, function(X) {
+    raw_file <- paste0("raw/violence_age_", X[1], "_", X[2], ".csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      intent = "violence",
+      group_by = c("MECH",  "YEAR"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      race_reporting = 'none' #this allows going back before 2018
+    )
+    
+    ds <- vroom::vroom(raw_file)
+    ds$agegrp = paste0(X[1], '-' , X[2], 'Years')
+    vroom::vroom_write(ds, raw_file)
+  })
   
-  # Tidying the main data (optional step based on your needs)
-  # For instance, remove rows where 'Deaths' is '--'
-  main_data <- main_data %>%
-    filter(Deaths != '--')
+  #accident, stratified by age
+  lapply(agegrps, function(X) {
+    raw_file <- paste0("raw/accident_age_", X[1], "_", X[2], ".csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      intent = "unintentional",
+      group_by = c("MECH",  "YEAR"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      race_reporting = 'none' #this allows going back before 2018
+    )
+    
+    ds <- vroom::vroom(raw_file)
+    ds$agegrp = paste0(X[1], '-' , X[2], 'Years')
+    vroom::vroom_write(ds, raw_file)
+  })
   
-  # You can also convert specific columns to numeric if needed, e.g.:
-  main_data$Year <- as.numeric(main_data$Year)
-  main_data$Population <- as.numeric(gsub(",", "", main_data$Population))
-  main_data$`Crude Rate` <- as.numeric(gsub("\\*\\*", "", main_data$`Crude Rate`))
-  main_data$`Age-Adjusted Rate` <- as.numeric(gsub("--", NA_character_, main_data$`Age-Adjusted Rate`))
   
-  # Save the tidy main data to a new CSV (if needed)
-  clean_data_path <- paste0(raw_path,file_name, ".csv.gz")
-  vroom::vroom_write(main_data, clean_data_path)
+  
+  #violence, stratified by state
+  dcf::dcf_download_wisqars(
+    "raw/violence_state.csv.xz",
+    intent = "violence",
+    group_by = c("MECH", "STATE",  "YEAR"),
+    year_start = 2001,
+    year_end = max_year,
+    race_reporting = 'none' #this allows going back before 2018
+  )
+  
+  #accident, stratified by state
+  dcf::dcf_download_wisqars(
+    "raw/accident_state.csv.xz",
+    intent = "unintentional",
+    group_by = c("MECH", "STATE",  "YEAR"),
+    year_start = 2001,
+    year_end = max_year,
+    race_reporting = 'none' #this allows going back before 2018
+  )
+  
+  #Overall
+  dcf::dcf_download_wisqars(
+    "raw/violence.csv.xz",
+    intent = "violence",
+    group_by = c("MECH",  "YEAR"),
+    year_start = 2001,
+    year_end = max_year,
+    race_reporting = 'none' #this allows going back before 2018
+  )
+  
+  #accident, stratified by state
+  dcf::dcf_download_wisqars(
+    "raw/accident.csv.xz",
+    intent = "unintentional",
+    group_by = c("MECH",  "YEAR"),
+    year_start = 2001,
+    year_end = max_year,
+    race_reporting = 'none' #this allows going back before 2018
+  )
 }
 
-# separate the metadata and data, move to raw
+#RERESH ALL THE DATA
+#wisqars_downloader(max_year=2023)
+  
+#
+# Reformat
+#
 
-lapply(all_files,import_wisqars)
+raw_state <- as.list(tools::md5sum(list.files(
+  "raw",
+  "csv",
+  full.names = TRUE
+)))
+process <- dcf::dcf_process_record()
 
-
-a1a <- vroom::vroom('./raw/intentional_2018_2023_state_age.csv.gz') %>%
-  rename(age = 'Age Group') 
-
-a1b <- vroom::vroom('./raw/intentional_2018_2023_state.csv.gz') %>%
-  mutate(age = 'Total')
-
-a1 <- bind_rows(a1a, a1b) %>%
-  mutate(Mechanism = str_to_lower(
-    str_replace_all(Mechanism, "[^a-zA-Z0-9]+", "_")
-  )) %>%
-  filter(Mechanism =='firearm') %>%
-  ungroup() %>%
-  pivot_wider(id_cols= c(age,Year, State), names_prefix='rate_intentional_',names_from=Mechanism, values_from=`Crude Rate`) 
-
-
-a2a <- vroom::vroom('./raw/unintentional_2018_2023_state_age.csv.gz') %>%
-  rename(age = 'Age Group') 
-
-a2b <- vroom::vroom('./raw/unintentional_2018_2023_state.csv.gz') %>%
-  mutate(age = 'Total')
-
-a2 <- bind_rows(a2a, a2b) %>%
-  mutate(Mechanism = str_to_lower(
-    str_replace_all(Mechanism, "[^a-zA-Z0-9]+", "_")
-  )) %>%
-  group_by(Mechanism) %>%
-  mutate( n_group =n(),
-          n_nonmiss = sum(!is.na(`Crude Rate`)),
-          keep = n_nonmiss > 100) %>% #remove if missing more than half
-  filter(keep==1) %>%
-  ungroup() %>%
-  pivot_wider(id_cols= c(age, Year, State), names_prefix='rate_unintentional_',names_from=Mechanism, values_from=`Crude Rate`) 
-
-geocodes <- vroom::vroom('../../resources/all_fips.csv.gz') %>%
-  filter(geography_name %in% state.name)
-
-b1 <- a1 %>%
-  full_join(a2, by=c('age', 'Year', 'State')) %>%
-  mutate(time = paste0(Year,'-01-01')
-         ) %>%
-  rename(geography_name = State) %>%
-  left_join(geocodes ,by='geography_name') %>%
-  relocate(geography, age, time) %>%
-  dplyr::select(-state, -geography_name) %>%
-  mutate(age = gsub(' to ', '-', age),
-         age = paste0(age, ' Years'),
-         age = gsub('Total Years', 'Total', age)
-         )
-
-vroom::vroom_write(b1, './standard/data.csv.gz')
-
-
+# process raw if state has changed
+if (!identical(process$raw_state, raw_state)) {
+  files <- list.files("raw", pattern = "\\.csv\\.xz$", full.names = TRUE)
+  
+  # read and combine, adding source info
+  combined <- files %>%
+    set_names() %>%
+    map_dfr(~ vroom::vroom(.x, show_col_types = FALSE) %>%
+              mutate(source = basename(.x)), .id = NULL) %>%
+    # clean and parse source into structured columns
+    mutate(source = str_remove(source, "\\.csv\\.xz$")) %>%
+    separate_wider_delim(
+      source,
+      delim = "_",
+      names = c("type", "level", "age1", "age2", "age3"),
+      too_few = "align_start"
+    ) %>%
+    # combine age columns into one (if present)
+    mutate(
+      CrudeRate = as.numeric(CrudeRate),
+      deaths = as.numeric(deaths),
+      state = replace_na(state, "00"),
+      agegrp = replace_na(agegrp, "Total"),
+      Mechlbl = str_to_lower(
+        str_replace_all(Mechlbl, "[^a-zA-Z0-9]+", "_")
+      ),
+      Mechlbl = if_else(Mechlbl=='firearm' & type=='accident','firearm_accident',
+                        if_else(Mechlbl=='firearm' & type=='violence','firearm_intentional',
+                                Mechlbl  
+                        )),
+      time=paste0(year, '-01-01')
+          ) %>%
+    rename(geography = state,
+           rate = CrudeRate
+           ) %>%
+    filter(grepl('firearm',Mechlbl) | type=='accident') %>%
+    dplyr::group_by(type,Mechlbl) |>
+    dplyr::filter(sum(!is.na(rate)) > 100, agegrp != "Unknown") |>
+    ungroup()|>
+    tidyr::pivot_wider(
+      id_cols = c("geography", "time", "agegrp"),
+      #names_prefix = "wisqars_",
+      names_from = c("Mechlbl"),
+      values_from = c("rate", "deaths")
+    )
+  
+  vroom::vroom_write(data, "standard/data.csv.gz", ",")
+  
+  process$raw_state <- raw_state
+  dcf::dcf_process_record(updated = process)
+}
