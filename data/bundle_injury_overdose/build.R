@@ -219,17 +219,13 @@ ggplot() +
   geom_line(aes(x=time, y=rate_firearm_intentional, group=age, color=age))
 
 
-wisqars %>%
-  filter(geography=='36' ) %>%
-  ggplot() +
-  geom_point(aes(x=time, y=rate_fall, group=age, color=age))
 
 wisqars %>%
   filter(geography=='36' ) %>%
   ggplot() +
-  geom_line(aes(x=time, y=rate_motor_vehicle_traffic, group=age, color=age))+
+  geom_line(aes(x=time, y=rate_firearm_intentional, group=age, color=age))+
   ylim(0,NA) +
   theme_classic()+
   ylab('Deaths/100000')+
-  ggtitle('Rate of Deaths from Motor Vehicle Crashes in New York')
+  ggtitle('Rate of Deaths from Firearm injuries in New York')
 
