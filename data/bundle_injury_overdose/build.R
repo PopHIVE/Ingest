@@ -4,6 +4,7 @@ library(arrow)
 ### FIPS codes
 all_fips <- vroom::vroom('../../resources/all_fips.csv.gz') 
 
+
 pop <- vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
   dplyr::select(GEOID, Total) %>%
   rename(geography=GEOID,
@@ -24,7 +25,12 @@ wisqars_long <- wisqars%>%
   dplyr::select(geography, year,age, starts_with('death')) %>%
   pivot_longer(starts_with('death'), values_to='N') %>%
   mutate( name = gsub('deaths_', '',name)) %>%
-  full_join(wisqars_long_rate, by=c('geography', 'year','age', 'name'))
+  full_join(wisqars_long_rate, by=c('geography', 'year','age', 'name')) %>%
+  left_join(all_fips, by='geography') %>%
+  dplyr::select(-geography,state) %>%
+  rename(geography = geography_name,
+         cause_of_death = name) %>%
+  dplyr::select(year, age, geography, cause_of_death, value, N)
 
 write_parquet(wisqars_long,'./dist/deaths_cause_age.parquet')
 
@@ -231,7 +237,7 @@ ggplot() +
 
 
 
-wisqars %>%
+wisqars_long %>%
   filter(geography=='36' ) %>%
   ggplot() +
   geom_line(aes(x=time, y=rate_firearm_intentional, group=age, color=age))+
