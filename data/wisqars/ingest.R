@@ -25,12 +25,10 @@ wisqars_downloader <- function(max_year=2023) {
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
+      group_ages=F,
       race_reporting = 'none' #this allows going back before 2018
     )
     
-    ds <- vroom::vroom(raw_file)
-    ds$agegrp = paste0(X[1], '-' , X[2], 'Years')
-    vroom::vroom_write(ds, raw_file)
   })
   
   #accident, stratified by age and state
@@ -45,12 +43,10 @@ wisqars_downloader <- function(max_year=2023) {
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
+      group_ages=F,
       race_reporting = 'none' #this allows going back before 2018
     )
     
-    ds <- vroom::vroom(raw_file)
-    ds$agegrp = paste0(X[1], '-' , X[2], 'Years')
-    vroom::vroom_write(ds, raw_file)
   })
   
   
@@ -65,12 +61,10 @@ wisqars_downloader <- function(max_year=2023) {
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
+      group_ages=F,
       race_reporting = 'none' #this allows going back before 2018
     )
     
-    ds <- vroom::vroom(raw_file)
-    ds$agegrp = paste0(X[1], '-' , X[2], 'Years')
-    vroom::vroom_write(ds, raw_file)
   })
   
   #accident, stratified by age
@@ -84,12 +78,10 @@ wisqars_downloader <- function(max_year=2023) {
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
+      group_ages=F,
       race_reporting = 'none' #this allows going back before 2018
     )
     
-    ds <- vroom::vroom(raw_file)
-    ds$agegrp = paste0(X[1], '-' , X[2], 'Years')
-    vroom::vroom_write(ds, raw_file)
   })
   
   
@@ -157,8 +149,16 @@ if (!identical(process$raw_state, raw_state)) {
   data <- files %>%
     set_names() %>%
     map_dfr(~ vroom::vroom(.x, show_col_types = FALSE) %>%
-              mutate(source = basename(.x)), .id = NULL) %>%
-    # clean and parse source into structured columns
+              mutate(source = basename(.x),
+                     deaths = as.character(deaths),
+                     ypll = as.character(ypll),
+                     CrudeRate = as.character(CrudeRate),
+                     CrudeRateypll = as.character(CrudeRateypll)
+                     
+                     
+            )
+            )%>%
+      
     mutate(source = str_remove(source, "\\.csv\\.xz$")) %>%
     separate_wider_delim(
       source,
@@ -167,12 +167,20 @@ if (!identical(process$raw_state, raw_state)) {
       too_few = "align_start"
     ) %>%
     # combine age columns into one (if present)
+    rename(agegrp= agegp) %>%
     mutate(
+      CrudeRate = gsub("**","",CrudeRate, fixed=T),
+      deaths = gsub("**","",deaths, fixed=T),
       CrudeRate = as.numeric(CrudeRate),
       deaths = as.numeric(deaths),
       state = replace_na(state, "00"),
       agegrp = replace_na(agegrp, "Total"),
-      agegrp = gsub('Years',' Years',agegrp),
+      agegrp = gsub("<1","0", agegrp),
+      agegrp = gsub("-Unknown","+", agegrp),
+      agegrp = paste0(agegrp, ' Years'),
+      agegrp = gsub("Total Years","Total", agegrp),
+      
+      
       Mechlbl = str_to_lower(
         str_replace_all(Mechlbl, "[^a-zA-Z0-9]+", "_")
       ),

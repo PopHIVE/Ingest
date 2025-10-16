@@ -12,7 +12,11 @@ pop <- vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
 #### WISQARS data
 
 wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
-  mutate(time = time %m+% years(1)  - 1 ) #define based on end of period
+  mutate( year= year(time),
+        time = time %m+% years(1)  - 1 ) #define based on end of period
+
+# wisqars_long <- wisqars%>%
+#   pivot_longer(starts_with('rate'))
 
 #CMS data is annual, not by month
 cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') %>%
@@ -22,12 +26,14 @@ cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') 
   mutate(time = time %m+% years(1)  - 1 ) #define based on end of period
 
 
+#export to parquet; add in Epic county here later
   cms %>%
   filter(age =='65+ Years') %>%
   mutate(year=year(time)) %>%
   rename(opioid_rate = cms_opioid_use_disorder_overarching) %>%
   dplyr::select(year, geography,opioid_rate) %>%
-  write_parquet('./dist/cms_county_opioid.parquet')
+   mutate(source='Medicare') %>%
+  write_parquet('./dist/county_opioid_by_source.parquet')
 
 cms_65plus_year <- cms %>%
   filter(age =='65+ Years') %>%
@@ -40,18 +46,39 @@ wisqars_od <- wisqars %>%
 nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
  # mutate(geography = sprintf("%02d", geography)) %>%
   left_join(all_fips, by='geography') %>%
+  left_join(pop, by='geography') %>%
   rename(nchs_pct_complete = pct_complete,
          nchs_pct_pending_invest = pct_pending_invest) %>%
-  relocate(geography_name, state, geography)
+  relocate(geography_name, state, geography) %>%
+  mutate(rate_deaths_overdose = n_deaths_overdose / pop *100000,
+         suppressed = if_else(is.na(n_deaths_overdose),1,0)) %>%
+  dplyr::select(geography, geography_name,time,n_deaths_overdose,rate_deaths_overdose )
 
-write_parquet(nchs_od_state,'./dist/overdose_deaths_state.parquet' )
+nchs_od_state %>%
+  dplyr::select (-geography) %>%
+  rename(geography = geography_name) %>%
+  mutate(max_date = max(time),
+         max_month = month(max_date),
+         month = month(time)) %>%
+  filter(month==max_month) %>%
+  dplyr::select(geography, time,n_deaths_overdose,rate_deaths_overdose ) %>%
+  write_parquet(.,'./dist/overdose_deaths_state.parquet' )
 
 nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') %>%
  # mutate(geography = sprintf("%05d", geography)) %>%
   full_join(all_fips, by='geography') %>%
   rename(
          nchs_pct_pending_invest = pct_pending_invest)%>%
-  relocate(geography_name, state, geography)
+  relocate(geography_name, state, geography) %>%
+  left_join(pop, by='geography') %>%
+  mutate(month=month(time),
+         year= year(time),
+         suppressed = if_else(is.na(n_deaths_overdose),1,0),
+         # N_deaths >0 & <10 are suppressed. fill with 5
+         n_deaths_overdose = if_else(is.na(n_deaths_overdose),5,n_deaths_overdose),
+         rate_deaths_overdose = n_deaths_overdose / pop*100000
+  ) %>%
+  dplyr::select(geography,time,n_deaths_overdose,rate_deaths_overdose, suppressed )
 
 write_parquet(nchs_od_county,'./dist/overdose_deaths_county.parquet' )
 
@@ -81,6 +108,7 @@ google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
 # ggplot(cms) +geom_line(aes(x=age, y=cms_opioid_use_disorder_overarching, group=geography))
 
 drugs_month_age <- wisqars_od %>%
+   mutate(time = time_end+1) %>%
   left_join(cms, by=c('age', 'geography','time'))
 
 ### google trends
@@ -92,13 +120,12 @@ drugs_month <- nchs %>%
   full_join(wisqars_od %>% filter(age=='Total'), by=c('geography'='geography','time'='time_end')) %>%
   rename(date = time,
   ) %>%
-  dplyr::select(geography, date, n_deaths_overdose,n_deaths_all_cause, rate_drug_poisoning,gtrends_narcan,cms_drug_use_disorder,cms_opioid_use_disorder_overarching  ) %>%
+  dplyr::select(geography, date, ra,n_deaths_all_cause, rate_drug_poisoning,gtrends_narcan,cms_drug_use_disorder,cms_opioid_use_disorder_overarching  ) %>%
   left_join(all_fips, by='geography') %>%
   arrange(geography, date) %>%
   group_by(geography) %>%
   left_join(pop, by='geography') %>%
-  mutate(gtrends_narcan_cum12 = zoo::rollsum(gtrends_narcan, k=12, na.pad=T),
-         od_death_rate = n_deaths_overdose / pop * 100000
+  mutate(gtrends_narcan_cum12 = zoo::rollsum(gtrends_narcan, k=12, na.pad=T)
          )
 
 drugs_month_source <- drugs_month %>%
@@ -134,48 +161,30 @@ drugs_month_source %>%
 ###Time series of drug overdose deaths and naloxone searches by state
 
 #The nchs + WISQARS, google data are 12 month cumulative sum .(e.g., 2023-01-01 is the total for 2022 calendar year)
-drugs_month %>%
-  filter(geography_name=='New York' ) %>%
-  ggplot()+
-  # geom_line(aes(x=date, y=gtrends_naloxone/max(gtrends_naloxone)))+
-  geom_line(aes(x=date, y=gtrends_narcan_cum12/max(gtrends_narcan_cum12, na.rm=T)), color='red')+
-  geom_line(aes(x=date, y=od_death_rate/max(od_death_rate, na.rm=T)), color='blue')+
-  geom_point(aes(x=date, y=rate_drug_poisoning/max(rate_drug_poisoning, na.rm=T)), color='black')+
-  geom_point(aes(x=date, y=cms_opioid_use_disorder_overarching/max(cms_opioid_use_disorder_overarching, na.rm=T)), color='orange')+
-    theme_classic()+
-  ylim(0,NA)
+# drugs_month %>%
+#   filter(geography_name=='New York' ) %>%
+#   ggplot()+
+#   # geom_line(aes(x=date, y=gtrends_naloxone/max(gtrends_naloxone)))+
+#   geom_line(aes(x=date, y=gtrends_narcan_cum12/max(gtrends_narcan_cum12, na.rm=T)), color='red')+
+#   geom_line(aes(x=date, y=od_death_rate/max(od_death_rate, na.rm=T)), color='blue')+
+#   geom_point(aes(x=date, y=rate_drug_poisoning/max(rate_drug_poisoning, na.rm=T)), color='black')+
+#   geom_point(aes(x=date, y=cms_opioid_use_disorder_overarching/max(cms_opioid_use_disorder_overarching, na.rm=T)), color='orange')+
+#     theme_classic()+
+#   ylim(0,NA)+
+#   ylab('Scaled value')
 
-drugs_month %>%
-  filter(geography_name=='New York' ) %>%
-  ggplot(aes(x=date, y=n_deaths_overdose))+
-  geom_line()+
-  theme_classic()+
-  ylim(0,NA)
+
 
 ## Map of OD by month; county,--just take every 12th observation,
 ##NCHS deathsm CMS opioid use disorder
 library(usmap)
-pop = vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
-  dplyr::select(Total, GEOID) %>%
-  rename(geography = GEOID) %>%
-  mutate(geography = as.numeric(geography))
 
-nchs_od_month_pull <- nchs %>%
-  left_join(pop, by='geography') %>%
-  mutate(month=month(time),
-         max_date = max(time, na.rm=T),
-         max_month = month(max_date),
-         year= year(time),
-         overdose_rate = n_deaths_overdose / Total*100000) 
-
-nchs_od_month_pull %>%
-  filter(year==2025) %>%
-  filter(month==max_month) %>%
-  rename(states= geography_name) %>%
-plot_usmap(data=., regions='state', values = "overdose_rate", color = NA) + 
+nchs_od_state %>%
+  filter(time=="2020-04-01") %>%
+  rename(state= geography_name) %>%
+plot_usmap(data=., regions='state', values = "rate_deaths_overdose", color = NA) + 
   scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
   theme(legend.position = "right")
-
 
 
 cms %>%
@@ -195,12 +204,32 @@ cms %>%
   ggtitle('Opioid use disorder prevalence, 65+ years Medicare FFS')
         
 
-nchs_od_month_pull %>%
-  filter(time=='2024-12-31' & !(geography_name %in% c(state.name, 'District of Columbia'))) %>%
+nchs_od_county %>%
+  filter(time=='2020-12-01' ) %>%
   rename(fips = geography) %>%
-  plot_usmap(data=., regions='counties', values = "overdose_rate", color = NA) + 
+  plot_usmap(data=., regions='counties', values = "rate_deaths_overdose", color = NA) + 
   scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
   theme(legend.position = "right")+
   ggtitle('Overdose deaths/100000 (NCHS)')
 
+
+wisqars %>%
+  filter(geography=='36' ) %>%
+ggplot() +
+  geom_line(aes(x=time, y=rate_firearm_intentional, group=age, color=age))
+
+
+wisqars %>%
+  filter(geography=='36' ) %>%
+  ggplot() +
+  geom_point(aes(x=time, y=rate_fall, group=age, color=age))
+
+wisqars %>%
+  filter(geography=='36' ) %>%
+  ggplot() +
+  geom_line(aes(x=time, y=rate_motor_vehicle_traffic, group=age, color=age))+
+  ylim(0,NA) +
+  theme_classic()+
+  ylab('Deaths/100000')+
+  ggtitle('Rate of Deaths from Motor Vehicle Crashes in New York')
 
