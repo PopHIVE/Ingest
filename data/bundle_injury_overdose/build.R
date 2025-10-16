@@ -15,8 +15,19 @@ wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
   mutate( year= year(time),
         time = time %m+% years(1)  - 1 ) #define based on end of period
 
-# wisqars_long <- wisqars%>%
-#   pivot_longer(starts_with('rate'))
+wisqars_long_rate <- wisqars%>%
+  dplyr::select(geography, age,year, starts_with('rate')) %>%
+  pivot_longer(starts_with('rate')) %>%
+  mutate( name = gsub('rate_', '',name))
+
+wisqars_long <- wisqars%>%
+  dplyr::select(geography, year,age, starts_with('death')) %>%
+  pivot_longer(starts_with('death'), values_to='N') %>%
+  mutate( name = gsub('deaths_', '',name)) %>%
+  full_join(wisqars_long_rate, by=c('geography', 'year','age', 'name'))
+
+write_parquet(wisqars_long,'./dist/deaths_cause_age.parquet')
+
 
 #CMS data is annual, not by month
 cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') %>%
