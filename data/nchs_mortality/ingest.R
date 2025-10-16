@@ -138,6 +138,7 @@ if (!identical(process2$raw_state, raw_state2)) {
   data2 <- open_dataset('./raw/gb4e-yj24.parquet') %>%
     collect() %>%
     mutate( time = as.Date(MonthEndingDate, '%m/%d/%Y'),
+            time = floor_date(time, unit='month'),
             STATEFIPS = sprintf("%02d", STATEFIPS),
             COUNTYFIPS = sprintf("%03d", COUNTYFIPS),
             geography=paste0(STATEFIPS, COUNTYFIPS)
