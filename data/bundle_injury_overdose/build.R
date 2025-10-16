@@ -22,6 +22,12 @@ cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') 
   mutate(time = time %m+% years(1)  - 1 ) #define based on end of period
 
 
+  cms %>%
+  filter(age =='65+ Years') %>%
+  mutate(year=year(time)) %>%
+  rename(opioid_rate = cms_opioid_use_disorder_overarching) %>%
+  dplyr::select(year, geography,opioid_rate) %>%
+  write_parquet('./dist/cms_county_opioid.parquet')
 
 cms_65plus_year <- cms %>%
   filter(age =='65+ Years') %>%
