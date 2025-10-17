@@ -4,6 +4,18 @@ library(tidyverse)
 # if there was staging data, make new standard version from it..this function will automaticaly save relevant file
 raw <- dcf::dcf_process_epic_staging(cleanup=F)
 
+##TREMPORARY SOLUTION TO GENERATE RAW FILE
+source('../../scripts/dcf_read_epic_injury.R')
+stage_files <- list.files('./raw/staging', full.names = T)
+stage_files <- stage_files[grep('.csv', stage_files)]
+od1 <- lapply(stage_files, function(X) {
+  res = dcf_read_epic_injury(X)
+  return(res$data)
+}) %>%
+  bind_rows() %>%
+  vroom::vroom_write(.,'./raw/opioid.csv.xz')
+############
+
 if (!is.null(raw)) {
   files <- list.files("raw", "\\.csv\\.xz", full.names = TRUE)
   data <- lapply(files, function(file) {
@@ -103,31 +115,40 @@ if (!is.null(raw)) {
   )
   
   #Monthly data
-  merged_monthly <- Reduce(
-    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-    data[c("self_harm")]
-  )
+  opioid_monthly <- data[[c('opioid')]]  %>%
+    filter(!is.na(age))%>%
+    rename(epic_n_ed_opioid = opioid_ed) %>%
+    mutate(epic_n_ed_opioid = if_else(epic_n_ed_opioid == '10 or fewer', '5', epic_n_ed_opioid ),
+           epic_n_ed_opioid = as.numeric(epic_n_ed_opioid),
+           suppressed = if_else(epic_n_ed_opioid == 5, 1, 0),
+           none_of_the_above = as.numeric(none_of_the_above),
+           all_cause = epic_n_ed_opioid + none_of_the_above,
+           epic_pct_ed_opioid = 100* epic_n_ed_opioid/all_cause
+           ) %>%
+    dplyr::select(time, geography, age,epic_n_ed_opioid, epic_pct_ed_opioid,suppressed)
   
-  # add epic_ prefix to all columns except geography, time, age
-  merged_monthly <- merged_monthly %>%
-    rename_with(~ paste0("epic_", .x), 
-                .cols = -c(geography, time, age))%>%
-    arrange(geography, age, time) %>%
-    group_by(geography, age) %>%
-    mutate(time= as.Date(time),
-           epic_n_all_encounters_lag1 = lag(epic_n_all_encounters,1),
-           remove = if_else(epic_n_all_encounters/epic_n_all_encounters_lag1<0.5 &
-                              time == max(time, na.rm=T),1,0)
-    ) %>%
-    filter(remove != 1) %>%
-    dplyr::select(-remove, -epic_n_all_encounters_lag1)
-  
+  merged_monthly <-opioid_monthly
   
   vroom::vroom_write(
     merged_monthly,
     "standard/monthly.csv.gz",
     ","
   )
+  # add epic_ prefix to all columns except geography, time, age
+  # merged_monthly <- merged_monthly %>%
+  #   rename_with(~ paste0("epic_", .x), 
+  #               .cols = -c(geography, time, age))%>%
+  #   arrange(geography, age, time) %>%
+  #   group_by(geography, age) %>%
+  #   mutate(time= as.Date(time),
+  #          epic_n_all_encounters_lag1 = lag(epic_n_all_encounters,1),
+  #          remove = if_else(epic_n_all_encounters/epic_n_all_encounters_lag1<0.5 &
+  #                             time == max(time, na.rm=T),1,0)
+  #   ) %>%
+  #   filter(remove != 1) %>%
+  #   dplyr::select(-remove, -epic_n_all_encounters_lag1)
+  
+
   
   vroom::vroom_write(
     Reduce(

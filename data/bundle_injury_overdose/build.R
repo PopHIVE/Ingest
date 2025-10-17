@@ -11,7 +11,6 @@ pop <- vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
          pop=Total)
 
 #### WISQARS data
-
 wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
   mutate( year= year(time),
         time = time %m+% years(1)  - 1 ) #define based on end of period
