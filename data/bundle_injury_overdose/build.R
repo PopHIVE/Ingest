@@ -52,8 +52,7 @@ cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') 
   write_parquet('./dist/county_opioid_by_source.parquet')
 
 cms_65plus_year <- cms %>%
-  filter(age =='65+ Years') %>%
-  mutate(time_end = time + 1) 
+  filter(age =='65+ Years')  
 
 wisqars_od <- wisqars %>%
   mutate(time_end = time + 1) %>%
@@ -102,8 +101,7 @@ nchs <- bind_rows(nchs_od_state, nchs_od_county)
 
 #epic
 
-# epic <- vroom::vroom('../../data/epic/standard/weekly.csv.gz') %>%
-#   dplyr::select( )
+epic <- vroom::vroom('../../data/epic/standard/monthly.csv.gz') 
 
 #Google--weekly (averaged to monthly) searches
 google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
@@ -118,60 +116,85 @@ google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
 
 
 
-## Month trends in overdoses
+## trends in overdoses
 
-#need to standardize the age naming; age groups do not really align; main interest is <65 and 65+
-# ggplot(cms) +geom_line(aes(x=age, y=cms_opioid_use_disorder_overarching, group=geography))
-
-drugs_month_age <- wisqars_od %>%
-   mutate(time = time_end+1) %>%
-  left_join(cms, by=c('age', 'geography','time'))
-
-### google trends
-### NCHS deaths in previous 12 month
-drugs_month <- nchs %>%
-  dplyr::select(-geography_name) %>%
-  full_join(google, by=c('geography','time')) %>%
-  full_join(cms_65plus_year, by=c('geography'='geography','time'='time_end')) %>%
-  full_join(wisqars_od %>% filter(age=='Total'), by=c('geography'='geography','time'='time_end')) %>%
-  rename(date = time,
-  ) %>%
-  dplyr::select(geography, date, ra,n_deaths_all_cause, rate_drug_poisoning,gtrends_narcan,cms_drug_use_disorder,cms_opioid_use_disorder_overarching  ) %>%
-  left_join(all_fips, by='geography') %>%
-  arrange(geography, date) %>%
-  group_by(geography) %>%
-  left_join(pop, by='geography') %>%
-  mutate(gtrends_narcan_cum12 = zoo::rollsum(gtrends_narcan, k=12, na.pad=T)
-         )
-
-drugs_month_source <- drugs_month %>%
-  dplyr::select(date, geography,geography_name,gtrends_narcan_cum12, od_death_rate,rate_drug_poisoning,cms_opioid_use_disorder_overarching ) %>%
-  pivot_longer( cols=c(gtrends_narcan_cum12, od_death_rate,rate_drug_poisoning,cms_opioid_use_disorder_overarching)) %>%
-  mutate( source = if_else( name== 'gtrends_narcan_cum12', "Google Health Trends",
-                            if_else( name== 'od_death_rate', "CDC/NCHS",
-                                     if_else( name== 'rate_drug_poisoning', "CDC/WISQARS",
-                                              if_else( name== 'cms_opioid_use_disorder_overarching', "Medicare",NA_character_
-                            ))))
-  )
-
-drugs_month_source %>% 
-  ungroup() %>%
+combine_long <- function() {
+  drugs_month_age <- wisqars_od %>%
+    mutate(time = time_end + 1) %>%
+    left_join(cms, by = c('age', 'geography', 'time'))
+  
+  ### google trends
+  ### NCHS deaths in previous 12 month
+  nchs_od <- nchs %>%
+    rename(value = rate_deaths_overdose, nchs_n_deaths_overdose = n_deaths_overdose) %>%
+    dplyr::select(geography, time, value, nchs_n_deaths_overdose , suppressed) %>%
+    mutate(source = 'CDC/NCHS', age = 'Total') %>%
+    filter(!is.na(time))
+  
+  google_od <- google %>%
+    arrange(time) %>%
+    # mutate(gtrends_narcan_cum12 = zoo::rollsum(gtrends_narcan, k = 12, na.pad =
+    #                                              T)) %>%
+    rename(value = gtrends_narcan) %>%
+    dplyr::select(geography, time, value) %>%
+    mutate(source = "Google Health Trends", age = 'Total')
+  
+  cms_65plus_year_od <- cms_65plus_year %>%
+    rename(value = cms_opioid_use_disorder_overarching) %>%
+    dplyr::select(geography, time, value, time_end) %>%
+    mutate(source = 'Medicare FFS', age = '65+ Years')
+  
+  wisqars_od2 <- wisqars_od %>%
+    rename(value = rate_drug_poisoning)  %>%
+    mutate(source = 'CDC/WISQARS')
+  
+  epic_od <- epic %>%
+    rename(value = epic_pct_ed_opioid) %>%
+    dplyr::select(time, geography, age, value, suppressed) %>%
+    mutate(source = 'Epic Cosmos')
+  
+  drugs_month_source <- bind_rows(nchs_od, google_od, wisqars_od2, epic_od) %>%
+    left_join(all_fips, by = 'geography') %>%
+    rename(fips = geography) %>%
+    dplyr::select(-state) %>%
+    group_by(source, age, fips) %>%
+    mutate(value_scale = value/max(value, na.rm=T),
+           time = if_else(!is.na(time_end), time_end, time)) #for 12m cum ave data, use last date
+  
+  
+  drugs_month_source %>%
+    ungroup() %>%
+    rename(date = time) %>%
     filter(geography_name %in% c('United States', 'District of Columbia', state.name)) %>%
-  dplyr::select(geography_name,date, source, value ) %>%
-  rename(geography = geography_name) %>%
-  filter(!is.na(value)) %>%
-  vroom::vroom_write(., './dist/overdose_by_geography_and_source.parquet')
+    rename(geography = geography_name) %>%
+    filter(!is.na(value)) %>%
+    write_parquet(., './dist/overdose_by_geography_and_source.parquet')
+  
+  drugs_month_source %>%
+    ungroup() %>%
+    filter(!(
+      geography_name %in% c('United States', 'District of Columbia', state.name)
+    )) %>%
+    rename(date = time) %>%
+    dplyr::select(geography_name, date, source, value) %>%
+    rename(geography = geography_name) %>%
+    filter(!is.na(value)) %>%
+    write_parquet(.,
+                       './dist/overdose_by_geography_and_source_county.parquet')
+}
 
-drugs_month_source %>% 
-  ungroup() %>%
-  filter(!(geography_name %in% c('United States', 'District of Columbia', state.name))) %>%
-  dplyr::select(geography_name,date, source, value ) %>%
-  rename(geography = geography_name) %>%
-  filter(!is.na(value)) %>%
-  vroom::vroom_write(., './dist/overdose_by_geography_and_source_county.parquet')
+combine_long()
 
 
+od_county <- read_parquet('./dist/overdose_by_geography_and_source_county.parquet')
 
+od_state <- read_parquet('./dist/overdose_by_geography_and_source.parquet')
+
+od_state %>%
+  filter(geography=='Kentucky' & age=='Total') %>%
+  ggplot()+
+  geom_line(aes(x=date, y=value_scale, group=source, color=source)) +
+  theme_classic()
 
 
 ###Time series of drug overdose deaths and naloxone searches by state
