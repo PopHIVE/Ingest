@@ -2,18 +2,18 @@ library(tidyverse)
 # Process staging data
 
 # if there was staging data, make new standard version from it..this function will automaticaly save relevant file
-raw <- dcf::dcf_process_epic_staging(cleanup=F)
+raw <- dcf::dcf_process_epic_staging(cleanup=T)
 
 ##TREMPORARY SOLUTION TO GENERATE RAW FILE
-source('../../scripts/dcf_read_epic_injury.R')
-stage_files <- list.files('./raw/staging', full.names = T)
-stage_files <- stage_files[grep('.csv', stage_files)]
-od1 <- lapply(stage_files, function(X) {
-  res = dcf_read_epic_injury(X)
-  return(res$data)
-}) %>%
-  bind_rows() %>%
-  vroom::vroom_write(.,'./raw/opioid.csv.xz')
+# source('../../scripts/dcf_read_epic_injury.R')
+# stage_files <- list.files('./raw/staging', full.names = T)
+# stage_files <- stage_files[grep('.csv', stage_files)]
+# od1 <- lapply(stage_files, function(X) {
+#   res = dcf_read_epic_injury(X)
+#   return(res$data)
+# }) %>%
+#   bind_rows() %>%
+#   vroom::vroom_write(.,'./raw/opioid.csv.xz')
 ############
 
 if (!is.null(raw)) {
