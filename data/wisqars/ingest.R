@@ -204,6 +204,9 @@ if (!identical(process$raw_state, raw_state)) {
       names_from = c("Mechlbl"),
       values_from = c("rate", "deaths")
     )
+  data <- data %>%
+    rename_with(~ paste0("wisqars_", .x),
+                .cols = which(grepl("^(rate_|deaths_)", names(data))))
   
   vroom::vroom_write(data, "standard/data.csv.gz", ",")
   
