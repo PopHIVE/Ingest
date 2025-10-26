@@ -33,7 +33,7 @@ dcf_build()
 #dcf::dcf_add_source("medicaid_quality")
 #dcf::dcf_add_source("vaers")
 #dcf::dcf_add_source("narms")
-dcf::dcf_add_source("wisqars")
+#dcf::dcf_add_source("wisqars")
 
 
 #dcf_add_source("schoolvaxview")
@@ -53,6 +53,7 @@ dcf::dcf_add_source("wisqars")
 # dcf_process("nis")
 # dcf_process("cms_mmd")
 # dcf_process("schoolvaxview")
+# dcf_process("wisqars")
 
 
 ## Add bundles
