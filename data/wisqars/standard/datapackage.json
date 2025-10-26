@@ -17,6 +17,7 @@
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "5562b94e5d9d792d47727bd1ccff7707753964be",
           "369c8c9326940804c05c23868f644e4ea4bd5cd6",
           "92358311a9578cb8c2438e27a55ad9a0894635bd",
           "3e563e58e98b3e93281e97c30f1e810707bc0e87",
@@ -25,6 +26,7 @@
           "9bcb328f78107f521fdf273e4c7623ea77cd0adc"
         ],
         "author": [
+          "Weinberger <daniel.weinberger@yale.edu>",
           "GitHub Actions <actions@github.com>",
           "Weinberger <daniel.weinberger@yale.edu>",
           "weinbergerlab <dweinber@gmail.com>",
@@ -33,6 +35,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Sun Oct 26 00:14:08 2025 -0400",
           "Thu Oct 23 21:17:39 2025 +0000",
           "Thu Oct 16 17:17:29 2025 -0400",
           "Wed Oct 15 17:09:06 2025 -0400",
@@ -41,6 +44,7 @@
           "Thu Oct 9 15:50:23 2025 -0400"
         ],
         "message": [
+          "part 1",
           "scheduled data build",
           "fix wisqars download to get age groups",
           "overdose bundle",
@@ -49,13 +53,7 @@
           "wisqrds ingestion"
         ]
       },
-      "source": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
+      "source": [],
       "ids": [
         {
           "variable": "geography"
@@ -624,940 +622,700 @@
     }
   ],
   "measure_info": {
+    "age": {
+      "name": "age",
+      "description": "Age group.",
+      "measure_type": "categorical",
+      "unit": "category",
+      "time_resolution": "yearly",
+      "id": "age"
+    },
     "wisqars_deaths_cut_pierce": {
-      "full_name": "wisqars_deaths_cut_pierce",
-      "measure": "wisqars_deaths_cut_pierce",
-      "id": "wisqars_deaths_cut_pierce",
-      "short_name": "Deaths due to Cut/pierce",
-      "long_name": "Deaths due to cut_pierce",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to cut_pierce by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to cut_pierce",
+      "short_name": "Death Rate (deaths cut_pierce)",
+      "long_name": "Rate of Deaths Caused by deaths cut_pierce",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to cut_pierce.",
+      "long_description": "Number of deaths due to cut_pierce.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_cut_pierce"
     },
     "wisqars_deaths_drowning_includes_water_transport": {
-      "full_name": "wisqars_deaths_drowning_includes_water_transport",
-      "measure": "wisqars_deaths_drowning_includes_water_transport",
-      "id": "wisqars_deaths_drowning_includes_water_transport",
-      "short_name": "Deaths due to Drowning, includes water transport",
-      "long_name": "Deaths due to drowning_includes_water_transport",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to drowning_includes_water_transport by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to drowning_includes_water_transport",
+      "short_name": "Death Rate (deaths drowning_includes_water_transport)",
+      "long_name": "Rate of Deaths Caused by deaths drowning_includes_water_transport",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to drowning_includes_water_transport.",
+      "long_description": "Number of deaths due to drowning_includes_water_transport.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_drowning_includes_water_transport"
     },
     "wisqars_deaths_fall": {
-      "full_name": "wisqars_deaths_fall",
-      "measure": "wisqars_deaths_fall",
-      "id": "wisqars_deaths_fall",
-      "short_name": "Deaths due to Fall",
-      "long_name": "Deaths due to fall",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to fall by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to fall",
+      "short_name": "Death Rate (deaths fall)",
+      "long_name": "Rate of Deaths Caused by deaths fall",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to fall.",
+      "long_description": "Number of deaths due to fall.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_fall"
     },
     "wisqars_deaths_fire_flame": {
-      "full_name": "wisqars_deaths_fire_flame",
-      "measure": "wisqars_deaths_fire_flame",
-      "id": "wisqars_deaths_fire_flame",
-      "short_name": "Deaths due to Fire/flame",
-      "long_name": "Deaths due to fire_flame",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to fire_flame by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to fire_flame",
+      "short_name": "Death Rate (deaths fire_flame)",
+      "long_name": "Rate of Deaths Caused by deaths fire_flame",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to fire_flame.",
+      "long_description": "Number of deaths due to fire_flame.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_fire_flame"
     },
     "wisqars_deaths_firearm_accident": {
-      "full_name": "wisqars_deaths_firearm_accident",
-      "measure": "wisqars_deaths_firearm_accident",
-      "id": "wisqars_deaths_firearm_accident",
-      "short_name": "Deaths due to Firearm accident",
-      "long_name": "Deaths due to firearm_accident",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to firearm_accident by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to firearm_accident",
+      "short_name": "Death Rate (deaths firearm_accident)",
+      "long_name": "Rate of Deaths Caused by deaths firearm_accident",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to firearm_accident.",
+      "long_description": "Number of deaths due to firearm_accident.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_firearm_accident"
     },
     "wisqars_deaths_machinery": {
-      "full_name": "wisqars_deaths_machinery",
-      "measure": "wisqars_deaths_machinery",
-      "id": "wisqars_deaths_machinery",
-      "short_name": "Deaths due to Machinery",
-      "long_name": "Deaths due to machinery",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to machinery by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to machinery",
+      "short_name": "Death Rate (deaths machinery)",
+      "long_name": "Rate of Deaths Caused by deaths machinery",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to machinery.",
+      "long_description": "Number of deaths due to machinery.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_machinery"
     },
     "wisqars_deaths_motor_vehicle_traffic": {
-      "full_name": "wisqars_deaths_motor_vehicle_traffic",
-      "measure": "wisqars_deaths_motor_vehicle_traffic",
-      "id": "wisqars_deaths_motor_vehicle_traffic",
-      "short_name": "Deaths due to Motor vehicle traffic",
-      "long_name": "Deaths due to motor_vehicle_traffic",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to motor_vehicle_traffic by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to motor_vehicle_traffic",
+      "short_name": "Death Rate (deaths motor_vehicle_traffic)",
+      "long_name": "Rate of Deaths Caused by deaths motor_vehicle_traffic",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to motor_vehicle_traffic.",
+      "long_description": "Number of deaths due to motor_vehicle_traffic.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_motor_vehicle_traffic"
     },
     "wisqars_deaths_pedal_cyclist_other": {
-      "full_name": "wisqars_deaths_pedal_cyclist_other",
-      "measure": "wisqars_deaths_pedal_cyclist_other",
-      "id": "wisqars_deaths_pedal_cyclist_other",
-      "short_name": "Deaths due to Pedal cyclist, other",
-      "long_name": "Deaths due to pedal_cyclist_other",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to pedal_cyclist_other by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to pedal_cyclist_other",
+      "short_name": "Death Rate (deaths pedal_cyclist_other)",
+      "long_name": "Rate of Deaths Caused by deaths pedal_cyclist_other",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to pedal_cyclist_other.",
+      "long_description": "Number of deaths due to pedal_cyclist_other.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_pedal_cyclist_other"
     },
     "wisqars_deaths_transport_other_land": {
-      "full_name": "wisqars_deaths_transport_other_land",
-      "measure": "wisqars_deaths_transport_other_land",
-      "id": "wisqars_deaths_transport_other_land",
-      "short_name": "Deaths due to Transport, other land",
-      "long_name": "Deaths due to transport_other_land",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to transport_other_land by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to transport_other_land",
+      "short_name": "Death Rate (deaths transport_other_land)",
+      "long_name": "Rate of Deaths Caused by deaths transport_other_land",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to transport_other_land.",
+      "long_description": "Number of deaths due to transport_other_land.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_transport_other_land"
     },
     "wisqars_deaths_pedestrian_other": {
-      "full_name": "wisqars_deaths_pedestrian_other",
-      "measure": "wisqars_deaths_pedestrian_other",
-      "id": "wisqars_deaths_pedestrian_other",
-      "short_name": "Deaths due to Pedestrian, other",
-      "long_name": "Deaths due to pedestrian_other",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to pedestrian_other by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to pedestrian_other",
+      "short_name": "Death Rate (deaths pedestrian_other)",
+      "long_name": "Rate of Deaths Caused by deaths pedestrian_other",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to pedestrian_other.",
+      "long_description": "Number of deaths due to pedestrian_other.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_pedestrian_other"
     },
     "wisqars_deaths_transport_other_excl_drown_by_water_transp": {
-      "full_name": "wisqars_deaths_transport_other_excl_drown_by_water_transp",
-      "measure": "wisqars_deaths_transport_other_excl_drown_by_water_transp",
-      "id": "wisqars_deaths_transport_other_excl_drown_by_water_transp",
-      "short_name": "Deaths due to Transport-related, overall, excluding drowning by water transport",
-      "long_name": "Deaths due to transport_other_excl_drown_by_water_transp",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to transport_other_excl_drown_by_water_transp by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to transport_other_excl_drown_by_water_transp",
+      "short_name": "Death Rate (deaths transport_other_excl_drown_by_water_transp)",
+      "long_name": "Rate of Deaths Caused by deaths transport_other_excl_drown_by_water_transp",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to transport_other_excl_drown_by_water_transp.",
+      "long_description": "Number of deaths due to transport_other_excl_drown_by_water_transp.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_transport_other_excl_drown_by_water_transp"
     },
     "wisqars_deaths_natural_environmental": {
-      "full_name": "wisqars_deaths_natural_environmental",
-      "measure": "wisqars_deaths_natural_environmental",
-      "id": "wisqars_deaths_natural_environmental",
-      "short_name": "Deaths due to Natural/environmental",
-      "long_name": "Deaths due to natural_environmental",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to natural_environmental by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to natural_environmental",
+      "short_name": "Death Rate (deaths natural_environmental)",
+      "long_name": "Rate of Deaths Caused by deaths natural_environmental",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to natural_environmental.",
+      "long_description": "Number of deaths due to natural_environmental.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Environmental"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_natural_environmental"
     },
     "wisqars_deaths_struck_by_against": {
-      "full_name": "wisqars_deaths_struck_by_against",
-      "measure": "wisqars_deaths_struck_by_against",
-      "id": "wisqars_deaths_struck_by_against",
-      "short_name": "Deaths due to Struck by/against",
-      "long_name": "Deaths due to struck_by_against",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to struck_by_against by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to struck_by_against",
+      "short_name": "Death Rate (deaths struck_by_against)",
+      "long_name": "Rate of Deaths Caused by deaths struck_by_against",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to struck_by_against.",
+      "long_description": "Number of deaths due to struck_by_against.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_struck_by_against"
     },
     "wisqars_deaths_suffocation": {
-      "full_name": "wisqars_deaths_suffocation",
-      "measure": "wisqars_deaths_suffocation",
-      "id": "wisqars_deaths_suffocation",
-      "short_name": "Deaths due to Suffocation",
-      "long_name": "Deaths due to suffocation",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to suffocation by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to suffocation",
+      "short_name": "Death Rate (deaths suffocation)",
+      "long_name": "Rate of Deaths Caused by deaths suffocation",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to suffocation.",
+      "long_description": "Number of deaths due to suffocation.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_suffocation"
     },
     "wisqars_deaths_other_specified_and_classifiable": {
-      "full_name": "wisqars_deaths_other_specified_and_classifiable",
-      "measure": "wisqars_deaths_other_specified_and_classifiable",
-      "id": "wisqars_deaths_other_specified_and_classifiable",
-      "short_name": "Deaths due to Other specified and classifiable",
-      "long_name": "Deaths due to other_specified_and_classifiable",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to other_specified_and_classifiable by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to other_specified_and_classifiable",
+      "short_name": "Death Rate (deaths other_specified_and_classifiable)",
+      "long_name": "Rate of Deaths Caused by deaths other_specified_and_classifiable",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to other_specified_and_classifiable.",
+      "long_description": "Number of deaths due to other_specified_and_classifiable.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Other"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_other_specified_and_classifiable"
     },
     "wisqars_deaths_other_specified_nec": {
-      "full_name": "wisqars_deaths_other_specified_nec",
-      "measure": "wisqars_deaths_other_specified_nec",
-      "id": "wisqars_deaths_other_specified_nec",
-      "short_name": "Deaths due to Other specified/ NEC",
-      "long_name": "Deaths due to other_specified_nec",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to other_specified_nec by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to other_specified_nec",
+      "short_name": "Death Rate (deaths other_specified_nec)",
+      "long_name": "Rate of Deaths Caused by deaths other_specified_nec",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to other_specified_nec.",
+      "long_description": "Number of deaths due to other_specified_nec.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Other"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_other_specified_nec"
     },
     "wisqars_deaths_unspecified": {
-      "full_name": "wisqars_deaths_unspecified",
-      "measure": "wisqars_deaths_unspecified",
-      "id": "wisqars_deaths_unspecified",
-      "short_name": "Deaths due to Unspecified",
-      "long_name": "Deaths due to unspecified",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to unspecified by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to unspecified",
+      "short_name": "Death Rate (deaths unspecified)",
+      "long_name": "Rate of Deaths Caused by deaths unspecified",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to unspecified.",
+      "long_description": "Number of deaths due to unspecified.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Other"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_unspecified"
     },
     "wisqars_deaths_drug_poisoning": {
-      "full_name": "wisqars_deaths_drug_poisoning",
-      "measure": "wisqars_deaths_drug_poisoning",
-      "id": "wisqars_deaths_drug_poisoning",
-      "short_name": "Deaths due to Drug poisoning",
-      "long_name": "Deaths due to drug_poisoning",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to drug_poisoning by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to drug_poisoning",
+      "short_name": "Death Rate (deaths drug_poisoning)",
+      "long_name": "Rate of Deaths Caused by deaths drug_poisoning",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to drug_poisoning.",
+      "long_description": "Number of deaths due to drug_poisoning.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Poisoning"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_drug_poisoning"
     },
     "wisqars_deaths_non_drug_poisoning": {
-      "full_name": "wisqars_deaths_non_drug_poisoning",
-      "measure": "wisqars_deaths_non_drug_poisoning",
-      "id": "wisqars_deaths_non_drug_poisoning",
-      "short_name": "Deaths due to Non-drug Poisoning",
-      "long_name": "Deaths due to non_drug_poisoning",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to non_drug_poisoning by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to non_drug_poisoning",
+      "short_name": "Death Rate (deaths non_drug_poisoning)",
+      "long_name": "Rate of Deaths Caused by deaths non_drug_poisoning",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to non_drug_poisoning.",
+      "long_description": "Number of deaths due to non_drug_poisoning.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Poisoning"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_non_drug_poisoning"
     },
     "wisqars_deaths_firearm_intentional": {
-      "full_name": "wisqars_deaths_firearm_intentional",
-      "measure": "wisqars_deaths_firearm_intentional",
-      "id": "wisqars_deaths_firearm_intentional",
-      "short_name": "Deaths due to Firearm, intentional",
-      "long_name": "Deaths due to firearm_intentional",
-      "category": "Injuries and overdoses",
-      "long_description": "Number of deaths attributed to firearm_intentional by year and strata. Counts fewer than 10 are suppressed",
-      "statement": "There were {value} deaths due to firearm_intentional",
+      "short_name": "Death Rate (deaths firearm_intentional)",
+      "long_name": "Rate of Deaths Caused by deaths firearm_intentional",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to firearm_intentional.",
+      "long_description": "Number of deaths due to firearm_intentional.",
       "measure_type": "Count",
-      "unit": "Deaths",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "unit": "Integer",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_deaths_firearm_intentional"
     },
     "wisqars_rate_cut_pierce": {
-      "full_name": "wisqars_rate_cut_pierce",
-      "measure": "wisqars_rate_cut_pierce",
-      "id": "wisqars_rate_cut_pierce",
-      "short_name": "Rate of death due to Cut/pierce",
-      "long_name": "Rate of death due to cut_pierce",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to cut_pierce by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to cut_pierce was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "short_name": "Death Rate (rate cut_pierce)",
+      "long_name": "Rate of Deaths Caused by rate cut_pierce",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to cut_pierce.",
+      "long_description": "Deaths per 100k people due to cut_pierce.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_cut_pierce"
     },
     "wisqars_rate_drowning_includes_water_transport": {
-      "full_name": "wisqars_rate_drowning_includes_water_transport",
-      "measure": "wisqars_rate_drowning_includes_water_transport",
-      "id": "wisqars_rate_drowning_includes_water_transport",
-      "short_name": "Rate of death due to Drowning, includes water transport",
-      "long_name": "Rate of death due to drowning_includes_water_transport",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to drowning_includes_water_transport by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to drowning_includes_water_transport was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "short_name": "Death Rate (rate drowning_includes_water_transport)",
+      "long_name": "Rate of Deaths Caused by rate drowning_includes_water_transport",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to drowning_includes_water_transport.",
+      "long_description": "Deaths per 100k people due to drowning_includes_water_transport.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_drowning_includes_water_transport"
     },
     "wisqars_rate_fall": {
-      "full_name": "wisqars_rate_fall",
-      "measure": "wisqars_rate_fall",
-      "id": "wisqars_rate_fall",
-      "short_name": "Rate of death due to Fall",
-      "long_name": "Rate of death due to fall",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to fall by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to fall was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "short_name": "Death Rate (rate fall)",
+      "long_name": "Rate of Deaths Caused by rate fall",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to fall.",
+      "long_description": "Deaths per 100k people due to fall.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_fall"
     },
     "wisqars_rate_fire_flame": {
-      "full_name": "wisqars_rate_fire_flame",
-      "measure": "wisqars_rate_fire_flame",
-      "id": "wisqars_rate_fire_flame",
-      "short_name": "Rate of death due to Fire/flame",
-      "long_name": "Rate of death due to fire_flame",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to fire_flame by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to fire_flame was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "short_name": "Death Rate (rate fire_flame)",
+      "long_name": "Rate of Deaths Caused by rate fire_flame",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to fire_flame.",
+      "long_description": "Deaths per 100k people due to fire_flame.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_fire_flame"
     },
     "wisqars_rate_firearm_accident": {
-      "full_name": "wisqars_rate_firearm_accident",
-      "measure": "wisqars_rate_firearm_accident",
-      "id": "wisqars_rate_firearm_accident",
-      "short_name": "Rate of death due to Firearm accident",
-      "long_name": "Rate of death due to firearm_accident",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to firearm_accident by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to firearm_accident was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "short_name": "Death Rate (rate firearm_accident)",
+      "long_name": "Rate of Deaths Caused by rate firearm_accident",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to firearm_accident.",
+      "long_description": "Deaths per 100k people due to firearm_accident.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_firearm_accident"
     },
     "wisqars_rate_machinery": {
-      "full_name": "wisqars_rate_machinery",
-      "measure": "wisqars_rate_machinery",
-      "id": "wisqars_rate_machinery",
-      "short_name": "Rate of death due to Machinery",
-      "long_name": "Rate of death due to machinery",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to machinery by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to machinery was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "short_name": "Death Rate (rate machinery)",
+      "long_name": "Rate of Deaths Caused by rate machinery",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to machinery.",
+      "long_description": "Deaths per 100k people due to machinery.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_machinery"
     },
     "wisqars_rate_motor_vehicle_traffic": {
-      "full_name": "wisqars_rate_motor_vehicle_traffic",
-      "measure": "wisqars_rate_motor_vehicle_traffic",
-      "id": "wisqars_rate_motor_vehicle_traffic",
-      "short_name": "Rate of death due to Motor vehicle traffic",
-      "long_name": "Rate of death due to motor_vehicle_traffic",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to motor_vehicle_traffic by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to motor_vehicle_traffic was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "short_name": "Death Rate (rate motor_vehicle_traffic)",
+      "long_name": "Rate of Deaths Caused by rate motor_vehicle_traffic",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to motor_vehicle_traffic.",
+      "long_description": "Deaths per 100k people due to motor_vehicle_traffic.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_motor_vehicle_traffic"
     },
     "wisqars_rate_pedal_cyclist_other": {
-      "full_name": "wisqars_rate_pedal_cyclist_other",
-      "measure": "wisqars_rate_pedal_cyclist_other",
-      "id": "wisqars_rate_pedal_cyclist_other",
-      "short_name": "Rate of death due to Pedal cyclist, other",
-      "long_name": "Rate of death due to pedal_cyclist_other",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to pedal_cyclist_other by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to pedal_cyclist_other was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "short_name": "Death Rate (rate pedal_cyclist_other)",
+      "long_name": "Rate of Deaths Caused by rate pedal_cyclist_other",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to pedal_cyclist_other.",
+      "long_description": "Deaths per 100k people due to pedal_cyclist_other.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_pedal_cyclist_other"
     },
     "wisqars_rate_transport_other_land": {
-      "full_name": "wisqars_rate_transport_other_land",
-      "measure": "wisqars_rate_transport_other_land",
-      "id": "wisqars_rate_transport_other_land",
-      "short_name": "Rate of death due to Transport, other land",
-      "long_name": "Rate of death due to transport_other_land",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to transport_other_land by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to transport_other_land was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "short_name": "Death Rate (rate transport_other_land)",
+      "long_name": "Rate of Deaths Caused by rate transport_other_land",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to transport_other_land.",
+      "long_description": "Deaths per 100k people due to transport_other_land.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_transport_other_land"
     },
     "wisqars_rate_pedestrian_other": {
-      "full_name": "wisqars_rate_pedestrian_other",
-      "measure": "wisqars_rate_pedestrian_other",
-      "id": "wisqars_rate_pedestrian_other",
-      "short_name": "Rate of death due to Pedestrian, other",
-      "long_name": "Rate of death due to pedestrian_other",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to pedestrian_other by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to pedestrian_other was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "short_name": "Death Rate (rate pedestrian_other)",
+      "long_name": "Rate of Deaths Caused by rate pedestrian_other",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to pedestrian_other.",
+      "long_description": "Deaths per 100k people due to pedestrian_other.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_pedestrian_other"
     },
     "wisqars_rate_transport_other_excl_drown_by_water_transp": {
-      "full_name": "wisqars_rate_transport_other_excl_drown_by_water_transp",
-      "measure": "wisqars_rate_transport_other_excl_drown_by_water_transp",
-      "id": "wisqars_rate_transport_other_excl_drown_by_water_transp",
-      "short_name": "Rate of death due to Transport-related, overall, excluding drowning by water transport",
-      "long_name": "Rate of death due to transport_other_excl_drown_by_water_transp",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to transport_other_excl_drown_by_water_transp by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to transport_other_excl_drown_by_water_transp was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Transportation"
+      "short_name": "Death Rate (rate transport_other_excl_drown_by_water_transp)",
+      "long_name": "Rate of Deaths Caused by rate transport_other_excl_drown_by_water_transp",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to transport_other_excl_drown_by_water_transp.",
+      "long_description": "Deaths per 100k people due to transport_other_excl_drown_by_water_transp.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_transport_other_excl_drown_by_water_transp"
     },
     "wisqars_rate_natural_environmental": {
-      "full_name": "wisqars_rate_natural_environmental",
-      "measure": "wisqars_rate_natural_environmental",
-      "id": "wisqars_rate_natural_environmental",
-      "short_name": "Rate of death due to Natural/environmental",
-      "long_name": "Rate of death due to natural_environmental",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to natural_environmental by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to natural_environmental was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Environmental"
+      "short_name": "Death Rate (rate natural_environmental)",
+      "long_name": "Rate of Deaths Caused by rate natural_environmental",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to natural_environmental.",
+      "long_description": "Deaths per 100k people due to natural_environmental.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_natural_environmental"
     },
     "wisqars_rate_struck_by_against": {
-      "full_name": "wisqars_rate_struck_by_against",
-      "measure": "wisqars_rate_struck_by_against",
-      "id": "wisqars_rate_struck_by_against",
-      "short_name": "Rate of death due to Struck by/against",
-      "long_name": "Rate of death due to struck_by_against",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to struck_by_against by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to struck_by_against was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "short_name": "Death Rate (rate struck_by_against)",
+      "long_name": "Rate of Deaths Caused by rate struck_by_against",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to struck_by_against.",
+      "long_description": "Deaths per 100k people due to struck_by_against.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_struck_by_against"
     },
     "wisqars_rate_suffocation": {
-      "full_name": "wisqars_rate_suffocation",
-      "measure": "wisqars_rate_suffocation",
-      "id": "wisqars_rate_suffocation",
-      "short_name": "Rate of death due to Suffocation",
-      "long_name": "Rate of death due to suffocation",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to suffocation by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to suffocation was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "short_name": "Death Rate (rate suffocation)",
+      "long_name": "Rate of Deaths Caused by rate suffocation",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to suffocation.",
+      "long_description": "Deaths per 100k people due to suffocation.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_suffocation"
     },
     "wisqars_rate_other_specified_and_classifiable": {
-      "full_name": "wisqars_rate_other_specified_and_classifiable",
-      "measure": "wisqars_rate_other_specified_and_classifiable",
-      "id": "wisqars_rate_other_specified_and_classifiable",
-      "short_name": "Rate of death due to Other specified and classifiable",
-      "long_name": "Rate of death due to other_specified_and_classifiable",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to other_specified_and_classifiable by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to other_specified_and_classifiable was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Other"
+      "short_name": "Death Rate (rate other_specified_and_classifiable)",
+      "long_name": "Rate of Deaths Caused by rate other_specified_and_classifiable",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to other_specified_and_classifiable.",
+      "long_description": "Deaths per 100k people due to other_specified_and_classifiable.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_other_specified_and_classifiable"
     },
     "wisqars_rate_other_specified_nec": {
-      "full_name": "wisqars_rate_other_specified_nec",
-      "measure": "wisqars_rate_other_specified_nec",
-      "id": "wisqars_rate_other_specified_nec",
-      "short_name": "Rate of death due to Other specified/ NEC",
-      "long_name": "Rate of death due to other_specified_nec",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to other_specified_nec by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to other_specified_nec was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Other"
+      "short_name": "Death Rate (rate other_specified_nec)",
+      "long_name": "Rate of Deaths Caused by rate other_specified_nec",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to other_specified_nec.",
+      "long_description": "Deaths per 100k people due to other_specified_nec.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_other_specified_nec"
     },
     "wisqars_rate_unspecified": {
-      "full_name": "wisqars_rate_unspecified",
-      "measure": "wisqars_rate_unspecified",
-      "id": "wisqars_rate_unspecified",
-      "short_name": "Rate of death due to Unspecified",
-      "long_name": "Rate of death due to unspecified",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to unspecified by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to unspecified was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Other"
+      "short_name": "Death Rate (rate unspecified)",
+      "long_name": "Rate of Deaths Caused by rate unspecified",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to unspecified.",
+      "long_description": "Deaths per 100k people due to unspecified.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_unspecified"
     },
     "wisqars_rate_drug_poisoning": {
-      "full_name": "wisqars_rate_drug_poisoning",
-      "measure": "wisqars_rate_drug_poisoning",
-      "id": "wisqars_rate_drug_poisoning",
-      "short_name": "Rate of death due to Drug poisoning",
-      "long_name": "Rate of death due to drug_poisoning",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to drug_poisoning by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to drug_poisoning was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Poisoning"
+      "short_name": "Death Rate (rate drug_poisoning)",
+      "long_name": "Rate of Deaths Caused by rate drug_poisoning",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to drug_poisoning.",
+      "long_description": "Deaths per 100k people due to drug_poisoning.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_drug_poisoning"
     },
     "wisqars_rate_non_drug_poisoning": {
-      "full_name": "wisqars_rate_non_drug_poisoning",
-      "measure": "wisqars_rate_non_drug_poisoning",
-      "id": "wisqars_rate_non_drug_poisoning",
-      "short_name": "Rate of death due to Non-drug Poisoning",
-      "long_name": "Rate of death due to non_drug_poisoning",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to non_drug_poisoning by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to non_drug_poisoning was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Poisoning"
+      "short_name": "Death Rate (rate non_drug_poisoning)",
+      "long_name": "Rate of Deaths Caused by rate non_drug_poisoning",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to non_drug_poisoning.",
+      "long_description": "Deaths per 100k people due to non_drug_poisoning.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_non_drug_poisoning"
     },
     "wisqars_rate_firearm_intentional": {
-      "full_name": "wisqars_rate_firearm_intentional",
-      "measure": "wisqars_rate_firearm_intentional",
-      "id": "wisqars_rate_firearm_intentional",
-      "short_name": "Rate of death due to Firearm, intentional",
-      "long_name": "Rate of death due to firearm_intentional",
-      "category": "Injuries and overdoses",
-      "long_description": "Rate of deaths attributed to firearm_intentional by year and strata. Rates based on fewer than 10 deaths are suppressed",
-      "statement": "The rate of death due to firearm_intentional was {value} per 100,000 people",
-      "measure_type": "Incidence",
-      "unit": "Deaths/100000 people",
-      "time_resolution": "year",
-      "restrictions": "WISQARS Data Use Agreement. The data source for WISQARS Fatal Injury Data is the National Vital Statistics System (NVSS) operated by the National Center for Health Statistics. WISQARS provides death counts and death rates for the United States and by state, county, age, race, Hispanic ethnicity, sex, leading cause of death, injury intent, and injury mechanism categories. WISQARS can be used to query death data for the years 2001 - 2021, of which the underlying cause of death is specified using ICD-10 codes. The National Center for Health Statistics (NCHS) in an agreement with the National Association of Public Health Statistics and Information Systems (NAPHSIS) has implemented a new, more restrictive rule for reporting state- and county-level death data for years 2008 and later from NVSS in order to avoid inadvertent disclosure of a decedent's identity. Therefore, the Data Analytics Branch, Division of Injury Prevention, NCIPC has modified WISQARS to accommodate the new data suppression rule; i.e., no figure, including totals, should be less than 10 in tabulations for sub-national geographic areas, regardless of the number of years combined with the 2008 and later data. Tabulations, charts, and maps produced by WISQARS using only NVSS death data for years prior to 2008 are not affected by this new rule. Therefore, queries of state-level data for years 1999 through 2007 will remain unrestricted; queries of state-level data that include 2008 or later are restricted.",
-      "sources": [
-        {
-          "id": "wisqars_nchs",
-          "location": "Fatal Injury Reports",
-          "location_url": "https://wisqars.cdc.gov/reports"
-        }
-      ],
-      "citations": [],
-      "subcategory": "Injury Mechanisms"
+      "short_name": "Death Rate (rate firearm_intentional)",
+      "long_name": "Rate of Deaths Caused by rate firearm_intentional",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to firearm_intentional.",
+      "long_description": "Deaths per 100k people due to firearm_intentional.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": {
+        "id": "wisqars",
+        "location": "Fatal Injury Report",
+        "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+      },
+      "id": "wisqars_rate_firearm_intentional"
     },
     "_sources": {
-      "wisqars_nchs": {
-        "name": "Web-based Injury Statistics Query and Reporting System (WISQARS™)",
+      "wisqars": {
+        "name": "Web-based Injury Statistics Query and Reporting System",
         "url": "https://wisqars.cdc.gov/",
-        "organization": "Centers for Disease Control and Prevention, National Center for Health Statistics",
-        "organization_url": "https://www.cdc.gov",
-        "description": "CDC's Web-based Injury Statistics Query and Reporting System (WISQARS™) is an interactive, online source of injury data. Users can access information on fatal and nonfatal injury, cost of injury, and data about social determinants of health related to injury. Data on more than 20 causes of injury among different populations and geographic locations can be explored in WISQARS™. PopHIVE uses data from the fatal injury reports, with the data coming from the National Center for Health Statistics-CDC annual mortality data files."
-      },
-      "wisqars_nvrds": {
-        "name": "Web-based Injury Statistics Query and Reporting System (WISQARS™)",
-        "url": "https://wisqars.cdc.gov/",
-        "organization": "Centers for Disease Control and Prevention, National Center for Injury Prevention and Control",
-        "organization_url": "https://www.cdc.gov",
-        "description": "CDC's Web-based Injury Statistics Query and Reporting System (WISQARS™) is an interactive, online source of injury data. Users can access information on fatal and nonfatal injury, cost of injury, and data about social determinants of health related to injury. Data on more than 20 causes of injury among different populations and geographic locations can be explored in WISQARS™. PopHIVE also has some mortality data from the National Violent Death Reporting System, Data Analytics Branch, National Center for Injury Prevention and Control, CDC."
+        "organization": "Centers for Disease Control and Prevention",
+        "organization_url": "https://data.cdc.gov"
       },
       "id": "_sources"
     }
