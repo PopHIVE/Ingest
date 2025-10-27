@@ -7,7 +7,7 @@
       "location": "VSRR Provisional Drug Overdose Death Counts",
       "location_url": "https://data.cdc.gov/National-Center-for-Health-Statistics/VSRR-Provisional-Drug-Overdose-Death-Counts/xkb8-kh2a/about_data",
       "description": "Provisional counts for drug overdose deaths from the National Vital Statistics System. Provisional counts may be incomplete and causes may be pending investigation; methods exist to adjust for reporting delays. Data updated monthly.",
-      "long_description": "This data presents provisional counts for drug overdose deaths based on a current flow of mortality data in the National Vital Statistics System. Counts for the most recent final annual data are provided for comparison. National provisional counts include deaths occurring within the 50 states and the District of Columbia as of the date specified and may not include all deaths that occurred during a given time period. Provisional counts are often incomplete and causes of death may be pending investigation resulting in an underestimate relative to final counts. To address this, methods were developed to adjust provisional counts for reporting delays by generating a set of predicted provisional counts. Several data quality metrics, including the percent completeness in overall death reporting, percentage of deaths with cause of death pending further investigation, and the percentage of drug overdose deaths with specific drugs or drug classes reported are included to aid in interpretation of provisional data. Reporting of the specific drugs and drug classes involved in drug overdose deaths varies by jurisdiction, and comparisons of death rates involving specific drugs across selected jurisdictions should not be made. Provisional data presented will be updated on a monthly basis as additional records are received.",
+      "long_description": "This data presents provisional counts for drug overdose deaths based on a current flow of mortality data in the National Vital Statistics System.",
       "date_accessed": 2025
     },
     "nvss_21_causes": {
@@ -16,21 +16,13 @@
       "organization_url": "https://www.cdc.gov/nchs",
       "location": "NVSS - 21 Cause of Death Groupings (state-level)",
       "location_url": "",
-      "description": "State-level counts grouped into the standard 21 cause categories (from NVSS). Data file: data_state_21_causes.csv.gz",
+      "description": "State-level counts grouped into the standard 21 cause categories (from NVSS)",
       "date_accessed": 2025
     }
   },
   "_defaults": {
-    "category": "Injury and overdose",
-    "short_description": "",
-    "statement": "",
     "time_resolution": "12 months",
-    "restrictions": "",
-    "sources": [
-      {
-        "id": "nchs_vsrr_provisional"
-      }
-    ],
+    "sources": [{"id": "nchs_vsrr_provisional"}],
     "citations": []
   },
   "_variant_templates": {
@@ -41,50 +33,53 @@
       "measure_type": "Number of deaths",
       "unit": "count",
       "variants": [
-        {
-          "drug": "cocaine",
-          "Drug": "Cocaine",
-          "icd": "T40.5"
-        },
-        {
-          "drug": "heroin",
-          "Drug": "Heroin",
-          "icd": "T40.1"
-        },
-        {
-          "drug": "methadone",
-          "Drug": "Methadone",
-          "icd": "T40.3"
-        },
-        {
-          "drug": "any_opioid",
-          "Drug": "any opioid",
-          "icd": "T40.2-T40.4"
-        }
+        {"Drug_label": "cocaine", "Drug_label": "Cocaine", "icd": "T40.5"},
+        {"Drug_label": "heroin", "Drug_label": "Heroin", "icd": "T40.1"},
+        {"Drug_label": "methadone", "Drug_label": "Methadone", "icd": "T40.3"},
+        {"Drug_label": "any_opioid", "Drug_label": "any opioid", "icd": "T40.2-T40.4"}
       ]
     },
-    "n_deaths_cause21_{code}": {
-      "id_template": "n_deaths_cause21_{code}",
-      "short_name_template": "Number of deaths due to {Cause}",
-      "long_name_template": "Number of deaths due to {Cause} (NVSS 21-cause grouping {code}) over past 12 months",
-      "measure_type": "Number of deaths",
-      "unit": "count",
-      "variants": [],
-      "variants_source": {
-        "file": "data_state_21_causes.csv.gz",
-        "code_column": "cause_code",
-        "label_column": "cause_label",
-        "note": "Processor should read file and generate variants where each row provides {code} and {Cause}."
-      },
-      "sources": [
-        {
-          "id": "nvss_21_causes"
-        }
+    "rate_{cause}": {
+      "id_template": "rate_{cause}",
+      "short_name_template": "Death rate from {Cause}",
+      "long_name_template": "Age-adjusted death rate from {Cause} per 100,000 population",
+      "measure_type": "Death rate",
+      "unit": "rate per 100,000",
+      "sources": [{"id": "nvss_21_causes"}],
+      "variants": [
+        {"Cause_label": "all_causes", "Cause_label": "all causes"},
+        {"Cause_label": "alzheimer_disease", "Cause_label": "Alzheimer's disease"},
+        {"Cause_label": "cancer", "Cause_label": "cancer"},
+        {"Cause_label": "chronic_liver_disease_and_cirrhosis", "Cause_label": "chronic liver disease and cirrhosis"},
+        {"Cause_label": "chronic_lower_respiratory_diseases", "Cause_label": "chronic lower respiratory diseases"},
+        {"Cause_label": "covid_19", "Cause_label": "COVID-19"},
+        {"Cause_label": "diabetes", "Cause_label": "diabetes"},
+        {"Cause_label": "drug_overdose", "Cause_label": "drug overdose"},
+        {"Cause_label": "falls_ages_65_and_over", "Cause_label": "falls (ages 65+)"},
+        {"Cause_label": "firearm_related_injury", "Cause_label": "firearm-related injury"},
+        {"Cause_label": "heart_disease", "Cause_label": "heart disease"},
+        {"Cause_label": "hiv_disease", "Cause_label": "HIV disease"},
+        {"Cause_label": "homicide", "Cause_label": "homicide"},
+        {"Cause_label": "hypertension", "Cause_label": "hypertension"},
+        {"Cause_label": "influenza_and_pneumonia", "Cause_label": "influenza and pneumonia"},
+        {"Cause_label": "kidney_disease", "Cause_label": "kidney disease"},
+        {"Cause_label": "parkinson_disease", "Cause_label": "Parkinson's disease"},
+        {"Cause_label": "pneumonitis_due_to_solids_and_liquids", "Cause_label": "pneumonitis due to solids and liquids"},
+        {"Cause_label": "stroke", "Cause_label": "stroke"},
+        {"Cause_label": "suicide", "Cause_label": "suicide"},
+        {"Cause_label": "unintentional_injuries", "Cause_label": "unintentional injuries"}
       ]
     }
   },
   "measures": {
-
+    "geography_name": {
+      "id": "geography_name",
+      "short_name": "Geographic area name",
+      "long_name": "Name of the geographic area",
+      "measure_type": "Geography",
+      "unit": "text",
+      "time_resolution": "N/A"
+    },
     "n_deaths_all_cause": {
       "id": "n_deaths_all_cause",
       "short_name": "Number of deaths due to any cause",
@@ -92,11 +87,7 @@
       "measure_type": "Number of deaths",
       "unit": "count",
       "time_resolution": "12 months",
-      "sources": [
-        {
-          "id": "nchs_vsrr_provisional"
-        }
-      ],
+      "sources": [{"id": "nchs_vsrr_provisional"}],
       "citations": []
     },
     "n_deaths_overdose": {
@@ -106,54 +97,39 @@
       "measure_type": "Number of deaths",
       "unit": "count",
       "time_resolution": "12 months",
-      "sources": [
-        {
-          "id": "nchs_vsrr_provisional"
-        }
-      ],
+      "sources": [{"id": "nchs_vsrr_provisional"}],
       "citations": []
     },
     "pct_drug_specified": {
       "id": "pct_drug_specified",
-      "short_name": "Percentage of overdose deaths where the drug is specified",
-      "long_name": "Percentage of overdose deaths where the drug is specified over past 12 months",
+      "short_name": "Percentage of overdose deaths with specified drug",
+      "long_name": "Percentage of overdose deaths where drug is specified",
       "measure_type": "Percentage of deaths",
       "unit": "percent",
       "time_resolution": "12 months",
-      "sources": [
-        {
-          "id": "nchs_vsrr_provisional"
-        }
-      ],
+      "sources": [{"id": "nchs_vsrr_provisional"}],
       "citations": []
     },
     "pct_pending_invest": {
       "id": "pct_pending_invest",
       "short_name": "Percentage of deaths pending investigation",
-      "long_name": "Percentage of deaths pending investigation over past 12 months",
+      "long_name": "Percentage of deaths pending investigation",
       "measure_type": "Percentage of deaths",
       "unit": "percent",
       "time_resolution": "12 months",
-      "sources": [
-        {
-          "id": "nchs_vsrr_provisional"
-        }
-      ],
+      "sources": [{"id": "nchs_vsrr_provisional"}],
       "citations": []
     },
     "pct_complete": {
       "id": "pct_complete",
-      "short_name": "Expected percentage of completeness of death records",
-      "long_name": "Expected percentage of completeness of death records over past 12 months",
+      "short_name": "Expected completeness of death records",
+      "long_name": "Expected percentage completeness of death records",
       "measure_type": "Percentage of deaths",
       "unit": "percent",
       "time_resolution": "12 months",
-      "sources": [
-        {
-          "id": "nchs_vsrr_provisional"
-        }
-      ],
+      "sources": [{"id": "nchs_vsrr_provisional"}],
       "citations": []
     }
   }
 }
+
