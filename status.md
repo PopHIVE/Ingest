@@ -46,8 +46,8 @@ flowchart LR
     end
     subgraph gtrends["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/gtrends" target="_blank" rel="noreferrer">gtrends</a></strong>`"]
         direction LR
-        n13["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/gtrends/standard/data_dma.csv.gz" target="_blank" rel="noreferrer">data_dma.csv.gz</a></strong><br/><br/><ul><li><code>geography_missing</code></li><li><code>missing_info: fips</code></li><li><code>missing_info: value</code></li><li><code>missing_info: term</code></li></ul>`"]:::warn
-        n14["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/gtrends/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: gtrends_drug+overdose</code></li><li><code>missing_info: gtrends_narcan</code></li><li><code>missing_info: gtrends_rsv_adjusted</code></li></ul>`"]:::warn
+        n13["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/gtrends/standard/data_dma.csv.gz" target="_blank" rel="noreferrer">data_dma.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: gtrends_drug+overdose</code></li></ul>`"]:::warn
+        n14["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/gtrends/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: gtrends_drug+overdose</code></li></ul>`"]:::warn
     end
     subgraph medicaid_quality["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid_quality" target="_blank" rel="noreferrer">medicaid_quality</a></strong>`"]
         direction LR
@@ -93,7 +93,7 @@ flowchart LR
     end
     subgraph wisqars["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/wisqars" target="_blank" rel="noreferrer">wisqars</a></strong>`"]
         direction LR
-        n27["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/wisqars/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: wisqars_rate_drowning_includes_water_transport_</code></li><li><code>missing_info: wisqars_rate_transport_other_excl_drown_by_water_transp_</code></li><li><code>missing_info: wisqars_deaths_drowning_includes_water_transport_</code></li><li><code>missing_info: wisqars_deaths_transport_other_excl_drown_by_water_transp_</code></li></ul>`"]:::warn
+        n27["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/wisqars/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
     end
     subgraph bundle_childhood_immunizations["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_childhood_immunizations" target="_blank" rel="noreferrer">bundle_childhood_immunizations</a></strong>`"]
         direction LR
@@ -162,6 +162,7 @@ flowchart LR
     s6---s9["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/nhsn.html" target="_blank" rel="noreferrer">COVIDcast > National Healthcare Safety Network Respiratory Hospitalizations</a></strong>"]
     s9 --> n6
     s10---s11["<strong><a href="https://github.com/DISSC-yale/gtrends_collection" target="_blank" rel="noreferrer">Yale Data-Intensive Social Sciences, Google Trends Collection Framework</a></strong>"]
+    s11 --> n13
     s11 --> n14
     s12---s13["<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">About the National Immunization Surveys (NIS)</a></strong>"]
     s13 --> n18
@@ -200,6 +201,7 @@ flowchart LR
     n3 --> bundle_injury_overdose
     n17 --> bundle_injury_overdose
     n15 --> bundle_injury_overdose
+    n27 --> bundle_injury_overdose
     n12 --> bundle_respiratory
     n14 --> bundle_respiratory
     n26 --> bundle_respiratory
