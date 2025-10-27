@@ -145,6 +145,7 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(DMA_ID = as.numeric(DMA_ID)) %>%
     filter(!is.na(DMA_ID))
   
+  
   g_states <- paste('US', state.abb, sep = '-')
   
   #
@@ -152,45 +153,48 @@ if (!identical(process$raw_state, raw_state)) {
   # ##Google metro data
   #view_dma <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/google_dma.parquet')
   g1_metro <- data_dma %>%
-    reshape2::melt(.,id.vars=c('geography','time')) %>%
-    rename(location = geography,
-           term=variable,
-           date=time) %>%
-    filter(!(location %in% g_states)) %>%
-    group_by(date, location, term) %>%
-    summarize(value = mean(value),
-    ) %>% #averages over duplicate pulls
+   # reshape2::melt(.,id.vars=c('geography','time')) %>%
+    filter(!(geography %in% g_states)) %>%
+    group_by(geography, time) %>%
+    summarise(across(
+      c(`gtrends_drug+overdose`,gtrends_naloxone, gtrends_narcan, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv ),
+      ~ mean(.x, na.rm = TRUE)
+    ), .groups = "drop") %>% #averages over duplicate pulls
     ungroup() %>%
     collect() %>%
     mutate(
-      date2 = as.Date(date),
-      date = as.Date(ceiling_date(date2, 'week')) - 1
+      time = as.character(as.Date(time)+ 6) # week end date
     ) %>%
-    group_by(term) %>%
-    mutate(location = as.numeric(location),
-           ucl = quantile(value, probs=0.99),
-           value = if_else(value>ucl, ucl, value)) %>%
-    ungroup() %>%
-    filter(!is.na(location)) %>%
-    rename(search_volume = value) %>%
-    filter(date >= as.Date('2018-07-01')) %>%
-    left_join(dma_link1, by = c('location' = 'DMA_ID'),relationship = "many-to-many") %>% #many to many join by date and counties
+    filter(!is.na(geography)) %>%
+    filter(time >= as.Date('2018-07-01')) %>%
+    rename(DMA_ID = geography) %>%
+    mutate(DMA_ID = as.numeric(DMA_ID)) %>%
+    left_join(dma_link1, by = c('DMA_ID' = 'DMA_ID'),relationship = "many-to-many") %>% #many to many join by date and counties
     group_by(STATEFP, CNTYFP) %>%
     mutate(
-      fips = paste0(STATEFP, sprintf("%03d", CNTYFP)),
-      fips = as.numeric(fips)
+      STATEFP = sprintf("%02d", STATEFP),
+      geography = paste0(STATEFP, sprintf("%03d", CNTYFP)),
     ) %>%
-    ungroup() %>%
-    mutate(
-      search_volume_scale = search_volume / max(search_volume, na.rm = T) * 100
+    ungroup()%>%
+    mutate(across(
+      c(`gtrends_drug+overdose`, gtrends_narcan,gtrends_naloxone, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv),
+      \(x) {
+        p99 <- quantile(x, 0.99, na.rm = TRUE)
+        pmin(x, p99)
+      })
     ) %>%
-    ungroup() %>%
-    dplyr::select(date, fips, search_volume_scale,term) %>%
-    rename(value = search_volume_scale) %>%
-    rename(time=date)
+    mutate(across(
+      c(gtrends_rsv_vaccine,
+        gtrends_naloxone,
+        `gtrends_drug+overdose`,
+        gtrends_narcan,
+        gtrends_overdose,
+        gtrends_rsv),
+      \(x) x / max(x, na.rm = TRUE) / 100  #scales each value to 100
+    )) %>%
+    dplyr::select(geography, time,  gtrends_narcan,gtrends_naloxone,`gtrends_drug+overdose`, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv)
   
-  g1_metro$time  <- as.character(as.Date(g1_metro$time)+ 6) # week end date
-  
+
   
   vroom::vroom_write(g1_metro, "standard/data_dma.csv.gz", ",")
   

@@ -376,10 +376,12 @@ trends_age %>%
 ### Google DMA
 #############################
 d3 <- vroom::vroom('../gtrends/standard/data_dma.csv.gz') %>%
-  filter(term=='gtrends_rsv') %>%
-  dplyr::select(-term) %>%
+  dplyr::select(geography, time, gtrends_rsv) %>%
+  rename(value = gtrends_rsv) %>%
   rename(date = time) %>%
-  filter(date > (max(date, na.rm=T)-365*2) )
+  filter(date > (max(date, na.rm=T)-365*2) ) %>%
+  rename(fips = geography) %>%
+  mutate(fips = as.numeric(fips))
 
   arrow::write_parquet(d3, "dist/rsv_google_dma.parquet")
   
