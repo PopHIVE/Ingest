@@ -190,7 +190,7 @@ if (!identical(process$raw_state, raw_state)) {
         gtrends_narcan,
         gtrends_overdose,
         gtrends_rsv),
-      \(x) x / max(x, na.rm = TRUE) / 100  #scales each value to 100
+      \(x) x / max(x, na.rm = TRUE) * 100  #scales each value to 100
     )) %>%
     dplyr::select(geography, time,  gtrends_narcan,gtrends_naloxone,`gtrends_drug+overdose`, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv)
   
