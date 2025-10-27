@@ -1,217 +1,66 @@
 {
-  "pct_obesity_value": {
-    "full_name": "Percent of the Population with BMI >30",
-    "measure": "",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "Prevalence",
-    "unit": "Percent",
-    "time_resolution": "year",
-    "sources": [
-      {
-        "name": "BRFSS (CDC)",
-        "url": "https://www.cdc.gov/brfss/index.html",
-        "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-        "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-        "date_accessed": 2025
-      }
-    ],
-    "citations": [],
-    "layer": []
-  },
-    "pct_diabetes_value": {
-    "full_name": "Percent of the Population that has been told by their provider that they have diabetes",
-    "measure": "",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "Prevalence",
-    "unit": "Percent",
-    "time_resolution": "year",
-    "sources": [
-          {
-            "name": "BRFSS (CDC)",
-            "url": "https://www.cdc.gov/brfss/index.html",
-            "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-            "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-            "date_accessed": 2025
-          }
-        ],    
-    "citations": [],
-    "layer": []
-  },
-      "age": {
-    "full_name": "Age group",
-    "measure": "",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
+  "age": {
+    "name": "age",
+    "description": "Age group.",
     "measure_type": "Age",
     "unit": "years",
-    "time_resolution": "year",
-    "sources": [
-          {
-            "name": "BRFSS (CDC)",
-            "url": "https://www.cdc.gov/brfss/index.html",
-            "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-            "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-            "date_accessed": 2025
-          }
-        ],       "citations": [],
-    "layer": []
+    "time_resolution": "year"
   },
-      "pct_diabetes_sample_size": {
-    "full_name": "Number of people who responded that they have been told by a healthcare provider they have diabetes",
-    "measure": "",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "Number",
-    "unit": "integer",
+
+  "pct_{outcome}_{metric}": {
+    "short_name": "Percent {outcome} ({metric})",
+    "long_name": "BRFSS measure for {outcome} ({metric})",
+    "category": "Health",
     "time_resolution": "year",
-    "sources": [
-          {
-            "name": "BRFSS (CDC)",
-            "url": "https://www.cdc.gov/brfss/index.html",
-            "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-            "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-            "date_accessed": 2025
-          }
-        ],   
-        "citations": [],
-    "layer": []
+    "variants": {
+      "value": {
+        "default": "value",
+        "short_description": "Percent of the population with {outcome}.",
+        "long_description": "Estimated percent of the population with {outcome} from BRFSS.",
+        "measure_type": "Prevalence",
+        "unit": "Percent",
+        "sources": [{ "id": "brfss" }]
+      },
+      "value_lcl": {
+        "default": "value_lcl",
+        "short_description": "Lower bound of the 95% confidence interval for percent {outcome}.",
+        "measure_type": "Prevalence",
+        "unit": "Percent",
+        "sources": [{ "id": "brfss" }]
+      },
+      "value_ucl": {
+        "default": "value_ucl",
+        "short_description": "Upper bound of the 95% confidence interval for percent {outcome}.",
+        "measure_type": "Prevalence",
+        "unit": "Percent",
+        "sources": [{ "id": "brfss" }]
+      },
+      "sample_size": {
+        "default": "sample_size",
+        "short_description": "Survey sample size used to estimate {outcome}.",
+        "measure_type": "Number",
+        "unit": "integer",
+        "sources": [{ "id": "brfss" }]
+      }
+    },
+    "categories": {
+      "obesity": { "default": "obesity", "full_name": "BMI >30" },
+      "diabetes": { "default": "diabetes", "full_name": "Ever been told you have diabetes?" },
+      "depression": { "default": "depression", "full_name": "(Ever told) (you had) a depressive disorder?" },
+      "heavy_drink": { "default": "heavy_drink", "full_name": "Heavy drinking (adult men having more than 14 drinks per week and adultwomen having more than 7 drinks per week)" }
+
+ }
   },
-      "pct_obesity_sample_size": {
-    "full_name": "Number of survey respondents with a calculated BMI >30",
-    "measure": "",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "Number",
-    "unit": "integer",
-    "time_resolution": "year",
-    "sources": [
-          {
-            "name": "BRFSS (CDC)",
-            "url": "https://www.cdc.gov/brfss/index.html",
-            "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-            "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-            "date_accessed": 2025
-          }
-        ],   
-        "citations": [],
-    "layer": []
-  },
-    "pct_diabetes_value_lcl": {
-    "full_name": "Lower Bound of the 95% confidence interval for the percent of the Population that has been told by their provider that they have diabetes",
-    "measure": "",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "Prevalence",
-    "unit": "Percent",
-    "time_resolution": "year",
-    "sources": [
-          {
-            "name": "BRFSS (CDC)",
-            "url": "https://www.cdc.gov/brfss/index.html",
-            "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-            "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-            "date_accessed": 2025
-          }
-        ],   
-        "citations": [],
-    "layer": []
-  },
-    "pct_diabetes_value_ucl": {
-    "full_name": "Upper Bound of the 95% confidence interval for the percent of the Population that has been told by their provider that they have diabetes",
-    "measure": "",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "Prevalence",
-    "unit": "Percent",
-    "time_resolution": "year",
-    "sources": [
-          {
-            "name": "BRFSS (CDC)",
-            "url": "https://www.cdc.gov/brfss/index.html",
-            "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-            "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-            "date_accessed": 2025
-          }
-        ],   
-        "citations": [],
-    "layer": []
-  },
-  "pct_obesity_value_lcl": {
-    "full_name": "Lower Bound of the 95% confidence interval for the percent of the Population with BMI >30",
-    "measure": "",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "Prevalence",
-    "unit": "Percent",
-    "time_resolution": "year",
-    "sources": [
-          {
-            "name": "BRFSS (CDC)",
-            "url": "https://www.cdc.gov/brfss/index.html",
-            "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-            "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-            "date_accessed": 2025
-          }
-        ],   
-        "citations": [],
-    "layer": []
-  },
-  "pct_obesity_value_ucl": {
-    "full_name": "Upper Bound of the 95% confidence interval for the percent of the Population with BMI >30",
-    "measure": "",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "Prevalence",
-    "unit": "Percent",
-    "time_resolution": "year",
-    "sources": [
-          {
-            "name": "BRFSS (CDC)",
-            "url": "https://www.cdc.gov/brfss/index.html",
-            "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-            "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-            "date_accessed": 2025
-          }
-        ],   
-        "citations": [],
-    "layer": []
+
+  "_sources": {
+    "brfss": {
+      "name": "BRFSS (CDC)",
+      "url": "https://www.cdc.gov/brfss/index.html",
+      "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
+      "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
+      "date_accessed": 2025,
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://data.cdc.gov"
+    }
   }
 }
