@@ -7,7 +7,7 @@ library(tidyverse)
 dcf_build()
 
 ##RUN ONCE from parent directory (not within an existing project) 
-# dcf_init('PopHIVE_DataStandards')
+# dcf_init('ingest')
 #########
 
 ###########
