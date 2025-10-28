@@ -57,6 +57,7 @@ dcf_build()
 # dcf_process("nchs_mortality")
 
 
+#check structure of the files before merging
 #dcf::dcf_check('brfss')
 #dcf::dcf_check('epic')
 #dcf::dcf_check('nchs_mortality')
