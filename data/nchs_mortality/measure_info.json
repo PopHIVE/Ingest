@@ -6,7 +6,6 @@
     "unit": "text",
     "time_resolution": "N/A"
   },
-
   "n_deaths_all_cause": {
     "name": "n_deaths_all_cause",
     "description": "Number of deaths due to any cause over past 12 months",
@@ -15,7 +14,6 @@
     "time_resolution": "12 months",
     "sources": ["nchs_vsrr_provisional"]
   },
-
   "n_deaths_overdose": {
     "name": "n_deaths_overdose",
     "description": "Number of deaths due to an overdose over past 12 months",
@@ -24,7 +22,6 @@
     "time_resolution": "12 months",
     "sources": ["nchs_vsrr_provisional"]
   },
-
   "pct_drug_specified": {
     "name": "pct_drug_specified",
     "description": "Percentage of overdose deaths where drug is specified",
@@ -33,7 +30,6 @@
     "time_resolution": "12 months",
     "sources": ["nchs_vsrr_provisional"]
   },
-
   "pct_pending_invest": {
     "name": "pct_pending_invest",
     "description": "Percentage of deaths pending investigation",
@@ -42,7 +38,6 @@
     "time_resolution": "12 months",
     "sources": ["nchs_vsrr_provisional"]
   },
-
   "pct_complete": {
     "name": "pct_complete",
     "description": "Expected completeness of death records",
@@ -51,62 +46,66 @@
     "time_resolution": "12 months",
     "sources": ["nchs_vsrr_provisional"]
   },
-
-  "_variant_templates": {
-    "n_deaths_{drug}": {
-      "name_template": "n_deaths_{drug}",
-      "description_template": "Number of deaths due to {Drug_label.1} over past 12 months (ICD10: {icd})",
-      "measure_type": "Number of deaths",
-      "unit": "count",
-      "time_resolution": "12 months",
-      "sources": ["nchs_vsrr_provisional"],
-      "variants": [
-        { "drug": "cocaine", "Drug_label.1": "Cocaine", "icd": "T40.5" },
-        { "drug": "heroin", "Drug_label.1": "Heroin", "icd": "T40.1" },
-        { "drug": "methadone", "Drug_label.1": "Methadone", "icd": "T40.3" },
-        { "drug": "any_opioid", "Drug_label.1": "any opioid", "icd": "T40.2-T40.4" }
-      ]
-    },
-
-    "rate_{cause}": {
-      "name_template": "rate_{cause}",
-      "description_template": "Age-adjusted death rate from {Cause_label.1} per 100,000 population",
-      "measure_type": "Death rate",
-      "unit": "rate per 100,000",
-      "time_resolution": "yearly",
-      "sources": ["nvss_21_causes"],
-      "variants": [
-        { "cause": "all_causes", "Cause_label.1": "all causes" },
-        { "cause": "alzheimer_disease", "Cause_label.1": "Alzheimer's disease" },
-        { "cause": "cancer", "Cause_label.1": "cancer" },
-        { "cause": "chronic_liver_disease_and_cirrhosis", "Cause_label.1": "chronic liver disease and cirrhosis" },
-        { "cause": "chronic_lower_respiratory_diseases", "Cause_label.1": "chronic lower respiratory diseases" },
-        { "cause": "covid_19", "Cause_label.1": "COVID-19" },
-        { "cause": "diabetes", "Cause_label.1": "diabetes" },
-        { "cause": "drug_overdose", "Cause_label.1": "drug overdose" },
-        { "cause": "heart_disease", "Cause_label.1": "heart disease" },
-        { "cause": "suicide", "Cause_label.1": "suicide" },
-        { "cause": "unintentional_injuries", "Cause_label.1": "unintentional injuries" }
-      ]
+  "n_deaths_{variant.name}": {
+    "name_template": "n_deaths_{variant.name}",
+    "description_template": "Number of deaths due to {variant.name} over past 12 months",
+    "measure_type": "Number of deaths",
+    "unit": "count",
+    "time_resolution": "12 months",
+    "sources": ["nchs_vsrr_provisional"],
+    "variants": {
+      "cocaine": {"default": "cocaine" , "short_description": "T40.5" },
+      "heroin": { "default": "heroin", "short_description": "T40.1" },
+      "methadone": { "default": "methadone", "short_description": "T40.3" },
+      "any_opioid": { "default": "any_opioid", "short_description": "T40.2-T40.4" }
     }
   },
-
+  "rate_{variant.name}": {
+    "name_template": "rate_{variant.name}",
+    "description_template": "Age-adjusted death rate from {variant.name} per 100,000 population",
+    "measure_type": "Death rate",
+    "unit": "rate per 100,000",
+    "time_resolution": "yearly",
+    "sources": ["nvss_21_causes"],
+    "variants": {
+      "all_causes": { "default": "all_causes", "Cause_label.1": "all causes" },
+      "alzheimer_disease": { "default": "alzheimer_disease", "Cause_label.1": "Alzheimer's disease" },
+      "cancer": { "default": "cancer", "Cause_label.1": "cancer" },
+      "chronic_liver_disease_and_cirrhosis": { "default": "chronic_liver_disease_and_cirrhosis", "Cause_label.1": "chronic liver disease and cirrhosis" },
+      "chronic_lower_respiratory_diseases": { "default": "chronic_lower_respiratory_diseases", "Cause_label.1": "chronic lower respiratory diseases" },
+      "covid_19": { "default": "covid_19", "Cause_label.1": "COVID-19" },
+      "diabetes": { "default": "diabetes", "Cause_label.1": "diabetes" },
+      "drug_overdose": { "default": "drug_overdose", "Cause_label.1": "drug overdose" },
+      "heart_disease": { "default": "heart_disease", "Cause_label.1": "heart disease" },
+      "suicide": { "default": "suicide", "Cause_label.1": "suicide" },
+      "unintentional_injuries": { "default": "unintentional_injuries", "Cause_label.1": "unintentional injuries" },
+      "falls_ages_65_and_over": { "default": "falls_ages_65_and_over", "Cause_label.1": "falls_ages_65_and_over" },
+      "firearm_related_injury": { "default": "firearm_related_injury", "Cause_label.1": "firearm_related_injury" },
+      "hiv_disease": { "default": "hiv_disease", "Cause_label.1": "hiv_disease" },
+      "homicide": { "default": "homicide", "Cause_label.1": "homicide" },
+      "hypertension": { "default": "hypertension", "Cause_label.1": "hypertension" },
+      "influenza_and_pneumonia": { "default": "influenza_and_pneumonia", "Cause_label.1": "influenza_and_pneumonia" },
+      "kidney_disease": { "default": "kidney_disease", "Cause_label.1": "kidney_disease" },
+      "parkinson_disease": { "default": "parkinson_disease", "Cause_label.1": "parkinson_disease" },
+      "pneumonitis_due_to_solids_and_liquids": { "default": "pneumonitis_due_to_solids_and_liquids", "Cause_label.1": "pneumonitis_due_to_solids_and_liquids" },
+      "stroke": { "default": "stroke", "Cause_label.1": "stroke" }
+    }
+  },
   "_sources": {
     "nchs_vsrr_provisional": {
       "organization": "Centers for Disease Control and Prevention (NCHS)",
       "organization_url": "https://www.cdc.gov/nchs/nvss/vsrr/drug-overdose-data.htm",
-      "location": "VSRR Provisional Drug Overdose Death Counts",
-      "location_url": "https://data.cdc.gov/National-Center-for-Health-Statistics/VSRR-Provisional-Drug-Overdose-Death-Counts/xkb8-kh2a/about_data",
+      "name": "VSRR Provisional Drug Overdose Death Counts",
+      "url": "https://data.cdc.gov/National-Center-for-Health-Statistics/VSRR-Provisional-Drug-Overdose-Death-Counts/xkb8-kh2a/about_data",
       "description": "Provisional counts for drug overdose deaths from the National Vital Statistics System. Provisional counts may be incomplete and causes may be pending investigation; methods exist to adjust for reporting delays. Data updated monthly.",
-      "date_accessed": 2025
+      "date_accessed": "2025"
     },
-
     "nvss_21_causes": {
       "organization": "National Center for Health Statistics (NCHS)",
       "organization_url": "https://www.cdc.gov/nchs",
-      "location": "NVSS - 21 Cause of Death Groupings (state-level)",
+      "name": "NVSS - 21 Cause of Death Groupings (state-level)",
       "description": "State-level counts grouped into the standard 21 cause categories (from NVSS)",
-      "date_accessed": 2025
+      "date_accessed": "2025"
     }
   }
 }

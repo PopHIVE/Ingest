@@ -51,7 +51,7 @@ if (!identical(process1$raw_state, raw_state1)) {
     rename( n_deaths_cocaine = "Cocaine (T40.5)" ,
             n_deaths_heroin = "Heroin (T40.1)" ,
             n_deaths_methadone = "Methadone (T40.3)",
-            n_deaths_any_opiod = "Natural, semi-synthetic, & synthetic opioids, incl. methadone (T40.2-T40.4)",
+            n_deaths_any_opioid = "Natural, semi-synthetic, & synthetic opioids, incl. methadone (T40.2-T40.4)",
             n_deaths_all_cause = "Number of Deaths" ,
             n_deaths_overdose = "Number of Drug Overdose Deaths" #,
            # pct_drug_specified = "Percent with drugs specified",
@@ -197,6 +197,12 @@ if (!identical(process3$raw_state, raw_state3)) {
       .cols = starts_with("rate_")
     )
     
+  fips_map <- vroom::vroom('../../resources/all_fips.csv.gz')
+  
+  data_type <- data_type %>% 
+    left_join(fips_map ,by='geography_name') %>%
+    dplyr::select(-state, -geography_name) %>%
+    relocate(geography, time)
   
   vroom::vroom_write(
     data_type,
