@@ -1,55 +1,62 @@
 {
   "age": {
-    "name": "age",
-    "description": "Age group.",
-    "measure_type": "Age",
+    "id": "age",
+    "short_name": "Age",
+    "long_name": "Age group",
+    "short_description": "Age group.",
+    "measure_type": "integer",
     "unit": "years",
     "time_resolution": "year"
   },
 
-  "pct_{outcome}_{metric}": {
-    "short_name": "Percent {outcome} ({metric})",
-    "long_name": "BRFSS measure for {outcome} ({metric})",
+  "pct_{category}_{variant}": {
+    "id": "pct_{category}_{variant}",
+    "short_name": "Percent {category} ({variant.short_name})",
+    "long_name": "BRFSS measure for {category} ({variant.short_name})",
+    "short_description": "Estimated percent of the population with {category} (BRFSS).",
     "category": "Health",
     "time_resolution": "year",
     "variants": {
       "value": {
         "default": "value",
-        "short_description": "Percent of the population with {outcome}.",
-        "long_description": "Estimated percent of the population with {outcome} from BRFSS.",
-        "measure_type": "Prevalence",
-        "unit": "Percent",
+        "short_name": "Value",
+        "short_description": "Percent of the population with {category}.",
+        "long_description": "Estimated percent of the population with {category} from BRFSS.",
+        "measure_type": "percent",
+        "unit": "percent",
         "sources": [{ "id": "brfss" }]
       },
       "value_lcl": {
         "default": "value_lcl",
-        "short_description": "Lower bound of the 95% confidence interval for percent {outcome}.",
-        "measure_type": "Prevalence",
-        "unit": "Percent",
+        "short_name": "Lower 95% CI",
+        "short_description": "Lower bound of the 95% confidence interval for percent {category}.",
+        "measure_type": "percent",
+        "unit": "percent",
         "sources": [{ "id": "brfss" }]
       },
       "value_ucl": {
         "default": "value_ucl",
-        "short_description": "Upper bound of the 95% confidence interval for percent {outcome}.",
-        "measure_type": "Prevalence",
-        "unit": "Percent",
+        "short_name": "Upper 95% CI",
+        "short_description": "Upper bound of the 95% confidence interval for percent {category}.",
+        "measure_type": "percent",
+        "unit": "percent",
         "sources": [{ "id": "brfss" }]
       },
       "sample_size": {
         "default": "sample_size",
-        "short_description": "Survey sample size used to estimate {outcome}.",
-        "measure_type": "Number",
-        "unit": "integer",
+        "short_name": "Sample size",
+        "short_description": "Survey sample size used to estimate {category}.",
+        "measure_type": "integer",
+        "unit": "count",
         "sources": [{ "id": "brfss" }]
       }
     },
     "categories": {
-      "obesity": { "default": "obesity", "full_name": "BMI >30" },
-      "diabetes": { "default": "diabetes", "full_name": "Ever been told you have diabetes?" },
-      "depression": { "default": "depression", "full_name": "(Ever told) (you had) a depressive disorder?" },
-      "heavy_drink": { "default": "heavy_drink", "full_name": "Heavy drinking (adult men having more than 14 drinks per week and adultwomen having more than 7 drinks per week)" }
-
- }
+      "obesity": { "default": "obesity", "short_name": "BMI >30" },
+      "diabetes": { "default": "diabetes", "short_name": "Ever been told you have diabetes?" },
+      "depression": { "default": "depression", "short_name": "Ever told you had a depressive disorder?" },
+      "heavy_drink": { "default": "heavy_drink", "short_name": "Heavy drinking (men >14 drinks/week; women >7 drinks/week)" }
+    }
   },
 
   "_sources": {

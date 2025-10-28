@@ -45,7 +45,7 @@ dcf_build()
 # dcf_process("gtrends")
 # dcf_process("NREVSS")
 # dcf_process("wastewater")
-# dcf_process("epic")
+# dcf::dcf_process("epic")
 # dcf::dcf_process("brfss")
 # dcf_process("respnet")
 # dcf_process("delphi_doctors_claims")
@@ -56,6 +56,9 @@ dcf_build()
 # dcf_process("wisqars")
 # dcf_process("nchs_mortality")
 
+
+#dcf::dcf_check('brfss')
+#dcf::dcf_check('epic')
 
 
 ## Add bundles

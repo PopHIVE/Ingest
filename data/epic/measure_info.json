@@ -1,69 +1,251 @@
 {
   "age": {
-    "name": "age",
-    "description": "Age group.",
-    "measure_type": "categorical",
-    "unit": "category",
-    "time_resolution": "yearly"
+    "full_name": "age",
+    "measure": "age",
+    "short_name": "Age Group",
+    "long_name": "Age Group",
+    "category": "demographic",
+    "short_description": "Age group.",
+    "long_description": "Age group, based on age in current years.",
+    "measure_type": "string",
+    "unit": "bin",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
   },
-  "wisqars_{variant.name}_{category.name}": {
-    "short_name": "Death Rate ({variant} {category})",
-    "long_name": "Rate of Deaths Caused by {variant} {category}",
-    "category": "Injury & Overdose",
-    "subcategory": "Fatalities",
-    "short_description": "Death rate due to {variant} {category}.",
-    "long_description": "Deaths per 100k people due to {variant} {category}.",
-    "measure_type": "per 100k",
-    "unit": "rate",
-    "time_resolution": "yearly",
+  "n_vaccine_mmr": {
+    "full_name": "n_vaccine_mmr",
+    "measure": "n_vaccine_mmr",
+    "short_name": "Immunizations for MMR",
+    "long_name": "Immunizations for Measles, Mumps, and Rubella (MMR)",
+    "category": "immunizations",
+    "short_description": "Number with Immunizations: Measles, Mumps, and Rubella (MMR) receipt",
+    "long_description": "Number with Immunizations: Measles, Mumps, and Rubella (MMR) receipt by Age in Years (Current) Range and State of Residence (U.S.).",
+    "measure_type": "integer",
+    "unit": "patient",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+  "mmr_receipt": {
+    "full_name": "mmr_receipt",
+    "measure": "mmr_receipt",
+    "short_name": "Immunizations for MMR: Percent",
+    "long_name": "Immunizations for Measles, Mumps, and Rubella (MMR): Percent",
+    "category": "immunizations",
+    "short_description": "Percentage with Immunizations: Measles, Mumps, and Rubella (MMR) receipt",
+    "long_description": "Percentage with Immunizations: Measles, Mumps, and Rubella (MMR) receipt by Age in Years (Current) Range and State of Residence (U.S.).",
+    "measure_type": "percent",
+    "unit": "percent of sample",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+  "n_obesity_county": {
+    "full_name": "n_obesity_county",
+    "measure": "n_obesity_county",
+    "short_name": "Number of Patients (Chronic, County)",
+    "long_name": "Number of Patients (Chronic, County)",
+    "category": "chronic",
+    "short_description": "Total number of patients.",
+    "long_description": "Total number of patients within the county-level obesity sample.",
+    "measure_type": "integer",
+    "unit": "patient",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+    "epic_n_ed_opioid": {
+    "full_name": "epic_n_ed_opioid",
+    "measure": "epic_n_ed_opioid",
+    "short_name": "Number of Patients in the ED for opioid overdose",
+    "long_name": "Number of Patients in the ED for opioid overdose",
+    "category": "injury/overdose",
+    "short_description": "Number of patients.",
+    "long_description": "Number of patients",
+    "measure_type": "integer",
+    "unit": "patient",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+  "epic_pct_ed_opioid": {
+    "full_name": "epic_pct_ed_opioid",
+    "measure": "epic_pct_ed_opioid",
+    "short_name": "Percentage of Patients in the ED for opioid overdose",
+    "long_name": "Percentage of Patients in the ED for opioid overdose",
+    "category": "injury/overdose",
+    "short_description": "Percentage of patients.",
+    "long_description": "Percentage of patients",
+    "measure_type": "percent",
+    "unit": "%",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+    "n_patients": {
+    "full_name": "n_patients ",
+    "measure": "n_patients ",
+    "short_name": "Number of Patients in the ED",
+    "long_name": "Number of Patients in the ED, any cause",
+    "category": "",
+    "short_description": "Number of patients.",
+    "long_description": "Number of patients",
+    "measure_type": "integer",
+    "unit": "N",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+  "epic_suppressed_flag_{variant.name}": {
+    "full_name": "epic_suppressed_flag_{variant.name} ",
+    "measure": "suppressed flag",
+    "short_name": "Fewer than 10 cases in the strata?",
+    "long_name": "Fewer than 10 cases in the strata?",
+    "category": "",
+    "short_description": "Binary",
+    "long_description": "Binary",
+    "measure_type": "binary",
+    "unit": "",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }],
     "variants": {
-      "violence": {
-        "default": "intentional",
-        "sources": {
-          "id": "wisqars",
-          "location": "Fatal Injury Report, Violence-related intent",
-          "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
-        }
-      },
-      "accident": {
-        "default": "accidental",
-        "sources": {
-          "id": "wisqars",
-          "location": "Fatal Injury Report, Unintentional intent",
-          "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=1&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
-        }
-      }
-    },
-    "categories": {
-      "firearm": {
-        "default": "firearm"
-      },
-      "drug_poisoning": {
-        "default": "drug poisioning"
-      },
-      "non_drug_poisoning": {
-        "default": "non-drug poisoning"
-      },
-      "suffocation": {
-        "default": "suffocation"
-      },
-      "motor_vehicle_traffic": {
-        "default": "motor vehicle traffic"
-      },
-      "fall": {
-        "default": "fall"
-      },
-      "unspecified": {
-        "default": "unspecified"
-      }
+      "covid": {"default": "covid", "category": "rsv"},
+      "flu": {"default": "flu", "category": "rsv"},
+      "rsv": {"default": "rsv", "category": "rsv"}
     }
   },
-  "_sources": {
-    "wisqars": {
-      "name": "Web-based Injury Statistics Query and Reporting System",
-      "url": "https://wisqars.cdc.gov/",
-      "organization": "Centers for Disease Control and Prevention",
-      "organization_url": "https://data.cdc.gov"
+  
+  
+  "hemoglobin_a1c_7": {
+    "full_name": "hemoglobin_a1c_7",
+    "measure": "hemoglobin_a1c_7",
+    "short_name": "HA1C >= 7%",
+    "long_name": "HA1C 7% Or More",
+    "category": "chronic",
+    "short_description": "Percent of sample with HcA1C test results of 7% or more.",
+    "long_description": "Percent of sample with Hemoglobin A1C test results of 7% or more.",
+    "measure_type": "percent",
+    "unit": "percent of sample",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+  "bmi_30_49.8": {
+    "full_name": "bmi_30_49.8",
+    "measure": "bmi_30_49.8",
+    "short_name": "BMI between 30 and 49.8",
+    "long_name": "Body Mass Index ( BMI) between 30 and 49.8",
+    "category": "chronic",
+    "short_description": "Percent of sample with a BMI between 30 and 49.8.",
+    "long_description": "Percent of sample with a Body Mass Index (BMI) between 30 and 49.8.",
+    "measure_type": "percent",
+    "unit": "percent of sample",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+  "n_rsv_tests": {
+    "full_name": "n_rsv_tests",
+    "measure": "n_rsv_tests",
+    "short_name": "RSV Tests: Positive",
+    "long_name": "Emergency Room (ER) Encounters with Positive Respiratory Syntactical Virus (RSV) Tests",
+    "category": "rsv",
+    "short_description": "Number of ER encounters with positive RSV tests.",
+    "long_description": "Number of emergency room (ER) encounters with positive Respiratory Syntactical Virus (RSV) tests (ICD-10-CM J12-J18 pneumonia).",
+    "measure_type": "integer",
+    "unit": "encounter",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+  "epic_positive_rsv_tests_(%)": {
+    "full_name": "epic_positive_rsv_tests_(%)",
+    "measure": "epic_positive_rsv_tests_(%)",
+    "short_name": "RSV Tests: Positive (%)",
+    "long_name": "Percent of Emergency Room (ER) Visits with Positive Respiratory Syntactical Virus (RSV) Tests",
+    "category": "rsv",
+    "short_description": "Percent of ER encounters with positive RSV tests.",
+    "long_description": "Percent of emergency room (ER) encounters with positive Respiratory Syntactical Virus (RSV) tests (ICD-10-CM J12-J18 pneumonia).",
+    "measure_type": "percent",
+    "unit": "percent of encounters",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
+  },
+  "epic_n_{variant.name}": {
+    "full_name": "n_{variant.name}",
+    "measure": "n_{variant.name}",
+    "short_name": "{variant} Patients",
+    "long_name": "{variant} Emergency Room (ER) Encounters",
+    "category": "{}",
+    "short_description": "Number of {variant} Parients",
+    "long_description": "Number of emergency room (ER) encounters with {variant} ICD-10-CM codes.",
+    "measure_type": "integer",
+    "unit": "encounters",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }],
+    "variants": {
+      "all_encounters": {"default": "All", "category": "general"},
+      "self_harm": {"default": "Self-Harm", "category": "injury"},
+      "covid": {"default": "COVID", "category": "rsv"},
+      "flu": {"default": "FLU", "category": "rsv"},
+      "rsv": {"default": "RSV", "category": "rsv"},
+      "rsv_tests": {"default": "RSVtests", "category": "rsv"}
+
     }
+  },
+  "epic_pct_{variant.name}": {
+    "full_name": "pct_{variant.name}",
+    "measure": "pct_{variant.name}",
+    "short_name": "{variant} Patients",
+    "long_name": "{variant} Emergency Room (ER) Encounters (%)",
+    "category": "{}",
+    "short_description": "Percentage of {variant} Parients",
+    "long_description": "Percentage of emergency room (ER) encounters with {variant} ICD-10-CM codes.",
+    "measure_type": "percent",
+    "unit": "%",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }],
+    "variants": {
+      "all_encounters": {"default": "All", "category": "general"},
+      "self_harm": {"default": "Self-Harm", "category": "injury"},
+      "covid": {"default": "COVID", "category": "rsv"},
+      "flu": {"default": "FLU", "category": "rsv"},
+      "rsv": {"default": "RSV", "category": "rsv"},
+      "rsv_tests": {"default": "RSVtests", "category": "rsv"}
+    }
+  },
+  "percentage_with_base_patient_followed_by_hemoglobin_a1c_6.5%_or_more_within_10_years_(%)": {
+    "full_name": "percentage_with_base_patient_followed_by_hemoglobin_a1c_6.5%_or_more_within_10_years_(%)",
+    "measure": "percentage_with_base_patient_followed_by_hemoglobin_a1c_6.5%_or_more_within_10_years_(%)",
+    "short_name": "HA1C >= 6.5%",
+    "long_name": "HA1C 6.5% Or More",
+    "category": "chronic",
+    "short_description": "Percent of sample with HcA1C test results of 6.5% or more.",
+    "long_description": "Percent of sample with Hemoglobin A1C test results of 6.5% or more.",
+    "measure_type": "percent",
+    "unit": "percent of sample",
+    "sources": [{
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/"
+    }]
   }
 }
