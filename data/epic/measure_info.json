@@ -1,5 +1,193 @@
 {
   "age": {
+    "id": "age",
+    "short_name": "Age",
+    "long_name": "Age group",
+    "short_description": "Age group.",
+    "long_description": "Age group, based on age in current years.",
+    "measure_type": "integer",
+    "unit": "years",
+    "time_resolution": "year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "n_vaccine_mmr": {
+    "id": "n_vaccine_mmr",
+    "short_name": "Immunizations for MMR",
+    "long_name": "Immunizations for Measles, Mumps, and Rubella (MMR)",
+    "short_description": "Number with Immunizations: Measles, Mumps, and Rubella (MMR) receipt",
+    "long_description": "Number with Immunizations: Measles, Mumps, and Rubella (MMR) receipt by Age and State of Residence.",
+    "measure_type": "integer",
+    "unit": "patient",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "mmr_receipt": {
+    "id": "mmr_receipt",
+    "short_name": "Immunizations for MMR: Percent",
+    "long_name": "Immunizations for Measles, Mumps, and Rubella (MMR): Percent",
+    "short_description": "Percentage with Immunizations: Measles, Mumps, and Rubella (MMR) receipt",
+    "measure_type": "percent",
+    "unit": "percent of sample",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "n_obesity_county": {
+    "id": "n_obesity_county",
+    "short_name": "Number of Patients (Chronic, County)",
+    "long_name": "Number of Patients (Chronic, County)",
+    "short_description": "Total number of patients.",
+    "long_description": "Total number of patients within the county-level obesity sample.",
+    "measure_type": "integer",
+    "unit": "patient",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_n_ed_opioid": {
+    "id": "epic_n_ed_opioid",
+    "short_name": "Number of Patients in the ED for opioid overdose",
+    "long_name": "Number of Patients in the ED for opioid overdose",
+    "short_description": "Number of patients.",
+    "measure_type": "integer",
+    "unit": "patient",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_pct_ed_opioid": {
+    "id": "epic_pct_ed_opioid",
+    "short_name": "Percentage of Patients in the ED for opioid overdose",
+    "long_name": "Percentage of Patients in the ED for opioid overdose",
+    "short_description": "Percentage of patients.",
+    "measure_type": "percent",
+    "unit": "percent",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "n_patients": {
+    "id": "n_patients",
+    "short_name": "Number of Patients in the ED",
+    "long_name": "Number of Patients in the ED, any cause",
+    "short_description": "Number of patients.",
+    "measure_type": "integer",
+    "unit": "count",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_suppressed_flag_{variant}": {
+    "id": "epic_suppressed_flag_{variant}",
+    "short_name": "Fewer than 10 cases in the strata?",
+    "long_name": "Fewer than 10 cases in the strata?",
+    "short_description": "Binary indicator for low counts",
+    "long_description": "Binary indicator: true if fewer than 10 cases in the strata",
+    "measure_type": "binary",
+    "unit": "",
+    "variants": {
+      "covid": { "default": "covid", "short_name": "COVID", "category": "rsv" },
+      "flu": { "default": "flu", "short_name": "FLU", "category": "rsv" },
+      "rsv": { "default": "rsv", "short_name": "RSV", "category": "rsv" }
+    },
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "hemoglobin_a1c_7": {
+    "id": "hemoglobin_a1c_7",
+    "short_name": "HA1C >= 7%",
+    "long_name": "HA1C 7% Or More",
+    "short_description": "Percent of sample with Hemoglobin A1C test results of 7% or more.",
+    "measure_type": "percent",
+    "unit": "percent of sample",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "bmi_30_49_8": {
+    "id": "bmi_30_49_8",
+    "short_name": "BMI between 30 and 49.8",
+    "long_name": "Body Mass Index (BMI) between 30 and 49.8",
+    "short_description": "Percent of sample with a BMI between 30 and 49.8.",
+    "measure_type": "percent",
+    "unit": "percent of sample",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "n_rsv_tests": {
+    "id": "n_rsv_tests",
+    "short_name": "RSV Tests: Positive",
+    "long_name": "Emergency Room (ER) Encounters with Positive Respiratory Syncytial Virus (RSV) Tests",
+    "short_description": "Number of ER encounters with positive RSV tests.",
+    "measure_type": "integer",
+    "unit": "encounter",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_positive_rsv_tests_percent": {
+    "id": "epic_positive_rsv_tests_percent",
+    "short_name": "RSV Tests: Positive (%)",
+    "long_name": "Percent of Emergency Room (ER) Visits with Positive RSV Tests",
+    "short_description": "Percent of ER encounters with positive RSV tests.",
+    "measure_type": "percent",
+    "unit": "percent",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_n_{variant}": {
+    "id": "epic_n_{variant}",
+    "short_name": "{variant.short_name} Patients",
+    "long_name": "{variant.short_name} Emergency Room (ER) Encounters",
+    "short_description": "Number of {variant.short_name} patients",
+    "long_description": "Number of emergency room (ER) encounters with {variant.short_name} ICD-10-CM codes.",
+    "measure_type": "integer",
+    "unit": "encounters",
+    "variants": {
+      "all_encounters": { "default": "all", "short_name": "All encounters", "category": "general" },
+      "self_harm": { "default": "self_harm", "short_name": "Self-Harm", "category": "injury" },
+      "covid": { "default": "covid", "short_name": "COVID", "category": "rsv" },
+      "flu": { "default": "flu", "short_name": "FLU", "category": "rsv" },
+      "rsv": { "default": "rsv", "short_name": "RSV", "category": "rsv" },
+      "rsv_tests": { "default": "rsv_tests", "short_name": "RSV tests", "category": "rsv" }
+    },
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_pct_{variant}": {
+    "id": "epic_pct_{variant}",
+    "short_name": "{variant.short_name} Patients (%)",
+    "long_name": "{variant.short_name} Emergency Room (ER) Encounters (%)",
+    "short_description": "Percentage of {variant.short_name} patients",
+    "measure_type": "percent",
+    "unit": "percent",
+    "variants": {
+      "all_encounters": { "default": "all", "short_name": "All encounters", "category": "general" },
+      "self_harm": { "default": "self_harm", "short_name": "Self-Harm", "category": "injury" },
+      "covid": { "default": "covid", "short_name": "COVID", "category": "rsv" },
+      "flu": { "default": "flu", "short_name": "FLU", "category": "rsv" },
+      "rsv": { "default": "rsv", "short_name": "RSV", "category": "rsv" },
+      "rsv_tests": { "default": "rsv_tests", "short_name": "RSV tests", "category": "rsv" }
+    },
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "percentage_with_base_patient_followed_by_hemoglobin_a1c_6_5_or_more_within_10_years": {
+    "id": "percentage_with_base_patient_followed_by_hemoglobin_a1c_6_5_or_more_within_10_years",
+    "short_name": "HA1C >= 6.5%",
+    "long_name": "HA1C 6.5% Or More",
+    "short_description": "Percent of sample with Hemoglobin A1C test results of 6.5% or more.",
+    "measure_type": "percent",
+    "unit": "percent of sample",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "_sources": {
+    "epic_cosmos": {
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/",
+      "date_accessed": 2025,
+      "organization": "Epic Systems",
+      "organization_url": "https://cosmos.epic.com/"
+    }
+  }
+}
+{
+  "age": {
     "full_name": "age",
     "measure": "age",
     "short_name": "Age Group",
@@ -51,7 +239,7 @@
     "long_name": "Number of Patients (Chronic, County)",
     "category": "chronic",
     "short_description": "Total number of patients.",
-    "long_description": "Total number of patients within the county-level obesity sample.",
+        "id": "age",
     "measure_type": "integer",
     "unit": "patient",
     "sources": [{
@@ -67,7 +255,7 @@
     "category": "injury/overdose",
     "short_description": "Number of patients.",
     "long_description": "Number of patients",
-    "measure_type": "integer",
+        "id": "n_vaccine_mmr",
     "unit": "patient",
     "sources": [{
       "name": "Epic Cosmos",
@@ -83,7 +271,7 @@
     "short_description": "Percentage of patients.",
     "long_description": "Percentage of patients",
     "measure_type": "percent",
-    "unit": "%",
+        "id": "mmr_receipt",
     "sources": [{
       "name": "Epic Cosmos",
       "url": "https://cosmos.epic.com/"
@@ -99,7 +287,7 @@
     "long_description": "Number of patients",
     "measure_type": "integer",
     "unit": "N",
-    "sources": [{
+        "id": "n_obesity_county",
       "name": "Epic Cosmos",
       "url": "https://cosmos.epic.com/"
     }]
@@ -115,7 +303,7 @@
     "measure_type": "binary",
     "unit": "",
     "sources": [{
-      "name": "Epic Cosmos",
+          "id": "epic_n_ed_opioid",
       "url": "https://cosmos.epic.com/"
     }],
     "variants": {
@@ -131,7 +319,7 @@
     "measure": "hemoglobin_a1c_7",
     "short_name": "HA1C >= 7%",
     "long_name": "HA1C 7% Or More",
-    "category": "chronic",
+          "id": "epic_pct_ed_opioid",
     "short_description": "Percent of sample with HcA1C test results of 7% or more.",
     "long_description": "Percent of sample with Hemoglobin A1C test results of 7% or more.",
     "measure_type": "percent",
@@ -147,7 +335,7 @@
     "short_name": "BMI between 30 and 49.8",
     "long_name": "Body Mass Index ( BMI) between 30 and 49.8",
     "category": "chronic",
-    "short_description": "Percent of sample with a BMI between 30 and 49.8.",
+          "id": "n_patients",
     "long_description": "Percent of sample with a Body Mass Index (BMI) between 30 and 49.8.",
     "measure_type": "percent",
     "unit": "percent of sample",
@@ -163,11 +351,11 @@
     "long_name": "Emergency Room (ER) Encounters with Positive Respiratory Syntactical Virus (RSV) Tests",
     "category": "rsv",
     "short_description": "Number of ER encounters with positive RSV tests.",
-    "long_description": "Number of emergency room (ER) encounters with positive Respiratory Syntactical Virus (RSV) tests (ICD-10-CM J12-J18 pneumonia).",
+          "id": "epic_suppressed_flag_{variant}",
     "measure_type": "integer",
     "unit": "encounter",
     "sources": [{
-      "name": "Epic Cosmos",
+          "long_description": "Binary indicator: true if fewer than 10 cases in the strata",
       "url": "https://cosmos.epic.com/"
     }]
   },

@@ -59,6 +59,7 @@ dcf_build()
 
 #dcf::dcf_check('brfss')
 #dcf::dcf_check('epic')
+#dcf::dcf_check('nchs_mortality')
 
 
 ## Add bundles
