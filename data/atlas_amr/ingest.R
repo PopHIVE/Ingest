@@ -18,4 +18,6 @@ a2 <- a1 %>%
   ungroup() %>%
   group_by(Species,  Year) %>%
   summarize(N=n()) %>%
-  mutate(N = if_else(N<10,NA_real_,N))
+  mutate(N = if_else(N<10,NA_real_,N)) %>%
+  ungroup() %>%
+  tidyr::complete(Species, Year, fill=list(N=NA))
