@@ -12,7 +12,6 @@ downloaded <- dcf_download_cmsmmd(
   race = NULL,
   sex = NULL,
   age = NULL,
-  #condition = c(15),
   adjust = 1
 )
 
