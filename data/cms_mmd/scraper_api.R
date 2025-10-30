@@ -9,6 +9,9 @@ variable_codes <- dcf_standardize_cmsmmd()
 downloaded <- dcf_download_cmsmmd(
   "prevalence",
   population = "f",
+ # geography='s',
+  condition=109,
+  #year=2015,
   race = NULL,
   sex = NULL,
   age = NULL,
@@ -19,7 +22,9 @@ downloaded <- dcf_download_cmsmmd(
 data_standard <- dcf_standardize_cmsmmd(downloaded$data)
 
 arrow::write_parquet(
-  data_standard, './raw/staging_api/staging.parquet',
+  data_standard, './raw/staging_api/all_staging.parquet',
 
 )
 
+
+data_standard 
