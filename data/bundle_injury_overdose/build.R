@@ -95,7 +95,8 @@ nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') 
          n_deaths_overdose = if_else(is.na(n_deaths_overdose),5,n_deaths_overdose),
          rate_deaths_overdose = n_deaths_overdose / pop*100000
   ) %>%
-  dplyr::select(geography,time,n_deaths_overdose,rate_deaths_overdose, suppressed )
+  dplyr::select(geography,time,n_deaths_overdose,rate_deaths_overdose, suppressed ) %>%
+  unique()
 
 write_parquet(nchs_od_county,'./dist/overdose_deaths_county.parquet' )
 
