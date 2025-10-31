@@ -34,6 +34,7 @@ dcf_build()
 #dcf::dcf_add_source("vaers")
 #dcf::dcf_add_source("narms")
 #dcf::dcf_add_source("wisqars")
+#dcf::dcf_add_source("atlas_amr")
 
 
 #dcf_add_source("schoolvaxview")

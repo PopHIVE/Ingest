@@ -13,7 +13,9 @@ pop <- vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
 #### WISQARS data
 wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
   mutate( year= year(time),
-        time = time %m+% years(1)  - 1 ) #define based on end of period
+        time = time %m+% years(1)  - 1 ,
+        age = if_else(age == "0-14 Years" , "<15 Years", age)
+        ) #define based on end of period
 
 wisqars_long_rate <- wisqars%>%
   dplyr::select(geography, age,year, starts_with('wisqars_rate')) %>%
@@ -56,7 +58,7 @@ cms_65plus_year <- cms %>%
 
 wisqars_od <- wisqars %>%
   mutate(time_end = time + 1) %>%
-  dplyr::select(geography, age, time_end, rate_drug_poisoning ) 
+  dplyr::select(geography, age, time_end, wisqars_rate_drug_poisoning ) 
 
 nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
  # mutate(geography = sprintf("%02d", geography)) %>%
@@ -101,7 +103,10 @@ nchs <- bind_rows(nchs_od_state, nchs_od_county)
 
 #epic
 
-epic <- vroom::vroom('../../data/epic/standard/monthly.csv.gz') 
+epic <- vroom::vroom('../../data/epic/standard/monthly.csv.gz') %>%
+  mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
+                         if_else(age ==  "25-45 Years", '25-44 Years', age
+          )))
 
 #Google--weekly (averaged to monthly) searches
 google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
@@ -141,11 +146,11 @@ combine_long <- function() {
   
   cms_65plus_year_od <- cms_65plus_year %>%
     rename(value = cms_opioid_use_disorder_overarching) %>%
-    dplyr::select(geography, time, value, time_end) %>%
+    dplyr::select(geography, time, value) %>%
     mutate(source = 'Medicare FFS', age = '65+ Years')
   
   wisqars_od2 <- wisqars_od %>%
-    rename(value = rate_drug_poisoning)  %>%
+    rename(value = wisqars_rate_drug_poisoning)  %>%
     mutate(source = 'CDC/WISQARS')
   
   epic_od <- epic %>%
