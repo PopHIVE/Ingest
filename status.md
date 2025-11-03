@@ -216,6 +216,7 @@ flowchart LR
     n7 --> bundle_childhood_immunizations
     n3 --> bundle_chronic_diseases
     n11 --> bundle_chronic_diseases
+    n8 --> bundle_chronic_diseases
     n11 --> bundle_injury_overdose
     n3 --> bundle_injury_overdose
     n17 --> bundle_injury_overdose
