@@ -63,6 +63,8 @@ dcf_build()
 #dcf::dcf_check('epic')
 #dcf::dcf_check('nchs_mortality')
 #dcf::dcf_check('abcs')
+#dcf::dcf_check('epic')
+#dcf::dcf_check('bundle_respiratory')
 
 
 ## Add bundles
