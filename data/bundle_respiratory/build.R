@@ -10,6 +10,10 @@ library(reshape2)
 library(tidyverse)
 library(tidycensus)
 
+
+process <- dcf::dcf_process_record()
+standard_files <- paste0("../", names(process$source_files))
+
 #overall_trends_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/overall_trends.parquet')
 
 #############################
