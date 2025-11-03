@@ -90,11 +90,25 @@
       }
     }
   ],
-  "source_files": [
-    "brfss/standard/data.csv.gz",
-    "epic/standard/state_no_time.csv.gz",
-    "cms_mmd/standard/data_state_county_age.csv.gz"
-  ],
+  "source_files": {
+    "brfss/standard/data.csv.gz": [
+      "prevalence_by_geography_and_source.parquet",
+      "prevalence_by_geography_year_and_source.parquet",
+      "brfss_prevalence_by_geography.parquet"
+    ],
+    "epic/standard/state_no_time.csv.gz": [
+      "epic_prevalence_by_geography.parquet",
+      "prevalence_by_geography_and_source.parquet"
+    ],
+    "epic/standard/county_no_time.csv.gz": [
+      "epic_prevalence_by_geography_county.parquet"
+    ],
+    "cms_mmd/standard/data_state_county_age.csv.gz": [
+      "prevalence_by_geography_and_source.parquet",
+      "prevalence_by_geography_year_and_source.parquet",
+      "epic_prevalence_by_geography_county_and_source.parquet"
+    ]
+  },
   "dist_state": {
     "./data/bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet": "5f1ab5103d1451813f09472433a4d04d",
     "./data/bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet": "e40fd11db5fcde1f0e82673da98a33a3",
@@ -109,23 +123,23 @@
     "./data/epic/standard/state_no_time.csv.gz": "e6f7ac55254a9369d1c29e1e3c2a31d0",
     "./data/cms_mmd/standard/data_state_county_age.csv.gz": "ecb8f9902c7998225fefbd58af5a36a7"
   },
-  "checked": "2025-11-03 08:37:32",
+  "checked": "2025-11-03 11:56:29",
   "check_results": {
     "./data/bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet": {
       "data": "time_missing",
       "measures": ["missing_info: year", "missing_info: age", "missing_info: source", "missing_info: outcome_name", "missing_info: value", "missing_info: value_lcl", "missing_info: value_ucl", "missing_info: sample_size"]
     },
-    "./data/bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet": {
+    "./data/bundle_chronic_diseases/dist/epic_prevalence_by_geography.parquet": {
       "data": "time_missing",
-      "measures": ["missing_info: age", "missing_info: source", "missing_info: outcome_name", "missing_info: value", "missing_info: pct_captured", "missing_info: sample_size"]
+      "measures": ["missing_info: fips", "missing_info: age", "missing_info: outcome_name", "missing_info: source", "missing_info: value", "missing_info: pct_captured", "missing_info: sample_size"]
     },
     "./data/bundle_chronic_diseases/dist/epic_prevalence_by_geography_county.parquet": {
       "data": "time_missing",
       "measures": ["missing_info: age", "missing_info: outcome_name", "missing_info: source", "missing_info: value", "missing_info: pct_captured", "missing_info: sample_size"]
     },
-    "./data/bundle_chronic_diseases/dist/epic_prevalence_by_geography.parquet": {
+    "./data/bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet": {
       "data": "time_missing",
-      "measures": ["missing_info: fips", "missing_info: age", "missing_info: outcome_name", "missing_info: source", "missing_info: value", "missing_info: pct_captured", "missing_info: sample_size"]
+      "measures": ["missing_info: age", "missing_info: source", "missing_info: outcome_name", "missing_info: value", "missing_info: pct_captured", "missing_info: sample_size"]
     },
     "./data/bundle_chronic_diseases/dist/prevalence_by_geography_and_source.csv": {
       "data": ["not_compressed", "time_missing"],

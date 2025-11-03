@@ -185,7 +185,7 @@ epic_county <- vroom::vroom('../epic/standard/county_no_time.csv.gz') %>%
   filter(!is.na(age)) %>% #small number of records missing age; filter those out here
   rename(sample_size=n_patients)
 
-write_parquet(epic_county,'./dist/epic_prevalence_by_geography_county.parquet' )
+#write_parquet(epic_county,'./dist/epic_prevalence_by_geography_county.parquet' )
 
 ## CMS county
 cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>%
