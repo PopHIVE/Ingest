@@ -135,13 +135,15 @@ prevalence_combined <-
             prevalence_age,
             
             prevalence_year) %>%
-  mutate(prev_diabetes = diab_yes * 100,
-         pct_diabetes_value_lcl = ci_l * 100,
-         pct_diabetes_value_ucl = ci_u * 100,
+  mutate(prev_diabetes_survey = diab_yes * 100,
+         prev_diabetes_survey_lcl = ci_l * 100,
+         prev_diabetes_survey_ucl = ci_u * 100,
          ) %>%
   filter(!is.na(age)) %>%
   rename(geography = state) %>%
-  dplyr::select(geography, time, age, prev_diabetes) 
+  dplyr::select(geography, time, age, prev_diabetes_survey,prev_diabetes_survey_lcl,prev_diabetes_survey_ucl) 
+
+vroom::vroom_write(prevalence_combined, './standard/data_survey.csv.gz' )
 
 #check against data from web
 v1 <- vroom::vroom('./standard/data.csv.gz') %>%
@@ -149,7 +151,9 @@ v1 <- vroom::vroom('./standard/data.csv.gz') %>%
   rename(pct_diabetes_precalc = pct_diabetes_value) %>%
   left_join(prevalence_combined, by=c('geography', 'time', 'age')) 
 
+
+
 ggplot(v1) +
-  geom_point(aes(x=prev_diabetes, y=pct_diabetes_precalc, color=as.factor(time)))+
+  geom_point(aes(x=prev_diabetes_survey, y=pct_diabetes_precalc, color=as.factor(time)))+
   geom_abline(aes(intercept=0, slope=1))
 
