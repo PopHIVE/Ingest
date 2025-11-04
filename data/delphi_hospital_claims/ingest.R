@@ -3,7 +3,7 @@ library(tidyverse)
 
 process <- dcf::dcf_process_record()
 
-select_endpoints <- c('smoothed_covid19_from_claims')
+select_endpoints <- c('smoothed_covid19_from_claims','smoothed_flu_from_claims')
 
 end.date <- lubridate::floor_date(Sys.Date(), 'week') - 1 #most recent saturday
 
@@ -61,7 +61,8 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     rename(
       delphi_hospital_covid_smooth = smoothed_covid19_from_claims,
-    )
+      delphi_hospital_flu_smooth = smoothed_flu_from_claims,
+              )
   
   
   vroom::vroom_write(data, "standard/data.csv.gz", ",")
