@@ -169,16 +169,17 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' )) %>%
+  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth')) %>%
   mutate( source = if_else(variable=='epic_pct_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
-                                                   if_else(variable=='wastewater_flua', 'CDC NWSS', 
-                                                           if_else(variable=='delphi_nhsn_flu', 'CDC NHSN', 
+                                                   if_else(variable=='delphi_hospital_flu_smooth', 'Delphi Hospital Claims', 
+                                                       if_else(variable=='wastewater_flua', 'CDC NWSS', 
+                                                             if_else(variable=='delphi_nhsn_flu', 'CDC NHSN', 
                                                                    
                                                            NA_character_
                                                            
-                                                   )))))
+                                                   ))))))
   ) %>%
   left_join(suppressed_flu, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
