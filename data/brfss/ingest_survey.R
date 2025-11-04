@@ -145,6 +145,8 @@ prevalence_combined <-
 
 vroom::vroom_write(prevalence_combined, './standard/data_survey.csv.gz' )
 
+write_csv(prevalence_combined, './standard/data_survey.csv' )
+
 #check against data from web
 v1 <- vroom::vroom('./standard/data.csv.gz') %>%
   dplyr::select(time, age, geography, pct_diabetes_value, pct_diabetes_sample_size) %>%
