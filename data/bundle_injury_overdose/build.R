@@ -52,6 +52,17 @@ cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') 
   dplyr::select(year, geography,opioid_rate) %>%
    mutate(source='Medicare') %>%
   write_parquet('./dist/county_opioid_by_source.parquet')
+  
+  cms %>%
+    filter(age =='65+ Years') %>%
+    mutate(year=year(time)) %>%
+    rename(opioid_rate = cms_opioid_use_disorder_overarching) %>%
+    mutate(source='Medicare') %>%
+    left_join(all_fips, by='geography') %>%
+    filter(state %in% c(state.abb,'US','DC') & geography_name %in% c(state.name, 'District of Columbia','United States')) %>%
+    dplyr::select(year, geography_name,opioid_rate) %>%
+    rename(geography=geography_name) %>%
+    write_parquet('./dist/state_opioid_by_source.parquet')  
 
 cms_65plus_year <- cms %>%
   filter(age =='65+ Years')  
@@ -262,16 +273,6 @@ nchs_od_county %>%
 wisqars %>%
   filter(geography=='36' ) %>%
 ggplot() +
-  geom_line(aes(x=time, y=rate_firearm_intentional, group=age, color=age))
-
-
-
-wisqars_long %>%
-  filter(geography=='36' ) %>%
-  ggplot() +
-  geom_line(aes(x=time, y=rate_firearm_intentional, group=age, color=age))+
-  ylim(0,NA) +
-  theme_classic()+
-  ylab('Deaths/100000')+
-  ggtitle('Rate of Deaths from Firearm injuries in New York')
+  geom_line(aes(x=time, y=wisqars_rate_firearm_intentional, group=age, color=age))+
+  theme_classic()
 
