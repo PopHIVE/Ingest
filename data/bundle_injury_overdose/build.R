@@ -62,6 +62,7 @@ cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') 
     filter(state %in% c(state.abb,'US','DC') & geography_name %in% c(state.name, 'District of Columbia','United States')) %>%
     dplyr::select(year, geography_name,opioid_rate) %>%
     rename(geography=geography_name) %>%
+    unique() %>%
     write_parquet('./dist/state_opioid_by_source.parquet')  
 
 cms_65plus_year <- cms %>%
