@@ -40,7 +40,8 @@ brfss_long <- brfss %>%
          ) %>%
   dplyr::select(geography, year,age, source, outcome_name, value, value_lcl, value_ucl,sample_size )%>%
   filter( outcome_name %in% c("Diabetes", "Obesity")
-  ) 
+  )  %>%
+  mutate(sample_size = if_else(geography=='United States',NA_real_,sample_size))
 
 write_parquet(brfss_long,'./dist/brfss_prevalence_by_geography.parquet' )
 
