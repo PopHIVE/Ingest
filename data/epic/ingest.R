@@ -143,22 +143,33 @@ if (!is.null(raw)) {
   
   
   #Monthly data
-  opioid_monthly <- data[[c('opioid')]]  %>%
+  
+  merged_monthly<- Reduce(
+    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
+    data[c("ed_opioid", "ed_firearm")]
+  )
+  
+  monthly <- merged_monthly %>%
     filter(!is.na(age))%>%
-    rename(epic_n_ed_opioid = opioid_ed) %>%
+    rename(epic_n_ed_opioid = ed_opioid,
+           epic_n_ed_firearm = firearm_injury) %>%
     mutate(epic_n_ed_opioid = if_else(epic_n_ed_opioid == '10 or fewer', '5', epic_n_ed_opioid ),
            epic_n_ed_opioid = as.numeric(epic_n_ed_opioid),
-           suppressed = if_else(epic_n_ed_opioid == 5, 1, 0),
+           
+           epic_n_ed_firearm = if_else(epic_n_ed_firearm == '10 or fewer', '5', epic_n_ed_firearm ),
+           epic_n_ed_firearm = as.numeric(epic_n_ed_firearm),
+           
+           suppressed_opioid = if_else(epic_n_ed_opioid == 5, 1, 0),
+           suppressed_firearm = if_else(epic_n_ed_firearm == 5, 1, 0),
+           
            none_of_the_above = as.numeric(none_of_the_above),
            all_cause = epic_n_ed_opioid + none_of_the_above,
            epic_pct_ed_opioid = 100* epic_n_ed_opioid/all_cause
            ) %>%
-    dplyr::select(time, geography, age,epic_n_ed_opioid, epic_pct_ed_opioid,suppressed)
-  
-  merged_monthly <-opioid_monthly
+    dplyr::select(time, geography, age,epic_n_ed_opioid, epic_pct_ed_opioid, starts_with('suppressed'))
   
   vroom::vroom_write(
-    merged_monthly,
+    monthly,
     "standard/monthly.csv.gz",
     ","
   )

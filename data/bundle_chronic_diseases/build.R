@@ -18,16 +18,17 @@ all_fips = vroom::vroom('../../resources/all_fips.csv.gz')
 
 
 #read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/chronic_diseases/brfss_prevalence_by_geography.parquet')
-brfss <- vroom::vroom('../brfss/standard/data.csv.gz')
+brfss <- vroom::vroom('../brfss/standard/data_survey.csv.gz') #uses the raw survey data from
+
 
 brfss_long <- brfss %>%
   rename(fips=geography) %>%
   mutate( geography = cdlTools::fips(fips, to = 'Name' ),
           geography = if_else(fips=='00','United States', geography)) %>%
   pivot_longer(
-    cols = starts_with("pct_"),
+    cols = starts_with("prev_"),
     names_to = c("outcome_name", "metric"),
-    names_pattern = "pct_([^_]+)_(.*)",
+    names_pattern = "prev_([^_]+)_(.*)",
     values_to = "val"
   ) %>%
   pivot_wider(
@@ -38,10 +39,13 @@ brfss_long <- brfss %>%
          year= lubridate::year(time),
          source='CDC BRFSS'
          ) %>%
-  dplyr::select(geography, year,age, source, outcome_name, value, value_lcl, value_ucl,sample_size )%>%
+  rename(value = survey,
+         value_lcl = survey_lcl,
+         value_ucl = survey_ucl) %>%
+  dplyr::select(geography, year,age, source, outcome_name, value, value_lcl, value_ucl )%>%
   filter( outcome_name %in% c("Diabetes", "Obesity")
-  )  %>%
-  mutate(sample_size = if_else(geography=='United States',NA_real_,sample_size))
+  ) %>%
+  filter(year <= 2024) #there is some 2025 data, but only for a few months
 
 write_parquet(brfss_long,'./dist/brfss_prevalence_by_geography.parquet' )
 

@@ -89,7 +89,7 @@ diabetes_format <- function(){
   
   # Calculate percent (mean) of diabetes by age, state, and time
   prevalence_age_state <- svyby(
-    ~diab_yes ,                  # variable of interest
+    ~diab_yes + obese_yes ,                  # variable of interest
     ~age + state + time,        # grouping variables
     design = design_age_state,
     svymean,
@@ -99,7 +99,7 @@ diabetes_format <- function(){
   )
   
   prevalence_age <- svyby(
-    ~diab_yes,                  # variable of interest
+    ~diab_yes + obese_yes,                  # variable of interest
     ~age +  time,        # grouping variables
     design = design_age_state,
     svymean,
@@ -110,7 +110,7 @@ diabetes_format <- function(){
     mutate(state = '00')
   
   prevalence_state <- svyby(
-    ~diab_yes,                  # variable of interest
+    ~diab_yes + obese_yes,                  # variable of interest
     ~ state + time,        # grouping variables
     design = design_age_state,
     svymean,
@@ -121,7 +121,7 @@ diabetes_format <- function(){
     mutate(age = 'Total')
   
   prevalence_year <- svyby(
-    ~diab_yes,                  # variable of interest
+    ~diab_yes + obese_yes,                  # variable of interest
     ~  time,        # grouping variables
     design = design_age_state,
     svymean,
@@ -140,12 +140,16 @@ diabetes_format <- function(){
               prevalence_age_state,
               prevalence_year) %>%
     mutate(prev_diabetes_survey = diab_yes * 100,
-           prev_diabetes_survey_lcl = ci_l * 100,
-           prev_diabetes_survey_ucl = ci_u * 100,
+           prev_diabetes_survey_lcl = ci_l.diab_yes * 100,
+           prev_diabetes_survey_ucl = ci_u.diab_yes * 100,
+           
+           prev_obesity_survey = obese_yes * 100,
+           prev_obesity_survey_lcl = ci_l.obese_yes * 100,
+           prev_obesity_survey_ucl = ci_u.obese_yes * 100,
            ) %>%
     filter(!is.na(age)) %>%
     rename(geography = state) %>%
-    dplyr::select(geography, time, age, prev_diabetes_survey,prev_diabetes_survey_lcl,prev_diabetes_survey_ucl) 
+    dplyr::select(geography, time, age, starts_with("prev_diabetes_"), starts_with('prev_obesity')) 
   
   vroom::vroom_write(prevalence_combined, './standard/data_survey.csv.gz' )
   
