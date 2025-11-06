@@ -3,7 +3,7 @@
 #
 
 base_url <- "https://github.com/DISSC-yale/gtrends_collection/raw/refs/heads/main/data/term="
-terms <- c("Naloxone", "overdose","narcan","drug+overdose", "rsv", "%252Fg%252F11j30ybfx6")
+terms <- c("Naloxone", "overdose","narcan","drug+overdose", "rsv", "%252Fg%252F11j30ybfx6", "9mm","heat+exhaustion","heat+stroke","shotgun")
 for (term in terms) {
   term_dir <- paste0("raw/term=", term)
   dir.create(term_dir, showWarnings = FALSE)
@@ -157,7 +157,7 @@ if (!identical(process$raw_state, raw_state)) {
     filter(!(geography %in% g_states)) %>%
     group_by(geography, time) %>%
     summarise(across(
-      c(`gtrends_drug+overdose`,gtrends_naloxone, gtrends_narcan, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv ),
+      c(`gtrends_drug+overdose`,gtrends_naloxone, gtrends_narcan, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv, `gtrends_heat+exhaustion`,`gtrends_heat+stroke`, gtrends_9mm, gtrends_shotgun ),
       ~ mean(.x, na.rm = TRUE)
     ), .groups = "drop") %>% #averages over duplicate pulls
     ungroup() %>%
@@ -177,7 +177,7 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     ungroup()%>%
     mutate(across(
-      c(`gtrends_drug+overdose`, gtrends_narcan,gtrends_naloxone, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv),
+      c(`gtrends_drug+overdose`, gtrends_narcan,gtrends_naloxone, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv, `gtrends_heat+exhaustion`,`gtrends_heat+stroke`, gtrends_9mm, gtrends_shotgun),
       \(x) {
         p99 <- quantile(x, 0.99, na.rm = TRUE)
         pmin(x, p99)
@@ -189,10 +189,14 @@ if (!identical(process$raw_state, raw_state)) {
         `gtrends_drug+overdose`,
         gtrends_narcan,
         gtrends_overdose,
-        gtrends_rsv),
+        gtrends_rsv,
+        `gtrends_heat+exhaustion`,
+        `gtrends_heat+stroke`, 
+        gtrends_9mm,
+        gtrends_shotgun),
       \(x) x / max(x, na.rm = TRUE) * 100  #scales each value to 100
     )) %>%
-    dplyr::select(geography, time,  gtrends_narcan,gtrends_naloxone,`gtrends_drug+overdose`, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv)
+    dplyr::select(geography, time,  starts_with("gtrends"))
   
 
   
