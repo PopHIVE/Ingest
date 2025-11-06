@@ -153,8 +153,8 @@ if (!is.null(raw)) {
   monthly <- merged_monthly %>%
     filter(!is.na(age))%>%
     rename(epic_n_ed_opioid = ed_opioid,
-           epic_n_ed_firearm = firearm_injury) %>%
-    mutate(epic_n_ed_opioid = if_else(epic_n_ed_opioid == '10 or fewer', '5', epic_n_ed_opioid ),
+           epic_n_ed_firearm = firearms_initial) %>%
+      mutate(epic_n_ed_opioid = if_else(epic_n_ed_opioid == '10 or fewer', '5', epic_n_ed_opioid ),
            epic_n_ed_opioid = as.numeric(epic_n_ed_opioid),
            
            epic_n_ed_firearm = if_else(epic_n_ed_firearm == '10 or fewer', '5', epic_n_ed_firearm ),
