@@ -96,14 +96,15 @@ if (!is.null(raw)) {
 
   merged_weekly <- Reduce(
     function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-    data[c("all_encounters", "covid", "flu", "rsv", "rsv_tests")]
+    data[c("all_encounters_weekly", "covid", "flu", "rsv", "rsv_tests")]
   )
   
   # add epic_ prefix to all columns except geography, time, age
   merged_weekly <- merged_weekly %>%
-    mutate(pct_rsv = 100*n_rsv/n_all_encounters,
-           pct_flu = 100*n_flu/n_all_encounters,
-           pct_covid = 100*n_covid/n_all_encounters,
+    filter(!is.na(age)) %>%
+    mutate(pct_rsv = 100*n_rsv/n_all_encounters_weekly,
+           pct_flu = 100*n_flu/n_all_encounters_weekly,
+           pct_covid = 100*n_covid/n_all_encounters_weekly,
            suppressed_flag_rsv = if_else(n_rsv<10,1,0),
            suppressed_flag_flu = if_else(n_flu<10,1,0),
            suppressed_flag_covid = if_else(n_covid<10,1,0),
@@ -113,8 +114,8 @@ if (!is.null(raw)) {
     arrange(geography, age, time) %>%
     group_by(geography, age) %>%
     mutate(time= as.Date(time),
-           epic_n_all_encounters_lag1 = lag(epic_n_all_encounters,1),
-           remove = if_else(epic_n_all_encounters/epic_n_all_encounters_lag1<0.5 &
+           epic_n_all_encounters_lag1 = lag(epic_n_all_encounters_weekly,1),
+           remove = if_else(epic_n_all_encounters_weekly/epic_n_all_encounters_lag1<0.5 &
                               time == max(time, na.rm=T),1,0)
     ) %>%
     filter(remove != 1) %>%
