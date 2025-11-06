@@ -206,7 +206,7 @@ cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %
   )  %>%
   mutate(age = if_else( age=='65_plus', "65+ Years",
                         if_else(age=='85_plus', "85+ Years",
-                                if_else( age=="All_Ages", 'Total', paste(age, 'Years'))))
+                                if_else( age=="All_Ages", 'Total', age)))
   ) %>%
   filter(time == max(time, na.rm=T)) %>% #only take most recent year
   dplyr::select(-time)%>%
