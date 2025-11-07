@@ -10,6 +10,21 @@ pop <- vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
   rename(geography=GEOID,
          pop=Total)
 
+#Google--weekly (averaged to monthly) searches
+google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
+  rename(gtrends_drug_overdose ="gtrends_drug+overdose",
+         gtrends_heat_exhaustion="gtrends_heat+exhaustion",
+         gtrends_heat_stroke="gtrends_heat+stroke",
+  ) %>%
+  dplyr::select(geography, time, starts_with('gtrends'))%>%
+  mutate(time = lubridate::floor_date(time, unit='month'))%>%
+  group_by(geography, time) %>%
+  summarise(across(
+    c(gtrends_naloxone, gtrends_narcan, gtrends_overdose, gtrends_drug_overdose,
+      gtrends_heat_exhaustion,gtrends_heat_stroke, gtrends_shotgun, gtrends_9mm ),
+    ~ mean(.x, na.rm = TRUE)
+  ))  
+
 #### WISQARS data
 wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
   mutate( year= year(time),
@@ -122,17 +137,6 @@ epic <- vroom::vroom('../../data/epic/standard/monthly.csv.gz') %>%
                          if_else(age ==  "25-45 Years", '25-44 Years', age
           )))
 
-#Google--weekly (averaged to monthly) searches
-google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
-  rename(gtrends_drug_overdose ="gtrends_drug+overdose") %>%
-  dplyr::select(geography, time, gtrends_naloxone,gtrends_narcan, gtrends_overdose,gtrends_drug_overdose)%>%
-  mutate(time = lubridate::floor_date(time, unit='month'))%>%
-  group_by(geography, time) %>%
-  summarise(across(
-    c(gtrends_naloxone, gtrends_narcan, gtrends_overdose, gtrends_drug_overdose),
-    ~ mean(.x, na.rm = TRUE)
-  ))  
-
 
 
 ## trends in overdoses
@@ -169,7 +173,7 @@ combine_long <- function() {
   
   epic_od <- epic %>%
     rename(value = epic_pct_ed_opioid) %>%
-    dplyr::select(time, geography, age, value, suppressed) %>%
+    dplyr::select(time, geography, age, value, suppressed_opioid) %>%
     mutate(source = 'Epic Cosmos')
   
   drugs_month_source <- bind_rows(nchs_od, google_od, wisqars_od2, epic_od) %>%
@@ -209,28 +213,14 @@ od_county <- read_parquet('./dist/overdose_by_geography_and_source_county.parque
 
 od_state <- read_parquet('./dist/overdose_by_geography_and_source.parquet')
 
-od_state %>%
-  filter(geography=='Kentucky' & age=='Total') %>%
-  ggplot()+
-  geom_line(aes(x=date, y=value_scale, group=source, color=source)) +
-  theme_classic()
-
-
-###Time series of drug overdose deaths and naloxone searches by state
-
-#The nchs + WISQARS, google data are 12 month cumulative sum .(e.g., 2023-01-01 is the total for 2022 calendar year)
-# drugs_month %>%
-#   filter(geography_name=='New York' ) %>%
+# p1 <- od_state %>%
+#   filter(geography=='United States' & age=='Total') %>%
 #   ggplot()+
-#   # geom_line(aes(x=date, y=gtrends_naloxone/max(gtrends_naloxone)))+
-#   geom_line(aes(x=date, y=gtrends_narcan_cum12/max(gtrends_narcan_cum12, na.rm=T)), color='red')+
-#   geom_line(aes(x=date, y=od_death_rate/max(od_death_rate, na.rm=T)), color='blue')+
-#   geom_point(aes(x=date, y=rate_drug_poisoning/max(rate_drug_poisoning, na.rm=T)), color='black')+
-#   geom_point(aes(x=date, y=cms_opioid_use_disorder_overarching/max(cms_opioid_use_disorder_overarching, na.rm=T)), color='orange')+
-#     theme_classic()+
-#   ylim(0,NA)+
-#   ylab('Scaled value')
-
+#   geom_line(aes(x=date, y=value_scale, group=source, color=source)) +
+#   theme_classic()
+# p1
+# 
+# plotly::ggplotly(p1)
 
 
 ## Map of OD by month; county,--just take every 12th observation,
@@ -277,3 +267,46 @@ ggplot() +
   geom_line(aes(x=time, y=wisqars_rate_firearm_intentional, group=age, color=age))+
   theme_classic()
 
+##################
+##Firearm by source
+########################
+wisqars_firarm <- wisqars %>%
+  dplyr::select(geography, time, age, wisqars_rate_firearm_intentional,wisqars_rate_firearm_accident ) %>%
+  pivot_longer(cols=c( wisqars_rate_firearm_intentional,wisqars_rate_firearm_accident )) %>%
+  rename(source= name)
+
+# wisqars %>%
+#     filter(age=='Total') %>%
+#     ggplot() +
+#   geom_point( aes(x=wisqars_rate_firearm_intentional, y=wisqars_rate_firearm_accident, color=time))
+
+google_firearm <- google %>%
+  dplyr::select(geography, time, gtrends_shotgun, gtrends_9mm) %>%
+  pivot_longer(cols=c(gtrends_shotgun, gtrends_9mm)) %>%
+  rename(source = name) %>%
+  mutate(age= 'Total')
+
+epic_firearms <- epic %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm) %>%
+  mutate(source='Epic Cosmos') %>%
+  rename(value =epic_n_ed_firearm)
+
+firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firarm) 
+
+firearms_by_source %>%
+  group_by(age, geography, source) %>%
+  mutate(value_scale = value/max(value, na.rm=T)) %>%
+  filter(age=='Total' & geography=='00') %>%
+ggplot() +
+  geom_line(aes(x=time, y=value_scale, group=source, color=source)) +
+  theme_classic()
+
+write_parquet(firearms_by_source,'firearms_geography_source.parquet')
+
+## Heat related
+google_heat <- google %>%
+  dplyr::select(geography, time,gtrends_heat_stroke,gtrends_heat_exhaustion) %>%
+  mutate(source= 'Google Health Trends')
+
+heat_by_source <- bind_rows(google_heat)
+write_parquet(heat_by_source,'heat_related_geography_source.parquet')

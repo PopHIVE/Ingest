@@ -165,9 +165,11 @@ if (!is.null(raw)) {
            
            none_of_the_above = as.numeric(none_of_the_above),
            all_cause = epic_n_ed_opioid + none_of_the_above,
-           epic_pct_ed_opioid = 100* epic_n_ed_opioid/all_cause
+           epic_pct_ed_opioid = 100* epic_n_ed_opioid/all_cause,
+           epic_pct_ed_firearm = 100* epic_n_ed_firearm/all_cause
+           
            ) %>%
-    dplyr::select(time, geography, age,epic_n_ed_opioid, epic_pct_ed_opioid, starts_with('suppressed'))
+    dplyr::select(time, geography, age,epic_n_ed_firearm, epic_pct_ed_firearm,epic_n_ed_opioid, epic_pct_ed_opioid, starts_with('suppressed'))
   
   vroom::vroom_write(
     monthly,
