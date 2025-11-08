@@ -152,7 +152,7 @@ wisqars_downloader <- function(max_year=2023) {
   
   # violence, stratified by state, age, and ethnicity (2018-2023 only) 
   lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_ethnicity_", X[1], "_", X[2], ".csv.xz")
+    raw_file <- paste0("raw/accident_state_age_ethnicity_", X[1], "_", X[2], ".csv.xz")
     dcf::dcf_download_wisqars(
       raw_file,
       intent = "violence",
