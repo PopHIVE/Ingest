@@ -309,4 +309,5 @@ google_heat <- google %>%
   mutate(source= 'Google Health Trends')
 
 heat_by_source <- bind_rows(google_heat)
+
 write_parquet(heat_by_source,'heat_related_geography_source.parquet')
