@@ -88,7 +88,7 @@ wisqars_downloader <- function(max_year=2023) {
   
   #violence, stratified by state, age, and sex 
   lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_sex_", X[1], "_", X[2], ".csv.xz")
+    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_sex.csv.xz")
     dcf::dcf_download_wisqars(
       raw_file,
       intent = "violence",
@@ -104,7 +104,7 @@ wisqars_downloader <- function(max_year=2023) {
   
   # accident, stratified by state, age, and sex
   lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_state_age_sex_", X[1], "_", X[2], ".csv.xz")
+    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_sex.csv.xz")
     dcf::dcf_download_wisqars(
       raw_file,
       intent = "unintentional",
@@ -120,7 +120,7 @@ wisqars_downloader <- function(max_year=2023) {
   
   # violence, stratified by state, age, and race (2018-2023 only) 
   lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_race_", X[1], "_", X[2], ".csv.xz")
+    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_race.csv.xz")
     dcf::dcf_download_wisqars(
       raw_file,
       intent = "violence",
@@ -136,7 +136,7 @@ wisqars_downloader <- function(max_year=2023) {
   
   # accident, stratified by state, age, and race (2018-2023 only) 
   lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_state_age_race_", X[1], "_", X[2], ".csv.xz")
+    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_race.csv.xz")
     dcf::dcf_download_wisqars(
       raw_file,
       intent = "unintentional",
@@ -152,7 +152,7 @@ wisqars_downloader <- function(max_year=2023) {
   
   # violence, stratified by state, age, and ethnicity (2018-2023 only) 
   lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_state_age_ethnicity_", X[1], "_", X[2], ".csv.xz")
+    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_ethnicity.csv.xz")
     dcf::dcf_download_wisqars(
       raw_file,
       intent = "violence",
@@ -168,7 +168,7 @@ wisqars_downloader <- function(max_year=2023) {
   
   # accident, stratified by state, age, and ethnicity (2018-2023 only) 
   lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_ethnicity_", X[1], "_", X[2], ".csv.xz")
+    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_ethnicity.csv.xz")
     dcf::dcf_download_wisqars(
       raw_file,
       intent = "unintentional",
@@ -267,6 +267,17 @@ if (!identical(process$raw_state, raw_state)) {
     rename(agegrp= agegp) %>%
     mutate(
       
+      
+      CrudeRate = gsub("**","",CrudeRate, fixed=T),
+      deaths = gsub("**","",deaths, fixed=T),
+      CrudeRate = as.numeric(CrudeRate),
+      deaths = as.numeric(deaths),
+      state = replace_na(state, "00"),
+      agegrp = replace_na(agegrp, "Total"),
+      agegrp = gsub("<1","0", agegrp),
+      agegrp = gsub("-Unknown","+", agegrp),
+      agegrp = paste0(agegrp, ' Years'),
+      agegrp = gsub("Total Years","Total", agegrp),
       sex = case_when(
         demographic == "sex" ~ coalesce(sex, "All"),
         TRUE ~ "All"
@@ -279,17 +290,6 @@ if (!identical(process$raw_state, raw_state)) {
         demographic == "ethnicity" ~ coalesce(ethnicity, "All"),
         TRUE ~ "All"
       ),
-      
-      CrudeRate = gsub("**","",CrudeRate, fixed=T),
-      deaths = gsub("**","",deaths, fixed=T),
-      CrudeRate = as.numeric(CrudeRate),
-      deaths = as.numeric(deaths),
-      state = replace_na(state, "00"),
-      agegrp = replace_na(agegrp, "Total"),
-      agegrp = gsub("<1","0", agegrp),
-      agegrp = gsub("-Unknown","+", agegrp),
-      agegrp = paste0(agegrp, ' Years'),
-      agegrp = gsub("Total Years","Total", agegrp),
       
       
       Mechlbl = str_to_lower(
