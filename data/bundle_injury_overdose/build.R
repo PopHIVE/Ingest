@@ -315,7 +315,7 @@ ggplot() +
   geom_line(aes(x=time, y=value_scale, group=source, color=source)) +
   theme_classic()
 
-write_parquet(firearms_by_source,'firearms_geography_source.parquet')
+write_parquet(firearms_by_source,'./dist/firearms_geography_source.parquet')
 
 ## Heat related
 google_heat <- google %>%
@@ -324,4 +324,4 @@ google_heat <- google %>%
 
 heat_by_source <- bind_rows(google_heat)
 
-write_parquet(heat_by_source,'heat_related_geography_source.parquet')
+write_parquet(heat_by_source,'./dist/heat_related_geography_source.parquet')
