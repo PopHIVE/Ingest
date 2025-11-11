@@ -320,7 +320,18 @@ write_parquet(firearms_by_source,'./dist/firearms_geography_source.parquet')
 ## Heat related
 google_heat <- google %>%
   dplyr::select(geography, time,gtrends_heat_stroke,gtrends_heat_exhaustion) %>%
-  mutate(source= 'Google Health Trends')
+  mutate(source= 'Google Health Trends') %>%
+  rename(fips = geography) %>%
+  ungroup() %>%
+    left_join(all_fips, by = c('fips' = 'geography')) %>%
+  dplyr::select(geography_name, time, starts_with('gtrends')) %>%
+  pivot_longer( cols=c(starts_with('gtrends'))) %>%
+  mutate( source = if_else(name=='gtrends_heat_stroke', 'Google Health Trends: Heat Stroke' ,
+                           if_else(name=='gtrends_heat_exhaustion', 'Google Health Trends: Heat Exhaustion' ,
+                          NA_character_))
+          ) %>%
+  rename(geography = geography_name) %>%
+  dplyr::select(geography, time, source, value )
 
 heat_by_source <- bind_rows(google_heat)
 
