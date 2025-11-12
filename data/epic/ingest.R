@@ -29,7 +29,7 @@ raw <- dcf::dcf_process_epic_staging(cleanup=F)
    filter(geography != '11001')
    
 chronic_import <- function(yearset){
- a1 <- read_csv(paste0("./raw/staging/C02_DM_A1C_State_Age_",yearset,".csv"), skip = 11) %>%
+ a1 <- read_csv(paste0("./raw/staging/2025_11_12_C02_DM_A1C_State_Age_",yearset,".csv"), skip = 11) %>%
    rename(diabetes_a1c_6_5 = "...3",
           diabetes_dx_cdw = "...4",
           n_patients_chronic = "...5",
