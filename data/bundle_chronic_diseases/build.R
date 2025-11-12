@@ -112,7 +112,7 @@ write_parquet(epic_state,'./dist/epic_prevalence_by_geography_year.parquet' )
 cms_state <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>%
   filter(geography_level %in% c('n','s')) %>%
   dplyr::select(geography, time, age, cms_obesity, cms_diabetes) %>%
-  mutate(source='Medicare_CMS') %>%
+  mutate(source='Medicare FFS') %>%
   rename(
     fips=geography
   ) %>%
@@ -202,7 +202,7 @@ epic_county <- vroom::vroom('../epic/standard/county_no_time.csv.gz') %>%
 cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>%
   filter(geography_level %in% c('c')) %>%
   dplyr::select(geography, time, age, cms_obesity, cms_diabetes) %>%
-  mutate(source='Medicare_CMS') %>%
+  mutate(source='Medicare FFS') %>%
   mutate( age = if_else(age=='≥65 Years','65+ Years', age)) %>%
   pivot_longer(
     cols = c(starts_with("cms_")),

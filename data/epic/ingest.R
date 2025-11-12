@@ -24,6 +24,10 @@ raw <- dcf::dcf_process_epic_staging(cleanup=F)
  stage_a1c <- stage_files[grep('A1C', stage_files)]
  data_years <- 2018:2025
  
+ all_fips_state <- all_fips %>%
+   filter(geography_name %in% c('United States','District of Columbia', state.name)) %>%
+   filter(geography != '11001')
+   
 chronic_import <- function(yearset){
  a1 <- read_csv(paste0("./raw/staging/C02_DM_A1C_State_Age_",yearset,".csv"), skip = 11) %>%
    rename(diabetes_a1c_6_5 = "...3",
@@ -42,7 +46,8 @@ chronic_import <- function(yearset){
           diabetes_a1c_6_5 = as.numeric(gsub('%','', diabetes_a1c_6_5)),
           n_patients_chronic = as.numeric(n_patients_chronic)
           ) %>%
-   left_join(all_fips, by='geography_name'
+   filter(geography_name %in% c('United States','District of Columbia', state.name))%>%
+   left_join(all_fips_state, by='geography_name'
              ) %>%
    mutate(time = paste0(yearset,'-01-01') ) %>%
    dplyr::select(age, geography, time, diabetes_a1c_6_5,diabetes_dx_ccw,n_patients_chronic) %>%
