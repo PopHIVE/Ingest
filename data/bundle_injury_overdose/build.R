@@ -65,14 +65,14 @@ cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') 
   mutate(year=year(time)) %>%
   rename(opioid_rate = cms_opioid_use_disorder_overarching) %>%
   dplyr::select(year, geography,opioid_rate) %>%
-   mutate(source='Medicare') %>%
+   mutate(source='Medicare FFS') %>%
   write_parquet('./dist/county_opioid_by_source.parquet')
   
   cms %>%
     filter(age =='65+ Years') %>%
     mutate(year=year(time)) %>%
     rename(opioid_rate = cms_opioid_use_disorder_overarching) %>%
-    mutate(source='Medicare') %>%
+    mutate(source='Medicare FFS') %>%
     left_join(all_fips, by='geography') %>%
     filter(state %in% c(state.abb,'US','DC') & geography_name %in% c(state.name, 'District of Columbia','United States')) %>%
     dplyr::select(year, geography_name,opioid_rate) %>%

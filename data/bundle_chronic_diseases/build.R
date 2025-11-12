@@ -73,42 +73,46 @@ pop_combined <- pop_long_state %>%
   rename(geography=region_name)
 
 
-epic_state <- vroom::vroom('../epic/standard/state_no_time.csv.gz') %>%
-  rename(pct_Diabetes = 'percentage_with_base_patient_followed_by_hemoglobin_a1c_6.5%_or_more_within_10_years_(%)')%>%
-filter(!is.na(pct_Diabetes) ) %>%
-  dplyr::select(geography, age,pct_Diabetes,bmi_30_49.8 ,n_patients) %>%
+epic_state <- vroom::vroom('../epic/standard/state_year.csv.gz') %>%
+  rename(pct_diabetes_a1c_6_5 = diabetes_a1c_6_5,
+         pct_diabetes_dx_ccw = diabetes_dx_ccw
+         ) %>%
   rename(
-          pct_Obesity = bmi_30_49.8,
          fips=geography
          ) %>%
-  mutate( geography = cdlTools::fips(fips, to = 'Name' ),
-          geography = if_else(fips=='00','United States', geography),
-          age = if_else(age=='≥65 Years','65+ Years', age)) %>%
+  left_join(all_fips, by=c('fips'='geography')) %>%
+  rename(geography =geography_name) %>%
+
   pivot_longer(
             cols = c(starts_with("pct_")),
             names_to = c("outcome_name"),
             names_prefix  = "pct_",
             values_to = "value"
           ) %>%
+  rename(n_patients = n_patients_chronic) %>%
  left_join(pop_combined, by=c('age'='age','geography'='geography')) %>%
   mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, as.numeric(n_patients)/pop_2021 * 100 ),
-         source='Epic Cosmos'
-         ) %>%
-  dplyr::select(geography, fips,age, outcome_name, source,value
+         source= if_else(outcome_name=='diabetes_a1c_6_5','Epic Cosmos: HbA1c',
+                                        if_else(outcome_name=='diabetes_dx_ccw','Epic Cosmos: ICD10',  outcome_name                     
+         )),
+         year = lubridate::year(time),
+         outcome_name = 'Diabetes'
+         )%>%
+  dplyr::select(geography, fips,age,year, outcome_name, source,value
                 ,pct_captured,n_patients
                 ) %>%
   filter(!is.na(age)) %>% #small number of records missing age; filter those out here
   rename(sample_size=n_patients) %>%
   filter( fips!='52') 
 
-write_parquet(epic_state,'./dist/epic_prevalence_by_geography.parquet' )
+write_parquet(epic_state,'./dist/epic_prevalence_by_geography_year.parquet' )
 
 
 ## CMS state
 cms_state <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>%
   filter(geography_level %in% c('n','s')) %>%
   dplyr::select(geography, time, age, cms_obesity, cms_diabetes) %>%
-  mutate(source='Medicare_CMS') %>%
+  mutate(source='Medicare FFS') %>%
   rename(
     fips=geography
   ) %>%
@@ -123,42 +127,44 @@ cms_state <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>
   )  %>%
   mutate(age = if_else( age=='65_plus', "65+ Years",
                   if_else(age=='85_plus', "85+ Years",
-                if_else( age=="All_Ages", 'Total', age)))
+                if_else( age=="All_Ages", 'Total', age))),
+         year = lubridate::year(time)
          ) %>%
+  dplyr::select(-time) %>%
   mutate(outcome_name = tools::toTitleCase(outcome_name))
 
 
 ## Combined file
+# 
+# cms_state_most_recent <- cms_state %>%
+#   filter(time == max(time, na.rm=T)) %>% #only take most recent year
+#   dplyr::select(-time)
+# 
+# brfss_most_recent <- brfss_long %>%
+#   filter(year == max(year, na.rm=T)) %>%
+#   dplyr::select(-year)
 
-cms_state_most_recent <- cms_state %>%
-  filter(time == max(time, na.rm=T)) %>% #only take most recent year
-  dplyr::select(-time)
-
-brfss_most_recent <- brfss_long %>%
-  filter(year == max(year, na.rm=T)) %>%
-  dplyr::select(-year)
-
-epic_brfss_cms_combined <- bind_rows(epic_state,brfss_most_recent,cms_state_most_recent)%>% 
+epic_brfss_cms_combined <- bind_rows(epic_state,brfss_long,cms_state)%>% 
   mutate( age = gsub('_to_','-', age),
           age = gsub('Under_','<', age)) %>%
   dplyr::select(-fips) %>%
-  filter(geography %in% c('United States','District of Colombia',state.name))
+  filter(geography %in% c('United States','District of Colombia',state.name)) 
+  
 
 
-write_parquet(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_source.parquet' )
+write_parquet(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_year_and_source.parquet' )
 
-write_csv(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_source.csv' )
 
 
 #Combine CMS and BRFSS but maintain time
-
-brfss_cms_combined_year <- cms_state %>%
-  mutate(year = lubridate::year(time)) %>%
-  dplyr::select(-time) %>%
-  bind_rows(brfss_most_recent) %>%
-  filter(age %in% c('Total',"65+ Years" )) #age groups where the datasets overlap
-
-write_parquet(brfss_cms_combined_year,'./dist/prevalence_by_geography_year_and_source.parquet' )
+# 
+# brfss_cms_combined_year <- cms_state %>%
+#   mutate(year = lubridate::year(time)) %>%
+#   dplyr::select(-time) %>%
+#   bind_rows(brfss_most_recent) %>%
+#   filter(age %in% c('Total',"65+ Years" )) #age groups where the datasets overlap
+# 
+# write_parquet(brfss_cms_combined_year,'./dist/prevalence_by_geography_year_and_source.parquet' )
 
 
 
@@ -196,7 +202,7 @@ epic_county <- vroom::vroom('../epic/standard/county_no_time.csv.gz') %>%
 cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>%
   filter(geography_level %in% c('c')) %>%
   dplyr::select(geography, time, age, cms_obesity, cms_diabetes) %>%
-  mutate(source='Medicare_CMS') %>%
+  mutate(source='Medicare FFS') %>%
   mutate( age = if_else(age=='≥65 Years','65+ Years', age)) %>%
   pivot_longer(
     cols = c(starts_with("cms_")),
