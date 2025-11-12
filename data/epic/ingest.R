@@ -44,7 +44,9 @@ chronic_import <- function(yearset){
           age = if_else(grepl('Total', age),'Total', age),
           diabetes_dx_ccw = as.numeric(gsub('%','', diabetes_dx_cdw)),
           diabetes_a1c_6_5 = as.numeric(gsub('%','', diabetes_a1c_6_5)),
-          n_patients_chronic = as.numeric(n_patients_chronic)
+          n_patients_chronic = as.numeric(n_patients_chronic),
+          geography_name = gsub('Total','United States',geography_name)
+          
           ) %>%
    filter(geography_name %in% c('United States','District of Columbia', state.name))%>%
    left_join(all_fips_state, by='geography_name'
