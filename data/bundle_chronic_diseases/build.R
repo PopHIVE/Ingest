@@ -75,7 +75,7 @@ pop_combined <- pop_long_state %>%
 
 epic_state <- vroom::vroom('../epic/standard/state_year.csv.gz') %>%
   rename(pct_diabetes_a1c_6_5 = diabetes_a1c_6_5,
-         pct_diabetes_dx_cw = diabetes_dx_ccw
+         pct_diabetes_dx_ccw = diabetes_dx_ccw
          ) %>%
   rename(
          fips=geography
@@ -92,11 +92,11 @@ epic_state <- vroom::vroom('../epic/standard/state_year.csv.gz') %>%
   rename(n_patients = n_patients_chronic) %>%
  left_join(pop_combined, by=c('age'='age','geography'='geography')) %>%
   mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, as.numeric(n_patients)/pop_2021 * 100 ),
-         source = 'Epic Cosmos',
-         outcome_name= if_else(outcome_name=='diabetes_a1c_6_5','HbA1c >= 6.5',
-                                        if_else(outcome_name=='diabetes_dx_ccw','ICD10',  outcome_name                     
+         source= if_else(outcome_name=='diabetes_a1c_6_5','Epic Cosmos: HbA1c',
+                                        if_else(outcome_name=='diabetes_dx_ccw','Epic Cosmos: ICD10',  outcome_name                     
          )),
-         year = lubridate::year(time)
+         year = lubridate::year(time),
+         outcome_name = 'Diabetes'
          )%>%
   dplyr::select(geography, fips,age,year, outcome_name, source,value
                 ,pct_captured,n_patients
@@ -135,14 +135,14 @@ cms_state <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %>
 
 
 ## Combined file
-
-cms_state_most_recent <- cms_state %>%
-  filter(time == max(time, na.rm=T)) %>% #only take most recent year
-  dplyr::select(-time)
-
-brfss_most_recent <- brfss_long %>%
-  filter(year == max(year, na.rm=T)) %>%
-  dplyr::select(-year)
+# 
+# cms_state_most_recent <- cms_state %>%
+#   filter(time == max(time, na.rm=T)) %>% #only take most recent year
+#   dplyr::select(-time)
+# 
+# brfss_most_recent <- brfss_long %>%
+#   filter(year == max(year, na.rm=T)) %>%
+#   dplyr::select(-year)
 
 epic_brfss_cms_combined <- bind_rows(epic_state,brfss_long,cms_state)%>% 
   mutate( age = gsub('_to_','-', age),
