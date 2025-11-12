@@ -25,7 +25,7 @@ raw <- dcf::dcf_process_epic_staging(cleanup=F)
  data_years <- 2018:2025
  
 chronic_import <- function(yearset){
- a1 <- read_csv("./raw/staging/C02_DM_A1C_State_Age_2018.csv", skip = 11) %>%
+ a1 <- read_csv(paste0("./raw/staging/C02_DM_A1C_State_Age_",yearset,".csv"), skip = 11) %>%
    rename(diabetes_a1c_6_5 = "...3",
           diabetes_dx_cdw = "...4",
           n_patients_chronic = "...5",
