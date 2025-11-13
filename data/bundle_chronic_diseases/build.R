@@ -75,14 +75,15 @@ pop_combined <- pop_long_state %>%
 
 epic_state <- vroom::vroom('../epic/standard/state_year.csv.gz') %>%
   rename(pct_diabetes_a1c_6_5 = diabetes_a1c_6_5,
-         pct_diabetes_dx_ccw = diabetes_dx_ccw
+         pct_diabetes_dx_ccw = diabetes_dx_ccw,
+         pct_obesity_dx_cdw = obesity_dx_cdw,
+         pct_obesity_bmi =obesity_bmi
          ) %>%
   rename(
          fips=geography
          ) %>%
   left_join(all_fips, by=c('fips'='geography')) %>%
   rename(geography =geography_name) %>%
-
   pivot_longer(
             cols = c(starts_with("pct_")),
             names_to = c("outcome_name"),
@@ -93,10 +94,16 @@ epic_state <- vroom::vroom('../epic/standard/state_year.csv.gz') %>%
  left_join(pop_combined, by=c('age'='age','geography'='geography')) %>%
   mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, as.numeric(n_patients)/pop_2021 * 100 ),
          source= if_else(outcome_name=='diabetes_a1c_6_5','Epic Cosmos: HbA1c',
-                                        if_else(outcome_name=='diabetes_dx_ccw','Epic Cosmos: ICD10',  outcome_name                     
-         )),
+                                        if_else(outcome_name=='diabetes_dx_ccw','Epic Cosmos: ICD10',  
+                                                if_else(outcome_name=='obesity_dx_ccw','Epic Cosmos: ICD10',  
+                                                        if_else(outcome_name=='obesity_bmi','Epic Cosmos: BMI', 
+                                                outcome_name                     
+         )))),
          year = lubridate::year(time),
-         outcome_name = 'Diabetes'
+         outcome_name = if_else(grepl('diabetes', outcome_name),'Diabetes',
+                                if_else(grepl('obesity', outcome_name),'Obesity',       
+                                NA_character_
+         ))
          )%>%
   dplyr::select(geography, fips,age,year, outcome_name, source,value
                 ,pct_captured,n_patients
