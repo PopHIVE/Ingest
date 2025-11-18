@@ -33,20 +33,20 @@ wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
         ) #define based on end of period
 
 wisqars_long_rate <- wisqars%>%
-  dplyr::select(geography, age,year, starts_with('wisqars_rate')) %>%
+  dplyr::select(geography, age, sex, race, ethnicity, year, starts_with('wisqars_rate')) %>%
   pivot_longer(starts_with('wisqars_rate')) %>%
   mutate( name = gsub('wisqars_rate_', '',name))
 
 wisqars_long <- wisqars%>%
-  dplyr::select(geography, year,age, starts_with('wisqars_death')) %>%
+  dplyr::select(geography, year,age, sex, race, ethnicity, starts_with('wisqars_death')) %>%
   pivot_longer(starts_with('wisqars_death'), values_to='N') %>%
   mutate( name = gsub('wisqars_deaths_', '',name)) %>%
-  full_join(wisqars_long_rate, by=c('geography', 'year','age', 'name')) %>%
+  full_join(wisqars_long_rate, by=c('geography', 'year','age', 'sex', 'race', 'ethnicity', 'name')) %>%
   left_join(all_fips, by='geography') %>%
   dplyr::select(-geography,state) %>%
   rename(geography = geography_name,
          cause_of_death = name) %>%
-  dplyr::select(year, age, geography, cause_of_death, value, N)
+  dplyr::select(year, age, sex, race, ethnicity, geography, cause_of_death, value, N)
 
 write_parquet(wisqars_long,'./dist/deaths_cause_age.parquet')
 
@@ -85,7 +85,7 @@ cms_65plus_year <- cms %>%
 
 wisqars_od <- wisqars %>%
   mutate(time_end = time + 1) %>%
-  dplyr::select(geography, age, time_end, wisqars_rate_drug_poisoning ) 
+  dplyr::select(geography, age, sex, race, ethnicity, time_end, wisqars_rate_drug_poisoning ) 
 
 nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
  # mutate(geography = sprintf("%02d", geography)) %>%
@@ -285,7 +285,7 @@ ggplot() +
 ##Firearm by source
 ########################
 wisqars_firarm <- wisqars %>%
-  dplyr::select(geography, time, age, wisqars_rate_firearm_intentional,wisqars_rate_firearm_accident ) %>%
+  dplyr::select(geography, time, age, sex, race, ethnicity, wisqars_rate_firearm_intentional,wisqars_rate_firearm_accident ) %>%
   pivot_longer(cols=c( wisqars_rate_firearm_intentional,wisqars_rate_firearm_accident )) %>%
   rename(source= name)
 
