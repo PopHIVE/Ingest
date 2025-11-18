@@ -185,10 +185,12 @@ epic_county <- vroom::vroom('../epic/standard/county_year.csv.gz') %>%
          n_patients = n_patients_chronic) %>%
   dplyr::select(geography, age,
                 #pct_Obesity,
-                pct_Diabetes ,n_patients
+                pct_Diabetes ,n_patients,
+                time
                 ) %>%
   filter(!is.na(pct_Diabetes) ) %>%
-  mutate(  age = if_else(age=='≥65 Years','65+ Years', age)
+  mutate(  age = if_else(age=='≥65 Years','65+ Years', age),
+           year = lubridate::year(time)
            ) %>%
   pivot_longer(
     cols = c(starts_with("pct_")),
@@ -200,7 +202,7 @@ epic_county <- vroom::vroom('../epic/standard/county_year.csv.gz') %>%
   mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, as.numeric(n_patients)/pop_2021 * 100 ),
          source='Epic Cosmos'
   ) %>%
-  dplyr::select(geography, age, outcome_name, source,value
+  dplyr::select(geography, age,year, outcome_name, source,value
                 ,pct_captured,n_patients
   ) %>%
   filter(!is.na(age)) %>% #small number of records missing age; filter those out here
@@ -229,6 +231,7 @@ cms_county <- vroom::vroom('../cms_mmd/standard/data_state_county_age.csv.gz') %
                                 if_else( age=="All_Ages", 'Total', age)))
   ) %>%
   filter(time == max(time, na.rm=T)) %>% #only take most recent year
+  mutate(year = lubridate::year(time)) %>%
   dplyr::select(-time)%>%
   mutate(outcome_name = tools::toTitleCase(outcome_name))
 
