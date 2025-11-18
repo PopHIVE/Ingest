@@ -312,7 +312,12 @@ if (!is.null(raw)) {
   
   vroom::vroom_write(merged_yearly, "standard/state_year.csv.gz", ",")
   
+  merged_yearly_county <- Reduce(
+    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
+    data[c("hba1c_county")]
+  )
   
+  vroom::vroom_write(merged_yearly_county, "standard/county_year.csv.gz", ",") 
   
   vroom::vroom_write(
     Reduce(
