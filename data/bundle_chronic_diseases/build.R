@@ -189,9 +189,10 @@ epic_county <- vroom::vroom('../epic/standard/county_year.csv.gz') %>%
   filter(time=='2025-01-01') %>%
   rename(#pct_Obesity = diabetes_a1c_6_5,
          pct_Diabetes = diabetes_a1c_6_5,
+         pct_Obesity = obesity_bmi,
          n_patients = n_patients_chronic) %>%
   dplyr::select(geography, age,
-                #pct_Obesity,
+                pct_Obesity,
                 pct_Diabetes ,n_patients,
                 time
                 ) %>%
