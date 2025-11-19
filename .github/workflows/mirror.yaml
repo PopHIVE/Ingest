@@ -1,0 +1,36 @@
+name: Mirror cosmos/standard folder → epic/standard
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # run daily at 06:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout destination repo (Ingest)
+        uses: actions/checkout@v4
+
+      - name: Clone upstream repo with sparse checkout
+        run: |
+          git clone --no-checkout https://github.com/PopHIVE/epic_preprocessing.git upstream
+          cd upstream
+          git sparse-checkout init --cone
+          git sparse-checkout set data/cosmos/standard
+          git checkout main
+
+      - name: Copy mirrored folder into Ingest repo
+        run: |
+          rm -rf data/epic/standard
+          mkdir -p data/epic
+          cp -r upstream/data/cosmos/standard data/epic/standard
+
+      - name: Commit and push changes (only if changed)
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add data/epic/standard
+          git commit -m "Mirror cosmos/standard → epic/standard" || echo "No changes"
+          git push
