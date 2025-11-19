@@ -5,128 +5,6 @@ all_fips <- vroom::vroom('../../resources/all_fips.csv.gz')
 # if there was staging data, make new standard version from it..this function will automaticaly save relevant file
 raw <- dcf::dcf_process_epic_staging(cleanup=T)
 
-##TREMPORARY SOLUTION TO GENERATE RAW FILE
-# source('../../scripts/dcf_read_epic_injury.R')
-# stage_files <- list.files('./raw/staging', full.names = T)
-# stage_files <- stage_files[grep('.csv', stage_files)]
-# od1 <- lapply(stage_files, function(X) {
-#   res = dcf_read_epic_injury(X)
-#   return(res$data)
-# }) %>%
-#   bind_rows() %>%
-#   vroom::vroom_write(.,'./raw/opioid.csv.xz')
-
-
-## Temporary solution to process annual hba1c file
-
- stage_files <- list.files('./raw/staging', full.names = T)
- stage_files <- stage_files[grep('.csv', stage_files)]
- stage_a1c <- stage_files[grep('A1C', stage_files)]
- stage_a1c_county <- stage_files[grep('C02.1', stage_files)]
- 
-  data_years <- 2018:2025
- 
- all_fips_state <- all_fips %>%
-   filter(geography_name %in% c('United States','District of Columbia', state.name)) %>%
-   filter(geography != '11001')
-   
-chronic_import <- function(yearset){
- a1 <- read_csv(paste0("./raw/staging/2025_11_12_C02_DM_A1C_State_Age_",yearset,".csv"), skip = 11) %>%
-   rename(diabetes_a1c_6_5 = "...3",
-          diabetes_dx_cdw = "...4",
-          n_patients_chronic = "...5",
-          geography_name ="State of Residence (U.S.)",
-          age = "Age at Encounter in Years"
-          ) %>%
-   tidyr::fill(geography_name, age, .direction='down') 
- 
- b1 <- read_csv(paste0("./raw/staging/2025_11_12_C03_OBESITY_ICD_BMI_State_Age_",yearset,".csv"), skip = 11) %>%
-   rename(obesity_bmi = "...3",
-          obesity_dx_cdw = "...4",
-          n_patients_chronic = "...5",
-          geography_name ="State of Residence (U.S.)",
-          age = "Age at Encounter in Years"
-   ) %>%
-   tidyr::fill(geography_name, age, .direction='down') 
- 
- combined <- full_join(a1, b1)  %>%
-   mutate(age = gsub("≥ ","", age),
-          age = gsub(" and < ","-", age),
-          age = gsub("Less than ", "<", age),
-          age = gsub("65 Years or more","65+ Years", age),
-          age = if_else(grepl('Total', age),'Total', age),
-          diabetes_dx_ccw = as.numeric(gsub('%','', diabetes_dx_cdw)),
-          diabetes_a1c_6_5 = as.numeric(gsub('%','', diabetes_a1c_6_5)),
-          obesity_dx_cdw = as.numeric(gsub('%','', obesity_dx_cdw)),
-          obesity_bmi = as.numeric(gsub('%','', obesity_bmi)),
-          n_patients_chronic = as.numeric(n_patients_chronic),
-          geography_name = gsub('Total','United States',geography_name)
-          
-          ) %>%
-   filter(geography_name %in% c('United States','District of Columbia', state.name))%>%
-   left_join(all_fips_state, by='geography_name'
-             ) %>%
-   mutate(time = paste0(yearset,'-01-01') ) %>%
-   dplyr::select(age, geography, time, diabetes_a1c_6_5,diabetes_dx_ccw, obesity_bmi,obesity_dx_cdw,n_patients_chronic) %>%
-   filter(!is.na(geography)) 
- return(combined)
-}
-
-all_fips_county = all_fips %>%
-  filter(!(geography_name %in% state.name)) %>%
-  mutate(geography_name = gsub(' County','', geography_name),
-         geography_name = paste0(geography_name,', ', state),
-         geography_name = toupper(geography_name)
-         ) %>%
-  dplyr::select(geography, geography_name) %>%
-  unique()
-
-chronic_import_county <- function(fileset){
-  a1 <- read_csv(fileset, skip = 11) %>%
-    rename(diabetes_a1c_6_5 = "...3",
-           diabetes_dx_cdw = "...4",
-           n_patients_chronic = "...5",
-           geography_name ="County of Residence",
-           age = "Age at Encounter in Years"
-    ) %>%
-    tidyr::fill(geography_name, age, .direction='down') 
-  
-
-  combined <-   a1 %>% #   full_join(a1, b1)  %>%
-    mutate(age = gsub("≥ ","", age),
-           age = gsub(" and < ","-", age),
-           age = gsub("Less than ", "<", age),
-           age = gsub("65 Years or more","65+ Years", age),
-           age = if_else(grepl('Total', age),'Total', age),
-           diabetes_dx_ccw = as.numeric(gsub('%','', diabetes_dx_cdw)),
-           diabetes_a1c_6_5 = as.numeric(gsub('%','', diabetes_a1c_6_5)),
-           #obesity_dx_cdw = as.numeric(gsub('%','', obesity_dx_cdw)),
-           #obesity_bmi = as.numeric(gsub('%','', obesity_bmi)),
-           n_patients_chronic = as.numeric(n_patients_chronic),
-           geography_name = gsub('Total','United States',geography_name)
-           
-    ) %>%
-    left_join(all_fips_county, by='geography_name'
-    ) %>%
-    mutate(
-      yearset = str_extract(fileset, "\\d{4}(?=\\.csv)"),
-      time = paste0(yearset,'-01-01') ) %>%
-    dplyr::select(age, geography, time, diabetes_a1c_6_5,diabetes_dx_ccw, #obesity_bmi,obesity_dx_cdw,
-                                    n_patients_chronic) %>%
-    filter(!is.na(geography)) 
-  return(combined)
-}
- 
-
-# all_chronic <- lapply(data_years, chronic_import) %>%
-#   bind_rows()
-# vroom::vroom_write(all_chronic,'./raw/hba1c.csv.xz') #overwrites incorrect file generated by package while keeping original JSON
-
-
-all_chronic_county <- lapply(stage_a1c_county, chronic_import_county) %>%
-  bind_rows()
-vroom::vroom_write(all_chronic_county,'./raw/hba1c_county.csv.xz') #overwrites incorrect file generated by package while keeping original JSON
-
 ############
 
 if (!is.null(raw)) {
@@ -305,19 +183,44 @@ if (!is.null(raw)) {
   #   dplyr::select(-remove, -epic_n_all_encounters_lag1)
   
   
-  merged_yearly <- Reduce(
+  merged_yearly_diabetes <- Reduce(
     function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-    data[c("hba1c")]
-  )
+    data[c("all_patients")]
+  ) %>%
+    rename(diabetes_a1c_6_5 = `a1c_6.5+_(%)`,
+           diabetes_dx_ccw = "dm_(%)",
+           n_patients = n_all_patients)
+  
+  merged_yearly_obesity <- Reduce(
+    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
+    data[c("obesity_state")]
+  ) %>%
+    rename(obesity_bmi = `bmi_30_49.8`,
+           obesity_dx_ccw = "dm_(%)" ,#this is mislabeled on input file--it is actually obesity
+           )
+
+    merged_yearly <- merged_yearly_diabetes %>%
+                full_join(merged_yearly_obesity) %>%
+      rename(n_patients_chronic = n_patients) %>%
+      mutate(  
+        diabetes_dx_ccw = as.numeric(gsub('%','', diabetes_dx_ccw)),
+        diabetes_a1c_6_5 = as.numeric(gsub('%','', diabetes_a1c_6_5)),
+        obesity_dx_ccw = as.numeric(gsub('%','', obesity_dx_ccw)),
+        obesity_bmi = as.numeric(gsub('%','', obesity_bmi)),
+      )
   
   vroom::vroom_write(merged_yearly, "standard/state_year.csv.gz", ",")
   
-  merged_yearly_county <- Reduce(
+  
+  ##
+  
+  merged_yearly_county_diabetes <- Reduce(
     function(a, b) merge(a, b, all = TRUE, sort = FALSE),
     data[c("hba1c_county")]
   )
   
-  vroom::vroom_write(merged_yearly_county, "standard/county_year.csv.gz", ",") 
+
+  vroom::vroom_write(merged_yearly_county_diabetes, "standard/county_year.csv.gz", ",") 
   
   vroom::vroom_write(
     Reduce(
