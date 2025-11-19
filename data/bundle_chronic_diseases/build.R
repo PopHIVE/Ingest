@@ -22,7 +22,10 @@ brfss <- vroom::vroom('../brfss/standard/data_survey.csv.gz') #uses the raw surv
 
 
 brfss_long <- brfss %>%
-  rename(fips=geography) %>%
+  rename(fips=geography,
+         prev_diabetes_survey_sample_size= sample_size_diab,
+         prev_obesity_survey_sample_size= sample_size_obesity,
+         ) %>%
   mutate( geography = cdlTools::fips(fips, to = 'Name' ),
           geography = if_else(fips=='00','United States', geography)) %>%
   pivot_longer(
@@ -41,11 +44,15 @@ brfss_long <- brfss %>%
          ) %>%
   rename(value = survey,
          value_lcl = survey_lcl,
-         value_ucl = survey_ucl) %>%
-  dplyr::select(geography, year,age, source, outcome_name, value, value_lcl, value_ucl )%>%
+         value_ucl = survey_ucl,
+         sample_size = survey_sample_size) %>%
+  dplyr::select(geography, year,age, source, outcome_name, value, value_lcl, value_ucl ,sample_size)%>%
   filter( outcome_name %in% c("Diabetes", "Obesity")
   ) %>%
-  filter(year <= 2024) #there is some 2025 data, but only for a few months
+  filter(year <= 2024 & #there is some 2025 data, but only for a few months
+           !(year==2024 & geography=='Tennessee') &
+           !(year==2023 & geography %in% c('Kentucky', 'Pennsylvania')) 
+         ) 
 
 write_parquet(brfss_long,'./dist/brfss_prevalence_by_geography.parquet' )
 

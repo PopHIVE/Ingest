@@ -61,8 +61,7 @@ diabetes_format <- function(){
                               if_else(
                                 agec == 4, '45-54 Years',
                                 if_else(agec == 5, '55-64 Years',
-                                        if_else(agec ==
-                                                  6, '65+ Years',
+                                        if_else(agec == 6, '65+ Years',
                                                 NA_character_))
                               ))
                     )),
@@ -73,68 +72,114 @@ diabetes_format <- function(){
       obese_yes = if_else(bmi_cat == 4, 1, 0),
       time = as.Date(paste0(IYEAR, '-01-01'))
     ) %>%
-    dplyr::select(diab_yes ,obese_yes, state, LLCPWT, age, agec,  time) %>%
+    rename(STSTR = `_STSTR`,
+           PSU = `_PSU`) %>%
+    dplyr::select(diab_yes ,obese_yes, state, LLCPWT, STSTR, PSU,age, agec,  time) %>%
     collect()
+  
+  
+   sample_size_age_state <- b %>%
+    group_by(agec, age,state, time) %>%
+    summarize(sample_size_diab = sum(diab_yes, na.rm=T),
+              sample_size_obesity = sum(obese_yes, na.rm=T),
+              )
+  
+  sample_size_age <- b %>%
+    group_by(agec, age, time) %>%
+    summarize(sample_size_diab = sum(diab_yes, na.rm=T),
+              sample_size_obesity = sum(obese_yes, na.rm=T),
+    )%>%
+    mutate( state= '00')
+  
+  sample_size_state <- b %>%
+    group_by(state, time) %>%
+    summarize(sample_size_diab = sum(diab_yes, na.rm=T),
+              sample_size_obesity = sum(obese_yes, na.rm=T),
+    )%>%
+    mutate( age = 'Total',
+            agec=0)
+  
+  sample_size <- b %>%
+    group_by( time) %>%
+    summarize(sample_size_diab = sum(diab_yes, na.rm=T),
+              sample_size_obesity = sum(obese_yes, na.rm=T),
+    ) %>%
+    mutate( state= '00',
+            age = 'Total',
+            agec=0)
+  
+  sample_size_combined <- bind_rows(sample_size_age_state,
+                                    sample_size_age,
+                                    sample_size_state,
+                                    sample_size) %>%
+    ungroup()
+  
+  
   
   # b_sum <- b %>%
   #   group_by(age,state,time, diab_yes) %>%
   #   summarize(LLCPWT = sum(LLCPWT))
   
+  # # Set options for allowing a single observation per stratum
+  # options(survey.lonely.psu = "adjust") 
+  
   # Define the design
-  design_age_state <- svydesign(
-    id = ~1,
-    weights = ~LLCPWT,
-    data = b
-  )
+  year_svy <- function(year){
   
-  # Calculate percent (mean) of diabetes by age, state, and time
-  prevalence_age_state <- svyby(
-    ~diab_yes + obese_yes ,                  # variable of interest
-    ~age + state + time,        # grouping variables
-    design = design_age_state,
-    svymean,
-    vartype = 'ci',
-    multicore=TRUE ,
-    na.rm = TRUE
-  )
-  
-  prevalence_age <- svyby(
-    ~diab_yes + obese_yes,                  # variable of interest
-    ~age +  time,        # grouping variables
-    design = design_age_state,
-    svymean,
-    vartype = 'ci',
-    multicore=TRUE ,
-    na.rm = TRUE
-  )%>%
-    mutate(state = '00')
-  
-  prevalence_state <- svyby(
-    ~diab_yes + obese_yes,                  # variable of interest
-    ~ state + time,        # grouping variables
-    design = design_age_state,
-    svymean,
-    vartype = 'ci',
-    multicore=TRUE ,
-    na.rm = TRUE
-  ) %>%
-    mutate(age = 'Total')
-  
-  prevalence_year <- svyby(
-    ~diab_yes + obese_yes,                  # variable of interest
-    ~  time,        # grouping variables
-    design = design_age_state,
-    svymean,
-    vartype = 'ci',
-    multicore=TRUE ,
-    na.rm = TRUE
-  ) %>%
-    mutate(age = 'Total', 
-           state= '00'
-           )
-  
-  
-  prevalence_combined <-
+      design_age_state <- svydesign(
+        id = ~1,
+        #strata = ~STSTR,
+        weights = ~LLCPWT,
+        data = b[b$time == year ,]
+      )
+      
+      # Calculate percent (mean) of diabetes by age, state, and time
+      prevalence_age_state <- svyby(
+        ~diab_yes + obese_yes ,                  # variable of interest
+        ~age + state ,        # grouping variables
+        design = design_age_state,
+        svymean,
+        vartype = 'ci',
+        multicore=TRUE ,
+        na.rm = TRUE
+      )
+      
+      prevalence_age <- svyby(
+        ~diab_yes + obese_yes,                  # variable of interest
+        ~age ,        # grouping variables
+        design = design_age_state,
+        svymean,
+        vartype = 'ci',
+        multicore=TRUE ,
+        na.rm = TRUE
+      )%>%
+        mutate(state = '00')
+      
+      prevalence_state <- svyby(
+        ~diab_yes + obese_yes,                  # variable of interest
+        ~ state ,        # grouping variables
+        design = design_age_state,
+        svymean,
+        vartype = 'ci',
+        multicore=TRUE ,
+        na.rm = TRUE
+      ) %>%
+        mutate(age = 'Total')
+      
+      prevalence_year <- svyby(
+        ~diab_yes + obese_yes,                  # variable of interest
+        ~  time,        # grouping variables
+        design = design_age_state,
+        svymean,
+        vartype = 'ci',
+        multicore=TRUE ,
+        na.rm = TRUE
+      ) %>%
+        mutate(age = 'Total', 
+               state= '00'
+               )
+
+  prevalence_combined_yr <-
     bind_rows(prevalence_state,
               prevalence_age,
               prevalence_age_state,
@@ -146,10 +191,17 @@ diabetes_format <- function(){
            prev_obesity_survey = obese_yes * 100,
            prev_obesity_survey_lcl = ci_l.obese_yes * 100,
            prev_obesity_survey_ucl = ci_u.obese_yes * 100,
+           time = year
            ) %>%
     filter(!is.na(age)) %>%
     rename(geography = state) %>%
     dplyr::select(geography, time, age, starts_with("prev_diabetes_"), starts_with('prev_obesity')) 
+   return(prevalence_combined_yr)
+  }
+  
+  prevalence_combined <- lapply(unique(b$time), year_svy) %>%
+    bind_rows() %>%
+    left_join(sample_size_combined, by=c( 'age','geography'='state','time'))
   
   vroom::vroom_write(prevalence_combined, './standard/data_survey.csv.gz' )
   
@@ -166,8 +218,14 @@ v1 <- vroom::vroom('./standard/data.csv.gz') %>%
   left_join(prevalence_combined, by=c('geography', 'time', 'age')) 
 
 
-
+##Correlation = 0.9966
 ggplot(v1) +
   geom_point(aes(x=prev_diabetes_survey, y=pct_diabetes_precalc, color=as.factor(time)))+
+  geom_abline(aes(intercept=0, slope=1))
+
+v1 %>%
+  filter(age!='Total') %>%
+ggplot() +
+  geom_point(aes(x=sample_size_diab, y=pct_diabetes_sample_size, color=as.factor(time)))+
   geom_abline(aes(intercept=0, slope=1))
 
