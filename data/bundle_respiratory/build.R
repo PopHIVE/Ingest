@@ -406,7 +406,7 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
 
   #abc_view_geo <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/pneumococcus/by_geography.parquet')
   d5 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
-    filter(geography!='00' & time == max(time)) %>%
+    filter(geography != '00' & time == max(time) & age =='Total') %>%
     rename(value = pct_IPD,
            value_N = N_IPD,
            fips=geography) %>%

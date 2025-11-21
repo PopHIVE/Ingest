@@ -23,33 +23,7 @@ raw_state <- dcf::dcf_download_cdc(
 #
 if (!identical(process$raw_state, raw_state)) {
   
-  #2019 serotype counts https://pubmed.ncbi.nlm.nih.gov/35172327/
-  data_state <- vroom::vroom("./raw/jiac058_suppl_supplementary_table_s2.csv", show_col_types = FALSE) %>%
-    group_by(State, sero) %>%
-    summarize(N_cases = n()) %>%
-    mutate(sero = as.factor(sero)) %>%
-    ungroup() %>%
-    group_by(State, sero) %>%
-    mutate(mean_cases = max(N_cases, na.rm = T)) %>%
-    group_by(State) %>%
-    mutate(pct = N_cases / sum(N_cases, na.rm = T) * 100) %>%
-    ungroup() %>%
-    tidyr::complete(sero, State, fill = list(pct = 0)) %>%
-    mutate(geography= fips(State, to='FIPS'),
-           geography = sprintf("%02d", geography),
-           time = as.Date('2019-01-01'),
-           age='Total',
-           N_cases = if_else(is.na(N_cases),0, N_cases)
-           ) %>%
-    rename(serotype=sero,
-           N_IPD=N_cases,
-           pct_IPD = pct
-           ) %>%
-    dplyr::select( age, serotype, geography, time, N_IPD,pct_IPD) %>%
-    ungroup()
-  
-  
-  data <-  vroom::vroom("./raw/qvzb-qs6p.csv.xz", show_col_types = FALSE) %>%
+   data_age <-  vroom::vroom("./raw/qvzb-qs6p.csv.xz", show_col_types = FALSE) %>%
     rename(
       agec = "Age Group (years)",
       year = Year,
@@ -87,13 +61,24 @@ if (!identical(process$raw_state, raw_state)) {
     left_join(all_fips, by=c('site'='state')) %>%
     mutate(geography = if_else(site=='All_Sites', '00', geography)) %>%
     group_by(geography, age, time) %>%
-    mutate(pct_IPD = N_IPD / sum(N_IPD)) %>%
+    mutate(pct_IPD = 100* N_IPD / sum(N_IPD)) %>%
     dplyr::select( geography, age, serotype,  time, N_IPD,pct_IPD) %>%
     ungroup()
     
+   data_total <- data_age %>%
+     group_by(geography, time,serotype) %>%
+     summarize(N_IPD = sum(N_IPD)) %>%
+     ungroup() %>%
+     group_by(geography, time) %>%
+     mutate(pct_IPD = 100* N_IPD / sum(N_IPD),
+            age = 'Total') %>%
+     ungroup()
+   
   
+   data2 <- bind_rows(data_age, data_total) 
+   
   vroom::vroom_write(
-    data,
+    data2,
     "standard/data.csv.gz",
     ","
   )
