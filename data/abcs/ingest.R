@@ -5,6 +5,9 @@ library(tidyr)
 #
 # Download
 #
+all_fips <- vroom::vroom('../../resources/all_fips.csv.gz') %>%
+  filter(geography_name %in% c(state.name, 'District of Columbia', 'United States')
+         & geography !='11001')
 
 process <- dcf::dcf_process_record()
 raw_state <- dcf::dcf_download_cdc(
@@ -46,12 +49,13 @@ if (!identical(process$raw_state, raw_state)) {
     ungroup()
   
   
-  data_nat <- vroom::vroom("./raw/qvzb-qs6p.csv.xz", show_col_types = FALSE) %>%
+  data <-  vroom::vroom("./raw/qvzb-qs6p.csv.xz", show_col_types = FALSE) %>%
     rename(
       agec = "Age Group (years)",
       year = Year,
       st = 'IPD Serotype',
-      N_IPD = 'Frequency Count'
+      N_IPD = 'Frequency Count',
+      site = Site,
     ) %>%
     mutate(
       st = if_else(st == '16', '16F', st),
@@ -72,18 +76,18 @@ if (!identical(process$raw_state, raw_state)) {
         labels = c('<5 years', '5-49 years', '50+ years')
       )
     ) %>%
-    group_by(st, agec2, year) %>%
+    group_by(site, st, agec2, year) %>%
     summarize(N_IPD = sum(N_IPD)) %>%
     ungroup() %>%
-    mutate(time = as.Date(paste(year,'01','01',sep='-')),
-           geography='00') %>%
+    mutate(time = as.Date(paste(year,'01','01',sep='-'))) %>%
     rename(age= agec2,
            serotype=st) %>%
-    dplyr::select( age, serotype, geography, time, N_IPD)%>%
-    tidyr::complete(serotype,age,time,geography, fill=list(N_IPD=0))
-  
-  
-  data <- bind_rows(data_nat, data_state)
+    dplyr::select( site, age, serotype,  time, N_IPD)%>%
+    tidyr::complete(site,serotype,age,time, fill=list(N_IPD=0)) %>%
+    left_join(all_fips, by=c('site'='state')) %>%
+    mutate(geography = if_else(site=='All_Sites', '00', geography)) %>%
+    dplyr::select( geography, age, serotype,  time, N_IPD)
+    
   
   vroom::vroom_write(
     data,
