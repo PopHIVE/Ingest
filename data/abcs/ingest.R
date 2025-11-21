@@ -86,7 +86,10 @@ if (!identical(process$raw_state, raw_state)) {
     tidyr::complete(site,serotype,age,time, fill=list(N_IPD=0)) %>%
     left_join(all_fips, by=c('site'='state')) %>%
     mutate(geography = if_else(site=='All_Sites', '00', geography)) %>%
-    dplyr::select( geography, age, serotype,  time, N_IPD)
+    group_by(geography, age, time) %>%
+    mutate(pct_IPD = N_IPD / sum(N_IPD)) %>%
+    dplyr::select( geography, age, serotype,  time, N_IPD,pct_IPD) %>%
+    ungroup()
     
   
   vroom::vroom_write(
