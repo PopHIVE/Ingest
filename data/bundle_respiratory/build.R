@@ -56,9 +56,6 @@ combined <- Reduce(
   data
 )
 
-#remove the RSV testing data from the combined file for now...
-combined <- combined %>%
-  dplyr::select(-`epic_positive_rsv_tests_(%)` ,-epic_rsv_tests,-epic_n_rsv_tests)
 
 #colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
 
@@ -224,19 +221,16 @@ arrow::write_parquet(d, "dist/rsv_positive_tests.parquet")
 #################
 
 #epic_testing_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/rsv_testing_pct.parquet')
-d2 <- vroom::vroom('../epic/standard/weekly.csv.gz') %>%
-  rename(n_pneumonia= epic_n_rsv_tests,
-         pct_tested = epic_rsv_tests,
-         date= time,
-         fips=geography
-         ) %>%
+d2 <- vroom::vroom('../epic/standard/monthly_tests.csv.gz') %>%
+ rename(fips = geography) %>%
   mutate(source = 'Epic Cosmos, ED',
-         suppressed_flag = if_else(n_pneumonia == '10 or fewer',1,0),
+         suppressed_flag = if_else(epic_n_ed_j12_j18 == '10 or fewer',1,0),
          geography = cdlTools::fips(fips, to='Name'),
          geography = if_else(fips=='00','United States', geography)
          )%>%
-  dplyr::select(source, geography,age, date, pct_tested, n_pneumonia, suppressed_flag ) %>%
-  filter(!is.na(age) & !is.na(pct_tested)) 
+  rename(date=time) %>%
+  dplyr::select(source, geography,age, date,epic_pct_rsv_pos_tests , epic_pct_j12_j18_tested_rsv, epic_n_ed_j12_j18,suppressed_flag ) %>%
+  filter(!is.na(age) & !is.na(epic_pct_j12_j18_tested_rsv)) 
   
 arrow::write_parquet(d2, "dist/rsv_testing_pct.parquet")
 
