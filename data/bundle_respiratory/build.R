@@ -161,7 +161,11 @@ overall_trends %>%
           ) %>%
   left_join(suppressed_rsv, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
-  dplyr::select(-variable, -fips) %>%
+  group_by(geography,  fips, source) %>%
+  mutate(N_obs = n()) %>%
+  filter(N_obs >=52) %>%
+  ungroup() %>%
+    dplyr::select(-variable, -fips,-N_obs) %>%
     arrow::write_parquet(., "dist/rsv_overall_trends.parquet")
 
 overall_trends %>% 
@@ -180,7 +184,11 @@ overall_trends %>%
   ) %>%
   left_join(suppressed_flu, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
-  dplyr::select(-variable,-fips) %>%
+  group_by(geography,  fips, source) %>%
+  mutate(N_obs = n()) %>%
+  filter(N_obs >=52) %>%
+  ungroup() %>%
+  dplyr::select(-variable, -fips,-N_obs) %>%
   arrow::write_parquet(., "dist/flu_overall_trends.parquet")
 
 overall_trends %>% 
@@ -201,7 +209,11 @@ overall_trends %>%
   ) %>%
   left_join(suppressed_covid, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
-  dplyr::select(-variable,-fips) %>%
+  group_by(geography,  fips, source) %>%
+  mutate(N_obs = n()) %>%
+  filter(N_obs >=52) %>%
+  ungroup() %>%
+  dplyr::select(-variable, -fips,-N_obs) %>%
   arrow::write_parquet(., "dist/covid_overall_trends.parquet")
 
 

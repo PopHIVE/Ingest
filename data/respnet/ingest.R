@@ -160,7 +160,22 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     dplyr::select(time, geography, age, starts_with('rate'))
   
-  #Write standard data
+  
+ 
+  #hash 284e55f3220473dfef18353f23577bfa90fd8fc8 Oct 6, 2025
+  #versions <- dcf::dcf_get_file("./standard/data.csv.gz", versions=T )
+  
+  # oct6_2025 <- vroom::vroom(dcf::dcf_get_file("./standard/data.csv.gz", "2025-10-06" )) %>%
+  #   mutate(vintage = as.Date('2025-10-06'))
+  # 
+  # data_combined2 <- data_combined %>%
+  #   mutate(vintage = Sys.Date()) %>%
+  #   bind_rows(oct6_2025) %>%
+  #   arrange(time, geography, age, desc(vintage)) %>%
+  #   group_by(time, geography, age) %>%
+  #   mutate(order =row_number()) 
+  # 
+    #Write standard data
   vroom::vroom_write(
     data_combined,
     "standard/data.csv.gz",
