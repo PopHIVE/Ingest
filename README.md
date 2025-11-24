@@ -76,6 +76,9 @@ Please cite the use of data from PopHIVE and the original source. the DOI for Po
 **November 14, 2025**
 We have updated several aspects of the obesity and diabetes definitions from Epic Cosmos. The denominator population has been updated to include base patients with an encounter, and a elevated HbA1c measurement or BMI>30 measurement in the 2 years prior to the encounter. This allows for stratification over time and more accurately captures the active users. We also change from a 10 year look back period to a 2 year look back period to be in line with the definitions used by the Medicare CCW. In addition to these changes, we have added two additional ways to measure diabetes and obesity prevalence based on the Epic Cosmos data. This is based on the [CCW definitions](https://www2.ccwdata.org/web/guest/home/), which evaluates the presence of diganostic codes for diabetes or obesity during a 2 year lookback period. The updated file can be found [here](https://github.com/PopHIVE/Ingest/blob/main/data/bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet)
 
+**November 21,2025**
+The CDC updated their invsdive pneumococcal disease file to i clude geographic site for 1998-2023. The file with geographic stratification by serotype has been updated accordingly, and the dashboard now shows 2023 instead of 2019
+
 # Guide to adding data and rebuilding the bundle
 
 ## Steps for adding new datasets
