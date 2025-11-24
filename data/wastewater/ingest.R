@@ -84,8 +84,19 @@ if (!identical(process$raw_state, raw_state)) {
   
   nat_ave <- data %>%
     left_join(state_ids, by=c('geography'='GEOID'))%>%
+    mutate(
+      #occasional extreme values. if value >95th percentile, set at 95th percentile
+      covid_95 = quantile(wastewater_covid, probs=0.95, na.rm=T),
+      flu_95 = quantile(wastewater_flua, probs=0.95, na.rm=T),
+      rsv_95 = quantile(wastewater_rsv, probs=0.95, na.rm=T),
+      
+      wastewater_covid = if_else(wastewater_covid > covid_95, covid_95, wastewater_covid),
+      wastewater_flua = if_else(wastewater_flua > flu_95, flu_95, wastewater_flua),
+      wastewater_rsv = if_else(wastewater_rsv > rsv_95, rsv_95, wastewater_rsv)
+    )%>%
     group_by(time) %>%
-    mutate(wgt_covid = (Total*!is.na(wastewater_covid))/sum(Total*!is.na(wastewater_covid), na.rm=T), #population weight
+    mutate(
+           wgt_covid = (Total*!is.na(wastewater_covid))/sum(Total*!is.na(wastewater_covid), na.rm=T), #population weight
            wgt_rsv = (Total*!is.na(wastewater_rsv))/sum(Total*!is.na(wastewater_rsv), na.rm=T), #population weight
            wgt_flua = (Total*!is.na(wastewater_flua))/sum(Total*!is.na(wastewater_flua), na.rm=T), #population weight
            wgt_part_covid = wgt_covid*wastewater_covid,
