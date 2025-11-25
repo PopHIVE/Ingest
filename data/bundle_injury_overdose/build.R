@@ -4,11 +4,22 @@ library(arrow)
 ### FIPS codes
 all_fips <- vroom::vroom('../../resources/all_fips.csv.gz') 
 
+state_fips <- all_fips %>%
+  filter(geography_name %in% c('District of Columbia',state.name) & geography != '11001') %>%
+  pull(geography)
 
-pop <- vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
+
+pop_region <- vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
   dplyr::select(GEOID, Total) %>%
   rename(geography=GEOID,
          pop=Total)
+
+pop_us <- pop_region %>%
+  filter(geography %in% state_fips) %>%
+  summarize(pop = sum(pop)) %>%
+  mutate(geography = '00')
+
+pop <- bind_rows(pop_us, pop_region)
 
 #Google--weekly (averaged to monthly) searches
 google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
@@ -28,25 +39,33 @@ google <- vroom::vroom('../../data/gtrends/standard/data.csv.gz') %>%
 #### WISQARS data
 wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
   mutate( year= year(time),
-        time = time %m+% years(1)  - 1 ,
-        age = if_else(age == "0-14 Years" , "<15 Years", age)
+          time = as.Date(paste(year, '07','01', sep='-')  ),
+          age = if_else(age == "0-14 Years" , "<15 Years", age)
         ) #define based on end of period
 
 wisqars_long_rate <- wisqars%>%
-  dplyr::select(geography, age, sex, race, ethnicity, year, starts_with('wisqars_rate')) %>%
+  dplyr::select(geography, age, 
+                #sex, race, ethnicity, 
+                year, starts_with('wisqars_rate')) %>%
   pivot_longer(starts_with('wisqars_rate')) %>%
   mutate( name = gsub('wisqars_rate_', '',name))
 
 wisqars_long <- wisqars%>%
-  dplyr::select(geography, year,age, sex, race, ethnicity, starts_with('wisqars_death')) %>%
+  dplyr::select(geography, year,age, 
+                #sex, race, ethnicity, 
+                starts_with('wisqars_death')) %>%
   pivot_longer(starts_with('wisqars_death'), values_to='N') %>%
   mutate( name = gsub('wisqars_deaths_', '',name)) %>%
-  full_join(wisqars_long_rate, by=c('geography', 'year','age', 'sex', 'race', 'ethnicity', 'name')) %>%
+  full_join(wisqars_long_rate, by=c('geography', 'year','age', 
+                                    #'sex', 'race', 'ethnicity', 
+                                    'name')) %>%
   left_join(all_fips, by='geography') %>%
   dplyr::select(-geography,state) %>%
   rename(geography = geography_name,
          cause_of_death = name) %>%
-  dplyr::select(year, age, sex, race, ethnicity, geography, cause_of_death, value, N)
+  dplyr::select(year, age, 
+                #sex, race, ethnicity, 
+                geography, cause_of_death, value, N)
 
 write_parquet(wisqars_long,'./dist/deaths_cause_age.parquet')
 
@@ -56,7 +75,10 @@ cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') 
   dplyr::select(geography, time, age,cms_alcohol_use_disorder, cms_drug_use_disorder,
                 cms_opioid_use_disorder_dx_px_based, cms_opioid_use_disorder_overarching,
                 cms_tobacco_use_disorder ) %>%
-  mutate(time = time %m+% years(1)  - 1 ) #define based on end of period
+  mutate(year=year(time),
+         time = as.Date(paste(year, '07','01', sep='-')  )
+         
+  ) 
 
 
 #export to parquet; add in Epic county here later
@@ -70,8 +92,7 @@ cms <- vroom::vroom('../../data/cms_mmd/standard/data_state_county_age.csv.gz') 
   
   cms %>%
     filter(age =='65+ Years') %>%
-    mutate(year=year(time)) %>%
-    rename(opioid_rate = cms_opioid_use_disorder_overarching) %>%
+     rename(opioid_rate = cms_opioid_use_disorder_overarching) %>%
     mutate(source='Medicare FFS') %>%
     left_join(all_fips, by='geography') %>%
     filter(state %in% c(state.abb,'US','DC') & geography_name %in% c(state.name, 'District of Columbia','United States')) %>%
@@ -84,8 +105,9 @@ cms_65plus_year <- cms %>%
   filter(age =='65+ Years')  
 
 wisqars_od <- wisqars %>%
-  mutate(time_end = time + 1) %>%
-  dplyr::select(geography, age, sex, race, ethnicity, time_end, wisqars_rate_drug_poisoning ) 
+  dplyr::select(geography, age, 
+                #sex, race, ethnicity, 
+                time, wisqars_rate_drug_poisoning ) 
 
 nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
  # mutate(geography = sprintf("%02d", geography)) %>%
@@ -132,7 +154,7 @@ nchs <- bind_rows(nchs_od_state, nchs_od_county)
 
 #epic
 
-epic <- vroom::vroom('../../data/epic/standard/monthly.csv.gz') %>%
+epic <- vroom::vroom('../../data/epic/standard/monthly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
                          if_else(age ==  "25-45 Years", '25-44 Years', age
           )))
@@ -143,7 +165,6 @@ epic <- vroom::vroom('../../data/epic/standard/monthly.csv.gz') %>%
 
 combine_long <- function() {
   drugs_month_age <- wisqars_od %>%
-    mutate(time = time_end + 1) %>%
     left_join(cms, by = c('age', 'geography', 'time'))
   
   ### google trends
@@ -151,8 +172,12 @@ combine_long <- function() {
   nchs_od <- nchs %>%
     rename(value = rate_deaths_overdose, nchs_n_deaths_overdose = n_deaths_overdose) %>%
     dplyr::select(geography, time, value, nchs_n_deaths_overdose , suppressed) %>%
-    mutate(source = 'CDC/NCHS', age = 'Total') %>%
-    filter(!is.na(time))
+    mutate(source = 'CDC/NCHS', age = 'Total',
+           month=lubridate::month(time)) %>%
+    filter(!is.na(time) & month==12) %>%
+    mutate(year = lubridate::year(time),
+           time = as.Date(paste(year,'07','01', sep='-')) # it is a 12 month backward ave, so for calendar year, take december, and set as mid-year estimate
+           )
   
   google_od <- google %>%
     arrange(time) %>%
@@ -181,8 +206,7 @@ combine_long <- function() {
     rename(fips = geography) %>%
     dplyr::select(-state) %>%
     group_by(source, age, fips) %>%
-    mutate(value_scale = value/max(value, na.rm=T),
-           time = if_else(!is.na(time_end), time_end, time)) #for 12m cum ave data, use last date
+    mutate(value_scale = value/max(value, na.rm=T)) #for 12m cum ave data, use last date
   
   
   drugs_month_source %>%
@@ -285,7 +309,9 @@ ggplot() +
 ##Firearm by source
 ########################
 wisqars_firarm <- wisqars %>%
-  dplyr::select(geography, time, age, sex, race, ethnicity, wisqars_rate_firearm_intentional,wisqars_rate_firearm_accident ) %>%
+  dplyr::select(geography, time, age, 
+                #sex, race, ethnicity, 
+                wisqars_rate_firearm_intentional,wisqars_rate_firearm_accident ) %>%
   pivot_longer(cols=c( wisqars_rate_firearm_intentional,wisqars_rate_firearm_accident )) %>%
   rename(source= name)
 
@@ -301,9 +327,10 @@ google_firearm <- google %>%
   mutate(age= 'Total')
 
 epic_firearms <- epic %>%
-  dplyr::select(geography, time, age, epic_n_ed_firearm) %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm , epic_pct_ed_firearm) %>%
   mutate(source='Epic Cosmos') %>%
-  rename(value =epic_n_ed_firearm)
+  rename(value =epic_pct_ed_firearm)%>%
+  filter(!is.na(time))
 
 firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firarm) 
 
@@ -332,6 +359,11 @@ google_heat <- google %>%
           ) %>%
   rename(geography = geography_name) %>%
   dplyr::select(geography, time, source, value )
+
+# epic_heat <- epic %>%
+#   rename(value = epic_pct_ed_heat) %>%
+#   dplyr::select(time, geography, age, value, suppressed_opioid) %>%
+#   mutate(source = 'Epic Cosmos')
 
 heat_by_source <- bind_rows(google_heat)
 
