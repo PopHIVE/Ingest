@@ -358,13 +358,14 @@ google_heat <- google %>%
                           NA_character_))
           ) %>%
   rename(geography = geography_name) %>%
-  dplyr::select(geography, time, source, value )
+  dplyr::select(geography, time, source, value ) %>%
+  mutate(age = 'Total')
 
-# epic_heat <- epic %>%
-#   rename(value = epic_pct_ed_heat) %>%
-#   dplyr::select(time, geography, age, value, suppressed_opioid) %>%
-#   mutate(source = 'Epic Cosmos')
+epic_heat <- epic %>%
+  rename(value = epic_pct_ed_heat) %>%
+  dplyr::select(time, geography, age, value, suppressed_opioid) %>%
+  mutate(source = 'Epic Cosmos')
 
-heat_by_source <- bind_rows(google_heat)
+heat_by_source <- bind_rows(google_heat,epic_heat)
 
 write_parquet(heat_by_source,'./dist/heat_related_geography_source.parquet')
