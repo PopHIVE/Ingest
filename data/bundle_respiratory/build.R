@@ -432,11 +432,13 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
            geography = fips(fips, to = "Abbreviation")
     ) %>%
     arrange(geography, serotype, year) %>%
+    group_by(geography, serotype) %>%
     mutate(value_lag1 = lag(value,1),
            value_lag2 = lag(value,2),
            value_smooth = rowMeans(across(c(value, value_lag1, value_lag2)), na.rm = TRUE)
            ) %>%
-    dplyr::select(serotype, geography, year,  value, value_N, value_smooth)
+    dplyr::select(serotype, geography, year,  value, value_N, value_smooth) %>%
+    ungroup()
   
   arrow::write_parquet(d5a, "dist/pneumococcus_by_geography_year.parquet")
   
