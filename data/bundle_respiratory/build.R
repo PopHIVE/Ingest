@@ -433,9 +433,13 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
     ) %>%
     arrange(geography, serotype, year) %>%
     group_by(geography, serotype) %>%
-    mutate(value_lag1 = lag(value,1),
-           value_lag2 = lag(value,2),
-           value_smooth = rowMeans(across(c(value, value_lag1, value_lag2)), na.rm = TRUE)
+    mutate(
+      value_smooth = slider::slide_dbl(
+        value,
+        .f = ~ mean(.x, na.rm = TRUE),
+        .before = 2,      # previous 2 rows + current = 3-year window
+        .complete = FALSE # allow partial windows
+      )
            ) %>%
     dplyr::select(serotype, geography, year,  value, value_N, value_smooth) %>%
     ungroup()
