@@ -423,6 +423,18 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
     
   arrow::write_parquet(d5, "dist/pneumococcus_by_geography.parquet")
   
+  d5a <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
+    filter(geography != '00'  & age =='Total') %>%
+    rename(value = pct_IPD,
+           value_N = N_IPD,
+           fips=geography) %>%
+    mutate(year = lubridate::year(time),
+           geography = fips(fips, to = "Abbreviation")
+    ) %>%
+    dplyr::select(serotype, geography, year,  value, value_N)
+  
+  arrow::write_parquet(d5a, "dist/pneumococcus_by_geography_year.parquet")
+  
   d4_2019_2020 <- d4 %>% filter(year %in% c(2019,2020) & age == "50+ years") %>%
     group_by(serotype) %>%
     summarize(value=sum(value)) %>%
