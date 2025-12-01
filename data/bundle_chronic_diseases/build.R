@@ -83,7 +83,7 @@ pop_combined <- pop_long_state %>%
 epic_state <- vroom::vroom('../epic/standard/state_year.csv.gz') %>%
   rename(pct_diabetes_a1c_6_5 = diabetes_a1c_6_5,
          pct_diabetes_dx_ccw = diabetes_dx_ccw,
-         pct_obesity_dx_cdw = obesity_dx_cdw,
+         pct_obesity_dx_ccw = obesity_dx_ccw,
          pct_obesity_bmi =obesity_bmi
          ) %>%
   rename(
@@ -102,7 +102,7 @@ epic_state <- vroom::vroom('../epic/standard/state_year.csv.gz') %>%
   mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, as.numeric(n_patients)/pop_2021 * 100 ),
          source= if_else(outcome_name=='diabetes_a1c_6_5','Epic Cosmos: HbA1c',
                                         if_else(outcome_name=='diabetes_dx_ccw','Epic Cosmos: ICD10',  
-                                                if_else(outcome_name %in% c('obesity_dx_cdw','obesity_dx_ccw'),'Epic Cosmos: ICD10',  
+                                                if_else(outcome_name %in% c('obesity_dx_ccw','obesity_dx_ccw'),'Epic Cosmos: ICD10',  
                                                         if_else(outcome_name=='obesity_bmi','Epic Cosmos: BMI', 
                                                 outcome_name                     
          )))),
