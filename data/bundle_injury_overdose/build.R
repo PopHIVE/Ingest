@@ -238,7 +238,7 @@ od_county <- read_parquet('./dist/overdose_by_geography_and_source_county.parque
 od_state <- read_parquet('./dist/overdose_by_geography_and_source.parquet')
 
 p1 <- od_state %>%
-  filter(geography=='United States' & age=='Total') %>%
+  filter(geography=='Ohio' & age=='Total') %>%
   ggplot()+
   geom_line(aes(x=date, y=value_scale, group=source, color=source)) +
   theme_classic()
@@ -255,7 +255,7 @@ od_state_year <- od_state %>%
   mutate(value_year_scale = value_year / max(value_year, na.rm=T))
 
 od_state_year %>%
-  filter(geography=='United States' & age=='Total') %>%
+  filter(geography=='Ohio' & age=='Total') %>%
 ggplot() +
   geom_line(aes(x=year, y=value_year_scale, group=source, color=source))+
   theme_classic()
