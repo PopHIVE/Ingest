@@ -215,6 +215,8 @@ combine_long <- function() {
     filter(geography_name %in% c('United States', 'District of Columbia', state.name)) %>%
     rename(geography = geography_name) %>%
     filter(!is.na(value)) %>%
+    dplyr::select(geography, date,age,source, value, value_scale,suppressed, suppressed_opioid ) %>%
+    
     write_parquet(., './dist/overdose_by_geography_and_source.parquet')
   
   drugs_month_source %>%
@@ -332,17 +334,39 @@ epic_firearms <- epic %>%
   rename(value =epic_pct_ed_firearm)%>%
   filter(!is.na(time))
 
-firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firarm) 
+state_cw <- all_fips %>%
+  filter(geography %in% state_fips)
+
+firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firarm) %>% 
+  ungroup() %>%
+  rename(fips = geography) %>%
+  left_join(state_cw, by=c('fips'='geography')) %>%
+  rename(geography = geography_name) %>%
+  dplyr::select(-fips)
+
+write_parquet(firearms_by_source,'./dist/firearms_geography_source.parquet')
 
 firearms_by_source %>%
+  ungroup() %>%
   group_by(age, geography, source) %>%
   mutate(value_scale = value/max(value, na.rm=T)) %>%
-  filter(age=='Total' & geography=='00') %>%
+  filter(age=='Total' & geography=='Ohio') %>%
 ggplot() +
   geom_line(aes(x=time, y=value_scale, group=source, color=source)) +
   theme_classic()
 
-write_parquet(firearms_by_source,'./dist/firearms_geography_source.parquet')
+
+firearms_by_source %>%
+  ungroup() %>%
+  mutate(year= lubridate::year(time)) %>%
+  group_by(age, geography, source, year) %>%
+  summarize(value = mean(value) ) %>%
+  mutate(value_scale = value/max(value, na.rm=T)) %>%
+  filter(age=='Total' & geography=='Ohio') %>%
+  ggplot() +
+  geom_line(aes(x=year, y=value_scale, group=source, color=source)) +
+  theme_classic()
+
 
 ## Heat related
 google_heat <- google %>%
