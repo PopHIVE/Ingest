@@ -105,6 +105,19 @@ if (!identical(process$raw_state, raw_state)) {
             gtrends_rsv_adjusted = if_else(gtrends_rsv_adjusted<0,0,gtrends_rsv_adjusted),
             gtrends_rsv_adjusted = gtrends_rsv_adjusted / max(gtrends_rsv_adjusted, na.rm=T)
     ) %>%
+    mutate(across(
+      c(gtrends_rsv_vaccine,
+        gtrends_naloxone,
+        `gtrends_drug+overdose`,
+        gtrends_narcan,
+        gtrends_overdose,
+        gtrends_rsv,
+        `gtrends_heat+exhaustion`,
+        `gtrends_heat+stroke`, 
+        gtrends_9mm,
+        gtrends_shotgun),
+      \(x) x / max(x, na.rm = TRUE) * 100  #scales each value to 100
+    )) %>%
     dplyr::select(-month, -season)
   
   data  %>% 
