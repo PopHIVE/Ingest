@@ -423,6 +423,7 @@ heat_by_source_year %>%
   facet_wrap(~source, scales='free_y', ncol=1)
 
 heat_by_source_year %>%
+  mutate( value = if_else(source=='Epic Cosmos' & geography == 'Alaska',NA_real_, value)) %>%
   write_parquet(.,
                 './dist/heat_by_geography_and_source_state_year.parquet')
 
