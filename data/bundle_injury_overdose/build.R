@@ -1,3 +1,6 @@
+###NOTE 12/4: the annual files should be updated for gtrends and Epic...rather than using a mean of the weekly/monthly data, instead use a direct pull of yearly data
+
+
 #Medicare FFS uses the CCW algorithms https://www2.ccwdata.org/documents/10280/19139421/chr-chronic-condition-algorithms.pdfcms
 library(tidyverse)
 library(arrow)
@@ -8,6 +11,8 @@ state_fips <- all_fips %>%
   filter(geography_name %in% c('District of Columbia',state.name) & geography != '11001') %>%
   pull(geography)
 
+state_cw <- all_fips %>%
+  filter(geography %in% c(state_fips, '00' ))
 
 pop_region <- vroom::vroom('../../resources/census_population_2021.csv.xz') %>%
   dplyr::select(GEOID, Total) %>%
@@ -337,8 +342,6 @@ epic_firearms <- epic %>%
   rename(value =epic_pct_ed_firearm)%>%
   filter(!is.na(time))
 
-state_cw <- all_fips %>%
-  filter(geography %in% c(state_fips, '00' ))
 
 firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firarm) %>% 
   ungroup() %>%
@@ -364,14 +367,15 @@ firearms_by_source_year <- firearms_by_source %>%
   mutate(year= lubridate::year(time)) %>%
   group_by(age, geography, source, year) %>%
   summarize(value = mean(value) ) %>%
-  filter(year>=2015) %>%
+  #filter(year>=2015) %>%
   mutate(value_scale = value/max(value, na.rm=T)) 
 
 firearms_by_source_year %>%
   filter(age=='Total' & geography=='United States') %>%
   ggplot() +
-  geom_line(aes(x=year, y=value_scale, group=source, color=source)) +
-  theme_classic()
+  geom_line(aes(x=year, y=value, group=source, color=source)) +
+  theme_classic() +
+  facet_wrap(~source, scales='free_y', ncol=1)
 
 firearms_by_source_year %>%
   write_parquet(.,
@@ -397,9 +401,28 @@ google_heat <- google %>%
 
 epic_heat <- epic %>%
   rename(value = epic_pct_ed_heat) %>%
-  dplyr::select(time, geography, age, value, suppressed_opioid) %>%
-  mutate(source = 'Epic Cosmos')
-
+  mutate(source = 'Epic Cosmos')%>%
+  rename(fips= geography) %>%
+  left_join(state_cw, by=c('fips'='geography')) %>%
+  dplyr::select(source,time, geography_name, age, value, suppressed_heat) %>%
+  rename(geography = geography_name)
+  
 heat_by_source <- bind_rows(google_heat,epic_heat)
 
 write_parquet(heat_by_source,'./dist/heat_related_geography_source.parquet')
+
+heat_by_source_year <- heat_by_source %>%
+  mutate(year= lubridate::year(time)) %>%
+  group_by(year, source, geography, age) %>%
+  summarize(value = mean(value, na.rm=T))
+
+heat_by_source_year %>%
+  filter(age=='Total' & geography=='United States') %>%
+  ggplot() +
+  geom_line(aes(x=year, y=value, group=source, color=source)) +
+  theme_classic() +
+  facet_wrap(~source, scales='free_y', ncol=1)
+
+heat_by_source_year %>%
+  write_parquet(.,
+                './dist/heat_by_geography_and_source_state_year.parquet')
