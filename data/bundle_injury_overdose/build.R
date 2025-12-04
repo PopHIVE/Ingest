@@ -162,7 +162,14 @@ nchs <- bind_rows(nchs_od_state, nchs_od_county)
 epic <- vroom::vroom('../../data/epic/standard/monthly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
                          if_else(age ==  "25-45 Years", '25-44 Years', age
-          )))
+          )),
+          
+          #Set alaska to NA
+          epic_pct_ed_firearm = if_else(geography=='02',NA_real_,epic_pct_ed_firearm),
+          epic_pct_ed_opioid = if_else(geography=='02',NA_real_,epic_pct_ed_opioid),
+          epic_pct_ed_heat = if_else(geography=='02',NA_real_,epic_pct_ed_heat),
+          
+          )
 
 
 
@@ -261,13 +268,10 @@ od_state_year <- od_state %>%
   group_by(geography, age, source) %>%
   mutate(value_year_scale = value_year / max(value_year, na.rm=T))
 
-od_state_year %>%
-  filter(geography=='United States' & age=='Total') %>%
-ggplot() +
-  geom_line(aes(x=year, y=value, group=source, color=source))+
-  theme_classic()
 
 od_state_year %>%
+  rename(value=value_year) %>%
+  dplyr::select(-value_year_scale) %>%
   write_parquet(.,
                 './dist/overdose_by_geography_and_source_state_year.parquet')
 
@@ -387,6 +391,7 @@ firearms_by_source_year %>%
   ylim(0,NA)
 
 firearms_by_source_year %>%
+  dplyr::select(-value_scale) %>%
   write_parquet(.,
                 './dist/firearms_by_geography_and_source_state_year.parquet')
 
