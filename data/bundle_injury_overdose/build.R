@@ -264,12 +264,20 @@ od_state_year <- od_state %>%
 od_state_year %>%
   filter(geography=='United States' & age=='Total') %>%
 ggplot() +
-  geom_line(aes(x=year, y=value_year_scale, group=source, color=source))+
+  geom_line(aes(x=year, y=value, group=source, color=source))+
   theme_classic()
 
 od_state_year %>%
   write_parquet(.,
                 './dist/overdose_by_geography_and_source_state_year.parquet')
+
+od_state_year %>%
+filter(age=='Total' & geography=='United States') %>%
+  ggplot() +
+  geom_line(aes(x=year, y=value_year, group=source, color=source)) +
+  theme_classic() +
+  ylim(0,NA) +
+  facet_wrap(~source, scales='free_y', ncol=1)
 
 ## Map of OD by month; county,--just take every 12th observation,
 ##NCHS deathsm CMS opioid use disorder
@@ -375,7 +383,8 @@ firearms_by_source_year %>%
   ggplot() +
   geom_line(aes(x=year, y=value, group=source, color=source)) +
   theme_classic() +
-  facet_wrap(~source, scales='free_y', ncol=1)
+  facet_wrap(~source, scales='free_y', ncol=1)+
+  ylim(0,NA)
 
 firearms_by_source_year %>%
   write_parquet(.,
@@ -421,6 +430,7 @@ heat_by_source_year %>%
   ggplot() +
   geom_line(aes(x=year, y=value, group=source, color=source)) +
   theme_classic() +
+  ylim(0,NA)+
   facet_wrap(~source, scales='free_y', ncol=1)
 
 heat_by_source_year %>%
