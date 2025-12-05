@@ -36,6 +36,7 @@ dcf_build()
 #dcf::dcf_add_source("wisqars")
 #dcf::dcf_add_source("atlas_amr")
 
+#dcf::dcf_add_source("nnds")
 
 #dcf_add_source("schoolvaxview")
 
