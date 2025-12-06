@@ -17,43 +17,43 @@ raw_state <- as.list(tools::md5sum(list.files(
 if (!identical(process$raw_state, raw_state)) {
   
   data1 <- arrow::open_dataset('./raw/combined.parquet') %>%
-    filter( racecat=='.' & sexcat=='.') %>%
-    dplyr::select(fips,year, condition_name, prevalence_rate, age_label,geography) %>%
+    dplyr::select(fips,year, condition_name, prevalence_rate, age_label,geography, racecat, sexcat) %>%
     collect() %>%
     rename(geography_level = geography) %>%
-    pivot_wider(., id_cols=c(fips, year, age_label,geography_level), names_from=condition_name, values_from = prevalence_rate) %>%
+    pivot_wider(., id_cols=c(fips, year, age_label,geography_level, racecat, sexcat), names_from=condition_name, values_from = prevalence_rate) %>%
     mutate(time = paste0('20',year,'-01-01'),
            fips = if_else(geography_level=='n', '00',fips)
            )%>%
     rename(geography = fips,
-           age=age_label) %>%
+           age=age_label,
+           race_ethnicity = racecat,
+           sex = sexcat) %>%
     dplyr::select(-year) %>%
-    relocate(geography, geography_level, time,age) %>%
+    relocate(geography, geography_level, time,age, race_ethnicity, sex) %>%
     rename_with(
       ~ paste0("cms_", .x),
-      .cols = -c(geography, geography_level, time, age)
+      .cols = -c(geography, geography_level, time, age, race_ethnicity, sex)
     )
   
   data2 <- arrow::open_dataset('./raw/screening_combined.parquet') %>%
-    filter( racecat=='.' & sexcat=='.') %>%
-    dplyr::select(fips,year, condition_name, care_rate, age_label,geography) %>%
+    dplyr::select(fips,year, condition_name, care_rate, age_label,geography, race_ethnicity, sex) %>%
     collect() %>%
     rename(geography_level = geography) %>%
-    pivot_wider(., id_cols=c(fips, year, age_label,geography_level), names_from=condition_name, values_from = care_rate) %>%
+    pivot_wider(., id_cols=c(fips, year, age_label,geography_level, race_ethnicity, sex), names_from=condition_name, values_from = care_rate) %>%
     mutate(time = paste0('20',year,'-01-01'),
            fips = if_else(geography_level=='n', '00',fips)
     )%>%
     rename(geography = fips,
            age=age_label) %>%
     dplyr::select(-year) %>%
-    relocate(geography, geography_level, time,age) %>%
+    relocate(geography, geography_level, time,age, race_ethnicity, sex) %>%
     rename_with(
       ~ paste0("cms_scrn_prvnt_", .x),
-      .cols = -c(geography, geography_level, time, age)
+      .cols = -c(geography, geography_level, time, age, race_ethnicity, sex)
     )
   
   data <- data1 %>%
-    full_join(data2, by=c('geography', 'geography_level', 'time','age')) %>%
+    full_join(data2, by=c('geography', 'geography_level', 'time','age', 'race_ethnicity', 'sex')) %>%
     mutate( age = gsub('_plus','+', age),
             age = gsub('All_Ages','Total', age),
             age = gsub('_to_','-', age),
