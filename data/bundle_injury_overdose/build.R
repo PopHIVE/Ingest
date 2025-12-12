@@ -221,7 +221,8 @@ combine_long <- function() {
     filter(geography_name %in% c('United States', 'District of Columbia', state.name)) %>%
     rename(geography = geography_name) %>%
     filter(!is.na(value)) %>%
-    dplyr::select(geography, date, age, source, value, value_scale, suppressed, suppressed_opioid) %>%
+    mutate(suppressed = if_else(is.na(suppressed),suppressed_opioid, suppressed)) %>%
+    dplyr::select(geography, date,age,source, value, value_scale,suppressed ) %>%
     write_parquet(., './dist/overdose_by_geography_and_source.parquet')
   
   drugs_month_source %>%

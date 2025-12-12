@@ -4,8 +4,8 @@
   "scripts": [
     {
       "path": "build.R",
-      "last_run": "2025-12-04 08:40:32",
-      "run_time": 4.895,
+      "last_run": "2025-12-11 08:44:39",
+      "run_time": 4.655,
       "last_status": {
         "log": [
           "Rows: 3314 Columns: 3",
@@ -31,13 +31,14 @@
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rℹ Use `spec()` to retrieve the full column specification for this data.",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r",
-          "Rows: 32344 Columns: 13",
+          "Rows: 624 Columns: 13",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r── Column specification ────────────────────────────────────────────────────────",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rDelimiter: \",\"",
-          "chr   (1): geography",
-          "dbl  (11): gtrends_rsv_vaccine, gtrends_9mm, gtrends_naloxone, gtrends_drug+...",
-          "date  (1): time",
+          "chr  (1): geography",
+          "dbl  (8): gtrends_9mm, gtrends_naloxone, gtrends_drug+overdose, gtrends_heat...",
+          "lgl  (3): gtrends_rsv_vaccine, gtrends_rsv, gtrends_rsv_adjusted",
+          "date (1): time",
           "",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r",
           "",
@@ -96,7 +97,7 @@
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rℹ Use `spec()` to retrieve the full column specification for this data.",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r",
-          "Rows: 31020 Columns: 12",
+          "Rows: 29016 Columns: 12",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r── Column specification ────────────────────────────────────────────────────────",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rDelimiter: \",\"",
@@ -115,7 +116,21 @@
           "The following object is masked from ‘package:cdlTools’:",
           "",
           "    fips",
-          ""
+          "",
+          "Rows: 21497 Columns: 12",
+          "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r",
+          "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r── Column specification ────────────────────────────────────────────────────────",
+          "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rDelimiter: \",\"",
+          "chr  (1): geography",
+          "dbl  (8): gtrends_drug+overdose, gtrends_naloxone, gtrends_narcan, gtrends_o...",
+          "lgl  (2): gtrends_rsv_vaccine, gtrends_rsv",
+          "date (1): time",
+          "",
+          "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r",
+          "",
+          "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rℹ Use `spec()` to retrieve the full column specification for this data.",
+          "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.",
+          "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r"
         ],
         "success": true
       }
@@ -129,7 +144,7 @@
     "nchs_mortality/standard/data_county.csv.gz",
     "wisqars/standard/data.csv.gz"
   ],
-  "checked": "2025-12-04 08:41:19",
+  "checked": "2025-12-12 12:36:26",
   "check_results": {
     "./data/bundle_injury_overdose/dist/brfss_prevalence_by_geography.parquet": {
       "data": "time_missing",
@@ -147,21 +162,35 @@
       "data": "time_missing",
       "measures": ["missing_info: fips", "missing_info: age", "missing_info: year", "missing_info: outcome_name", "missing_info: source", "missing_info: value", "missing_info: pct_captured", "missing_info: sample_size"]
     },
+    "./data/bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet": {
+      "data": "time_missing",
+      "measures": ["missing_info: age", "missing_info: source", "missing_info: year", "missing_info: value"]
+    },
     "./data/bundle_injury_overdose/dist/firearms_geography_source.parquet": {
-      "data": "geography_nas",
       "measures": ["missing_info: source", "missing_info: value", "missing_info: age", "missing_info: epic_n_ed_firearm", "missing_info: state"]
     },
+    "./data/bundle_injury_overdose/dist/google_dma.parquet": {
+      "data": ["geography_missing", "time_missing"],
+      "measures": ["missing_info: fips", "missing_info: date", "missing_info: gtrends_narcan", "missing_info: gtrends_9mm", "missing_info: gtrends_shotgun", "missing_info: gtrends_heat_exhaustion"]
+    },
+    "./data/bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet": {
+      "data": "time_missing",
+      "measures": ["missing_info: year", "missing_info: source", "missing_info: age", "missing_info: value"]
+    },
     "./data/bundle_injury_overdose/dist/heat_related_geography_source.parquet": {
-      "data": ["geography_nas", "time_nas"],
-      "measures": ["missing_info: source", "missing_info: value", "missing_info: age", "missing_info: suppressed_opioid"]
+      "measures": ["missing_info: source", "missing_info: value", "missing_info: age", "missing_info: suppressed_heat"]
     },
     "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet": {
       "data": ["geography_nas", "time_missing"],
       "measures": ["missing_info: date", "missing_info: source", "missing_info: value"]
     },
+    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source_state_year.parquet": {
+      "data": "time_missing",
+      "measures": ["missing_info: age", "missing_info: year", "missing_info: source", "missing_info: value"]
+    },
     "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet": {
       "data": "time_missing",
-      "measures": ["missing_info: date", "missing_info: age", "missing_info: source", "missing_info: value", "missing_info: value_scale", "missing_info: suppressed", "missing_info: suppressed_opioid"]
+      "measures": ["missing_info: date", "missing_info: age", "missing_info: source", "missing_info: value", "missing_info: value_scale", "missing_info: suppressed"]
     },
     "./data/bundle_injury_overdose/dist/overdose_deaths_county.parquet": {
       "measures": ["missing_info: n_deaths_overdose", "missing_info: rate_deaths_overdose", "missing_info: suppressed"]
@@ -180,10 +209,14 @@
     "./data/bundle_injury_overdose/dist/county_opioid_by_source.parquet": "dc96a27914966dc235fcc53b8e1783f4",
     "./data/bundle_injury_overdose/dist/deaths_cause_age.parquet": "328722fa8092feb311029bac7e08bcdc",
     "./data/bundle_injury_overdose/dist/epic_prevalence_by_geography_year.parquet": "50273d881ec4e84be00167180c0c63c1",
-    "./data/bundle_injury_overdose/dist/firearms_geography_source.parquet": "7fa2315ae29702b750d341a1c5df6e64",
-    "./data/bundle_injury_overdose/dist/heat_related_geography_source.parquet": "4132836491ff40d1326fa3f43aea8ec3",
-    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet": "e566734f7a38195ca2845756b944f5f7",
-    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet": "007bba001a81d6ef81530c157a5d341c",
+    "./data/bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet": "41e72afa110543b7c67fb40c43821192",
+    "./data/bundle_injury_overdose/dist/firearms_geography_source.parquet": "b6db7c64ca9d2b618577ee18c7561571",
+    "./data/bundle_injury_overdose/dist/google_dma.parquet": "f1b25b5641d549a898508593c616ba55",
+    "./data/bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet": "7859397791219d90c1116acd3bef9d4b",
+    "./data/bundle_injury_overdose/dist/heat_related_geography_source.parquet": "d70b4d41abb0f3f7a6c824f5d66b7be7",
+    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet": "c3a798e94579d314e51aaa1b01c06d68",
+    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source_state_year.parquet": "6cf9f025ee1a16bc3340024c5deb5a94",
+    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet": "5032e6377316c9822a374db7917915f2",
     "./data/bundle_injury_overdose/dist/overdose_deaths_county.parquet": "afee3c1691e7318d6cc0115e7805af6b",
     "./data/bundle_injury_overdose/dist/overdose_deaths_state.parquet": "74c9c708ff4fd282229de278e6795784",
     "./data/bundle_injury_overdose/dist/state_opioid_by_source.parquet": "dd5256e6c89d9228c6ea782433460157"
