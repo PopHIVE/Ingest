@@ -267,7 +267,8 @@ if (!identical(process$raw_state, raw_state)) {
     rename(agegrp= agegp) %>%
     mutate(
       
-      
+      sex = as.character(sex),
+
       CrudeRate = gsub("**","",CrudeRate, fixed=T),
       deaths = gsub("**","",deaths, fixed=T),
       CrudeRate = as.numeric(CrudeRate),
