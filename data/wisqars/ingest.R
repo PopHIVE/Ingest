@@ -150,14 +150,14 @@ wisqars_downloader <- function(max_year=2023) {
     )
   })
   
-  # violence, stratified by state, age, and ethnicity (2018-2023 only) 
+  # violence, stratified by state, age, and ethnicity (2001-2023 only) 
   lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_ethnicity.csv.xz")
+    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_ethnicity.csv.xz")
     dcf::dcf_download_wisqars(
       raw_file,
       intent = "violence",
-      group_by = c("MECH", "STATE", "YEAR", "ETHNICITY"),  
-      year_start = 2018,
+      group_by = c("MECH", "STATE", "YEAR", "ETHNICTY"),  
+      year_start = 2001,
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
@@ -166,14 +166,14 @@ wisqars_downloader <- function(max_year=2023) {
     )
   })
   
-  # accident, stratified by state, age, and ethnicity (2018-2023 only) 
+  # accident, stratified by state, age, and ethnicity (2001-2023 only) 
   lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_ethnicity.csv.xz")
+    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_ethnicity.csv.xz")
     dcf::dcf_download_wisqars(
       raw_file,
       intent = "unintentional",
-      group_by = c("MECH", "STATE", "YEAR", "ETHNICITY"),  
-      year_start = 2018,
+      group_by = c("MECH", "STATE", "YEAR", "ETHNICTY"),  
+      year_start = 2001,
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
@@ -263,12 +263,18 @@ if (!identical(process$raw_state, raw_state)) {
       names = c("type", "level", "age1", "age2", "age3", "demographic"),
       too_few = "align_start"
     ) %>%
+    {
+      # temporary fix to missing ethnicity column
+      if (!"sex" %in% names(.)) .$sex <- NA
+      if (!"race" %in% names(.)) .$race <- NA  
+      if (!"ethnicity" %in% names(.)) .$ethnicity <- NA
+      .
+    } %>%
     # combine age columns into one (if present)
     rename(agegrp= agegp) %>%
     mutate(
       
-      sex = as.character(sex),
-
+      
       CrudeRate = gsub("**","",CrudeRate, fixed=T),
       deaths = gsub("**","",deaths, fixed=T),
       CrudeRate = as.numeric(CrudeRate),
@@ -280,15 +286,15 @@ if (!identical(process$raw_state, raw_state)) {
       agegrp = paste0(agegrp, ' Years'),
       agegrp = gsub("Total Years","Total", agegrp),
       sex = case_when(
-        demographic == "sex" ~ coalesce(sex, "All"),
+        demographic == "sex" ~ coalesce(as.character(sex), "All"),
         TRUE ~ "All"
       ),
       race = case_when(
-        demographic == "race" ~ coalesce(race, "All"),
+        demographic == "race" ~ coalesce(as.character(race), "All"),
         TRUE ~ "All"
       ),
       ethnicity = case_when(
-        demographic == "ethnicity" ~ coalesce(ethnicity, "All"),
+        demographic == "ethnicity" ~ coalesce(as.character(ethnicity), "All"),
         TRUE ~ "All"
       ),
       
