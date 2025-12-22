@@ -68,6 +68,8 @@ wisqars_long <- wisqars_aggregated %>%
                                #'firearm_accident',
                               # 'firearm_intentional',
                               # 'drug_poisoning',
+                              'pedal_cyclist_mv_traffic',
+                              "pedestrian_mv_traffic",
                                'non_drug_poisoning'
                                )) %>%
   mutate(cause_of_death = gsub('natural_environmental', 'Natural/environmental', cause_of_death), 
@@ -76,7 +78,10 @@ wisqars_long <- wisqars_aggregated %>%
           cause_of_death = gsub('fire_flame' , 'Exposure to smoke, fire, flame' , cause_of_death),
           cause_of_death = gsub('motor_vehicle_traffic' , 'Motor vehicle, traffic', cause_of_death),
           cause_of_death = gsub( 'non_drug_poisoning', 'Non-drug poisoning' , cause_of_death),
-    cause_of_death = gsub( 'suffocation', 'Suffocation' , cause_of_death)
+    cause_of_death = gsub( 'suffocation', 'Suffocation' , cause_of_death),
+    cause_of_death = gsub( 'pedal_cyclist_mv_traffic', 'Pedal cyclist (motor vehicle)' , cause_of_death),
+    cause_of_death = gsub( 'pedestrian_mv_traffic', 'Pedestrian (motor vehicle traffic)' , cause_of_death)
+    
         #  cause_of_death = gsub('firearm_accident' , , cause_of_death),
          # cause_of_death = gsub('firearm_intentional' , , cause_of_death)
           #cause_of_death = gsub( , , cause_of_death),

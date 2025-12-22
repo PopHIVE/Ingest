@@ -48,7 +48,45 @@ wisqars_downloader <- function(max_year=2023) {
     )
     
   })
+  
+  #cycling accident with MV, stratified by age and state
+  lapply(agegrps, function(X) {
+    raw_file <-
+      paste0("raw/cycle_accident_state_age_", X[1], "_", X[2], ".csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      mechanism = 20980,
+      intent = "unintentional",
+      group_by = c("MECH", "STATE", "YEAR"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      group_ages=F,
+      race_reporting = 'none' #this allows going back before 2018
+    )
+    
+  })
 
+  #pedestrian accident with MV, stratified by age and state
+  lapply(agegrps, function(X) {
+    raw_file <-
+      paste0("raw/ped_accident_state_age_", X[1], "_", X[2], ".csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      mechanism = 21010,
+      intent = "unintentional",
+      group_by = c("MECH", "STATE", "YEAR"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      group_ages=F,
+      race_reporting = 'none' #this allows going back before 2018
+    )
+    
+  })
+  
   
   
   #violence, stratified by age
@@ -243,6 +281,8 @@ if (!identical(process$raw_state, raw_state)) {
   files <- list.files("raw", pattern = "\\.csv\\.xz$", full.names = TRUE)
   
   # read and combine, adding source info
+  #test <- vroom::vroom('./raw/cycle_accident_state_age_65_199.csv.xz')
+  
   data <- files %>%
     set_names() %>%
     map_dfr(~ vroom::vroom(.x, show_col_types = FALSE) %>%
@@ -312,9 +352,9 @@ if (!identical(process$raw_state, raw_state)) {
            rate = CrudeRate,
            age= agegrp
            ) %>%
-    filter(grepl('firearm',Mechlbl) | type=='accident') %>%
+    filter(grepl('firearm',Mechlbl) | type=='accident'|type=='cycle'|type=='ped') %>%
     dplyr::group_by(type,Mechlbl) |>
-    dplyr::filter(sum(!is.na(rate)) > 100, age != "Unknown") |>
+    dplyr::filter(sum(!is.na(rate)) > 100, age != "Unknown", Mechlbl!='.', Mechlbl!='_') |>
     ungroup()|>
     tidyr::pivot_wider(
       id_cols = c("geography", "time", "age",  "sex", "race", "ethnicity"),
