@@ -57,6 +57,30 @@ wisqars_long <- wisqars_aggregated %>%
   dplyr::select(-geography, state) %>%
   rename(geography = geography_name,
          cause_of_death = name) %>%
+  filter(cause_of_death %in% c('natural_environmental',
+                              'drowning_includes_water_transport_',
+                               'fall',
+                               'fire_flame',
+                              'suffocation',
+                               'motor_vehicle_traffic',
+                               #'pedal_cyclist_other',
+                               #'pedestrian_other',
+                               #'firearm_accident',
+                              # 'firearm_intentional',
+                              # 'drug_poisoning',
+                               'non_drug_poisoning'
+                               )) %>%
+  mutate(cause_of_death = gsub('natural_environmental', 'Natural/environmental', cause_of_death), 
+    cause_of_death = gsub('drowning_includes_water_transport_', 'Drowning, including water transport', cause_of_death),
+          cause_of_death = gsub( 'fall', 'Fall', cause_of_death),
+          cause_of_death = gsub('fire_flame' , 'Exposure to smoke, fire, flame' , cause_of_death),
+          cause_of_death = gsub('motor_vehicle_traffic' , 'Motor vehicle, traffic', cause_of_death),
+          cause_of_death = gsub( 'non_drug_poisoning', 'Non-drug poisoning' , cause_of_death),
+    cause_of_death = gsub( 'suffocation', 'Suffocation' , cause_of_death)
+        #  cause_of_death = gsub('firearm_accident' , , cause_of_death),
+         # cause_of_death = gsub('firearm_intentional' , , cause_of_death)
+          #cause_of_death = gsub( , , cause_of_death),
+          ) %>%
   dplyr::select(year, age, geography, cause_of_death, value, N)
 
 write_parquet(wisqars_long,'./dist/deaths_cause_age.parquet')
