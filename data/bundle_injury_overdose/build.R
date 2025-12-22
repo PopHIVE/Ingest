@@ -63,8 +63,6 @@ wisqars_long <- wisqars_aggregated %>%
                                'fire_flame',
                               'suffocation',
                                'motor_vehicle_traffic',
-                               #'pedal_cyclist_other',
-                               #'pedestrian_other',
                                #'firearm_accident',
                               # 'firearm_intentional',
                               # 'drug_poisoning',

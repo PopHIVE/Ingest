@@ -49,7 +49,9 @@ wisqars_downloader <- function(max_year=2023) {
     
   })
   
+  ############################################################
   #cycling accident with MV, stratified by age and state
+  
   lapply(agegrps, function(X) {
     raw_file <-
       paste0("raw/cycle_accident_state_age_", X[1], "_", X[2], ".csv.xz")
@@ -67,7 +69,51 @@ wisqars_downloader <- function(max_year=2023) {
     )
     
   })
+  lapply(agegrps, function(X) {
+    raw_file <-
+      paste0("raw/cycle_accident_age_", X[1], "_", X[2], ".csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      mechanism = 20980,
+      intent = "unintentional",
+      group_by = c("MECH", "YEAR"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      group_ages=F,
+      race_reporting = 'none' #this allows going back before 2018
+    )
+    
+  })
 
+  raw_file <-
+    paste0("raw/cycle_accident", ".csv.xz")
+  dcf::dcf_download_wisqars(
+    raw_file,
+    mechanism = 20980,
+    intent = "unintentional",
+    group_by = c("MECH", "YEAR"),
+    year_start = 2001,
+    year_end = max_year,
+    group_ages=F,
+    race_reporting = 'none' #this allows going back before 2018
+  )
+  
+  raw_file <-
+    paste0("raw/cycle_accident_state", ".csv.xz")
+  dcf::dcf_download_wisqars(
+    raw_file,
+    mechanism = 20980,
+    intent = "unintentional",
+    group_by = c("MECH", "STATE","YEAR"),
+    year_start = 2001,
+    year_end = max_year,
+    group_ages=F,
+    race_reporting = 'none' #this allows going back before 2018
+  )
+  
+  ###########################################################
   #pedestrian accident with MV, stratified by age and state
   lapply(agegrps, function(X) {
     raw_file <-
@@ -87,8 +133,51 @@ wisqars_downloader <- function(max_year=2023) {
     
   })
   
+  lapply(agegrps, function(X) {
+    raw_file <-
+      paste0("raw/ped_accident_age_", X[1], "_", X[2], ".csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      mechanism = 21010,
+      intent = "unintentional",
+      group_by = c("MECH",  "YEAR"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      group_ages=F,
+      race_reporting = 'none' #this allows going back before 2018
+    )
+    
+  })
   
   
+  raw_file <-
+    paste0("raw/ped_accident", ".csv.xz")
+  dcf::dcf_download_wisqars(
+    raw_file,
+    mechanism = 21010,
+    intent = "unintentional",
+    group_by = c("MECH", "YEAR"),
+    year_start = 2001,
+    year_end = max_year,
+    group_ages=F,
+    race_reporting = 'none' #this allows going back before 2018
+  )
+  
+  raw_file <-
+    paste0("raw/ped_accident_state", ".csv.xz")
+  dcf::dcf_download_wisqars(
+    raw_file,
+    mechanism = 21010,
+    intent = "unintentional",
+    group_by = c("MECH", "STATE","YEAR"),
+    year_start = 2001,
+    year_end = max_year,
+    group_ages=F,
+    race_reporting = 'none' #this allows going back before 2018
+  )
+  #####################################
   #violence, stratified by age
   lapply(agegrps, function(X) {
     raw_file <- paste0("raw/violence_age_", X[1], "_", X[2], ".csv.xz")
@@ -281,22 +370,25 @@ if (!identical(process$raw_state, raw_state)) {
   files <- list.files("raw", pattern = "\\.csv\\.xz$", full.names = TRUE)
   
   # read and combine, adding source info
-  #test <- vroom::vroom('./raw/cycle_accident_state_age_65_199.csv.xz')
+  #test <- vroom::vroom('./raw/ped_accident_state.csv.xz')
   
   data <- files %>%
     set_names() %>%
     map_dfr(~ vroom::vroom(.x, show_col_types = FALSE) %>%
-              mutate(source = basename(.x),
+              dplyr::select(-any_of(c("ageadj", "ageadjypll"))) %>%
+         mutate(source = basename(.x),
                      deaths = as.character(deaths),
                      ypll = as.character(ypll),
                      CrudeRate = as.character(CrudeRate),
                      CrudeRateypll = as.character(CrudeRateypll)
-                     
+                    # ageadj = as.character(ageadj),
+                    # ageadjypll = as.character(ageadjypll),
                      
             )
             )%>%
       
-    mutate(source = str_remove(source, "\\.csv\\.xz$")) %>%
+    mutate(source = str_remove(source, "\\.csv\\.xz$"),
+           agegp = if_else(agegp=='<1-Unknown', NA_character_, agegp) ) %>%
     separate_wider_delim(
       source,
       delim = "_",
