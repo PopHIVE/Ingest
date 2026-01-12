@@ -63,9 +63,28 @@ if (!identical(process$raw_state, raw_state)) {
     group_by(geography, age, time) %>%
     mutate(pct_IPD = 100* N_IPD / sum(N_IPD)) %>%
     dplyr::select( geography, age, serotype,  time, N_IPD,pct_IPD) %>%
-    ungroup()
-    
-   data_total <- data_age %>%
+    ungroup() %>%
+     filter(geography != '00')
+   
+   # data_age %>%
+   #   group_by(time, geography) %>%
+   #   summarize(N_IPD=sum(N_IPD))
+   # 
+   ##Note re-calculate 'All-sites' to just be the 8 sites that consistently report from 1998 onwards
+   data_age_nat <- data_age %>%
+     filter(geography %in% c('06','09','13','24','27','36','41','47') ) %>%
+     group_by(age, serotype, time) %>%
+     summarize(N_IPD = sum(N_IPD, na.rm=T)) %>%
+     ungroup() %>%
+     group_by(age, time) %>%
+     mutate(pct_IPD = 100* N_IPD / sum(N_IPD),
+            geography = '00') %>%
+     dplyr::select( geography, age, serotype,  time, N_IPD,pct_IPD)
+     
+   data_age2 <- bind_rows(data_age,data_age_nat) 
+   
+   
+   data_total <- data_age2 %>%
      group_by(geography, time,serotype) %>%
      summarize(N_IPD = sum(N_IPD)) %>%
      ungroup() %>%
