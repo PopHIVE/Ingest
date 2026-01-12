@@ -94,7 +94,7 @@ if (!identical(process$raw_state, raw_state)) {
      ungroup()
    
   
-   data2 <- bind_rows(data_age, data_total) 
+   data2 <- bind_rows(data_age2, data_total) 
    
   vroom::vroom_write(
     data2,
