@@ -67,8 +67,6 @@ if (!identical(process$raw_state, raw_state)) {
     )
     
     
-  #vroom::vroom_write(data, "standard/data_state_county_age.csv.gz", ",")
-
   #aggregated total
   data_total <- data %>%
     filter(race_ethnicity == 'Total', sex == 'Total')
