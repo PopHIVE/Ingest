@@ -67,28 +67,25 @@ if (!identical(process$raw_state, raw_state)) {
     )
     
     
-  vroom::vroom_write(data, "standard/data_state_county_age.csv.gz", ",")
+  #vroom::vroom_write(data, "standard/data_state_county_age.csv.gz", ",")
 
-  if (!dir.exists("dist")) dir.create("dist")
-  
-  #creating dist files
   #aggregated total
   data_total <- data %>%
     filter(race_ethnicity == 'Total', sex == 'Total')
   
-  vroom::vroom_write(data_total, "dist/data_state_county_age.csv.gz", ",")
+  vroom::vroom_write(data_total, "standard/data_state_county_age.csv.gz", ",")
  
   #stratified by race/ethnicity 
   data_by_race <- data %>%
     filter(sex == 'Total')
   
-  vroom::vroom_write(data_by_race, "dist/data_state_county_age_by_race.csv.gz", ",")
+  vroom::vroom_write(data_by_race, "standard/data_state_county_age_by_race.csv.gz", ",")
   
   #stratified by sex
   data_by_sex <- data %>%
     filter(race_ethnicity == 'Total')
   
-  vroom::vroom_write(data_by_sex, "dist/data_state_county_age_by_sex.csv.gz", ",")
+  vroom::vroom_write(data_by_sex, "standard/data_state_county_age_by_sex.csv.gz", ",")
   
   #record processed raw state
   process$raw_state <- raw_state
