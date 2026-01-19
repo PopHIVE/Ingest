@@ -396,9 +396,11 @@ if (!identical(process$raw_state, raw_state)) {
       too_few = "align_start"
     ) %>%
     {
-      # temporary fix to missing ethnicity column
+      # temporary fix to missing columns
       if (!"sex" %in% names(.)) .$sex <- NA
       if (!"race" %in% names(.)) .$race <- NA  
+      # WISQARS uses "ethnicty" (typo) as column name
+      if ("ethnicty" %in% names(.)) . <- rename(., ethnicity = ethnicty)
       if (!"ethnicity" %in% names(.)) .$ethnicity <- NA
       .
     } %>%
@@ -418,18 +420,34 @@ if (!identical(process$raw_state, raw_state)) {
       agegrp = paste0(agegrp, ' Years'),
       agegrp = gsub("Total Years","Total", agegrp),
       sex = case_when(
-        demographic == "sex" ~ coalesce(as.character(sex), "All"),
+        demographic == "sex" ~ case_when(
+          sex == 1 ~ "Male",
+          sex == 2 ~ "Female",
+          TRUE ~ "All"
+        ),
         TRUE ~ "All"
       ),
       race = case_when(
-        demographic == "race" ~ coalesce(as.character(race), "All"),
+        demographic == "race" ~ case_when(
+          race == "01" | race == 1 ~ "White",
+          race == "02" | race == 2 ~ "Black",
+          race == "03" | race == 3 ~ "American Indian/Alaska Native",
+          race == "04" | race == 4 ~ "Asian",
+          race == "05" | race == 5 ~ "Native Hawaiian/Pacific Islander",
+          race == "06" | race == 6 ~ "More than one race",
+          TRUE ~ "All"
+        ),
         TRUE ~ "All"
       ),
       ethnicity = case_when(
-        demographic == "ethnicity" ~ coalesce(as.character(ethnicity), "All"),
+        demographic == "ethnicity" ~ case_when(
+          ethnicity == 1 ~ "Hispanic",
+          ethnicity == 2 ~ "Non-Hispanic",
+          ethnicity == 3 ~ "Unknown",
+          TRUE ~ "All"
+        ),
         TRUE ~ "All"
       ),
-      
       
       Mechlbl = str_to_lower(
         str_replace_all(Mechlbl, "[^a-zA-Z0-9]+", "_")
