@@ -125,9 +125,17 @@ if (!identical(process$raw_state, raw_state)) {
     dplyr::select(-resolution) %>%
   vroom::vroom_write(., "standard/data.csv.gz", ",")
   
+  
+  current_month <- lubridate::month(Sys.Date())
+  current_year <- lubridate::year(Sys.Date())
+  
+  #yearly data. for partial years, only keep if have accumulated through Aug
   data  %>% 
-    filter(resolution=='year') %>%
-    dplyr::select(-resolution) %>%
+    mutate(keep_year = if_else(current_month>=8,current_year, current_year-1),
+           data_year = lubridate::year(time)
+           ) %>%
+    filter(resolution=='year' & data_year<=keep_year) %>%
+    dplyr::select(-resolution, -keep_year, -data_year) %>%
     vroom::vroom_write(., "standard/data_year.csv.gz", ",")
 
   # record processed raw state

@@ -63,9 +63,9 @@ wisqars_long <- wisqars_aggregated %>%
                                'fire_flame',
                               'suffocation',
                                'motor_vehicle_traffic',
-                               #'firearm_accident',
-                              # 'firearm_intentional',
-                              # 'drug_poisoning',
+                               'firearm_accident',
+                               'firearm_intentional',
+                               'drug_poisoning',
                               'pedal_cyclist_mv_traffic',
                               "pedestrian_mv_traffic",
                                'non_drug_poisoning'
@@ -78,11 +78,10 @@ wisqars_long <- wisqars_aggregated %>%
           cause_of_death = gsub( 'non_drug_poisoning', 'Non-drug poisoning' , cause_of_death),
     cause_of_death = gsub( 'suffocation', 'Suffocation' , cause_of_death),
     cause_of_death = gsub( 'pedal_cyclist_mv_traffic', 'Pedal cyclist (motor vehicle)' , cause_of_death),
-    cause_of_death = gsub( 'pedestrian_mv_traffic', 'Pedestrian (motor vehicle traffic)' , cause_of_death)
+    cause_of_death = gsub( 'pedestrian_mv_traffic', 'Pedestrian (motor vehicle traffic)' , cause_of_death),
     
-        #  cause_of_death = gsub('firearm_accident' , , cause_of_death),
-         # cause_of_death = gsub('firearm_intentional' , , cause_of_death)
-          #cause_of_death = gsub( , , cause_of_death),
+          cause_of_death = gsub('firearm_accident' ,'Firearm (accidental)' , cause_of_death),
+          cause_of_death = gsub('firearm_intentional' ,'Firearm (intentional)' , cause_of_death)
           ) %>%
   dplyr::select(year, age, geography, cause_of_death, value, N)
 
@@ -199,9 +198,9 @@ nchs <- bind_rows(nchs_od_state, nchs_od_county)
 epic <- vroom::vroom('../../data/epic/standard/monthly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
                         if_else(age ==  "25-45 Years", '25-44 Years', age)),
-          epic_pct_ed_firearm = if_else(geography=='02',NA_real_,epic_pct_ed_firearm),
-          epic_pct_ed_opioid = if_else(geography=='02',NA_real_,epic_pct_ed_opioid),
-          epic_pct_ed_heat = if_else(geography=='02',NA_real_,epic_pct_ed_heat)
+          epic_rate_ed_firearm = if_else(geography=='02',NA_real_,epic_rate_ed_firearm),
+          epic_rate_ed_opioid = if_else(geography=='02',NA_real_,epic_rate_ed_opioid),
+          epic_rate_ed_heat = if_else(geography=='02',NA_real_,epic_rate_ed_heat)
   )
 
 ## trends in overdoses
@@ -236,7 +235,7 @@ combine_long <- function() {
     mutate(source = 'CDC/WISQARS')
   
   epic_od <- epic %>%
-    rename(value = epic_pct_ed_opioid) %>%
+    rename(value = epic_rate_ed_opioid) %>%
     dplyr::select(time, geography, age, value, suppressed_opioid) %>%
     mutate(source = 'Epic Cosmos')
   
@@ -374,9 +373,9 @@ google_firearm <- google %>%
   mutate(age= 'Total')
 
 epic_firearms <- epic %>%
-  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_pct_ed_firearm) %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
   mutate(source='Epic Cosmos') %>%
-  rename(value = epic_pct_ed_firearm) %>%
+  rename(value = epic_rate_ed_firearm) %>%
   filter(!is.na(time))
 
 firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firearm) %>% 
@@ -426,7 +425,7 @@ google_heat <- google %>%
   mutate(age = 'Total')
 
 epic_heat <- epic %>%
-  rename(value = epic_pct_ed_heat) %>%
+  rename(value = epic_rate_ed_heat) %>%
   mutate(source = 'Epic Cosmos') %>%
   rename(fips = geography) %>%
   left_join(state_cw, by=c('fips'='geography')) %>%
