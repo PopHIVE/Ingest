@@ -66,7 +66,7 @@ PopHIVE/Ingest/
 │   │   │   ├── data.csv.gz      # Main standardized file
 │   │   │   ├── data_state.csv.gz    # State-level (if separate)
 │   │   │   └── data_county.csv.gz   # County-level (if separate)
-│   │   ├── ingest.R             # Transformation script
+│   │   ├── ingest.R             # Transformation script (SINGLE FILE PER SOURCE)
 │   │   ├── measure_info.json    # Variable metadata
 │   │   └── process.json         # Processing state (auto-generated)
 │   │
@@ -124,6 +124,61 @@ dcf::dcf_build()
 
 ---
 
+## Important Convention: Single ingest.R Per Data Source
+
+**CRITICAL**: Each data source directory must contain exactly **ONE** `ingest.R` script.
+
+### Multiple Data Sources in One Directory
+
+When a single data source directory needs to process multiple related datasets (e.g., data from different URLs or APIs), **integrate all processing into the single `ingest.R` file** rather than creating separate scripts.
+
+### Example: SchoolVaxView
+
+The `schoolvaxview` directory processes data from two sources:
+1. CDC SchoolVaxView (via Socrata API)
+2. Washington Post School Vaccination Rates (via GitHub)
+
+Both are integrated into a single `ingest.R` file:
+
+```r
+# ingest.R structure for multiple sources
+process <- dcf::dcf_process_record()
+
+# Source 1: CDC SchoolVaxView
+raw_state <- dcf::dcf_download_cdc("ijqb-a7ye", "raw", process$raw_state)
+if (!identical(process$raw_state, raw_state)) {
+  # Process CDC data...
+  # Write to standard/data.csv.gz and standard/data_exemptions.csv.gz
+  process$raw_state <- raw_state
+  dcf::dcf_process_record(updated = process)
+}
+
+# Source 2: Washington Post
+download.file(wapo_url, "raw/wapo_file.csv")
+current_wapo_state <- list(hash = tools::md5sum("raw/wapo_file.csv"))
+if (!identical(process$wapo_state, current_wapo_state)) {
+  # Process WaPo data...
+  # Write to standard/data_wapo_counties.csv.gz and standard/data_wapo_schools.csv.gz
+  process$wapo_state <- current_wapo_state
+  dcf::dcf_process_record(updated = process)
+}
+```
+
+### Key Points
+
+- Use the `process` object to track multiple raw data states (e.g., `process$raw_state`, `process$wapo_state`)
+- Each source can have its own change detection logic
+- Output multiple standardized files with descriptive names (e.g., `data_wapo_counties.csv.gz`)
+- All variables from secondary sources should use prefixes to avoid naming conflicts (e.g., `wapo_`)
+
+### Why This Matters
+
+- The `dcf` package expects one `ingest.R` per source directory
+- Running `dcf::dcf_process("source_name", "..")` executes the single `ingest.R`
+- Multiple scripts would require manual orchestration outside of `dcf`
+
+---
+
 ## ingest.R Template
 
 ```r
@@ -132,7 +187,12 @@ dcf::dcf_build()
 # Source: {URL or description}
 # =============================================================================
 
-process <- dcf::dcf_process_record()
+# Initialize process record (creates process.json if it doesn't exist)
+if (!file.exists("process.json")) {
+  process <- list(raw_state = NULL)
+} else {
+  process <- dcf::dcf_process_record()
+}
 
 # -----------------------------------------------------------------------------
 # 1. Download raw data
@@ -391,9 +451,38 @@ mutate(time = ceiling_date(as.Date(time), "week", week_start = 7) - 1)
 ### Issue: Multiple records per geography/time
 ```r
 # Solution: Check for duplicates, aggregate if needed
-data %>% 
+data %>%
   group_by(geography, time, age) %>%
   summarize(value = sum(value), .groups = "drop")
+```
+
+### Issue: Error "process file process.json does not exist"
+```r
+# Problem: dcf::dcf_process_record() fails on first run of new data source
+# Solution: Check if process.json exists before calling dcf_process_record()
+if (!file.exists("process.json")) {
+  process <- list(raw_state = NULL)
+} else {
+  process <- dcf::dcf_process_record()
+}
+```
+
+### Issue: Error "raw/file.csv.gz does not exist in current working directory"
+```r
+# Problem: ingest.R uses relative paths and must be run from source directory
+# Solution: Change to source directory before running, then change back
+setwd("data/source_name")
+source("ingest.R")
+setwd("../..")
+```
+
+### Issue: Error "missing process file: ../ingest/process.json" when using dcf_process
+```r
+# Problem: Wrong directory parameter or missing project files
+# Solution: From project root, just use the source name (no directory parameter)
+dcf::dcf_process("source_name")
+
+# Also ensure project.Rproj and README.md exist in the source folder
 ```
 
 ---
@@ -404,11 +493,11 @@ data %>%
 # Check current data status
 dcf::dcf_status()
 
-# Rebuild single source
-source("data/source_name/ingest.R")
+# Rebuild single source (from project root)
+dcf::dcf_process("source_name")
 
 # Rebuild single bundle
-dcf::dcf_process("bundle_respiratory", ".")
+dcf::dcf_process("bundle_measles")
 
 # Full rebuild
 dcf::dcf_build()

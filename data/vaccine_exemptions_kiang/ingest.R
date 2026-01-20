@@ -41,8 +41,8 @@ if (!identical(process$raw_state, raw_state)) {
   data_state <- data_raw %>%
     filter(geography == "state") %>%
     mutate(
-      # Use state abbreviation to get FIPS code
-      geography = cdlTools::fips(state_abb, to = "FIPS")
+      # Use state abbreviation to get FIPS code (convert to 2-digit character string)
+      geography = stringr::str_pad(as.character(cdlTools::fips(state_abb, to = "FIPS")), width = 2, pad = "0")
     ) %>%
     # Format time - use September 1 of each year for school-entry data
     mutate(
