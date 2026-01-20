@@ -265,7 +265,7 @@ combine_long <- function() {
     rename(date = time) %>%
     dplyr::select(geography_name, date, source, value) %>%
     rename(geography = geography_name) %>%
-    filter(!is.na(value)) %>%
+    #filter(!is.na(value)) %>%
     write_parquet(.,
                   './dist/overdose_by_geography_and_source_county.parquet')
 }
