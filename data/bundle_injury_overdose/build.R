@@ -203,6 +203,14 @@ epic <- vroom::vroom('../../data/epic/standard/monthly_injury.csv.gz') %>%
           epic_rate_ed_heat = if_else(geography=='02',NA_real_,epic_rate_ed_heat)
   )
 
+epic_year <- vroom::vroom('../../data/epic/standard/yearly_injury.csv.gz') %>%
+  mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
+                        if_else(age ==  "25-45 Years", '25-44 Years', age)),
+          epic_rate_ed_firearm = if_else(geography=='02',NA_real_,epic_rate_ed_firearm),
+          epic_rate_ed_opioid = if_else(geography=='02',NA_real_,epic_rate_ed_opioid),
+          epic_rate_ed_heat = if_else(geography=='02',NA_real_,epic_rate_ed_heat)
+  )
+
 ## trends in overdoses
 combine_long <- function() {
   drugs_month_age <- wisqars_od %>%
@@ -219,22 +227,26 @@ combine_long <- function() {
            time = as.Date(paste(year,'07','01', sep='-'))
     )
   
+  #yearly search 
   google_od <- google %>%
     arrange(time) %>%
     rename(value = gtrends_narcan) %>%
     dplyr::select(geography, time, value) %>%
     mutate(source = "Google Health Trends", age = 'Total')
   
+  #yearly cms
   cms_od <- cms %>%
     rename(value = cms_opioid_use_disorder_overarching) %>%
     dplyr::select(geography, time, age, value) %>%
     mutate(source = 'Medicare FFS')
   
+  #yearly death
   wisqars_od2 <- wisqars_od %>%
     rename(value = wisqars_rate_drug_poisoning) %>%
     mutate(source = 'CDC/WISQARS')
   
-  epic_od <- epic %>%
+  #yearly epic
+  epic_od <- epic_year %>%
     rename(value = epic_rate_ed_opioid) %>%
     dplyr::select(time, geography, age, value, suppressed_opioid) %>%
     mutate(source = 'Epic Cosmos')
@@ -265,7 +277,7 @@ combine_long <- function() {
     rename(date = time) %>%
     dplyr::select(geography_name, date, source, value) %>%
     rename(geography = geography_name) %>%
-    filter(!is.na(value)) %>%
+    #filter(!is.na(value)) %>%
     write_parquet(.,
                   './dist/overdose_by_geography_and_source_county.parquet')
 }
@@ -288,6 +300,7 @@ plotly::ggplotly(p1)
 od_state_year <- od_state %>%
   mutate(year=year(date)) %>%
   group_by(geography, age, year, source) %>%
+  filter(!grepl('Epic', source)) %>% #remove monthly epic data, sub in for year
   summarize(value_year = mean(value, na.rm=T)) %>%
   ungroup() %>%
   group_by(geography, age, source) %>%
@@ -378,6 +391,16 @@ epic_firearms <- epic %>%
   rename(value = epic_rate_ed_firearm) %>%
   filter(!is.na(time))
 
+epic_firearms_year <- epic_year %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
+  mutate(source='Epic Cosmos') %>%
+  rename(value = epic_rate_ed_firearm) %>%
+  filter(!is.na(time)) %>%
+  mutate(year= lubridate::year(time)) %>%
+  left_join(state_cw, by=c('geography')) %>%
+  dplyr::select(-time, -geography, -state)  %>%
+  rename(geography = geography_name) 
+
 firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firearm) %>% 
   ungroup() %>%
   rename(fips = geography) %>%
@@ -388,22 +411,15 @@ firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firearm) 
 write_parquet(firearms_by_source,'./dist/firearms_geography_source.parquet')
 
 firearms_by_source_year <- firearms_by_source %>%
+  filter(!grepl('Epic', source)) %>%
   ungroup() %>%
   mutate(year= lubridate::year(time)) %>%
   group_by(age, geography, source, year) %>%
   summarize(value = mean(value)) %>%
-  mutate(value_scale = value/max(value, na.rm=T)) 
+  ungroup() %>%
+  bind_rows(epic_firearms_year) 
 
 firearms_by_source_year %>%
-  filter(age=='Total' & geography=='United States') %>%
-  ggplot() +
-  geom_line(aes(x=year, y=value, group=source, color=source)) +
-  theme_classic() +
-  facet_wrap(~source, scales='free_y', ncol=1)+
-  ylim(0,NA)
-
-firearms_by_source_year %>%
-  dplyr::select(-value_scale) %>%
   write_parquet(.,
                 './dist/firearms_by_geography_and_source_state_year.parquet')
 
@@ -424,22 +440,23 @@ google_heat <- google %>%
   dplyr::select(geography, time, source, value) %>%
   mutate(age = 'Total')
 
-epic_heat <- epic %>%
+epic_heat_year <- epic_year %>%
   rename(value = epic_rate_ed_heat) %>%
   mutate(source = 'Epic Cosmos') %>%
   rename(fips = geography) %>%
   left_join(state_cw, by=c('fips'='geography')) %>%
-  dplyr::select(source, time, geography_name, age, value, suppressed_heat) %>%
-  rename(geography = geography_name)
+  mutate(year= lubridate::year(time)) %>%
+  dplyr::select(source, year, geography_name, age, value, suppressed_heat) %>%
+  rename(geography = geography_name) 
 
-heat_by_source <- bind_rows(google_heat, epic_heat)
-
-write_parquet(heat_by_source,'./dist/heat_related_geography_source.parquet')
-
-heat_by_source_year <- heat_by_source %>%
+google_heat_year <- google_heat %>%
   mutate(year= lubridate::year(time)) %>%
   group_by(year, source, geography, age) %>%
   summarize(value = mean(value, na.rm=T))
+
+heat_by_source_year <- bind_rows(google_heat_year, epic_heat_year)
+
+#write_parquet(heat_by_source,'./dist/heat_related_geography_source.parquet')
 
 heat_by_source_year %>%
   filter(age=='Total' & geography=='United States') %>%
