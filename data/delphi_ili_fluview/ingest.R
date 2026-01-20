@@ -51,13 +51,22 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   # 3. Read and transform data
   # ---------------------------------------------------------------------------
+
+  # Load FIPS crosswalk for faster lookup (replaces cdlTools::fips)
+  fips_lookup <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
+    filter(nchar(geography) == 2) %>%  # Only state-level
+    select(geography, state) %>%
+    mutate(state = tolower(state))  # Convert to lowercase to match raw data
+
   data <- vroom::vroom('./raw/data.csv.xz', show_col_types = FALSE) %>%
+    # Merge FIPS codes
+    left_join(fips_lookup, by = c("region" = "state")) %>%
     mutate(
       # Convert region to FIPS code
       geography = case_when(
         region == "nat" ~ "00",
-        region == "DC" ~ "11",
-        TRUE ~ sprintf("%02d", cdlTools::fips(region, to = 'fips'))
+        !is.na(geography) ~ geography,  # Use merged FIPS code
+        TRUE ~ NA_character_  # Should not happen if lookup is complete
       ),
       # Convert epiweek to date (Saturday at end of week)
       # Epiweek format: YYYYWW (e.g., 202301 = 2023 week 1)

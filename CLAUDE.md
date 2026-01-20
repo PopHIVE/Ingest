@@ -44,7 +44,19 @@ All standardized output files must conform to these column specifications:
 - **National**: Use `"00"` (not `"US"` or `"0"`)
 - **State**: 2-digit FIPS code as string (`"06"` not `6`)
 - **County**: 5-digit FIPS code as string (`"06037"`)
-- Convert state names/abbreviations using `cdlTools::fips(state, to='FIPS')`
+- **PREFERRED**: Convert state/county names to FIPS codes using merge with `resources/all_fips.csv.gz` (much faster than `cdlTools::fips()`)
+  ```r
+  # Load FIPS crosswalk (do this once per script)
+  fips_lookup <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
+    filter(nchar(geography) == 2) %>%  # Only state-level (or omit for county-level)
+    select(geography, state) %>%
+    mutate(state = tolower(state))  # Match case to your data
+
+  # Merge to get FIPS codes
+  data <- data %>%
+    left_join(fips_lookup, by = c("state_column" = "state"))
+  ```
+- **Alternative**: Use `cdlTools::fips(state, to='FIPS')` only if merge approach is not feasible (note: this is very slow)
 
 ### Time Standards
 
@@ -427,7 +439,32 @@ When creating or reviewing ingestion scripts, verify:
 
 ### Issue: State names instead of FIPS codes
 ```r
-# Solution: Use cdlTools
+# PREFERRED Solution: Use merge with all_fips.csv.gz (much faster)
+# Load FIPS lookup once at the start of processing
+fips_lookup <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
+  filter(nchar(geography) == 2) %>%  # State-level only
+  select(geography, state) %>%
+  mutate(state = tolower(state))  # Adjust case to match your data
+
+# For state abbreviations (e.g., "al", "ca", "tx"):
+data <- data %>%
+  left_join(fips_lookup, by = c("state_abbrev" = "state")) %>%
+  mutate(
+    geography = case_when(
+      state_abbrev == "nat" ~ "00",  # Handle special cases
+      !is.na(geography) ~ geography,
+      TRUE ~ NA_character_
+    )
+  )
+
+# For county-level data (5-digit FIPS):
+fips_lookup_county <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
+  select(geography, geography_name)
+
+data <- data %>%
+  left_join(fips_lookup_county, by = c("county_name" = "geography_name"))
+
+# SLOWER Alternative: Use cdlTools only if merge is not feasible
 mutate(geography = cdlTools::fips(state_name, to = "FIPS"))
 ```
 
