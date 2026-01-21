@@ -58,11 +58,26 @@ if (!identical(process$raw_state, raw_state)) {
     # Remove rows with missing geography
     filter(!is.na(geography))
 
-  # Calculate national average (unweighted mean of states)
+  # Load state populations for weighted averaging
+  state_pop <- vroom::vroom("../../resources/pop_state.csv.gz", show_col_types = FALSE) %>%
+    filter(age_level == "Total") %>%
+    select(state_name = geography, population = popsize) %>%
+    # Convert state names to FIPS codes
+    mutate(
+      geography = stringr::str_pad(
+        as.character(cdlTools::fips(state_name, to = "FIPS")),
+        width = 2, pad = "0"
+      )
+    ) %>%
+    filter(!is.na(geography)) %>%
+    select(geography, population)
+
+  # Calculate national average (population-weighted mean of states)
   nat_ave <- data_state %>%
+    left_join(state_pop, by = "geography") %>%
     group_by(time) %>%
     summarize(
-      exemption_rate_mmr = mean(exemption_rate_mmr, na.rm = TRUE),
+      exemption_rate_mmr = weighted.mean(exemption_rate_mmr, population, na.rm = TRUE),
       .groups = "drop"
     ) %>%
     mutate(geography = '00')

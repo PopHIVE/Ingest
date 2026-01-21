@@ -9,6 +9,11 @@ library(dplyr)
 library(vroom)
 library(digest)
 
+# Load FIPS lookup table (faster than cdlTools::fips())
+fips_lookup <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
+  filter(nchar(geography) == 2) %>%  # State-level only
+  select(geography, geography_name, state)
+
 process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
@@ -58,14 +63,8 @@ if (!identical(process$raw_state, raw_state)) {
       statename = Geography
     ) %>%
     filter(statename %in% c(state.name, 'District of Columbia', 'United States')) %>%
-    mutate(geography = cdlTools::fips(statename, to='FIPS'),
-           geography = if_else(statename=='United States',0,geography),
-           geography = stringr::str_pad(
-             as.character(geography),
-             width = 2,
-             side = "left",
-             pad = "0"
-           ),
+    left_join(fips_lookup, by = c("statename" = "geography_name")) %>%
+    mutate(geography = if_else(statename == 'United States', "00", geography),
            time = paste(substr(year,1,4),'09','01', sep='-'), #set date to start of academic year (Sept 1,YYYY)
            vax = if_else(
              grepl('1 dose', Dose), NA_character_, vax  #removes the 1 dose varicella category
@@ -214,15 +213,7 @@ if (!identical(process$wapo_state, current_wapo_state)) {
       wapo_school_grade = grade
     ) %>%
     # Convert state to FIPS (state-level only, no county FIPS in school data)
-    mutate(
-      state_fips = cdlTools::fips(wapo_school_state, to = "FIPS"),
-      geography = stringr::str_pad(
-        as.character(state_fips),
-        width = 2,
-        side = "left",
-        pad = "0"
-      )
-    ) %>%
+    left_join(fips_lookup, by = c("wapo_school_state" = "state")) %>%
     # Select final columns
     select(
       geography,
