@@ -300,7 +300,6 @@ plotly::ggplotly(p1)
 od_state_year <- od_state %>%
   mutate(year=year(date)) %>%
   group_by(geography, age, year, source) %>%
-  filter(!grepl('Epic', source)) %>% #remove monthly epic data, sub in for year
   summarize(value_year = mean(value, na.rm=T)) %>%
   ungroup() %>%
   group_by(geography, age, source) %>%
