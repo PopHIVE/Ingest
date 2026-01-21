@@ -522,6 +522,40 @@ dcf::dcf_process("source_name")
 # Also ensure project.Rproj and README.md exist in the source folder
 ```
 
+### Issue: Connecticut county FIPS codes not matching
+
+Connecticut abolished its 8 counties in 2022 and replaced them with 9 planning regions as county-equivalents. This means:
+
+- **Old FIPS codes (pre-2022)**: `09001`-`09015` (8 counties: Fairfield, Hartford, Litchfield, etc.)
+- **New FIPS codes (2022+)**: `09110`-`09190` (9 planning regions: Capitol, Greater Bridgeport, etc.)
+
+The Census 2021 data uses old codes, while newer datasets (2022+) use new codes. Both sets are included in `resources/all_fips.csv.gz`.
+
+```r
+# For datasets using new CT planning region codes, load supplemental population data:
+ct_pop <- vroom::vroom("../../resources/ct_planning_regions_pop_under5.csv.gz",
+                        show_col_types = FALSE)
+
+# Combine with standard county population data
+pop_county <- bind_rows(pop_county, ct_pop)
+```
+
+**Resource files:**
+- `resources/all_fips.csv.gz` - Contains both old (09001-09015) and new (09110-09190) CT codes
+- `resources/ct_planning_regions_pop_under5.csv.gz` - Population under 5 years for CT planning regions (source: 2022 ACS 1-year estimates)
+
+| New FIPS | Planning Region |
+|----------|-----------------|
+| 09110 | Capitol |
+| 09120 | Greater Bridgeport |
+| 09130 | Lower Connecticut River Valley |
+| 09140 | Naugatuck Valley |
+| 09150 | Northeastern Connecticut |
+| 09160 | Northwest Hills |
+| 09170 | South Central Connecticut |
+| 09180 | Southeastern Connecticut |
+| 09190 | Western Connecticut |
+
 ---
 
 ## Quick Reference Commands
