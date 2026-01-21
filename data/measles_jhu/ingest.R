@@ -5,9 +5,13 @@
 
 library(dplyr)
 library(lubridate)
-library(cdlTools)
 
 process <- dcf::dcf_process_record()
+
+# Load FIPS lookup for state abbreviation to FIPS code conversion
+fips_lookup <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
+  filter(nchar(geography) == 2) %>%  # State-level only
+  select(geography, state)
 
 # -----------------------------------------------------------------------------
 # 1. Download raw data from GitHub
@@ -59,12 +63,11 @@ if (!identical(process$raw_state, raw_state)) {
       names_to = "state",
       values_to = "value"
     ) %>%
-    # Extract state abbreviation and convert to FIPS
+    # Extract state abbreviation and convert to FIPS via lookup
     mutate(
-      state_abbr = stringr::str_extract(state, "^[A-Z]+"),
-      geography = as.character(cdlTools::fips(state_abbr, to = "FIPS")),
-      geography = stringr::str_pad(geography, width = 2, pad = "0")
+      state_abbr = stringr::str_extract(state, "^[A-Z]+")
     ) %>%
+    left_join(fips_lookup, by = c("state_abbr" = "state")) %>%
     # Use week_end date and convert to MM-DD-YYYY format
     mutate(
       # Week ends on Saturday (adjust if needed)

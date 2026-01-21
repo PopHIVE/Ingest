@@ -1,6 +1,7 @@
 # =============================================================================
 # Bundle: Measles
-# Combines: wastewater_measles, vaccine_exemptions_kiang, measles_jhu, mmr_healthmap
+# Combines: wastewater_measles, vaccine_exemptions_kiang, measles_jhu, mmr_healthmap,
+#           measles_cdc
 # =============================================================================
 
 library(dplyr)
@@ -23,6 +24,7 @@ mmr_healthmap_county <- vroom::vroom('../mmr_healthmap/standard/data_county.csv.
 mmr_healthmap_zcta <- vroom::vroom('../mmr_healthmap/standard/data_zcta.csv.gz', show_col_types = FALSE)
 wapo_counties <- vroom::vroom('../schoolvaxview/standard/data_wapo_counties.csv.gz', show_col_types = FALSE)
 wapo_schools <- vroom::vroom('../schoolvaxview/standard/data_wapo_schools.csv.gz', show_col_types = FALSE)
+measles_cdc <- vroom::vroom('../measles_cdc/standard/data.csv.gz', show_col_types = FALSE)
 
 # -----------------------------------------------------------------------------
 # 2. Prepare state-level data
@@ -563,3 +565,37 @@ arrow::write_parquet(
 )
 
 vroom::vroom_write(wapo_with_cases, "dist/measles_wapo_counties_with_cases.csv.gz", ",")
+
+# -----------------------------------------------------------------------------
+# 19. Create CDC weekly case data time series (national-level)
+# -----------------------------------------------------------------------------
+cdc_cases_national <- measles_cdc %>%
+  filter(geography == "00") %>%
+  rename(fips = geography) %>%
+  mutate(
+    geography = "United States",
+    date = as.Date(time, format = "%m-%d-%Y")
+  ) %>%
+  select(geography, fips, date, cases = value) %>%
+  arrange(date) %>%
+  mutate(
+    # Cumulative cases
+    cumulative_cases = cumsum(cases),
+    # 3-week moving average
+    cases_smooth = zoo::rollapplyr(
+      cases,
+      3,
+      mean,
+      partial = TRUE,
+      na.rm = TRUE
+    ),
+    cases_smooth = if_else(is.nan(cases_smooth), NA, cases_smooth)
+  )
+
+arrow::write_parquet(
+  cdc_cases_national,
+  "dist/measles_cdc_cases_national.parquet",
+  compression = "snappy"
+)
+
+vroom::vroom_write(cdc_cases_national, "dist/measles_cdc_cases_national.csv.gz", ",")
