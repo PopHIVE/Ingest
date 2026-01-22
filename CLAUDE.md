@@ -45,17 +45,62 @@ All standardized output files must conform to these column specifications:
 - **State**: 2-digit FIPS code as string (`"06"` not `6`)
 - **County**: 5-digit FIPS code as string (`"06037"`)
 - **PREFERRED**: Convert state/county names to FIPS codes using merge with `resources/all_fips.csv.gz` (much faster than `cdlTools::fips()`)
+
+#### all_fips.csv.gz Structure
+
+The file contains three columns:
+| Column | Description | Examples |
+|--------|-------------|----------|
+| `geography` | FIPS code | `"06"` (state), `"06037"` (county), `"00"` (national) |
+| `geography_name` | Full name | `"California"`, `"Los Angeles County"`, `"United States"` |
+| `state` | State abbreviation | `"CA"`, `"US"` |
+
+**Important notes:**
+- County names include their suffix (e.g., "Los Angeles County", "Orleans Parish", "Anchorage Municipality")
+- State-level entries have 2-digit FIPS codes; county-level have 5-digit codes
+- National entry uses `"00"` for geography and `"United States"` for geography_name
+
+#### State-level FIPS lookup
   ```r
   # Load FIPS crosswalk (do this once per script)
-  fips_lookup <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
-    filter(nchar(geography) == 2) %>%  # Only state-level (or omit for county-level)
-    select(geography, state) %>%
-    mutate(state = tolower(state))  # Match case to your data
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+
+  # For state abbreviations (e.g., "CA", "TX"):
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, state)
+
+  # For full state names (e.g., "California", "Texas"):
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, geography_name)
 
   # Merge to get FIPS codes
   data <- data %>%
-    left_join(fips_lookup, by = c("state_column" = "state"))
+    left_join(state_fips_lookup, by = c("state_column" = "state"))
   ```
+
+#### County-level FIPS lookup
+  ```r
+  # County names in all_fips include suffixes that must be handled
+  county_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 5) %>%
+    select(geography, geography_name, state) %>%
+    mutate(
+      # Strip common suffixes to match raw data formats
+      county_name = sub(" County$", "", geography_name),
+      county_name = sub(" Parish$", "", county_name),      # Louisiana
+      county_name = sub(" Borough$", "", county_name),     # Alaska
+      county_name = sub(" Census Area$", "", county_name), # Alaska
+      county_name = sub(" Municipality$", "", county_name), # Alaska
+      state_fips = substr(geography, 1, 2)
+    )
+
+  # Merge using both state and county name to avoid ambiguity
+  data <- data %>%
+    left_join(county_fips_lookup, by = c("state_fips", "county_name"))
+  ```
+
 - **Alternative**: Use `cdlTools::fips(state, to='FIPS')` only if merge approach is not feasible (note: this is very slow)
 
 ### Time Standards
@@ -86,8 +131,7 @@ PopHIVE/Ingest/
 │   │   ├── build.R              # Bundle assembly script
 │   │   ├── process.json         # Lists source files used
 │   │   └── dist/                # Final outputs for visualization
-│   │       ├── *.parquet        # Primary format for web
-│   │       └── *.csv.gz         # Alternative format
+│   │       └── *.parquet        # Parquet format only (no CSV)
 │   │
 │   ├── epic/                    # Epic Cosmos data
 │   ├── gtrends/                 # Google Health Trends
@@ -199,6 +243,8 @@ if (!identical(process$wapo_state, current_wapo_state)) {
 # Source: {URL or description}
 # =============================================================================
 
+library(dplyr)
+
 # Initialize process record (creates process.json if it doesn't exist)
 if (!file.exists("process.json")) {
   process <- list(raw_state = NULL)
@@ -217,12 +263,23 @@ raw_state <- dcf::dcf_download_cdc(
 
 # Only process if data has changed
 if (!identical(process$raw_state, raw_state)) {
-  
+
   # ---------------------------------------------------------------------------
-  # 2. Read and transform data
+  # 2. Load FIPS lookup and read raw data
   # ---------------------------------------------------------------------------
-  data_raw <- vroom::vroom("raw/{dataset-id}.csv.xz")
-  
+  # Load FIPS crosswalk (preferred over cdlTools::fips())
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+
+  # State-level lookup (for full state names like "California")
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, geography_name)
+
+  data_raw <- vroom::vroom("raw/{dataset-id}.csv.xz", show_col_types = FALSE)
+
+  # ---------------------------------------------------------------------------
+  # 3. Transform data
+  # ---------------------------------------------------------------------------
   data_standard <- data_raw %>%
     # Filter to relevant subset
     filter(
@@ -234,13 +291,15 @@ if (!identical(process$raw_state, raw_state)) {
     rename(
       time = `Week Ending Date`,
       age = `Age group`,
-      state = Site
+      state_name = Site
     ) %>%
-    # Transform geography
+    # Transform geography using FIPS lookup
+    left_join(state_fips_lookup, by = c("state_name" = "geography_name")) %>%
     mutate(
       geography = case_when(
-        state == "Overall" ~ "00",
-        TRUE ~ cdlTools::fips(state, to = "FIPS")
+        state_name == "Overall" ~ "00",
+        !is.na(geography) ~ geography,
+        TRUE ~ NA_character_
       )
     ) %>%
     # Format time
@@ -248,21 +307,19 @@ if (!identical(process$raw_state, raw_state)) {
       time = format(as.Date(time), "%m-%d-%Y")
     ) %>%
     # Select and order columns
-    select(geography, time, age, value = `Weekly Rate`) %>%
-    # Remove intermediate columns
-    select(-state)
-  
+    select(geography, time, age, value = `Weekly Rate`)
+
   # ---------------------------------------------------------------------------
-  # 3. Write standardized output
+  # 4. Write standardized output
   # ---------------------------------------------------------------------------
   vroom::vroom_write(
     data_standard,
     "standard/data.csv.gz",
     delim = ","
   )
-  
+
   # ---------------------------------------------------------------------------
-  # 4. Record processed state
+  # 5. Record processed state
   # ---------------------------------------------------------------------------
   process$raw_state <- raw_state
   dcf::dcf_process_record(updated = process)
@@ -406,16 +463,13 @@ combined <- combined %>%
   ungroup()
 
 # -----------------------------------------------------------------------------
-# 4. Write outputs
+# 4. Write outputs (parquet only, no CSV)
 # -----------------------------------------------------------------------------
 arrow::write_parquet(
   combined,
   "dist/overall_trends.parquet",
   compression = "snappy"  # Use "gzip" for smaller files
 )
-
-# Also write CSV for compatibility
-vroom::vroom_write(combined, "dist/overall_trends.csv.gz", ",")
 ```
 
 ---
@@ -430,7 +484,8 @@ When creating or reviewing ingestion scripts, verify:
 - [ ] **Missing data**: Handled appropriately (NA, not empty strings)
 - [ ] **Suppression**: Flagged with `suppressed_flag` column if imputed
 - [ ] **measure_info.json**: Entry exists for each variable
-- [ ] **Compression**: Output files are gzip compressed (`.csv.gz`)
+- [ ] **Compression**: Standard output files are gzip compressed (`.csv.gz`)
+- [ ] **Bundle outputs**: Dist files are parquet only (`.parquet`), no CSV
 - [ ] **process.json**: Updated in bundle with source file paths
 
 ---
@@ -438,32 +493,10 @@ When creating or reviewing ingestion scripts, verify:
 ## Common Issues and Solutions
 
 ### Issue: State names instead of FIPS codes
+
+See the **Geography Standards** section above for the preferred approach using `all_fips.csv.gz`.
+
 ```r
-# PREFERRED Solution: Use merge with all_fips.csv.gz (much faster)
-# Load FIPS lookup once at the start of processing
-fips_lookup <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
-  filter(nchar(geography) == 2) %>%  # State-level only
-  select(geography, state) %>%
-  mutate(state = tolower(state))  # Adjust case to match your data
-
-# For state abbreviations (e.g., "al", "ca", "tx"):
-data <- data %>%
-  left_join(fips_lookup, by = c("state_abbrev" = "state")) %>%
-  mutate(
-    geography = case_when(
-      state_abbrev == "nat" ~ "00",  # Handle special cases
-      !is.na(geography) ~ geography,
-      TRUE ~ NA_character_
-    )
-  )
-
-# For county-level data (5-digit FIPS):
-fips_lookup_county <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
-  select(geography, geography_name)
-
-data <- data %>%
-  left_join(fips_lookup_county, by = c("county_name" = "geography_name"))
-
 # SLOWER Alternative: Use cdlTools only if merge is not feasible
 mutate(geography = cdlTools::fips(state_name, to = "FIPS"))
 ```
