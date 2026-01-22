@@ -35,35 +35,38 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   data_raw <- vroom::vroom("raw/measles.csv.xz", delim = ",", show_col_types = FALSE)
 
-  # Convert state names to GEOIDs
-  state_ids <- vroom::vroom(
-    "https://www2.census.gov/geo/docs/reference/codes2020/national_state2020.txt",
-    delim = "|",
-    col_types = list(STATE = "c", STATEFP = "c")
-  )
+  # Load FIPS lookup from resources (faster and more consistent than census API)
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
 
-  # Load census data for population weighting
+  # State FIPS lookup (2-digit codes)
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, geography_name, state)
+
+  # County FIPS lookup (5-digit codes)
+  # County names in all_fips include "County" suffix (e.g., "Los Angeles County")
+  county_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 5) %>%
+    select(geography, geography_name, state) %>%
+    mutate(
+      # Create county_name without "County" suffix to match raw data format
+      county_name = sub(" County$", "", geography_name),
+      county_name = sub(" Parish$", "", county_name),  # Louisiana
+      county_name = sub(" Borough$", "", county_name), # Alaska
+      county_name = sub(" Census Area$", "", county_name), # Alaska
+      county_name = sub(" Municipality$", "", county_name), # Alaska
+      state_fips = substr(geography, 1, 2)
+    )
+
+  # Load census data for population weighting (still needed for weighted averages)
   state_pop <- dcf::dcf_load_census(
     out_dir = "../../resources",
     state_only = TRUE
   )
 
-  # Load county census data for county mapping
-  county_pop <- dcf::dcf_load_census(
-    out_dir = "../../resources",
-    state_only = FALSE
-  )
-
   # ---------------------------------------------------------------------------
   # 3a. Create site-level (county) data
   # ---------------------------------------------------------------------------
-  # Load county FIPS codes with names
-  county_fips <- county_pop %>%
-    select(GEOID, NAME) %>%
-    mutate(
-      county_name = sub(" County$", "", NAME),
-      state_fips = substr(GEOID, 1, 2)
-    )
 
   data_county <- data_raw %>%
     # Filter to relevant rows
@@ -72,12 +75,10 @@ if (!identical(process$raw_state, raw_state)) {
       !is.na(Counties_Served),
       Pathogen_Target == "Measles"
     ) %>%
-    # Map state names to FIPS codes
-    mutate(
-      state_fips = structure(
-        state_ids$STATEFP,
-        names = state_ids$STATE_NAME
-      )[`State/Territory`]
+    # Map state names to FIPS codes using lookup
+    left_join(
+      state_fips_lookup %>% select(state_fips = geography, geography_name),
+      by = c("State/Territory" = "geography_name")
     ) %>%
     # Parse and format time
     mutate(
@@ -89,12 +90,11 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(county_name = trimws(Counties_Served)) %>%
     # Map to county FIPS codes
     left_join(
-      county_fips,
-      by = c("state_fips" = "state_fips", "county_name" = "county_name")
+      county_fips_lookup %>% select(geography, state_fips, county_name),
+      by = c("state_fips", "county_name")
     ) %>%
     # Keep only successfully mapped counties
-    filter(!is.na(GEOID)) %>%
-    rename(geography = GEOID) %>%
+    filter(!is.na(geography)) %>%
     # Keep site-level data with sewershed ID
     mutate(
       sewershed_id = Sewershed,
@@ -127,12 +127,10 @@ if (!identical(process$raw_state, raw_state)) {
       !is.na(`State/Territory`),
       Pathogen_Target == "Measles"
     ) %>%
-    # Map state names to FIPS codes
-    mutate(
-      geography = structure(
-        state_ids$STATEFP,
-        names = state_ids$STATE_NAME
-      )[`State/Territory`]
+    # Map state names to FIPS codes using lookup
+    left_join(
+      state_fips_lookup %>% select(geography, geography_name),
+      by = c("State/Territory" = "geography_name")
     ) %>%
     # Parse and format time
     mutate(
@@ -186,7 +184,7 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(geography = '00')
 
   # Combine state and national data
-  data_state_combined <- bind_rows(data_state, nat_ave)
+  data_state_combined <- bind_rows(data_county, data_state, nat_ave)
 
   # ---------------------------------------------------------------------------
   # 4. Write standardized outputs
