@@ -336,6 +336,10 @@ trends_age <- combined_age %>%
     ),
     value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
     value_smooth = value_smooth - min(value_smooth, na.rm = T),
+
+    value_scale = value - min(value, na.rm = T),
+    value_scale = value_scale / max(value_scale, na.rm = T) * 100,
+    
     value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
   ) 
 
