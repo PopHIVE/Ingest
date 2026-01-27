@@ -122,6 +122,15 @@ combo_school_NIS <- bind_rows(nis2, vaxview2) %>%
          geography = geography_name) %>%
   dplyr::select(-fips, -state ) %>%
   relocate(year, geography, vaccine)
-  
+
 
 write_parquet(combo_school_NIS, "./dist/overall_rates_by_source.parquet")
+
+############################################################
+# Washington Post school vaccination data - county level
+wapo_counties <- vroom::vroom('../schoolvaxview/standard/data_wapo_counties.csv.gz')
+arrow::write_parquet(wapo_counties, "dist/wapo_vax_counties.parquet")
+
+# Washington Post school vaccination data - school level
+wapo_schools <- vroom::vroom('../schoolvaxview/standard/data_wapo_schools.csv.gz')
+arrow::write_parquet(wapo_schools, "dist/wapo_vax_schools.parquet")
