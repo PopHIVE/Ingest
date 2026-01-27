@@ -1,10 +1,11 @@
 # =============================================================================
 # Bundle: Measles
 # Combines: wastewater_measles, vaccine_exemptions_kiang, measles_jhu, mmr_healthmap,
-#           measles_cdc, schoolvaxview (WaPo)
-# Output: Two consolidated files in long format:
+#           measles_cdc, schoolvaxview (WaPo), measles_age_cdc
+# Output: Three consolidated files in long format:
 #   1. measles_state.parquet - State-level data with geography = state name
 #   2. measles_county.parquet - County-level data with geography = county FIPS
+#   3. measles_cases_by_age.parquet - National age-stratified cases
 # =============================================================================
 
 library(dplyr)
@@ -36,6 +37,7 @@ mmr_healthmap_state <- vroom::vroom('../mmr_healthmap/standard/data_state.csv.gz
 mmr_healthmap_county <- vroom::vroom('../mmr_healthmap/standard/data_county.csv.gz', show_col_types = FALSE)
 wapo_counties <- vroom::vroom('../schoolvaxview/standard/data_wapo_counties.csv.gz', show_col_types = FALSE)
 measles_cdc <- vroom::vroom('../measles_cdc/standard/data.csv.gz', show_col_types = FALSE)
+measles_age_cdc <- vroom::vroom('../measles_age_cdc/standard/data.csv.gz', show_col_types = FALSE)
 
 # -----------------------------------------------------------------------------
 # 3. Prepare state-level FIPS codes for filtering
@@ -245,6 +247,32 @@ arrow::write_parquet(
 )
 
 # =============================================================================
+# AGE-STRATIFIED NATIONAL FILE
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 8. CDC age-stratified measles cases (national-level, weekly)
+# -----------------------------------------------------------------------------
+measles_age_long <- measles_age_cdc %>%
+  mutate(
+    date = as.Date(time, format = "%m-%d-%Y"),
+    year = year(date),
+    week = isoweek(date),
+    geography = "United States"
+  ) %>%
+  select(geography, date, year, week, age, value = cum_cases_measles_age) %>%
+  filter(!is.na(value)) %>%
+  mutate(source = "cdc_measles_cases_age") %>%
+  arrange(date, age)
+
+# Write age-stratified parquet
+arrow::write_parquet(
+  measles_age_long,
+  "dist/measles_cases_by_age.parquet",
+  compression = "snappy"
+)
+
+# =============================================================================
 # Summary
 # =============================================================================
 cat("Measles bundle created:\n")
@@ -252,4 +280,6 @@ cat("  - State-level:", nrow(measles_state_long), "records from",
     length(unique(measles_state_long$source)), "sources\n")
 cat("  - County-level:", nrow(measles_county_long), "records from",
     length(unique(measles_county_long$source)), "sources\n")
+cat("  - Age-stratified:", nrow(measles_age_long), "records\n")
+
 
