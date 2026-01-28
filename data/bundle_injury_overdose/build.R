@@ -1,5 +1,6 @@
 #Medicare FFS uses the CCW algorithms https://www2.ccwdata.org/documents/10280/19139421/chr-chronic-condition-algorithms.pdfcms
 library(tidyverse)
+library(lubridate)
 library(arrow)
 
 ### FIPS codes
@@ -35,7 +36,7 @@ google <- vroom::vroom('../../data/gtrends/standard/data_year.csv.gz') %>%
 
 #### WISQARS data
 wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
-  mutate( year= year(time),
+  mutate( year= lubridate::year(time),
           time = as.Date(paste(year, '07','01', sep='-')),
           age = if_else(age == "0-14 Years" , "<15 Years", age)
   ) #define based on end of period
@@ -80,7 +81,7 @@ wisqars_long <- wisqars_aggregated %>%
     cause_of_death = gsub( 'pedal_cyclist_mv_traffic', 'Pedal cyclist (motor vehicle)' , cause_of_death),
     cause_of_death = gsub( 'pedestrian_mv_traffic', 'Pedestrian (motor vehicle traffic)' , cause_of_death),
     
-          cause_of_death = gsub('firearm_accident' ,'Firearm (accidental)' , cause_of_death),
+          cause_of_death = gsub('firearm_accident' ,'Firearm (unintentional)' , cause_of_death),
           cause_of_death = gsub('firearm_intentional' ,'Firearm (intentional)' , cause_of_death)
           ) %>%
   dplyr::select(year, age, geography, cause_of_death, value, N)
