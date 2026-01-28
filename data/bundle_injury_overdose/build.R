@@ -417,7 +417,11 @@ firearms_by_source_year <- firearms_by_source %>%
   group_by(age, geography, source, year) %>%
   summarize(value = mean(value)) %>%
   ungroup() %>%
-  bind_rows(epic_firearms_year) 
+  bind_rows(epic_firearms_year)  %>%
+  mutate( source = if_else(source=='wisqars_rate_firearm_intentional', 'CDC/WISQARS: Firearm (intentional)',
+                           if_else(source=='wisqars_rate_firearm_accident', 'CDC/WISQARS: Firearm (unintentional)',
+                                   source))
+  )
 
 firearms_by_source_year %>%
   write_parquet(.,
