@@ -1,218 +1,176 @@
 # =============================================================================
 # Wastewater Measles Data Ingestion
 # Source: CDC NWSS Measles Wastewater Surveillance
-# https://www.cdc.gov/wcms/vizdata/NCEZID_DIDRI/measles/nwssmeaslessitemapnocoords.csv
+# https://data.cdc.gov/d/akvg-8vrb
 # =============================================================================
 
 library(dplyr)
+library(tidyr)
 
 process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
 # 1. Download raw data
 # -----------------------------------------------------------------------------
-url <- "https://www.cdc.gov/wcms/vizdata/NCEZID_DIDRI/measles/nwssmeaslessitemapnocoords.csv"
-raw_path <- "raw/measles.csv"
-download.file(url, raw_path)
-unlink(paste0(raw_path, ".xz"))
-system2("xz", c("-f", raw_path))
-
-# -----------------------------------------------------------------------------
-# 2. Check raw state
-# -----------------------------------------------------------------------------
-raw_state <- as.list(tools::md5sum(list.files(
+raw_state <- dcf::dcf_download_cdc(
+  "akvg-8vrb",
   "raw",
-  "csv",
-  recursive = TRUE,
-  full.names = TRUE
-)))
+  process$raw_state
+)
 
 # Only process if data has changed
 if (!identical(process$raw_state, raw_state)) {
 
   # ---------------------------------------------------------------------------
-  # 3. Read and transform data
+  # 2. Load FIPS lookup
   # ---------------------------------------------------------------------------
-  data_raw <- vroom::vroom("raw/measles.csv.xz", delim = ",", show_col_types = FALSE)
-
-  # Load FIPS lookup from resources (faster and more consistent than census API)
   all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
 
-  # State FIPS lookup (2-digit codes)
+  # State-level lookup (for 2-letter abbreviations)
   state_fips_lookup <- all_fips %>%
     filter(nchar(geography) == 2) %>%
-    select(geography, geography_name, state)
+    select(geography, state) %>%
+    mutate(state = tolower(state))  # Match lowercase abbreviations in raw data
 
-  # County FIPS lookup (5-digit codes)
-  # County names in all_fips include "County" suffix (e.g., "Los Angeles County")
-  county_fips_lookup <- all_fips %>%
-    filter(nchar(geography) == 5) %>%
-    select(geography, geography_name, state) %>%
+  # ---------------------------------------------------------------------------
+  # 3. Read and transform data
+  # ---------------------------------------------------------------------------
+  data_raw <- vroom::vroom("raw/akvg-8vrb.csv.xz", delim = ",", show_col_types = FALSE) %>%
     mutate(
-      # Create county_name without "County" suffix to match raw data format
-      county_name = sub(" County$", "", geography_name),
-      county_name = sub(" Parish$", "", county_name),  # Louisiana
-      county_name = sub(" Borough$", "", county_name), # Alaska
-      county_name = sub(" Census Area$", "", county_name), # Alaska
-      county_name = sub(" Municipality$", "", county_name), # Alaska
-      state_fips = substr(geography, 1, 2)
+      detected = if_else(pcr_target_avg_conc > 0, 1, 0),
+      # Convert to Saturday at end of week (epiweek convention)
+      # floor_date with week_start=7 (Sunday) gives start of week, add 6 days for Saturday
+      weekdate = lubridate::floor_date(as.Date(sample_collect_date), unit = "week", week_start = 7) + 6
     )
 
-  # Load census data for population weighting (still needed for weighted averages)
-  state_pop <- dcf::dcf_load_census(
-    out_dir = "../../resources",
-    state_only = TRUE
-  )
-
   # ---------------------------------------------------------------------------
-  # 3a. Create site-level (county) data
-  # ---------------------------------------------------------------------------
-
-  data_county <- data_raw %>%
-    # Filter to relevant rows
-    filter(
-      !is.na(`State/Territory`),
-      !is.na(Counties_Served),
-      Pathogen_Target == "Measles"
-    ) %>%
-    # Map state names to FIPS codes using lookup
-    left_join(
-      state_fips_lookup %>% select(state_fips = geography, geography_name),
-      by = c("State/Territory" = "geography_name")
-    ) %>%
-    # Parse and format time
-    mutate(
-      time = as.Date(Update_Date_Time, format = "%m-%d-%Y %I:%M %p"),
-      time = format(time, "%m-%d-%Y")
-    ) %>%
-    # Separate multiple counties (some sewersheds serve multiple counties)
-    tidyr::separate_rows(Counties_Served, sep = ",\\s*") %>%
-    mutate(county_name = trimws(Counties_Served)) %>%
-    # Map to county FIPS codes
-    left_join(
-      county_fips_lookup %>% select(geography, state_fips, county_name),
-      by = c("state_fips", "county_name")
-    ) %>%
-    # Keep only successfully mapped counties
-    filter(!is.na(geography)) %>%
-    # Keep site-level data with sewershed ID
-    mutate(
-      sewershed_id = Sewershed,
-      detection_status = Detection_Category,
-      detection_count = Detection_Count,
-      sample_count = Sample_Count,
-      population_served = Population_Served,
-      # Binary detection indicator: 1 if any detection, 0 otherwise
-      detection_flag = if_else(Detection_Count > 0, 1, 0)
-    ) %>%
-    select(
-      geography,
-      time,
-      sewershed_id,
-      detection_status,
-      detection_count,
-      detection_flag,
-      sample_count,
-      population_served
-    ) %>%
-    # Remove duplicates (in case a sewershed was counted multiple times)
-    distinct()
-
-  # ---------------------------------------------------------------------------
-  # 3b. Create state-level data (aggregated)
+  # 4. State-level aggregation
   # ---------------------------------------------------------------------------
   data_state <- data_raw %>%
-    # Filter to relevant rows
-    filter(
-      !is.na(`State/Territory`),
-      Pathogen_Target == "Measles"
-    ) %>%
-    # Map state names to FIPS codes using lookup
-    left_join(
-      state_fips_lookup %>% select(geography, geography_name),
-      by = c("State/Territory" = "geography_name")
-    ) %>%
-    # Parse and format time
-    mutate(
-      time = as.Date(Update_Date_Time, format = "%m-%d-%Y %I:%M %p"),
-      time = format(time, "%m-%d-%Y")
-    ) %>%
-    # Aggregate by geography and time
-    group_by(geography, time) %>%
+    group_by(wwtp_jurisdiction, weekdate) %>%
     summarize(
-      # Count of sewersheds with detection
-      detection_count = sum(Detection_Count, na.rm = TRUE),
-      # Total sample count
-      sample_count = sum(Sample_Count, na.rm = TRUE),
-      # Detection rate (detections per sample)
+      detection_count = sum(detected, na.rm = TRUE),
+      sample_count = n(),
+      population_served = sum(population_served, na.rm = TRUE),
       detection_rate = if_else(
         sample_count > 0,
         detection_count / sample_count * 100,
         NA_real_
       ),
-      # Binary detection indicator: 1 if any detection in the state, 0 otherwise
-      detection_flag = if_else(sum(Detection_Count, na.rm = TRUE) > 0, 1, 0),
-      # Number of sewersheds reporting
-      sewershed_count = n(),
-      # Population served (sum)
-      population_served = sum(Population_Served, na.rm = TRUE),
       .groups = "drop"
     ) %>%
-    # Remove rows with missing geography
-    filter(!is.na(geography))
+    # Convert state abbreviation to FIPS code
+    left_join(state_fips_lookup, by = c("wwtp_jurisdiction" = "state")) %>%
+    # Format time as MM-DD-YYYY
+    mutate(
+      time = format(weekdate, "%m-%d-%Y")
+    ) %>%
+    select(
+      geography,
+      time,
+      ww_detection_rate = detection_rate,
+      ww_detection_count = detection_count,
+      ww_sample_count = sample_count,
+      ww_population_served = population_served
+    ) %>%
+    filter(!is.na(geography))  # Remove any unmatched states
 
-  # Calculate national average (population-weighted)
-  nat_ave <- data_state %>%
-    left_join(state_pop, by = c('geography' = 'GEOID')) %>%
-    group_by(time) %>%
+  # ---------------------------------------------------------------------------
+  # 5. National-level aggregation
+  # ---------------------------------------------------------------------------
+  data_national <- data_raw %>%
+    group_by(weekdate) %>%
     summarize(
-      # Population-weighted detection rate
-      detection_rate = weighted.mean(
-        detection_rate,
-        Total,
-        na.rm = TRUE
-      ),
-      # Sum of counts
-      detection_count = sum(detection_count, na.rm = TRUE),
-      sample_count = sum(sample_count, na.rm = TRUE),
-      # Binary detection indicator for national level
-      detection_flag = if_else(sum(detection_count, na.rm = TRUE) > 0, 1, 0),
-      sewershed_count = sum(sewershed_count, na.rm = TRUE),
+      detection_count = sum(detected, na.rm = TRUE),
+      sample_count = n(),
       population_served = sum(population_served, na.rm = TRUE),
+      detection_rate = if_else(
+        sample_count > 0,
+        detection_count / sample_count * 100,
+        NA_real_
+      ),
       .groups = "drop"
     ) %>%
-    mutate(geography = '00')
+    mutate(
+      geography = "00",
+      time = format(weekdate, "%m-%d-%Y")
+    ) %>%
+    select(
+      geography,
+      time,
+      ww_detection_rate = detection_rate,
+      ww_detection_count = detection_count,
+      ww_sample_count = sample_count,
+      ww_population_served = population_served
+    )
 
-  # Combine state and national data
-  data_state_combined <- bind_rows(data_county, data_state, nat_ave)
+  # Combine state and national
+  data_state_final <- bind_rows(data_national, data_state) %>%
+    arrange(geography, time)
 
   # ---------------------------------------------------------------------------
-  # 4. Write standardized outputs
+  # 6. County-level aggregation
   # ---------------------------------------------------------------------------
-  # State-level aggregated data
+  # Expand rows for sites serving multiple counties
+  data_county <- data_raw %>%
+    # Split county_fips on ", " and expand to one row per county
+    mutate(county_fips_list = strsplit(county_fips, ", ")) %>%
+    unnest(county_fips_list) %>%
+    rename(geography = county_fips_list) %>%
+    # Aggregate by county and week
+    group_by(geography, weekdate) %>%
+    summarize(
+      detection_count = sum(detected, na.rm = TRUE),
+      sample_count = n(),
+      population_served = sum(population_served, na.rm = TRUE),
+      detection_rate = if_else(
+        sample_count > 0,
+        detection_count / sample_count * 100,
+        NA_real_
+      ),
+      .groups = "drop"
+    ) %>%
+    # Format time as MM-DD-YYYY
+    mutate(
+      time = format(weekdate, "%m-%d-%Y")
+    ) %>%
+    select(
+      geography,
+      time,
+      ww_detection_rate = detection_rate,
+      ww_detection_count = detection_count,
+      ww_sample_count = sample_count,
+      ww_population_served = population_served
+    ) %>%
+    filter(!is.na(geography) & geography != "") %>%
+    arrange(geography, time)
+
+  # ---------------------------------------------------------------------------
+  # 7. Write standardized outputs
+  # ---------------------------------------------------------------------------
+  # Create standard directory if it doesn't exist
+  if (!dir.exists("standard")) {
+    dir.create("standard")
+  }
+
   vroom::vroom_write(
-    data_state_combined,
-    "standard/data_state.csv.gz",
+    data_state_final,
+    "standard/data.csv.gz",
     delim = ","
   )
 
-  # County-level site data
   vroom::vroom_write(
     data_county,
     "standard/data_county.csv.gz",
     delim = ","
   )
 
-  # Also write combined as main data file (for backwards compatibility)
-  vroom::vroom_write(
-    data_state_combined,
-    "standard/data.csv.gz",
-    delim = ","
-  )
-
   # ---------------------------------------------------------------------------
-  # 5. Record processed state
+  # 8. Record processed state
   # ---------------------------------------------------------------------------
   process$raw_state <- raw_state
   dcf::dcf_process_record(updated = process)
 }
+
+
+

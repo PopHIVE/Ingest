@@ -29,6 +29,7 @@ state_fips_lookup <- all_fips %>%
 # 2. Load standardized source files
 # -----------------------------------------------------------------------------
 wastewater_measles <- vroom::vroom('../wastewater_measles/standard/data.csv.gz', show_col_types = FALSE)
+wastewater_measles_county <- vroom::vroom('../wastewater_measles/standard/data_county.csv.gz', show_col_types = FALSE)
 vaccine_exemptions <- vroom::vroom('../vaccine_exemptions_kiang/standard/data.csv.gz', show_col_types = FALSE)
 vaccine_exemptions_county <- vroom::vroom('../vaccine_exemptions_kiang/standard/data_county.csv.gz', show_col_types = FALSE)
 measles_jhu_state <- vroom::vroom('../measles_jhu/standard/data_state.csv.gz', show_col_types = FALSE)
@@ -62,7 +63,7 @@ wastewater_state <- wastewater_measles %>%
   mutate(
     geography = if_else(geography == "00", "United States", state_name)
   ) %>%
-  select(geography, date, year, week, value = detection_rate) %>%
+  select(geography, date, year, week, value = ww_detection_rate) %>%
   filter(!is.na(value)) %>%
   mutate(source = "wastewater_detection_rate")
 
@@ -214,15 +215,13 @@ wapo_county <- wapo_counties %>%
 # -----------------------------------------------------------------------------
 # 6e. Wastewater measles detection (county-level, weekly)
 # -----------------------------------------------------------------------------
-wastewater_county <- wastewater_measles %>%
-  filter(nchar(geography) == 5) %>%  # County FIPS codes are 5 digits
-
+wastewater_county <- wastewater_measles_county %>%
   mutate(
     date = as.Date(time, format = "%m-%d-%Y"),
     year = year(date),
     week = isoweek(date)
   ) %>%
-  select(geography, date, year, week, value = detection_rate) %>%
+  select(geography, date, year, week, value = ww_detection_rate) %>%
   filter(!is.na(value)) %>%
   mutate(source = "wastewater_detection_rate")
 
