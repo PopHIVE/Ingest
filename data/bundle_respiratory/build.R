@@ -31,8 +31,7 @@ bundle_files  <- list( '../epic/standard/weekly.csv.gz',
                        '../wastewater/standard/data.csv.gz',
                        '../delphi_doctors_claims/standard/data.csv.gz',
                        '../delphi_hospital_claims/standard/data.csv.gz',
-                       '../delphi_nhsn/standard/data.csv.gz',
-                       '../delphi_ili_fluview/standard/data.csv.gz'
+                       '../delphi_nhsn/standard/data.csv.gz'
 )
                  
 start_time <- "2020"
@@ -176,7 +175,7 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth', 'delphi_fluview_wili')) %>%
+  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth')) %>%
   mutate( source = if_else(variable=='epic_pct_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
