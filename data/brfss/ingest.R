@@ -36,11 +36,12 @@ chronic <- open_dataset('./raw/dttw-5yxu.parquet') %>%
          value_ucl= Confidence_limit_High,
          value = Data_value,
          ) %>%
+         collect() %>%
   mutate(time = as.Date(paste0(Year,'-01-','01')),
+        geography = as.character(geography),
          geography = if_else(grepl('All States and DC', Locationdesc),'00',geography)
          ) %>% #all states + DC
-  dplyr::select(time,age, geography, Topic, Response,Sample_Size, Data_value_type, value, value_lcl, value_ucl)%>%
-    collect() 
+  dplyr::select(time,age, geography, Topic, Response,Sample_Size, Data_value_type, value, value_lcl, value_ucl)
        
 #How deal with multiple categories for obesity (pregnancy, pre diabetes)
 wide1 <- chronic %>%
