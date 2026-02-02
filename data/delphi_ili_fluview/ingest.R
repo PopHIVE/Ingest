@@ -8,12 +8,7 @@ library(epidatr)
 library(tidyverse)
 library(lubridate)
 
-# Initialize process record
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
 # 1. Download raw data from Delphi FluView API

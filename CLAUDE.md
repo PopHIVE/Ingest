@@ -609,6 +609,9 @@ dcf::dcf_build()
 # Validate standard file format
 source("scripts/validate_standard.R")
 validate_standard_file("data/source_name/standard/data.csv.gz")
+
+# Rebuild data source documentation (generates docs/index.html)
+Rscript scripts/build_docs.R
 ```
 
 ---
@@ -641,7 +644,13 @@ validate_standard_file("data/source_name/standard/data.csv.gz")
    dcf::dcf_process("bundle_category", ".")
    ```
 
-8. **Commit changes**: Include raw data sample, ingest.R, measure_info.json, standard output
+8. **Update documentation**: The data source documentation is auto-generated from `measure_info.json` files
+   ```r
+   Rscript scripts/build_docs.R
+   ```
+   This generates `docs/index.html` with variable tables and source information. The GitHub Action will also rebuild docs automatically when `measure_info.json` files change.
+
+9. **Commit changes**: Include raw data sample, ingest.R, measure_info.json, standard output, and updated docs/
 
 ---
 
