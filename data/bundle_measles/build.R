@@ -37,9 +37,28 @@ measles_jhu_county <- vroom::vroom('../measles_jhu/standard/data_county.csv.gz',
 mmr_healthmap_state <- vroom::vroom('../mmr_healthmap/standard/data_state.csv.gz', show_col_types = FALSE)
 mmr_healthmap_county <- vroom::vroom('../mmr_healthmap/standard/data_county.csv.gz', show_col_types = FALSE)
 wapo_counties <- vroom::vroom('../schoolvaxview/standard/data_wapo_counties.csv.gz', show_col_types = FALSE)
+wapo_schools <- vroom::vroom('../schoolvaxview/standard/data_wapo_schools.csv.gz', show_col_types = FALSE)
+
 measles_cdc <- vroom::vroom('../measles_cdc/standard/data.csv.gz', show_col_types = FALSE)
 measles_age_cdc <- vroom::vroom('../measles_age_cdc/standard/data.csv.gz', show_col_types = FALSE)
 
+
+mmr_county_summary <- wapo_schools %>% 
+filter(wapo_school_type== "PUBLIC" & wapo_school_state=='CA') %>%
+group_by(wapo_school_county, wapo_school_state, time) %>%
+reframe(min_mmr_district = min(wapo_school_mmr_rate, na.rm=TRUE),
+          max_mmr_district = max(wapo_school_mmr_rate, na.rm=TRUE),
+          avg_mmr_district = mean(wapo_school_mmr_rate, na.rm=TRUE),
+          var_mmr_district = var(wapo_school_mmr_rate, na.rm=TRUE),
+          n_schools = n()
+          ) %>%
+  ungroup() %>%
+  select(wapo_school_state,wapo_school_county, time,
+         min_mmr_district,
+         max_mmr_district,
+         avg_mmr_district,
+         var_mmr_district,
+         n_schools) 
 # -----------------------------------------------------------------------------
 # 3. Prepare state-level FIPS codes for filtering
 # -----------------------------------------------------------------------------
