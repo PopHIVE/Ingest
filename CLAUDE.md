@@ -554,8 +554,33 @@ data %>%
 ```
 
 ### Issue: Error "process file process.json does not exist"
-This is caused by failure to initialize a new datasource with dcf::dcf_add_source(). If this is not done,then the process.json file
-is not properly initialized. Go back and create the process.json structure using the correct format.
+This is caused by failure to initialize a new datasource with `dcf::dcf_add_source()`. If this is not done, the process.json file is not properly initialized.
+
+**Preferred solution**: Run `dcf::dcf_add_source("source_name")` to create the folder structure properly.
+
+**Manual fix**: If you need to create the process.json manually, use this structure (replace `source_name` with your data folder name):
+
+```json
+{
+  "name": "source_name",
+  "type": "source",
+  "scripts": [
+    {
+      "path": "ingest.R",
+      "manual": false,
+      "frequency": 0,
+      "last_run": "",
+      "run_time": "",
+      "last_status": {
+        "log": "",
+        "success": true
+      }
+    }
+  ],
+  "checked": "",
+  "check_results": []
+}
+```
 
 ### Issue: Error "raw/file.csv.gz does not exist in current working directory"
 ```r
@@ -573,6 +598,34 @@ setwd("../..")
 dcf::dcf_process("source_name")
 
 # Also ensure project.Rproj and README.md exist in the source folder
+```
+
+### Issue: Error "vec_math.arrow_binary() not implemented" when running dcf_process()
+
+This error occurs when a script works fine when run directly but fails via `dcf_process()`. The cause is vroom's Arrow ALTREP (lazy loading) backend:
+
+- **When running directly**: Interactive sessions may materialize data earlier or have different environment state
+- **When running via dcf_process()**: Scripts run in a cleaner context where Arrow ALTREP stays active, keeping columns as Arrow binary types until an operation forces materialization
+
+The error typically triggers when using `if_else()` with mixed types (e.g., comparing integers with Arrow-backed columns) or when `cdlTools::fips()` returns integers that get mixed with other types.
+
+```r
+# Problem: cdlTools::fips() with if_else causes Arrow type issues
+mutate(geography = cdlTools::fips(statename, to='FIPS'),
+       geography = if_else(statename=='United States', 0, geography))
+
+# Solution: Use FIPS lookup merge instead (also faster)
+all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+state_fips_lookup <- all_fips %>%
+  filter(nchar(geography) == 2) %>%
+  select(geography, geography_name)
+
+data <- data %>%
+  left_join(state_fips_lookup, by = c("statename" = "geography_name")) %>%
+  mutate(geography = if_else(statename == 'United States', "00", geography))
+
+# Alternative: Disable Arrow ALTREP (less preferred)
+data <- vroom::vroom("file.csv.xz", show_col_types = FALSE, altrep = FALSE)
 ```
 
 ### Issue: Connecticut county FIPS codes not matching

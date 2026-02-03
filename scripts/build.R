@@ -4,6 +4,7 @@
 library(dcf)
 library(tidyverse)
 
+
 dcf_build()
 
 ##RUN ONCE from parent directory (not within an existing project) 
@@ -52,7 +53,7 @@ dcf_build()
 # dcf_process("respnet")
 # dcf_process("delphi_hospital_claims")
 # dcf_process("delphi_ili_fluview")
-
+dcf::dcf_process("schoolvax_washpost")
 # dcf_process("delphi_nhsn")
 # dcf_process("nis")
 # dcf_process("cms_mmd")

@@ -120,11 +120,13 @@ if (!identical(process$raw_state, raw_state)) {
     full_join(data3, by = c('age', 'time', 'geography'))
   
   data_combined = bind_rows(data1, data2_3_combo) %>%
+    as.data.frame() %>%  # Convert from Arrow to regular R data frame
     rename(fips = geography) %>%
     mutate(
+      fips = as.numeric(fips),  # Ensure fips is numeric before sprintf
       rate_covid = if_else(time < '2020-03-01', 0, rate_covid),
       rate_rsv = if_else(is.na(rate_rsv), 0, rate_rsv), #do NOT fill in flu here
-      
+
       age = if_else(
         age == '0-<1 year',
         "<1 Years",

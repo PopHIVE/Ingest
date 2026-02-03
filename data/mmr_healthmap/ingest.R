@@ -91,8 +91,9 @@ if (!needs_update) {
 # 2. Process County-Level Data
 # -----------------------------------------------------------------------------
 
-# Read county data
-data_county_raw <- vroom::vroom("raw/county_pred_final.csv.gz", show_col_types = FALSE)
+# Read county data (convert from Arrow to regular R data frame)
+data_county_raw <- vroom::vroom("raw/county_pred_final.csv.gz", show_col_types = FALSE) %>%
+  as.data.frame()
 
 # Transform to standard format
 # Note: This is a cross-sectional estimate (no time dimension)
@@ -128,8 +129,9 @@ vroom::vroom_write(
 # 2. Process ZCTA (ZIP Code) Level Data
 # -----------------------------------------------------------------------------
 
-# Read ZCTA data
-data_zcta_raw <- vroom::vroom("raw/zcta_pred_final.csv.gz", show_col_types = FALSE)
+# Read ZCTA data (convert from Arrow to regular R data frame)
+data_zcta_raw <- vroom::vroom("raw/zcta_pred_final.csv.gz", show_col_types = FALSE) %>%
+  as.data.frame()
 
 # Transform to standard format
 data_zcta <- data_zcta_raw %>%
@@ -169,6 +171,7 @@ pop_county <- vroom::vroom(
   "../../resources/census_population_2021.csv.xz",
   show_col_types = FALSE
 ) %>%
+  as.data.frame() %>%
   filter(nchar(GEOID) == 5) %>%
   select(geography = GEOID, pop_under5 = `Under 5 years`) %>%
   mutate(geography = sprintf("%05d", as.numeric(geography)))
@@ -180,6 +183,7 @@ ct_pop <- vroom::vroom(
   "../../resources/ct_planning_regions_pop_under5.csv.gz",
   show_col_types = FALSE
 ) %>%
+  as.data.frame() %>%
   select(geography, pop_under5)
 
 pop_county <- bind_rows(pop_county, ct_pop)
