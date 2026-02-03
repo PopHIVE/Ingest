@@ -23,24 +23,29 @@
   },
   "delphi_hospital_flu_smooth": {
     "id": "delphi_hospital_flu_smooth",
-    "short_name": "",
-    "long_name": "",
+    "short_name": "Influenza Hospital Admissions",
+    "long_name": "Percentage of Hospital Admissions with Influenza Diagnosis",
     "category": "respiratory",
     "short_description": "Estimated percentage of new hospital admissions with influenza-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother",
     "long_description": "This data source is based on electronic medical records and claims data about hospital admissions, provided to Delphi by health system partners. We use this inpatient data to estimate the percentage of new hospital admissions with an influenza-associated diagnosis code in a given location, on a given day",
     "statement": "",
-    "measure_type": "",
+    "measure_type": "percent",
     "unit": "Percent of new hospital admissions, smoothed",
     "time_resolution": "day",
     "restrictions": "CC-BY Attribution license",
-    "sources": [
-     {
-    "name": "CMU Delphi",
-    "url": "https://cmu-delphi.github.io/delphi-epidata/",
-    "location": "COVIDcast > Hospital Admissions",
-    "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html"
-    }
-    ],
+    "sources": [{ "id": "delphi_hospital_admissions" }],
     "citations": []
+  },
+
+  "_sources": {
+    "delphi_hospital_admissions": {
+      "name": "CMU Delphi COVIDcast - Hospital Admissions",
+      "url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html",
+      "organization": "Carnegie Mellon University Delphi Research Group",
+      "organization_url": "https://delphi.cmu.edu/",
+      "location": "COVIDcast Epidata API",
+      "location_url": "https://cmu-delphi.github.io/delphi-epidata/",
+      "description": "The Delphi Hospital Admissions signal estimates the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. Data are smoothed using a Gaussian linear smoother to reduce day-to-day variation. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are available at state and county levels with approximately 3-4 day lag from the date of admission."
+    }
   }
 }
