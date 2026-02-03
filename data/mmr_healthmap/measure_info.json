@@ -1,4 +1,69 @@
 {
+  "value": {
+    "id": "value",
+    "short_name": "MMR Coverage",
+    "long_name": "MMR Vaccine Coverage Estimate",
+    "short_description": "Estimated percentage of children with at least one dose of MMR vaccine.",
+    "measure_type": "percent",
+    "unit": "percent",
+    "sources": [{ "id": "healthmap_mmr" }]
+  },
+
+  "risk_level": {
+    "id": "risk_level",
+    "short_name": "Risk Level",
+    "long_name": "Under-Vaccination Risk Classification",
+    "short_description": "Risk classification for under-vaccination based on coverage estimates.",
+    "long_description": "Risk level classification (e.g., high, medium, low) indicating the likelihood of under-vaccination in the geographic area based on estimated MMR coverage.",
+    "measure_type": "categorical",
+    "unit": "",
+    "sources": [{ "id": "healthmap_mmr" }]
+  },
+
+  "local_i": {
+    "id": "local_i",
+    "short_name": "Local Moran's I",
+    "long_name": "Local Moran's I Statistic",
+    "short_description": "Local Moran's I statistic for spatial autocorrelation.",
+    "long_description": "Local Moran's I statistic measuring spatial autocorrelation of vaccination coverage. Positive values indicate clustering of similar values; negative values indicate clustering of dissimilar values.",
+    "measure_type": "numeric",
+    "unit": "",
+    "sources": [{ "id": "healthmap_mmr" }]
+  },
+
+  "p_value": {
+    "id": "p_value",
+    "short_name": "P-Value",
+    "long_name": "Statistical P-Value",
+    "short_description": "P-value for the Local Moran's I statistic.",
+    "long_description": "Statistical significance level for the Local Moran's I test of spatial autocorrelation. Lower values indicate more statistically significant clustering.",
+    "measure_type": "numeric",
+    "unit": "",
+    "sources": [{ "id": "healthmap_mmr" }]
+  },
+
+  "spatial_cluster": {
+    "id": "spatial_cluster",
+    "short_name": "Spatial Cluster",
+    "long_name": "Spatial Cluster Classification",
+    "short_description": "Classification of spatial clustering pattern.",
+    "long_description": "Classification of spatial autocorrelation pattern based on Local Moran's I analysis. Categories may include High-High (cluster of high values), Low-Low (cluster of low values), High-Low (outlier with high value surrounded by low), Low-High (outlier with low value surrounded by high), or Not Significant.",
+    "measure_type": "categorical",
+    "unit": "",
+    "sources": [{ "id": "healthmap_mmr" }]
+  },
+
+  "population_sample": {
+    "id": "population_sample",
+    "short_name": "Population Sample",
+    "long_name": "Participatory Surveillance Sample Size",
+    "short_description": "Number of participatory surveillance respondents in the area.",
+    "long_description": "Sample size from participatory surveillance data used in the small area estimation model to generate vaccine coverage estimates.",
+    "measure_type": "integer",
+    "unit": "respondents",
+    "sources": [{ "id": "healthmap_mmr" }]
+  },
+
   "mmr_coverage_county": {
     "id": "mmr_coverage_county",
     "short_name": "MMR Vaccination Coverage (County)",
@@ -76,7 +141,8 @@
       "url": "https://github.com/eric-gengzhou/MMR_vaccine_estimates",
       "organization": "HealthMap / Boston Children's Hospital",
       "organization_url": "https://healthmap.org/",
-      "description": "County, ZIP code, and state-level estimates of MMR (measles, mumps, and rubella) vaccine coverage among US children, developed using small area estimation with multilevel regression and post-stratification (MRP). The methodology integrates participatory surveillance data from digital health platforms with demographic and contextual covariates to produce granular geographic estimates of vaccination coverage gaps. Estimates include posterior mean coverage percentages, risk classifications for under-vaccination, and spatial autocorrelation measures (Local Moran's I) to identify geographic clustering of under-vaccinated areas. This research was conducted in response to the 2025 measles outbreak to support targeted public health interventions."
+      "description": "County, ZIP code, and state-level estimates of MMR (measles, mumps, and rubella) vaccine coverage among US children, developed using small area estimation with multilevel regression and post-stratification (MRP). The methodology integrates participatory surveillance data from digital health platforms with demographic and contextual covariates to produce granular geographic estimates of vaccination coverage gaps. Estimates include posterior mean coverage percentages, risk classifications for under-vaccination, and spatial autocorrelation measures (Local Moran's I) to identify geographic clustering of under-vaccinated areas. This research was conducted in response to the 2025 measles outbreak to support targeted public health interventions.",
+      "restrictions": "MIT License: Copyright (c) 2025 Eric Zhou.  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the Software), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:Attribution required. Cite Zhou EG, Brownstein J, Rader B. Assessing MMR Vaccination Coverage Gaps in US Children with Digital Participatory Surveillance. Nature Health. 2025."
     }
   }
 }

@@ -373,14 +373,13 @@ make_source_section <- function(source_name, source_dir) {
     description <- first_source$description %||% ""
   }
 
-  # Check for restrictions in any variable
-  restrictions <- ""
-  for (key in names(measure_info)) {
-    if (key != "_sources") {
-      r <- measure_info[[key]]$restrictions
-      if (!is.null(r) && nchar(r) > 0) {
-        restrictions <- r
-        break
+  # Collect restrictions from _sources
+  restrictions_list <- list()
+  if (!is.null(sources_meta) && length(sources_meta) > 0) {
+    for (src_key in names(sources_meta)) {
+      src <- sources_meta[[src_key]]
+      if (!is.null(src$restrictions) && nchar(src$restrictions) > 0) {
+        restrictions_list[[src$name %||% src_key]] <- src$restrictions
       }
     }
   }
@@ -415,10 +414,23 @@ make_source_section <- function(source_name, source_dir) {
       },
 
       # Restrictions
-      if (nchar(restrictions) > 0) {
-        tags$div(class = "alert alert-warning",
-          tags$strong("Restrictions: "), restrictions
-        )
+      if (length(restrictions_list) > 0) {
+        if (length(restrictions_list) == 1) {
+          # Single source - show inline
+          tags$div(class = "alert alert-warning",
+            tags$strong("Restrictions: "), restrictions_list[[1]]
+          )
+        } else {
+          # Multiple sources - show as list
+          tags$div(class = "alert alert-warning",
+            tags$strong("Restrictions:"),
+            tags$ul(class = "mb-0 mt-2",
+              lapply(names(restrictions_list), function(src_name) {
+                tags$li(tags$strong(src_name, ": "), restrictions_list[[src_name]])
+              })
+            )
+          )
+        }
       },
 
       # Variable tables

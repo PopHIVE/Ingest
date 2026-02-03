@@ -9,14 +9,15 @@
   },
   "resources": [
     {
-      "bytes": 4302712,
+      "bytes": 4302733,
       "encoding": "ISO-8859-1",
-      "md5": "88e2906685b2d200542a67e9dc8be834",
+      "md5": "94fcb6c12a14213f829ba72d657e0ada",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "b0cd5e888daf4a63d94d1370140226c7b8dcd812",
           "43922efe6067856f579e7e908ce2e1dcdc883848",
           "4bf7a93442011f06a6d0911b452537d3e687b01c",
           "5fbead9f997752301d278d310cca41bf9950e0a8",
@@ -84,6 +85,7 @@
           "4cb10f051274bbe312640cd33af0a812cc00cc75"
         ],
         "author": [
+          "danweinberger <daniel.weinberger@yale.edu>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -151,6 +153,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Sun Feb 1 22:36:14 2026 -0500",
           "Tue Jan 27 14:52:19 2026 +0000",
           "Fri Jan 23 14:44:05 2026 +0000",
           "Tue Jan 20 14:51:21 2026 +0000",
@@ -218,6 +221,7 @@
           "Mon Aug 11 14:19:10 2025 -0400"
         ],
         "message": [
+          "update respiratory files",
           "scheduled data build",
           "scheduled data build",
           "scheduled data build",
@@ -285,14 +289,7 @@
           "adds county level epic data for cosmos diabetes/obesity"
         ]
       },
-      "source": [
-        {
-          "name": "CMU Delphi",
-          "url": "https://cmu-delphi.github.io/delphi-epidata/",
-          "location": "COVIDcast > Doctor Visits",
-          "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/doctor-visits.html"
-        }
-      ],
+      "source": [],
       "ids": [
         {
           "variable": "geography"
@@ -301,8 +298,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-02-01 21:53:04.909399",
-      "last_modified": "2025-08-11 12:58:12.653652",
+      "created": "2026-02-02 23:22:50.825382",
+      "last_modified": "2025-10-24 13:59:54.753862",
       "vintage": {},
       "row_count": 672937,
       "entity_count": 2608,
@@ -3249,7 +3246,7 @@
           },
           {
             "name": "delphi_doc_covid_smooth",
-            "duplicates": 150591,
+            "duplicates": 150581,
             "time_range": [0, 312],
             "type": "float",
             "missing": 0,
@@ -3260,28 +3257,40 @@
           }
         ]
       },
-      "sha512": "5fe57121ea66031affc43eff67a20f10b1f81deec6adb676a9eacb5ec3f9489dc60781e40fe0666592e0099aedf91739153155bf0fc952d7e09849b300958455"
+      "sha512": "d32ba7e083ea35f1491105414bd059e0a549144dc90239686306ab344c83406913a608834c5751955f9e0bf4e7046604729a1fc602ed74498380313cba454067"
     }
   ],
   "measure_info": {
     "delphi_doc_covid_smooth": {
       "id": "delphi_doc_covid_smooth",
+      "short_name": "COVID Doctor Visits",
+      "long_name": "Percentage of Outpatient Visits for COVID-Related Symptoms",
       "category": "respiratory",
       "short_description": "Estimated percentage of outpatient doctor visits primarily about COVID-related symptoms, based on data from health system partners, smoothed in time using a Gaussian linear smoother",
-      "long_description": "This data source is based on information about outpatient visits, provided to CMU/Delphi by health system partners. Using this outpatient data, CMU/Delphi estimates the percentage of COVID-related doctor’s visits in a given location, on a given day. Percent of all unique outpatient visits with primary ICD-10 code of any of: U071, U072, B9729, J1281, Z03818, B342, J1289",
+      "long_description": "This data source is based on information about outpatient visits, provided to CMU/Delphi by health system partners. Using this outpatient data, CMU/Delphi estimates the percentage of COVID-related doctor's visits in a given location, on a given day. Percent of all unique outpatient visits with primary ICD-10 code of any of: U071, U072, B9729, J1281, Z03818, B342, J1289",
       "measure_type": "percent",
       "unit": "Percent of doctor's visits, smoothed",
       "time_resolution": "day",
       "restrictions": "CC-BY Attribution license",
       "sources": [
         {
-          "name": "CMU Delphi",
-          "url": "https://cmu-delphi.github.io/delphi-epidata/",
-          "location": "COVIDcast > Doctor Visits",
-          "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/doctor-visits.html"
+          "id": "delphi_doctor_visits"
         }
       ],
       "citations": []
+    },
+    "_sources": {
+      "delphi_doctor_visits": {
+        "name": "CMU Delphi COVIDcast - Doctor Visits",
+        "url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/doctor-visits.html",
+        "organization": "Carnegie Mellon University Delphi Research Group",
+        "organization_url": "https://delphi.cmu.edu/",
+        "location": "COVIDcast Epidata API",
+        "location_url": "https://cmu-delphi.github.io/delphi-epidata/",
+        "description": "The Delphi Doctor Visits signal estimates the percentage of outpatient doctor visits with COVID-related diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal is calculated as the percentage of outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). Data are smoothed using a Gaussian linear smoother to reduce day-to-day noise. This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are available at state and county levels with approximately 3-4 day lag from the date of service.",
+        "restrictions": "CC-BY Attribution license. Data may be used with attribution to the CMU Delphi Group."
+      },
+      "id": "_sources"
     }
   }
 }

@@ -262,10 +262,4 @@ if (!identical(process$wapo_state, current_wapo_state)) {
   process$wapo_state <- current_wapo_state
   dcf::dcf_process_record(updated = process)
 
-  cat("Successfully processed Washington Post vaccination data\n")
-  cat("  - Counties:", nrow(counties_standard), "records\n")
-  cat("  - Schools:", nrow(schools_standard), "records\n")
-
-} else {
-  cat("No changes detected in Washington Post data\n")
 }

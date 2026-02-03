@@ -155,6 +155,7 @@ PopHIVE/Ingest/
 
 ```r
 # Create new data source folder structure
+### Important!! When adding a new data source, you MUST run this function. Otherwise the process.json files will not be initialized correctly, causing the pieplein to fail
 dcf::dcf_add_source("source_name")
 
 # Initialize processing record for tracking changes
@@ -330,6 +331,8 @@ if (!identical(process$raw_state, raw_state)) {
 
 ## measure_info.json Template
 
+Each `measure_info.json` file should include variable definitions and a centralized `_sources` object. Variables reference sources by ID.
+
 ```json
 {
   "variable_name": {
@@ -343,22 +346,46 @@ if (!identical(process$raw_state, raw_state)) {
     "measure_type": "Incidence|Prevalence|Rate|Percent|Count",
     "unit": "Cases per 100,000|Percent|Count",
     "time_resolution": "Week|Month|Year",
-    "restrictions": "Non-commercial purposes|Attribution required|None",
-    "sources": [
-      {
-        "name": "Source organization",
-        "url": "https://data.source.url"
-      }
-    ],
+    "sources": [{ "id": "source_id" }],
     "citations": [
       {
         "title": "Publication title",
         "url": "https://doi.org/..."
       }
     ]
+  },
+
+  "_sources": {
+    "source_id": {
+      "name": "Full source name",
+      "url": "https://data.source.url",
+      "organization": "Organization name",
+      "organization_url": "https://organization.url",
+      "location": "Specific dataset location (optional)",
+      "location_url": "https://specific.dataset.url (optional)",
+      "description": "Detailed narrative description of the data source, including methodology, coverage, limitations, and any important caveats for users.",
+      "restrictions": "License and usage restrictions. Examples: 'Public domain. CDC data is generally not subject to copyright restrictions.' or 'CC BY 4.0. Attribution required for reuse.' or 'Attribution required. Cite [citation].'",
+      "date_accessed": 2025
+    }
   }
 }
 ```
+
+### _sources Field Requirements
+
+Every `_sources` entry MUST include:
+- **name**: Full name of the data source
+- **url**: Primary URL for the data source
+- **organization**: Name of the organization providing the data
+- **organization_url**: URL for the organization
+- **description**: Narrative description of the source (methodology, coverage, limitations)
+- **restrictions**: License and usage restrictions
+
+Special restriction wording:
+- **Epic Cosmos**: "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+- **Google Health Trends**: "Data can be reused with attribution of data from the Google Health Trends API, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest)."
+- **CDC/CMS data**: "Public domain. CDC data is generally not subject to copyright restrictions."
+- **Academic publications**: "Attribution required. Cite [full citation]."
 
 ---
 
@@ -527,15 +554,8 @@ data %>%
 ```
 
 ### Issue: Error "process file process.json does not exist"
-```r
-# Problem: dcf::dcf_process_record() fails on first run of new data source
-# Solution: Check if process.json exists before calling dcf_process_record()
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
-```
+This is caused by failure to initialize a new datasource with dcf::dcf_add_source(). If this is not done,then the process.json file
+is not properly initialized. Go back and create the process.json structure using the correct format.
 
 ### Issue: Error "raw/file.csv.gz does not exist in current working directory"
 ```r

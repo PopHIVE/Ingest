@@ -22,13 +22,81 @@
     "variants": {
       "naloxone": {"default": "naloxone", "category": "overdose"},
       "overdose": {"default": "overdose", "category": "overdose"},
-      "gtrends_drug+overdose": {"default": "gtrends_drug+overdose", "category": "overdose"},
+      "drug+overdose": {"default": "drug+overdose", "category": "overdose"},
       "narcan": {"default": "narcan", "category": "overdose"},
       "rsv": {"default": "rsv", "category": "rsv"},
       "rsv_vaccine": {"default": "rsv_vaccine", "category": "rsv"},
-      "rsv_adjusted": {"default": "rsv_adjusted", "category": "rsv"}
-
+      "rsv_adjusted": {"default": "rsv_adjusted", "category": "rsv"},
+      "9mm": {"default": "9mm", "category": "firearms"},
+      "shotgun": {"default": "shotgun", "category": "firearms"},
+      "heat+exhaustion": {"default": "heat+exhaustion", "category": "heat"},
+      "heat+stroke": {"default": "heat+stroke", "category": "heat"}
     }
+  },
+
+  "gtrends_9mm": {
+    "id": "gtrends_9mm",
+    "short_name": "Google Search Volume: 9mm",
+    "long_name": "Google Trends Search Volume for 9mm",
+    "category": "firearms",
+    "short_description": "Google search volume for the term 9mm.",
+    "long_description": "Google trends search volume for the term 9mm. Values are the probabilities of a short search session including the term within the geography and timeframe, multiplied by 10 million.",
+    "measure_type": "probability",
+    "unit": "probability * 10M",
+    "time_resolution": "week",
+    "sources": [{ "id": "gtrends" }]
+  },
+
+  "gtrends_shotgun": {
+    "id": "gtrends_shotgun",
+    "short_name": "Google Search Volume: Shotgun",
+    "long_name": "Google Trends Search Volume for Shotgun",
+    "category": "firearms",
+    "short_description": "Google search volume for the term shotgun.",
+    "long_description": "Google trends search volume for the term shotgun. Values are the probabilities of a short search session including the term within the geography and timeframe, multiplied by 10 million.",
+    "measure_type": "probability",
+    "unit": "probability * 10M",
+    "time_resolution": "week",
+    "sources": [{ "id": "gtrends" }]
+  },
+
+  "gtrends_drug+overdose": {
+    "id": "gtrends_drug+overdose",
+    "short_name": "Google Search Volume: Drug Overdose",
+    "long_name": "Google Trends Search Volume for Drug Overdose",
+    "category": "overdose",
+    "short_description": "Google search volume for the term drug overdose.",
+    "long_description": "Google trends search volume for the combined term drug+overdose. Values are the probabilities of a short search session including the term within the geography and timeframe, multiplied by 10 million.",
+    "measure_type": "probability",
+    "unit": "probability * 10M",
+    "time_resolution": "week",
+    "sources": [{ "id": "gtrends" }]
+  },
+
+  "gtrends_heat+exhaustion": {
+    "id": "gtrends_heat+exhaustion",
+    "short_name": "Google Search Volume: Heat Exhaustion",
+    "long_name": "Google Trends Search Volume for Heat Exhaustion",
+    "category": "heat",
+    "short_description": "Google search volume for the term heat exhaustion.",
+    "long_description": "Google trends search volume for the combined term heat+exhaustion. Values are the probabilities of a short search session including the term within the geography and timeframe, multiplied by 10 million.",
+    "measure_type": "probability",
+    "unit": "probability * 10M",
+    "time_resolution": "week",
+    "sources": [{ "id": "gtrends" }]
+  },
+
+  "gtrends_heat+stroke": {
+    "id": "gtrends_heat+stroke",
+    "short_name": "Google Search Volume: Heat Stroke",
+    "long_name": "Google Trends Search Volume for Heat Stroke",
+    "category": "heat",
+    "short_description": "Google search volume for the term heat stroke.",
+    "long_description": "Google trends search volume for the combined term heat+stroke. Values are the probabilities of a short search session including the term within the geography and timeframe, multiplied by 10 million.",
+    "measure_type": "probability",
+    "unit": "probability * 10M",
+    "time_resolution": "week",
+    "sources": [{ "id": "gtrends" }]
   },
   "value": {
     "full_name": "value",
@@ -51,7 +119,8 @@
       "url": "https://trends.google.com",
       "organization": "Yale Data-Intensive Social Science Center (DISSC)",
       "organization_url": "https://github.com/DISSC-yale/gtrends_collection",
-      "description": "Google Health Trends data accessed via the Google Health Trends API, processed and collected using Yale DISSC's gtrends_collection framework. The data represents the probability of a short search session including a specific health-related term within a geography and timeframe, multiplied by 10 million for readability. Search volumes are provided at the DMA (Designated Market Area) and state level on a weekly basis. This data source enables tracking of public interest in health topics such as RSV, overdose, and naloxone as potential early indicators of disease activity or public health concerns."
+      "description": "Google Health Trends data accessed via the Google Health Trends API, processed and collected using Yale DISSC's gtrends_collection framework. The data represents the probability of a short search session including a specific health-related term within a geography and timeframe, multiplied by 10 million for readability. Search volumes are provided at the DMA (Designated Market Area) and state level on a weekly basis. This data source enables tracking of public interest in health topics such as RSV, overdose, and naloxone as potential early indicators of disease activity or public health concerns.",
+      "restrictions": "Data can be reused with attribution of data from the Google Health Trends API, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest)."
     }
   }
 }
