@@ -15,7 +15,12 @@
       "format": "csv",
       "name": "data_county.csv",
       "filename": "data_county.csv.gz",
-      "versions": {},
+      "versions": {
+        "hash": ["b588047aff549b5b11fe9e2c56e739c0638dfdda"],
+        "author": ["danweinberger <daniel.weinberger@yale.edu>"],
+        "date": ["Mon Jan 19 23:44:15 2026 -0500"],
+        "message": ["adds wahpost immunization data, Delphi ILI, others"]
+      },
       "source": [],
       "ids": [
         {
@@ -25,8 +30,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-01-19 17:07:11.337952",
-      "last_modified": "2026-01-19 16:55:23.130754",
+      "created": "2026-02-02 23:49:36.366156",
+      "last_modified": "2026-01-27 15:18:25.282326",
       "vintage": {},
       "row_count": 3109,
       "entity_count": 3109,
@@ -3226,13 +3231,18 @@
       "sha512": "2e7b66e18bf10abf324b0af566c31e9b20354bec36789379b4c0fc529f51da3a352794bf5480f4346da1615927b70ec1fffe1ad5af32e2db8a77781afc2e4ff1"
     },
     {
-      "bytes": 584,
+      "bytes": 620,
       "encoding": "ISO-8859-1",
-      "md5": "aab76fc68322efd974022798d0858917",
+      "md5": "9ace0051112ca24e0de1a05396a83de4",
       "format": "csv",
       "name": "data_state.csv",
       "filename": "data_state.csv.gz",
-      "versions": {},
+      "versions": {
+        "hash": ["4f5b9992d1af847bd1cefa5fc12cc0e0ff58220e", "b588047aff549b5b11fe9e2c56e739c0638dfdda"],
+        "author": ["danweinberger <daniel.weinberger@yale.edu>", "danweinberger <daniel.weinberger@yale.edu>"],
+        "date": ["Tue Jan 20 23:48:25 2026 -0500", "Mon Jan 19 23:44:15 2026 -0500"],
+        "message": ["update the Healthmap MMR estimate ingestion and fix issue with missing CT county data", "adds wahpost immunization data, Delphi ILI, others"]
+      },
       "source": [],
       "ids": [
         {
@@ -3242,8 +3252,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-01-19 17:07:12.17008",
-      "last_modified": "2026-01-19 16:55:25.347418",
+      "created": "2026-02-02 23:49:36.997322",
+      "last_modified": "2026-01-27 15:18:25.285322",
       "vintage": {},
       "row_count": 50,
       "entity_count": 50,
@@ -3324,14 +3334,14 @@
             "time_range": [0, 0],
             "type": "float",
             "missing": 0,
-            "mean": 71.54047,
-            "sd": 4.012975,
-            "min": 61.990986,
-            "max": 79.268874
+            "mean": 70.584423,
+            "sd": 4.063514,
+            "min": 61.215128,
+            "max": 79.418913
           }
         ]
       },
-      "sha512": "cb946c13bacefd0c05a1a14006765c4a17482a9576e9229fc2db8005a4bc4a48f1171927093b2f37cb8abf34728231bec798350e939e5e20b3defcedea9ececc"
+      "sha512": "30b61158dec936cdb7a03cad4de4f55e9c3a6f9b656672c9b01b995c82240cdb449c05d1f9f84bf04eb57e1e92b822a3d336feb2463ec34eb3377669c0420da9"
     },
     {
       "bytes": 680445,
@@ -3340,7 +3350,12 @@
       "format": "csv",
       "name": "data_zcta.csv",
       "filename": "data_zcta.csv.gz",
-      "versions": {},
+      "versions": {
+        "hash": ["b588047aff549b5b11fe9e2c56e739c0638dfdda"],
+        "author": ["danweinberger <daniel.weinberger@yale.edu>"],
+        "date": ["Mon Jan 19 23:44:15 2026 -0500"],
+        "message": ["adds wahpost immunization data, Delphi ILI, others"]
+      },
       "source": [],
       "ids": [
         {
@@ -3350,8 +3365,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-01-19 17:07:12.136198",
-      "last_modified": "2026-01-19 16:55:24.638071",
+      "created": "2026-02-02 23:49:36.877256",
+      "last_modified": "2026-01-27 15:18:25.291882",
       "vintage": {},
       "row_count": 29971,
       "entity_count": 29971,
@@ -33403,6 +33418,85 @@
     }
   ],
   "measure_info": {
+    "value": {
+      "id": "value",
+      "short_name": "MMR Coverage",
+      "long_name": "MMR Vaccine Coverage Estimate",
+      "short_description": "Estimated percentage of children with at least one dose of MMR vaccine.",
+      "measure_type": "percent",
+      "unit": "percent",
+      "sources": [
+        {
+          "id": "healthmap_mmr"
+        }
+      ]
+    },
+    "risk_level": {
+      "id": "risk_level",
+      "short_name": "Risk Level",
+      "long_name": "Under-Vaccination Risk Classification",
+      "short_description": "Risk classification for under-vaccination based on coverage estimates.",
+      "long_description": "Risk level classification (e.g., high, medium, low) indicating the likelihood of under-vaccination in the geographic area based on estimated MMR coverage.",
+      "measure_type": "categorical",
+      "sources": [
+        {
+          "id": "healthmap_mmr"
+        }
+      ]
+    },
+    "local_i": {
+      "id": "local_i",
+      "short_name": "Local Moran's I",
+      "long_name": "Local Moran's I Statistic",
+      "short_description": "Local Moran's I statistic for spatial autocorrelation.",
+      "long_description": "Local Moran's I statistic measuring spatial autocorrelation of vaccination coverage. Positive values indicate clustering of similar values; negative values indicate clustering of dissimilar values.",
+      "measure_type": "numeric",
+      "sources": [
+        {
+          "id": "healthmap_mmr"
+        }
+      ]
+    },
+    "p_value": {
+      "id": "p_value",
+      "short_name": "P-Value",
+      "long_name": "Statistical P-Value",
+      "short_description": "P-value for the Local Moran's I statistic.",
+      "long_description": "Statistical significance level for the Local Moran's I test of spatial autocorrelation. Lower values indicate more statistically significant clustering.",
+      "measure_type": "numeric",
+      "sources": [
+        {
+          "id": "healthmap_mmr"
+        }
+      ]
+    },
+    "spatial_cluster": {
+      "id": "spatial_cluster",
+      "short_name": "Spatial Cluster",
+      "long_name": "Spatial Cluster Classification",
+      "short_description": "Classification of spatial clustering pattern.",
+      "long_description": "Classification of spatial autocorrelation pattern based on Local Moran's I analysis. Categories may include High-High (cluster of high values), Low-Low (cluster of low values), High-Low (outlier with high value surrounded by low), Low-High (outlier with low value surrounded by high), or Not Significant.",
+      "measure_type": "categorical",
+      "sources": [
+        {
+          "id": "healthmap_mmr"
+        }
+      ]
+    },
+    "population_sample": {
+      "id": "population_sample",
+      "short_name": "Population Sample",
+      "long_name": "Participatory Surveillance Sample Size",
+      "short_description": "Number of participatory surveillance respondents in the area.",
+      "long_description": "Sample size from participatory surveillance data used in the small area estimation model to generate vaccine coverage estimates.",
+      "measure_type": "integer",
+      "unit": "respondents",
+      "sources": [
+        {
+          "id": "healthmap_mmr"
+        }
+      ]
+    },
     "mmr_coverage_county": {
       "id": "mmr_coverage_county",
       "short_name": "MMR Vaccination Coverage (County)",
@@ -33467,8 +33561,7 @@
       "restrictions": "None",
       "sources": [
         {
-          "name": "HealthMap MMR Vaccine Estimates",
-          "url": "https://github.com/eric-gengzhou/MMR_vaccine_estimates"
+          "id": "healthmap_mmr"
         }
       ],
       "citations": [
@@ -33477,6 +33570,17 @@
           "url": "https://github.com/eric-gengzhou/MMR_vaccine_estimates"
         }
       ]
+    },
+    "_sources": {
+      "healthmap_mmr": {
+        "name": "HealthMap MMR Vaccine Coverage Estimates",
+        "url": "https://github.com/eric-gengzhou/MMR_vaccine_estimates",
+        "organization": "HealthMap / Boston Children's Hospital",
+        "organization_url": "https://healthmap.org/",
+        "description": "County, ZIP code, and state-level estimates of MMR (measles, mumps, and rubella) vaccine coverage among US children, developed using small area estimation with multilevel regression and post-stratification (MRP). The methodology integrates participatory surveillance data from digital health platforms with demographic and contextual covariates to produce granular geographic estimates of vaccination coverage gaps. Estimates include posterior mean coverage percentages, risk classifications for under-vaccination, and spatial autocorrelation measures (Local Moran's I) to identify geographic clustering of under-vaccinated areas. This research was conducted in response to the 2025 measles outbreak to support targeted public health interventions.",
+        "restrictions": "MIT License: Copyright (c) 2025 Eric Zhou.  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the Software), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:Attribution required. Cite Zhou EG, Brownstein J, Rader B. Assessing MMR Vaccination Coverage Gaps in US Children with Digital Participatory Surveillance. Nature Health. 2025."
+      },
+      "id": "_sources"
     }
   }
 }

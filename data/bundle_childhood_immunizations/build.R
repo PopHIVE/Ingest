@@ -128,9 +128,9 @@ write_parquet(combo_school_NIS, "./dist/overall_rates_by_source.parquet")
 
 ############################################################
 # Washington Post school vaccination data - county level
-wapo_counties <- vroom::vroom('../schoolvaxview/standard/data_wapo_counties.csv.gz')
+wapo_counties <- vroom::vroom('../schoolvax_washpost/standard/data_counties.csv.gz')
 arrow::write_parquet(wapo_counties, "dist/wapo_vax_counties.parquet")
 
 # Washington Post school vaccination data - school level
-wapo_schools <- vroom::vroom('../schoolvaxview/standard/data_wapo_schools.csv.gz')
+wapo_schools <- vroom::vroom('../schoolvax_washpost/standard/data_schools.csv.gz')
 arrow::write_parquet(wapo_schools, "dist/wapo_vax_schools.parquet")

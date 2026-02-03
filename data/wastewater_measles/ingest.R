@@ -172,5 +172,3 @@ if (!identical(process$raw_state, raw_state)) {
   dcf::dcf_process_record(updated = process)
 }
 
-
-

@@ -36,6 +36,7 @@ if (!identical(process1$raw_state, raw_state1)) {
   #type of overdose counts by state (12 month backward total)
   data_type <- open_dataset('./raw/xkb8-kh2a.parquet') %>%
     collect() %>%
+    as.data.frame() %>%
     mutate( time = as.Date(paste(Year, Month, '01', sep='-'), '%Y-%B-%d'),
             State = if_else(State=='YC','NY', State), #combines NYC and NY state
     ) %>%
@@ -62,6 +63,7 @@ if (!identical(process1$raw_state, raw_state1)) {
   
   data_pct_specified <- open_dataset('./raw/xkb8-kh2a.parquet') %>%
     collect() %>%
+    as.data.frame() %>%
     mutate( time = as.Date(paste(Year, Month, '01', sep='-'), '%Y-%B-%d'),
             State = if_else(State=='YC','NY', State), #combines NYC and NY state
     ) %>%
@@ -89,9 +91,10 @@ if (!identical(process1$raw_state, raw_state1)) {
   
   
   ##Completeness of data
-  
+
   data_completeness <- open_dataset('./raw/xkb8-kh2a.parquet') %>%
     collect() %>%
+    as.data.frame() %>%
     #population-weighted average for New York
     mutate( State = if_else(State=='YC','NY', State), #combines NYC and NY state
             geography = if_else(State=='US', 0,
@@ -137,6 +140,7 @@ if (!identical(process2$raw_state, raw_state2)) {
   #type of overdose counts by state (12 month backward total)
   data2 <- open_dataset('./raw/gb4e-yj24.parquet') %>%
     collect() %>%
+    as.data.frame() %>%
     mutate( time = as.Date(MonthEndingDate, '%m/%d/%Y'),
             time = floor_date(time, unit='month'),
             STATEFIPS = sprintf("%02d", STATEFIPS),
@@ -164,6 +168,8 @@ if (!identical(process2$raw_state, raw_state2)) {
 if (!identical(process3$raw_state, raw_state3)) {
   
   data_type <- open_dataset('./raw/489q-934x.parquet') %>%
+    collect() %>%
+    as.data.frame() %>%
     rename(time_period = 'Time Period',
            type_rate = 'Rate Type',
            cause_of_death = 'Cause of Death',
@@ -171,7 +177,6 @@ if (!identical(process3$raw_state, raw_state3)) {
            Rate_overall = 'Overall Rate'
            ) %>%
     filter(time_period == "3-month period" & type_rate == 'Age-adjusted'  ) %>%
-    collect() %>%
     pivot_longer( cols= starts_with('Rate')) %>%
     mutate(state = map_lgl(name, ~ any(str_detect(.x, c('Rate_overall',state.name))))
            )%>%
@@ -197,7 +202,7 @@ if (!identical(process3$raw_state, raw_state3)) {
       .cols = starts_with("rate_")
     )
     
-  fips_map <- vroom::vroom('../../resources/all_fips.csv.gz')
+  fips_map <- vroom::vroom('../../resources/all_fips.csv.gz', altrep = FALSE)
   
   data_type <- data_type %>% 
     left_join(fips_map ,by='geography_name') %>%

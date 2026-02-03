@@ -155,6 +155,7 @@ PopHIVE/Ingest/
 
 ```r
 # Create new data source folder structure
+### Important!! When adding a new data source, you MUST run this function. Otherwise the process.json files will not be initialized correctly, causing the pieplein to fail
 dcf::dcf_add_source("source_name")
 
 # Initialize processing record for tracking changes
@@ -330,6 +331,8 @@ if (!identical(process$raw_state, raw_state)) {
 
 ## measure_info.json Template
 
+Each `measure_info.json` file should include variable definitions and a centralized `_sources` object. Variables reference sources by ID.
+
 ```json
 {
   "variable_name": {
@@ -343,22 +346,46 @@ if (!identical(process$raw_state, raw_state)) {
     "measure_type": "Incidence|Prevalence|Rate|Percent|Count",
     "unit": "Cases per 100,000|Percent|Count",
     "time_resolution": "Week|Month|Year",
-    "restrictions": "Non-commercial purposes|Attribution required|None",
-    "sources": [
-      {
-        "name": "Source organization",
-        "url": "https://data.source.url"
-      }
-    ],
+    "sources": [{ "id": "source_id" }],
     "citations": [
       {
         "title": "Publication title",
         "url": "https://doi.org/..."
       }
     ]
+  },
+
+  "_sources": {
+    "source_id": {
+      "name": "Full source name",
+      "url": "https://data.source.url",
+      "organization": "Organization name",
+      "organization_url": "https://organization.url",
+      "location": "Specific dataset location (optional)",
+      "location_url": "https://specific.dataset.url (optional)",
+      "description": "Detailed narrative description of the data source, including methodology, coverage, limitations, and any important caveats for users.",
+      "restrictions": "License and usage restrictions. Examples: 'Public domain. CDC data is generally not subject to copyright restrictions.' or 'CC BY 4.0. Attribution required for reuse.' or 'Attribution required. Cite [citation].'",
+      "date_accessed": 2025
+    }
   }
 }
 ```
+
+### _sources Field Requirements
+
+Every `_sources` entry MUST include:
+- **name**: Full name of the data source
+- **url**: Primary URL for the data source
+- **organization**: Name of the organization providing the data
+- **organization_url**: URL for the organization
+- **description**: Narrative description of the source (methodology, coverage, limitations)
+- **restrictions**: License and usage restrictions
+
+Special restriction wording:
+- **Epic Cosmos**: "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+- **Google Health Trends**: "Data can be reused with attribution of data from the Google Health Trends API, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest)."
+- **CDC/CMS data**: "Public domain. CDC data is generally not subject to copyright restrictions."
+- **Academic publications**: "Attribution required. Cite [full citation]."
 
 ---
 
@@ -527,13 +554,31 @@ data %>%
 ```
 
 ### Issue: Error "process file process.json does not exist"
-```r
-# Problem: dcf::dcf_process_record() fails on first run of new data source
-# Solution: Check if process.json exists before calling dcf_process_record()
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
+This is caused by failure to initialize a new datasource with `dcf::dcf_add_source()`. If this is not done, the process.json file is not properly initialized.
+
+**Preferred solution**: Run `dcf::dcf_add_source("source_name")` to create the folder structure properly.
+
+**Manual fix**: If you need to create the process.json manually, use this structure (replace `source_name` with your data folder name):
+
+```json
+{
+  "name": "source_name",
+  "type": "source",
+  "scripts": [
+    {
+      "path": "ingest.R",
+      "manual": false,
+      "frequency": 0,
+      "last_run": "",
+      "run_time": "",
+      "last_status": {
+        "log": "",
+        "success": true
+      }
+    }
+  ],
+  "checked": "",
+  "check_results": []
 }
 ```
 
@@ -553,6 +598,34 @@ setwd("../..")
 dcf::dcf_process("source_name")
 
 # Also ensure project.Rproj and README.md exist in the source folder
+```
+
+### Issue: Error "vec_math.arrow_binary() not implemented" when running dcf_process()
+
+This error occurs when a script works fine when run directly but fails via `dcf_process()`. The cause is vroom's Arrow ALTREP (lazy loading) backend:
+
+- **When running directly**: Interactive sessions may materialize data earlier or have different environment state
+- **When running via dcf_process()**: Scripts run in a cleaner context where Arrow ALTREP stays active, keeping columns as Arrow binary types until an operation forces materialization
+
+The error typically triggers when using `if_else()` with mixed types (e.g., comparing integers with Arrow-backed columns) or when `cdlTools::fips()` returns integers that get mixed with other types.
+
+```r
+# Problem: cdlTools::fips() with if_else causes Arrow type issues
+mutate(geography = cdlTools::fips(statename, to='FIPS'),
+       geography = if_else(statename=='United States', 0, geography))
+
+# Solution: Use FIPS lookup merge instead (also faster)
+all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+state_fips_lookup <- all_fips %>%
+  filter(nchar(geography) == 2) %>%
+  select(geography, geography_name)
+
+data <- data %>%
+  left_join(state_fips_lookup, by = c("statename" = "geography_name")) %>%
+  mutate(geography = if_else(statename == 'United States', "00", geography))
+
+# Alternative: Disable Arrow ALTREP (less preferred)
+data <- vroom::vroom("file.csv.xz", show_col_types = FALSE, altrep = FALSE)
 ```
 
 ### Issue: Connecticut county FIPS codes not matching
@@ -609,6 +682,9 @@ dcf::dcf_build()
 # Validate standard file format
 source("scripts/validate_standard.R")
 validate_standard_file("data/source_name/standard/data.csv.gz")
+
+# Rebuild data source documentation (generates docs/index.html)
+Rscript scripts/build_docs.R
 ```
 
 ---
@@ -641,7 +717,13 @@ validate_standard_file("data/source_name/standard/data.csv.gz")
    dcf::dcf_process("bundle_category", ".")
    ```
 
-8. **Commit changes**: Include raw data sample, ingest.R, measure_info.json, standard output
+8. **Update documentation**: The data source documentation is auto-generated from `measure_info.json` files
+   ```r
+   Rscript scripts/build_docs.R
+   ```
+   This generates `docs/index.html` with variable tables and source information. The GitHub Action will also rebuild docs automatically when `measure_info.json` files change.
+
+9. **Commit changes**: Include raw data sample, ingest.R, measure_info.json, standard output, and updated docs/
 
 ---
 
