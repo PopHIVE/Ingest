@@ -98,4 +98,57 @@ df_all <- df_all %>%
   rename(year= core_set_year) %>%
   mutate(year = if_else(is.na(year), ffy,year))
 
+df_all <- vroom::vroom( './raw/all_years.csv.gz')
+
+df_all <- df_all %>%
+  rename(year= core_set_year) %>%
+  mutate(year = if_else(is.na(year), ffy,year))
+
+##stratified files
+
+#create stratified directory
+if(!dir.exists('./raw/stratified')) dir.create('./raw/stratified')
+
+#by domain
+cat("\nCreating domain-stratified files...\n")
+df_all %>%
+  filter(!is.na(domain)) %>%
+  group_by(domain) %>%
+  group_walk(~ vroom::vroom_write(.x, paste0('./raw/stratified/domain_', 
+                                             gsub(" |/", "_", .y$domain), '.csv.gz')))
+
+#by population
+cat("Creating population-stratified files...\n")
+df_all %>%
+  filter(!is.na(population)) %>%
+  group_by(population) %>%
+  group_walk(~ vroom::vroom_write(.x, paste0('./raw/stratified/pop_', 
+                                             gsub(" |/", "_", .y$population), '.csv.gz')))
+
+#by measure type
+cat("Creating measure-type-stratified files...\n")
+df_all %>%
+  filter(!is.na(measure_type)) %>%
+  group_by(measure_type) %>%
+  group_walk(~ vroom::vroom_write(.x, paste0('./raw/stratified/type_', 
+                                             gsub(" |/", "_", .y$measure_type), '.csv.gz')))
+
+#2020 and beyond...
+cat("Creating recent years file (2020+)...\n")
+df_all %>%
+  filter(year >= 2020) %>%
+  vroom::vroom_write('./raw/recent_2020plus.csv.gz')
+
+#summary of stratifications
+cat("\n=== STRATIFICATION SUMMARY ===\n")
+cat("Files created in ./raw/stratified/\n\n")
+
+cat("By domain:\n")
+df_all %>% count(domain, sort = TRUE) %>% print()
+
+cat("\nBy population:\n")
+df_all %>% count(population, sort = TRUE) %>% print()
+
+cat("\nBy measure type:\n")
+df_all %>% count(measure_type, sort = TRUE) %>% print()
 
