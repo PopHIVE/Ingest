@@ -1,6 +1,6 @@
 # =============================================================================
 # JHU Measles Tracking Team Data Ingestion
-# Source: https://github.com/JHU-Measles-Tracking-Team/measles_data
+# Source: https://github.com/CSSEGISandData/measles_data
 # =============================================================================
 
 library(dplyr)
@@ -16,7 +16,7 @@ fips_lookup <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = 
 # -----------------------------------------------------------------------------
 # 1. Download raw data from GitHub
 # -----------------------------------------------------------------------------
-base_url <- "https://raw.githubusercontent.com/JHU-Measles-Tracking-Team/measles_data/main/"
+base_url <- "https://raw.githubusercontent.com/CSSEGISandData/measles_data/main/"
 
 files <- c(
   "Top_states_time_series.csv",
