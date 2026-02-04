@@ -19,7 +19,7 @@ All standardized output files must conform to these column specifications:
 | Column | Description | Format | Examples |
 |--------|-------------|--------|----------|
 | `geography` | Geographic identifier | FIPS code string | `"00"` (national), `"06"` (California), `"06037"` (LA County) |
-| `time` | Time period end date | `MM-DD-YYYY` | `"01-04-2025"` (Saturday for weekly data) |
+| `time` | Time period end date | `YYYY-mm-dd` | `"2025-01-04"` (Saturday for weekly data) |
 
 ### Common Optional Columns
 
@@ -105,10 +105,10 @@ The file contains three columns:
 
 ### Time Standards
 
-- **Format**: `MM-DD-YYYY` (with leading zeros)
+- **Format**: `YYYY-mm-dd` (ISO 8601 format with leading zeros)
 - **Weekly data**: Use Saturday at end of week (epiweek convention)
 - **Monthly data**: Use last day of month
-- **Annual data**: Use `12-31-YYYY`
+- **Annual data**: Use `YYYY-12-31`
 
 ---
 
@@ -305,7 +305,7 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     # Format time
     mutate(
-      time = format(as.Date(time), "%m-%d-%Y")
+      time = format(as.Date(time), "%Y-%m-%d")
     ) %>%
     # Select and order columns
     select(geography, time, age, value = `Weekly Rate`)
@@ -506,7 +506,7 @@ arrow::write_parquet(
 When creating or reviewing ingestion scripts, verify:
 
 - [ ] **Geography**: All values are valid FIPS codes; national = `"00"`
-- [ ] **Time**: Format is `MM-DD-YYYY`; weekly data uses Saturday
+- [ ] **Time**: Format is `YYYY-mm-dd`; weekly data uses Saturday
 - [ ] **Column names**: Use standard names (lowercase, underscores)
 - [ ] **Missing data**: Handled appropriately (NA, not empty strings)
 - [ ] **Suppression**: Flagged with `suppressed_flag` column if imputed
@@ -530,8 +530,8 @@ mutate(geography = cdlTools::fips(state_name, to = "FIPS"))
 
 ### Issue: Date in wrong format
 ```r
-# Solution: Parse and reformat
-mutate(time = format(as.Date(time, "%Y-%m-%d"), "%m-%d-%Y"))
+# Solution: Parse and reformat to ISO 8601
+mutate(time = format(as.Date(time, "%m-%d-%Y"), "%Y-%m-%d"))
 ```
 
 ### Issue: National data missing

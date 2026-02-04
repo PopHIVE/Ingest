@@ -20,7 +20,7 @@ base_url <- "https://raw.githubusercontent.com/CSSEGISandData/measles_data/main/
 
 files <- c(
   "Top_states_time_series.csv",
-  "measles_county_all_updates.csv",
+  "measles_county_all_updates_detailed.csv",
   "data_sources_by_state.csv"
 )
 
@@ -72,7 +72,7 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(
       # Week ends on Saturday (adjust if needed)
       week_end_date = as.Date(week_end),
-      time = format(week_end_date, "%m-%d-%Y")
+      time = format(week_end_date, "%Y-%m-%d")
     ) %>%
     # Ensure value is numeric and select standard columns
     mutate(value = as.numeric(value)) %>%
@@ -83,7 +83,7 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   # 3. Read and transform County-level data
   # ---------------------------------------------------------------------------
-  county_data <- vroom::vroom("raw/measles_county_all_updates.csv.xz", show_col_types = FALSE)
+  county_data <- vroom::vroom("raw/measles_county_all_updates_detailed.csv.xz", show_col_types = FALSE)
 
   # Transform to standard format for county-level daily data
   county_standard <- county_data %>%
@@ -94,7 +94,7 @@ if (!identical(process$raw_state, raw_state)) {
     # Convert date to MM-DD-YYYY format
     mutate(
       date_obj = as.Date(date),
-      time = format(date_obj, "%m-%d-%Y")
+      time = format(date_obj, "%Y-%m-%d")
     ) %>%
     # Ensure value is numeric
     mutate(value = as.numeric(value)) %>%
@@ -106,7 +106,7 @@ if (!identical(process$raw_state, raw_state)) {
   # Aggregate county data to weekly level (matching epiweek convention - Saturday)
   county_weekly <- county_standard %>%
     mutate(
-      date_obj = as.Date(time, format = "%m-%d-%Y"),
+      date_obj = as.Date(time, format = "%Y-%m-%d"),
       # Get the Saturday at the end of the epiweek
       week_end = ceiling_date(date_obj, "week", week_start = 7) - days(1)
     ) %>%
@@ -116,9 +116,10 @@ if (!identical(process$raw_state, raw_state)) {
       .groups = "drop"
     ) %>%
     mutate(
-      time = format(week_end, "%m-%d-%Y")
+      time = format(week_end, "%Y-%m-%d")
     ) %>%
-    select(geography, time, value)
+    select(geography, time, value) %>%
+    arrange(geography, time)
 
   # Aggregate county data to state level for comparison
   state_from_county <- county_weekly %>%
@@ -129,7 +130,7 @@ if (!identical(process$raw_state, raw_state)) {
     summarize(
       value = as.numeric(sum(value, na.rm = TRUE)),
       .groups = "drop"
-    ) %>%
+    )%>%
     rename(geography = state_fips)
 
   # ---------------------------------------------------------------------------
