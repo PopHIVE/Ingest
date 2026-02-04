@@ -119,6 +119,11 @@ overall_trends <-   combined %>%
   value_smooth = if_else(grepl('delphi_hospital',variable)|grepl('delphi_doctor',variable), value, value_smooth), #For Delphi, do not apply additional smoothing since data are pre-smoothed
   
   value_smooth = value_smooth - min(value_smooth, na.rm = T),
+
+  value_scale = value - min(value, na.rm=T),
+  
+  value_scale = value_scale/max(value_scale, na.rm = T) * 100,
+  
   value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
   ) %>%
   ungroup() %>%
@@ -176,11 +181,11 @@ overall_trends %>%
                                            if_else(variable=='rate_flu', 'CDC RespNET',
                                                    if_else(variable=='delphi_hospital_flu_smooth', 'Delphi Hospital Claims', 
                                                        if_else(variable=='wastewater_flua', 'CDC NWSS', 
-                                                             if_else(variable=='delphi_nhsn_flu', 'CDC NHSN', 
-                                                                   
+                                                             if_else(variable=='delphi_nhsn_flu', 'CDC NHSN',
+                                                                   if_else(variable=='delphi_fluview_wili', 'CDC ILINet',
                                                            NA_character_
-                                                           
-                                                   ))))))
+
+                                                   )))))))
   ) %>%
   left_join(suppressed_flu, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
@@ -331,6 +336,10 @@ trends_age <- combined_age %>%
     ),
     value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
     value_smooth = value_smooth - min(value_smooth, na.rm = T),
+
+    value_scale = value - min(value, na.rm = T),
+    value_scale = value_scale / max(value_scale, na.rm = T) * 100,
+    
     value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
   ) 
 
