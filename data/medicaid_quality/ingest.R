@@ -66,6 +66,9 @@ get_medicaid_data_complete <- function(dataset_id, limit = 1000) {
   }
 }
 
+# initialize dcf process
+process <- dcf::dcf_process_record()
+
 # https://data.medicaid.gov/datasets?theme%5B0%5D=Quality
 data_ids <-  list("e85033c7-367e-467e-9e81-8e85048102b8",#2023
      "dfd13757-d763-4f7a-9641-3f06ce21b4c6", #2022
@@ -79,76 +82,78 @@ data_ids <-  list("e85033c7-367e-467e-9e81-8e85048102b8",#2023
      "2b6a0ec0-efe6-5aec-9fe4-e168b8b6f553" #2014
      )
 
+#raw state tracking
+raw_state <- digest::digest(list(
+  dataset_ids = data_ids,
+  timestamp = format(Sys.time(), "%Y-%m-%d")
+))
+
+#processing if raw data has changed
+if (!identical(process$raw_state, raw_state)) {
 df_ls <- lapply(data_ids, get_medicaid_data_complete)
 
 names(df_ls) <- paste0('year',2014:2023)
 
 #save the raw files
-lapply(names(df_ls), function(X) vroom::vroom_write(df_ls[[X]], paste0('./raw/',X, '.csv.gz') ))
+lapply(names(df_ls), function(X) {
+  vroom::vroom_write(df_ls[[X]], paste0('raw/', X, '.csv.xz'))
+})
 
-df_all <- bind_rows(df_ls)
+#creating standard format
+#renaming columns for consistency across years and ease
+data1 <- bind_rows(df_ls, .id = "year") %>%
+  mutate(year = gsub("year", "", year)) %>%
+  rename(
+    measure_abbr = measure_abbreviation,
+    value = state_rate,
+    n_states = number_of_states_reporting,
+    pct25 = bottom_quartile,
+    pct75 = top_quartile
+  ) %>%
+  
+  mutate(
+    time_year = if_else(is.na(core_set_year) | core_set_year == "", 
+                        if_else(is.na(ffy) | ffy == "", year, ffy),
+                        core_set_year),
+    state_comments = if_else(is.na(statespecific_comments), 
+                             state_specific_comments, 
+                             statespecific_comments),
+    pct25 = if_else(is.na(pct25), `25th_percentile`, pct25),
+    pct75 = if_else(is.na(pct75), `75th_percentile`, pct75),
+    measure_info = if_else(is.na(measure_description), 
+                           rate_definition, 
+                           measure_description)
+  ) %>%
+  select(
+    time_year,
+    state,
+    domain,
+    reporting_program,
+    measure_name,
+    measure_abbr,
+    measure_info,
+    population,
+    methodology,
+    value,
+    n_states,
+    median,
+    pct25,
+    pct75,
+    notes,
+    source,
+    state_comments
+  )
 
-vroom::vroom_write(df_all, './raw/all_years.csv.gz')
-###########################################################################
-###########################################################################
+#writing standard file
+vroom::vroom_write(
+  data1,
+  "standard/data.csv.gz",
+  ","
+)
 
-df_all <- vroom::vroom( './raw/all_years.csv.gz')
+#record processed raw state
+process$raw_state <- raw_state
+dcf::dcf_process_record(updated = process)
+}
 
-df_all <- df_all %>%
-  rename(year= core_set_year) %>%
-  mutate(year = if_else(is.na(year), ffy,year))
-
-df_all <- vroom::vroom( './raw/all_years.csv.gz')
-
-df_all <- df_all %>%
-  rename(year= core_set_year) %>%
-  mutate(year = if_else(is.na(year), ffy,year))
-
-##stratified files
-
-#create stratified directory
-if(!dir.exists('./raw/stratified')) dir.create('./raw/stratified')
-
-#by domain
-cat("\nCreating domain-stratified files...\n")
-df_all %>%
-  filter(!is.na(domain)) %>%
-  group_by(domain) %>%
-  group_walk(~ vroom::vroom_write(.x, paste0('./raw/stratified/domain_', 
-                                             gsub(" |/", "_", .y$domain), '.csv.gz')))
-
-#by population
-cat("Creating population-stratified files...\n")
-df_all %>%
-  filter(!is.na(population)) %>%
-  group_by(population) %>%
-  group_walk(~ vroom::vroom_write(.x, paste0('./raw/stratified/pop_', 
-                                             gsub(" |/", "_", .y$population), '.csv.gz')))
-
-#by measure type
-cat("Creating measure-type-stratified files...\n")
-df_all %>%
-  filter(!is.na(measure_type)) %>%
-  group_by(measure_type) %>%
-  group_walk(~ vroom::vroom_write(.x, paste0('./raw/stratified/type_', 
-                                             gsub(" |/", "_", .y$measure_type), '.csv.gz')))
-
-#2020 and beyond...
-cat("Creating recent years file (2020+)...\n")
-df_all %>%
-  filter(year >= 2020) %>%
-  vroom::vroom_write('./raw/recent_2020plus.csv.gz')
-
-#summary of stratifications
-cat("\n=== STRATIFICATION SUMMARY ===\n")
-cat("Files created in ./raw/stratified/\n\n")
-
-cat("By domain:\n")
-df_all %>% count(domain, sort = TRUE) %>% print()
-
-cat("\nBy population:\n")
-df_all %>% count(population, sort = TRUE) %>% print()
-
-cat("\nBy measure type:\n")
-df_all %>% count(measure_type, sort = TRUE) %>% print()
 
