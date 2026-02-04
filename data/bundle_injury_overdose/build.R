@@ -41,6 +41,7 @@ wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
           age = if_else(age == "0-14 Years" , "<15 Years", age)
   ) #define based on end of period
 
+
 wisqars_aggregated <- wisqars %>%
   filter(sex == "All", race == "All", ethnicity == "All")
 
