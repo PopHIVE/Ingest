@@ -63,19 +63,8 @@ if (!identical(process$raw_state, raw_state)) {
         !is.na(geography) ~ geography,  # Use merged FIPS code
         TRUE ~ NA_character_  # Should not happen if lookup is complete
       ),
-      # Convert epiweek to date (Saturday at end of week)
-      # Epiweek format: YYYYWW (e.g., 202301 = 2023 week 1)
-      epiweek_year = as.integer(substr(as.character(epiweek), 1, 4)),
-      epiweek_week = as.integer(substr(as.character(epiweek), 5, 6)),
-      # Calculate Saturday ending the epiweek
-      # MMWR week 1 always contains Jan 4, and weeks run Sunday-Saturday
-      # Find Jan 4 of the year, get its MMWR week start (Sunday), then add weeks
-      jan4 = as.Date(paste0(epiweek_year, "-01-04")),
-      # Find the Sunday of the week containing Jan 4
-      jan4_wday = lubridate::wday(jan4, week_start = 7),  # Sunday = 1
-      week1_sunday = jan4 - (jan4_wday - 1),
-      # Calculate the Saturday of the requested epiweek
-      time = week1_sunday + (epiweek_week - 1) * 7 + 6  # +6 to get Saturday
+      # Convert epiweek (YYYY-mm-dd Sunday) to Saturday end-of-week
+      time = as.Date(epiweek) + 6
     ) %>%
     # Select and rename columns to standard format
     # wili = weighted ILI percentage, ili = unweighted ILI percentage
