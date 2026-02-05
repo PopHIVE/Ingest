@@ -31,7 +31,8 @@ bundle_files  <- list( '../epic/standard/weekly.csv.gz',
                        '../wastewater/standard/data.csv.gz',
                        '../delphi_doctors_claims/standard/data.csv.gz',
                        '../delphi_hospital_claims/standard/data.csv.gz',
-                       '../delphi_nhsn/standard/data.csv.gz'
+                       '../delphi_nhsn/standard/data.csv.gz',
+                       '../delphi_ili_fluview/standard/data.csv.gz'
 )
                  
 start_time <- "2020"
@@ -58,43 +59,6 @@ combined <- Reduce(
 
 
 #colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
-
-
-
-############################
-############################
-#Experimental: try to just create one big output table
-# output_table <- combined %>%
-#   pivot_longer(
-#     cols = where(is.numeric),
-#     names_to = "metric",
-#     values_to = "value"
-#   ) %>%
-#   arrange(geography, metric, time) %>%
-#   group_by(geography, metric) %>%
-#   mutate(
-#     value_smooth = zoo::rollapplyr(value, 3, mean, partial = TRUE, na.rm = TRUE),
-#     value_smooth_scale = value_smooth / max(value_smooth, na.rm = TRUE) * 100
-#   ) %>%
-#   ungroup() %>%
-#   pivot_wider(
-#     names_from = metric,
-#     values_from = c(value, value_smooth, value_smooth_scale),
-#     names_sep = "_"
-#   )
-# vroom::vroom_write(
-#   output_table,
-#   "dist/TEST_mega.csv.gz",
-#   ","
-# )
-# arrow::write_parquet(output_table,
-#                      "dist/TEST_mega.parquet")
-# 
-# jsonlite::write_json(output_table, gzfile("dist/TEST_mega.json.gz"), dataframe = "columns")  #way too big
-
-####################################
-####################################
-####################################
 
 
 overall_trends <-   combined %>%
@@ -175,7 +139,7 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth')) %>%
+  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth','delphi_fluview_wili')) %>%
   mutate( source = if_else(variable=='epic_pct_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
