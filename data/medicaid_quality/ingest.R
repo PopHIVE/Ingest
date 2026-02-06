@@ -66,7 +66,7 @@ get_medicaid_data_complete <- function(dataset_id, limit = 1000) {
   }
 }
 
-# initialize dcf process
+  # initialize dcf process
 process <- dcf::dcf_process_record()
 
 # https://data.medicaid.gov/datasets?theme%5B0%5D=Quality
@@ -155,5 +155,3 @@ vroom::vroom_write(
 process$raw_state <- raw_state
 dcf::dcf_process_record(updated = process)
 }
-
-
