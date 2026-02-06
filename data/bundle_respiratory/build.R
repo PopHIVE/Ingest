@@ -31,7 +31,8 @@ bundle_files  <- list( '../epic/standard/weekly.csv.gz',
                        '../wastewater/standard/data.csv.gz',
                        '../delphi_doctors_claims/standard/data.csv.gz',
                        '../delphi_hospital_claims/standard/data.csv.gz',
-                       '../delphi_nhsn/standard/data.csv.gz'
+                       '../delphi_nhsn/standard/data.csv.gz',
+                       '../delphi_ili_fluview/standard/data.csv.gz'
 )
                  
 start_time <- "2020"
@@ -60,43 +61,6 @@ combined <- Reduce(
 #colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
 
 
-
-############################
-############################
-#Experimental: try to just create one big output table
-# output_table <- combined %>%
-#   pivot_longer(
-#     cols = where(is.numeric),
-#     names_to = "metric",
-#     values_to = "value"
-#   ) %>%
-#   arrange(geography, metric, time) %>%
-#   group_by(geography, metric) %>%
-#   mutate(
-#     value_smooth = zoo::rollapplyr(value, 3, mean, partial = TRUE, na.rm = TRUE),
-#     value_smooth_scale = value_smooth / max(value_smooth, na.rm = TRUE) * 100
-#   ) %>%
-#   ungroup() %>%
-#   pivot_wider(
-#     names_from = metric,
-#     values_from = c(value, value_smooth, value_smooth_scale),
-#     names_sep = "_"
-#   )
-# vroom::vroom_write(
-#   output_table,
-#   "dist/TEST_mega.csv.gz",
-#   ","
-# )
-# arrow::write_parquet(output_table,
-#                      "dist/TEST_mega.parquet")
-# 
-# jsonlite::write_json(output_table, gzfile("dist/TEST_mega.json.gz"), dataframe = "columns")  #way too big
-
-####################################
-####################################
-####################################
-
-
 overall_trends <-   combined %>%
   filter( (time >= max(time) - 365*2) & geography %in% state_fips) %>%
   rename(fips= geography) %>%
@@ -119,6 +83,11 @@ overall_trends <-   combined %>%
   value_smooth = if_else(grepl('delphi_hospital',variable)|grepl('delphi_doctor',variable), value, value_smooth), #For Delphi, do not apply additional smoothing since data are pre-smoothed
   
   value_smooth = value_smooth - min(value_smooth, na.rm = T),
+
+  value_scale = value - min(value, na.rm=T),
+  
+  value_scale = value_scale/max(value_scale, na.rm = T) * 100,
+  
   value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
   ) %>%
   ungroup() %>%
@@ -170,17 +139,17 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth')) %>%
+  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth','delphi_fluview_wili')) %>%
   mutate( source = if_else(variable=='epic_pct_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
                                                    if_else(variable=='delphi_hospital_flu_smooth', 'Delphi Hospital Claims', 
                                                        if_else(variable=='wastewater_flua', 'CDC NWSS', 
-                                                             if_else(variable=='delphi_nhsn_flu', 'CDC NHSN', 
-                                                                   
+                                                             if_else(variable=='delphi_nhsn_flu', 'CDC NHSN',
+                                                                   if_else(variable=='delphi_fluview_wili', 'CDC ILINet',
                                                            NA_character_
-                                                           
-                                                   ))))))
+
+                                                   )))))))
   ) %>%
   left_join(suppressed_flu, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
@@ -331,6 +300,10 @@ trends_age <- combined_age %>%
     ),
     value_smooth = if_else(is.nan(value_smooth), NA, value_smooth),
     value_smooth = value_smooth - min(value_smooth, na.rm = T),
+
+    value_scale = value - min(value, na.rm = T),
+    value_scale = value_scale / max(value_scale, na.rm = T) * 100,
+    
     value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
   ) 
 

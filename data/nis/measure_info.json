@@ -1,12 +1,65 @@
 {
+  "birth_year": {
+    "id": "birth_year",
+    "short_name": "Birth Year",
+    "long_name": "Birth Year of Child",
+    "short_description": "Calendar year the child was born.",
+    "measure_type": "integer",
+    "unit": "year",
+    "sources": [{ "id": "nis" }]
+  },
+
+  "age": {
+    "id": "age",
+    "short_name": "Age",
+    "long_name": "Age Group",
+    "short_description": "Age group of surveyed children.",
+    "long_description": "Age group category used in the National Immunization Survey, typically 19-35 months for young children or 13-17 years for adolescents.",
+    "measure_type": "categorical",
+    "unit": "",
+    "sources": [{ "id": "nis" }]
+  },
+
+  "vaccine": {
+    "id": "vaccine",
+    "short_name": "Vaccine",
+    "long_name": "Vaccine Type",
+    "short_description": "Type of vaccine being measured.",
+    "long_description": "Type of vaccine measured in the survey (e.g., MMR, DTaP, Polio, Hib, HepB, Varicella, PCV).",
+    "measure_type": "categorical",
+    "unit": "",
+    "sources": [{ "id": "nis" }]
+  },
+
+  "insurance": {
+    "id": "insurance",
+    "short_name": "Insurance Status",
+    "long_name": "Health Insurance Status",
+    "short_description": "Health insurance coverage status of the child.",
+    "long_description": "Health insurance status categories used in the National Immunization Survey to stratify vaccination coverage estimates.",
+    "measure_type": "categorical",
+    "unit": "",
+    "sources": [{ "id": "nis" }]
+  },
+
+  "urban": {
+    "id": "urban",
+    "short_name": "Urbanicity",
+    "long_name": "Urban-Rural Classification",
+    "short_description": "Urban or rural classification of residence.",
+    "long_description": "Urban-rural classification of the child's residence area, used to stratify vaccination coverage estimates by urbanicity.",
+    "measure_type": "categorical",
+    "unit": "",
+    "sources": [{ "id": "nis" }]
+  },
+
   "sample_size_{variant}": {
-    "id": "vax_uptake_{variant}",
+    "id": "sample_size_{variant}",
     "short_name": "Sample size for survey responses",
     "long_name": "Sample size for survey responses",
     "category": "childhood immunizations",
     "short_description": "",
-    "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
-    "statement": "",
+    "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
     "measure_type": "percent",
     "unit": "percent",
     "time_resolution": "year",
@@ -42,7 +95,7 @@
     "long_name": "Vaccine uptake for {variant} estimated from survey responses",
     "category": "childhood immunizations",
     "short_description": "",
-    "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+    "long_description": "Percent of survey respondents who received the indicated vaccine",
     "statement": "",
     "measure_type": "percent",
     "unit": "percent",
@@ -87,14 +140,18 @@
           },    
                     
     "restrictions": "",
-    "sources": [
-          {
-            "name": "National Immunization Survey",
-            "url": "https://www.cdc.gov/nis/about/index.html",
-            "location": "About the National Immunization Surveys (NIS)",
-            "location_url": "https://www.cdc.gov/nis/about/index.html"
-          }
-        ],    
+    "sources": [{ "id": "nis" }],
     "citations": []
+  },
+
+  "_sources": {
+    "nis": {
+      "name": "National Immunization Survey (NIS)",
+      "url": "https://www.cdc.gov/nis/about/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/ncird/",
+      "description": "The National Immunization Surveys (NIS) are a group of telephone surveys used to monitor vaccination coverage among children 19-35 months, teens 13-17 years, flu vaccinations for children 6 months-17 years, and COVID-19 vaccination for children, teens, and adults. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the CDC and authorized by the Public Health Service Act. NIS provides population-based, state and local area estimates of vaccination coverage using a standard survey methodology. Surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll age-eligible children. With parental permission, vaccination providers are contacted to verify immunization records. Children and teens are classified as up to date based on ACIP-recommended vaccine doses.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+    }
   }
 }

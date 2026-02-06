@@ -308,8 +308,74 @@ wisqars_downloader <- function(max_year=2023) {
       race_reporting = 'none'  # Ethnicity is separate from race
     )
   })
-  
-  
+
+  # CROSS-TABULATED DEMOGRAPHICS (sex × ethnicity, 2001-2023)
+  # violence, stratified by state, age, sex, and ethnicity
+  lapply(agegrps, function(X) {
+    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_sex_ethnicity.csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      intent = "violence",
+      group_by = c("MECH", "STATE", "YEAR", "SEX", "ETHNICTY"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      group_ages = F,
+      race_reporting = 'none'
+    )
+  })
+
+  # accident, stratified by state, age, sex, and ethnicity
+  lapply(agegrps, function(X) {
+    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_sex_ethnicity.csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      intent = "unintentional",
+      group_by = c("MECH", "STATE", "YEAR", "SEX", "ETHNICTY"),
+      year_start = 2001,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      group_ages = F,
+      race_reporting = 'none'
+    )
+  })
+
+  # CROSS-TABULATED DEMOGRAPHICS (sex × race × ethnicity, 2018-2023 only)
+  # violence, stratified by state, age, sex, race, and ethnicity
+  lapply(agegrps, function(X) {
+    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_sex_race_ethnicity.csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      intent = "violence",
+      group_by = c("MECH", "STATE", "YEAR", "SEX", "RACE", "ETHNICTY"),
+      year_start = 2018,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      group_ages = F,
+      race_reporting = 'single'
+    )
+  })
+
+  # accident, stratified by state, age, sex, race, and ethnicity
+  lapply(agegrps, function(X) {
+    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_sex_race_ethnicity.csv.xz")
+    dcf::dcf_download_wisqars(
+      raw_file,
+      intent = "unintentional",
+      group_by = c("MECH", "STATE", "YEAR", "SEX", "RACE", "ETHNICTY"),
+      year_start = 2018,
+      year_end = max_year,
+      age_min = X[1],
+      age_max = X[2],
+      group_ages = F,
+      race_reporting = 'single'
+    )
+  })
+
+
   #violence, stratified by state
   dcf::dcf_download_wisqars(
     "raw/violence_state.csv.xz",
@@ -393,12 +459,15 @@ if (!identical(process$raw_state, raw_state)) {
       source,
       delim = "_",
       names = c("type", "level", "age1", "age2", "age3", "demographic"),
-      too_few = "align_start"
+      too_few = "align_start",
+      too_many = "merge"
     ) %>%
     {
-      # temporary fix to missing ethnicity column
+      # temporary fix to missing columns
       if (!"sex" %in% names(.)) .$sex <- NA
       if (!"race" %in% names(.)) .$race <- NA  
+      # WISQARS uses "ethnicty" (typo) as column name
+      if ("ethnicty" %in% names(.)) . <- rename(., ethnicity = ethnicty)
       if (!"ethnicity" %in% names(.)) .$ethnicity <- NA
       .
     } %>%
@@ -418,18 +487,34 @@ if (!identical(process$raw_state, raw_state)) {
       agegrp = paste0(agegrp, ' Years'),
       agegrp = gsub("Total Years","Total", agegrp),
       sex = case_when(
-        demographic == "sex" ~ coalesce(as.character(sex), "All"),
+        demographic == "sex" | grepl("sex", demographic) ~ case_when(
+          sex == 1 ~ "Male",
+          sex == 2 ~ "Female",
+          TRUE ~ "All"
+        ),
         TRUE ~ "All"
       ),
       race = case_when(
-        demographic == "race" ~ coalesce(as.character(race), "All"),
+        demographic == "race" | grepl("race", demographic) ~ case_when(
+          race == "01" | race == 1 ~ "White",
+          race == "02" | race == 2 ~ "Black",
+          race == "03" | race == 3 ~ "American Indian/Alaska Native",
+          race == "04" | race == 4 ~ "Asian",
+          race == "05" | race == 5 ~ "Native Hawaiian/Pacific Islander",
+          race == "06" | race == 6 ~ "More than one race",
+          TRUE ~ "All"
+        ),
         TRUE ~ "All"
       ),
       ethnicity = case_when(
-        demographic == "ethnicity" ~ coalesce(as.character(ethnicity), "All"),
+        demographic == "ethnicity" | grepl("ethnicity", demographic) ~ case_when(
+          ethnicity == 1 ~ "Non-Hispanic",
+          ethnicity == 2 ~ "Hispanic",
+          ethnicity == 3 ~ "Unknown",
+          TRUE ~ "All"
+        ),
         TRUE ~ "All"
       ),
-      
       
       Mechlbl = str_to_lower(
         str_replace_all(Mechlbl, "[^a-zA-Z0-9]+", "_")
@@ -459,7 +544,7 @@ if (!identical(process$raw_state, raw_state)) {
                 .cols = which(grepl("^(rate_|deaths_)", names(data))))
   
   vroom::vroom_write(data, "standard/data.csv.gz", ",")
-  
+
   process$raw_state <- raw_state
   dcf::dcf_process_record(updated = process)
 }

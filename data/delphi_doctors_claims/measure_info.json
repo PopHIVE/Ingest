@@ -1,24 +1,30 @@
 {
    "delphi_doc_covid_smooth": {
     "id": "delphi_doc_covid_smooth",
-    "short_name": "",
-    "long_name": "",
+    "short_name": "COVID Doctor Visits",
+    "long_name": "Percentage of Outpatient Visits for COVID-Related Symptoms",
     "category": "respiratory",
     "short_description": "Estimated percentage of outpatient doctor visits primarily about COVID-related symptoms, based on data from health system partners, smoothed in time using a Gaussian linear smoother",
-    "long_description": "This data source is based on information about outpatient visits, provided to CMU/Delphi by health system partners. Using this outpatient data, CMU/Delphi estimates the percentage of COVID-related doctor’s visits in a given location, on a given day. Percent of all unique outpatient visits with primary ICD-10 code of any of: U071, U072, B9729, J1281, Z03818, B342, J1289",
+    "long_description": "This data source is based on information about outpatient visits, provided to CMU/Delphi by health system partners. Using this outpatient data, CMU/Delphi estimates the percentage of COVID-related doctor's visits in a given location, on a given day. Percent of all unique outpatient visits with primary ICD-10 code of any of: U071, U072, B9729, J1281, Z03818, B342, J1289",
     "statement": "",
     "measure_type": "percent",
     "unit": "Percent of doctor's visits, smoothed",
     "time_resolution": "day",
     "restrictions": "CC-BY Attribution license",
-    "sources": [
-    {
-    "name": "CMU Delphi",
-    "url": "https://cmu-delphi.github.io/delphi-epidata/",
-    "location": "COVIDcast > Doctor Visits",
-    "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/doctor-visits.html"
-    }
-    ],
+    "sources": [{ "id": "delphi_doctor_visits" }],
     "citations": []
+  },
+
+  "_sources": {
+    "delphi_doctor_visits": {
+      "name": "CMU Delphi COVIDcast - Doctor Visits",
+      "url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/doctor-visits.html",
+      "organization": "Carnegie Mellon University Delphi Research Group",
+      "organization_url": "https://delphi.cmu.edu/",
+      "location": "COVIDcast Epidata API",
+      "location_url": "https://cmu-delphi.github.io/delphi-epidata/",
+      "description": "The Delphi Doctor Visits signal estimates the percentage of outpatient doctor visits with COVID-related diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal is calculated as the percentage of outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). Data are smoothed using a Gaussian linear smoother to reduce day-to-day noise. This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are available at state and county levels with approximately 3-4 day lag from the date of service.",
+      "restrictions": "CC-BY Attribution license. Data may be used with attribution to the CMU Delphi Group."
+    }
   }
 }
