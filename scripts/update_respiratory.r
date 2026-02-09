@@ -1,0 +1,15 @@
+library(dcf)
+library(tidyverse)
+#dcf::dcf_process("epic")
+dcf_process("delphi_doctors_claims")
+dcf_process("delphi_hospital_claims")
+dcf_process("delphi_ili_fluview")
+dcf_process("delphi_nhsn")
+dcf_process("gtrends")
+
+dcf_process("NREVSS")
+dcf_process("nssp")
+dcf_process("respnet")
+dcf_process("wastewater")
+
+dcf::dcf_process("bundle_respiratory", ".")
