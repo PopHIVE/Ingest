@@ -1,32 +1,100 @@
 {
-  "example_variable": {
-    "id": "example_variable",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "",
-    "unit": "",
-    "time_resolution": "",
-    "restrictions": "",
-      "sources": [
-          {
-            "id": "narms"
-          }
-        ],    "citations": []
+  "narms_isolates": {
+    "id": "narms_isolates",
+    "short_name": "NARMS isolate count",
+    "long_name": "Number of isolates tested by NARMS",
+    "category": "antimicrobial_resistance",
+    "short_description": "Monthly count of bacterial isolates submitted for antimicrobial resistance testing",
+    "long_description": "Number of bacterial isolates from human, animal, and food specimens submitted to NARMS for antimicrobial susceptibility testing. Data from the BEAM Dashboard Report.",
+    "statement": "In {location}, {value} isolates were submitted to NARMS",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Month",
+    "sources": [{ "id": "narms_beam" }],
+    "citations": []
   },
+  "narms_pct_amr": {
+    "id": "narms_pct_amr",
+    "short_name": "Percent with clinically important AMR",
+    "long_name": "Percentage of isolates with clinically important antimicrobial resistance",
+    "category": "antimicrobial_resistance",
+    "short_description": "Percentage of tested isolates showing clinically important antimicrobial resistance",
+    "long_description": "Percentage of isolates with clinically important antimicrobial resistance, as reported in the BEAM Dashboard. Source: CDC NARMS BEAM Dashboard Report Data.",
+    "statement": "In {location}, {value}% of isolates showed clinically important AMR",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Month",
+    "sources": [{ "id": "narms_beam" }],
+    "citations": []
+  },
+  "narms_now_pct_resistant": {
+    "id": "narms_now_pct_resistant",
+    "short_name": "Percent resistant to antimicrobial",
+    "long_name": "Percentage of isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Percentage of tested human clinical isolates showing resistance to a specific antimicrobial agent or matching a specific resistance pattern",
+    "long_description": "Percentage of human clinical isolates tested by NARMS showing resistance to a specific antimicrobial agent or matching a specific resistance pattern, as determined by AST (antimicrobial susceptibility testing) or WGS (whole genome sequencing). Resistance is based on CLSI breakpoints. Data extracted from the NARMS Now interactive dashboard.",
+    "statement": "In {location}, {value}% of {species} isolates were resistant to {agent}",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_now" }],
+    "citations": [
+      {
+        "title": "NARMS Now: Human Data",
+        "url": "https://www.cdc.gov/narms/data/index.html"
+      }
+    ]
+  },
+  "narms_now_n_resistant": {
+    "id": "narms_now_n_resistant",
+    "short_name": "Number of resistant isolates",
+    "long_name": "Number of isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Count of human clinical isolates showing resistance to a specific antimicrobial",
+    "long_description": "Number of human clinical isolates tested by NARMS showing resistance to a specific antimicrobial agent. Numerator of the resistance percentage.",
+    "statement": "In {location}, {value} isolates of {species} were resistant to {agent}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_now" }],
+    "citations": []
+  },
+  "narms_now_n_tested": {
+    "id": "narms_now_n_tested",
+    "short_name": "Number of isolates tested",
+    "long_name": "Number of isolates tested for antimicrobial susceptibility",
+    "category": "antimicrobial_resistance",
+    "short_description": "Total number of human clinical isolates tested for resistance to a specific antimicrobial",
+    "long_description": "Total number of human clinical isolates tested by NARMS for susceptibility to a specific antimicrobial agent. Denominator of the resistance percentage.",
+    "statement": "In {location}, {value} isolates of {species} were tested for {agent}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_now" }],
+    "citations": []
+  },
+
   "_sources": {
-    "narms": {
-      "name": "National Antimicobial Resistance Monitoring System (NARMS)",
-      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/narms-now-integrated-data",
-      "location": "BEAM Dashboard - Report Data",
-      "location_url": "https://data.cdc.gov/Foodborne-Waterborne-and-Related-Diseases/BEAM-Dashboard-Report-Data/jbhn-e8xn/about_data",
+    "narms_beam": {
+      "name": "NARMS BEAM Dashboard Report Data",
+      "url": "https://data.cdc.gov/Foodborne-Waterborne-and-Related-Diseases/BEAM-Dashboard-Report-Data/jbhn-e8xn/about_data",
       "organization": "Centers for Disease Control and Prevention",
       "organization_url": "https://www.cdc.gov",
-      "restrictions": "Public Domain, US Government Data.",
-      "description": "What is NARMS? The National Antimicrobial Resistance Monitoring System (NARMS) is a U.S. public health monitoring system that tracks antimicrobial resistance (AMR) in foodborne and other intestinal bacteria using a One Health approach. As outlined in the NARMS Strategic Plan: 2021-2025, the overall purpose of NARMS is to: Monitor trends in antimicrobial resistance among enteric bacteria from humans, retail meats, and animals at the time of slaughter;  Disseminate timely information on antimicrobial resistance in pathogenic and commensal microorganisms to stakeholders in the U.S. and abroad to promote interventions that reduce resistance among foodborne bacteria; Conduct research to better understand the emergence, persistence, and spread of antimicrobial resistance; Provide timely antimicrobial resistance data for outbreak investigations; and Provide data that assist the FDA in making decisions related to the approval of safe and effective antimicrobial drugs for animals. What are the different components of NARMS? NARMS was established in 1996 as a partnership between the Food and Drug Administration (FDA), the Centers for Disease Control and Prevention (CDC), and the U.S. Department of Agriculture (USDA) to track antibiotic resistance in foodborne bacteria from retail meats, human illnesses, and food producing animals. In partnership with FDA’s Veterinary Laboratory Investigation and Response Network (Vet-LIRN) and USDA’s National Animal Health Laboratory Network (NAHLN), NARMS was expanded to encompass select animal pathogens. In partnership with the Environmental Protection Agency (EPA), NARMS is also working to understand antimicrobial resistance in environmental waters following the One Health paradigm to understand AMR in the environment. NARMS works closely with other Agencies in the USDA including the Animal and Plant Health Inspection Service (APHIS) and the Agricultural Research Service (ARS) to collect animal data and develop microbiological methods, the National Center for Biotechnology Information (NCBI) to publish genomic data, and state public health and agriculture agencies and universities to collect retail meat samples. Guidance to viewers: Antimicrobial resistance is extremely complex and driven by many factors. In general, it is difficult to draw meaningful conclusions by comparing just one year to another. Instead, it is best to look for patterns that emerge over several years. Genotypic resistance data available in NARMS Now will be updated on a rolling basis. NARMS human isolate data are available only from states that have given CDC permission to share it; however aggregate data from all states are included in the total counts in tables, graphs, and maps in the interactive displays. Note: Persons who use these data should cite the National Antimicrobial Resistance Monitoring System (NARMS) as the source of the original data. The data in these tables and displays are not confidential. Additional information on sampling and testing methodologies can be found here.\n\nSuggested citation: Food and Drug Administration (FDA). NARMS Now. Rockville, MD: U.S. Department of Health and Human Services. Available from URL: https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/narms-now-integrated-data. Accessed MM/DD/YYYY"
+      "description": "Monthly counts of bacterial isolates and antimicrobial resistance rates from the NARMS Bacterial Enteric Antimicrobial Monitoring (BEAM) Dashboard. Covers Salmonella, Campylobacter, Shigella, STEC, and Vibrio from human, animal, and food specimens.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
+    "narms_now": {
+      "name": "NARMS Now: Human Data - Antimicrobial Resistance",
+      "url": "https://www.cdc.gov/narms/data/index.html",
+      "location": "NARMS Now Interactive Dashboard - Human Data",
+      "location_url": "https://app.powerbigov.us/view?r=eyJrIjoiZmU5ZjA2ZDItNTU0MS00M2EzLWEyZmQtZmY3Y2RlZjdjYTdjIiwidCI6IjljZTcwODY5LTYwZGItNDRmZC1hYmU4LWQyNzY3MDc3ZmM4ZiJ9",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov",
+      "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella). Both AST (phenotypic) and WGS (genotypic) test method results are available. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    }
   }
-}
 }
