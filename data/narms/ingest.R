@@ -74,6 +74,7 @@ POWERBI_DATASET_ID <- "79ae757b-89a7-402a-b539-769c6da4ca8e"
 POWERBI_REPORT_ID <- "4d3aa8d6-8c28-485a-aa28-9defc6e356ad"
 AGENT_VISUAL_ID <- "6ac0e3afaa4ddc521019"
 PATTERN_VISUAL_ID <- "f400588f58b922c7b131"
+QUERY_DELAY <- 0.5  # seconds between API requests
 
 # --- Organism definitions ---
 organisms <- list(
@@ -110,16 +111,189 @@ organisms <- list(
 )
 
 test_methods <- c("AST", "WGS")
-YEAR_FROM <- 2018
-YEAR_TO <- 2022
+YEAR_FROM <- 2016
+YEAR_TO <- 2024
+
+# --- Site definitions ---
+# NARMSSiteName entity values from the Power BI model (51 states + DC)
+# The main loop prepends NULL (= national "All" with no site filter)
+sites <- c(
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+  "Connecticut", "Delaware", "District Of Columbia", "Florida", "Georgia",
+  "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+  "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+  "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota",
+  "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island",
+  "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
+  "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+)
+
+# Map site names to FIPS codes for geography column
+# Load FIPS crosswalk once for site-to-FIPS mapping
+all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+site_to_fips <- all_fips %>%
+  filter(nchar(geography) == 2, geography != "00") %>%
+  select(geography, geography_name) %>%
+  # NARMSSiteName uses "District Of Columbia" (capital O); all_fips uses lowercase "of"
+  mutate(site_name = if_else(
+    geography_name == "District of Columbia",
+    "District Of Columbia",
+    geography_name
+  )) %>%
+  select(geography, site_name)
 
 # =============================================================================
 # Helper Functions
 # =============================================================================
 
+#' Build a site filter Where clause for Power BI queries
+#' Returns NULL if site_name is NULL (no filter = national "All")
+build_site_filter <- function(site_name) {
+  if (is.null(site_name)) return(NULL)
+  list(Condition = list(
+    In = list(
+      Expressions = list(list(Column = list(
+        Expression = list(SourceRef = list(Source = "site")),
+        Property = "SiteName"))),
+      Values = list(list(list(
+        Literal = list(Value = paste0("'", site_name, "'"))
+      )))
+    )
+  ))
+}
+
 #' Build a Power BI query for resistance by agent
+#' @param site_name NULL for national "All", or a state name like "California"
 build_agent_query <- function(genus, species, test_method,
+                              site_name = NULL,
                               year_from = YEAR_FROM, year_to = YEAR_TO) {
+
+  # From clause: include NARMSSiteName only when filtering by site
+  from_clause <- list(
+    list(Name = "n", Entity = "NARMSAgent", Type = 0L),
+    list(Name = "n1", Entity = "NARMSYear", Type = 0L),
+    list(Name = "n2", Entity = "NARMSResultAST", Type = 0L),
+    list(Name = "n11", Entity = "NARMSTest", Type = 0L),
+    list(Name = "n21", Entity = "NARMSLookupGenus", Type = 0L),
+    list(Name = "n111", Entity = "NARMSLookupSpecies", Type = 0L)
+  )
+  if (!is.null(site_name)) {
+    from_clause <- c(from_clause, list(
+      list(Name = "site", Entity = "NARMSSiteName", Type = 0L)
+    ))
+  }
+
+  # Where clause: base filters + optional site filter
+  where_clause <- list(
+    # Exclude null ranks
+    list(Condition = list(
+      Not = list(Expression = list(
+        In = list(
+          Expressions = list(
+            list(Column = list(
+              Expression = list(SourceRef = list(Source = "n")),
+              Property = "Rank"))
+          ),
+          Values = list(list(list(Literal = list(Value = "null"))))
+        )
+      ))
+    )),
+    # ShowVibrioAbxAgentTbl filter
+    list(
+      Condition = list(Comparison = list(
+        ComparisonKind = 0L,
+        Left = list(Measure = list(
+          Expression = list(SourceRef = list(Source = "n")),
+          Property = "ShowVibrioAbxAgentTbl")),
+        Right = list(Literal = list(Value = "1L"))
+      )),
+      Target = list(
+        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
+                           Property = "Rank")),
+        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
+                           Property = "CLSI Antimicrobial Class")),
+        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
+                           Property = "Antimicrobial Agent"))
+      )
+    ),
+    # Show SquashReport filter
+    list(
+      Condition = list(Comparison = list(
+        ComparisonKind = 0L,
+        Left = list(Measure = list(
+          Expression = list(SourceRef = list(Source = "n")),
+          Property = "Show SquashReport")),
+        Right = list(Literal = list(Value = "1L"))
+      )),
+      Target = list(
+        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
+                           Property = "Rank")),
+        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
+                           Property = "CLSI Antimicrobial Class")),
+        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
+                           Property = "Antimicrobial Agent"))
+      )
+    ),
+    # Test method filter
+    list(Condition = list(
+      In = list(
+        Expressions = list(
+          list(Column = list(
+            Expression = list(SourceRef = list(Source = "n11")),
+            Property = "TestMethod"))
+        ),
+        Values = list(list(list(
+          Literal = list(Value = paste0("'", test_method, "'"))
+        )))
+      )
+    )),
+    # Genus + Species filter
+    list(Condition = list(
+      In = list(
+        Expressions = list(
+          list(Column = list(
+            Expression = list(SourceRef = list(Source = "n21")),
+            Property = "Genus")),
+          list(Column = list(
+            Expression = list(SourceRef = list(Source = "n111")),
+            Property = "SpeciesSerotype"))
+        ),
+        Values = list(list(
+          list(Literal = list(Value = paste0("'", genus, "'"))),
+          list(Literal = list(Value = paste0("'", species, "'")))
+        ))
+      )
+    )),
+    # Year range filter
+    list(Condition = list(
+      And = list(
+        Left = list(Comparison = list(
+          ComparisonKind = 2L,
+          Left = list(Column = list(
+            Expression = list(SourceRef = list(Source = "n1")),
+            Property = "DataYear")),
+          Right = list(Literal = list(
+            Value = paste0(year_from, "D")))
+        )),
+        Right = list(Comparison = list(
+          ComparisonKind = 4L,
+          Left = list(Column = list(
+            Expression = list(SourceRef = list(Source = "n1")),
+            Property = "DataYear")),
+          Right = list(Literal = list(
+            Value = paste0(year_to, "D")))
+        ))
+      )
+    ))
+  )
+
+  # Append site filter if specified
+  site_filter <- build_site_filter(site_name)
+  if (!is.null(site_filter)) {
+    where_clause <- c(where_clause, list(site_filter))
+  }
+
   list(
     version = "1.0.0",
     queries = list(
@@ -130,14 +304,7 @@ build_agent_query <- function(genus, species, test_method,
               SemanticQueryDataShapeCommand = list(
                 Query = list(
                   Version = 2L,
-                  From = list(
-                    list(Name = "n", Entity = "NARMSAgent", Type = 0L),
-                    list(Name = "n1", Entity = "NARMSYear", Type = 0L),
-                    list(Name = "n2", Entity = "NARMSResultAST", Type = 0L),
-                    list(Name = "n11", Entity = "NARMSTest", Type = 0L),
-                    list(Name = "n21", Entity = "NARMSLookupGenus", Type = 0L),
-                    list(Name = "n111", Entity = "NARMSLookupSpecies", Type = 0L)
-                  ),
+                  From = from_clause,
                   Select = list(
                     list(
                       Column = list(Expression = list(SourceRef = list(Source = "n")),
@@ -170,108 +337,7 @@ build_agent_query <- function(genus, species, test_method,
                       NativeReferenceName = "ResistByAgentCell"
                     )
                   ),
-                  Where = list(
-                    # Exclude null ranks
-                    list(Condition = list(
-                      Not = list(Expression = list(
-                        In = list(
-                          Expressions = list(
-                            list(Column = list(
-                              Expression = list(SourceRef = list(Source = "n")),
-                              Property = "Rank"))
-                          ),
-                          Values = list(list(list(Literal = list(Value = "null"))))
-                        )
-                      ))
-                    )),
-                    # ShowVibrioAbxAgentTbl filter
-                    list(
-                      Condition = list(Comparison = list(
-                        ComparisonKind = 0L,
-                        Left = list(Measure = list(
-                          Expression = list(SourceRef = list(Source = "n")),
-                          Property = "ShowVibrioAbxAgentTbl")),
-                        Right = list(Literal = list(Value = "1L"))
-                      )),
-                      Target = list(
-                        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
-                                           Property = "Rank")),
-                        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
-                                           Property = "CLSI Antimicrobial Class")),
-                        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
-                                           Property = "Antimicrobial Agent"))
-                      )
-                    ),
-                    # Show SquashReport filter
-                    list(
-                      Condition = list(Comparison = list(
-                        ComparisonKind = 0L,
-                        Left = list(Measure = list(
-                          Expression = list(SourceRef = list(Source = "n")),
-                          Property = "Show SquashReport")),
-                        Right = list(Literal = list(Value = "1L"))
-                      )),
-                      Target = list(
-                        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
-                                           Property = "Rank")),
-                        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
-                                           Property = "CLSI Antimicrobial Class")),
-                        list(Column = list(Expression = list(SourceRef = list(Source = "n")),
-                                           Property = "Antimicrobial Agent"))
-                      )
-                    ),
-                    # Test method filter
-                    list(Condition = list(
-                      In = list(
-                        Expressions = list(
-                          list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n11")),
-                            Property = "TestMethod"))
-                        ),
-                        Values = list(list(list(
-                          Literal = list(Value = paste0("'", test_method, "'"))
-                        )))
-                      )
-                    )),
-                    # Genus + Species filter
-                    list(Condition = list(
-                      In = list(
-                        Expressions = list(
-                          list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n21")),
-                            Property = "Genus")),
-                          list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n111")),
-                            Property = "SpeciesSerotype"))
-                        ),
-                        Values = list(list(
-                          list(Literal = list(Value = paste0("'", genus, "'"))),
-                          list(Literal = list(Value = paste0("'", species, "'")))
-                        ))
-                      )
-                    )),
-                    # Year range filter
-                    list(Condition = list(
-                      And = list(
-                        Left = list(Comparison = list(
-                          ComparisonKind = 2L,
-                          Left = list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n1")),
-                            Property = "DataYear")),
-                          Right = list(Literal = list(
-                            Value = paste0(year_from, "D")))
-                        )),
-                        Right = list(Comparison = list(
-                          ComparisonKind = 4L,
-                          Left = list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n1")),
-                            Property = "DataYear")),
-                          Right = list(Literal = list(
-                            Value = paste0(year_to, "D")))
-                        ))
-                      )
-                    ))
-                  )
+                  Where = where_clause
                 ),
                 Binding = list(
                   Primary = list(
@@ -314,8 +380,114 @@ build_agent_query <- function(genus, species, test_method,
 }
 
 #' Build a Power BI query for resistance by pattern
+#' @param site_name NULL for national "All", or a state name like "California"
 build_pattern_query <- function(genus, species, test_method,
+                                site_name = NULL,
                                 year_from = YEAR_FROM, year_to = YEAR_TO) {
+
+  # From clause: include NARMSSiteName only when filtering by site
+  from_clause <- list(
+    list(Name = "n1", Entity = "NARMSYear", Type = 0L),
+    list(Name = "r", Entity = "NARMSResistancePatternTable", Type = 0L),
+    list(Name = "n", Entity = "NARMSResByPatternAST", Type = 0L),
+    list(Name = "n2", Entity = "NARMSTest", Type = 0L),
+    list(Name = "n11", Entity = "NARMSLookupGenus", Type = 0L),
+    list(Name = "n111", Entity = "NARMSLookupSpecies", Type = 0L)
+  )
+  if (!is.null(site_name)) {
+    from_clause <- c(from_clause, list(
+      list(Name = "site", Entity = "NARMSSiteName", Type = 0L)
+    ))
+  }
+
+  # Where clause: base filters + optional site filter
+  where_clause <- list(
+    # Exclude null Display
+    list(Condition = list(
+      Not = list(Expression = list(
+        In = list(
+          Expressions = list(
+            list(Column = list(
+              Expression = list(SourceRef = list(Source = "r")),
+              Property = "Display"))
+          ),
+          Values = list(list(list(Literal = list(Value = "null"))))
+        )
+      ))
+    )),
+    # ShowDisplay filter
+    list(
+      Condition = list(Comparison = list(
+        ComparisonKind = 0L,
+        Left = list(Measure = list(
+          Expression = list(SourceRef = list(Source = "r")),
+          Property = "ShowDisplay")),
+        Right = list(Literal = list(Value = "1L"))
+      )),
+      Target = list(
+        list(Column = list(Expression = list(SourceRef = list(Source = "r")),
+                           Property = "Display"))
+      )
+    ),
+    # Test method filter
+    list(Condition = list(
+      In = list(
+        Expressions = list(
+          list(Column = list(
+            Expression = list(SourceRef = list(Source = "n2")),
+            Property = "TestMethod"))
+        ),
+        Values = list(list(list(
+          Literal = list(Value = paste0("'", test_method, "'"))
+        )))
+      )
+    )),
+    # Genus + Species filter
+    list(Condition = list(
+      In = list(
+        Expressions = list(
+          list(Column = list(
+            Expression = list(SourceRef = list(Source = "n11")),
+            Property = "Genus")),
+          list(Column = list(
+            Expression = list(SourceRef = list(Source = "n111")),
+            Property = "SpeciesSerotype"))
+        ),
+        Values = list(list(
+          list(Literal = list(Value = paste0("'", genus, "'"))),
+          list(Literal = list(Value = paste0("'", species, "'")))
+        ))
+      )
+    )),
+    # Year range filter
+    list(Condition = list(
+      And = list(
+        Left = list(Comparison = list(
+          ComparisonKind = 2L,
+          Left = list(Column = list(
+            Expression = list(SourceRef = list(Source = "n1")),
+            Property = "DataYear")),
+          Right = list(Literal = list(
+            Value = paste0(year_from, "D")))
+        )),
+        Right = list(Comparison = list(
+          ComparisonKind = 4L,
+          Left = list(Column = list(
+            Expression = list(SourceRef = list(Source = "n1")),
+            Property = "DataYear")),
+          Right = list(Literal = list(
+            Value = paste0(year_to, "D")))
+        ))
+      )
+    ))
+  )
+
+  # Append site filter if specified
+  site_filter <- build_site_filter(site_name)
+  if (!is.null(site_filter)) {
+    where_clause <- c(where_clause, list(site_filter))
+  }
+
   list(
     version = "1.0.0",
     queries = list(
@@ -326,14 +498,7 @@ build_pattern_query <- function(genus, species, test_method,
               SemanticQueryDataShapeCommand = list(
                 Query = list(
                   Version = 2L,
-                  From = list(
-                    list(Name = "n1", Entity = "NARMSYear", Type = 0L),
-                    list(Name = "r", Entity = "NARMSResistancePatternTable", Type = 0L),
-                    list(Name = "n", Entity = "NARMSResByPatternAST", Type = 0L),
-                    list(Name = "n2", Entity = "NARMSTest", Type = 0L),
-                    list(Name = "n11", Entity = "NARMSLookupGenus", Type = 0L),
-                    list(Name = "n111", Entity = "NARMSLookupSpecies", Type = 0L)
-                  ),
+                  From = from_clause,
                   Select = list(
                     list(
                       Column = list(Expression = list(SourceRef = list(Source = "n1")),
@@ -354,86 +519,7 @@ build_pattern_query <- function(genus, species, test_method,
                       NativeReferenceName = "ResistancePatternCell"
                     )
                   ),
-                  Where = list(
-                    # Exclude null Display
-                    list(Condition = list(
-                      Not = list(Expression = list(
-                        In = list(
-                          Expressions = list(
-                            list(Column = list(
-                              Expression = list(SourceRef = list(Source = "r")),
-                              Property = "Display"))
-                          ),
-                          Values = list(list(list(Literal = list(Value = "null"))))
-                        )
-                      ))
-                    )),
-                    # ShowDisplay filter
-                    list(
-                      Condition = list(Comparison = list(
-                        ComparisonKind = 0L,
-                        Left = list(Measure = list(
-                          Expression = list(SourceRef = list(Source = "r")),
-                          Property = "ShowDisplay")),
-                        Right = list(Literal = list(Value = "1L"))
-                      )),
-                      Target = list(
-                        list(Column = list(Expression = list(SourceRef = list(Source = "r")),
-                                           Property = "Display"))
-                      )
-                    ),
-                    # Test method filter
-                    list(Condition = list(
-                      In = list(
-                        Expressions = list(
-                          list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n2")),
-                            Property = "TestMethod"))
-                        ),
-                        Values = list(list(list(
-                          Literal = list(Value = paste0("'", test_method, "'"))
-                        )))
-                      )
-                    )),
-                    # Genus + Species filter
-                    list(Condition = list(
-                      In = list(
-                        Expressions = list(
-                          list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n11")),
-                            Property = "Genus")),
-                          list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n111")),
-                            Property = "SpeciesSerotype"))
-                        ),
-                        Values = list(list(
-                          list(Literal = list(Value = paste0("'", genus, "'"))),
-                          list(Literal = list(Value = paste0("'", species, "'")))
-                        ))
-                      )
-                    )),
-                    # Year range filter
-                    list(Condition = list(
-                      And = list(
-                        Left = list(Comparison = list(
-                          ComparisonKind = 2L,
-                          Left = list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n1")),
-                            Property = "DataYear")),
-                          Right = list(Literal = list(
-                            Value = paste0(year_from, "D")))
-                        )),
-                        Right = list(Comparison = list(
-                          ComparisonKind = 4L,
-                          Left = list(Column = list(
-                            Expression = list(SourceRef = list(Source = "n1")),
-                            Property = "DataYear")),
-                          Right = list(Literal = list(
-                            Value = paste0(year_to, "D")))
-                        ))
-                      )
-                    ))
-                  )
+                  Where = where_clause
                 ),
                 Binding = list(
                   Primary = list(
@@ -689,72 +775,87 @@ needs_refresh <- is.null(last_scrape) ||
   as.Date(last_scrape) < Sys.Date() - 30
 
 if (needs_refresh) {
+  n_sites <- length(sites)  # includes NULL (national) as first element
+  total_queries <- length(organisms) * length(test_methods) * 2 * (n_sites + 1)
+  # +1 because NULL (national) is not in the sites vector but is the first iteration
+
   message("=== Scraping NARMS Now Power BI dashboard ===")
-  message(sprintf("Organisms: %d | Test methods: %d | Total queries: %d",
-                  length(organisms), length(test_methods),
-                  length(organisms) * length(test_methods) * 2))
+  message(sprintf("Organisms: %d | Test methods: %d | Sites: %d (+ national) | Total queries: ~%d",
+                  length(organisms), length(test_methods), n_sites, total_queries))
+  message(sprintf("Estimated time: ~%.0f minutes (%.1fs delay between queries)",
+                  total_queries * QUERY_DELAY / 60, QUERY_DELAY))
 
   all_agent_data <- list()
   all_pattern_data <- list()
   error_log <- list()
   query_count <- 0
-  total_queries <- length(organisms) * length(test_methods) * 2
 
-  for (org in organisms) {
-    for (tm in test_methods) {
-      # --- Resistance by Agent ---
-      query_count <- query_count + 1
-      message(sprintf("  [%d/%d] %s / %s / %s (agent)",
-                      query_count, total_queries, org$genus, org$species, tm))
+  # Iterate: national (NULL) first, then each state
+  site_list <- c(list(NULL), as.list(sites))
 
-      tryCatch({
-        query <- build_agent_query(org$genus, org$species, tm)
-        response <- execute_powerbi_query(query)
-        parsed <- parse_agent_response(response, org$genus, org$species, tm)
+  for (site in site_list) {
+    site_label <- if (is.null(site)) "All (national)" else site
 
-        if (!is.null(parsed) && nrow(parsed) > 0) {
-          all_agent_data[[length(all_agent_data) + 1]] <- parsed
-          message(sprintf("    -> %d rows", nrow(parsed)))
-        } else {
-          message("    -> No data")
-        }
-      }, error = function(e) {
-        error_log[[length(error_log) + 1]] <<- list(
-          genus = org$genus, species = org$species,
-          test_method = tm, tab = "agent",
-          error = conditionMessage(e)
-        )
-        warning(sprintf("    -> ERROR: %s", conditionMessage(e)))
-      })
+    for (org in organisms) {
+      for (tm in test_methods) {
+        # --- Resistance by Agent ---
+        query_count <- query_count + 1
+        message(sprintf("  [%d/%d] %s / %s / %s / %s (agent)",
+                        query_count, total_queries, site_label,
+                        org$genus, org$species, tm))
 
-      Sys.sleep(2)
+        tryCatch({
+          query <- build_agent_query(org$genus, org$species, tm, site_name = site)
+          response <- execute_powerbi_query(query)
+          parsed <- parse_agent_response(response, org$genus, org$species, tm)
 
-      # --- Resistance by Pattern ---
-      query_count <- query_count + 1
-      message(sprintf("  [%d/%d] %s / %s / %s (pattern)",
-                      query_count, total_queries, org$genus, org$species, tm))
+          if (!is.null(parsed) && nrow(parsed) > 0) {
+            parsed$site_name <- if (is.null(site)) NA_character_ else site
+            all_agent_data[[length(all_agent_data) + 1]] <- parsed
+            message(sprintf("    -> %d rows", nrow(parsed)))
+          } else {
+            message("    -> No data")
+          }
+        }, error = function(e) {
+          error_log[[length(error_log) + 1]] <<- list(
+            site = site_label, genus = org$genus, species = org$species,
+            test_method = tm, tab = "agent",
+            error = conditionMessage(e)
+          )
+          warning(sprintf("    -> ERROR: %s", conditionMessage(e)))
+        })
 
-      tryCatch({
-        query <- build_pattern_query(org$genus, org$species, tm)
-        response <- execute_powerbi_query(query)
-        parsed <- parse_pattern_response(response, org$genus, org$species, tm)
+        Sys.sleep(QUERY_DELAY)
 
-        if (!is.null(parsed) && nrow(parsed) > 0) {
-          all_pattern_data[[length(all_pattern_data) + 1]] <- parsed
-          message(sprintf("    -> %d rows", nrow(parsed)))
-        } else {
-          message("    -> No data")
-        }
-      }, error = function(e) {
-        error_log[[length(error_log) + 1]] <<- list(
-          genus = org$genus, species = org$species,
-          test_method = tm, tab = "pattern",
-          error = conditionMessage(e)
-        )
-        warning(sprintf("    -> ERROR: %s", conditionMessage(e)))
-      })
+        # --- Resistance by Pattern ---
+        query_count <- query_count + 1
+        message(sprintf("  [%d/%d] %s / %s / %s / %s (pattern)",
+                        query_count, total_queries, site_label,
+                        org$genus, org$species, tm))
 
-      Sys.sleep(2)
+        tryCatch({
+          query <- build_pattern_query(org$genus, org$species, tm, site_name = site)
+          response <- execute_powerbi_query(query)
+          parsed <- parse_pattern_response(response, org$genus, org$species, tm)
+
+          if (!is.null(parsed) && nrow(parsed) > 0) {
+            parsed$site_name <- if (is.null(site)) NA_character_ else site
+            all_pattern_data[[length(all_pattern_data) + 1]] <- parsed
+            message(sprintf("    -> %d rows", nrow(parsed)))
+          } else {
+            message("    -> No data")
+          }
+        }, error = function(e) {
+          error_log[[length(error_log) + 1]] <<- list(
+            site = site_label, genus = org$genus, species = org$species,
+            test_method = tm, tab = "pattern",
+            error = conditionMessage(e)
+          )
+          warning(sprintf("    -> ERROR: %s", conditionMessage(e)))
+        })
+
+        Sys.sleep(QUERY_DELAY)
+      }
     }
   }
 
@@ -764,8 +865,11 @@ if (needs_refresh) {
     agent_df <- do.call(rbind, all_agent_data)
 
     agent_standard <- agent_df %>%
+      # Map site_name to FIPS geography code
+      left_join(site_to_fips, by = "site_name") %>%
       mutate(
-        geography = "00",
+        # National (site_name = NA) -> "00", states -> FIPS code from lookup
+        geography = if_else(is.na(site_name), "00", geography),
         time = paste0(year, "-12-31")
       ) %>%
       select(
@@ -782,8 +886,10 @@ if (needs_refresh) {
     pattern_df <- do.call(rbind, all_pattern_data)
 
     pattern_standard <- pattern_df %>%
+      # Map site_name to FIPS geography code
+      left_join(site_to_fips, by = "site_name") %>%
       mutate(
-        geography = "00",
+        geography = if_else(is.na(site_name), "00", geography),
         time = paste0(year, "-12-31")
       ) %>%
       select(
@@ -809,6 +915,7 @@ if (needs_refresh) {
     n_agent_rows = if (length(all_agent_data) > 0) nrow(agent_df) else 0,
     n_pattern_rows = if (length(all_pattern_data) > 0) nrow(pattern_df) else 0,
     n_errors = length(error_log),
+    n_sites = n_sites + 1,
     year_from = YEAR_FROM,
     year_to = YEAR_TO
   )
