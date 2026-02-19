@@ -17,6 +17,13 @@ library(data.table)
 
 process <- dcf::dcf_process_record()
 
+# dpkg_path <- "standard/datapackage.json"
+# if (file.exists(dpkg_path)) {
+#   raw_bytes <- readBin(dpkg_path, "raw", file.info(dpkg_path)$size)
+#   raw_text <- rawToChar(raw_bytes)
+#   clean_text <- iconv(raw_text, from = "UTF-8", to = "ASCII", sub = "")
+#   writeLines(clean_text, dpkg_path, useBytes = TRUE)
+# }
 
 # -----------------------------------------------------------------------------
 # 1. Download Washington Post school vaccination data
@@ -189,3 +196,9 @@ process <- dcf::dcf_process_record()
 #   dcf::dcf_process_record(updated = process)
 
 # }
+
+# -----------------------------------------------------------------------------
+# Clean non-UTF-8 characters from datapackage.json
+# The dcf package auto-generates this file from CSV data which may contain
+# accented characters in school names (é, ñ, ü, em dashes, etc.)
+# -----------------------------------------------------------------------------
