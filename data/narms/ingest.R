@@ -1,69 +1,22 @@
 # =============================================================================
 # NARMS Data Ingestion
-# Source 1: BEAM Dashboard Report Data (CDC Socrata API: jbhn-e8xn)
-# Source 2: NARMS Now Human Data - Resistance by Agent (Power BI API)
-# Source 3: NARMS Now Human Data - Resistance by Pattern (Power BI API)
+# Source 1: NARMS Now Human Data - Resistance by Agent (Power BI API)
+# Source 2: NARMS Now Human Data - Resistance by Pattern (Power BI API)
 # =============================================================================
 
 library(dplyr)
+library(vroom)
 library(httr2)
 library(jsonlite)
 
-process <- dcf::dcf_process_record()
-
-# =============================================================================
-# SOURCE 1: BEAM Dashboard Report Data (existing)
-# =============================================================================
-
-raw_state <- dcf::dcf_download_cdc(
-  "jbhn-e8xn",
-  "raw",
-  process$raw_state
-)
-
-if (!identical(process$raw_state, raw_state)) {
-
-  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
-  state_fips_lookup <- all_fips %>%
-    filter(nchar(geography) == 2) %>%
-    select(geography, state)
-
-  data_raw <- vroom::vroom("./raw/jbhn-e8xn.csv.xz", show_col_types = FALSE)
-
-  data_standard <- data_raw %>%
-    left_join(state_fips_lookup, by = c("State" = "state")) %>%
-    mutate(
-      time = lubridate::ceiling_date(
-        lubridate::make_date(Year, Month, 1),
-        "month"
-      ) - 1,
-      time = format(time, "%Y-%m-%d")
-    ) %>%
-    rename(
-      pathogen = Pathogen,
-      serotype = `Serotype/Species`,
-      source_type = `Source Type`,
-      source_site = `Source Site`,
-      narms_isolates = `Number of isolates`,
-      narms_outbreak_isolates = `Outbreak associated isolates`,
-      narms_new_outbreaks = `New multistate outbreaks`,
-      narms_new_outbreaks_us = `New multistate outbreaks - US`,
-      narms_pct_amr = `% Isolates with clinically important antimicrobial resistance`,
-      narms_sequenced = `Number of sequenced isolates analyzed by NARMS`
-    ) %>%
-    select(
-      time, geography, pathogen, serotype, source_type, source_site,
-      starts_with("narms_")
-    )
-
-  vroom::vroom_write(data_standard, "standard/data.csv.gz", ",")
-
-  process$raw_state <- raw_state
-  dcf::dcf_process_record(updated = process)
+if (!file.exists("process.json")) {
+  process <- list(narms_now_state = NULL)
+} else {
+  process <- dcf::dcf_process_record()
 }
 
 # =============================================================================
-# SOURCE 2 & 3: NARMS Now - Resistance by Agent & Pattern (Power BI API)
+# NARMS Now - Resistance by Agent & Pattern (Power BI API)
 # =============================================================================
 
 # --- Power BI API Configuration ---
@@ -111,7 +64,8 @@ organisms <- list(
 )
 
 test_methods <- c("AST", "WGS")
-YEAR_FROM <- 2016
+YEAR_FROM_AST <- 1999
+YEAR_FROM_WGS <- 2016
 YEAR_TO <- 2024
 
 # --- Site definitions ---
@@ -128,20 +82,6 @@ sites <- c(
   "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
   "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
 )
-
-# Map site names to FIPS codes for geography column
-# Load FIPS crosswalk once for site-to-FIPS mapping
-all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
-site_to_fips <- all_fips %>%
-  filter(nchar(geography) == 2, geography != "00") %>%
-  select(geography, geography_name) %>%
-  # NARMSSiteName uses "District Of Columbia" (capital O); all_fips uses lowercase "of"
-  mutate(site_name = if_else(
-    geography_name == "District of Columbia",
-    "District Of Columbia",
-    geography_name
-  )) %>%
-  select(geography, site_name)
 
 # =============================================================================
 # Helper Functions
@@ -775,6 +715,19 @@ needs_refresh <- is.null(last_scrape) ||
   as.Date(last_scrape) < Sys.Date() - 30
 
 if (needs_refresh) {
+  # Load FIPS crosswalk for site-to-FIPS mapping
+  # NARMSSiteName uses "District Of Columbia" (capital O); all_fips uses lowercase "of"
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+  site_to_fips <- all_fips %>%
+    filter(nchar(geography) == 2, geography != "00") %>%
+    select(geography, geography_name) %>%
+    mutate(site_name = if_else(
+      geography_name == "District of Columbia",
+      "District Of Columbia",
+      geography_name
+    )) %>%
+    select(geography, site_name)
+
   n_sites <- length(sites)  # includes NULL (national) as first element
   total_queries <- length(organisms) * length(test_methods) * 2 * (n_sites + 1)
   # +1 because NULL (national) is not in the sites vector but is the first iteration
@@ -798,6 +751,8 @@ if (needs_refresh) {
 
     for (org in organisms) {
       for (tm in test_methods) {
+        year_from <- if (tm == "WGS") YEAR_FROM_WGS else YEAR_FROM_AST
+
         # --- Resistance by Agent ---
         query_count <- query_count + 1
         message(sprintf("  [%d/%d] %s / %s / %s / %s (agent)",
@@ -805,7 +760,8 @@ if (needs_refresh) {
                         org$genus, org$species, tm))
 
         tryCatch({
-          query <- build_agent_query(org$genus, org$species, tm, site_name = site)
+          query <- build_agent_query(org$genus, org$species, tm, site_name = site,
+                                     year_from = year_from)
           response <- execute_powerbi_query(query)
           parsed <- parse_agent_response(response, org$genus, org$species, tm)
 
@@ -834,7 +790,8 @@ if (needs_refresh) {
                         org$genus, org$species, tm))
 
         tryCatch({
-          query <- build_pattern_query(org$genus, org$species, tm, site_name = site)
+          query <- build_pattern_query(org$genus, org$species, tm, site_name = site,
+                                       year_from = year_from)
           response <- execute_powerbi_query(query)
           parsed <- parse_pattern_response(response, org$genus, org$species, tm)
 
@@ -916,7 +873,8 @@ if (needs_refresh) {
     n_pattern_rows = if (length(all_pattern_data) > 0) nrow(pattern_df) else 0,
     n_errors = length(error_log),
     n_sites = n_sites + 1,
-    year_from = YEAR_FROM,
+    year_from_ast = YEAR_FROM_AST,
+    year_from_wgs = YEAR_FROM_WGS,
     year_to = YEAR_TO
   )
   dcf::dcf_process_record(updated = process)
