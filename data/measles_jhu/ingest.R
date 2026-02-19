@@ -139,9 +139,14 @@ if (!identical(process$raw_state, raw_state)) {
 
   # Combine top states data with aggregated county data
   # Priority: use top_states data where available, supplement with county data
-  all_states_weekly <- 
-    state_from_county  %>%
-    arrange(geography, time)
+  all_states_weekly <- bind_rows(
+    top_states_standard %>% mutate(source = "top_states"),
+    state_from_county %>% mutate(source = "county_agg")
+  ) %>%
+    arrange(geography, time, desc(source)) %>%
+    # Keep top_states data when both exist for same geography/time
+    distinct(geography, time, .keep_all = TRUE) %>%
+    select(geography, time, value)
 
   # Calculate national totals
   national_weekly <- all_states_weekly %>%
