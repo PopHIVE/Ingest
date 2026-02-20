@@ -1,0 +1,40 @@
+on:
+  schedule:
+    # 4pm ET Friday (21:00 UTC; during EDT this runs at 5pm)
+    - cron: '0 21 * * 5'
+    # 10am ET Monday (15:00 UTC; during EDT this runs at 11am)
+    - cron: '0 15 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-respiratory:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev libudunits2-dev libproj-dev libgdal-dev libgeos-dev cmake libnode-dev libfontconfig1-dev
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-renv@v2
+      - run: Rscript -e "renv::install('dissc-yale/dcf')"
+      - run: Rscript scripts/update_respiratory.r
+        env:
+          DELPHI_EPIDATA_KEY: ${{ secrets.DELPHI_EPIDATA_KEY }}
+      - id: diff
+        run: |
+          if git diff --exit-code; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add -A
+          git commit -m "scheduled respiratory data update"
+          git push

@@ -82,7 +82,7 @@ dcf_build()
 #run these from the relevant bundle directory
 # dcf::dcf_process("bundle_respiratory", ".")
 # dcf::dcf_process("bundle_childhood_immunizations", ".")
-# dcf::dcf_process("chronic_diseases", ".")
+# dcf::dcf_process("bundle_chronic_diseases", ".")
 # dcf::dcf_process("bundle_injury_overdose", ".")
 
 #Update mermaid diagram
