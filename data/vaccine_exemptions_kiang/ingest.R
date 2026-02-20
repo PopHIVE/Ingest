@@ -49,11 +49,12 @@ if (!identical(process$raw_state, raw_state)) {
       time = paste0("09-01-", year),
       time = format(as.Date(time, format = "%m-%d-%Y"), "%m-%d-%Y")
     ) %>%
-    # Select and rename columns - keep only essential columns
-    select(
-      geography,
-      time,
-      exemption_rate_mmr = pct
+    # Pivot exemption types to wide format
+    select(geography, time, exemption_type, pct) %>%
+    tidyr::pivot_wider(
+      names_from = exemption_type,
+      values_from = pct,
+      names_prefix = "exemption_rate_mmr_"
     ) %>%
     # Remove rows with missing geography
     filter(!is.na(geography))
@@ -77,7 +78,8 @@ if (!identical(process$raw_state, raw_state)) {
     left_join(state_pop, by = "geography") %>%
     group_by(time) %>%
     summarize(
-      exemption_rate_mmr = weighted.mean(exemption_rate_mmr, population, na.rm = TRUE),
+      exemption_rate_mmr_med = weighted.mean(exemption_rate_mmr_med, population, na.rm = TRUE),
+      exemption_rate_mmr_nonmed = weighted.mean(exemption_rate_mmr_nonmed, population, na.rm = TRUE),
       .groups = "drop"
     ) %>%
     mutate(geography = '00')
@@ -88,22 +90,41 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   # 3b. Create county-level data
   # ---------------------------------------------------------------------------
+
+  # Load county populations for weighted averaging of IHME-merged counties
+  county_pop <- vroom::vroom(
+    "../../resources/census_population_2021.csv.xz",
+    show_col_types = FALSE
+  ) %>%
+    filter(nchar(GEOID) == 5) %>%
+    select(fips_orig = GEOID, population = Total)
+
   data_county <- data_raw %>%
     filter(geography == "county") %>%
     # Use the IHME FIPS codes (more complete)
     mutate(
-      geography = stringr::str_pad(as.character(fips_ihme), width = 5, pad = "0")
+      geography = stringr::str_pad(as.character(fips_ihme), width = 5, pad = "0"),
+      fips_orig = stringr::str_pad(as.character(fips_orig), width = 5, pad = "0")
     ) %>%
     # Format time - use September 1 of each year for school-entry data
     mutate(
       time = paste0("09-01-", year),
       time = format(as.Date(time, format = "%m-%d-%Y"), "%m-%d-%Y")
     ) %>%
-    # Select and rename columns - keep only essential columns
-    select(
-      geography,
-      time,
-      exemption_rate_mmr = pct
+    # Join county populations for weighted averaging of IHME-merged counties
+    left_join(county_pop, by = "fips_orig") %>%
+    # Pivot exemption types to wide format
+    select(geography, time, exemption_type, pct, population) %>%
+    # Population-weighted average for counties merged under same IHME FIPS
+    group_by(geography, time, exemption_type) %>%
+    summarize(
+      pct = weighted.mean(pct, population, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    tidyr::pivot_wider(
+      names_from = exemption_type,
+      values_from = pct,
+      names_prefix = "exemption_rate_mmr_"
     ) %>%
     # Remove rows with missing geography
     filter(!is.na(geography))
