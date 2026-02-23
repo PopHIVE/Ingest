@@ -14,49 +14,155 @@ agegrps <- list(c(0,14),
 #violence, stratified by age and state
 
 wisqars_downloader <- function(max_year=2023) {
-  lapply(agegrps, function(X) {
-    raw_file <-
-      paste0("raw/violence_state_age_", X[1], "_", X[2], ".csv.xz")
+
+  # Helper function to download all 9 patterns for a given intent
+  # intent_name: prefix for raw filenames (e.g., "violence", "homicide")
+  # intent_value: API intent parameter (e.g., "violence", "homicide", "legal")
+  download_intent <- function(intent_name, intent_value, max_year) {
+
+    # Pattern 1: state × age
+    lapply(agegrps, function(X) {
+      dcf::dcf_download_wisqars(
+        paste0("raw/", intent_name, "_state_age_", X[1], "_", X[2], ".csv.xz"),
+        intent = intent_value,
+        group_by = c("MECH", "STATE", "YEAR"),
+        year_start = 2001,
+        year_end = max_year,
+        age_min = X[1],
+        age_max = X[2],
+        group_ages = F,
+        race_reporting = 'none'
+      )
+    })
+
+    # Pattern 2: age only (national)
+    lapply(agegrps, function(X) {
+      dcf::dcf_download_wisqars(
+        paste0("raw/", intent_name, "_age_", X[1], "_", X[2], ".csv.xz"),
+        intent = intent_value,
+        group_by = c("MECH", "YEAR"),
+        year_start = 2001,
+        year_end = max_year,
+        age_min = X[1],
+        age_max = X[2],
+        group_ages = F,
+        race_reporting = 'none'
+      )
+    })
+
+    # Pattern 3: state × age × sex
+    lapply(agegrps, function(X) {
+      dcf::dcf_download_wisqars(
+        paste0("raw/", intent_name, "_state_age_", X[1], "_", X[2], "_sex.csv.xz"),
+        intent = intent_value,
+        group_by = c("MECH", "STATE", "YEAR", "SEX"),
+        year_start = 2001,
+        year_end = max_year,
+        age_min = X[1],
+        age_max = X[2],
+        group_ages = F,
+        race_reporting = 'none'
+      )
+    })
+
+    # Pattern 4: state × age × race (2018+ only)
+    lapply(agegrps, function(X) {
+      dcf::dcf_download_wisqars(
+        paste0("raw/", intent_name, "_state_age_", X[1], "_", X[2], "_race.csv.xz"),
+        intent = intent_value,
+        group_by = c("MECH", "STATE", "YEAR", "RACE"),
+        year_start = 2018,
+        year_end = max_year,
+        age_min = X[1],
+        age_max = X[2],
+        group_ages = F,
+        race_reporting = 'single'
+      )
+    })
+
+    # Pattern 5: state × age × ethnicity
+    lapply(agegrps, function(X) {
+      dcf::dcf_download_wisqars(
+        paste0("raw/", intent_name, "_state_age_", X[1], "_", X[2], "_ethnicity.csv.xz"),
+        intent = intent_value,
+        group_by = c("MECH", "STATE", "YEAR", "ETHNICTY"),
+        year_start = 2001,
+        year_end = max_year,
+        age_min = X[1],
+        age_max = X[2],
+        group_ages = F,
+        race_reporting = 'none'
+      )
+    })
+
+    # Pattern 6: state × age × sex × ethnicity
+    lapply(agegrps, function(X) {
+      dcf::dcf_download_wisqars(
+        paste0("raw/", intent_name, "_state_age_", X[1], "_", X[2], "_sex_ethnicity.csv.xz"),
+        intent = intent_value,
+        group_by = c("MECH", "STATE", "YEAR", "SEX", "ETHNICTY"),
+        year_start = 2001,
+        year_end = max_year,
+        age_min = X[1],
+        age_max = X[2],
+        group_ages = F,
+        race_reporting = 'none'
+      )
+    })
+
+    # Pattern 7: state × age × sex × race × ethnicity (2018+ only)
+    lapply(agegrps, function(X) {
+      dcf::dcf_download_wisqars(
+        paste0("raw/", intent_name, "_state_age_", X[1], "_", X[2], "_sex_race_ethnicity.csv.xz"),
+        intent = intent_value,
+        group_by = c("MECH", "STATE", "YEAR", "SEX", "RACE", "ETHNICTY"),
+        year_start = 2018,
+        year_end = max_year,
+        age_min = X[1],
+        age_max = X[2],
+        group_ages = F,
+        race_reporting = 'single'
+      )
+    })
+
+    # Pattern 8: state only (all ages)
     dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "violence",
+      paste0("raw/", intent_name, "_state.csv.xz"),
+      intent = intent_value,
       group_by = c("MECH", "STATE", "YEAR"),
       year_start = 2001,
       year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages=F,
-      race_reporting = 'none' #this allows going back before 2018
+      race_reporting = 'none'
     )
-    
-  })
-  
-  #accident, stratified by age and state
-  lapply(agegrps, function(X) {
-    raw_file <-
-      paste0("raw/accident_state_age_", X[1], "_", X[2], ".csv.xz")
+
+    # Pattern 9: national overall (all ages)
     dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "unintentional",
-      group_by = c("MECH", "STATE", "YEAR"),
+      paste0("raw/", intent_name, ".csv.xz"),
+      intent = intent_value,
+      group_by = c("MECH", "YEAR"),
       year_start = 2001,
       year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages=F,
-      race_reporting = 'none' #this allows going back before 2018
+      race_reporting = 'none'
     )
-    
-  })
-  
+  }
+
+  # Existing intents
+  download_intent("violence", "violence", max_year)
+  download_intent("accident", "unintentional", max_year)
+
+  # New granular violence sub-intents
+  download_intent("homicide", "homicide", max_year)
+  download_intent("suicide", "suicide", max_year)
+  download_intent("legal", "legal", max_year)
+
   ############################################################
+  # Special mechanism-specific downloads (cycling and pedestrian)
+  # These are specific to unintentional injuries and don't apply to violence sub-intents
+
   #cycling accident with MV, stratified by age and state
-  
   lapply(agegrps, function(X) {
-    raw_file <-
-      paste0("raw/cycle_accident_state_age_", X[1], "_", X[2], ".csv.xz")
     dcf::dcf_download_wisqars(
-      raw_file,
+      paste0("raw/cycle_accident_state_age_", X[1], "_", X[2], ".csv.xz"),
       mechanism = 20980,
       intent = "unintentional",
       group_by = c("MECH", "STATE", "YEAR"),
@@ -64,16 +170,14 @@ wisqars_downloader <- function(max_year=2023) {
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
-      group_ages=F,
-      race_reporting = 'none' #this allows going back before 2018
+      group_ages = F,
+      race_reporting = 'none'
     )
-    
   })
+
   lapply(agegrps, function(X) {
-    raw_file <-
-      paste0("raw/cycle_accident_age_", X[1], "_", X[2], ".csv.xz")
     dcf::dcf_download_wisqars(
-      raw_file,
+      paste0("raw/cycle_accident_age_", X[1], "_", X[2], ".csv.xz"),
       mechanism = 20980,
       intent = "unintentional",
       group_by = c("MECH", "YEAR"),
@@ -81,45 +185,38 @@ wisqars_downloader <- function(max_year=2023) {
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
-      group_ages=F,
-      race_reporting = 'none' #this allows going back before 2018
+      group_ages = F,
+      race_reporting = 'none'
     )
-    
   })
 
-  raw_file <-
-    paste0("raw/cycle_accident", ".csv.xz")
   dcf::dcf_download_wisqars(
-    raw_file,
+    "raw/cycle_accident.csv.xz",
     mechanism = 20980,
     intent = "unintentional",
     group_by = c("MECH", "YEAR"),
     year_start = 2001,
     year_end = max_year,
-    group_ages=F,
-    race_reporting = 'none' #this allows going back before 2018
+    group_ages = F,
+    race_reporting = 'none'
   )
-  
-  raw_file <-
-    paste0("raw/cycle_accident_state", ".csv.xz")
+
   dcf::dcf_download_wisqars(
-    raw_file,
+    "raw/cycle_accident_state.csv.xz",
     mechanism = 20980,
     intent = "unintentional",
-    group_by = c("MECH", "STATE","YEAR"),
+    group_by = c("MECH", "STATE", "YEAR"),
     year_start = 2001,
     year_end = max_year,
-    group_ages=F,
-    race_reporting = 'none' #this allows going back before 2018
+    group_ages = F,
+    race_reporting = 'none'
   )
-  
+
   ###########################################################
   #pedestrian accident with MV, stratified by age and state
   lapply(agegrps, function(X) {
-    raw_file <-
-      paste0("raw/ped_accident_state_age_", X[1], "_", X[2], ".csv.xz")
     dcf::dcf_download_wisqars(
-      raw_file,
+      paste0("raw/ped_accident_state_age_", X[1], "_", X[2], ".csv.xz"),
       mechanism = 21010,
       intent = "unintentional",
       group_by = c("MECH", "STATE", "YEAR"),
@@ -127,293 +224,46 @@ wisqars_downloader <- function(max_year=2023) {
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
-      group_ages=F,
-      race_reporting = 'none' #this allows going back before 2018
+      group_ages = F,
+      race_reporting = 'none'
     )
-    
   })
-  
+
   lapply(agegrps, function(X) {
-    raw_file <-
-      paste0("raw/ped_accident_age_", X[1], "_", X[2], ".csv.xz")
     dcf::dcf_download_wisqars(
-      raw_file,
+      paste0("raw/ped_accident_age_", X[1], "_", X[2], ".csv.xz"),
       mechanism = 21010,
       intent = "unintentional",
-      group_by = c("MECH",  "YEAR"),
+      group_by = c("MECH", "YEAR"),
       year_start = 2001,
       year_end = max_year,
       age_min = X[1],
       age_max = X[2],
-      group_ages=F,
-      race_reporting = 'none' #this allows going back before 2018
+      group_ages = F,
+      race_reporting = 'none'
     )
-    
   })
-  
-  
-  raw_file <-
-    paste0("raw/ped_accident", ".csv.xz")
+
   dcf::dcf_download_wisqars(
-    raw_file,
+    "raw/ped_accident.csv.xz",
     mechanism = 21010,
     intent = "unintentional",
     group_by = c("MECH", "YEAR"),
     year_start = 2001,
     year_end = max_year,
-    group_ages=F,
-    race_reporting = 'none' #this allows going back before 2018
+    group_ages = F,
+    race_reporting = 'none'
   )
-  
-  raw_file <-
-    paste0("raw/ped_accident_state", ".csv.xz")
+
   dcf::dcf_download_wisqars(
-    raw_file,
+    "raw/ped_accident_state.csv.xz",
     mechanism = 21010,
     intent = "unintentional",
-    group_by = c("MECH", "STATE","YEAR"),
+    group_by = c("MECH", "STATE", "YEAR"),
     year_start = 2001,
     year_end = max_year,
-    group_ages=F,
-    race_reporting = 'none' #this allows going back before 2018
-  )
-  #####################################
-  #violence, stratified by age
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_age_", X[1], "_", X[2], ".csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "violence",
-      group_by = c("MECH",  "YEAR"),
-      year_start = 2001,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages=F,
-      race_reporting = 'none' #this allows going back before 2018
-    )
-    
-    
-  })
-  
-  #accident, stratified by age
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_age_", X[1], "_", X[2], ".csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "unintentional",
-      group_by = c("MECH",  "YEAR"),
-      year_start = 2001,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages=F,
-      race_reporting = 'none' #this allows going back before 2018
-    )
-    
-  })
-  
-  #violence, stratified by state, age, and sex 
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_sex.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "violence",
-      group_by = c("MECH", "STATE", "YEAR", "SEX"), 
-      year_start = 2001,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'none'
-    )
-  })
-  
-  # accident, stratified by state, age, and sex
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_sex.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "unintentional",
-      group_by = c("MECH", "STATE", "YEAR", "SEX"), 
-      year_start = 2001,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'none'
-    )
-  })
-  
-  # violence, stratified by state, age, and race (2018-2023 only) 
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_race.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "violence",
-      group_by = c("MECH", "STATE", "YEAR", "RACE"),  
-      year_start = 2018,  # Only available from 2018
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'single'  # Changed to 'single' for 2018-2023
-    )
-  })
-  
-  # accident, stratified by state, age, and race (2018-2023 only) 
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_race.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "unintentional",
-      group_by = c("MECH", "STATE", "YEAR", "RACE"),  
-      year_start = 2018,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'single'
-    )
-  })
-  
-  # violence, stratified by state, age, and ethnicity (2001-2023 only) 
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_ethnicity.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "violence",
-      group_by = c("MECH", "STATE", "YEAR", "ETHNICTY"),  
-      year_start = 2001,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'none'  # Ethnicity is separate from race
-    )
-  })
-  
-  # accident, stratified by state, age, and ethnicity (2001-2023 only) 
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_ethnicity.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "unintentional",
-      group_by = c("MECH", "STATE", "YEAR", "ETHNICTY"),  
-      year_start = 2001,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'none'  # Ethnicity is separate from race
-    )
-  })
-
-  # CROSS-TABULATED DEMOGRAPHICS (sex × ethnicity, 2001-2023)
-  # violence, stratified by state, age, sex, and ethnicity
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_sex_ethnicity.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "violence",
-      group_by = c("MECH", "STATE", "YEAR", "SEX", "ETHNICTY"),
-      year_start = 2001,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'none'
-    )
-  })
-
-  # accident, stratified by state, age, sex, and ethnicity
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_sex_ethnicity.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "unintentional",
-      group_by = c("MECH", "STATE", "YEAR", "SEX", "ETHNICTY"),
-      year_start = 2001,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'none'
-    )
-  })
-
-  # CROSS-TABULATED DEMOGRAPHICS (sex × race × ethnicity, 2018-2023 only)
-  # violence, stratified by state, age, sex, race, and ethnicity
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/violence_state_age_", X[1], "_", X[2], "_sex_race_ethnicity.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "violence",
-      group_by = c("MECH", "STATE", "YEAR", "SEX", "RACE", "ETHNICTY"),
-      year_start = 2018,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'single'
-    )
-  })
-
-  # accident, stratified by state, age, sex, race, and ethnicity
-  lapply(agegrps, function(X) {
-    raw_file <- paste0("raw/accident_state_age_", X[1], "_", X[2], "_sex_race_ethnicity.csv.xz")
-    dcf::dcf_download_wisqars(
-      raw_file,
-      intent = "unintentional",
-      group_by = c("MECH", "STATE", "YEAR", "SEX", "RACE", "ETHNICTY"),
-      year_start = 2018,
-      year_end = max_year,
-      age_min = X[1],
-      age_max = X[2],
-      group_ages = F,
-      race_reporting = 'single'
-    )
-  })
-
-
-  #violence, stratified by state
-  dcf::dcf_download_wisqars(
-    "raw/violence_state.csv.xz",
-    intent = "violence",
-    group_by = c("MECH", "STATE",  "YEAR"),
-    year_start = 2001,
-    year_end = max_year,
-    race_reporting = 'none' #this allows going back before 2018
-  )
-  
-  #accident, stratified by state
-  dcf::dcf_download_wisqars(
-    "raw/accident_state.csv.xz",
-    intent = "unintentional",
-    group_by = c("MECH", "STATE",  "YEAR"),
-    year_start = 2001,
-    year_end = max_year,
-    race_reporting = 'none' #this allows going back before 2018
-  )
-  
-  #Overall
-  dcf::dcf_download_wisqars(
-    "raw/violence.csv.xz",
-    intent = "violence",
-    group_by = c("MECH",  "YEAR"),
-    year_start = 2001,
-    year_end = max_year,
-    race_reporting = 'none' #this allows going back before 2018
-  )
-  
-  #accident, Overall
-  dcf::dcf_download_wisqars(
-    "raw/accident.csv.xz",
-    intent = "unintentional",
-    group_by = c("MECH",  "YEAR"),
-    year_start = 2001,
-    year_end = max_year,
-    race_reporting = 'none' #this allows going back before 2018
+    group_ages = F,
+    race_reporting = 'none'
   )
 }
 
@@ -519,10 +369,14 @@ if (!identical(process$raw_state, raw_state)) {
       Mechlbl = str_to_lower(
         str_replace_all(Mechlbl, "[^a-zA-Z0-9]+", "_")
       ),
-      Mechlbl = if_else(Mechlbl=='firearm' & type=='accident','firearm_accident',
-                        if_else(Mechlbl=='firearm' & type=='violence','firearm_intentional',
-                                Mechlbl  
-                        )),
+      Mechlbl = case_when(
+        Mechlbl == 'firearm' & type == 'accident'  ~ 'firearm_accident',
+        Mechlbl == 'firearm' & type == 'violence'  ~ 'firearm_intentional',
+        Mechlbl == 'firearm' & type == 'homicide'  ~ 'firearm_homicide',
+        Mechlbl == 'firearm' & type == 'suicide'   ~ 'firearm_suicide',
+        Mechlbl == 'firearm' & type == 'legal'     ~ 'firearm_legal_intervention',
+        TRUE ~ Mechlbl
+      ),
       time=paste0(year, '-01-01')
           ) %>%
     rename(geography = state,
