@@ -1,262 +1,57 @@
-library(tidyverse)
-# Process staging data
-all_fips <- vroom::vroom('../../resources/all_fips.csv.gz')
+# =============================================================================
+# Epic Cosmos Data Ingestion
+# Source: https://github.com/PopHIVE/epic_preprocessing
+# Pulls pre-processed standard files from the epic_preprocessing repository.
+# =============================================================================
 
-# if there was staging data, make new standard version from it..this function will automaticaly save relevant file
-raw <- dcf::dcf_process_epic_staging(cleanup=T)
+library(dplyr)
 
-############
+process <- dcf::dcf_process_record()
 
-if (!is.null(raw)) {
-  process <- dcf::dcf_process_record()
-  meta_files <- list.files("raw", "json", full.names = TRUE)
-  raw_vintages <- lapply(
-    structure(
-      meta_files,
-      names = gsub(".*/|\\..*", "", meta_files)
-    ),
-    function(meta_file) {
-      meta <- jsonlite::read_json(meta_file)[[1L]]
-      as.character(as.Date(meta[["Date of Export"]], "%m/%d/%Y"))
-    }
-  )
-  
-  files <- list.files("raw", "\\.csv\\.xz", full.names = TRUE)
-  data <- lapply(files, function(file) {
-    d <- vroom::vroom(file, show_col_types = FALSE, guess_max = Inf)
-    
-    if(grepl('self_harm',file)){
-      d <- d %>%
-        rename( n_all_encounters = n_self_harm,
-                pct_self_harm = "percent_with_self-harm_dx_(%)")
-    }
-    
-    d2 <- dcf::dcf_standardize_epic(d)
-    
-    if('month' %in% names(d)){
-      d2$time = paste0(d2$time, '-01')
-    }
-    
-    if ("geography" %in% names(d2)) {
-    d2 <- d2 %>%
-      mutate(geography = if_else(geography=='0','00', geography) 
-      )
-    }
-    
-    if ("time" %in% names(d2)) {
-      
-      d2 <- d2 %>%
-        mutate(time = as.Date(time),
-               weekday = weekdays(time),
-             time = if_else(weekday=='Sunday', time+6, time), #week end date
-             time = as.character(time)
-      ) %>%
-        dplyr::select(-weekday) 
-    }
-    
-    if ("n_obesity_state" %in% names(d2)) {
-      d2 <- d2 %>%
-        rename(n_patients = n_obesity_state) 
-    }
+# GitHub raw base URL for standard files
+base_url <- "https://raw.githubusercontent.com/PopHIVE/epic_preprocessing/main/data/bundle_cosmos/standard"
 
-    if ("age" %in% names(d2)) {
-    d2 <- d2 %>%
-      mutate(age = stringr::str_replace(age, "^Less than\\s+(\\d+)", "<\\1 Years"),
-             age = stringr::str_replace(age, "^(\\d+) or more$", "≥\\1 Years"),
-             age = stringr::str_replace(age, "^≥\\s*(\\d+) and <\\s*(\\d+)$", "\\1-\\2 Years"),
-             age = if_else( 
-               age=="1-5 Years", "1-4 Years",
-               if_else( age=="5-18 Years", "5-17 Years",
-                        if_else(age=="18-25 Years", "18-24 Years",
-                                if_else(age=="18-50 Years", "18-49 Years",
-                            if_else( age=="25-35 Years" , "25-34 Years",
-                                     if_else( age=="35-45 Years", "35-44 Years",
-                                              if_else( age=="45-55 Years", "45-54 Years",
-                                                       if_else( age=="50-65 Years", "50-64 Years",
-                                                       if_else( age=="55-65 Years", "55-64 Years",
-                                                                if_else( age=="≥65 Years", "65+ Years",
-                                                                         age
-                            ))))))))))
-          
-             )
-       }
-    
-    return(d2)
+# Files to download from the remote standard folder
+standard_files <- c(
+  "county_no_time.csv.gz",
+  "county_year.csv.gz",
+  "heat_year_county.csv.gz",
+  "monthly.csv.gz",
+  "monthly_injury.csv.gz",
+  "monthly_tests.csv.gz",
+  "no_geo.csv.gz",
+  "state_no_time.csv.gz",
+  "state_year.csv.gz",
+  "weekly.csv.gz",
+  "yearly_injury.csv.gz"
+)
+
+# Download each file and track hashes for change detection
+current_hashes <- list()
+any_changed <- FALSE
+
+for (f in standard_files) {
+  url <- paste0(base_url, "/", f)
+  dest <- file.path("standard", f)
+
+  tryCatch({
+    download.file(url, dest, mode = "wb", quiet = TRUE)
+    current_hashes[[f]] <- tools::md5sum(dest)
+  }, error = function(e) {
+    message("Warning: failed to download ", f, ": ", e$message)
   })
-  names(data) <- sub("\\..*", "", basename(files))
-
-  merged_weekly <- Reduce(
-    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-    data[c("all_encounters_weekly", "covid", "flu", "rsv", "rsv_tests")]
-  )
-  
-  # add epic_ prefix to all columns except geography, time, age
-  merged_weekly <- merged_weekly %>%
-    filter(!is.na(age)) %>%
-    mutate(pct_rsv = 100*n_rsv/n_all_encounters_weekly,
-           pct_flu = 100*n_flu/n_all_encounters_weekly,
-           pct_covid = 100*n_covid/n_all_encounters_weekly,
-           suppressed_flag_rsv = if_else(n_rsv<10,1,0),
-           suppressed_flag_flu = if_else(n_flu<10,1,0),
-           suppressed_flag_covid = if_else(n_covid<10,1,0),
-           ) %>%
-    rename_with(~ paste0("epic_", .x), 
-                .cols = -c(geography, time, age))%>%
-    arrange(geography, age, time) %>%
-    group_by(geography, age) %>%
-    mutate(time= as.Date(time),
-           epic_n_all_encounters_lag1 = lag(epic_n_all_encounters_weekly,1),
-           remove = if_else(epic_n_all_encounters_weekly/epic_n_all_encounters_lag1<0.5 &
-                              time == max(time, na.rm=T),1,0)
-    ) %>%
-    filter(remove != 1) %>%
-    dplyr::select(-remove, -epic_n_all_encounters_lag1)
-    
-  
-  vroom::vroom_write(
-    merged_weekly,
-    "standard/weekly.csv.gz",
-    ","
-  )
-  
-  process$vintages <- list(
-    weekly.csv.gz = max(unlist(raw_vintages[c(
-      "all_encounters",
-      "covid",
-      "flu",
-      "rsv"
-    )])),
-    state_no_time.csv.gz = raw_vintages$self_harm,
-    county_no_time.csv.gz = raw_vintages$obesity_county,
-    no_geo.csv.gz = raw_vintages$rsv_tests,
-    children.csv.gz = raw_vintages$vaccine_mmr
-  )
-  dcf::dcf_process_record(updated = process)
-  
-  
-  #Monthly data
-  
-  merged_monthly<- Reduce(
-    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-    data[c("ed_opioid", "ed_firearm")]
-  )
-  
-  monthly <- merged_monthly %>%
-    filter(!is.na(age))%>%
-    rename(epic_n_ed_opioid = ed_opioid,
-           epic_n_ed_firearm = firearms_initial) %>%
-      mutate(epic_n_ed_opioid = if_else(epic_n_ed_opioid == '10 or fewer', '5', epic_n_ed_opioid ),
-           epic_n_ed_opioid = as.numeric(epic_n_ed_opioid),
-           
-           epic_n_ed_firearm = if_else(epic_n_ed_firearm == '10 or fewer', '5', epic_n_ed_firearm ),
-           epic_n_ed_firearm = as.numeric(epic_n_ed_firearm),
-           
-           suppressed_opioid = if_else(epic_n_ed_opioid == 5, 1, 0),
-           suppressed_firearm = if_else(epic_n_ed_firearm == 5, 1, 0),
-           
-           none_of_the_above = as.numeric(none_of_the_above),
-           all_cause = epic_n_ed_opioid + none_of_the_above,
-           epic_pct_ed_opioid = 100* epic_n_ed_opioid/all_cause,
-           epic_pct_ed_firearm = 100* epic_n_ed_firearm/all_cause
-           
-           ) %>%
-    dplyr::select(time, geography, age,epic_n_ed_firearm, epic_pct_ed_firearm,epic_n_ed_opioid, epic_pct_ed_opioid, starts_with('suppressed'))
-  
-  vroom::vroom_write(
-    monthly,
-    "standard/monthly.csv.gz",
-    ","
-  )
-  
-  # add epic_ prefix to all columns except geography, time, age
-  # merged_monthly <- merged_monthly %>%
-  #   rename_with(~ paste0("epic_", .x), 
-  #               .cols = -c(geography, time, age))%>%
-  #   arrange(geography, age, time) %>%
-  #   group_by(geography, age) %>%
-  #   mutate(time= as.Date(time),
-  #          epic_n_all_encounters_lag1 = lag(epic_n_all_encounters,1),
-  #          remove = if_else(epic_n_all_encounters/epic_n_all_encounters_lag1<0.5 &
-  #                             time == max(time, na.rm=T),1,0)
-  #   ) %>%
-  #   filter(remove != 1) %>%
-  #   dplyr::select(-remove, -epic_n_all_encounters_lag1)
-  
-  
-  merged_yearly_diabetes <- Reduce(
-    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-    data[c("all_patients")]
-  ) %>%
-    rename(diabetes_a1c_6_5 = `a1c_6.5+_(%)`,
-           diabetes_dx_ccw = "dm_(%)",
-           n_patients = n_all_patients)
-  
-  merged_yearly_obesity <- Reduce(
-    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-    data[c("obesity_state")]
-  ) %>%
-    rename(obesity_bmi = `bmi_30_49.8`,
-           obesity_dx_ccw = "dm_(%)" ,#this is mislabeled on input file--it is actually obesity
-           )
-
-    merged_yearly <- merged_yearly_diabetes %>%
-                full_join(merged_yearly_obesity) %>%
-      rename(n_patients_chronic = n_patients) %>%
-      mutate(  
-        diabetes_dx_ccw = as.numeric(gsub('%','', diabetes_dx_ccw)),
-        diabetes_a1c_6_5 = as.numeric(gsub('%','', diabetes_a1c_6_5)),
-        obesity_dx_ccw = as.numeric(gsub('%','', obesity_dx_ccw)),
-        obesity_bmi = as.numeric(gsub('%','', obesity_bmi)),
-      )
-  
-  vroom::vroom_write(merged_yearly, "standard/state_year.csv.gz", ",")
-  
-  
-  ##
-  
-  merged_yearly_county_diabetes <- Reduce(
-    function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-    data[c("hba1c_county")]
-  )
-  
-
-  vroom::vroom_write(merged_yearly_county_diabetes, "standard/county_year.csv.gz", ",") 
-  
-  vroom::vroom_write(
-    Reduce(
-      function(a, b) merge(a, b, all = TRUE, sort = FALSE),
-      data[c("obesity_state")]
-    ),
-    "standard/state_no_time.csv.gz",
-    ","
-  )
-  vroom::vroom_write(data$obesity_county, "standard/county_no_time.csv.gz", ",")
-  vroom::vroom_write(data$rsv_tests, "standard/no_geo.csv.gz", ",")
-  vroom::vroom_write(data$vaccine_mmr, "standard/children.csv.gz", ",")
-  
-
 }
 
-#Test
-# merged_weekly %>%
-#   filter(geography=='00' & age=='Total') %>%
-#   mutate(time=as.Date(time)) %>%
-# ggplot(aes(x=time, y=epic_n_rsv))+
-#   geom_line()
-# merged_weekly %>%
-#   filter(geography=='00' & age=='Total') %>%
-#   mutate(time=as.Date(time)) %>%
-#   ggplot(aes(x=time, y=epic_n_flu))+
-#   geom_line()
-# 
-# # merged_weekly %>%
-# #   filter(geography=='00' & age=='Total') %>%
-# #   mutate(time=as.Date(time)) %>%
-# #   ggplot(aes(x=time, y=epic_n_covid))+
-# #   geom_line()
-# # 
-# merged_weekly %>%
-#   filter(geography=='00' & age=='Total') %>%
-#   mutate(time=as.Date(time)) %>%
-#   ggplot(aes(x=time, y=epic_n_all_encounters))+
-#   geom_line()
+# Also download the measure_info.json
+measure_url <- "https://raw.githubusercontent.com/PopHIVE/epic_preprocessing/main/data/bundle_cosmos/measure_info.json"
+tryCatch({
+  download.file(measure_url, "measure_info.json", mode = "wb", quiet = TRUE)
+}, error = function(e) {
+  message("Warning: failed to download measure_info.json: ", e$message)
+})
+
+# Check if anything changed
+if (!identical(process$raw_state, current_hashes)) {
+  process$raw_state <- current_hashes
+  dcf::dcf_process_record(updated = process)
+}
