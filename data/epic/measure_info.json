@@ -8,9 +8,11 @@
     "measure_type": "integer",
     "unit": "years",
     "time_resolution": "year",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
@@ -18,43 +20,49 @@
     "id": "n_patients",
     "short_name": "Number of Patients in the ED",
     "long_name": "Number of Patients in the ED, any cause",
-    "short_description": "Number of patients.",
+    "short_description": "Number of patients presenting to the emergency department for any cause.",
+    "long_description": "Total number of patients presenting to the emergency department for any cause. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
     "measure_type": "integer",
     "unit": "count",
+    "time_resolution": "Week",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "epic_suppressed_flag_{variant}": {
     "id": "epic_suppressed_flag_{variant}",
     "short_name": "Fewer than 10 cases in the strata?",
-    "long_name": "Fewer than 10 cases in the strata?",
-    "short_description": "Binary indicator for low counts",
-    "long_description": "Binary indicator: true if fewer than 10 cases in the strata",
+    "long_name": "Suppression flag: fewer than 10 cases in the strata",
+    "short_description": "Binary indicator for low counts.",
+    "long_description": "Binary indicator: 1 if fewer than 10 cases in the strata, 0 otherwise. When suppressed, the corresponding count is imputed as 5.",
     "measure_type": "binary",
     "unit": "",
     "variants": {
       "covid": {
         "default": "covid",
         "short_name": "COVID",
-        "category": "rsv"
+        "category": "respiratory"
       },
       "flu": {
         "default": "flu",
-        "short_name": "FLU",
-        "category": "rsv"
+        "short_name": "Influenza",
+        "category": "respiratory"
       },
       "rsv": {
         "default": "rsv",
         "short_name": "RSV",
-        "category": "rsv"
+        "category": "respiratory"
       }
     },
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
@@ -63,11 +71,15 @@
     "short_name": "RSV Tests: Positive",
     "long_name": "Emergency Room (ER) Encounters with Positive Respiratory Syncytial Virus (RSV) Tests",
     "short_description": "Number of ER encounters with positive RSV tests.",
+    "long_description": "Number of emergency room encounters with positive RSV tests among pneumonia admissions (ICD-10: J12-J18). Data accessed via Epic Cosmos SlicerDicer. Counts fewer than 10 are suppressed and imputed as 5.",
     "measure_type": "integer",
     "unit": "encounter",
+    "time_resolution": "Month",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
@@ -76,11 +88,15 @@
     "short_name": "RSV Tests: Positive (%)",
     "long_name": "Percent of Emergency Room (ER) Visits with Positive RSV Tests",
     "short_description": "Percent of ER encounters with positive RSV tests.",
+    "long_description": "Percentage of emergency room encounters with positive RSV tests among pneumonia admissions (ICD-10: J12-J18).",
     "measure_type": "percent",
-    "unit": "percent",
+    "unit": "%",
+    "time_resolution": "Month",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
@@ -88,8 +104,8 @@
     "id": "epic_n_{variant}",
     "short_name": "{variant.short_name} Patients",
     "long_name": "{variant.short_name} Emergency Room (ER) Encounters",
-    "short_description": "Number of {variant.short_name} patients",
-    "long_description": "Number of emergency room (ER) encounters with {variant.short_name} ICD-10-CM codes.",
+    "short_description": "Number of {variant.short_name} patients.",
+    "long_description": "Number of emergency room (ER) encounters with {variant.short_name} ICD-10-CM codes. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
     "measure_type": "integer",
     "unit": "encounters",
     "variants": {
@@ -101,27 +117,29 @@
       "covid": {
         "default": "covid",
         "short_name": "COVID",
-        "category": "rsv"
+        "category": "respiratory"
       },
       "flu": {
         "default": "flu",
-        "short_name": "FLU",
-        "category": "rsv"
+        "short_name": "Influenza",
+        "category": "respiratory"
       },
       "rsv": {
         "default": "rsv",
         "short_name": "RSV",
-        "category": "rsv"
+        "category": "respiratory"
       },
       "ed_j12_j18": {
         "default": "ed_j12_j18",
-        "short_name": "J12_J18",
-        "category": "rsv"
+        "short_name": "Pneumonia (J12-J18)",
+        "category": "respiratory"
       }
     },
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
@@ -129,7 +147,8 @@
     "id": "epic_pct_{variant}",
     "short_name": "{variant.short_name} Patients (%)",
     "long_name": "{variant.short_name} Emergency Room (ER) Encounters (%)",
-    "short_description": "Percentage of {variant.short_name} patients",
+    "short_description": "Percentage of {variant.short_name} patients among all ER encounters.",
+    "long_description": "Percentage of emergency room encounters attributable to {variant.short_name} ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
     "measure_type": "percent",
     "unit": "%",
     "variants": {
@@ -141,148 +160,172 @@
       "covid": {
         "default": "covid",
         "short_name": "COVID",
-        "category": "rsv"
+        "category": "respiratory"
       },
       "flu": {
         "default": "flu",
-        "short_name": "FLU",
-        "category": "rsv"
+        "short_name": "Influenza",
+        "category": "respiratory"
       },
       "rsv": {
         "default": "rsv",
         "short_name": "RSV",
-        "category": "rsv"
+        "category": "respiratory"
       },
       "rsv_pos_tests": {
         "default": "rsv_pos_tests",
-        "short_name": "rsv_pos_tests",
+        "short_name": "RSV Positive Tests",
         "long_name": "Percent of tests among pneumonia patients in the ED (J12-J18) that are positive for RSV",
-        "category": "rsv"
+        "category": "respiratory"
       },
       "j12_j18_tested_rsv": {
         "default": "j12_j18_tested_rsv",
-        "short_name": "j12_j18_tested_rsv",
+        "short_name": "J12-J18 Tested RSV",
         "long_name": "Percent of pneumonia patients in the ED (J12-J18) that are tested for RSV",
-        "category": "rsv"
+        "category": "respiratory"
       }
     },
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "epic_pct_rsv_pos_tests": {
     "id": "epic_pct_rsv_pos_tests",
     "short_name": "Percent positive",
-    "long_name": "Percent of tests among hospitalized pneumonia admissions (ICD10: J12-J18) that are positive for RSV",
-    "short_description": "Percent of tests among pneumonia admissions (ICD10: J12-J18) that are positive for RSV. This is among hospital admissions, including those that started in the emergency department",
+    "long_name": "Percent of tests among hospitalized pneumonia admissions (ICD-10: J12-J18) that are positive for RSV",
+    "short_description": "Percent of tests among pneumonia admissions (ICD-10: J12-J18) that are positive for RSV.",
+    "long_description": "Percent of RSV tests among hospitalized pneumonia admissions (ICD-10: J12-J18) that are positive for RSV. This is among hospital admissions, including those that started in the emergency department. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
     "unit": "%",
+    "time_resolution": "Month",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "epic_pct_j12_j18_tested_rsv": {
     "id": "epic_pct_j12_j18_tested_rsv",
     "short_name": "Percent tested",
-    "long_name": "Percent of hospitalized pneumonia admissions (J12-J18) receiving a test for RSV. This is among hospital admissions, including those that started in the emergency department",
-    "short_description": "Percent of hospitalized pneumonia admissions (J12-J18) receiving a test for RSV",
+    "long_name": "Percent of hospitalized pneumonia admissions (J12-J18) receiving a test for RSV",
+    "short_description": "Percent of hospitalized pneumonia admissions (J12-J18) receiving a test for RSV.",
+    "long_description": "Percent of hospitalized pneumonia admissions (ICD-10: J12-J18) receiving a test for RSV. This is among hospital admissions, including those that started in the emergency department. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
     "unit": "%",
+    "time_resolution": "Month",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
-  "_sources": {
-    "epic_cosmos": {
-      "name": "Epic Cosmos",
-      "url": "https://cosmos.epic.com/",
-      "date_accessed": 2025,
-      "organization": "Epic Systems",
-      "organization_url": "https://cosmos.epic.com/"
-    }
-  },
   "epic_n_ed_opioid": {
     "id": "epic_n_ed_opioid",
-    "short_name": "Number of Patients in the ED for opioid overdose",
-    "long_name": "Number of Patients in the ED for opioid overdose",
-    "short_description": "Number of patients.",
-    "measure_type": "integer",
+    "short_name": "ED opioid overdose patients",
+    "long_name": "Number of patients in the ED for opioid overdose",
+    "short_description": "Number of patients presenting to the emergency department for opioid overdose.",
+    "long_description": "Number of patients presenting to the emergency department with an opioid overdose diagnosis. Data from Epic Cosmos. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Count",
     "unit": "patient",
+    "time_resolution": "Month",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "epic_rate_ed_opioid": {
     "id": "epic_rate_ed_opioid",
-    "short_name": "Number of people with an opioid overdose per 100,000 ED patients",
-    "long_name": "Number of people with an opioid overdose per 100,000 ED patients",
-    "short_description": "Number of overdoses per 100,000 ED patients.",
+    "short_name": "ED opioid overdose rate",
+    "long_name": "Opioid overdose rate per 100,000 ED patients",
+    "short_description": "Number of opioid overdoses per 100,000 ED patients.",
+    "long_description": "Rate of opioid overdose ED encounters per 100,000 all-cause ED encounters. Data from Epic Cosmos. Counts fewer than 10 are suppressed and imputed as 5.",
     "measure_type": "Rate",
     "unit": "Cases per 100,000",
+    "time_resolution": "Month",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "n_obesity_county": {
     "id": "n_obesity_county",
-    "short_name": "Number of Patients (Chronic, County)",
-    "long_name": "Number of Patients (Chronic, County)",
-    "short_description": "Total number of patients.",
-    "long_description": "Total number of patients within the county-level obesity sample.",
+    "short_name": "Number of patients (chronic, county)",
+    "long_name": "Number of patients in the county-level obesity sample",
+    "short_description": "Total number of patients in the county-level obesity sample.",
+    "long_description": "Total number of patients within the county-level obesity sample. Data from Epic Cosmos. County-level data may have high missingness in some states.",
     "measure_type": "integer",
     "unit": "patient",
+    "time_resolution": "Year",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "obesity_bmi": {
     "id": "obesity_bmi",
-    "short_name": "BMI between 30 and 49.8",
+    "short_name": "BMI 30-49.8",
     "long_name": "Body Mass Index (BMI) between 30 and 49.8",
     "short_description": "Percent of sample with a BMI between 30 and 49.8 in the past 2 years.",
+    "long_description": "Percent of sample with a Body Mass Index (BMI) measurement between 30 and 49.8 in the past 2 years. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
     "unit": "%",
+    "time_resolution": "Year",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
-  "obesity_dx_cdw": {
-    "id": "obesity_dx_cdw",
+  "obesity_dx_ccw": {
+    "id": "obesity_dx_ccw",
     "short_name": "Obesity CCW definition",
     "long_name": "Obesity based on the CCW definition",
-    "long_description": "Percent of sample with a diagnostic code for obesity on an encounter in the past 2 years, similar to the CCW definition: https://www2.ccwdata.org/web/guest/condition-categories-other.",
+    "short_description": "Percent of sample with a diagnostic code for obesity based on the CCW definition.",
+    "long_description": "Percent of sample with a diagnostic code for obesity on an encounter in the past 2 years, similar to the CCW definition: https://www2.ccwdata.org/web/guest/condition-categories-other. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
     "unit": "%",
+    "time_resolution": "Year",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "diabetes_a1c_6_5": {
     "id": "diabetes_a1c_6_5",
-    "short_name": "Elevated hemoglobbin A1c > 6.5%",
+    "short_name": "Elevated hemoglobin A1c > 6.5%",
     "long_name": "Prevalence of diabetes based on elevated Hemoglobin A1c in the previous 2 years",
-    "long_description": "Percent of sample with a measurement of Hemoglobin A1c greater than 6.5% in the past 2 years.",
+    "short_description": "Percent of sample with Hemoglobin A1c greater than 6.5%.",
+    "long_description": "Percent of sample with a measurement of Hemoglobin A1c greater than 6.5% in the past 2 years. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
     "unit": "%",
+    "time_resolution": "Year",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
@@ -290,51 +333,67 @@
     "id": "diabetes_dx_ccw",
     "short_name": "Diabetes CCW definition",
     "long_name": "Diabetes based on the CCW definition",
-    "long_description": "Percent of sample with a diagnostic code for diabetes on an encounter in the past 2 years, similar to the CCW definition: https://www2.ccwdata.org/web/guest/condition-categories-chronic.",
+    "short_description": "Percent of sample with a diagnostic code for diabetes based on the CCW definition.",
+    "long_description": "Percent of sample with a diagnostic code for diabetes on an encounter in the past 2 years, similar to the CCW definition: https://www2.ccwdata.org/web/guest/condition-categories-chronic. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
     "unit": "%",
+    "time_resolution": "Year",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "hemoglobin_a1c_7": {
     "id": "hemoglobin_a1c_7",
     "short_name": "HA1C >= 7%",
-    "long_name": "HA1C 7% Or More",
+    "long_name": "Hemoglobin A1C 7% or more",
     "short_description": "Percent of sample with Hemoglobin A1C test results of 7% or more.",
+    "long_description": "Percent of sample with Hemoglobin A1C test results of 7% or more. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
-    "unit": "percent of sample",
+    "unit": "%",
+    "time_resolution": "Year",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "bmi_30_49_8": {
     "id": "bmi_30_49_8",
-    "short_name": "BMI between 30 and 49.8",
+    "short_name": "BMI 30-49.8",
     "long_name": "Body Mass Index (BMI) between 30 and 49.8",
     "short_description": "Percent of sample with a BMI between 30 and 49.8.",
+    "long_description": "Percent of sample with a Body Mass Index (BMI) measurement between 30 and 49.8. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
-    "unit": "percent of sample",
+    "unit": "%",
+    "time_resolution": "Year",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   },
   "percentage_with_base_patient_followed_by_hemoglobin_a1c_6_5_or_more_within_10_years": {
     "id": "percentage_with_base_patient_followed_by_hemoglobin_a1c_6_5_or_more_within_10_years",
     "short_name": "HA1C >= 6.5%",
-    "long_name": "HA1C 6.5% Or More",
+    "long_name": "Hemoglobin A1C 6.5% or more",
     "short_description": "Percent of sample with Hemoglobin A1C test results of 6.5% or more.",
+    "long_description": "Percent of sample with Hemoglobin A1C test results of 6.5% or more. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
-    "unit": "percent of sample",
+    "unit": "%",
+    "time_resolution": "Year",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
     "sources": [
       {
-        "id": "epic_cosmos"
+        "name": "Epic Cosmos",
+        "url": "https://cosmos.epic.com/"
       }
     ]
   }
