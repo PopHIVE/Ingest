@@ -47,7 +47,64 @@
     "citations": []
   },
 
+  "narms_retail_pct_resistant": {
+    "id": "narms_retail_pct_resistant",
+    "short_name": "Percent resistant (retail meats)",
+    "long_name": "Percentage of retail meat isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Percentage of retail meat isolates testing resistant (R) to a specific antimicrobial agent, among positive cultures",
+    "long_description": "Percentage of retail meat isolates with a Resistant (R) call for a specific antimicrobial agent, calculated from individual isolate-level FDA NARMS retail meats data. Only isolates with GROWTH=YES (positive cultures) are included. Resistance is determined by CLSI breakpoints. Data are aggregated nationally by year, organism genus/species/serotype, meat source, and antibiotic. NA values indicate no isolates were tested for that combination.",
+    "statement": "In {location}, {value}% of {genus} isolates from {meat_source} were resistant to {antimicrobial}",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_retail_meats" }],
+    "citations": [
+      {
+        "title": "FDA NARMS Retail Meats Integrated Report",
+        "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries"
+      }
+    ]
+  },
+  "narms_retail_n_resistant": {
+    "id": "narms_retail_n_resistant",
+    "short_name": "Number resistant (retail meats)",
+    "long_name": "Number of retail meat isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Count of retail meat isolates with a Resistant (R) call for a specific antimicrobial",
+    "long_description": "Number of retail meat isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage. Only positive cultures (GROWTH=YES) are included.",
+    "statement": "In {location}, {value} {genus} isolates from {meat_source} were resistant to {antimicrobial}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_retail_meats" }],
+    "citations": []
+  },
+  "narms_retail_n_tested": {
+    "id": "narms_retail_n_tested",
+    "short_name": "Number tested (retail meats)",
+    "long_name": "Number of retail meat isolates tested for antimicrobial susceptibility",
+    "category": "antimicrobial_resistance",
+    "short_description": "Total number of retail meat isolates tested for resistance to a specific antimicrobial",
+    "long_description": "Total number of retail meat isolates (GROWTH=YES) with a non-missing SIR call for a specific antimicrobial agent. Denominator of the resistance percentage.",
+    "statement": "In {location}, {value} {genus} isolates from {meat_source} were tested for {antimicrobial}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_retail_meats" }],
+    "citations": []
+  },
+
   "_sources": {
+    "narms_retail_meats": {
+      "name": "FDA NARMS Retail Meats Surveillance Data",
+      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
+      "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
+      "organization_url": "https://www.fda.gov/animal-veterinary",
+      "description": "Isolate-level antimicrobial susceptibility data from the FDA NARMS retail meats program. Samples collected from retail stores in participating states. Organisms tested include Campylobacter (coli, jejuni), Enterococcus (faecalis, faecium), Escherichia coli, and Salmonella (multiple serotypes). Meat sources include retail chicken, ground beef, ground turkey, pork chops, and veal. SIR (Susceptible/Intermediate/Resistant) calls based on CLSI breakpoints. Data span 2002-2021.",
+      "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2025
+    },
     "narms_now": {
       "name": "NARMS Now: Human Data - Antimicrobial Resistance",
       "url": "https://www.cdc.gov/narms/data/index.html",

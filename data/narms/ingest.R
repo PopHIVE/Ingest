@@ -10,7 +10,7 @@ library(httr2)
 library(jsonlite)
 
 if (!file.exists("process.json")) {
-  process <- list(narms_now_state = NULL)
+  process <- list(narms_now_state = NULL, retail_meats_state = NULL)
 } else {
   process <- dcf::dcf_process_record()
 }
@@ -880,4 +880,154 @@ if (needs_refresh) {
   dcf::dcf_process_record(updated = process)
 
   message("=== NARMS Now scraping complete ===")
+}
+
+# =============================================================================
+# Source 3: NARMS Retail Meats Data (FDA/CVM)
+# Source: FDA NARMS Integrated Reports/Summaries
+# URL: https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries
+# File: raw/cvm-narms-retail-meats.xlsx
+# =============================================================================
+
+retail_raw_path <- "raw/cvm-narms-retail-meats.xlsx"
+retail_url <- "https://www.fda.gov/files/animal%20%26%20veterinary/published/cvm-narms-retail-meats_0.xlsx"
+
+download.file(retail_url, retail_raw_path, mode = "wb", quiet = TRUE)
+current_retail_state <- list(hash = as.character(tools::md5sum(retail_raw_path)))
+
+if (!identical(process$retail_meats_state, current_retail_state)) {
+    message("Processing NARMS retail meats data...")
+
+    library(readxl)
+    library(tidyr)
+
+    # SIR (Susceptible / Intermediate / Resistant) column codes
+    sir_codes <- c(
+      "AMC", "AMI", "AMP", "ATM", "AVL", "AXO", "AZI", "BAC",
+      "CAZ", "CCV", "CEP", "CEQ", "CHL", "CIP", "CIP2", "CLI",
+      "COL", "COT", "CTC", "CTX", "DAP", "DOX", "ERY", "FEP",
+      "FFN", "FIS", "FLA", "FOX", "GEN", "IMI", "KAN", "LIN",
+      "LZD", "MER", "NAL", "NIT", "PEN", "PTZ", "QDA", "SAL",
+      "SMX", "STR", "SUF", "TEL", "TET", "TGC", "TIO", "TYL", "VAN"
+    )
+    sir_col_names <- paste0(sir_codes, " SIR")
+
+    # Full antimicrobial names from the FDA NARMS data dictionary
+    # (https://www.fda.gov/media/110404/download)
+    # FLA, SAL, SUF, CIP2 are veterinary-specific and not in the standard
+    # data dictionary; identified from genus-specificity in the data:
+    # FLA/SAL = Enterococcus only; SUF/CIP2 = Salmonella/E. coli only
+    antimicrobial_names <- c(
+      AMC  = "Amoxicillin-clavulanic acid",
+      AMI  = "Amikacin",
+      AMP  = "Ampicillin",
+      ATM  = "Aztreonam",
+      AVL  = "Avilamycin",
+      AXO  = "Ceftriaxone",
+      AZI  = "Azithromycin",
+      BAC  = "Bacitracin",
+      CAZ  = "Ceftazidime",
+      CCV  = "Ceftiofur",
+      CEP  = "Cephalothin",
+      CEQ  = "Cefquinome",
+      CHL  = "Chloramphenicol",
+      CIP  = "Ciprofloxacin",
+      CIP2 = "Ciprofloxacin (2nd breakpoint)",
+      CLI  = "Clindamycin",
+      COL  = "Colistin",
+      COT  = "Trimethoprim-sulfamethoxazole",
+      CTC  = "Chlortetracycline",
+      CTX  = "Cefotaxime",
+      DAP  = "Daptomycin",
+      DOX  = "Doxycycline",
+      ERY  = "Erythromycin",
+      FEP  = "Cefepime",
+      FFN  = "Florfenicol",
+      FIS  = "Sulfisoxazole",
+      FLA  = "Flaveomycin",
+      FOX  = "Cefoxitin",
+      GEN  = "Gentamicin",
+      IMI  = "Imipenem",
+      KAN  = "Kanamycin",
+      LIN  = "Lincomycin",
+      LZD  = "Linezolid",
+      MER  = "Meropenem",
+      NAL  = "Nalidixic acid",
+      NIT  = "Nitrofurantoin",
+      PEN  = "Penicillin",
+      PTZ  = "Piperacillin-tazobactam",
+      QDA  = "Quinupristin-dalfopristin",
+      SAL  = "Salinomycin",
+      SMX  = "Sulfamethoxazole",
+      STR  = "Streptomycin",
+      SUF  = "Sulfonamides",
+      TEL  = "Telithromycin",
+      TET  = "Tetracycline",
+      TGC  = "Tigecycline",
+      TIO  = "Ceftiofur",
+      TYL  = "Tylosin",
+      VAN  = "Vancomycin"
+    )
+
+    # FIPS lookup: state abbreviation -> 2-digit FIPS
+    all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+    state_fips_lookup <- all_fips %>%
+      filter(nchar(geography) == 2) %>%
+      select(geography, state)
+
+    retail_raw <- readxl::read_excel(retail_raw_path, sheet = "Retail_Meats")
+
+    # Filter to positive cultures; pivot antibiotic SIR columns to long format
+    retail_long <- retail_raw %>%
+      filter(GROWTH == "YES") %>%
+      select(YEAR, GENUS_NAME, SPECIES, SEROTYPE, SOURCE, STATE,
+             any_of(sir_col_names)) %>%
+      pivot_longer(
+        cols = any_of(sir_col_names),
+        names_to = "antimicrobial",
+        values_to = "sir"
+      ) %>%
+      mutate(
+        antimicrobial = sub(" SIR$", "", antimicrobial),
+        antimicrobial = antimicrobial_names[antimicrobial]
+      ) %>%
+      filter(!is.na(sir))
+
+    # Aggregate by state, converting abbreviation to FIPS
+    retail_standard <- retail_long %>%
+      left_join(state_fips_lookup, by = c("STATE" = "state")) %>%
+      filter(!is.na(geography)) %>%
+      group_by(YEAR, GENUS_NAME, SPECIES, SEROTYPE, SOURCE, antimicrobial, geography) %>%
+      summarize(
+        n_tested    = n(),
+        n_resistant = sum(sir == "R"),
+        .groups     = "drop"
+      ) %>%
+      mutate(
+        value = n_resistant / n_tested * 100,
+        time  = paste0(YEAR, "-12-31")
+      ) %>%
+      rename(
+        genus       = GENUS_NAME,
+        species     = SPECIES,
+        serotype    = SEROTYPE,
+        meat_source = SOURCE
+      ) %>%
+      select(
+        geography, time, genus, species, serotype, meat_source,
+        antimicrobial, value, n_resistant, n_tested
+      )
+
+    vroom::vroom_write(
+      retail_standard,
+      "standard/data_retail_meats.csv.gz",
+      delim = ","
+    )
+    message(sprintf(
+      "Wrote %d rows to standard/data_retail_meats.csv.gz",
+      nrow(retail_standard)
+    ))
+
+    process$retail_meats_state <- current_retail_state
+    dcf::dcf_process_record(updated = process)
 }
