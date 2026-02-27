@@ -11,14 +11,14 @@
 #   standard/data_county.csv.gz  -- 5-digit FIPS, vintage years 2009-2024
 #   standard/data_zcta.csv.gz    -- 5-digit ZCTA, vintage years 2009-2024
 #
-# Variable legend (all computed variables carry a "census_" prefix)
+# Variable legend (all computed variables carry a "acs_" prefix)
 #   Race/Ethnicity: W=Non-Hispanic White, B=Non-Hispanic Black, A=Asian,
 #                   H=Hispanic/Latino, P1=Pacific Islander/Native Hawaiian,
 #                   P=Native American, Q=Two or more races
 #   Sex:            F=Female, M=Male
 #   Age:            I=Infants 0-4, J=Juveniles 5-17, Y=Young Adults 18-39,
 #                   O=Middle-Aged 40-64, S=Seniors 65+
-#   Example:        census_POP, census_PCT_W, census_AGE, census_REX, etc.
+#   Example:        acs_POP, acs_PCT_W, acs_AGE, acs_REX, etc.
 # =============================================================================
 
 #to edit API key:
@@ -145,33 +145,33 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   b1 <- if (!is.null(raw1)) {
     raw1 %>%
       mutate(
-        census_AGE = B01002_001E,
-        census_BDB = safe_div(B28002_004E, B28002_001E),
-        census_BTH = safe_div(B13002_002E, B13002_001E),
-        census_DCY = safe_div(B14005_010E + B14005_011E + B14005_014E + B14005_015E +
+        acs_AGE = B01002_001E,
+        acs_BDB = safe_div(B28002_004E, B28002_001E),
+        acs_BTH = safe_div(B13002_002E, B13002_001E),
+        acs_DCY = safe_div(B14005_010E + B14005_011E + B14005_014E + B14005_015E +
                  B14005_024E + B14005_025E + B14005_028E + B14005_029E, B14005_001E),
-        census_EDB = safe_div(B15002_011E + B15002_012E + B15002_013E + B15002_014E +
+        acs_EDB = safe_div(B15002_011E + B15002_012E + B15002_013E + B15002_014E +
                  B15002_015E + B15002_016E + B15002_017E + B15002_018E +
                  B15002_028E + B15002_029E + B15002_030E + B15002_031E +
                  B15002_032E + B15002_033E + B15002_034E + B15002_035E, B15002_001E),
-        census_EDC = safe_div(B15002_012E + B15002_013E + B15002_014E + B15002_015E +
+        acs_EDC = safe_div(B15002_012E + B15002_013E + B15002_014E + B15002_015E +
                  B15002_016E + B15002_017E + B15002_018E + B15002_029E +
                  B15002_030E + B15002_031E + B15002_032E + B15002_033E +
                  B15002_034E + B15002_035E, B15002_001E),
-        census_GNI = B19083_001E,
-        census_GRP = safe_div(B26001_001E, B01001_001E),
+        acs_GNI = B19083_001E,
+        acs_GRP = safe_div(B26001_001E, B01001_001E),
         # Severe burden (50%+): renters + mortgaged owners + non-mortgaged owners
-        census_HBS = safe_div(B25070_010E + B25091_011E + B25091_022E,
+        acs_HBS = safe_div(B25070_010E + B25091_011E + B25091_022E,
               B25070_001E + B25091_001E),
         # Any burden (30%+): renters + mortgaged owners + non-mortgaged owners
         # Note: B25091_019E-022E = non-mortgaged owner 30%+ bands
-        census_HBU = safe_div(B25070_007E + B25070_008E + B25070_009E + B25070_010E +
+        acs_HBU = safe_div(B25070_007E + B25070_008E + B25070_009E + B25070_010E +
                  B25091_008E + B25091_009E + B25091_010E + B25091_011E +
                  B25091_019E + B25091_020E + B25091_021E + B25091_022E,
               B25070_001E + B25091_001E)
       ) %>%
-      keep_cols(c("census_AGE", "census_BDB", "census_BTH", "census_DCY", "census_EDB", "census_EDC",
-                  "census_GNI", "census_GRP", "census_HBS", "census_HBU"))
+      keep_cols(c("acs_AGE", "acs_BDB", "acs_BTH", "acs_DCY", "acs_EDB", "acs_EDC",
+                  "acs_GNI", "acs_GRP", "acs_HBS", "acs_HBU"))
   } else NULL
 
   # ---------------------------------------------------------------------------
@@ -201,37 +201,37 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   b2 <- if (!is.null(raw2)) {
     raw2 %>%
       mutate(
-        census_POP   = B01001_001E,
-        census_POP_M = B01001_002E,
-        census_POP_F = B01001_026E,
-        census_POP_I = B01001_003E + B01001_027E,
-        census_POP_J = B01001_004E + B01001_005E + B01001_006E +
+        acs_POP   = B01001_001E,
+        acs_POP_M = B01001_002E,
+        acs_POP_F = B01001_026E,
+        acs_POP_I = B01001_003E + B01001_027E,
+        acs_POP_J = B01001_004E + B01001_005E + B01001_006E +
                 B01001_028E + B01001_029E + B01001_030E,
-        census_POP_Y = B01001_007E + B01001_008E + B01001_009E + B01001_010E +
+        acs_POP_Y = B01001_007E + B01001_008E + B01001_009E + B01001_010E +
                 B01001_011E + B01001_012E + B01001_013E +
                 B01001_031E + B01001_032E + B01001_033E + B01001_034E +
                 B01001_035E + B01001_036E + B01001_037E,
-        census_POP_O = B01001_014E + B01001_015E + B01001_016E + B01001_017E +
+        acs_POP_O = B01001_014E + B01001_015E + B01001_016E + B01001_017E +
                 B01001_018E + B01001_019E +
                 B01001_038E + B01001_039E + B01001_040E + B01001_041E +
                 B01001_042E + B01001_043E,
-        census_POP_S = B01001_020E + B01001_021E + B01001_022E + B01001_023E +
+        acs_POP_S = B01001_020E + B01001_021E + B01001_022E + B01001_023E +
                 B01001_024E + B01001_025E +
                 B01001_044E + B01001_045E + B01001_046E + B01001_047E +
                 B01001_048E + B01001_049E
       ) %>%
       mutate(
-        census_PCT_M = safe_div(census_POP_M, census_POP),
-        census_PCT_F = safe_div(census_POP_F, census_POP),
-        census_PCT_I = safe_div(census_POP_I, census_POP),
-        census_PCT_J = safe_div(census_POP_J, census_POP),
-        census_PCT_Y = safe_div(census_POP_Y, census_POP),
-        census_PCT_O = safe_div(census_POP_O, census_POP),
-        census_PCT_S = safe_div(census_POP_S, census_POP),
-        census_DEP   = safe_div(census_POP_I + census_POP_J + census_POP_S, census_POP_Y + census_POP_O)
+        acs_PCT_M = safe_div(acs_POP_M, acs_POP),
+        acs_PCT_F = safe_div(acs_POP_F, acs_POP),
+        acs_PCT_I = safe_div(acs_POP_I, acs_POP),
+        acs_PCT_J = safe_div(acs_POP_J, acs_POP),
+        acs_PCT_Y = safe_div(acs_POP_Y, acs_POP),
+        acs_PCT_O = safe_div(acs_POP_O, acs_POP),
+        acs_PCT_S = safe_div(acs_POP_S, acs_POP),
+        acs_DEP   = safe_div(acs_POP_I + acs_POP_J + acs_POP_S, acs_POP_Y + acs_POP_O)
       ) %>%
-      keep_cols(c("census_POP", "census_POP_M", "census_POP_F", "census_POP_I", "census_POP_J", "census_POP_Y", "census_POP_O", "census_POP_S",
-                  "census_PCT_M", "census_PCT_F", "census_PCT_I", "census_PCT_J", "census_PCT_Y", "census_PCT_O", "census_PCT_S", "census_DEP"))
+      keep_cols(c("acs_POP", "acs_POP_M", "acs_POP_F", "acs_POP_I", "acs_POP_J", "acs_POP_Y", "acs_POP_O", "acs_POP_S",
+                  "acs_PCT_M", "acs_PCT_F", "acs_PCT_I", "acs_PCT_J", "acs_PCT_Y", "acs_PCT_O", "acs_PCT_S", "acs_DEP"))
   } else NULL
 
   # ---------------------------------------------------------------------------
@@ -252,29 +252,29 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   b3 <- if (!is.null(raw3)) {
     raw3 %>%
       mutate(
-        census_POP_W  = B03002_003E,
-        census_POP_B  = B03002_004E,
-        census_POP_P  = B03002_005E,
-        census_POP_A  = B03002_006E,
-        census_POP_P1 = B03002_007E,
-        census_POP_Q  = B03002_009E,
-        census_POP_H  = B03002_012E
+        acs_POP_W  = B03002_003E,
+        acs_POP_B  = B03002_004E,
+        acs_POP_P  = B03002_005E,
+        acs_POP_A  = B03002_006E,
+        acs_POP_P1 = B03002_007E,
+        acs_POP_Q  = B03002_009E,
+        acs_POP_H  = B03002_012E
       ) %>%
       mutate(
-        census_PCT_W  = safe_div(census_POP_W,  B03002_001E),
-        census_PCT_B  = safe_div(census_POP_B,  B03002_001E),
-        census_PCT_P  = safe_div(census_POP_P,  B03002_001E),
-        census_PCT_A  = safe_div(census_POP_A,  B03002_001E),
-        census_PCT_P1 = safe_div(census_POP_P1, B03002_001E),
-        census_PCT_Q  = safe_div(census_POP_Q,  B03002_001E),
-        census_PCT_H  = safe_div(census_POP_H,  B03002_001E),
+        acs_PCT_W  = safe_div(acs_POP_W,  B03002_001E),
+        acs_PCT_B  = safe_div(acs_POP_B,  B03002_001E),
+        acs_PCT_P  = safe_div(acs_POP_P,  B03002_001E),
+        acs_PCT_A  = safe_div(acs_POP_A,  B03002_001E),
+        acs_PCT_P1 = safe_div(acs_POP_P1, B03002_001E),
+        acs_PCT_Q  = safe_div(acs_POP_Q,  B03002_001E),
+        acs_PCT_H  = safe_div(acs_POP_H,  B03002_001E),
         # Herfindahl-based diversity index (1 = maximally diverse)
-        census_REX = 1 - (census_PCT_W^2 + census_PCT_B^2 + census_PCT_P^2 + census_PCT_A^2 +
-                   census_PCT_P1^2 + census_PCT_Q^2 + census_PCT_H^2)
+        acs_REX = 1 - (acs_PCT_W^2 + acs_PCT_B^2 + acs_PCT_P^2 + acs_PCT_A^2 +
+                   acs_PCT_P1^2 + acs_PCT_Q^2 + acs_PCT_H^2)
       ) %>%
-      keep_cols(c("census_POP_W", "census_POP_B", "census_POP_P", "census_POP_A", "census_POP_P1", "census_POP_Q", "census_POP_H",
-                  "census_PCT_W", "census_PCT_B", "census_PCT_P", "census_PCT_A", "census_PCT_P1", "census_PCT_Q", "census_PCT_H",
-                  "census_REX"))
+      keep_cols(c("acs_POP_W", "acs_POP_B", "acs_POP_P", "acs_POP_A", "acs_POP_P1", "acs_POP_Q", "acs_POP_H",
+                  "acs_PCT_W", "acs_PCT_B", "acs_PCT_P", "acs_PCT_A", "acs_PCT_P1", "acs_PCT_Q", "acs_PCT_H",
+                  "acs_REX"))
   } else NULL
 
   # ---------------------------------------------------------------------------
@@ -313,36 +313,36 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   b4 <- if (!is.null(raw4)) {
     raw4 %>%
       mutate(
-        census_HTA = safe_div(B11012_010E + B11012_015E, B11012_001E),
-        census_HTJ = safe_div(B25014_005E + B25014_006E + B25014_007E +
+        acs_HTA = safe_div(B11012_010E + B11012_015E, B11012_001E),
+        acs_HTJ = safe_div(B25014_005E + B25014_006E + B25014_007E +
                  B25014_011E + B25014_012E + B25014_013E, B25014_001E),
-        census_HUF = safe_div(B25048_003E, B25048_001E),
-        census_HUG = safe_div(B25043_007E + B25043_016E, B25043_001E),
-        census_HUN = safe_div(B25024_010E + B25024_011E, B25024_001E),
-        census_HUO = safe_div(B25003_002E, B25003_001E),
-        census_POV = safe_div(B17001_002E, B17001_001E),
-        census_PUB = safe_div(B08301_010E, B08301_001E),
-        census_PVA = safe_div(C17002_002E, C17002_001E),
-        census_PVB = safe_div(C17002_002E + C17002_003E + C17002_004E + C17002_005E, C17002_001E),
-        census_PVC = safe_div(C17002_002E + C17002_003E + C17002_004E + C17002_005E +
+        acs_HUF = safe_div(B25048_003E, B25048_001E),
+        acs_HUG = safe_div(B25043_007E + B25043_016E, B25043_001E),
+        acs_HUN = safe_div(B25024_010E + B25024_011E, B25024_001E),
+        acs_HUO = safe_div(B25003_002E, B25003_001E),
+        acs_POV = safe_div(B17001_002E, B17001_001E),
+        acs_PUB = safe_div(B08301_010E, B08301_001E),
+        acs_PVA = safe_div(C17002_002E, C17002_001E),
+        acs_PVB = safe_div(C17002_002E + C17002_003E + C17002_004E + C17002_005E, C17002_001E),
+        acs_PVC = safe_div(C17002_002E + C17002_003E + C17002_004E + C17002_005E +
                  C17002_006E + C17002_007E, C17002_001E),
-        census_SNP = safe_div(B22003_002E, B22003_001E),
-        census_VAL = B25077_001E,
-        census_WWN = safe_div(B28002_013E, B28002_001E),
-        census_INB = B20017_001E,
-        census_INC = B19013_001E,
-        census_PCI = B19301_001E,
-        census_INL = B19082_001E,
-        census_INM = B19082_002E,
-        census_INN = B19082_003E,
-        census_INO = B19082_004E,
-        census_INP = B19082_005E,
-        census_INQ = B19082_006E,
-        census_OWS = safe_div(B19081_005E, B19081_001E)
+        acs_SNP = safe_div(B22003_002E, B22003_001E),
+        acs_VAL = B25077_001E,
+        acs_WWN = safe_div(B28002_013E, B28002_001E),
+        acs_INB = B20017_001E,
+        acs_INC = B19013_001E,
+        acs_PCI = B19301_001E,
+        acs_INL = B19082_001E,
+        acs_INM = B19082_002E,
+        acs_INN = B19082_003E,
+        acs_INO = B19082_004E,
+        acs_INP = B19082_005E,
+        acs_INQ = B19082_006E,
+        acs_OWS = safe_div(B19081_005E, B19081_001E)
       ) %>%
-      keep_cols(c("census_HTA", "census_HTJ", "census_HUF", "census_HUG", "census_HUN", "census_HUO", "census_POV", "census_PUB",
-                  "census_PVA", "census_PVB", "census_PVC", "census_SNP", "census_VAL", "census_WWN",
-                  "census_INB", "census_INC", "census_PCI", "census_INL", "census_INM", "census_INN", "census_INO", "census_INP", "census_INQ", "census_OWS"))
+      keep_cols(c("acs_HTA", "acs_HTJ", "acs_HUF", "acs_HUG", "acs_HUN", "acs_HUO", "acs_POV", "acs_PUB",
+                  "acs_PVA", "acs_PVB", "acs_PVC", "acs_SNP", "acs_VAL", "acs_WWN",
+                  "acs_INB", "acs_INC", "acs_PCI", "acs_INL", "acs_INM", "acs_INN", "acs_INO", "acs_INP", "acs_INQ", "acs_OWS"))
   } else NULL
 
   # ---------------------------------------------------------------------------
@@ -364,7 +364,7 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   b5 <- if (!is.null(raw5)) {
     raw5 %>%
       mutate(
-        census_LEQ = safe_div(B16004_006E + B16004_007E + B16004_008E + B16004_011E +
+        acs_LEQ = safe_div(B16004_006E + B16004_007E + B16004_008E + B16004_011E +
                  B16004_012E + B16004_013E + B16004_016E + B16004_017E +
                  B16004_018E + B16004_021E + B16004_022E + B16004_023E +
                  B16004_028E + B16004_029E + B16004_030E + B16004_033E +
@@ -374,7 +374,7 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
                  B16004_056E + B16004_057E + B16004_060E + B16004_061E +
                  B16004_062E + B16004_065E + B16004_066E + B16004_067E, B16004_001E)
       ) %>%
-      keep_cols("census_LEQ")
+      keep_cols("acs_LEQ")
   } else NULL
 
   # ---------------------------------------------------------------------------
@@ -392,13 +392,13 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   b6 <- if (!is.null(raw6)) {
     raw6 %>%
       mutate(
-        census_UNS = safe_div(B27001_005E + B27001_008E + B27001_011E + B27001_014E +
+        acs_UNS = safe_div(B27001_005E + B27001_008E + B27001_011E + B27001_014E +
                  B27001_017E + B27001_020E + B27001_023E + B27001_026E +
                  B27001_029E + B27001_033E + B27001_036E + B27001_039E +
                  B27001_042E + B27001_045E + B27001_048E + B27001_051E +
                  B27001_054E + B27001_057E, B27001_001E)
       ) %>%
-      keep_cols("census_UNS")
+      keep_cols("acs_UNS")
   } else NULL
 
   # ---------------------------------------------------------------------------
@@ -447,7 +447,7 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
       select(any_of(id_cols), UMP_d)
 
     left_join(ump_n, ump_d, by = intersect(names(ump_n), id_cols)) %>%
-      mutate(census_UMP = safe_div(UMP_n, UMP_d)) %>%
+      mutate(acs_UMP = safe_div(UMP_n, UMP_d)) %>%
       select(-UMP_n, -UMP_d)
   } else NULL
 
@@ -463,11 +463,11 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   b9 <- if (!is.null(raw9)) {
     raw9 %>%
       mutate(
-        census_DIS = safe_div(S1810_C02_001E, S1810_C01_001E),
-        census_MCR = safe_div(S2704_C02_002E, S2704_C01_001E),
-        census_MCD = safe_div(S2704_C02_006E, S2704_C01_001E)
+        acs_DIS = safe_div(S1810_C02_001E, S1810_C01_001E),
+        acs_MCR = safe_div(S2704_C02_002E, S2704_C01_001E),
+        acs_MCD = safe_div(S2704_C02_006E, S2704_C01_001E)
       ) %>%
-      keep_cols(c("census_DIS", "census_MCR", "census_MCD"))
+      keep_cols(c("acs_DIS", "acs_MCR", "acs_MCD"))
   } else NULL
 
   # ---------------------------------------------------------------------------

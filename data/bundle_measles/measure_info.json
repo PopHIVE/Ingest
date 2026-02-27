@@ -1,2 +1,86 @@
-{}
-
+{
+  "bundle_measles/dist/measles_state.parquet|source": {
+    "levels": {
+      "wastewater_detection_rate": { "source_id": "ww_detection_rate" },
+      "vaccine_exemption_rate": {
+        "id": "bundle_measles/dist/measles_state.parquet|source=vaccine_exemption_rate",
+        "short_name": "MMR vaccine exemption rate",
+        "long_name": "Kindergarten MMR Vaccine Exemption Rate (State)",
+        "category": "immunization",
+        "short_description": "Percentage of kindergartners with exemptions from MMR vaccination requirements at state level.",
+        "long_description": "State-level percentage of kindergartners with exemptions from MMR vaccination requirements. Compiled from state-reported exemption data spanning 2009–2024, covering prepandemic (2009–2019) and postpandemic (2020–2024) periods. Data from Kiang et al. 2025 (JAMA).",
+        "measure_type": "Percent",
+        "unit": "%",
+        "time_resolution": "Year",
+        "sources": [{ "id": "kiang_exemptions" }]
+      },
+      "jhu_measles_cases": { "source_id": "measles_cases_state_jhu" },
+      "mmr_coverage_healthmap": { "source_id": "mmr_coverage_state" },
+      "cdc_measles_cases": { "source_id": "cdc_measles_cases" }
+    }
+  },
+  "bundle_measles/dist/measles_county.parquet|source": {
+    "levels": {
+      "wastewater_detection_rate": { "source_id": "ww_detection_rate" },
+      "vaccine_exemption_rate": {
+        "id": "bundle_measles/dist/measles_county.parquet|source=vaccine_exemption_rate",
+        "short_name": "MMR vaccine exemption rate",
+        "long_name": "Kindergarten MMR Vaccine Exemption Rate (County)",
+        "category": "immunization",
+        "short_description": "Percentage of kindergartners with exemptions from MMR vaccination requirements at county level.",
+        "long_description": "County-level percentage of kindergartners with exemptions from MMR vaccination requirements. Compiled from state-reported exemption data spanning 2009–2024. County-level coverage varies by state, as not all states report at the county level. Data from Kiang et al. 2025 (JAMA).",
+        "measure_type": "Percent",
+        "unit": "%",
+        "time_resolution": "Year",
+        "sources": [{ "id": "kiang_exemptions" }]
+      },
+      "jhu_measles_cases": { "source_id": "measles_cases_county_jhu" },
+      "mmr_coverage_healthmap": { "source_id": "mmr_coverage_county" },
+      "wapo_county_vax_rate": { "source_id": "wapo_county_vax_rate" }
+    }
+  },
+  "bundle_measles/dist/measles_cases_by_age.parquet|source": {
+    "levels": {
+      "cdc_measles_cases_age": { "source_id": "cum_cases_measles_age" }
+    }
+  },
+  "bundle_measles/dist/measles_state.parquet|value": {
+    "id": "bundle_measles/dist/measles_state.parquet|value",
+    "short_name": "State measles indicator value",
+    "long_name": "State-Level Measles-Related Indicator Value",
+    "category": "immunization",
+    "short_description": "Value for the measles-related measure identified by the source column. Units vary by source.",
+    "long_description": "Combined state-level measles indicators from multiple sources in long format. The source column identifies the measure type: wastewater_detection_rate (% wastewater samples positive for measles RNA; CDC NWSS), vaccine_exemption_rate (% kindergartners with MMR exemptions; Kiang et al.), jhu_measles_cases (weekly confirmed case counts from JHU), mmr_coverage_healthmap (estimated % children with MMR coverage; HealthMap), cdc_measles_cases (national weekly CDC case counts). Units and time resolutions differ by source.",
+    "measure_type": "Varies by source",
+    "unit": "Varies by source",
+    "time_resolution": "Week or Year",
+    "sources": [
+      { "id": "nwss_measles" },
+      { "id": "kiang_exemptions" },
+      { "id": "jhu_measles" },
+      { "id": "healthmap_mmr" },
+      { "id": "cdc_measles" }
+    ]
+  },
+  "bundle_measles/dist/measles_county.parquet|value": {
+    "id": "bundle_measles/dist/measles_county.parquet|value",
+    "short_name": "County measles indicator value",
+    "long_name": "County-Level Measles-Related Indicator Value",
+    "category": "immunization",
+    "short_description": "Value for the measles-related measure identified by the source column. Units vary by source.",
+    "long_description": "Combined county-level measles indicators from multiple sources in long format. The source column identifies the measure type: wastewater_detection_rate (% wastewater samples positive; CDC NWSS), vaccine_exemption_rate (% kindergartners with MMR exemptions; Kiang et al.), jhu_measles_cases (weekly confirmed case counts; JHU), mmr_coverage_healthmap (estimated % children with MMR coverage; HealthMap), wapo_county_vax_rate (county MMR vaccination rate; Washington Post). Units and time resolutions differ by source.",
+    "measure_type": "Varies by source",
+    "unit": "Varies by source",
+    "time_resolution": "Week or Year",
+    "sources": [
+      { "id": "nwss_measles" },
+      { "id": "kiang_exemptions" },
+      { "id": "jhu_measles" },
+      { "id": "healthmap_mmr" },
+      { "id": "wapo_school_vax" }
+    ]
+  },
+  "bundle_measles/dist/measles_cases_by_age.parquet|value": {
+    "source_id": "cum_cases_measles_age"
+  }
+}

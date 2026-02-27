@@ -5,6 +5,7 @@
 
 library(jsonlite)
 library(vroom)
+library(arrow)
 library(htmltools)
 library(glue)
 
@@ -79,6 +80,42 @@ geography = list(
     description = "Type of survey conducted",
     measure_type = "category",
     unit = ""
+  ),
+  year = list(
+    short_name = "Year",
+    description = "Calendar year",
+    measure_type = "date",
+    unit = "year"
+  ),
+  date = list(
+    short_name = "Date",
+    description = "Date (Saturday for weekly data)",
+    measure_type = "date",
+    unit = "date"
+  ),
+  week = list(
+    short_name = "ISO Week",
+    description = "ISO week number within the year",
+    measure_type = "integer",
+    unit = "week number"
+  ),
+  source = list(
+    short_name = "Source",
+    description = "Data source identifier for tall-format files",
+    measure_type = "category",
+    unit = ""
+  ),
+  outcome_name = list(
+    short_name = "Outcome",
+    description = "Health outcome name (e.g., Diabetes, Obesity)",
+    measure_type = "category",
+    unit = ""
+  ),
+  fips = list(
+    short_name = "FIPS Code",
+    description = "FIPS geographic identifier",
+    measure_type = "identifier",
+    unit = "FIPS code"
   )
 )
 
@@ -97,12 +134,31 @@ get_csv_columns <- function(filepath) {
   })
 }
 
+#' Get column names from a parquet file
+get_parquet_columns <- function(filepath) {
+  tryCatch({
+    pf <- arrow::read_parquet(filepath, as_data_frame = FALSE)
+    return(names(pf))
+  }, error = function(e) {
+    return(character(0))
+  })
+}
+
 #' Find all standard data files for a source
 get_standard_files <- function(source_dir) {
   standard_dir <- file.path(source_dir, "standard")
   if (!dir.exists(standard_dir)) return(character(0))
 
   files <- list.files(standard_dir, pattern = "\\.csv\\.gz$", full.names = TRUE)
+  return(files)
+}
+
+#' Find all dist parquet files for a bundle
+get_dist_files <- function(bundle_dir) {
+  dist_dir <- file.path(bundle_dir, "dist")
+  if (!dir.exists(dist_dir)) return(character(0))
+
+  files <- list.files(dist_dir, pattern = "\\.parquet$", full.names = TRUE)
   return(files)
 }
 
@@ -138,9 +194,11 @@ get_variable_info <- function(measure_info, var_name) {
       # Both placeholders - try all combinations
       for (cat_val in category_keys) {
         for (var_val in variant_keys) {
+          # "blank" is a special variant key that expands to empty string
+          effective_var_val <- if (var_val == "blank") "" else var_val
           test_name <- key
           test_name <- gsub("\\{category(\\.[^}]*)?\\}", cat_val, test_name)
-          test_name <- gsub("\\{variant(\\.[^}]*)?\\}", var_val, test_name)
+          test_name <- gsub("\\{variant(\\.[^}]*)?\\}", effective_var_val, test_name)
           if (test_name == var_name) {
             captured <- list(category = cat_val, variant = var_val)
             return(resolve_template(info, captured))
@@ -150,7 +208,8 @@ get_variable_info <- function(measure_info, var_name) {
     } else if (has_variant && !is.null(variant_keys)) {
       # Only variant placeholder
       for (var_val in variant_keys) {
-        test_name <- gsub("\\{variant(\\.[^}]*)?\\}", var_val, key)
+        effective_var_val <- if (var_val == "blank") "" else var_val
+        test_name <- gsub("\\{variant(\\.[^}]*)?\\}", effective_var_val, key)
         if (test_name == var_name) {
           captured <- list(variant = var_val)
           return(resolve_template(info, captured))
@@ -166,6 +225,34 @@ get_variable_info <- function(measure_info, var_name) {
         }
       }
     }
+  }
+
+  return(NULL)
+}
+
+#' Look up variable info for a bundle column using the path-prefixed key schema
+get_bundle_variable_info <- function(measure_info, bundle_name, filename, col_name) {
+  # Bundle keys are: bundle_name/dist/filename.parquet|col_name
+  full_key <- paste0(bundle_name, "/dist/", filename, "|", col_name)
+
+  # Try full key lookup (direct or template via get_variable_info)
+  info <- get_variable_info(measure_info, full_key)
+  if (!is.null(info)) return(info)
+
+  # Bundle-specific override for geography: state/national files use names,
+  # county-level files use 5-digit FIPS codes
+  if (col_name == "geography") {
+    return(list(
+      short_name = "Geography",
+      description = "Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)",
+      measure_type = "identifier",
+      unit = "name or FIPS code"
+    ))
+  }
+
+  # Fall back to standard vars using just the column name
+  if (col_name %in% names(STANDARD_VARS)) {
+    return(STANDARD_VARS[[col_name]])
   }
 
   return(NULL)
@@ -198,7 +285,10 @@ resolve_template <- function(info, captured) {
 
     # Replace simple placeholders {name} with captured values
     for (ph_name in names(captured)) {
-      text <- gsub(paste0("\\{", ph_name, "\\}"), captured[[ph_name]], text)
+      ph_val <- captured[[ph_name]]
+      # "blank" variant expands to empty string in display
+      if (ph_name == "variant" && ph_val == "blank") ph_val <- ""
+      text <- gsub(paste0("\\{", ph_name, "\\}"), ph_val, text)
     }
 
     # Replace dotted placeholders {name.field} with lookup values
@@ -264,7 +354,29 @@ format_source_name <- function(name) {
   return(name)
 }
 
-#' Generate HTML for a single variable row
+#' Format a bundle name for display
+format_bundle_name <- function(name) {
+  display <- sub("^bundle_", "", name)
+  display <- gsub("_", " ", display)
+  display <- tools::toTitleCase(display)
+  paste0("Bundle: ", display)
+}
+
+#' Generate HTML badge list for levels of a tall-format column
+make_levels_display <- function(levels_info) {
+  if (is.null(levels_info) || length(levels_info) == 0) return(NULL)
+
+  level_badges <- lapply(names(levels_info), function(lvl) {
+    tags$span(class = "badge bg-secondary me-1 mb-1", style = "font-weight: normal;", lvl)
+  })
+
+  tags$div(class = "mt-1",
+    tags$small(class = "text-muted", tags$em("Values: ")),
+    level_badges
+  )
+}
+
+#' Generate HTML for a single variable row (source files)
 make_variable_row <- function(var_name, var_info) {
   short_name <- var_info$short_name %||% var_name
   description <- var_info$short_description %||% var_info$description %||%
@@ -281,7 +393,36 @@ make_variable_row <- function(var_name, var_info) {
   )
 }
 
-#' Generate HTML for a data file section
+#' Generate HTML for a single variable row in a bundle file
+#' Handles levels (tall-format columns) and source_id references
+make_bundle_variable_row <- function(col_name, var_info) {
+  short_name <- var_info$short_name %||% col_name
+  description <- var_info$short_description %||% var_info$description %||%
+                 var_info$long_description %||% ""
+  measure_type <- var_info$measure_type %||% ""
+  unit <- var_info$unit %||% ""
+
+  # Note source_id reference in description
+  if (!is.null(var_info$source_id) && nchar(var_info$source_id) > 0) {
+    ref_note <- paste0("(source variable: ", var_info$source_id, ")")
+    description <- if (nchar(description) > 0) paste(description, ref_note) else ref_note
+  }
+
+  # Show levels for tall-format columns
+  levels_display <- if (!is.null(var_info$levels)) {
+    make_levels_display(var_info$levels)
+  } else NULL
+
+  tags$tr(
+    tags$td(tags$code(col_name)),
+    tags$td(short_name),
+    tags$td(description, levels_display),
+    tags$td(measure_type),
+    tags$td(unit)
+  )
+}
+
+#' Generate HTML for a data file section (source CSV files)
 make_file_section <- function(filepath, measure_info) {
   filename <- basename(filepath)
   columns <- get_csv_columns(filepath)
@@ -294,6 +435,40 @@ make_file_section <- function(filepath, measure_info) {
       var_info <- list(short_name = col, description = "", measure_type = "", unit = "")
     }
     make_variable_row(col, var_info)
+  })
+
+  tagList(
+    tags$h5(class = "mt-3", tags$code(filename)),
+    tags$div(class = "table-responsive",
+      tags$table(class = "table table-striped table-sm",
+        tags$thead(
+          tags$tr(
+            tags$th("Variable"),
+            tags$th("Short Name"),
+            tags$th("Description"),
+            tags$th("Type"),
+            tags$th("Unit")
+          )
+        ),
+        tags$tbody(rows)
+      )
+    )
+  )
+}
+
+#' Generate HTML for a bundle dist parquet file section
+make_bundle_file_section <- function(filepath, measure_info, bundle_name) {
+  filename <- basename(filepath)
+  columns <- get_parquet_columns(filepath)
+
+  if (length(columns) == 0) return(NULL)
+
+  rows <- lapply(columns, function(col) {
+    var_info <- get_bundle_variable_info(measure_info, bundle_name, filename, col)
+    if (is.null(var_info)) {
+      var_info <- list(short_name = col, description = "", measure_type = "", unit = "")
+    }
+    make_bundle_variable_row(col, var_info)
   })
 
   tagList(
@@ -446,41 +621,107 @@ make_source_section <- function(source_name, source_dir) {
   )
 }
 
+#' Generate HTML for a bundle section
+make_bundle_section <- function(bundle_name, bundle_dir) {
+  measure_info_path <- file.path(bundle_dir, "measure_info.json")
+
+  measure_info <- tryCatch({
+    fromJSON(measure_info_path, simplifyVector = FALSE)
+  }, error = function(e) {
+    return(list())
+  })
+
+  # Get dist parquet files
+  dist_files <- get_dist_files(bundle_dir)
+
+  # Generate file sections
+  file_sections <- lapply(dist_files, function(f) {
+    make_bundle_file_section(f, measure_info, bundle_name)
+  })
+  file_sections <- Filter(Negate(is.null), file_sections)
+
+  section_id <- gsub("[^a-zA-Z0-9]", "-", bundle_name)
+
+  tagList(
+    tags$section(id = section_id, class = "mb-5",
+      tags$h2(class = "border-bottom pb-2", format_bundle_name(bundle_name)),
+
+      tags$p(class = "text-muted",
+        tags$em(sprintf("Combined output bundle. Dist files: %d parquet file(s).",
+                        length(dist_files)))
+      ),
+
+      if (length(file_sections) > 0) {
+        tagList(
+          tags$h4(class = "mt-4", "Output Files (dist/)"),
+          file_sections
+        )
+      } else {
+        tags$p(class = "text-muted", "No dist parquet files found.")
+      }
+    )
+  )
+}
+
 # -----------------------------------------------------------------------------
 # Main Script
 # -----------------------------------------------------------------------------
 
 cat("Building data source documentation...\n")
 
-# Find all data sources (exclude bundles)
+# Find all data source and bundle directories
 data_dir <- "data"
 all_dirs <- list.dirs(data_dir, recursive = FALSE, full.names = TRUE)
+
+# Separate sources from bundles
 source_dirs <- all_dirs[!grepl("bundle_", basename(all_dirs))]
+bundle_dirs  <- all_dirs[grepl("bundle_", basename(all_dirs))]
 
 # Filter to only those with measure_info.json
 source_dirs <- source_dirs[sapply(source_dirs, function(d) {
   file.exists(file.path(d, "measure_info.json"))
 })]
+bundle_dirs <- bundle_dirs[sapply(bundle_dirs, function(d) {
+  file.exists(file.path(d, "measure_info.json"))
+})]
 
 cat(sprintf("Found %d data sources with measure_info.json\n", length(source_dirs)))
+cat(sprintf("Found %d bundles with measure_info.json\n", length(bundle_dirs)))
 
 # Sort alphabetically
 source_dirs <- source_dirs[order(basename(source_dirs))]
+bundle_dirs  <- bundle_dirs[order(basename(bundle_dirs))]
 source_names <- basename(source_dirs)
+bundle_names  <- basename(bundle_dirs)
 
-# Generate navigation items
-nav_items <- lapply(source_names, function(name) {
+# Generate navigation items for sources
+nav_items_sources <- lapply(source_names, function(name) {
   section_id <- gsub("[^a-zA-Z0-9]", "-", name)
   tags$li(class = "nav-item",
     tags$a(class = "nav-link", href = paste0("#", section_id), format_source_name(name))
   )
 })
 
+# Generate navigation items for bundles
+nav_items_bundles <- lapply(bundle_names, function(name) {
+  section_id <- gsub("[^a-zA-Z0-9]", "-", name)
+  tags$li(class = "nav-item",
+    tags$a(class = "nav-link", href = paste0("#", section_id), format_bundle_name(name))
+  )
+})
+
 # Generate source sections
-cat("Generating documentation sections...\n")
+cat("Generating data source sections...\n")
 source_sections <- lapply(seq_along(source_dirs), function(i) {
   cat(sprintf("  Processing %s (%d/%d)\n", source_names[i], i, length(source_dirs)))
   make_source_section(source_names[i], source_dirs[i])
+})
+
+# Generate bundle sections
+cat("Generating bundle sections...\n")
+bundle_sections <- lapply(seq_along(bundle_dirs), function(i) {
+  cat(sprintf("  Processing bundle %s (%d/%d)\n", bundle_names[i], i, length(bundle_dirs)))
+  make_bundle_section(bundle_names[i], bundle_dirs[i])
 })
 
 # Build the full HTML page
@@ -501,6 +742,7 @@ html_page <- tags$html(lang = "en",
       section { scroll-margin-top: 70px; }
       code { background-color: #f8f9fa; padding: 0.125rem 0.25rem; border-radius: 0.25rem; }
       .table th { background-color: #f8f9fa; }
+      .sidebar-heading { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
     "))
   ),
   tags$body(
@@ -522,7 +764,10 @@ html_page <- tags$html(lang = "en",
           style = "position: fixed; top: 56px; bottom: 0; overflow-y: auto; padding-top: 1rem;",
           tags$div(class = "position-sticky",
             tags$h6(class = "sidebar-heading px-3 mt-1 mb-1 text-muted", "Data Sources"),
-            tags$ul(class = "nav flex-column nav-pills", nav_items)
+            tags$ul(class = "nav flex-column nav-pills", nav_items_sources),
+            tags$hr(class = "mx-3"),
+            tags$h6(class = "sidebar-heading px-3 mt-2 mb-1 text-muted", "Bundles"),
+            tags$ul(class = "nav flex-column nav-pills", nav_items_bundles)
           )
         ),
 
@@ -531,11 +776,25 @@ html_page <- tags$html(lang = "en",
           tags$div(class = "pt-3",
             tags$h1("PopHIVE Data Source Documentation"),
             tags$p(class = "lead text-muted",
-              "This page documents all data sources in the PopHIVE/Ingest repository, ",
+              "This page documents all data sources and output bundles in the PopHIVE/Ingest repository, ",
               "including variable definitions, data types, and source information."
             ),
             tags$hr(),
-            source_sections
+
+            # Data source sections
+            tags$h2(class = "text-muted mb-4", id = "data-sources", "Data Sources"),
+            source_sections,
+
+            tags$hr(class = "my-5"),
+
+            # Bundle sections
+            tags$h2(class = "text-muted mb-4", id = "bundles", "Output Bundles"),
+            tags$p(class = "text-muted",
+              "Bundles combine multiple data sources into consolidated parquet files for visualization. ",
+              "Columns marked with values indicate tall-format (long) data where the listed column ",
+              "identifies which measure each row contains."
+            ),
+            bundle_sections
           )
         )
       )
