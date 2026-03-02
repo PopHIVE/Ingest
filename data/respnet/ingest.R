@@ -38,7 +38,7 @@ if (!identical(process$raw_state, raw_state)) {
   all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
   state_fips_lookup <- all_fips %>%
     filter(nchar(geography) == 2) %>%
-    select(geography, state)
+    select(geography, geography_name)
 
   #Data 1 has national*age or state*(overall age) for all viruses.
   ##
@@ -66,7 +66,7 @@ if (!identical(process$raw_state, raw_state)) {
       )
     ) %>%
     reshape2::dcast(., time + age + state ~ virus, value.var = 'Weekly Rate') %>%
-    left_join(state_fips_lookup, by = c("state" = "state")) %>%
+    left_join(state_fips_lookup, by = c("state" = "geography_name")) %>%
     mutate(
       rate_flu = if_else(is.na(rate_flu), 0, rate_flu), #do not fill in below
       geography = if_else(state == "Overall", "00", geography)
@@ -91,7 +91,7 @@ if (!identical(process$raw_state, raw_state)) {
         Type == 'Crude Rate'
     ) %>%
     rename(rate_rsv = Rate, time = "Week ending date", age = "Age Category") %>%
-    left_join(state_fips_lookup, by = c("State" = "state")) %>%
+    left_join(state_fips_lookup, by = c("State" = "geography_name")) %>%
     mutate(
       geography = if_else(State == "RSV-NET", "00", geography)
     ) %>%
@@ -119,7 +119,7 @@ if (!identical(process$raw_state, raw_state)) {
       time = 'Week ending date',
       rate_covid = 'Weekly Rate'
     ) %>%
-    left_join(state_fips_lookup, by = c("state" = "state")) %>%
+    left_join(state_fips_lookup, by = c("state" = "geography_name")) %>%
     mutate(
       geography = if_else(state == "COVID-NET", "00", geography)
     ) %>%
