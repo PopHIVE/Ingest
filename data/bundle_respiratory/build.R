@@ -4,7 +4,6 @@
 
 library(dplyr)
 library(arrow)
-library(cdlTools)
 library(lubridate)
 library(reshape2)
 library(tidyverse)
@@ -23,6 +22,14 @@ state_fips <- c(0, as.numeric(unique(tidycensus::fips_codes$state_code)))
 state_fips <- stringr::str_pad(gsub("\\D", "", state_fips), width = 2, pad = "0")
 
 state_names <- c('United States', state.name)
+
+all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+state_name_lookup <- all_fips %>%
+  filter(nchar(geography) == 2) %>%
+  select(geography, geography_name)
+state_abbr_lookup <- all_fips %>%
+  filter(nchar(geography) == 2) %>%
+  select(geography, state)
 
 bundle_files  <- list( '../epic/standard/weekly.csv.gz',
                        '../gtrends/standard/data.csv.gz',
@@ -64,9 +71,11 @@ combined <- Reduce(
 overall_trends <-   combined %>%
   filter( (time >= max(time) - 365*2) & geography %in% state_fips) %>%
   rename(fips= geography) %>%
-  mutate( geography = cdlTools::fips(fips, to = "Name"),
-          geography = if_else(fips == '00', 'United States', geography)) %>%
+  left_join(state_name_lookup, by = c("fips" = "geography")) %>%
+  mutate(geography = if_else(fips == '00', 'United States', geography_name)) %>%
+  dplyr::select(-geography_name) %>%
   reshape2::melt(., id.vars = c('geography', 'time','fips')) %>%
+  mutate(value = suppressWarnings(as.numeric(value))) %>%
   arrange(geography,  time) %>%
   group_by(geography,  variable) %>%
   mutate(
@@ -82,13 +91,13 @@ overall_trends <-   combined %>%
   
   value_smooth = if_else(grepl('delphi_hospital',variable)|grepl('delphi_doctor',variable), value, value_smooth), #For Delphi, do not apply additional smoothing since data are pre-smoothed
   
-  value_smooth = value_smooth - min(value_smooth, na.rm = T),
+  value_smooth = value_smooth - suppressWarnings(min(value_smooth, na.rm = T)),
 
-  value_scale = value - min(value, na.rm=T),
-  
-  value_scale = value_scale/max(value_scale, na.rm = T) * 100,
-  
-  value_smooth_scale = value_smooth / max(value_smooth, na.rm = T) * 100
+  value_scale = value - suppressWarnings(min(value, na.rm=T)),
+
+  value_scale = value_scale / suppressWarnings(max(value_scale, na.rm = T)) * 100,
+
+  value_smooth_scale = value_smooth / suppressWarnings(max(value_smooth, na.rm = T)) * 100
   ) %>%
   ungroup() %>%
   rename(date = time) %>%
@@ -204,10 +213,10 @@ arrow::write_parquet(d, "dist/rsv_positive_tests.parquet")
 #epic_testing_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/rsv_testing_pct.parquet')
 d2 <- vroom::vroom('../epic/standard/monthly_tests.csv.gz') %>%
  rename(fips = geography) %>%
+  left_join(state_name_lookup, by = c("fips" = "geography")) %>%
   mutate(source = 'Epic Cosmos, ED',
          suppressed_flag = if_else(epic_n_ed_j12_j18 == '10 or fewer',1,0),
-         geography = cdlTools::fips(fips, to='Name'),
-         geography = if_else(fips=='00','United States', geography)
+         geography = if_else(fips=='00','United States', geography_name)
          )%>%
   rename(date=time) %>%
   dplyr::select(source, geography,age, date,epic_pct_rsv_pos_tests , epic_pct_j12_j18_tested_rsv, epic_n_ed_j12_j18,suppressed_flag ) %>%
@@ -271,9 +280,9 @@ trends_age <- combined_age %>%
   filter(geography %in% state_fips ) %>%
   filter(time >= max(time) -365*2 ) %>%
   rename(fips= geography) %>%
-  mutate( geography = fips(fips, to = "Name"),
-          geography = if_else(fips == '00', 'United States', geography)
-          ) %>%
+  left_join(state_name_lookup, by = c("fips" = "geography")) %>%
+  mutate(geography = if_else(fips == '00', 'United States', geography_name)) %>%
+  dplyr::select(-geography_name) %>%
   dplyr::select(geography, time, age, fips, starts_with('epic_pct'),
                 starts_with('rate')) %>%
   reshape2::melt(., id.vars = c('geography', 'time','fips', 'age'))  %>%
@@ -389,8 +398,9 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
     rename(value = pct_IPD,
            value_N = N_IPD,
            fips=geography) %>%
+    left_join(state_abbr_lookup, by = c("fips" = "geography")) %>%
     mutate(year = lubridate::year(time),
-           geography = fips(fips, to = "Abbreviation")
+           geography = state
     ) %>%
     dplyr::select(serotype, geography, year,  value, value_N)
     
@@ -401,8 +411,9 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
     rename(value = pct_IPD,
            value_N = N_IPD,
            fips=geography) %>%
+    left_join(state_abbr_lookup, by = c("fips" = "geography")) %>%
     mutate(year = lubridate::year(time),
-           geography = fips(fips, to = "Abbreviation")
+           geography = state
     ) %>%
     arrange(geography, serotype, year) %>%
     group_by(geography, serotype) %>%

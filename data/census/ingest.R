@@ -525,10 +525,9 @@ fetch_all_years <- function(geo_level, api_key, years = YEARS) {
 # =============================================================================
 # Run ingest when output files are absent or a new vintage year is available
 # =============================================================================
-output_files  <- c("standard/data.csv.gz",
-                   "standard/data_state.csv.gz",
+output_files  <- c("standard/data_state.csv.gz",
                    "standard/data_county.csv.gz",
-                   "standard/data_zcta.csv.gz")
+                   "standard/data_zcta_2023_2024.csv.gz")
 output_exists <- all(file.exists(output_files))
 last_vintage  <- process$last_vintage_year
 current_max   <- max(YEARS)
