@@ -98,6 +98,7 @@ exemptions_state <- vaccine_exemptions %>%
   ) %>%
   left_join(state_fips_lookup, by = c("geography" = "fips")) %>%
   mutate(
+    exemption_rate_mmr = exemption_rate_mmr_med + exemption_rate_mmr_nonmed,
     geography = if_else(geography == "00", "United States", state_name)
   ) %>%
   select(geography, date, year, week, value = exemption_rate_mmr) %>%
@@ -291,15 +292,6 @@ arrow::write_parquet(
   compression = "snappy"
 )
 
-# =============================================================================
-# Summary
-# =============================================================================
-cat("Measles bundle created:\n")
-cat("  - State-level:", nrow(measles_state_long), "records from",
-    length(unique(measles_state_long$source)), "sources\n")
-cat("  - County-level:", nrow(measles_county_long), "records from",
-    length(unique(measles_county_long$source)), "sources\n")
-cat("  - Age-stratified:", nrow(measles_age_long), "records\n")
 
 
 
