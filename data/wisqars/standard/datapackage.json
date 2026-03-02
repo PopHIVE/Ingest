@@ -9,14 +9,15 @@
   },
   "resources": [
     {
-      "bytes": 1591937,
+      "bytes": 1851202,
       "encoding": "ISO-8859-1",
-      "md5": "11cf71310abfa65cb8a80c8c4e232515",
+      "md5": "cebddd3b36fc228628fde46931eeb023",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "a87beab2269ff315aaf3efdd8ec38392c2f2698b",
           "461ebfc475ee744d591ae029c95b2b46157e11d4",
           "6d1664a3a052c73f72e9d14f3f8298da92e7eb51",
           "0cd2a71035f8def62aeb5d43e524610e55ac6b2a",
@@ -32,6 +33,7 @@
           "9bcb328f78107f521fdf273e4c7623ea77cd0adc"
         ],
         "author": [
+          "tobysalmon <toby.salmon@yale.edu>",
           "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>",
@@ -47,6 +49,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Feb 17 18:10:33 2026 -0500",
           "Tue Feb 10 09:43:52 2026 -0500",
           "Mon Dec 22 17:32:42 2025 -0500",
           "Mon Dec 22 16:52:19 2025 -0500",
@@ -62,6 +65,7 @@
           "Thu Oct 9 15:50:23 2025 -0400"
         ],
         "message": [
+          "fixes! added homicide, suicide, and legal intervention for firearm data",
           "rebuild succesful",
           "update injury and overdose bundle to include national. age aggregated estimates for pedesitrian and cyclists",
           "adds pedestrian and cyclist MV accident",
@@ -92,8 +96,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-02-10 09:31:37",
-      "last_modified": "2026-01-18 21:33:25.740593",
+      "created": "2026-03-02 13:53:07.513863",
+      "last_modified": "2025-10-24 13:42:11.339863",
       "vintage": {},
       "row_count": 86324,
       "entity_count": 52,
@@ -430,6 +434,28 @@
             "max": 1.4
           },
           {
+            "name": "wisqars_rate_firearm_homicide",
+            "duplicates": 82380,
+            "time_range": [0, 22],
+            "type": "float",
+            "missing": 65055,
+            "mean": 11.290743,
+            "sd": 19.589812,
+            "min": 0,
+            "max": 349.78
+          },
+          {
+            "name": "wisqars_rate_firearm_legal_intervention",
+            "duplicates": 86123,
+            "time_range": [0, 22],
+            "type": "float",
+            "missing": 85150,
+            "mean": 0.608663,
+            "sd": 0.871389,
+            "min": 0.03,
+            "max": 11.14
+          },
+          {
             "name": "wisqars_rate_pedestrian_mv_traffic",
             "duplicates": 85808,
             "time_range": [0, 22],
@@ -439,6 +465,17 @@
             "sd": 1.097646,
             "min": 0.26,
             "max": 9.33
+          },
+          {
+            "name": "wisqars_rate_firearm_suicide",
+            "duplicates": 82403,
+            "time_range": [0, 22],
+            "type": "float",
+            "missing": 58694,
+            "mean": 12.597834,
+            "sd": 9.444612,
+            "min": 0,
+            "max": 145.58
           },
           {
             "name": "wisqars_rate_firearm_intentional",
@@ -683,6 +720,28 @@
             "max": 937
           },
           {
+            "name": "wisqars_deaths_firearm_homicide",
+            "duplicates": 85511,
+            "time_range": [0, 22],
+            "type": "integer",
+            "missing": 65055,
+            "mean": 108.048004,
+            "sd": 542.055511,
+            "min": 10,
+            "max": 20958
+          },
+          {
+            "name": "wisqars_deaths_firearm_legal_intervention",
+            "duplicates": 86185,
+            "time_range": [0, 22],
+            "type": "integer",
+            "missing": 85150,
+            "mean": 34.201874,
+            "sd": 70.828378,
+            "min": 10,
+            "max": 643
+          },
+          {
             "name": "wisqars_deaths_pedestrian_mv_traffic",
             "duplicates": 85850,
             "time_range": [0, 22],
@@ -692,6 +751,17 @@
             "sd": 486.809158,
             "min": 10,
             "max": 8233
+          },
+          {
+            "name": "wisqars_deaths_firearm_suicide",
+            "duplicates": 85391,
+            "time_range": [0, 22],
+            "type": "integer",
+            "missing": 58694,
+            "mean": 130.050344,
+            "sd": 698.445197,
+            "min": 10,
+            "max": 27300
           },
           {
             "name": "wisqars_deaths_firearm_intentional",
@@ -706,7 +776,7 @@
           }
         ]
       },
-      "sha512": "6f0eadc1d83845ad314ca578757872c23908df3d937706c4c9390c17dfee73cf6a25f42a0086c541b740195566e4cdb236c9c86f0445d191c9e966427c84eb29"
+      "sha512": "e8547b295405c6bd6e8b20137b0f2546c82dc41c888559248037f0de6f8259c83310ab969851032ef337d2a7e57be04d965f7460fc35dee8ce7d40bbd72153b3"
     }
   ],
   "measure_info": {
@@ -1121,6 +1191,63 @@
         }
       ],
       "id": "wisqars_deaths_firearm_intentional"
+    },
+    "wisqars_deaths_firearm_homicide": {
+      "short_name": "Death Rate (deaths firearm_homicide)",
+      "long_name": "Rate of Deaths Caused by deaths firearm_homicide",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to firearm_homicide.",
+      "long_description": "Number of deaths due to firearm_homicide.",
+      "measure_type": "Count",
+      "unit": "Integer",
+      "sources": [
+        {
+          "id": "wisqars",
+          "location": "Fatal Injury Report",
+          "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+        }
+      ],
+      "id": "wisqars_deaths_firearm_homicide"
+    },
+    "wisqars_deaths_firearm_suicide": {
+      "short_name": "Death Rate (deaths firearm_suicide)",
+      "long_name": "Rate of Deaths Caused by deaths firearm_suicide",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to firearm_suicide.",
+      "long_description": "Number of deaths due to firearm_suicide.",
+      "measure_type": "Count",
+      "unit": "Integer",
+      "sources": [
+        {
+          "id": "wisqars",
+          "location": "Fatal Injury Report",
+          "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+        }
+      ],
+      "id": "wisqars_deaths_firearm_suicide"
+    },
+    "wisqars_deaths_firearm_legal_intervention": {
+      "short_name": "Death Rate (deaths firearm_legal_intervention)",
+      "long_name": "Rate of Deaths Caused by deaths firearm_legal_intervention",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Number of death rate due to firearm_legal_intervention.",
+      "long_description": "Number of deaths due to firearm_legal_intervention.",
+      "measure_type": "Count",
+      "unit": "Integer",
+      "sources": [
+        {
+          "id": "wisqars",
+          "location": "Fatal Injury Report",
+          "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+        }
+      ],
+      "id": "wisqars_deaths_firearm_legal_intervention"
     },
     "wisqars_deaths_hot_object_substance": {
       "short_name": "Death Rate (deaths hot_object_substance)",
@@ -1558,6 +1685,63 @@
         }
       ],
       "id": "wisqars_rate_firearm_intentional"
+    },
+    "wisqars_rate_firearm_homicide": {
+      "short_name": "Death Rate (rate firearm_homicide)",
+      "long_name": "Rate of Deaths Caused by rate firearm_homicide",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to firearm_homicide.",
+      "long_description": "Deaths per 100k people due to firearm_homicide.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": [
+        {
+          "id": "wisqars",
+          "location": "Fatal Injury Report",
+          "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+        }
+      ],
+      "id": "wisqars_rate_firearm_homicide"
+    },
+    "wisqars_rate_firearm_suicide": {
+      "short_name": "Death Rate (rate firearm_suicide)",
+      "long_name": "Rate of Deaths Caused by rate firearm_suicide",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to firearm_suicide.",
+      "long_description": "Deaths per 100k people due to firearm_suicide.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": [
+        {
+          "id": "wisqars",
+          "location": "Fatal Injury Report",
+          "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+        }
+      ],
+      "id": "wisqars_rate_firearm_suicide"
+    },
+    "wisqars_rate_firearm_legal_intervention": {
+      "short_name": "Death Rate (rate firearm_legal_intervention)",
+      "long_name": "Rate of Deaths Caused by rate firearm_legal_intervention",
+      "category": "Injury & Overdose",
+      "subcategory": "Fatalities",
+      "time_resolution": "yearly",
+      "short_description": "Death rate due to firearm_legal_intervention.",
+      "long_description": "Deaths per 100k people due to firearm_legal_intervention.",
+      "measure_type": "per 100k",
+      "unit": "rate",
+      "sources": [
+        {
+          "id": "wisqars",
+          "location": "Fatal Injury Report",
+          "location_url": "https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0"
+        }
+      ],
+      "id": "wisqars_rate_firearm_legal_intervention"
     },
     "wisqars_rate_hot_object_substance": {
       "short_name": "Death Rate (rate hot_object_substance)",

@@ -15,7 +15,6 @@ base_url <- "https://raw.githubusercontent.com/PopHIVE/epic_preprocessing/main/d
 standard_files <- c(
   "county_no_time.csv.gz",
   "county_year.csv.gz",
-  "heat_year_county.csv.gz",
   "monthly.csv.gz",
   "monthly_injury.csv.gz",
   "monthly_tests.csv.gz",

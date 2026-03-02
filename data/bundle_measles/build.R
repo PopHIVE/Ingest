@@ -36,8 +36,8 @@ measles_jhu_state <- vroom::vroom('../measles_jhu/standard/data_state.csv.gz', s
 measles_jhu_county <- vroom::vroom('../measles_jhu/standard/data_county.csv.gz', show_col_types = FALSE)
 mmr_healthmap_state <- vroom::vroom('../mmr_healthmap/standard/data_state.csv.gz', show_col_types = FALSE)
 mmr_healthmap_county <- vroom::vroom('../mmr_healthmap/standard/data_county.csv.gz', show_col_types = FALSE)
-wapo_counties <- vroom::vroom('../schoolvaxview/standard/data_wapo_counties.csv.gz', show_col_types = FALSE)
-wapo_schools <- vroom::vroom('../schoolvaxview/standard/data_wapo_schools.csv.gz', show_col_types = FALSE)
+wapo_counties <- vroom::vroom('../schoolvax_washpost/standard/data_counties.csv.gz', show_col_types = FALSE)
+wapo_schools <- vroom::vroom('../schoolvax_washpost/standard/data_schools.csv.gz', show_col_types = FALSE)
 
 measles_cdc <- vroom::vroom('../measles_cdc/standard/data.csv.gz', show_col_types = FALSE)
 measles_age_cdc <- vroom::vroom('../measles_age_cdc/standard/data.csv.gz', show_col_types = FALSE)
@@ -212,7 +212,8 @@ exemptions_county <- vaccine_exemptions_county %>%
   mutate(
     date = as.Date(time, format = "%m-%d-%Y"),
     year = year(date),
-    week = NA_integer_
+    week = NA_integer_,
+    exemption_rate_mmr = exemption_rate_mmr_med + exemption_rate_mmr_nonmed
   ) %>%
   select(geography, date, year, week, value = exemption_rate_mmr) %>%
   filter(!is.na(value)) %>%

@@ -1,7 +1,6 @@
 library(dcf)
 library(tidyverse)
 library(reshape2)
-library(cdlTools)
 #
 # Download
 #
@@ -36,11 +35,16 @@ raw_state_covid <- dcf::dcf_download_cdc(
 
 raw_state <- paste0(raw_state_combined, raw_state_rsv, raw_state_covid)
 if (!identical(process$raw_state, raw_state)) {
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, state)
+
   #Data 1 has national*age or state*(overall age) for all viruses.
   ##
   data1 <- vroom::vroom('raw/kvib-3txy.csv.xz') %>%
     filter(
-      Type == 'Unadjusted Rate' &
+      rate_type == "Observed" &
         Sex == 'Overall' &
         `Race/Ethnicity` == 'Overall'
     ) %>%
@@ -61,10 +65,11 @@ if (!identical(process$raw_state, raw_state)) {
         )
       )
     ) %>%
-    dcast(., time + age + state ~ virus, value.var = 'Weekly Rate') %>%
+    reshape2::dcast(., time + age + state ~ virus, value.var = 'Weekly Rate') %>%
+    left_join(state_fips_lookup, by = c("state" = "state")) %>%
     mutate(
       rate_flu = if_else(is.na(rate_flu), 0, rate_flu), #do not fill in below
-      geography = if_else(state == 'Overall', 0, fips(state, to = 'FIPS'))
+      geography = if_else(state == "Overall", "00", geography)
     ) %>%
     filter(age == 'Overall') %>%
     dplyr::select(-state)
@@ -86,15 +91,16 @@ if (!identical(process$raw_state, raw_state)) {
         Type == 'Crude Rate'
     ) %>%
     rename(rate_rsv = Rate, time = "Week ending date", age = "Age Category") %>%
+    left_join(state_fips_lookup, by = c("State" = "state")) %>%
     mutate(
-      geography = if_else(State == 'RSV-NET', 0, fips(State, to = 'FIPS'))
+      geography = if_else(State == "RSV-NET", "00", geography)
     ) %>%
     dplyr::select(geography, age, time, rate_rsv)
   
-  #data 3 has state*age for influenza
+  #data 3 has state*age for covid
   data3 <- vroom::vroom('raw/6jg4-xsqq.csv.xz') %>%
     filter(
-      AgeCategory_Legend %in%
+      `Age Category` %in%
         c(
           '1-4 years',
           '0-<1 year',
@@ -102,18 +108,21 @@ if (!identical(process$raw_state, raw_state)) {
           '18-49 years',
           "≥65 years",
           "50-64 years"
-        )
+        ) &
+        Sex == 'All' &
+        Race == 'All' &
+        `Rate Type` == 'Observed'
     ) %>%
     rename(
-      age = 'AgeCategory_Legend',
+      age = 'Age Category',
       state = State,
-      time = '_WeekendDate'
+      time = 'Week ending date',
+      rate_covid = 'Weekly Rate'
     ) %>%
-    dcast(., time + age + state ~ ., value.var = 'WeeklyRate') %>%
+    left_join(state_fips_lookup, by = c("state" = "state")) %>%
     mutate(
-      geography = if_else(state == 'COVID-NET', 0, fips(state, to = 'FIPS'))
+      geography = if_else(state == "COVID-NET", "00", geography)
     ) %>%
-    rename(rate_covid = '.') %>%
     dplyr::select(-state)
   
   data2_3_combo <- data2 %>%
