@@ -126,6 +126,7 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(
       state_fips = substr(geography, 1, 2)
     ) %>%
+    filter(state_fips != "00") %>%  # Exclude any non-county entries
     group_by(state_fips, time) %>%
     summarize(
       value = as.numeric(sum(value, na.rm = TRUE)),
