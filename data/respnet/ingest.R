@@ -119,9 +119,12 @@ if (!identical(process$raw_state, raw_state)) {
       time = 'Week ending date',
       rate_covid = 'Weekly Rate'
     ) %>%
-    left_join(state_fips_lookup, by = c("state" = "geography_name")) %>%
+    left_join(
+      all_fips %>% filter(nchar(geography) == 2) %>% select(geography, state),
+      by = c("state" = "state")
+    ) %>%
     mutate(
-      geography = if_else(state == "COVID-NET", "00", geography)
+      geography = if_else(state %in% c('All', "COVID-NET"), "00", geography)
     ) %>%
     dplyr::select(-state)
   
@@ -169,7 +172,7 @@ if (!identical(process$raw_state, raw_state)) {
       geography = sprintf("%02d", fips),
       time = lubridate::floor_date(time)
     ) %>%
-    dplyr::select(time, geography, age, starts_with('rate'))
+    dplyr::select(time, geography, age, rate_covid, rate_rsv, rate_flu)
   
   
  
