@@ -570,9 +570,9 @@ if (!output_exists || is.null(last_vintage) || last_vintage < current_max) {
                     select(-geo_level) %>%
                     rename(geography_zcta=geography)
 
-   if (nrow(data_zcta_2019_2020) > 0) vroom::vroom_write(data_zcta_2019_2020, './standard/data_zcta_2019_2020.csv.gz')
-   if (nrow(data_zcta_2021_2022) > 0) vroom::vroom_write(data_zcta_2021_2022, './standard/data_zcta_2021_2022.csv.gz')
-   if (nrow(data_zcta_2023_2024) > 0) vroom::vroom_write(data_zcta_2023_2024, './standard/data_zcta_2023_2024.csv.gz')
+   if (nrow(data_zcta_2019_2020) > 0) vroom::vroom_write(data_zcta_2019_2020, './standard/data_zcta_2019_2020.csv.gz', delim = ",")
+   if (nrow(data_zcta_2021_2022) > 0) vroom::vroom_write(data_zcta_2021_2022, './standard/data_zcta_2021_2022.csv.gz', delim = ",")
+   if (nrow(data_zcta_2023_2024) > 0) vroom::vroom_write(data_zcta_2023_2024, './standard/data_zcta_2023_2024.csv.gz', delim = ",")
    
    if (nrow(data_state) > 0) vroom::vroom_write(data_state, "standard/data_state.csv.gz", delim = ",")
    if (nrow(data_county) > 0) vroom::vroom_write(data_county, "standard/data_county.csv.gz", delim = ",")
