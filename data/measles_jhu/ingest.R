@@ -86,32 +86,10 @@ if (!identical(process$raw_state, raw_state)) {
   county_data <- vroom::vroom("raw/measles_county_all_updates_detailed.csv.xz", show_col_types = FALSE)
 
   # Transform to standard format for county-level daily data
-  # Manual FIPS mapping for non-standard geographic regions (location_id = 0).
-  # These regions span multiple counties; each is mapped to the primary/largest
-  # county in the region.
-  manual_fips_map <- c(
-    "Upstate, South Carolina"                     = "45045",  # Greenville County, SC
-    "Southwest Health District, Utah"             = "49053",  # Washington County, UT
-    "Bear River, Utah"                            = "49005",  # Cache County, UT
-    "Central, Utah"                               = "49041",  # Sevier County, UT
-    "Southeast Health District, Utah"             = "49007",  # Carbon County, UT
-    "Mid-Cumberland Region, Tennessee"            = "47037",  # Davidson County, TN
-    "Nashville-Davidson County Region, Tennessee" = "47037",  # Davidson County, TN
-    "Upper Cumberland Region, Tennessee"          = "47141",  # Putnam County, TN
-    "Central Region, Virginia"                    = "51087",  # Henrico County, VA
-    "Eastern Region, Virginia"                    = "51810",  # Virginia Beach city, VA
-    "Northern Region, Virginia"                   = "51059",  # Fairfax County, VA
-    "Northwest Region, Virginia"                  = "51171",  # Shenandoah County, VA
-    "Region 9, Louisiana"                         = "22071"   # Orleans Parish, LA
-  )
-
   county_standard <- county_data %>%
+    # Pad FIPS codes to 5 digits
     mutate(
-      geography = if_else(
-        location_id == 0,
-        manual_fips_map[location_name],
-        stringr::str_pad(as.character(location_id), width = 5, pad = "0")
-      )
+      geography = stringr::str_pad(as.character(location_id), width = 5, pad = "0")
     ) %>%
     # Convert date to MM-DD-YYYY format
     mutate(
