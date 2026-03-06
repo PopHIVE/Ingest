@@ -1,76 +1,89 @@
 # =============================================================================
 # CDC Measles Cases by Age Group Data Ingestion
 # Source: https://www.cdc.gov/measles/data-research/index.html
-# National-level cumulative measles case counts by age group, manually recorded
+# Ingests two files: new weekly cases and cumulative cases by age/vaccination
 # =============================================================================
 
 library(dplyr)
-library(tidyr)
 
-# Initialize process record
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+process <- dcf::dcf_process_record()
 
-# -----------------------------------------------------------------------------
-# 1. Read raw data
-# -----------------------------------------------------------------------------
-raw_file <- "raw/measles_age_by_week.csv"
+new_file <- "raw/cdc_measles_new_cases_age.csv"
+cum_file  <- "raw/cdc_measles_cumulative_age.csv"
 
 # Calculate hash for change detection
-raw_state <- list(hash = tools::md5sum(raw_file))
+raw_state <- list(
+  new_hash = tools::md5sum(new_file),
+  cum_hash = tools::md5sum(cum_file)
+)
 
-# Check if data has changed
 if (!identical(process$raw_state, raw_state)) {
 
   # ---------------------------------------------------------------------------
-  # 2. Read and transform data
+  # 2. Read and process new cases file
   # ---------------------------------------------------------------------------
-  data_raw <- vroom::vroom(raw_file, show_col_types = FALSE)
-
-  # Transform to standard format
-  # The data has cumulative case counts by age group
-  data_standard <- data_raw %>%
-    # Parse date and convert to standard format
+  new_cases <- vroom::vroom(new_file, show_col_types = FALSE, na = c("", "NA", "N/A")) %>%
     mutate(
-      date = as.Date(Update_Date, format = "%m/%d/%y"),
-      time = format(date, "%m-%d-%Y"),
-      geography = "00"  # National-level data
+      geography  = "00",
+      type       = "new",
+      time       = format(as.Date(update_date), "%Y-%m-%d"),
+      cases_total = cases_under_5 + cases_5_19 + cases_over_20 + cases_age_unknown
     ) %>%
-    # Select and rename age columns, pivoting to long format
+    rename(
+      hosp_total             = hospitalizations_total,
+      hosp_count_under_5     = hospitalizations_under_5,
+      hosp_count_5_19        = hospitalizations_5_19,
+      hosp_count_over_20     = hospitalizations_over_20,
+      hosp_count_age_unknown = hospitalizations_age_unknown
+    ) %>%
     select(
-      geography,
-      time,
-      `0-4` = Under_5,
-      `5-19` = Age_5_19,
-      `20+` = Over_20,
-      Unknown = Unknown,
-      Overall = Cum_Cases
-    ) %>%
-    # Pivot to long format with age column
-    pivot_longer(
-      cols = c(`0-4`, `5-19`, `20+`, Unknown, Overall),
-      names_to = "age",
-      values_to = "cum_cases_measles_age"
-    ) %>%
-    # Remove rows with NA values
-    filter(!is.na(cum_cases_measles_age)) %>%
-    # Sort by time and age
-    arrange(time, age)
+      geography, time, type,
+      cases_total, cases_under_5, cases_5_19, cases_over_20, cases_age_unknown,
+      cases_unvaccinated_unknown, cases_one_dose, cases_two_doses,
+      hosp_total, hosp_count_under_5, hosp_count_5_19, hosp_count_over_20, hosp_count_age_unknown
+    )
 
   # ---------------------------------------------------------------------------
-  # 3. Write standardized output
+  # 3. Read and process cumulative cases file
   # ---------------------------------------------------------------------------
-  vroom::vroom_write(
-    data_standard,
-    "standard/data.csv.gz",
-    delim = ","
-  )
+  cum_cases <- vroom::vroom(cum_file, show_col_types = FALSE, na = c("", "NA", "N/A")) %>%
+    mutate(
+      geography = "00",
+      type      = "cumulative",
+      time      = format(as.Date(`Update Date`, format = "%B %d, %Y"), "%Y-%m-%d")
+    ) %>%
+    rename(
+      cases_total              = `Total Cases`,
+      cases_under_5            = `Cases <5`,
+      cases_5_19               = `Cases 5-19`,
+      cases_over_20            = `Cases 20+`,
+      cases_age_unknown        = `Cases Age Unknown`,
+      cases_unvaccinated_unknown = `Cases Unvacc/Unknown`,
+      cases_one_dose           = `Cases 1 Dose`,
+      cases_two_doses          = `Cases 2+ Doses`,
+      hosp_total               = `Hosp Total`,
+      hosp_pct_under_5         = `Hosp <5 %`,
+      hosp_pct_5_19            = `Hosp 5-19 %`,
+      hosp_pct_over_20         = `Hosp 20+ %`,
+      hosp_pct_age_unknown     = `Hosp Age Unknown %`
+    ) %>%
+    select(
+      geography, time, type,
+      cases_total, cases_under_5, cases_5_19, cases_over_20, cases_age_unknown,
+      cases_unvaccinated_unknown, cases_one_dose, cases_two_doses,
+      hosp_total, hosp_pct_under_5, hosp_pct_5_19, hosp_pct_over_20, hosp_pct_age_unknown
+    )
 
   # ---------------------------------------------------------------------------
-  # 4. Record processed state
+  # 4. Combine and write output
+  # ---------------------------------------------------------------------------
+  combined <- bind_rows(new_cases, cum_cases) %>%
+    arrange(type, time)
+
+  vroom::vroom_write(combined, "standard/data.csv.gz", delim = ",")
+
+  # ---------------------------------------------------------------------------
+  # 5. Record processed state
   # ---------------------------------------------------------------------------
   process$raw_state <- raw_state
   dcf::dcf_process_record(updated = process)
