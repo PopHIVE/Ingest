@@ -275,15 +275,21 @@ arrow::write_parquet(
 # -----------------------------------------------------------------------------
 measles_age_long <- measles_age_cdc %>%
   mutate(
-    date = as.Date(time, format = "%m-%d-%Y"),
+    date = as.Date(time),
     year = year(date),
     week = isoweek(date),
     geography = "United States"
   ) %>%
-  select(geography, date, year, week, age, value = cum_cases_measles_age) %>%
+  pivot_longer(
+    cols = starts_with("cases_"),
+    names_to = "age",
+    values_to = "value",
+    names_prefix = "cases_"
+  ) %>%
   filter(!is.na(value)) %>%
   mutate(source = "cdc_measles_cases_age") %>%
-  arrange(date, age)
+  select(geography, date, year, week, type, age, value, source) %>%
+  arrange(date, type, age)
 
 # Write age-stratified parquet
 arrow::write_parquet(
