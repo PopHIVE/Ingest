@@ -83,7 +83,10 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   # 3. Read and transform County-level data
   # ---------------------------------------------------------------------------
-  county_data <- vroom::vroom("raw/measles_county_all_updates_detailed.csv.xz", show_col_types = FALSE)
+  county_data <- vroom::vroom("raw/measles_county_all_updates_detailed.csv.xz", show_col_types = FALSE) %>%
+    filter(outcome_type == 'case_lab-confirmed')
+    
+
 
   # Transform to standard format for county-level daily data
   # Manual FIPS mapping for non-standard geographic regions (location_id = 0).
