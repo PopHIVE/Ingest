@@ -86,10 +86,65 @@ if (!identical(process$raw_state, raw_state)) {
   county_data <- vroom::vroom("raw/measles_county_all_updates_detailed.csv.xz", show_col_types = FALSE)
 
   # Transform to standard format for county-level daily data
+  # Manual FIPS mapping for non-standard geographic regions (location_id = 0).
+  # These regions span multiple counties; each is mapped to the primary/largest
+  # county in the region.
+  manual_fips_map <- c(
+    "Upstate, South Carolina"                     = "45045",  # Greenville County, SC
+    "Southwest Health District, Utah"             = "49053",  # Washington County, UT
+    "Bear River, Utah"                            = "49005",  # Cache County, UT
+    "Central, Utah"                               = "49041",  # Sevier County, UT
+    "Southeast Health District, Utah"             = "49007",  # Carbon County, UT
+    "Mid-Cumberland Region, Tennessee"            = "47037",  # Davidson County, TN
+    "Nashville-Davidson County Region, Tennessee" = "47037",  # Davidson County, TN
+    "Upper Cumberland Region, Tennessee"          = "47141",  # Putnam County, TN
+    "Central Region, Virginia"                    = "51087",  # Henrico County, VA
+    "Eastern Region, Virginia"                    = "51810",  # Virginia Beach city, VA
+    "Northern Region, Virginia"                   = "51059",  # Fairfax County, VA
+    "Northwest Region, Virginia"                  = "51171",  # Shenandoah County, VA
+    "Region 9, Louisiana"                         = "22071"   # Orleans Parish, LA
+  )
+
+  # Manual FIPS mapping for non-standard regions that use state FIPS codes as
+  # location_id (values 1-999). Regional entries are mapped to the primary county;
+  # unknown-county entries use the 2-digit state FIPS to indicate state-level.
+  regional_fips_map <- c(
+    "Central, Iowa"                     = "19153",  # Polk County, IA
+    "Eastern, Iowa"                     = "19113",  # Linn County, IA
+    "Western, Iowa"                     = "19193",  # Woodbury County, IA
+    "North, Alabama"                    = "01089",  # Madison County, AL
+    "Twin Cities Metro Area, Minnesota" = "27053",  # Hennepin County, MN
+    "Coastal Health District, Georgia"  = "13051",  # Chatham County, GA
+    "Metro East , Illinois"             = "17163",  # St. Clair County, IL
+    "Unknown County, California"        = "06",     # State-level, county unknown
+    "Unknown County, Idaho"             = "16",     # State-level, county unknown
+    "Unknown County, Illinois"          = "17",     # State-level, county unknown
+    "Unknown County, Kansas"            = "20",     # State-level, county unknown
+    "Unknown County, Kentucky"          = "21067",  # Fayette County, KY
+    "Unknown County, Minnesota"         = "27",     # State-level, county unknown
+    "Unknown County, Nebraska"          = "31141",  # Platte County, NE
+    "Unknown County, Oregon"            = "41",     # State-level, county unknown
+    "Unknown County, Pennsylvania"      = "42",     # State-level, county unknown
+    "Unknown County, Texas"             = "48"      # State-level, county unknown
+  )
+
   county_standard <- county_data %>%
-    # Pad FIPS codes to 5 digits
     mutate(
-      geography = stringr::str_pad(as.character(location_id), width = 5, pad = "0")
+      geography = case_when(
+        location_id == 0 ~
+          manual_fips_map[location_name],
+        # Date-specific mapping for New Jersey unknown county
+        location_name == "Unknown County, New Jersey" & date == "2025-08-29" ~
+          "34003",  # Bergen County, NJ
+        location_name == "Unknown County, New Jersey" & date == "2025-10-29" ~
+          "34",     # State-level, county unknown
+        # Regional/unknown entries using state FIPS as location_id
+        location_name %in% names(regional_fips_map) ~
+          regional_fips_map[location_name],
+        # Standard county FIPS: pad location_id to 5 digits
+        TRUE ~
+          stringr::str_pad(as.character(location_id), width = 5, pad = "0")
+      )
     ) %>%
     # Convert date to MM-DD-YYYY format
     mutate(

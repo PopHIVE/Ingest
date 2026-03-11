@@ -6,7 +6,7 @@ flowchart LR
     s0(("<strong><a href="https://www.cdc.gov/abcs/index.html" target="_blank" rel="noreferrer">Active Bacterial Core surveillance (ABCs)</a></strong>"))
     s2(("<strong><a href="https://pubmed.ncbi.nlm.nih.gov/39758745/" target="_blank" rel="noreferrer">Serotype-Specific Urinary Antigen Detection (SSUAD) Study</a></strong>"))
     s4(("<strong><a href="https://www.cdc.gov/brfss/index.html" target="_blank" rel="noreferrer">Behavioral Risk Factor Surveillance System (BRFSS)</a></strong>"))
-    s6(("<strong><a href="https://www.census.gov/programs-surveys/acs/data.html" target="_blank" rel="noreferrer">American Community Survey 5-Year Estimates (via Metopio)</a></strong>"))
+    s6(("<strong><a href="https://www.census.gov/programs-surveys/acs/data.html" target="_blank" rel="noreferrer">2024 American Community Survey 5-Year Estimates, Powered by Metopio</a></strong>"))
     s8(("<strong><a href="https://data.cdc.gov" target="_blank" rel="noreferrer">Center of Medicare and Medicaid Services (CMS)</a></strong>"))
     s10(("<strong><a href="https://data.cms.gov/tools/mapping-medicare-disparities-by-population" target="_blank" rel="noreferrer">Mapping Medicare Disparities by Population Tool</a></strong>"))
     s11(("<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/doctor-visits.html" target="_blank" rel="noreferrer">CMU Delphi COVIDcast - Doctor Visits</a></strong>"))
@@ -51,48 +51,48 @@ flowchart LR
     end
     subgraph census["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/census" target="_blank" rel="noreferrer">census</a></strong>`"]
         direction LR
-        n5["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_county.csv.gz" target="_blank" rel="noreferrer">data_county.csv.gz</a></strong>`"]:::pass
-        n6["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_state.csv.gz" target="_blank" rel="noreferrer">data_state.csv.gz</a></strong>`"]:::pass
-        n7["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_zcta_2019_2020.csv.gz" target="_blank" rel="noreferrer">data_zcta_2019_2020.csv.gz</a></strong>`"]:::pass
-        n8["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_zcta_2021_2022.csv.gz" target="_blank" rel="noreferrer">data_zcta_2021_2022.csv.gz</a></strong>`"]:::pass
-        n9["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_zcta_2023_2024.csv.gz" target="_blank" rel="noreferrer">data_zcta_2023_2024.csv.gz</a></strong>`"]:::pass
+        n5["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_county.csv.gz" target="_blank" rel="noreferrer">data_county.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n6["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_state.csv.gz" target="_blank" rel="noreferrer">data_state.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: value</code></li></ul>`"]:::warn
+        n7["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_zcta_2019_2020.csv-MWMJ0G3P8D.gz" target="_blank" rel="noreferrer">data_zcta_2019_2020.csv-MWMJ0G3P8D.gz</a></strong><br/><br/><ul><li><code>missing_info: geography_zcta</code></li></ul>`"]:::warn
+        n8["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_zcta_2019_2020.csv.gz" target="_blank" rel="noreferrer">data_zcta_2019_2020.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: geography_zcta</code></li></ul>`"]:::warn
+        n9["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_zcta_2021_2022.csv.gz" target="_blank" rel="noreferrer">data_zcta_2021_2022.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: geography_zcta</code></li></ul>`"]:::warn
+        n10["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data_zcta_2023_2024.csv.gz" target="_blank" rel="noreferrer">data_zcta_2023_2024.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: geography_zcta</code></li></ul>`"]:::warn
+        n11["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/census/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: version https://git-lfs.github.com/spec/v1</code></li></ul>`"]:::warn
     end
     subgraph cms_mmd["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cms_mmd" target="_blank" rel="noreferrer">cms_mmd</a></strong>`"]
         direction LR
-        n10["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/cms_mmd/standard/data_state_county_age_by_race.csv.gz" target="_blank" rel="noreferrer">data_state_county_age_by_race.csv.gz</a></strong>`"]:::pass
-        n11["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/cms_mmd/standard/data_state_county_age_by_sex.csv.gz" target="_blank" rel="noreferrer">data_state_county_age_by_sex.csv.gz</a></strong>`"]:::pass
-        n12["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/cms_mmd/standard/data_state_county_age.csv.gz" target="_blank" rel="noreferrer">data_state_county_age.csv.gz</a></strong>`"]:::pass
+        n12["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/cms_mmd/standard/data_state_county_age_by_race.csv.gz" target="_blank" rel="noreferrer">data_state_county_age_by_race.csv.gz</a></strong>`"]:::pass
+        n13["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/cms_mmd/standard/data_state_county_age_by_sex.csv.gz" target="_blank" rel="noreferrer">data_state_county_age_by_sex.csv.gz</a></strong>`"]:::pass
+        n14["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/cms_mmd/standard/data_state_county_age.csv.gz" target="_blank" rel="noreferrer">data_state_county_age.csv.gz</a></strong>`"]:::pass
     end
     subgraph delphi_doctors_claims["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/delphi_doctors_claims" target="_blank" rel="noreferrer">delphi_doctors_claims</a></strong>`"]
         direction LR
-        n13["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/delphi_doctors_claims/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
+        n15["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/delphi_doctors_claims/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
     end
     subgraph delphi_hospital_claims["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/delphi_hospital_claims" target="_blank" rel="noreferrer">delphi_hospital_claims</a></strong>`"]
         direction LR
-        n14["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/delphi_hospital_claims/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
+        n16["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/delphi_hospital_claims/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
     end
     subgraph delphi_ili_fluview["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/delphi_ili_fluview" target="_blank" rel="noreferrer">delphi_ili_fluview</a></strong>`"]
         direction LR
-        n15["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/delphi_ili_fluview/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
+        n17["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/delphi_ili_fluview/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
     end
     subgraph delphi_nhsn["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/delphi_nhsn" target="_blank" rel="noreferrer">delphi_nhsn</a></strong>`"]
         direction LR
-        n16["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/delphi_nhsn/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
+        n18["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/delphi_nhsn/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
     end
     subgraph epic["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/epic" target="_blank" rel="noreferrer">epic</a></strong>`"]
         direction LR
-        n17["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/county_no_time.csv.gz" target="_blank" rel="noreferrer">county_no_time.csv.gz</a></strong>`"]:::pass
-        n18["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/county_year.csv.gz" target="_blank" rel="noreferrer">county_year.csv.gz</a></strong>`"]:::pass
-        n19["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/heat_year_county.csv" target="_blank" rel="noreferrer">heat_year_county.csv</a></strong>`"]:::pass
-        n20["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/heat_year_county.csv.gz" target="_blank" rel="noreferrer">heat_year_county.csv.gz</a></strong>`"]:::pass
-        n21["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/monthly_injury.csv.gz" target="_blank" rel="noreferrer">monthly_injury.csv.gz</a></strong>`"]:::pass
-        n22["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/monthly_tests.csv.gz" target="_blank" rel="noreferrer">monthly_tests.csv.gz</a></strong>`"]:::pass
-        n23["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/monthly.csv.gz" target="_blank" rel="noreferrer">monthly.csv.gz</a></strong>`"]:::pass
-        n24["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/no_geo.csv.gz" target="_blank" rel="noreferrer">no_geo.csv.gz</a></strong>`"]:::pass
-        n25["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/state_no_time.csv.gz" target="_blank" rel="noreferrer">state_no_time.csv.gz</a></strong>`"]:::pass
-        n26["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/state_year.csv.gz" target="_blank" rel="noreferrer">state_year.csv.gz</a></strong>`"]:::pass
-        n27["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/weekly.csv.gz" target="_blank" rel="noreferrer">weekly.csv.gz</a></strong>`"]:::pass
-        n28["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/yearly_injury.csv.gz" target="_blank" rel="noreferrer">yearly_injury.csv.gz</a></strong>`"]:::pass
+        n19["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/county_no_time.csv.gz" target="_blank" rel="noreferrer">county_no_time.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: bmi_30_49.8, obesity_(%), Year</code></li></ul>`"]:::warn
+        n20["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/county_year.csv.gz" target="_blank" rel="noreferrer">county_year.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: n_patients_chronic</code></li></ul>`"]:::warn
+        n21["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/monthly_injury.csv.gz" target="_blank" rel="noreferrer">monthly_injury.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: epic_n_ed_firearm, epic_rate_ed_firearm, epic_n_ed_heat, epic_rate_ed_heat, suppressed_opioid, suppressed_firearm, suppressed_heat</code></li></ul>`"]:::warn
+        n22["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/monthly_tests.csv.gz" target="_blank" rel="noreferrer">monthly_tests.csv.gz</a></strong><br/><br/><ul><li><code>time_nas</code></li><li><code>missing_info: suppressed_rsv_test</code></li></ul>`"]:::warn
+        n23["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/monthly.csv.gz" target="_blank" rel="noreferrer">monthly.csv.gz</a></strong><br/><br/><ul><li><code>time_nas</code></li><li><code>missing_info: epic_n_ed_firearm, epic_pct_ed_firearm, epic_pct_ed_opioid, suppressed_opioid, suppressed_firearm</code></li></ul>`"]:::warn
+        n24["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/no_geo.csv.gz" target="_blank" rel="noreferrer">no_geo.csv.gz</a></strong><br/><br/><ul><li><code>time_nas</code></li><li><code>missing_info: positive_rsv_tests_(%), rsv_tests</code></li></ul>`"]:::warn
+        n25["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/state_no_time.csv.gz" target="_blank" rel="noreferrer">state_no_time.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: bmi_30_49.8, dm_(%), Year</code></li></ul>`"]:::warn
+        n26["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/state_year.csv.gz" target="_blank" rel="noreferrer">state_year.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: n_patients_chronic</code></li></ul>`"]:::warn
+        n27["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/weekly.csv.gz" target="_blank" rel="noreferrer">weekly.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: epic_n_all_encounters_weekly</code></li></ul>`"]:::warn
+        n28["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/epic/standard/yearly_injury.csv.gz" target="_blank" rel="noreferrer">yearly_injury.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: epic_n_ed_firearm, epic_rate_ed_firearm, epic_n_ed_heat, epic_rate_ed_heat, suppressed_opioid, suppressed_firearm, suppressed_heat</code></li></ul>`"]:::warn
     end
     subgraph gtrends["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/gtrends" target="_blank" rel="noreferrer">gtrends</a></strong>`"]
         direction LR
@@ -117,7 +117,7 @@ flowchart LR
     end
     subgraph medicaid_quality["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid_quality" target="_blank" rel="noreferrer">medicaid_quality</a></strong>`"]
         direction LR
-        n38["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/medicaid_quality/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
+        n38["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/medicaid_quality/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong><br/><br/><ul><li><code>missing_info: geography_level, age, sex, race_ethnicity, payer, domain, medicaid_fum_ch_7d_pct_25, medicaid_fum_ch_7d_pct_75, medicaid_fum_ch_30d_pct_25, medicaid_fum_ch_30d_pct_75, medicaid_fua_ch_7d_pct_25, medicaid_fua_ch_7d_pct_75, medicaid_fua_ch_30d_pct_25, medicaid_fua_ch_30d_pct_75, medicaid_fuh_ch_7d_pct_25, medicaid_fuh_ch_7d_pct_75, medicaid_fuh_ch_30d_pct_25, medicaid_fuh_ch_30d_pct_75, medicaid_add_ch_30d_pct_25, medicaid_add_ch_30d_pct_75, medicaid_add_ch_cont_pct_25, medicaid_add_ch_cont_pct_75, medicaid_apm_ch_gluc_pct_25, medicaid_apm_ch_gluc_pct_75, medicaid_apm_ch_chol_pct_25, medicaid_apm_ch_chol_pct_75, medicaid_apm_ch_gluc_chol_pct_25, medicaid_apm_ch_gluc_chol_pct_75, medicaid_app_ch_pct_25, medicaid_app_ch_pct_75, medicaid_amb_ch_pct_25, medicaid_amb_ch_pct_75, medicaid_amr_ch_pct_25, medicaid_amr_ch_pct_75, medicaid_aab_ch_pct_25, medicaid_aab_ch_pct_75, medicaid_oev_ch_pct_25, medicaid_oev_ch_pct_75, medicaid_sfm_ch_pct_25, medicaid_sfm_ch_pct_75, medicaid_tfl_ch_pct_25, medicaid_tfl_ch_pct_75, medicaid_cpc_ch_pct_25, medicaid_cpc_ch_pct_75, medicaid_ccw_ch_pct_25, medicaid_ccw_ch_pct_75, medicaid_ccp_ch_pct_25, medicaid_ccp_ch_pct_75, medicaid_lbw_ch_pct_25, medicaid_lbw_ch_pct_75, medicaid_lrcd_ch_pct_25, medicaid_lrcd_ch_pct_75, medicaid_ppc_ch_pct_25, medicaid_ppc_ch_pct_75, medicaid_wcv_ch_pct_25, medicaid_wcv_ch_pct_75, medicaid_cis_ch_pct_25, medicaid_cis_ch_pct_75, medicaid_chl_ch_pct_25, medicaid_chl_ch_pct_75, medicaid_dev_ch_pct_25, medicaid_dev_ch_pct_75, medicaid_ima_ch_pct_25, medicaid_ima_ch_pct_75, medicaid_lsc_ch_pct_25, medicaid_lsc_ch_pct_75, medicaid_wcc_ch_pct_25, medicaid_wcc_ch_pct_75, medicaid_w30_ch_pct_25, medicaid_w30_ch_pct_75, medicaid_saa_ad_pct_25, medicaid_saa_ad_pct_75, medicaid_amm_ad_pct_25, medicaid_amm_ad_pct_75, medicaid_amm_ad_cont_pct_25, medicaid_amm_ad_cont_pct_75, medicaid_ssd_ad_pct_25, medicaid_ssd_ad_pct_75, medicaid_fum_ad_7d_pct_25, medicaid_fum_ad_7d_pct_75, medicaid_fum_ad_30d_pct_25, medicaid_fum_ad_30d_pct_75, medicaid_fua_ad_7d_pct_25, medicaid_fua_ad_7d_pct_75, medicaid_fua_ad_30d_pct_25, medicaid_fua_ad_30d_pct_75, medicaid_fuh_ad_7d_pct_25, medicaid_fuh_ad_7d_pct_75, medicaid_fuh_ad_30d_pct_25, medicaid_fuh_ad_30d_pct_75, medicaid_iet_ad_pct_25, medicaid_iet_ad_pct_75, medicaid_msc_ad_pct_25, medicaid_msc_ad_pct_75, medicaid_oud_ad_pct_25, medicaid_oud_ad_pct_75, medicaid_amr_ad_pct_25, medicaid_amr_ad_pct_75, medicaid_aab_ad_pct_25, medicaid_aab_ad_pct_75, medicaid_cob_ad_pct_25, medicaid_cob_ad_pct_75, medicaid_cbp_ad_pct_25, medicaid_cbp_ad_pct_75, medicaid_hbd_ad_pct_25, medicaid_hbd_ad_pct_75, medicaid_pqi01_ad_pct_25, medicaid_pqi01_ad_pct_75, medicaid_pqi05_ad_pct_25, medicaid_pqi05_ad_pct_75, medicaid_pqi08_ad_pct_25, medicaid_pqi08_ad_pct_75, medicaid_pqi15_ad_pct_25, medicaid_pqi15_ad_pct_75, medicaid_ohd_ad_pct_25, medicaid_ohd_ad_pct_75, medicaid_cpa_ad_pct_25, medicaid_cpa_ad_pct_75, medicaid_ncidds_ad_pct_25, medicaid_ncidds_ad_pct_75, medicaid_ccw_ad_pct_25, medicaid_ccw_ad_pct_75, medicaid_ccp_ad_pct_25, medicaid_ccp_ad_pct_75, medicaid_ppc_ad_pct_25, medicaid_ppc_ad_pct_75, medicaid_bcs_ad_pct_25, medicaid_bcs_ad_pct_75, medicaid_ccs_ad_pct_25, medicaid_ccs_ad_pct_75, medicaid_chl_ad_pct_25, medicaid_chl_ad_pct_75, medicaid_col_ad_pct_25, medicaid_col_ad_pct_75, medicaid_fva_ad_pct_25, medicaid_fva_ad_pct_75, medicaid_pcr_ad_pct_25, medicaid_pcr_ad_pct_75, medicaid_add_ch_init_pct_25, medicaid_add_ch_init_pct_75, medicaid_hpc_ad_pct_25, medicaid_hpc_ad_pct_75, medicaid_pdent_ch_pct_25, medicaid_pdent_ch_pct_75, medicaid_seal_ch_pct_25, medicaid_seal_ch_pct_75, medicaid_awc_ch_pct_25, medicaid_awc_ch_pct_75, medicaid_w15_ch_pct_25, medicaid_w15_ch_pct_75, medicaid_w34_ch_pct_25, medicaid_w34_ch_pct_75, medicaid_aba_ad_pct_25, medicaid_aba_ad_pct_75, medicaid_apc_ch_pct_25, medicaid_apc_ch_pct_75, medicaid_cap_ch_pct_25, medicaid_cap_ch_pct_75, medicaid_mpm_ad_pct_25, medicaid_mpm_ad_pct_75, medicaid_ha1c_ad_pct_25, medicaid_ha1c_ad_pct_75, medicaid_fua_fum_ad_7d_pct_25, medicaid_fua_fum_ad_7d_pct_75, medicaid_fua_fum_ad_30d_pct_25, medicaid_fua_fum_ad_30d_pct_75, medicaid_mma_ch_pct_25, medicaid_mma_ch_pct_75, medicaid_fpc_ch_pct_25, medicaid_fpc_ch_pct_75, medicaid_hpv_ch_pct_25, medicaid_hpv_ch_pct_75, medicaid_ldl_ad_pct_25, medicaid_ldl_ad_pct_75, medicaid_tdent_ch_pct_25, medicaid_tdent_ch_pct_75</code></li></ul>`"]:::warn
     end
     subgraph mmr_epic["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/mmr_epic" target="_blank" rel="noreferrer">mmr_epic</a></strong>`"]
         direction LR
@@ -145,7 +145,7 @@ flowchart LR
     end
     subgraph nnds["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nnds" target="_blank" rel="noreferrer">nnds</a></strong>`"]
         direction LR
-        n48["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/nnds/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong>`"]:::pass
+        n48["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/nnds/standard/data.csv.gz" target="_blank" rel="noreferrer">data.csv.gz</a></strong><br/><br/><ul><li><code>geography_nas</code></li></ul><br />Script Failed:<br />In argument: 'time = MMWRweek2Date('Current MMWR Year', 'MMWR WEEK', MMWRday = NULL)'.`"]:::fail
     end
     subgraph NREVSS["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/NREVSS" target="_blank" rel="noreferrer">NREVSS</a></strong>`"]
         direction LR
@@ -157,7 +157,7 @@ flowchart LR
     end
     subgraph schoolvax_washpost["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/schoolvax_washpost" target="_blank" rel="noreferrer">schoolvax_washpost</a></strong>`"]
         direction LR
-        n51["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/schoolvax_washpost/standard/data_counties.csv.gz" target="_blank" rel="noreferrer">data_counties.csv.gz</a></strong>`"]:::pass
+        n51["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/schoolvax_washpost/standard/data_counties.csv.gz" target="_blank" rel="noreferrer">data_counties.csv.gz</a></strong><br/><br/><ul><li><code>geography_nas</code></li></ul>`"]:::warn
         n52["`<strong><a href="https://github.com/PopHIVE/Ingest/blob/main/data/schoolvax_washpost/standard/data_schools.csv.gz" target="_blank" rel="noreferrer">data_schools.csv.gz</a></strong>`"]:::pass
     end
     subgraph schoolvaxview["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/schoolvaxview" target="_blank" rel="noreferrer">schoolvaxview</a></strong>`"]
@@ -292,28 +292,27 @@ flowchart LR
     s5 --> n3
     s5 --> n4
     s6---s7["<strong><a href="https://api.census.gov/data.html" target="_blank" rel="noreferrer">Census API — ACS 5-Year Detailed Tables and Subject Tables</a></strong>"]
-    s7 --> n5
-    s7 --> n6
     s7 --> n7
     s7 --> n8
     s7 --> n9
+    s7 --> n10
     s8---s9["<strong><a href="https://data.cms.gov/tools/mapping-medicare-disparities-by-population" target="_blank" rel="noreferrer">Mapping Medicare Disparities by Population Tool</a></strong>"]
-    s9 --> n10
-    s10 --> n10
-    s9 --> n11
-    s10 --> n11
     s9 --> n12
     s10 --> n12
+    s9 --> n13
+    s10 --> n13
+    s9 --> n14
+    s10 --> n14
     s11---s12["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/" target="_blank" rel="noreferrer">COVIDcast Epidata API</a></strong>"]
-    s12 --> n13
-    s13---s14["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html" target="_blank" rel="noreferrer">COVIDcast > Hospital Admissions</a></strong>"]
-    s14 --> n14
-    s12 --> n14
-    s16---s17["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/fluview.html" target="_blank" rel="noreferrer">FluView API</a></strong>"]
-    s17 --> n15
-    s18 --> n15
     s12 --> n15
+    s13---s14["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html" target="_blank" rel="noreferrer">COVIDcast > Hospital Admissions</a></strong>"]
+    s14 --> n16
     s12 --> n16
+    s16---s17["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/fluview.html" target="_blank" rel="noreferrer">FluView API</a></strong>"]
+    s17 --> n17
+    s18 --> n17
+    s12 --> n17
+    s12 --> n18
     s21---s22["<strong><a href="https://github.com/DISSC-yale/gtrends_collection" target="_blank" rel="noreferrer">Yale Data-Intensive Social Sciences, Google Trends Collection Framework</a></strong>"]
     s22 --> n29
     s22 --> n30
@@ -372,11 +371,11 @@ flowchart LR
     n45 --> bundle_childhood_immunizations
     n4 --> bundle_chronic_diseases
     n25 --> bundle_chronic_diseases
-    n17 --> bundle_chronic_diseases
-    n12 --> bundle_chronic_diseases
+    n19 --> bundle_chronic_diseases
+    n14 --> bundle_chronic_diseases
     n25 --> bundle_injury_overdose
     n4 --> bundle_injury_overdose
-    n12 --> bundle_injury_overdose
+    n14 --> bundle_injury_overdose
     n44 --> bundle_injury_overdose
     n42 --> bundle_injury_overdose
     n61 --> bundle_injury_overdose

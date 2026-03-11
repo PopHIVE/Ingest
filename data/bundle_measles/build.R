@@ -1,7 +1,7 @@
 # =============================================================================
 # Bundle: Measles
 # Combines: wastewater_measles, vaccine_exemptions_kiang, measles_jhu, mmr_healthmap,
-#           measles_cdc, schoolvaxview (WaPo), measles_age_cdc
+#           measles_cdc, schoolvaxview (WaPo), measles_age_cdc2
 # Output: Three consolidated files in long format:
 #   1. measles_state.parquet - State-level data with geography = state name
 #   2. measles_county.parquet - County-level data with geography = county FIPS
@@ -40,7 +40,7 @@ wapo_counties <- vroom::vroom('../schoolvax_washpost/standard/data_counties.csv.
 wapo_schools <- vroom::vroom('../schoolvax_washpost/standard/data_schools.csv.gz', show_col_types = FALSE)
 
 measles_cdc <- vroom::vroom('../measles_cdc/standard/data.csv.gz', show_col_types = FALSE)
-measles_age_cdc <- vroom::vroom('../measles_age_cdc/standard/data.csv.gz', show_col_types = FALSE)
+measles_age_cdc2 <- vroom::vroom('../measles_age_cdc2/standard/data.csv.gz', show_col_types = FALSE)
 
 
 mmr_county_summary <- wapo_schools %>% 
@@ -273,17 +273,23 @@ arrow::write_parquet(
 # -----------------------------------------------------------------------------
 # 8. CDC age-stratified measles cases (national-level, weekly)
 # -----------------------------------------------------------------------------
-measles_age_long <- measles_age_cdc %>%
+measles_age_long <- measles_age_cdc2 %>%
   mutate(
-    date = as.Date(time, format = "%m-%d-%Y"),
+    date = as.Date(time),
     year = year(date),
     week = isoweek(date),
     geography = "United States"
   ) %>%
-  select(geography, date, year, week, age, value = cum_cases_measles_age) %>%
+  pivot_longer(
+    cols = starts_with("cases_"),
+    names_to = "age",
+    values_to = "value",
+    names_prefix = "cases_"
+  ) %>%
   filter(!is.na(value)) %>%
   mutate(source = "cdc_measles_cases_age") %>%
-  arrange(date, age)
+  select(geography, date, year, week, type, age, value, source) %>%
+  arrange(date, type, age)
 
 # Write age-stratified parquet
 arrow::write_parquet(
