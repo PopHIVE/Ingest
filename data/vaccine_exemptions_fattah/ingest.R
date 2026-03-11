@@ -100,7 +100,7 @@ if (!identical(process$raw_state, raw_state)) {
     select(fips_orig = GEOID, population = Total)
 
   data_county <- data_raw %>%
-    filter(geography == "county") %>%
+    filter(nchar(fips_orig) == 5) %>%
     # Use the IHME FIPS codes (more complete)
     mutate(
       geography = stringr::str_pad(as.character(fips_ihme), width = 5, pad = "0"),
