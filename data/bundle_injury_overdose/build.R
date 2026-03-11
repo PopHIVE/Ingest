@@ -204,7 +204,7 @@ write_parquet(. ,'./dist/overdose_deaths_county.parquet')
 nchs <- bind_rows(nchs_od_state, nchs_od_county)
 
 #epic
-epic <- vroom::vroom('../../data/epic/standard/monthly_injury.csv.gz') %>%
+epic <- vroom::vroom('../../data/epic_injury/standard/monthly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
                         if_else(age ==  "25-45 Years", '25-44 Years', age)),
           epic_rate_ed_firearm = if_else(geography=='02',NA_real_,epic_rate_ed_firearm),
@@ -212,7 +212,7 @@ epic <- vroom::vroom('../../data/epic/standard/monthly_injury.csv.gz') %>%
           epic_rate_ed_heat = if_else(geography=='02',NA_real_,epic_rate_ed_heat)
   )
 
-epic_year <- vroom::vroom('../../data/epic/standard/yearly_injury.csv.gz') %>%
+epic_year <- vroom::vroom('../../data/epic_injury/standard/yearly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
                         if_else(age ==  "25-45 Years", '25-44 Years', age)),
           epic_rate_ed_firearm = if_else(geography=='02',NA_real_,epic_rate_ed_firearm),

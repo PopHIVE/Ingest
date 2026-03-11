@@ -31,7 +31,7 @@ state_abbr_lookup <- all_fips %>%
   filter(nchar(geography) == 2) %>%
   select(geography, state)
 
-bundle_files  <- list( '../epic/standard/weekly.csv.gz',
+bundle_files  <- list( '../epic_resp_infections/standard/weekly.csv.gz',
                        '../gtrends/standard/data.csv.gz',
                        '../nssp/standard/data.csv.gz',
                        '../respnet/standard/data.csv.gz',
@@ -211,7 +211,7 @@ arrow::write_parquet(d, "dist/rsv_positive_tests.parquet")
 #################
 
 #epic_testing_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/rsv_testing_pct.parquet')
-d2 <- vroom::vroom('../epic/standard/monthly_tests.csv.gz') %>%
+d2 <- vroom::vroom('../epic_resp_infections/standard/monthly_tests.csv.gz') %>%
  rename(fips = geography) %>%
   left_join(state_name_lookup, by = c("fips" = "geography")) %>%
   mutate(source = 'Epic Cosmos, ED',
@@ -253,7 +253,7 @@ d3 %>%
 
 #age_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/trends_by_age.parquet')
 
-bundle_files_age  <- list( '../epic/standard/weekly.csv.gz',
+bundle_files_age  <- list( '../epic_resp_infections/standard/weekly.csv.gz',
                            '../respnet/standard/data.csv.gz'
 )
 
