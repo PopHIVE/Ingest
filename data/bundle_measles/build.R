@@ -1,6 +1,6 @@
 # =============================================================================
 # Bundle: Measles
-# Combines: wastewater_measles, vaccine_exemptions_kiang, measles_jhu, mmr_healthmap,
+# Combines: wastewater_measles, vaccine_exemptions_fattah, measles_jhu, mmr_healthmap,
 #           measles_cdc, schoolvaxview (WaPo), measles_age_cdc2
 # Output: Three consolidated files in long format:
 #   1. measles_state.parquet - State-level data with geography = state name
@@ -30,8 +30,8 @@ state_fips_lookup <- all_fips %>%
 # -----------------------------------------------------------------------------
 wastewater_measles <- vroom::vroom('../wastewater_measles/standard/data.csv.gz', show_col_types = FALSE)
 wastewater_measles_county <- vroom::vroom('../wastewater_measles/standard/data_county.csv.gz', show_col_types = FALSE)
-vaccine_exemptions <- vroom::vroom('../vaccine_exemptions_kiang/standard/data.csv.gz', show_col_types = FALSE)
-vaccine_exemptions_county <- vroom::vroom('../vaccine_exemptions_kiang/standard/data_county.csv.gz', show_col_types = FALSE)
+vaccine_exemptions <- vroom::vroom('../vaccine_exemptions_fattah/standard/data.csv.gz', show_col_types = FALSE)
+vaccine_exemptions_county <- vroom::vroom('../vaccine_exemptions_fattah/standard/data_county.csv.gz', show_col_types = FALSE)
 measles_jhu_state <- vroom::vroom('../measles_jhu/standard/data_state.csv.gz', show_col_types = FALSE)
 measles_jhu_county <- vroom::vroom('../measles_jhu/standard/data_county.csv.gz', show_col_types = FALSE)
 mmr_healthmap_state <- vroom::vroom('../mmr_healthmap/standard/data_state.csv.gz', show_col_types = FALSE)
@@ -214,9 +214,10 @@ exemptions_county <- vaccine_exemptions_county %>%
     date = as.Date(time, format = "%m-%d-%Y"),
     year = year(date),
     week = NA_integer_,
+    exemption_rate_mmr_med = if_else(is.na(exemption_rate_mmr_med), 0, exemption_rate_mmr_med),
     exemption_rate_mmr = exemption_rate_mmr_med + exemption_rate_mmr_nonmed
   ) %>%
-  select(geography, date, year, week, value = exemption_rate_mmr) %>%
+  select(geography, date, year,  value = exemption_rate_mmr) %>%
   filter(!is.na(value)) %>%
   mutate(source = "vaccine_exemption_rate")
 
