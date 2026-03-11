@@ -194,6 +194,81 @@
       }
     ]
   },
+  "suppressed_rsv_test": {
+    "id": "suppressed_rsv_test",
+    "short_name": "RSV Test Count Suppressed?",
+    "long_name": "Suppression flag for RSV test encounter count",
+    "short_description": "Binary indicator: 1 if the RSV test encounter count was suppressed (fewer than 10), 0 otherwise.",
+    "long_description": "Binary indicator: 1 if the count of J12-J18 pneumonia encounters with RSV testing (epic_n_ed_j12_j18) was suppressed due to fewer than 10 cases, in which case the count is imputed as 5. Otherwise 0.",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Month",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ]
+  },
+  "positive_rsv_tests_(%)": {
+    "id": "positive_rsv_tests_(%)",
+    "short_name": "RSV Positive Test Rate (%) [raw]",
+    "long_name": "Percent of RSV Tests Positive Among Pneumonia Admissions (raw, no geography)",
+    "short_description": "Raw export column: percent of RSV tests positive among J12-J18 pneumonia admissions.",
+    "long_description": "Raw column from Epic Cosmos SlicerDicer export. Represents the percentage of RSV tests that returned positive among hospitalized pneumonia admissions (ICD-10: J12-J18). This is the unprocessed version stored in no_geo.csv.gz before renaming to epic_pct_rsv_pos_tests.",
+    "measure_type": "percent",
+    "unit": "%",
+    "time_resolution": "Month",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ]
+  },
+  "rsv_tests": {
+    "id": "rsv_tests",
+    "short_name": "RSV Test Rate (%) [raw]",
+    "long_name": "Percent of Pneumonia Admissions Tested for RSV (raw, no geography)",
+    "short_description": "Raw export column: percent of J12-J18 pneumonia admissions receiving an RSV test.",
+    "long_description": "Raw column from Epic Cosmos SlicerDicer export. Represents the percentage of hospitalized pneumonia admissions (ICD-10: J12-J18) that received an RSV test. This is the unprocessed version stored in no_geo.csv.gz before renaming to epic_pct_j12_j18_tested_rsv.",
+    "measure_type": "percent",
+    "unit": "%",
+    "time_resolution": "Month",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ]
+  },
+  "epic_n_all_encounters_weekly": {
+    "id": "epic_n_all_encounters_weekly",
+    "short_name": "All-Cause ED Encounters (Weekly)",
+    "long_name": "Total Weekly Emergency Department Encounters (All Causes)",
+    "short_description": "Total number of weekly emergency department encounters for any cause.",
+    "long_description": "Total count of weekly emergency department encounters for any cause, used as the denominator for respiratory illness percentages. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "integer",
+    "unit": "encounters",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ]
+  },
+  "epic_suppressed_flag_all_encounters_weekly": {
+    "id": "epic_suppressed_flag_all_encounters_weekly",
+    "short_name": "All Encounters Count Suppressed? (Weekly)",
+    "long_name": "Suppression flag: fewer than 10 all-cause weekly ED encounters in the strata",
+    "short_description": "Binary indicator: 1 if the all-cause weekly ED encounter count was suppressed, 0 otherwise.",
+    "long_description": "Binary indicator: 1 if fewer than 10 all-cause weekly emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_all_encounters_weekly) is imputed as 5.",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ]
+  },
   "epic_pct_j12_j18_tested_rsv": {
     "id": "epic_pct_j12_j18_tested_rsv",
     "short_name": "Percent tested",
