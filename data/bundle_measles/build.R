@@ -214,10 +214,10 @@ exemptions_county <- vaccine_exemptions_county %>%
     date = as.Date(time, format = "%m-%d-%Y"),
     year = year(date),
     week = NA_integer_,
-    exemption_rate_mmr_med = if_else(is.na(exemption_rate_mmr_med), 0, exemption_rate_mmr_med),
-    exemption_rate_mmr = exemption_rate_mmr_med + exemption_rate_mmr_nonmed
+    #exemption_rate_mmr_med = if_else(is.na(exemption_rate_mmr_med), 0, exemption_rate_mmr_med),
+    #exemption_rate_mmr_nonmed =  exemption_rate_mmr_nonmed
   ) %>%
-  select(geography, date, year,  value = exemption_rate_mmr) %>%
+  select(geography, date, year,  value = exemption_rate_mmr_nonmed) %>%
   filter(!is.na(value)) %>%
   mutate(source = "vaccine_exemption_rate")
 
