@@ -243,7 +243,7 @@ wastewater_county <- wastewater_measles_county %>%
     week = isoweek(date)
   ) %>%
   select(geography, date, year, week, value = ww_detection_rate) %>%
-  filter(!is.na(value)) %>%
+  #filter(!is.na(value)) %>%
   mutate(source = "wastewater_detection_rate")
 
 # -----------------------------------------------------------------------------
