@@ -51,8 +51,8 @@ measles_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_type
     date = as.Date(time, format = "%m-%d-%Y"),
     year = year(date),
     week = isoweek(date),
-    source = "nnds"
-  ) %>%
+    source = "cdc_measles_cases"
+         )%>%
   arrange(geography, date) %>%
   group_by(geography) %>%
   tidyr::fill(value, .direction = "down") %>%
