@@ -43,6 +43,22 @@ measles_cdc <- vroom::vroom('../measles_cdc/standard/data.csv.gz', show_col_type
 measles_age_cdc2 <- vroom::vroom('../measles_age_cdc2/standard/data.csv.gz', show_col_types = FALSE)
 
 
+measles_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = FALSE) %>%
+    mutate(value = measles_imported + measles_indigenous ) %>%
+        dplyr::select(geography, time, value ) %>%
+        filter(!is.na(geography)) %>%
+         mutate(
+    date = as.Date(time, format = "%m-%d-%Y"),
+    year = year(date),
+    week = isoweek(date),
+    source = "nnds"
+  ) %>%
+  arrange(geography, date) %>%
+  group_by(geography) %>%
+  tidyr::fill(value, .direction = "down") %>%
+  ungroup()
+
+
 mmr_county_summary <- wapo_schools %>% 
 filter(wapo_school_type== "PUBLIC" & wapo_school_state=='CA') %>%
 group_by(wapo_school_county, wapo_school_state, time) %>%
@@ -164,6 +180,7 @@ measles_state_long <- bind_rows(
   exemptions_state,
   jhu_state,
   mmr_state,
+  measles_state_nnds,
   cdc_national
 ) %>%
   arrange(geography, source, date) %>%

@@ -177,6 +177,7 @@ if (!identical(process$raw_state, raw_state)) {
       time = format(week_end, "%Y-%m-%d")
     ) %>%
     select(geography, time, value) %>%
+     tidyr::complete(geography, time, fill = list(value = 0)) %>%
     arrange(geography, time)
 
   # Aggregate county data to state level for comparison
@@ -218,6 +219,7 @@ if (!identical(process$raw_state, raw_state)) {
 
   # Combine state and national data
   state_final <- bind_rows(all_states_weekly, national_weekly) %>%
+      tidyr::complete(geography, time, fill = list(value = 0)) %>%
     arrange(geography, time)
 
   # ---------------------------------------------------------------------------
@@ -238,12 +240,13 @@ if (!identical(process$raw_state, raw_state)) {
     delim = ","
   )
 
-  # Combined (state + county) for comprehensive view
+  # Combined (state + county) for comprehensive view, filling missing geography/time combos with 0
   combined_final <- bind_rows(
     state_final %>% mutate(geographic_level = "state"),
     county_weekly %>% mutate(geographic_level = "county")
   ) %>%
     select(-geographic_level) %>%
+    tidyr::complete(geography, time, fill = list(value = 0)) %>%
     arrange(geography, time)
 
   vroom::vroom_write(
