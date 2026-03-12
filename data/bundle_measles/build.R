@@ -187,7 +187,7 @@ measles_state_long <- bind_rows(
   exemptions_state,
   jhu_state,
   mmr_state,
-  measles_state_nnds,
+  #measles_state_nnds,
   cdc_national
 ) %>%
   arrange(geography, source, date) %>%
