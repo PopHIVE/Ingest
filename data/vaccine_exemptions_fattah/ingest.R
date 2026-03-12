@@ -130,6 +130,31 @@ if (!identical(process$raw_state, raw_state)) {
     filter(!is.na(geography))
 
   # ---------------------------------------------------------------------------
+  # 3c. Expand state-only data to counties
+  # ---------------------------------------------------------------------------
+  # AK, DE, DC, IN, RI have no county-level data; assign state value to each county
+  state_only_fips <- c("02", "10", "11", "18", "44")
+
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+
+  state_only_counties <- all_fips %>%
+    filter(
+      nchar(geography) == 5,
+      substr(geography, 1, 2) %in% state_only_fips
+    ) %>%
+    mutate(state_fips = substr(geography, 1, 2)) %>%
+    select(geography, state_fips)
+
+  county_from_state <- state_only_counties %>%
+    left_join(
+      data_state %>% rename(state_fips = geography),
+      by = "state_fips"
+    ) %>%
+    select(-state_fips)
+
+  data_county <- bind_rows(data_county, county_from_state)
+
+  # ---------------------------------------------------------------------------
   # 4. Write standardized outputs
   # ---------------------------------------------------------------------------
   # State-level data
