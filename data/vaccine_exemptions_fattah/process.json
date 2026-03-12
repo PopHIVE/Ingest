@@ -1,38 +1,90 @@
 {
-  "name": "vaccine_exemptions_kiang",
-  "type": "source",
+  "name": "bundle_measles",
+  "type": "bundle",
   "scripts": [
     {
-      "path": "ingest.R",
-      "manual": false,
-      "frequency": 0,
-      "last_run": "2026-03-03 00:43:52",
-      "run_time": 2.02,
+      "path": "build.R",
+      "last_run": "2026-03-06 14:56:46",
+      "run_time": 0.552,
       "last_status": {
-        "log": [
-          "trying URL 'https://raw.githubusercontent.com/mkiang/vaccine_exemptions/refs/heads/main/data/analytic_data_rounded.csv'",
-          "Content type 'text/plain; charset=utf-8' length 5208337 bytes (5.0 MB)",
-          "==================================================",
-          "downloaded 5.0 MB",
-          ""
-        ],
+        "log": [],
         "success": true
       }
     }
   ],
-  "checked": "2026-03-06 14:57:41",
-  "check_results": {
-    "data/vaccine_exemptions_kiang/standard/data_county.csv.gz": [],
-    "data/vaccine_exemptions_kiang/standard/data_state.csv.gz": [],
-    "data/vaccine_exemptions_kiang/standard/data.csv.gz": []
+  "source_files": {
+    "wastewater_measles/standard/data.csv.gz": [
+      "measles_overall_trends.parquet",
+      "measles_overall_trends.csv.gz",
+      "measles_geographic_summary.parquet",
+      "measles_geographic_summary.csv.gz",
+      "measles_detection_status.parquet",
+      "measles_detection_status.csv.gz",
+      "measles_exemptions_with_wastewater.parquet",
+      "measles_exemptions_with_wastewater.csv.gz"
+    ],
+    "vaccine_exemptions_kiang/standard/data.csv.gz": [
+      "measles_exemptions_trends.parquet",
+      "measles_exemptions_trends.csv.gz",
+      "measles_exemptions_with_wastewater.parquet",
+      "measles_exemptions_with_wastewater.csv.gz"
+    ],
+    "schoolvaxview/standard/data_wapo_counties.csv.gz": [
+      "measles_wapo_counties.parquet",
+      "measles_wapo_counties.csv.gz",
+      "measles_wapo_counties_with_cases.parquet",
+      "measles_wapo_counties_with_cases.csv.gz"
+    ],
+    "schoolvaxview/standard/data_wapo_schools.csv.gz": [
+      "measles_wapo_schools.parquet",
+      "measles_wapo_schools.csv.gz"
+    ],
+    "measles_age_cdc2/standard/data.csv.gz": [
+      "measles_cases_by_age.parquet"
+    ]
   },
-  "raw_state": {
-    "raw/exemptions.csv.xz": "ca500980b60382ae7aed6f758de385e4"
+  "dist_state": {
+    "./data/bundle_measles/dist/measles_cases_by_age.parquet": "987c38175a12fc69607c9f81e5efe570",
+    "./data/bundle_measles/dist/measles_county.parquet": "ed554ba45f5c1ad0a4c242b2b5a177fa",
+    "./data/bundle_measles/dist/measles_state.parquet": "4527faf9d1e21bc2336abce5fae81eb3",
+    "./data/wastewater_measles/standard/datapackage.json": "1b5b8791a35e4631844686fb9076d921",
+    "./data/vaccine_exemptions_kiang/standard/datapackage.json": "d94a5dec0ba6fc502764c7136942f885",
+    "./data/schoolvaxview/standard/datapackage.json": "3ad5e8452aa770bdb586abeb278a7008",
+    "./data/measles_age_cdc/standard/datapackage.json": "9f47aa8bc4ad3b65735d4f21c7d2e33e"
   },
   "standard_state": {
-    "./data/vaccine_exemptions_kiang/measure_info.json": "4037399967d83dcf9b8b06d5e4de3713",
-    "./data/vaccine_exemptions_kiang/standard/data_county.csv.gz": "74a0fa162267ca42cb2c915a63e8fb68",
-    "./data/vaccine_exemptions_kiang/standard/data_state.csv.gz": "614116d531a1bc16258b6e4a8eb2af8a",
-    "./data/vaccine_exemptions_kiang/standard/data.csv.gz": "614116d531a1bc16258b6e4a8eb2af8a"
-  }
+    "./data/wastewater_measles/standard/data.csv.gz": "242cdefea960777bfafd5e38b1bfa1e6",
+    "./data/vaccine_exemptions_kiang/standard/data.csv.gz": "614116d531a1bc16258b6e4a8eb2af8a",
+    "./data/schoolvaxview/standard/data_wapo_counties.csv.gz": {},
+    "./data/schoolvaxview/standard/data_wapo_schools.csv.gz": {},
+    "./data/measles_age_cdc/standard/data.csv.gz": "510dca794ae8430bb7f8935e796e7da7"
+  },
+  "checked": "2026-03-06 14:57:36",
+  "check_results": {
+    "data/bundle_measles/dist/measles_cases_by_age.parquet": {
+      "measures": [
+        "missing_info: date",
+        "missing_info: year",
+        "missing_info: week",
+        "missing_info: age"
+      ]
+    },
+    "data/bundle_measles/dist/measles_county.parquet": {
+      "data": "geography_nas",
+      "measures": [
+        "missing_info: date",
+        "missing_info: year",
+        "missing_info: week"
+      ]
+    },
+    "data/bundle_measles/dist/measles_state.parquet": {
+      "data": "geography_nas",
+      "measures": [
+        "missing_info: date",
+        "missing_info: year",
+        "missing_info: week"
+      ]
+    }
+  },
+  "raw_state": 1772813676
 }

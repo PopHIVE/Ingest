@@ -35,15 +35,19 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   data_raw <- vroom::vroom("raw/exemptions.csv.xz", delim = ",", show_col_types = FALSE)
 
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, state)
+
   # ---------------------------------------------------------------------------
   # 3a. Create state-level data
   # ---------------------------------------------------------------------------
   data_state <- data_raw %>%
     filter(geography == "state") %>%
-    mutate(
-      # Use state abbreviation to get FIPS code (convert to 2-digit character string)
-      geography = stringr::str_pad(as.character(cdlTools::fips(state_abb, to = "FIPS")), width = 2, pad = "0")
-    ) %>%
+    select(-geography) %>%
+    left_join(state_fips_lookup, by = c("state_abb" = "state")) %>%
     # Format time - use September 1 of each year for school-entry data
     mutate(
       time = paste0("09-01-", year),
@@ -134,8 +138,6 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   # AK, DE, DC, IN, RI have no county-level data; assign state value to each county
   state_only_fips <- c("02", "10", "11", "18", "44")
-
-  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
 
   state_only_counties <- all_fips %>%
     filter(
