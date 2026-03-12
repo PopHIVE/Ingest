@@ -57,9 +57,13 @@ measles_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_type
   group_by(geography) %>%
   tidyr::fill(value, .direction = "down") %>%
   ungroup() %>%
+  group_by(geography, year) %>%
+  mutate(new_value = value - lag(value, default = 0)) %>%
+  ungroup() %>%
   left_join(state_fips_lookup, by = c("geography" = "fips")) %>%
   mutate(geography = if_else(geography == "00", "United States", state_name)) %>%
-  select(-state_name)
+  select(-state_name) %>%
+  filter(geography != "United States") 
 
 
 mmr_county_summary <- wapo_schools %>% 
@@ -183,8 +187,8 @@ measles_state_long <- bind_rows(
   exemptions_state,
   jhu_state,
   mmr_state,
-  measles_state_nnds
- # cdc_national
+  measles_state_nnds,
+  cdc_national
 ) %>%
   arrange(geography, source, date) %>%
   select(geography, date, year, week, source, value)
