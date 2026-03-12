@@ -59,3 +59,13 @@ if (!identical(process$raw_state, raw_state)) {
  
   
 }
+
+
+test <- data %>%
+filter(Label=="Measles, Indigenous" & `Reporting Area` == "Total") %>%
+arrange(`Reporting Area`, time) %>%
+  group_by(`Reporting Area`) %>%
+  rename(current=`Current week`) %>%
+  summarize(csum2= cumsum(current)
+            ) %>%
+  arrange(desc(total))
