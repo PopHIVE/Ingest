@@ -17,8 +17,37 @@ if (!file.exists("process.json")) {
   process <- dcf::dcf_process_record()
 }
 
-new_file <- "raw/cdc_measles_new_cases_age.csv"
-cum_file  <- "raw/cdc_measles_cumulative_age.csv"
+
+library(dplyr)
+
+process <- dcf::dcf_process_record()
+
+# GitHub raw base URL for standard files
+base_url <- "https://github.com/PopHIVE/measles_age_cdc_scraper/raw/refs/heads/main/"
+
+# Files to download from the remote standard folder
+raw_files <- c(
+  "measles_structured.csv"
+)
+
+# Download each file and track hashes for change detection
+current_hashes <- list()
+any_changed <- FALSE
+
+for (f in raw_files) {
+  url <- paste0(base_url, "/", f)
+  dest <- file.path("raw", f)
+
+  tryCatch({
+    download.file(url, dest, mode = "wb", quiet = TRUE)
+    current_hashes[[f]] <- tools::md5sum(dest)
+  }, error = function(e) {
+    message("Warning: failed to download ", f, ": ", e$message)
+  })
+}
+
+
+cum_file  <- "raw/measles_structured.csv"
 
 # Change detection based on file hashes
 raw_state <- list(
