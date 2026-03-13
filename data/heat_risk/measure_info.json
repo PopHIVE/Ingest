@@ -1,0 +1,35 @@
+{
+  "heat_risk": {
+    "id": "heat_risk",
+    "short_name": "Heat Risk Score",
+    "long_name": "NOAA HeatRisk Mean Score",
+    "category": "heat",
+    "short_description": "Mean daily heat risk score (0–4) aggregated to county and state level.",
+    "long_description": "The NOAA Weather Prediction Center (WPC) HeatRisk product provides a daily heat risk forecast across the contiguous United States on a 0–4 scale: 0 = No Risk, 1 = Minor, 2 = Moderate, 3 = Major, 4 = Extreme. Values represent the risk of heat-related illness to the general population. County- and state-level values are derived by computing the area-weighted mean raster pixel value from the GeoTIFF archive files (~2.5 km NDFD grid). Historical archive data is available from 2024-08-01 onward. The current 7-day forecast (forecast_day = 1–7) is refreshed daily. The county-level file includes a low_coverage_flag column (1 = fewer than 9 pixels cover the county, ~56 km²) indicating that the estimate is based on very few grid cells and should be interpreted with caution.",
+    "statement": "The mean heat risk score in {location} on {time} was {value} (0–4 scale).",
+    "measure_type": "Index",
+    "unit": "Score (0–4)",
+    "time_resolution": "Day",
+    "sources": [{ "id": "noaa_wpc_heatrisk" }],
+    "citations": [
+      {
+        "title": "NWS Weather Prediction Center HeatRisk",
+        "url": "https://www.wpc.ncep.noaa.gov/heatrisk/"
+      }
+    ]
+  },
+
+  "_sources": {
+    "noaa_wpc_heatrisk": {
+      "name": "NOAA WPC HeatRisk",
+      "url": "https://www.wpc.ncep.noaa.gov/heatrisk/data/archive/",
+      "organization": "NOAA Weather Prediction Center (WPC)",
+      "organization_url": "https://www.wpc.ncep.noaa.gov/",
+      "location": "HeatRisk GeoTIFF Archive and 7-Day Forecast",
+      "location_url": "https://www.wpc.ncep.noaa.gov/heatrisk/data.html",
+      "description": "The NOAA Weather Prediction Center HeatRisk product provides a daily, gridded (2.5 km) assessment of heat risk across the contiguous United States for the current day and 7-day forecast period. Risk is classified on a 0–4 scale based on the combination of heat intensity and duration relative to local historical thresholds, with consideration for overnight low temperatures and heat index. The archive provides daily GeoTIFF rasters back to August 1, 2024. County- and state-level summaries in this dataset are computed as the mean pixel value within each geographic boundary using area-weighted zonal statistics.",
+      "restrictions": "Public domain. NOAA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    }
+  }
+}
