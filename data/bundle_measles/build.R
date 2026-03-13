@@ -304,21 +304,26 @@ measles_age_long <- measles_age_cdc2 %>%
     geography = "United States"
   ) %>%
   pivot_longer(
-    cols = c(cdc_cum_cases, cdc_new_cases),
+    cols = c(cdc_cum_cases, cdc_new_cases,cdc_new_hosp,cdc_cum_hosp),
     names_to = "type",
     values_to = "value"
   ) %>%
   mutate(
     type = case_when(
-      type == "cdc_cum_cases" ~ "cumulative",
-      type == "cdc_new_cases" ~ "new_cases"
+      type == "cdc_cum_cases" ~ "cumulative cases",
+      type == "cdc_new_cases" ~ "new cases",
+      type == "cdc_new_hosp" ~ "new hospitalizations",
+      type == "cdc_cum_hosp" ~ "cumulative hospitalizations",
     ),
     age = age_group
   ) %>%
   filter(!is.na(value)) %>%
   mutate(source = "cdc_measles_cases_age") %>%
   select(geography, date, year, week, type, age, vax_group, value, source) %>%
-  arrange(date, type, age, vax_group)
+  arrange( type, age, vax_group,date) %>%
+  mutate( source = if_else(vax_group != 'Total', 'cdc_measles_cases_vax', source)
+  )
+ 
 
 # Write age-stratified parquet
 arrow::write_parquet(
