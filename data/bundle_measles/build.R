@@ -327,4 +327,3 @@ arrow::write_parquet(
   compression = "snappy"
 )
 
-check <- arrow::read_parquet("https://github.com/PopHIVE/Ingest/raw/refs/heads/main/data/bundle_measles/dist/measles_cases_by_age.parquet")
