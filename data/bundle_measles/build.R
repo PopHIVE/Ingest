@@ -301,20 +301,24 @@ arrow::write_parquet(
 measles_age_long <- measles_age_cdc2 %>%
   mutate(
     date = as.Date(time),
-    year = year(date),
-    week = isoweek(date),
     geography = "United States"
   ) %>%
   pivot_longer(
-    cols = starts_with("cases_"),
-    names_to = "age",
-    values_to = "value",
-    names_prefix = "cases_"
+    cols = c(cdc_cum_cases, cdc_new_cases),
+    names_to = "type",
+    values_to = "value"
+  ) %>%
+  mutate(
+    type = case_when(
+      type == "cdc_cum_cases" ~ "cumulative",
+      type == "cdc_new_cases" ~ "new_cases"
+    ),
+    age = age_group
   ) %>%
   filter(!is.na(value)) %>%
   mutate(source = "cdc_measles_cases_age") %>%
-  select(geography, date, year, week, type, age, value, source) %>%
-  arrange(date, type, age)
+  select(geography, date, year, week, type, age, vax_group, value, source) %>%
+  arrange(date, type, age, vax_group)
 
 # Write age-stratified parquet
 arrow::write_parquet(
@@ -323,7 +327,4 @@ arrow::write_parquet(
   compression = "snappy"
 )
 
-
-
-
-
+check <- arrow::read_parquet("https://github.com/PopHIVE/Ingest/raw/refs/heads/main/data/bundle_measles/dist/measles_cases_by_age.parquet")
