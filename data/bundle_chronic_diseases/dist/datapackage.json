@@ -1,17 +1,17 @@
 {
   "name": "bundle_chronic_diseases",
   "title": "Bundle Chronic Diseases",
-
   "resources": [
     {
       "bytes": 319812,
       "encoding": "ISO-8859-1",
-      "md5": "b0001583979e376e804ccd557f539f45",
+      "md5": "94a10ed2d917fe96d899b741456a9dce",
       "format": "parquet",
       "name": "brfss_prevalence_by_geography",
       "filename": "brfss_prevalence_by_geography.parquet",
       "versions": {
         "hash": [
+          "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "1a28469dd4a514054e5edaf1711313968ced0670",
           "3feef2aacc5681e203a69a43c6fa05bb62477096",
           "931cf93c19e3bd3868912dad2d2277a550788420",
@@ -63,6 +63,7 @@
           "0729910fad06bceda1fac9cea35cae8b1c3312ba"
         ],
         "author": [
+          "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "danweinberger <daniel.weinberger@yale.edu>",
@@ -114,6 +115,7 @@
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Wed Mar 11 11:41:55 2026 -0400",
           "Tue Mar 3 00:46:06 2026 +0000",
           "Mon Mar 2 14:50:39 2026 -0500",
           "Thu Feb 19 10:27:03 2026 -0500",
@@ -165,6 +167,7 @@
           "Fri Aug 8 23:00:16 2025 -0400"
         ],
         "message": [
+          "Squashed ",
           "scheduled data build",
           "Claude Sonnet 4.6 <noreply@anthropic.com>",
           "remove missing epic file from the bundle script",
@@ -217,6 +220,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -225,8 +229,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:56:07.231615",
-      "last_modified": "2026-03-06 14:56:07.231615",
+      "created": "2026-03-13 15:02:54.872248",
+      "last_modified": "2026-03-13 15:02:54.872248",
       "vintage": {},
       "row_count": 5306,
       "entity_count": 55,
@@ -235,6 +239,7 @@
           {
             "name": "geography",
             "duplicates": 5251,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -299,6 +304,7 @@
           {
             "name": "year",
             "duplicates": 5299,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -310,6 +316,7 @@
           {
             "name": "age",
             "duplicates": 5299,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -326,6 +333,46 @@
           {
             "name": "source",
             "duplicates": 5305,
+            "info": {
+              "levels": {
+                "CDC BRFSS": {
+                  "source_id": "prev_diabetes_survey",
+                  "id": "CDC BRFSS",
+                  "name": "prev_diabetes_survey",
+                  "duplicates": 149,
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 10.662075,
+                  "sd": 9.28104,
+                  "min": 0,
+                  "max": 100,
+                  "info": {
+                    "id": "prev_diabetes_survey",
+                    "short_name": "Diabetes Prevalence (Survey)",
+                    "long_name": "Diabetes Prevalence from BRFSS Survey",
+                    "short_description": "Estimated diabetes prevalence from BRFSS survey data.",
+                    "measure_type": "percent",
+                    "unit": "percent",
+                    "time_resolution": "year",
+                    "sources": [
+                      {
+                        "id": "brfss"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "brfss",
+                      "data_dir": "/data/brfss/standard",
+                      "file": "data_survey.csv.gz"
+                    }
+                  }
+                }
+              },
+              "id": "source"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -336,6 +383,17 @@
           {
             "name": "outcome_name",
             "duplicates": 5304,
+            "info": {
+              "levels": {
+                "Diabetes": {
+                  "id": "Diabetes"
+                },
+                "Obesity": {
+                  "id": "Obesity"
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -347,6 +405,22 @@
           {
             "name": "value",
             "duplicates": 31,
+            "info": {
+              "id": "value",
+              "short_name": "Chronic disease prevalence (BRFSS)",
+              "long_name": "BRFSS Chronic Disease Prevalence Estimate",
+              "category": "chronic_disease",
+              "short_description": "Estimated prevalence of diabetes or obesity from BRFSS telephone survey, by state and year.",
+              "long_description": "Age-stratified state-level prevalence estimates for diabetes and obesity from the CDC Behavioral Risk Factor Surveillance System (BRFSS). Diabetes prevalence is based on self-reported ever-diagnosis; obesity is based on calculated BMI ≥30 from self-reported height and weight. The outcome_name column identifies the condition. Includes 95% confidence intervals (value_lcl, value_ucl) and survey sample size.",
+              "measure_type": "Percent",
+              "unit": "%",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "brfss"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -358,6 +432,21 @@
           {
             "name": "value_lcl",
             "duplicates": 31,
+            "info": {
+              "id": "value_lcl",
+              "short_name": "Prevalence lower 95% CI (BRFSS)",
+              "long_name": "Lower 95% Confidence Interval for BRFSS Prevalence",
+              "category": "chronic_disease",
+              "short_description": "Lower bound of the 95% confidence interval for BRFSS chronic disease prevalence.",
+              "measure_type": "Percent",
+              "unit": "%",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "brfss"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -369,6 +458,21 @@
           {
             "name": "value_ucl",
             "duplicates": 31,
+            "info": {
+              "id": "value_ucl",
+              "short_name": "Prevalence upper 95% CI (BRFSS)",
+              "long_name": "Upper 95% Confidence Interval for BRFSS Prevalence",
+              "category": "chronic_disease",
+              "short_description": "Upper bound of the 95% confidence interval for BRFSS chronic disease prevalence.",
+              "measure_type": "Percent",
+              "unit": "%",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "brfss"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -380,6 +484,21 @@
           {
             "name": "sample_size",
             "duplicates": 3767,
+            "info": {
+              "id": "sample_size",
+              "short_name": "Sample size (BRFSS)",
+              "long_name": "BRFSS Survey Sample Size",
+              "category": "chronic_disease",
+              "short_description": "Number of BRFSS survey respondents used to estimate chronic disease prevalence.",
+              "measure_type": "Count",
+              "unit": "Count",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "brfss"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -520,6 +639,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -529,20 +655,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -552,20 +678,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -575,14 +701,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -594,6 +713,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -603,20 +729,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -626,14 +752,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -733,6 +852,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -742,20 +868,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -765,20 +891,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -788,14 +914,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -1058,7 +1177,7 @@
           ]
         }
       },
-      "sha512": "4849e7e58f6af0c67e40632cf8064f66d68aeee1fd0983f5c333d0123ba0a57a15c787fcf8fed841cca4192a71aa4efd3c45434dcf1ee15220f942640dbc98f5"
+      "sha512": "48ebe8958c5b80f582b3f84480e108d2ff8d12dd06b91bf1da9dd40ed5f507b8e2092116767fef898cf27a9216f01fd6752b4af27dfa62e08c1afd445d70f13b"
     },
     {
       "bytes": 29976,
@@ -1082,6 +1201,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -1090,8 +1210,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.457654",
-      "last_modified": "2026-03-06 14:46:39.457654",
+      "created": "2026-03-13 14:53:31.151378",
+      "last_modified": "2026-03-13 14:53:31.151378",
       "vintage": {},
       "row_count": 9848,
       "entity_count": 3298,
@@ -1100,6 +1220,7 @@
           {
             "name": "year",
             "duplicates": 9845,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -1111,6 +1232,7 @@
           {
             "name": "geography",
             "duplicates": 6550,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -4418,6 +4540,7 @@
           {
             "name": "opioid_rate",
             "duplicates": 9838,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -4429,6 +4552,7 @@
           {
             "name": "source",
             "duplicates": 9847,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -4568,6 +4692,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -4577,20 +4708,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -4600,20 +4731,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -4623,14 +4754,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -4642,6 +4766,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -4651,20 +4782,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -4674,14 +4805,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -4781,6 +4905,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -4790,20 +4921,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -4813,20 +4944,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -4836,14 +4967,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -5130,6 +5254,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -5138,8 +5263,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.461654",
-      "last_modified": "2026-03-06 14:46:39.461654",
+      "created": "2026-03-13 14:53:31.151828",
+      "last_modified": "2026-03-13 14:53:31.151828",
       "vintage": {},
       "row_count": 143520,
       "entity_count": 52,
@@ -5148,6 +5273,7 @@
           {
             "name": "year",
             "duplicates": 143497,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -5159,6 +5285,7 @@
           {
             "name": "age",
             "duplicates": 143514,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -5174,6 +5301,7 @@
           {
             "name": "geography",
             "duplicates": 143468,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -5235,6 +5363,7 @@
           {
             "name": "cause_of_death",
             "duplicates": 143500,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -5264,6 +5393,7 @@
           {
             "name": "value",
             "duplicates": 138795,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 88316,
@@ -5275,6 +5405,7 @@
           {
             "name": "N",
             "duplicates": 140974,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 88316,
@@ -5415,6 +5546,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -5424,20 +5562,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -5447,20 +5585,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -5470,14 +5608,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -5489,6 +5620,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -5498,20 +5636,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -5521,14 +5659,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -5628,6 +5759,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -5637,20 +5775,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -5660,20 +5798,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -5683,14 +5821,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -5964,6 +6095,7 @@
       "filename": "epic_prevalence_by_geography_county_and_source.parquet",
       "versions": {
         "hash": [
+          "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "1a28469dd4a514054e5edaf1711313968ced0670",
           "fbbece4f8763f802f070593d3dd168841505719e",
           "4bf7a93442011f06a6d0911b452537d3e687b01c",
@@ -5995,6 +6127,7 @@
           "e8347cc0c48b509d48c585808391325219b3f7df"
         ],
         "author": [
+          "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
@@ -6026,6 +6159,7 @@
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Wed Mar 11 11:41:55 2026 -0400",
           "Tue Mar 3 00:46:06 2026 +0000",
           "Tue Feb 3 16:02:56 2026 -0500",
           "Fri Jan 23 14:44:05 2026 +0000",
@@ -6057,6 +6191,7 @@
           "Wed Aug 27 22:50:21 2025 -0400"
         ],
         "message": [
+          "Squashed ",
           "scheduled data build",
           "re-run build_dcf",
           "scheduled data build",
@@ -6089,6 +6224,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -6097,8 +6233,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:56:14.085546",
-      "last_modified": "2026-03-06 14:56:14.085546",
+      "created": "2026-03-13 15:03:01.674235",
+      "last_modified": "2026-03-13 15:03:01.674235",
       "vintage": {},
       "row_count": 71376,
       "entity_count": 3244,
@@ -6107,6 +6243,7 @@
           {
             "name": "geography",
             "duplicates": 68132,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -9360,6 +9497,7 @@
           {
             "name": "age",
             "duplicates": 71364,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -9381,6 +9519,110 @@
           {
             "name": "source",
             "duplicates": 71373,
+            "info": {
+              "levels": {
+                "Epic Cosmos: HbA1c": {
+                  "source_id": "diabetes_a1c_6_5",
+                  "id": "Epic Cosmos: HbA1c",
+                  "name": "diabetes_a1c_6_5",
+                  "duplicates": 2022,
+                  "info": {
+                    "source_file": {
+                      "project": "cosmos",
+                      "data_dir": "/data/epic/standard",
+                      "file": "state_year.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 24,
+                  "mean": 6.055999,
+                  "sd": 4.864146,
+                  "min": 0.08,
+                  "max": 20.64
+                },
+                "Epic Cosmos: BMI": {
+                  "source_id": "obesity_bmi",
+                  "id": "Epic Cosmos: BMI",
+                  "name": "obesity_bmi",
+                  "duplicates": 1129,
+                  "info": {
+                    "source_file": {
+                      "project": "cosmos",
+                      "data_dir": "/data/epic/standard",
+                      "file": "state_year.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 40,
+                  "mean": 34.05785,
+                  "sd": 13.600709,
+                  "min": 2.73,
+                  "max": 60.91
+                },
+                "Medicare FFS": {
+                  "source_id": "cms_diabetes",
+                  "id": "Medicare FFS",
+                  "name": "cms_diabetes",
+                  "duplicates": 58592,
+                  "time_range": [
+                    0,
+                    2
+                  ],
+                  "type": "integer",
+                  "missing": 24,
+                  "mean": 26.589188,
+                  "sd": 6.276079,
+                  "min": 0,
+                  "max": 78,
+                  "info": {
+                    "full_name": "cms_diabetes",
+                    "measure": "cms_diabetes",
+                    "short_name": "CMS: Diabetes",
+                    "long_name": "Prevalence among Medicare Fee for Service patients of Diabetes",
+                    "category": "chronic conditions",
+                    "short_description": "Prevalence among Medicare Fee for Service patients of Diabetes.",
+                    "long_description": "Prevalence among Medicare Fee for Service patients of Diabetes. Prevalence rates are calculated by searching for certain diagnosis codes in Medicare beneficiaries’ claims. A beneficiary is considered to have a condition if the CMS administrative data has a claim indicating that the beneficiary is diagnosed for a specific condition over the reference time period (one, two, or three years, depending on the condition chosen) or, in the case of ESRD and disability, if the reason for entitlement (original or current) is listed as disabled or ESRD in the MBSF. The definitions used are the FFS definitions, based on ICD10 codes: https://www2.ccwdata.org/documents/10280/19139421/chr-chronic-condition-algorithms.pdf",
+                    "statement": "The viral activity level of Diabetes in wastewater is {value}.",
+                    "measure_type": "prevalence",
+                    "unit": "percentage",
+                    "time_resolution": "year",
+                    "sources": [
+                      {
+                        "name": "Center of Medicare and Medicaid Services (CMS)",
+                        "url": "https://data.cdc.gov",
+                        "location": "Mapping Medicare Disparities by Population Tool",
+                        "location_url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+                        "date_accessed": 2025
+                      }
+                    ],
+                    "sources.1": [
+                      {
+                        "name": "Center of Medicare and Medicaid Services (CMS)",
+                        "url": "https://data.cdc.gov",
+                        "location": "Mapping Medicare Disparities by Population Tool",
+                        "location_url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+                        "date_accessed": 2025
+                      }
+                    ],
+                    "id": "cms_diabetes",
+                    "source_file": {
+                      "project": "cms_mmd",
+                      "data_dir": "/data/cms_mmd/standard",
+                      "file": "data_state_county_age.csv.gz"
+                    }
+                  }
+                }
+              },
+              "id": "source"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -9393,6 +9635,17 @@
           {
             "name": "outcome_name",
             "duplicates": 71374,
+            "info": {
+              "levels": {
+                "Diabetes": {
+                  "id": "Diabetes"
+                },
+                "Obesity": {
+                  "id": "Obesity"
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -9404,6 +9657,25 @@
           {
             "name": "value",
             "duplicates": 65116,
+            "info": {
+              "id": "value",
+              "short_name": "Chronic disease prevalence (county)",
+              "long_name": "County-Level Chronic Disease Prevalence from Epic and Medicare",
+              "category": "chronic_disease",
+              "short_description": "Estimated prevalence of diabetes or obesity at county level from Epic Cosmos or Medicare FFS.",
+              "long_description": "County-level prevalence estimates for diabetes and obesity from Epic Cosmos (2025 snapshot) and Medicare Fee-for-Service (CMS, most recent year). For Epic Cosmos: 'Epic Cosmos: HbA1c' uses HbA1c ≥6.5% for diabetes; 'Epic Cosmos: BMI' uses measured BMI ≥30 for obesity. For Medicare FFS: diagnosis based on CCW ICD-10 algorithm. The source column identifies the data source and clinical definition.",
+              "measure_type": "Percent",
+              "unit": "%",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "epic"
+                },
+                {
+                  "id": "cms_mmd"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 22,
@@ -9415,6 +9687,7 @@
           {
             "name": "year",
             "duplicates": 71374,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -9426,6 +9699,21 @@
           {
             "name": "pct_captured",
             "duplicates": 54992,
+            "info": {
+              "id": "pct_captured",
+              "short_name": "Epic population capture (%, county)",
+              "long_name": "Percentage of 2021 County Population Captured in Epic Cosmos",
+              "category": "chronic_disease",
+              "short_description": "Percentage of the 2021 county population represented in the Epic Cosmos patient panel, by age group.",
+              "measure_type": "Percent",
+              "unit": "%",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "epic"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 38522,
@@ -9437,6 +9725,24 @@
           {
             "name": "sample_size",
             "duplicates": 62767,
+            "info": {
+              "id": "sample_size",
+              "short_name": "Patient count (county)",
+              "long_name": "Number of Patients in County-Level Analysis",
+              "category": "chronic_disease",
+              "short_description": "Number of patients used in the county-level analysis. Small counts from Epic Cosmos are reported as '10 or fewer'.",
+              "measure_type": "Count",
+              "unit": "Count",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "epic"
+                },
+                {
+                  "id": "cms_mmd"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 38522,
@@ -9577,6 +9883,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -9586,20 +9899,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -9609,20 +9922,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -9632,14 +9945,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -9651,6 +9957,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -9660,20 +9973,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -9683,14 +9996,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -9790,6 +10096,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -9799,20 +10112,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -9822,20 +10135,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -9845,14 +10158,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -10199,6 +10505,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -10207,8 +10514,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.464654",
-      "last_modified": "2026-03-06 14:46:39.464654",
+      "created": "2026-03-13 14:53:31.154828",
+      "last_modified": "2026-03-13 14:53:31.154828",
       "vintage": "2025-11-05",
       "row_count": 34126,
       "entity_count": 3018,
@@ -10217,6 +10524,7 @@
           {
             "name": "geography",
             "duplicates": 31108,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -13244,6 +13552,7 @@
           {
             "name": "age",
             "duplicates": 34118,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -13261,6 +13570,7 @@
           {
             "name": "outcome_name",
             "duplicates": 34124,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -13272,6 +13582,7 @@
           {
             "name": "source",
             "duplicates": 34125,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -13282,6 +13593,7 @@
           {
             "name": "value",
             "duplicates": 32703,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 1,
@@ -13293,6 +13605,7 @@
           {
             "name": "pct_captured",
             "duplicates": 17112,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 16,
@@ -13304,6 +13617,7 @@
           {
             "name": "sample_size",
             "duplicates": 24561,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -13444,6 +13758,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -13453,20 +13774,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -13476,20 +13797,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -13499,14 +13820,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -13518,6 +13832,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -13527,20 +13848,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -13550,14 +13871,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -13657,6 +13971,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -13666,20 +13987,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -13689,20 +14010,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -13712,14 +14033,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -13993,6 +14307,7 @@
       "filename": "epic_prevalence_by_geography_year.parquet",
       "versions": {
         "hash": [
+          "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "1a28469dd4a514054e5edaf1711313968ced0670",
           "fbbece4f8763f802f070593d3dd168841505719e",
           "86a28d8f71174fa8b4f014f08e1efd9cc9448373",
@@ -14014,6 +14329,7 @@
           "ab11e30d790bab0f1c98ecd30e4e8f4c2520bafd"
         ],
         "author": [
+          "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
@@ -14035,6 +14351,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Wed Mar 11 11:41:55 2026 -0400",
           "Tue Mar 3 00:46:06 2026 +0000",
           "Tue Feb 3 16:02:56 2026 -0500",
           "Thu Dec 4 08:41:27 2025 +0000",
@@ -14056,6 +14373,7 @@
           "Tue Nov 11 22:49:35 2025 -0500"
         ],
         "message": [
+          "Squashed ",
           "scheduled data build",
           "re-run build_dcf",
           "scheduled data build",
@@ -14078,6 +14396,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -14086,8 +14405,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:56:07.338614",
-      "last_modified": "2026-03-06 14:56:07.338614",
+      "created": "2026-03-13 15:02:54.967248",
+      "last_modified": "2026-03-13 15:02:54.967248",
       "vintage": {},
       "row_count": 13312,
       "entity_count": 52,
@@ -14096,6 +14415,7 @@
           {
             "name": "geography",
             "duplicates": 13260,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -14157,6 +14477,7 @@
           {
             "name": "fips",
             "duplicates": 13260,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -14218,6 +14539,7 @@
           {
             "name": "age",
             "duplicates": 13304,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -14235,6 +14557,7 @@
           {
             "name": "year",
             "duplicates": 13304,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -14246,6 +14569,17 @@
           {
             "name": "outcome_name",
             "duplicates": 13310,
+            "info": {
+              "levels": {
+                "Diabetes": {
+                  "id": "Diabetes"
+                },
+                "Obesity": {
+                  "id": "Obesity"
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -14257,6 +14591,80 @@
           {
             "name": "source",
             "duplicates": 13309,
+            "info": {
+              "levels": {
+                "Epic Cosmos: HbA1c": {
+                  "source_id": "diabetes_a1c_6_5",
+                  "id": "Epic Cosmos: HbA1c",
+                  "name": "diabetes_a1c_6_5",
+                  "duplicates": 2022,
+                  "info": {
+                    "source_file": {
+                      "project": "cosmos",
+                      "data_dir": "/data/epic/standard",
+                      "file": "state_year.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 24,
+                  "mean": 6.055999,
+                  "sd": 4.864146,
+                  "min": 0.08,
+                  "max": 20.64
+                },
+                "Epic Cosmos: ICD10": {
+                  "source_id": "diabetes_dx_ccw",
+                  "id": "Epic Cosmos: ICD10",
+                  "name": "diabetes_dx_ccw",
+                  "duplicates": 1587,
+                  "info": {
+                    "source_file": {
+                      "project": "cosmos",
+                      "data_dir": "/data/epic/standard",
+                      "file": "state_year.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 18,
+                  "mean": 10.251489,
+                  "sd": 8.259665,
+                  "min": 0.3,
+                  "max": 33.37
+                },
+                "Epic Cosmos: BMI": {
+                  "source_id": "obesity_bmi",
+                  "id": "Epic Cosmos: BMI",
+                  "name": "obesity_bmi",
+                  "duplicates": 1129,
+                  "info": {
+                    "source_file": {
+                      "project": "cosmos",
+                      "data_dir": "/data/epic/standard",
+                      "file": "state_year.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 40,
+                  "mean": 34.05785,
+                  "sd": 13.600709,
+                  "min": 2.73,
+                  "max": 60.91
+                }
+              },
+              "id": "source"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -14269,6 +14677,22 @@
           {
             "name": "value",
             "duplicates": 8949,
+            "info": {
+              "id": "value",
+              "short_name": "Chronic disease prevalence (Epic, state)",
+              "long_name": "Epic Cosmos State-Level Chronic Disease Prevalence",
+              "category": "chronic_disease",
+              "short_description": "Estimated prevalence of diabetes or obesity from Epic Cosmos EHR, by state and year.",
+              "long_description": "State-level prevalence estimates for diabetes and obesity from Epic Cosmos electronic health records. The source column identifies the clinical definition: 'Epic Cosmos: HbA1c' uses HbA1c ≥6.5% for diabetes; 'Epic Cosmos: ICD10' uses CCW ICD-10 diagnosis codes for both conditions; 'Epic Cosmos: BMI' uses measured BMI ≥30 for obesity. Values represent the percentage of active Epic patients meeting the specified criterion.",
+              "measure_type": "Percent",
+              "unit": "%",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "epic"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 122,
@@ -14280,6 +14704,22 @@
           {
             "name": "pct_captured",
             "duplicates": 9985,
+            "info": {
+              "id": "pct_captured",
+              "short_name": "Epic population capture (%)",
+              "long_name": "Percentage of 2021 State Population Captured in Epic Cosmos",
+              "category": "chronic_disease",
+              "short_description": "Percentage of the 2021 state population represented in the Epic Cosmos patient panel, by age group.",
+              "long_description": "Estimated percentage of the 2021 Census population in each age group that is represented in the Epic Cosmos patient panel for a given state. Used as an indicator of Epic's geographic coverage and potential selection bias. Lower values indicate that Epic data covers a smaller fraction of the state's population.",
+              "measure_type": "Percent",
+              "unit": "%",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "epic"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -14291,6 +14731,21 @@
           {
             "name": "sample_size",
             "duplicates": 9991,
+            "info": {
+              "id": "sample_size",
+              "short_name": "Epic patient count (state)",
+              "long_name": "Number of Epic Cosmos Patients in State-Level Analysis",
+              "category": "chronic_disease",
+              "short_description": "Number of Epic Cosmos patients in the state-level analysis. Values ≤10 are reported as '10 or fewer'.",
+              "measure_type": "Count",
+              "unit": "Count",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "epic"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -14431,6 +14886,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -14440,20 +14902,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -14463,20 +14925,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -14486,14 +14948,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -14505,6 +14960,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -14514,20 +14976,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -14537,14 +14999,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -14644,6 +15099,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -14653,20 +15115,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -14676,20 +15138,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -14699,14 +15161,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -15117,6 +15572,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -15125,8 +15581,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.461654",
-      "last_modified": "2026-03-06 14:46:39.461654",
+      "created": "2026-03-13 14:53:31.152828",
+      "last_modified": "2026-03-13 14:53:31.152828",
       "vintage": "2025-11-05",
       "row_count": 842,
       "entity_count": 53,
@@ -15135,6 +15591,7 @@
           {
             "name": "geography",
             "duplicates": 789,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -15197,6 +15654,7 @@
           {
             "name": "fips",
             "duplicates": 789,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -15259,6 +15717,7 @@
           {
             "name": "age",
             "duplicates": 834,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -15276,6 +15735,7 @@
           {
             "name": "outcome_name",
             "duplicates": 840,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -15287,6 +15747,7 @@
           {
             "name": "source",
             "duplicates": 841,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -15297,6 +15758,7 @@
           {
             "name": "value",
             "duplicates": 390,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -15308,6 +15770,7 @@
           {
             "name": "pct_captured",
             "duplicates": 427,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 14,
@@ -15319,6 +15782,7 @@
           {
             "name": "sample_size",
             "duplicates": 421,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -15459,6 +15923,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -15468,20 +15939,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -15491,20 +15962,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -15514,14 +15985,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -15533,6 +15997,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -15542,20 +16013,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -15565,14 +16036,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -15672,6 +16136,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -15681,20 +16152,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -15704,20 +16175,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -15727,14 +16198,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -16021,6 +16485,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -16029,8 +16494,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.472654",
-      "last_modified": "2026-03-06 14:46:39.472654",
+      "created": "2026-03-13 14:53:31.163828",
+      "last_modified": "2026-03-13 14:53:31.163828",
       "vintage": {},
       "row_count": 188837,
       "entity_count": 1876,
@@ -16039,6 +16504,7 @@
           {
             "name": "geography",
             "duplicates": 186961,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 437,
@@ -17923,6 +18389,7 @@
           {
             "name": "date",
             "duplicates": 188704,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -18065,6 +18532,7 @@
           {
             "name": "source",
             "duplicates": 188835,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -18076,6 +18544,7 @@
           {
             "name": "value",
             "duplicates": 155439,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -18216,6 +18685,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -18225,20 +18701,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -18248,20 +18724,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -18271,14 +18747,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -18290,6 +18759,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -18299,20 +18775,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -18322,14 +18798,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -18429,6 +18898,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -18438,20 +18914,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -18461,20 +18937,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -18484,14 +18960,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -18778,6 +19247,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -18786,8 +19256,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.469654",
-      "last_modified": "2026-03-06 14:46:39.469654",
+      "created": "2026-03-13 14:53:31.160828",
+      "last_modified": "2026-03-13 14:53:31.160828",
       "vintage": {},
       "row_count": 29459,
       "entity_count": 52,
@@ -18796,6 +19266,7 @@
           {
             "name": "fips",
             "duplicates": 29406,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -18858,6 +19329,7 @@
           {
             "name": "date",
             "duplicates": 29299,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -19027,6 +19499,7 @@
           {
             "name": "value",
             "duplicates": 7938,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -19038,6 +19511,7 @@
           {
             "name": "nchs_n_deaths_overdose",
             "duplicates": 26501,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 23075,
@@ -19049,6 +19523,7 @@
           {
             "name": "suppressed",
             "duplicates": 29456,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 19103,
@@ -19060,6 +19535,7 @@
           {
             "name": "source",
             "duplicates": 29455,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -19073,6 +19549,7 @@
           {
             "name": "age",
             "duplicates": 29453,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -19088,6 +19565,7 @@
           {
             "name": "time_end",
             "duplicates": 29435,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 24116,
@@ -19120,6 +19598,7 @@
           {
             "name": "geography",
             "duplicates": 29407,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -19181,6 +19660,7 @@
           {
             "name": "value_scale",
             "duplicates": 5191,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -19321,6 +19801,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -19330,20 +19817,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -19353,20 +19840,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -19376,14 +19863,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -19395,6 +19875,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -19404,20 +19891,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -19427,14 +19914,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -19534,6 +20014,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -19543,20 +20030,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -19566,20 +20053,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -19589,14 +20076,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -19891,6 +20371,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -19899,8 +20380,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.476654",
-      "last_modified": "2026-03-06 14:46:39.476654",
+      "created": "2026-03-13 14:53:31.167828",
+      "last_modified": "2026-03-13 14:53:31.167828",
       "vintage": {},
       "row_count": 188520,
       "entity_count": 3142,
@@ -19909,6 +20390,7 @@
           {
             "name": "geography",
             "duplicates": 185378,
+            "info": [],
             "time_range": [0, 59],
             "type": "string",
             "missing": 0,
@@ -23060,6 +23542,7 @@
           {
             "name": "time",
             "duplicates": 188460,
+            "info": [],
             "time_range": [0, 59],
             "type": "string",
             "missing": 0,
@@ -23129,6 +23612,7 @@
           {
             "name": "n_deaths_overdose",
             "duplicates": 187355,
+            "info": [],
             "time_range": [0, 59],
             "type": "integer",
             "missing": 0,
@@ -23140,6 +23624,7 @@
           {
             "name": "rate_deaths_overdose",
             "duplicates": 155317,
+            "info": [],
             "time_range": [0, 59],
             "type": "float",
             "missing": 60,
@@ -23151,6 +23636,7 @@
           {
             "name": "suppressed",
             "duplicates": 188518,
+            "info": [],
             "time_range": [0, 59],
             "type": "integer",
             "missing": 0,
@@ -23291,6 +23777,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -23300,20 +23793,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -23323,20 +23816,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -23346,14 +23839,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -23365,6 +23851,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -23374,20 +23867,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -23397,14 +23890,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -23504,6 +23990,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -23513,20 +24006,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -23536,20 +24029,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -23559,14 +24052,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -23861,6 +24347,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -23869,8 +24356,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.476654",
-      "last_modified": "2026-03-06 14:46:39.476654",
+      "created": "2026-03-13 14:53:31.167828",
+      "last_modified": "2026-03-13 14:53:31.167828",
       "vintage": {},
       "row_count": 583,
       "entity_count": 53,
@@ -23879,6 +24366,7 @@
           {
             "name": "geography",
             "duplicates": 530,
+            "info": [],
             "time_range": [0, 10],
             "type": "string",
             "missing": 11,
@@ -23940,6 +24428,7 @@
           {
             "name": "time",
             "duplicates": 572,
+            "info": [],
             "time_range": [0, 10],
             "type": "string",
             "missing": 0,
@@ -23960,6 +24449,7 @@
           {
             "name": "n_deaths_overdose",
             "duplicates": 61,
+            "info": [],
             "time_range": [0, 10],
             "type": "integer",
             "missing": 0,
@@ -23971,6 +24461,7 @@
           {
             "name": "rate_deaths_overdose",
             "duplicates": 14,
+            "info": [],
             "time_range": [0, 10],
             "type": "float",
             "missing": 11,
@@ -24111,6 +24602,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -24120,20 +24618,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -24143,20 +24641,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -24166,14 +24664,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -24185,6 +24676,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -24194,20 +24692,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -24217,14 +24715,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -24324,6 +24815,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -24333,20 +24831,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -24356,20 +24854,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -24379,14 +24877,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -24709,6 +25200,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -24717,8 +25209,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.477654",
-      "last_modified": "2026-03-06 14:46:39.477654",
+      "created": "2026-03-13 14:53:31.167828",
+      "last_modified": "2026-03-13 14:53:31.167828",
       "vintage": {},
       "row_count": 2140,
       "entity_count": 51,
@@ -24727,6 +25219,7 @@
           {
             "name": "geography",
             "duplicates": 2089,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -24787,6 +25280,7 @@
           {
             "name": "age",
             "duplicates": 2128,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -24808,6 +25302,7 @@
           {
             "name": "outcome_name",
             "duplicates": 2138,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -24819,6 +25314,7 @@
           {
             "name": "source",
             "duplicates": 2137,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -24831,6 +25327,7 @@
           {
             "name": "value",
             "duplicates": 976,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -24842,6 +25339,7 @@
           {
             "name": "pct_captured",
             "duplicates": 1732,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 1326,
@@ -24853,6 +25351,7 @@
           {
             "name": "sample_size",
             "duplicates": 1732,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 1326,
@@ -24864,6 +25363,7 @@
           {
             "name": "value_lcl",
             "duplicates": 1428,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 1426,
@@ -24875,6 +25375,7 @@
           {
             "name": "value_ucl",
             "duplicates": 1428,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 1426,
@@ -25015,6 +25516,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -25024,20 +25532,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -25047,20 +25555,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -25070,14 +25578,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -25089,6 +25590,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -25098,20 +25606,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -25121,14 +25629,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -25228,6 +25729,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -25237,20 +25745,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -25260,20 +25768,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -25283,14 +25791,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -25701,6 +26202,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -25709,8 +26211,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.477654",
-      "last_modified": "2026-03-06 14:46:39.477654",
+      "created": "2026-03-13 14:53:31.167828",
+      "last_modified": "2026-03-13 14:53:31.167828",
       "vintage": "2025-11-05",
       "row_count": 2140,
       "entity_count": 51,
@@ -25719,6 +26221,7 @@
           {
             "name": "geography",
             "duplicates": 2089,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -25779,6 +26282,7 @@
           {
             "name": "age",
             "duplicates": 2128,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -25800,6 +26304,7 @@
           {
             "name": "outcome_name",
             "duplicates": 2138,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -25811,6 +26316,7 @@
           {
             "name": "source",
             "duplicates": 2137,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -25823,6 +26329,7 @@
           {
             "name": "value",
             "duplicates": 976,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -25834,6 +26341,7 @@
           {
             "name": "pct_captured",
             "duplicates": 1732,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 1326,
@@ -25845,6 +26353,7 @@
           {
             "name": "sample_size",
             "duplicates": 1732,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 1326,
@@ -25856,6 +26365,7 @@
           {
             "name": "value_lcl",
             "duplicates": 1428,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 1426,
@@ -25867,6 +26377,7 @@
           {
             "name": "value_ucl",
             "duplicates": 1428,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 1426,
@@ -26007,6 +26518,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26016,20 +26534,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26039,20 +26557,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26062,14 +26580,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -26081,6 +26592,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26090,20 +26608,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26113,14 +26631,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -26220,6 +26731,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26229,20 +26747,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26252,20 +26770,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26275,14 +26793,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -26550,12 +27061,13 @@
     {
       "bytes": 299602,
       "encoding": "ISO-8859-1",
-      "md5": "35c8b206ce4beacc94c71a5adfece2f8",
+      "md5": "c5740075a04fe6c3814b18c8e8a0208c",
       "format": "parquet",
       "name": "prevalence_by_geography_and_year_and_source",
       "filename": "prevalence_by_geography_and_year_and_source.parquet",
       "versions": {
         "hash": [
+          "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "1a28469dd4a514054e5edaf1711313968ced0670",
           "3feef2aacc5681e203a69a43c6fa05bb62477096",
           "931cf93c19e3bd3868912dad2d2277a550788420",
@@ -26578,6 +27090,7 @@
           "ab11e30d790bab0f1c98ecd30e4e8f4c2520bafd"
         ],
         "author": [
+          "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "danweinberger <daniel.weinberger@yale.edu>",
@@ -26600,6 +27113,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Wed Mar 11 11:41:55 2026 -0400",
           "Tue Mar 3 00:46:06 2026 +0000",
           "Mon Mar 2 14:50:39 2026 -0500",
           "Thu Feb 19 10:27:03 2026 -0500",
@@ -26622,6 +27136,7 @@
           "Tue Nov 11 22:49:35 2025 -0500"
         ],
         "message": [
+          "Squashed ",
           "scheduled data build",
           "Claude Sonnet 4.6 <noreply@anthropic.com>",
           "remove missing epic file from the bundle script",
@@ -26645,6 +27160,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -26653,8 +27169,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:56:07.960608",
-      "last_modified": "2026-03-06 14:56:07.960608",
+      "created": "2026-03-13 15:02:55.559247",
+      "last_modified": "2026-03-13 15:02:55.559247",
       "vintage": {},
       "row_count": 19848,
       "entity_count": 51,
@@ -26663,6 +27179,7 @@
           {
             "name": "geography",
             "duplicates": 19797,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -26723,6 +27240,7 @@
           {
             "name": "age",
             "duplicates": 19836,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -26744,6 +27262,7 @@
           {
             "name": "year",
             "duplicates": 19840,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -26755,6 +27274,55 @@
           {
             "name": "outcome_name",
             "duplicates": 19846,
+            "info": {
+              "levels": {
+                "Diabetes": {
+                  "id": "Diabetes",
+                  "short_name": "Diabetes",
+                  "long_name": "Diabetes Prevalence",
+                  "category": "chronic_disease",
+                  "short_description": "Estimated prevalence of diabetes among adults.",
+                  "long_description": "Estimated prevalence of diabetes among adults, from BRFSS (self-reported diagnosis), Epic Cosmos (HbA1c ≥6.5% or ICD-10 diagnosis codes), and Medicare FFS (CCW algorithm). The source column identifies the data source and clinical definition used.",
+                  "measure_type": "Percent",
+                  "unit": "%",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "brfss"
+                    },
+                    {
+                      "id": "epic"
+                    },
+                    {
+                      "id": "cms_mmd"
+                    }
+                  ]
+                },
+                "Obesity": {
+                  "id": "Obesity",
+                  "short_name": "Obesity",
+                  "long_name": "Obesity Prevalence",
+                  "category": "chronic_disease",
+                  "short_description": "Estimated prevalence of obesity (BMI ≥30) among adults.",
+                  "long_description": "Estimated prevalence of obesity among adults, from BRFSS (self-reported height/weight, BMI ≥30), Epic Cosmos (measured BMI ≥30 or ICD-10 diagnosis codes), and Medicare FFS (CCW algorithm). The source column identifies the data source and clinical definition used.",
+                  "measure_type": "Percent",
+                  "unit": "%",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "brfss"
+                    },
+                    {
+                      "id": "epic"
+                    },
+                    {
+                      "id": "cms_mmd"
+                    }
+                  ]
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -26766,6 +27334,168 @@
           {
             "name": "source",
             "duplicates": 19843,
+            "info": {
+              "levels": {
+                "CDC BRFSS": {
+                  "source_id": "prev_diabetes_survey",
+                  "id": "CDC BRFSS",
+                  "name": "prev_diabetes_survey",
+                  "duplicates": 149,
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 10.662075,
+                  "sd": 9.28104,
+                  "min": 0,
+                  "max": 100,
+                  "info": {
+                    "id": "prev_diabetes_survey",
+                    "short_name": "Diabetes Prevalence (Survey)",
+                    "long_name": "Diabetes Prevalence from BRFSS Survey",
+                    "short_description": "Estimated diabetes prevalence from BRFSS survey data.",
+                    "measure_type": "percent",
+                    "unit": "percent",
+                    "time_resolution": "year",
+                    "sources": [
+                      {
+                        "id": "brfss"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "brfss",
+                      "data_dir": "/data/brfss/standard",
+                      "file": "data_survey.csv.gz"
+                    }
+                  }
+                },
+                "Epic Cosmos: HbA1c": {
+                  "source_id": "diabetes_a1c_6_5",
+                  "id": "Epic Cosmos: HbA1c",
+                  "name": "diabetes_a1c_6_5",
+                  "duplicates": 2022,
+                  "info": {
+                    "source_file": {
+                      "project": "cosmos",
+                      "data_dir": "/data/epic/standard",
+                      "file": "state_year.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 24,
+                  "mean": 6.055999,
+                  "sd": 4.864146,
+                  "min": 0.08,
+                  "max": 20.64
+                },
+                "Epic Cosmos: ICD10": {
+                  "source_id": "diabetes_dx_ccw",
+                  "id": "Epic Cosmos: ICD10",
+                  "name": "diabetes_dx_ccw",
+                  "duplicates": 1587,
+                  "info": {
+                    "source_file": {
+                      "project": "cosmos",
+                      "data_dir": "/data/epic/standard",
+                      "file": "state_year.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 18,
+                  "mean": 10.251489,
+                  "sd": 8.259665,
+                  "min": 0.3,
+                  "max": 33.37
+                },
+                "Epic Cosmos: BMI": {
+                  "source_id": "obesity_bmi",
+                  "id": "Epic Cosmos: BMI",
+                  "name": "obesity_bmi",
+                  "duplicates": 1129,
+                  "info": {
+                    "source_file": {
+                      "project": "cosmos",
+                      "data_dir": "/data/epic/standard",
+                      "file": "state_year.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 40,
+                  "mean": 34.05785,
+                  "sd": 13.600709,
+                  "min": 2.73,
+                  "max": 60.91
+                },
+                "Medicare FFS": {
+                  "source_id": "cms_diabetes",
+                  "id": "Medicare FFS",
+                  "name": "cms_diabetes",
+                  "duplicates": 58592,
+                  "time_range": [
+                    0,
+                    2
+                  ],
+                  "type": "integer",
+                  "missing": 24,
+                  "mean": 26.589188,
+                  "sd": 6.276079,
+                  "min": 0,
+                  "max": 78,
+                  "info": {
+                    "full_name": "cms_diabetes",
+                    "measure": "cms_diabetes",
+                    "short_name": "CMS: Diabetes",
+                    "long_name": "Prevalence among Medicare Fee for Service patients of Diabetes",
+                    "category": "chronic conditions",
+                    "short_description": "Prevalence among Medicare Fee for Service patients of Diabetes.",
+                    "long_description": "Prevalence among Medicare Fee for Service patients of Diabetes. Prevalence rates are calculated by searching for certain diagnosis codes in Medicare beneficiaries’ claims. A beneficiary is considered to have a condition if the CMS administrative data has a claim indicating that the beneficiary is diagnosed for a specific condition over the reference time period (one, two, or three years, depending on the condition chosen) or, in the case of ESRD and disability, if the reason for entitlement (original or current) is listed as disabled or ESRD in the MBSF. The definitions used are the FFS definitions, based on ICD10 codes: https://www2.ccwdata.org/documents/10280/19139421/chr-chronic-condition-algorithms.pdf",
+                    "statement": "The viral activity level of Diabetes in wastewater is {value}.",
+                    "measure_type": "prevalence",
+                    "unit": "percentage",
+                    "time_resolution": "year",
+                    "sources": [
+                      {
+                        "name": "Center of Medicare and Medicaid Services (CMS)",
+                        "url": "https://data.cdc.gov",
+                        "location": "Mapping Medicare Disparities by Population Tool",
+                        "location_url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+                        "date_accessed": 2025
+                      }
+                    ],
+                    "sources.1": [
+                      {
+                        "name": "Center of Medicare and Medicaid Services (CMS)",
+                        "url": "https://data.cdc.gov",
+                        "location": "Mapping Medicare Disparities by Population Tool",
+                        "location_url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
+                        "date_accessed": 2025
+                      }
+                    ],
+                    "id": "cms_diabetes",
+                    "source_file": {
+                      "project": "cms_mmd",
+                      "data_dir": "/data/cms_mmd/standard",
+                      "file": "data_state_county_age.csv.gz"
+                    }
+                  }
+                }
+              },
+              "id": "source"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -26780,6 +27510,28 @@
           {
             "name": "value",
             "duplicates": 10551,
+            "info": {
+              "id": "value",
+              "short_name": "Chronic disease prevalence",
+              "long_name": "Chronic Disease Prevalence by Geography, Year, and Source",
+              "category": "chronic_disease",
+              "short_description": "Estimated prevalence of diabetes or obesity by state and year from multiple sources.",
+              "long_description": "Combined state-level prevalence estimates for diabetes and obesity from CDC BRFSS (telephone survey), Epic Cosmos EHR (HbA1c, ICD-10, and BMI-based definitions), and Medicare Fee-for-Service administrative claims. The outcome_name column identifies the condition (Diabetes or Obesity); the source column identifies the data source and clinical definition. These sources are not directly comparable due to differences in population covered (all adults vs. Epic patients vs. Medicare beneficiaries ≥65), case definitions, and ascertainment methodology.",
+              "measure_type": "Percent",
+              "unit": "%",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "brfss"
+                },
+                {
+                  "id": "epic"
+                },
+                {
+                  "id": "cms_mmd"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 62,
@@ -26791,6 +27543,7 @@
           {
             "name": "pct_captured",
             "duplicates": 16584,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 6792,
@@ -26802,6 +27555,28 @@
           {
             "name": "sample_size",
             "duplicates": 15076,
+            "info": {
+              "id": "sample_size",
+              "short_name": "Sample size",
+              "long_name": "Sample Size for Prevalence Estimate",
+              "category": "chronic_disease",
+              "short_description": "Survey respondents (BRFSS), patient count (Epic), or beneficiary count (Medicare) for the prevalence estimate.",
+              "long_description": "Sample size underlying the prevalence estimate. Interpretation varies by source: for BRFSS, this is the number of survey respondents; for Epic Cosmos, this is the number of active patients (values ≤10 are reported as '10 or fewer'); for Medicare FFS, this is the number of beneficiaries with a Medicare claim.",
+              "measure_type": "Count",
+              "unit": "Count",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "brfss"
+                },
+                {
+                  "id": "epic"
+                },
+                {
+                  "id": "cms_mmd"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 1836,
@@ -26813,6 +27588,7 @@
           {
             "name": "value_lcl",
             "duplicates": 14915,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 14892,
@@ -26824,6 +27600,7 @@
           {
             "name": "value_ucl",
             "duplicates": 14915,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 14892,
@@ -26964,6 +27741,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26973,20 +27757,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -26996,20 +27780,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -27019,14 +27803,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -27038,6 +27815,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -27047,20 +27831,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -27070,14 +27854,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -27177,6 +27954,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -27186,20 +27970,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -27209,20 +27993,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -27232,14 +28016,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -27502,7 +28279,7 @@
           ]
         }
       },
-      "sha512": "40fe32c9116ffb0525aa8123a120327c72dfb01364b2272caf5b28835f5b7987e934a58e3345cd79e82bee959b0d7d9f0713336f967178bac573e000fb61e63c"
+      "sha512": "3f3cccefeec9463e765fa54c7baa9e350f6eece0deb6ebf24e07ca073b167bc3f4c8b468523254d8c1bcfd8df6a839cbd7a92edcb1b144361be56c44734e2e8b"
     },
     {
       "bytes": 37378,
@@ -27574,6 +28351,7 @@
         ]
       },
       "source": [],
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -27582,8 +28360,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-06 14:46:39.479654",
-      "last_modified": "2026-03-06 14:46:39.479654",
+      "created": "2026-03-13 14:53:31.170828",
+      "last_modified": "2026-03-13 14:53:31.170828",
       "vintage": {},
       "row_count": 904,
       "entity_count": 57,
@@ -27592,6 +28370,7 @@
           {
             "name": "fips",
             "duplicates": 846,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 220,
@@ -27658,6 +28437,7 @@
           {
             "name": "age",
             "duplicates": 902,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -27669,6 +28449,7 @@
           {
             "name": "source",
             "duplicates": 902,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -27680,6 +28461,7 @@
           {
             "name": "geography",
             "duplicates": 847,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 12,
@@ -27745,6 +28527,7 @@
           {
             "name": "outcome_name",
             "duplicates": 902,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -27756,6 +28539,7 @@
           {
             "name": "value",
             "duplicates": 644,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -27767,6 +28551,7 @@
           {
             "name": "year",
             "duplicates": 900,
+            "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 220,
@@ -27778,6 +28563,7 @@
           {
             "name": "value_lcl",
             "duplicates": 683,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 684,
@@ -27789,6 +28575,7 @@
           {
             "name": "value_ucl",
             "duplicates": 683,
+            "info": [],
             "time_range": [-1, -1],
             "type": "float",
             "missing": 684,
@@ -27929,6 +28716,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -27938,20 +28732,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -27961,20 +28755,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -27984,14 +28778,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             }
           },
           "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source"
@@ -28003,6 +28790,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -28012,20 +28806,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -28035,14 +28829,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
@@ -28142,6 +28929,13 @@
               "id": "Epic Cosmos: HbA1c",
               "name": "diabetes_a1c_6_5",
               "duplicates": 2022,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -28151,20 +28945,20 @@
               "mean": 6.055999,
               "sd": 4.864146,
               "min": 0.08,
-              "max": 20.64,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 20.64
             },
             "Epic Cosmos: ICD10": {
               "source_id": "diabetes_dx_ccw",
               "id": "Epic Cosmos: ICD10",
               "name": "diabetes_dx_ccw",
               "duplicates": 1587,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -28174,20 +28968,20 @@
               "mean": 10.251489,
               "sd": 8.259665,
               "min": 0.3,
-              "max": 33.37,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 33.37
             },
             "Epic Cosmos: BMI": {
               "source_id": "obesity_bmi",
               "id": "Epic Cosmos: BMI",
               "name": "obesity_bmi",
               "duplicates": 1129,
+              "info": {
+                "source_file": {
+                  "project": "cosmos",
+                  "data_dir": "/data/epic/standard",
+                  "file": "state_year.csv.gz"
+                }
+              },
               "time_range": [
                 0,
                 7
@@ -28197,14 +28991,7 @@
               "mean": 34.05785,
               "sd": 13.600709,
               "min": 2.73,
-              "max": 60.91,
-              "info": {
-                "source_file": {
-                  "project": "cosmos",
-                  "data_dir": "/data/epic/standard",
-                  "file": "state_year.csv.gz"
-                }
-              }
+              "max": 60.91
             },
             "Medicare FFS": {
               "source_id": "cms_diabetes",
