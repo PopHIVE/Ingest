@@ -184,14 +184,16 @@ if (length(new_archive_dates) > 0) {
     # Append to existing archive data if present
     if (file.exists(county_file)) {
       existing <- vroom(county_file, show_col_types = FALSE) %>%
-        filter(forecast_day == 0L)
+        filter(forecast_day == 0L) %>%
+        mutate(time = as.character(time))
       new_county <- bind_rows(existing, new_county) %>%
         distinct(geography, time, .keep_all = TRUE) %>%
         arrange(geography, time)
     }
     if (file.exists(state_file)) {
       existing <- vroom(state_file, show_col_types = FALSE) %>%
-        filter(forecast_day == 0L)
+        filter(forecast_day == 0L) %>%
+        mutate(time = as.character(time))
       new_state <- bind_rows(existing, new_state) %>%
         distinct(geography, time, .keep_all = TRUE) %>%
         arrange(geography, time)
@@ -256,7 +258,8 @@ if (!identical(today_str, last_fcst_run)) {
     # Replace forecast rows, keep archive rows
     if (file.exists(county_file)) {
       archive_county <- vroom(county_file, show_col_types = FALSE) %>%
-        filter(forecast_day == 0L)
+        filter(forecast_day == 0L) %>%
+        mutate(time = as.character(time))
       vroom::vroom_write(bind_rows(archive_county, new_fcst_county),
                          county_file, delim = ",")
     } else {
@@ -265,7 +268,8 @@ if (!identical(today_str, last_fcst_run)) {
 
     if (file.exists(state_file)) {
       archive_state <- vroom(state_file, show_col_types = FALSE) %>%
-        filter(forecast_day == 0L)
+        filter(forecast_day == 0L) %>%
+        mutate(time = as.character(time))
       vroom::vroom_write(bind_rows(archive_state, new_fcst_state),
                          state_file, delim = ",")
     } else {
