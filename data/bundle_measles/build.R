@@ -44,14 +44,24 @@ measles_age_cdc2 <- vroom::vroom('../measles_age_cdc2/standard/data.csv.gz', sho
 
 
 measles_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = FALSE) %>%
-    mutate(value = measles_imported + measles_indigenous ) %>%
+    mutate(value = measles_imported + measles_indigenous,
+    value = if_else(value==0, NA_real_, value),
+    date_year = time - 6,
+    year = year(as.Date(date_year, format = "%m-%d-%Y"))
+     ) %>%
+     arrange(geography, time, year) %>%
+     group_by(geography, year) %>%
+     tidyr::fill(value, .direction = "down") %>%
+     ungroup() %>%
         dplyr::select(geography, time, value ) %>%
         filter(!is.na(geography)) %>%
          mutate(
     date = as.Date(time, format = "%m-%d-%Y"),
     year = year(date),
+    year = if_else(date=='2025-01-05',2024,year),
     week = isoweek(date),
-    source = "cdc_measles_cases_nnds_cum"
+    source = "cdc_measles_cases_nnds_cum",
+    value = if_else(is.na(value), 0, value)
          )%>%
   arrange(geography, date) %>%
   group_by(geography) %>%
@@ -63,7 +73,8 @@ measles_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_type
   left_join(state_fips_lookup, by = c("geography" = "fips")) %>%
   mutate(geography = if_else(geography == "00", "United States", state_name)) %>%
   select(-state_name) %>%
-  filter(geography != "United States") 
+  filter(geography != "United States") %>%
+  dplyr::select(geography, date, year, week, value , source, new_value) %>%
 
 
 mmr_county_summary <- wapo_schools %>% 
