@@ -125,7 +125,7 @@ flowchart LR
     end
     subgraph measles_age_cdc2["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/measles_age_cdc2" target="_blank" rel="noreferrer">measles_age_cdc2</a></strong>`"]
         direction LR
-        n44["`data.csv.gz<br/><br/><ul><li><code>missing_info: type, cases_age_unknown, hosp_count_5_19, hosp_count_over_20, hosp_count_age_unknown, hosp_pct_5_19, hosp_pct_over_20, hosp_pct_age_unknown</code></li></ul>`"]:::warn
+        n44["`data.csv.gz<br/><br/><ul><li><code>missing_info: year, week</code></li></ul>`"]:::warn
     end
     subgraph measles_cdc["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/measles_cdc" target="_blank" rel="noreferrer">measles_cdc</a></strong>`"]
         direction LR
