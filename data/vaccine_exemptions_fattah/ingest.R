@@ -154,7 +154,10 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     select(-state_fips)
 
-  data_county <- bind_rows(data_county, county_from_state)
+  data_county <- bind_rows(
+    data_county %>% mutate(geo_level = "county"),
+    county_from_state %>% mutate(geo_level = "state")
+  )
 
   # ---------------------------------------------------------------------------
   # 4. Write standardized outputs

@@ -250,7 +250,7 @@ exemptions_county <- vaccine_exemptions_county %>%
     #exemption_rate_mmr_med = if_else(is.na(exemption_rate_mmr_med), 0, exemption_rate_mmr_med),
     #exemption_rate_mmr_nonmed =  exemption_rate_mmr_nonmed
   ) %>%
-  select(geography, date, year,  value = exemption_rate_mmr_nonmed) %>%
+  select(geography, geo_level, date, year,  value = exemption_rate_mmr_nonmed) %>%
   filter(!is.na(value)) %>%
   mutate(source = "vaccine_exemption_rate")
 
@@ -291,7 +291,9 @@ measles_county_long <- bind_rows(
   wastewater_county
 ) %>%
   arrange(geography, source, date) %>%
-  select(geography, date, year, week, source, value)
+  select(geography, geo_level,date, year, week, source, value) %>%
+  mutate(geo_level = if_else(is.na(geo_level), "county", geo_level)
+  )
 
 # Write county-level parquet
 arrow::write_parquet(
@@ -340,4 +342,5 @@ arrow::write_parquet(
   "dist/measles_cases_by_age.parquet",
   compression = "snappy"
 )
+
 
