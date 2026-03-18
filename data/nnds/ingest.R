@@ -22,9 +22,13 @@ raw_state <- dcf::dcf_download_cdc(
 
 if (!identical(process$raw_state, raw_state)) {
   data <- vroom::vroom("./raw/x9gk-5huc.csv.xz", show_col_types = FALSE) %>%
-    mutate(time = MMWRweek2Date(`Current MMWR Year`, `MMWR WEEK`, MMWRday = NULL)
-      )
-  
+    mutate(time = MMWRweek2Date(`Current MMWR Year`, `MMWR WEEK`, MMWRday = NULL)+6 #week ending date
+      ) %>%
+      rename(mmwr_year = `Current MMWR Year`,
+      mmwr_week = `MMWR WEEK`
+      ) 
+
+ 
   total_grp <- data %>%
     filter(!is.na(LOCATION1)) %>%
     group_by(Label ) %>%
@@ -38,12 +42,12 @@ if (!identical(process$raw_state, raw_state)) {
     `Reporting Area` = toupper(`Reporting Area`)
      ) %>%
     filter(!is.na(LOCATION1)|`Reporting Area`%in% c('TOTAL') )%>%
-    pivot_wider(id_cols = c(time, `Reporting Area` ), values_from= `Cumulative YTD Current MMWR Year`, names_from=Label) %>%
+    pivot_wider(id_cols = c(time,mmwr_year,mmwr_week, `Reporting Area` ), values_from= `Cumulative YTD Current MMWR Year`, names_from=Label) %>%
     clean_names() %>%
     mutate(
           reporting_area = if_else(reporting_area == 'TOTAL', 'UNITED STATES',reporting_area )) %>%
     left_join(all_fips, by=c('reporting_area'='geography_name')) %>%
-    dplyr::relocate(time, geography) %>%
+    dplyr::relocate(time,mmwr_year,mmwr_week, geography) %>%
     dplyr::select( -reporting_area, -state)
   
   vroom::vroom_write(
