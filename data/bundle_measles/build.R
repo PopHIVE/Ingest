@@ -56,6 +56,7 @@ measles_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_type
         dplyr::select(geography, time, year, week, value ) %>%
         filter(!is.na(geography)) %>%
          mutate(
+    time = if_else(week == 53,  as.Date(paste0(year, "-12-31")), time),
     date = as.Date(time, format = "%m-%d-%Y"),
     source = "cdc_measles_cases_nnds_cum",
     value = if_else(is.na(value), 0, value)
