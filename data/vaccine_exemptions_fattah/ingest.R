@@ -155,8 +155,8 @@ if (!identical(process$raw_state, raw_state)) {
     select(-state_fips)
 
   data_county <- bind_rows(
-    data_county %>% mutate(geo_level = "county"),
-    county_from_state %>% mutate(geo_level = "state")
+    data_county %>% mutate(is_state_estimate = 0),
+    county_from_state %>% mutate(is_state_estimate = 1)
   )
 
   # ---------------------------------------------------------------------------

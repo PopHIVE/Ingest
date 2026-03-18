@@ -12,6 +12,7 @@ library(dplyr)
 library(tidyr)
 library(arrow)
 library(lubridate)
+library(MMWRweek)
 
 process <- dcf::dcf_process_record()
 standard_files <- paste0("../", names(process$source_files))
@@ -180,9 +181,9 @@ cdc_national <- measles_cdc %>%
   filter(geography == "00") %>%
   mutate(
     date = as.Date(time, format = "%m-%d-%Y"),
-    year = year(date),
-    week = isoweek(date),
-    geography = "United States"
+    year = MMWRweek::MMWRweek(date)$MMWRyear,
+    week = MMWRweek::MMWRweek(date)$MMWRweek,
+      geography = "United States"
   ) %>%
   select(geography, date, year, week, value) %>%
   filter(!is.na(value)) %>%
@@ -250,7 +251,7 @@ exemptions_county <- vaccine_exemptions_county %>%
     #exemption_rate_mmr_med = if_else(is.na(exemption_rate_mmr_med), 0, exemption_rate_mmr_med),
     #exemption_rate_mmr_nonmed =  exemption_rate_mmr_nonmed
   ) %>%
-  select(geography, geo_level, date, year,  value = exemption_rate_mmr_nonmed) %>%
+  select(geography, is_state_estimate, date, year,  value = exemption_rate_mmr_nonmed) %>%
   filter(!is.na(value)) %>%
   mutate(source = "vaccine_exemption_rate")
 
@@ -291,8 +292,8 @@ measles_county_long <- bind_rows(
   wastewater_county
 ) %>%
   arrange(geography, source, date) %>%
-  select(geography, geo_level,date, year, week, source, value) %>%
-  mutate(geo_level = if_else(is.na(geo_level), "county", geo_level)
+  select(geography, is_state_estimate,date, year, week, source, value) %>%
+  mutate(is_state_estimate = if_else(is.na(is_state_estimate), 0, is_state_estimate)
   )
 
 # Write county-level parquet
