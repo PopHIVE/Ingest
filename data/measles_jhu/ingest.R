@@ -71,8 +71,8 @@ if (!identical(process$raw_state, raw_state)) {
     # Use week_end date and convert to MM-DD-YYYY format
     mutate(
       # Week ends on Saturday (adjust if needed)
-      week_end_date = as.Date(week_end),
-      time = format(week_end_date, "%Y-%m-%d")
+      week_end_date = as.Date(week_end, "%m/%d/%y"),
+      time = format(week_end_date)
     ) %>%
     # Ensure value is numeric and select standard columns
     mutate(value = as.numeric(value)) %>%

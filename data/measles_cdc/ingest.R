@@ -41,8 +41,7 @@ if (!identical(process$raw_state, raw_state)) {
       # National-level data uses FIPS code "00"
       geography = "00",
       # Use week_end date and convert to MM-DD-YYYY format
-      week_end_date = as.Date(week_end),
-      time = format(week_end_date, "%m-%d-%Y"),
+      time = as.Date(week_end),
       # Ensure cases is numeric
       value = as.numeric(cases)
     ) %>%
