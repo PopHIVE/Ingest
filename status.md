@@ -115,9 +115,9 @@ flowchart LR
     end
     subgraph measles_jhu["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/measles_jhu" target="_blank" rel="noreferrer">measles_jhu</a></strong>`"]
         direction LR
-        n35["`data_county.csv.gz`"]:::pass
-        n36["`data_state.csv.gz`"]:::pass
-        n37["`data.csv.gz`"]:::pass
+        n35["`data_county.csv.gz<br /><br />Script Failed:<br />`"]:::fail
+        n36["`data_state.csv.gz<br /><br />Script Failed:<br />`"]:::fail
+        n37["`data.csv.gz<br /><br />Script Failed:<br />`"]:::fail
     end
     subgraph medicaid_quality["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid_quality" target="_blank" rel="noreferrer">medicaid_quality</a></strong>`"]
         direction LR
@@ -161,7 +161,7 @@ flowchart LR
     end
     subgraph schoolvax_washpost["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/schoolvax_washpost" target="_blank" rel="noreferrer">schoolvax_washpost</a></strong>`"]
         direction LR
-        n51["`data_counties.csv.gz`"]:::pass
+        n51["`data_counties.csv.gz<br/><br/><ul><li><code>type_changed: geography</code></li></ul>`"]:::warn
         n52["`data_schools.csv.gz`"]:::pass
     end
     subgraph schoolvaxview["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/schoolvaxview" target="_blank" rel="noreferrer">schoolvaxview</a></strong>`"]
