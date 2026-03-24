@@ -103,7 +103,13 @@ if (!identical(process$wapo_state, current_wapo_state)) {
       wapo_prepand_herd,
       wapo_postpand_herd
     ) %>%
-    distinct()
+    distinct() %>%
+    group_by(geography,time) %>%
+    mutate(id1=row_number()) %>%
+    filter(id1==1) %>%
+    ungroup() %>%
+    dplyr::select(-id1) %>%
+    filter(!is.na(geography))
 
   # ---------------------------------------------------------------------------
   # 1b. Process school-level data
