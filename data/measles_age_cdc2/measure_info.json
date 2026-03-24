@@ -1,0 +1,103 @@
+{
+  "cdc_cum_cases": {
+    "id": "cdc_cum_cases",
+    "short_name": "Measles cumulative cases",
+    "long_name": "Cumulative measles cases in the United States",
+    "category": "immunization",
+    "short_description": "Year-to-date cumulative count of confirmed measles cases in the United States.",
+    "long_description": "Cumulative count of confirmed measles cases in the United States from the start of the calendar year through the reporting week. Stratified by age group (<5, 5-19, 20+, Total) and vaccination status (Total, Unvaccinated/Unknown, One dose MMR, Two doses MMR). Negative values reflect CDC retroactive corrections. Cases are classified following CSTE case definitions.",
+    "statement": "In the United States, {value} cumulative measles cases were reported as of {time}.",
+    "measure_type": "Count",
+    "unit": "Cases",
+    "time_resolution": "Week",
+    "sources": [{ "id": "cdc_measles_age2" }],
+    "citations": []
+  },
+
+  "cdc_new_cases": {
+    "id": "cdc_new_cases",
+    "short_name": "Measles new weekly cases",
+    "long_name": "New measles cases reported in the United States for the reporting week",
+    "category": "immunization",
+    "short_description": "Weekly new count of confirmed measles cases in the United States.",
+    "long_description": "Count of newly confirmed measles cases in the United States for the reporting week. Stratified by age group (<5, 5-19, 20+, Total) and vaccination status (Total, Unvaccinated/Unknown, One dose MMR, Two doses MMR). Negative values reflect CDC retroactive corrections. Cases are classified following CSTE case definitions.",
+    "statement": "In the United States, {value} new measles cases were reported for the week ending {time}.",
+    "measure_type": "Count",
+    "unit": "Cases",
+    "time_resolution": "Week",
+    "sources": [{ "id": "cdc_measles_age2" }],
+    "citations": []
+  },
+
+  "cdc_cum_hosp": {
+    "id": "cdc_cum_hosp",
+    "short_name": "Measles cumulative hospitalizations",
+    "long_name": "Cumulative measles-associated hospitalizations in the United States",
+    "category": "immunization",
+    "short_description": "Year-to-date cumulative count of measles-associated hospitalizations in the United States.",
+    "long_description": "Cumulative count of measles-associated hospitalizations in the United States from the start of the calendar year through the reporting week. Stratified by age group (<5, 5-19, 20+, Total) and vaccination status (Total, Unvaccinated/Unknown, One dose MMR, Two doses MMR). Negative values reflect CDC retroactive corrections.",
+    "statement": "In the United States, {value} cumulative measles-associated hospitalizations were reported as of {time}.",
+    "measure_type": "Count",
+    "unit": "Hospitalizations",
+    "time_resolution": "Week",
+    "sources": [{ "id": "cdc_measles_age2" }],
+    "citations": []
+  },
+
+  "cdc_new_hosp": {
+    "id": "cdc_new_hosp",
+    "short_name": "Measles new weekly hospitalizations",
+    "long_name": "New measles-associated hospitalizations reported in the United States for the reporting week",
+    "category": "immunization",
+    "short_description": "Weekly new count of measles-associated hospitalizations in the United States.",
+    "long_description": "Count of newly reported measles-associated hospitalizations in the United States for the reporting week. Stratified by age group (<5, 5-19, 20+, Total) and vaccination status (Total, Unvaccinated/Unknown, One dose MMR, Two doses MMR). Negative values reflect CDC retroactive corrections.",
+    "statement": "In the United States, {value} new measles-associated hospitalizations were reported for the week ending {time}.",
+    "measure_type": "Count",
+    "unit": "Hospitalizations",
+    "time_resolution": "Week",
+    "sources": [{ "id": "cdc_measles_age2" }],
+    "citations": []
+  },
+
+  "age_group": {
+    "id": "age_group",
+    "short_name": "Age group",
+    "long_name": "Age group stratification for measles cases and hospitalizations",
+    "category": "immunization",
+    "short_description": "Age group of measles cases or hospitalizations.",
+    "long_description": "Age group stratification for measles case and hospitalization counts. When age_group is one of the age-specific values (<5 years, 5-19 years, 20+ years), vax_group is always 'Total'. When age_group is 'Total', vax_group varies across all vaccination status categories.",
+    "measure_type": "Category",
+    "unit": "Category",
+    "time_resolution": "Week",
+    "categories": ["<5 years", "5-19 years", "20+ years", "Total"],
+    "sources": [{ "id": "cdc_measles_age2" }],
+    "citations": []
+  },
+
+  "vax_group": {
+    "id": "vax_group",
+    "short_name": "Vaccination status group",
+    "long_name": "Vaccination status stratification for measles cases and hospitalizations",
+    "category": "immunization",
+    "short_description": "Vaccination status of measles cases or hospitalizations.",
+    "long_description": "Vaccination status stratification for measles case and hospitalization counts. Only present when age_group is 'Total'; rows with age-specific groups (<5, 5-19, 20+) always have vax_group set to 'Total'. 'Unvaccinated/Unknown' includes persons with no measles-containing vaccine doses or unknown vaccination history. 'One dose MMR' and 'Two doses MMR' refer to receipt of one or two doses of measles-mumps-rubella vaccine.",
+    "measure_type": "Category",
+    "unit": "Category",
+    "time_resolution": "Week",
+    "categories": ["Total", "Unvaccinated/Unknown", "One dose MMR", "Two doses MMR"],
+    "sources": [{ "id": "cdc_measles_age2" }],
+    "citations": []
+  },
+
+  "_sources": {
+    "cdc_measles_age2": {
+      "name": "CDC Measles Cases and Outbreaks - Age and Vaccination Status",
+      "url": "https://www.cdc.gov/measles/data-research/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/measles/",
+      "description": "Weekly new and cumulative case and hospitalization counts for measles in the United States, stratified by age group (<5, 5-19, 20+, and Total) and vaccination status (Total, Unvaccinated/Unknown, One dose MMR, Two doses MMR). Data is updated weekly on the CDC Measles Cases and Outbreaks surveillance page. Negative values in case counts reflect retroactive corrections by the CDC. Cases are classified as confirmed or probable following CSTE case definitions. The source presents cumulative counts or percentages. The number of new counts is derived from the difference in cumulative cases in 2 successive weeks. For the stratification by vaccine status, the source provided the percent in each vaccinated group, and this was multiplied by the cumulative cases to approximate the number in each group",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    }
+  }
+}

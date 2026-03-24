@@ -80,7 +80,7 @@ pop_combined <- pop_long_state %>%
   rename(geography=region_name)
 
 
-epic_state <- vroom::vroom('../epic/standard/state_year.csv.gz') %>%
+epic_state <- vroom::vroom('../epic_chronic/standard/state_year.csv.gz') %>%
   rename(pct_diabetes_a1c_6_5 = diabetes_a1c_6_5,
          pct_diabetes_dx_ccw = diabetes_dx_ccw,
          pct_obesity_dx_ccw = obesity_dx_ccw,
@@ -185,7 +185,7 @@ write_parquet(epic_brfss_cms_combined,'./dist/prevalence_by_geography_and_year_a
 
 
 # County
-epic_county <- vroom::vroom('../epic/standard/county_year.csv.gz') %>%
+epic_county <- vroom::vroom('../epic_chronic/standard/county_year.csv.gz') %>%
   filter(time=='2025-01-01') %>%
   rename(#pct_Obesity = diabetes_a1c_6_5,
          pct_Diabetes = diabetes_a1c_6_5,

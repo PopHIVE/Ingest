@@ -67,23 +67,30 @@ wisqars_long <- wisqars_aggregated %>%
                                'motor_vehicle_traffic',
                                'firearm_accident',
                                'firearm_intentional',
+                               'firearm_homicide',
+                               'firearm_suicide',
+                               'firearm_legal_intervention',
                                'drug_poisoning',
                               'pedal_cyclist_mv_traffic',
                               "pedestrian_mv_traffic",
                                'non_drug_poisoning'
                                )) %>%
-  mutate(cause_of_death = gsub('natural_environmental', 'Natural/environmental', cause_of_death), 
+  mutate(cause_of_death = gsub('natural_environmental', 'Natural/environmental', cause_of_death),
     cause_of_death = gsub('drowning_includes_water_transport_', 'Drowning, including water transport', cause_of_death),
           cause_of_death = gsub( 'fall', 'Fall', cause_of_death),
           cause_of_death = gsub('fire_flame' , 'Exposure to smoke, fire, flame' , cause_of_death),
           cause_of_death = gsub('motor_vehicle_traffic' , 'Motor vehicle, traffic', cause_of_death),
           cause_of_death = gsub( 'non_drug_poisoning', 'Non-drug poisoning' , cause_of_death),
+          cause_of_death = gsub( 'drug_poisoning', 'Drug poisoning' , cause_of_death),
     cause_of_death = gsub( 'suffocation', 'Suffocation' , cause_of_death),
     cause_of_death = gsub( 'pedal_cyclist_mv_traffic', 'Pedal cyclist (motor vehicle)' , cause_of_death),
     cause_of_death = gsub( 'pedestrian_mv_traffic', 'Pedestrian (motor vehicle traffic)' , cause_of_death),
-    
+
           cause_of_death = gsub('firearm_accident' ,'Firearm (unintentional)' , cause_of_death),
-          cause_of_death = gsub('firearm_intentional' ,'Firearm (intentional)' , cause_of_death)
+          cause_of_death = gsub('firearm_legal_intervention' ,'Firearm (legal intervention)' , cause_of_death),
+          cause_of_death = gsub('firearm_intentional' ,'Firearm (intentional)' , cause_of_death),
+          cause_of_death = gsub('firearm_homicide' ,'Firearm (homicide)' , cause_of_death),
+          cause_of_death = gsub('firearm_suicide' ,'Firearm (suicide)' , cause_of_death)
           ) %>%
   dplyr::select(year, age, geography, cause_of_death, value, N)
 
@@ -197,7 +204,7 @@ write_parquet(. ,'./dist/overdose_deaths_county.parquet')
 nchs <- bind_rows(nchs_od_state, nchs_od_county)
 
 #epic
-epic <- vroom::vroom('../../data/epic/standard/monthly_injury.csv.gz') %>%
+epic <- vroom::vroom('../../data/epic_injury/standard/monthly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
                         if_else(age ==  "25-45 Years", '25-44 Years', age)),
           epic_rate_ed_firearm = if_else(geography=='02',NA_real_,epic_rate_ed_firearm),
@@ -205,7 +212,7 @@ epic <- vroom::vroom('../../data/epic/standard/monthly_injury.csv.gz') %>%
           epic_rate_ed_heat = if_else(geography=='02',NA_real_,epic_rate_ed_heat)
   )
 
-epic_year <- vroom::vroom('../../data/epic/standard/yearly_injury.csv.gz') %>%
+epic_year <- vroom::vroom('../../data/epic_injury/standard/yearly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
                         if_else(age ==  "25-45 Years", '25-44 Years', age)),
           epic_rate_ed_firearm = if_else(geography=='02',NA_real_,epic_rate_ed_firearm),
@@ -366,16 +373,25 @@ wisqars %>%
 ##Firearm by source
 ########################
 wisqars_firearm <- wisqars_aggregated %>%
-  dplyr::select(geography, time, age, wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident) %>%
-  pivot_longer(cols = c(wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident)) %>%
+  dplyr::select(geography, time, age, wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident,
+                wisqars_rate_firearm_homicide, wisqars_rate_firearm_suicide,
+                wisqars_rate_firearm_legal_intervention) %>%
+  pivot_longer(cols = c(wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident,
+                        wisqars_rate_firearm_homicide, wisqars_rate_firearm_suicide,
+                        wisqars_rate_firearm_legal_intervention)) %>%
   rename(source = name)
 
 # Demographic version
 wisqars_firearm_demo <- wisqars %>%
   left_join(all_fips, by = 'geography') %>%
-  dplyr::select(geography_name, time, age, sex, race, ethnicity, wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident) %>%
+  dplyr::select(geography_name, time, age, sex, race, ethnicity,
+                wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident,
+                wisqars_rate_firearm_homicide, wisqars_rate_firearm_suicide,
+                wisqars_rate_firearm_legal_intervention) %>%
   rename(geography = geography_name) %>%
-  pivot_longer(cols = c(wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident)) %>%
+  pivot_longer(cols = c(wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident,
+                        wisqars_rate_firearm_homicide, wisqars_rate_firearm_suicide,
+                        wisqars_rate_firearm_legal_intervention)) %>%
   rename(source = name)
 
 write_parquet(wisqars_firearm_demo, './dist/firearms_by_demographics.parquet')
@@ -419,10 +435,14 @@ firearms_by_source_year <- firearms_by_source %>%
   summarize(value = mean(value)) %>%
   ungroup() %>%
   bind_rows(epic_firearms_year)  %>%
-  mutate( source = if_else(source=='wisqars_rate_firearm_intentional', 'CDC/WISQARS: Firearm (intentional)',
-                           if_else(source=='wisqars_rate_firearm_accident', 'CDC/WISQARS: Firearm (unintentional)',
-                                   source))
-  )
+  mutate( source = case_when(
+    source == 'wisqars_rate_firearm_intentional' ~ 'CDC/WISQARS: Firearm (intentional)',
+    source == 'wisqars_rate_firearm_accident' ~ 'CDC/WISQARS: Firearm (unintentional)',
+    source == 'wisqars_rate_firearm_homicide' ~ 'CDC/WISQARS: Firearm (homicide)',
+    source == 'wisqars_rate_firearm_suicide' ~ 'CDC/WISQARS: Firearm (suicide)',
+    source == 'wisqars_rate_firearm_legal_intervention' ~ 'CDC/WISQARS: Firearm (legal intervention)',
+    TRUE ~ source
+  ))
 
 firearms_by_source_year %>%
   write_parquet(.,

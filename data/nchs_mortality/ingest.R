@@ -1,6 +1,5 @@
 library(dcf)
 library(tidyverse)
-library(cdlTools)
 library(arrow)
 library(reshape2)
 
@@ -32,7 +31,12 @@ raw_state3 <- dcf::dcf_download_cdc(
 
 
 if (!identical(process1$raw_state, raw_state1)) {
-  
+
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, state)
+
   #type of overdose counts by state (12 month backward total)
   data_type <- open_dataset('./raw/xkb8-kh2a.parquet') %>%
     collect() %>%
@@ -43,12 +47,8 @@ if (!identical(process1$raw_state, raw_state1)) {
     group_by(time,State, Indicator) %>%
     summarize( N_deaths = sum(`Data Value`)) %>%
     reshape2::dcast( time+State ~ Indicator , value.var='N_deaths') %>%
-    mutate( 
-            geography = if_else(State=='US', 0,
-                               fips(State, to='FIPS')
-          ),
-          geography = sprintf("%02d", geography)
-    ) %>%
+    left_join(state_fips_lookup, by = c("State" = "state")) %>%
+    mutate(geography = if_else(State == 'US', "00", geography)) %>%
     rename( n_deaths_cocaine = "Cocaine (T40.5)" ,
             n_deaths_heroin = "Heroin (T40.1)" ,
             n_deaths_methadone = "Methadone (T40.3)",
@@ -78,13 +78,8 @@ if (!identical(process1$raw_state, raw_state1)) {
     ) %>%
     summarize( pct_drug_specified = sum(wgt_part)) %>%
     reshape2::dcast( time+State ~ Indicator , value.var='pct_drug_specified') %>%
-    mutate( 
-      geography = if_else(State=='US', 0,
-                          fips(State, to='FIPS')
-      ),
-      geography = sprintf("%02d", geography)
-      
-    ) %>%
+    left_join(state_fips_lookup, by = c("State" = "state")) %>%
+    mutate(geography = if_else(State == 'US', "00", geography)) %>%
     rename( # pct_drug_specified = "Percent with drugs specified",
     ) %>%
     dplyr::select(geography, time, starts_with('pct_'))
@@ -96,10 +91,9 @@ if (!identical(process1$raw_state, raw_state1)) {
     collect() %>%
     as.data.frame() %>%
     #population-weighted average for New York
-    mutate( State = if_else(State=='YC','NY', State), #combines NYC and NY state
-            geography = if_else(State=='US', 0,
-                                fips(State, to='FIPS') ),
-            geography = sprintf("%02d", geography),
+    mutate(State = if_else(State=='YC','NY', State)) %>% #combines NYC and NY state
+    left_join(state_fips_lookup, by = c("State" = "state")) %>%
+    mutate( geography = if_else(State == 'US', "00", geography),
               wgt = if_else(`State Name`=='New York', (19.87-8.258)/19.87,
                          if_else(`State Name`=='New York City', 8.258/19.87,
                                  1

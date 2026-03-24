@@ -1,3 +1,4 @@
+library(dplyr)
 #
 # Download
 #
@@ -6,6 +7,19 @@
 base_url <- "https://github.com/DISSC-yale/gtrends_collection/raw/refs/heads/main/data/term="
 
 terms <- c("Naloxone", "overdose","narcan","drug+overdose", "rsv", "%252Fg%252F11j30ybfx6", "9mm","heat+exhaustion","heat+stroke","shotgun")
+
+raw_state <- jsonlite::read_json(
+  "https://github.com/DISSC-yale/gtrends_collection/raw/refs/heads/main/data_state.json"
+)
+raw_state <- raw_state[grep(
+  paste0("data/term=(?:", paste(URLdecode(terms), collapse = "|"), ")"),
+  names(raw_state)
+)]
+process <- dcf::dcf_process_record()
+
+# process raw if state has changed
+if (!identical(process$raw_state, raw_state)) {
+
 for (term in terms) {
   term_dir <- paste0("raw/term=", term)
   dir.create(term_dir, showWarnings = FALSE)
@@ -29,21 +43,7 @@ for (term in terms) {
     mode = "wb"
   )
 }
-#
-# Reformat
-#
 
-# check raw state
-raw_state <- as.list(tools::md5sum(list.files(
-  "raw",
-  "parquet",
-  recursive = TRUE,
-  full.names = TRUE
-)))
-process <- dcf::dcf_process_record()
-
-# process raw if state has changed
-if (!identical(process$raw_state, raw_state)) {
   data_week <- dplyr::collect(dplyr::filter(
     arrow::open_dataset("raw"),
     grepl("US", location),
@@ -273,3 +273,4 @@ if (!identical(process$raw_state, raw_state)) {
     vroom::vroom_write(., "standard/data_dma_year.csv.gz", ",")
   
 }
+

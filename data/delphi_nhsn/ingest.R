@@ -6,6 +6,14 @@ process <- dcf::dcf_process_record()
 
 nhsn_endpoints <- c('confirmed_admissions_covid_ew', 'confirmed_admissions_rsv_ew','confirmed_admissions_flu_ew')
 
+delphi_maxdate <- epidatr::pub_covidcast_meta() %>%
+  filter(signal %in% nhsn_endpoints & data_source == 'nhsn') %>%
+  pull(last_update) %>%
+  max() %>%
+  as.character()
+
+if (!identical(process$delphi_maxdate, delphi_maxdate)) {
+
 state <- epidatr::pub_covidcast(
   source = "nhsn", signal = nhsn_endpoints,
   geo_type = c("state"),
@@ -30,7 +38,7 @@ raw_state <- as.list(tools::md5sum(list.files(
 )))
 
 #process raw if state has changed
-if (!identical(process$raw_state, raw_state)) {
+#if (!identical(process$raw_state, raw_state)) {
   data <- vroom::vroom('./raw/data.csv.xz') %>%
     mutate(geography = sprintf("%02d",cdlTools::fips(geo_value, to='fips') ),
            geography = if_else(geo_value=='us','00', geography),
@@ -62,6 +70,8 @@ if (!identical(process$raw_state, raw_state)) {
   
   # record processed raw state
   process$raw_state <- raw_state
+  process$delphi_maxdate <- delphi_maxdate
+
   dcf::dcf_process_record(updated = process)
 
 

@@ -1,21 +1,138 @@
 {
-  "epic_all_encounters": {
-    "source_id": "n_all_encounters"
+  "bundle_respiratory/dist/rsv_overall_trends.parquet|source": {
+    "levels": {
+      "Epic Cosmos, ED": { "source_id": "epic_pct_rsv" },
+      "Google Health Trends": { "source_id": "gtrends_rsv_adjusted" },
+      "CDC NSSP": { "source_id": "percent_visits_rsv" },
+      "CDC RespNET": { "source_id": "rate_rsv" },
+      "CDC NWSS": { "source_id": "wastewater_rsv" },
+      "CDC NHSN": { "source_id": "delphi_nhsn_rsv" }
+    }
   },
-  "epic_covid": {
-    "source_id": "n_covid"
+  "bundle_respiratory/dist/flu_overall_trends.parquet|source": {
+    "levels": {
+      "Epic Cosmos, ED": { "source_id": "epic_pct_flu" },
+      "CDC NSSP": { "source_id": "percent_visits_flu" },
+      "CDC RespNET": { "source_id": "rate_flu" },
+      "CDC NWSS": { "source_id": "wastewater_flua" },
+      "CDC NHSN": { "source_id": "delphi_nhsn_flu" },
+      "Delphi Hospital Claims": { "source_id": "delphi_hospital_flu_smooth" },
+      "CDC ILINet": { "source_id": "delphi_fluview_wili" }
+    }
   },
-  "epic_flu": {
-    "source_id": "n_flu"
+  "bundle_respiratory/dist/covid_overall_trends.parquet|source": {
+    "levels": {
+      "Epic Cosmos, ED": { "source_id": "epic_pct_covid" },
+      "CDC NSSP": { "source_id": "percent_visits_covid" },
+      "CDC RespNET": { "source_id": "rate_covid" },
+      "CDC NWSS": { "source_id": "wastewater_covid" },
+      "CDC NHSN": { "source_id": "delphi_nhsn_covid" },
+      "Delphi Hospital Claims": { "source_id": "delphi_hospital_covid_smooth" },
+      "Delphi Doctor Claims": { "source_id": "delphi_doc_covid_smooth" }
+    }
   },
-  "epic_rsv": {
-    "source_id": "n_rsv"
+  "bundle_respiratory/dist/rsv_trends_by_age.parquet|source": {
+    "levels": {
+      "Epic Cosmos (ED)": { "source_id": "epic_pct_rsv" },
+      "CDC RSV-NET (Hospitalization)": { "source_id": "rate_rsv" }
+    }
   },
-  "gtrends_rsv_vaccine": {},
-  "gtrends_naloxone": {},
-  "gtrends_overdose": {},
-  "gtrends_rsv": {},
-  "wastewater_covid": {},
-  "wastewater_flua": {},
-  "wastewater_rsv": {}
+  "bundle_respiratory/dist/flu_trends_by_age.parquet|source": {
+    "levels": {
+      "Epic Cosmos (ED)": { "source_id": "epic_pct_flu" },
+      "CDC RSV-NET (Hospitalization)": { "source_id": "rate_flu" }
+    }
+  },
+  "bundle_respiratory/dist/covid_trends_by_age.parquet|source": {
+    "levels": {
+      "Epic Cosmos (ED)": { "source_id": "epic_pct_covid" },
+      "CDC RSV-NET (Hospitalization)": { "source_id": "rate_covid" }
+    }
+  },
+  "{category}value{variant}": {
+    "measure_column": "{category}source",
+    "categories": {
+      "bundle_respiratory/dist/rsv_overall_trends.parquet|": {},
+      "bundle_respiratory/dist/flu_overall_trends.parquet|": {},
+      "bundle_respiratory/dist/covid_overall_trends.parquet|": {},
+      "bundle_respiratory/dist/rsv_trends_by_age.parquet|": {},
+      "bundle_respiratory/dist/flu_trends_by_age.parquet|": {},
+      "bundle_respiratory/dist/covid_trends_by_age.parquet|": {}
+    },
+    "variants": {
+      "blank": {
+        "short_name": "Value",
+        "short_description": "Primary measure from the data source, adjusted to a zero minimum within each geography."
+      },
+      "_smooth": {
+        "short_name": "Smoothed value",
+        "short_description": "3-week trailing moving average. Pre-smoothed Delphi signals are not re-smoothed."
+      },
+      "_scale": {
+        "short_name": "Scaled value (0–100)",
+        "short_description": "Primary value rescaled to 0–100 relative to the geography-level minimum and maximum."
+      },
+      "_smooth_scale": {
+        "short_name": "Smoothed scaled value (0–100)",
+        "short_description": "3-week smoothed value rescaled to 0–100 relative to the geography-level minimum and maximum."
+      }
+    }
+  },
+  "bundle_respiratory/dist/rsv_ed_visits_by_county.parquet|percent_visits_rsv": {
+    "source_id": "percent_visits_rsv"
+  },
+  "bundle_respiratory/dist/flu_ed_visits_by_county.parquet|percent_visits_flu": {
+    "source_id": "percent_visits_flu"
+  },
+  "bundle_respiratory/dist/covid_ed_visits_by_county.parquet|percent_visits_covid": {
+    "source_id": "percent_visits_covid"
+  },
+  "bundle_respiratory/dist/rsv_positive_tests.parquet|value": {
+    "source_id": "pcr_detections"
+  },
+  "bundle_respiratory/dist/rsv_google_dma.parquet|value": {
+    "source_id": "gtrends_rsv"
+  },
+  "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_pct_rsv_pos_tests": {
+    "source_id": "epic_pct_rsv_pos_tests"
+  },
+  "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_pct_j12_j18_tested_rsv": {
+    "source_id": "epic_pct_j12_j18_tested_rsv"
+  },
+  "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_n_ed_j12_j18": {
+    "source_id": "epic_n_ed_j12_j18"
+  },
+  "bundle_respiratory/dist/pneumococcus_serotype_trends.parquet|value": {
+    "source_id": "N_IPD"
+  },
+  "bundle_respiratory/dist/pneumococcus_by_geography.parquet|value": {
+    "source_id": "pct_IPD"
+  },
+  "bundle_respiratory/dist/pneumococcus_by_geography.parquet|value_N": {
+    "source_id": "N_IPD"
+  },
+  "bundle_respiratory/dist/pneumococcus_by_geography_year.parquet|value": {
+    "source_id": "pct_IPD"
+  },
+  "bundle_respiratory/dist/pneumococcus_by_geography_year.parquet|value_N": {
+    "source_id": "N_IPD"
+  },
+  "bundle_respiratory/dist/pneumococcus_by_geography_year.parquet|value_smooth": {
+    "id": "bundle_respiratory/dist/pneumococcus_by_geography_year.parquet|value_smooth",
+    "short_name": "Pneumococcal IPD % (3-year smoothed)",
+    "long_name": "3-Year Rolling Average Percent of Invasive Pneumococcal Disease by Serotype",
+    "category": "respiratory",
+    "short_description": "3-year rolling average of the percent of IPD cases caused by each pneumococcal serotype.",
+    "long_description": "3-year rolling average (current and prior 2 years) of the percentage of invasive pneumococcal disease (IPD) cases attributable to each serotype, by state. Calculated from annual ABCs data using a sliding window.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "abcs" }]
+  },
+  "bundle_respiratory/dist/pneumococcus_comparison.parquet|ipd": {
+    "source_id": "N_IPD"
+  },
+  "bundle_respiratory/dist/pneumococcus_comparison.parquet|pneumonia": {
+    "source_id": "N_SSUAD"
+  }
 }

@@ -1,0 +1,198 @@
+{
+  "age": {
+    "id": "age",
+    "short_name": "Age",
+    "long_name": "Age group",
+    "short_description": "Age group.",
+    "long_description": "Age group, based on age in current years.",
+    "measure_type": "integer",
+    "unit": "years",
+    "time_resolution": "year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "n_patients": {
+    "id": "n_patients",
+    "short_name": "Number of Patients in the ED",
+    "long_name": "Number of Patients in the ED, any cause",
+    "short_description": "Number of patients presenting to the emergency department for any cause.",
+    "long_description": "Total number of patients presenting to the emergency department for any cause. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "integer",
+    "unit": "count",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_suppressed_flag_{variant}": {
+    "id": "epic_suppressed_flag_{variant}",
+    "short_name": "Fewer than 10 cases in the strata?",
+    "long_name": "Suppression flag: fewer than 10 cases in the strata",
+    "short_description": "Binary indicator for low counts.",
+    "long_description": "Binary indicator: 1 if fewer than 10 cases in the strata, 0 otherwise. When suppressed, the corresponding count is imputed as 5.",
+    "measure_type": "binary",
+    "unit": "",
+    "variants": {
+      "covid": { "default": "covid", "short_name": "COVID", "category": "respiratory" },
+      "flu": { "default": "flu", "short_name": "Influenza", "category": "respiratory" },
+      "rsv": { "default": "rsv", "short_name": "RSV", "category": "respiratory" }
+    },
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "n_rsv_tests": {
+    "id": "n_rsv_tests",
+    "short_name": "RSV Tests: Positive",
+    "long_name": "Emergency Room (ER) Encounters with Positive Respiratory Syncytial Virus (RSV) Tests",
+    "short_description": "Number of ER encounters with positive RSV tests.",
+    "long_description": "Number of emergency room encounters with positive RSV tests among pneumonia admissions (ICD-10: J12-J18). Data accessed via Epic Cosmos SlicerDicer. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "integer",
+    "unit": "encounter",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_positive_rsv_tests_percent": {
+    "id": "epic_positive_rsv_tests_percent",
+    "short_name": "RSV Tests: Positive (%)",
+    "long_name": "Percent of Emergency Room (ER) Visits with Positive RSV Tests",
+    "short_description": "Percent of ER encounters with positive RSV tests.",
+    "long_description": "Percentage of emergency room encounters with positive RSV tests among pneumonia admissions (ICD-10: J12-J18).",
+    "measure_type": "percent",
+    "unit": "%",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_n_{variant}": {
+    "id": "epic_n_{variant}",
+    "short_name": "{variant.short_name} Patients",
+    "long_name": "{variant.short_name} Emergency Room (ER) Encounters",
+    "short_description": "Number of {variant.short_name} patients.",
+    "long_description": "Number of emergency room (ER) encounters with {variant.short_name} ICD-10-CM codes. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "integer",
+    "unit": "encounters",
+    "variants": {
+      "all_encounters": { "default": "all", "short_name": "All encounters", "category": "general" },
+      "covid": { "default": "covid", "short_name": "COVID", "category": "respiratory" },
+      "flu": { "default": "flu", "short_name": "Influenza", "category": "respiratory" },
+      "rsv": { "default": "rsv", "short_name": "RSV", "category": "respiratory" },
+      "ed_j12_j18": { "default": "ed_j12_j18", "short_name": "Pneumonia (J12-J18)", "category": "respiratory" }
+    },
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_pct_{variant}": {
+    "id": "epic_pct_{variant}",
+    "short_name": "{variant.short_name} Patients (%)",
+    "long_name": "{variant.short_name} Emergency Room (ER) Encounters (%)",
+    "short_description": "Percentage of {variant.short_name} patients among all ER encounters.",
+    "long_description": "Percentage of emergency room encounters attributable to {variant.short_name} ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+    "measure_type": "percent",
+    "unit": "%",
+    "variants": {
+      "all_encounters": { "default": "all", "short_name": "All encounters", "category": "general" },
+      "covid": { "default": "covid", "short_name": "COVID", "category": "respiratory" },
+      "flu": { "default": "flu", "short_name": "Influenza", "category": "respiratory" },
+      "rsv": { "default": "rsv", "short_name": "RSV", "category": "respiratory" },
+      "rsv_pos_tests": { "default": "rsv_pos_tests", "short_name": "RSV Positive Tests", "long_name": "Percent of tests among pneumonia patients in the ED (J12-J18) that are positive for RSV", "category": "respiratory" },
+      "j12_j18_tested_rsv": { "default": "j12_j18_tested_rsv", "short_name": "J12-J18 Tested RSV", "long_name": "Percent of pneumonia patients in the ED (J12-J18) that are tested for RSV", "category": "respiratory" }
+    },
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_pct_rsv_pos_tests": {
+    "id": "epic_pct_rsv_pos_tests",
+    "short_name": "Percent positive",
+    "long_name": "Percent of tests among hospitalized pneumonia admissions (ICD-10: J12-J18) that are positive for RSV",
+    "short_description": "Percent of tests among pneumonia admissions (ICD-10: J12-J18) that are positive for RSV.",
+    "long_description": "Percent of RSV tests among hospitalized pneumonia admissions (ICD-10: J12-J18) that are positive for RSV. This is among hospital admissions, including those that started in the emergency department. Data accessed via Epic Cosmos SlicerDicer.",
+    "measure_type": "percent",
+    "unit": "%",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_rsv_test": {
+    "id": "suppressed_rsv_test",
+    "short_name": "RSV Test Count Suppressed?",
+    "long_name": "Suppression flag for RSV test encounter count",
+    "short_description": "Binary indicator: 1 if the RSV test encounter count was suppressed (fewer than 10), 0 otherwise.",
+    "long_description": "Binary indicator: 1 if the count of J12-J18 pneumonia encounters with RSV testing (epic_n_ed_j12_j18) was suppressed due to fewer than 10 cases, in which case the count is imputed as 5. Otherwise 0.",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "positive_rsv_tests_(%)": {
+    "id": "positive_rsv_tests_(%)",
+    "short_name": "RSV Positive Test Rate (%) [raw]",
+    "long_name": "Percent of RSV Tests Positive Among Pneumonia Admissions (raw, no geography)",
+    "short_description": "Raw export column: percent of RSV tests positive among J12-J18 pneumonia admissions.",
+    "long_description": "Raw column from Epic Cosmos SlicerDicer export. Represents the percentage of RSV tests that returned positive among hospitalized pneumonia admissions (ICD-10: J12-J18). This is the unprocessed version stored in no_geo.csv.gz before renaming to epic_pct_rsv_pos_tests.",
+    "measure_type": "percent",
+    "unit": "%",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "rsv_tests": {
+    "id": "rsv_tests",
+    "short_name": "RSV Test Rate (%) [raw]",
+    "long_name": "Percent of Pneumonia Admissions Tested for RSV (raw, no geography)",
+    "short_description": "Raw export column: percent of J12-J18 pneumonia admissions receiving an RSV test.",
+    "long_description": "Raw column from Epic Cosmos SlicerDicer export. Represents the percentage of hospitalized pneumonia admissions (ICD-10: J12-J18) that received an RSV test. This is the unprocessed version stored in no_geo.csv.gz before renaming to epic_pct_j12_j18_tested_rsv.",
+    "measure_type": "percent",
+    "unit": "%",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_n_all_encounters_weekly": {
+    "id": "epic_n_all_encounters_weekly",
+    "short_name": "All-Cause ED Encounters (Weekly)",
+    "long_name": "Total Weekly Emergency Department Encounters (All Causes)",
+    "short_description": "Total number of weekly emergency department encounters for any cause.",
+    "long_description": "Total count of weekly emergency department encounters for any cause, used as the denominator for respiratory illness percentages. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "integer",
+    "unit": "encounters",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_suppressed_flag_all_encounters_weekly": {
+    "id": "epic_suppressed_flag_all_encounters_weekly",
+    "short_name": "All Encounters Count Suppressed? (Weekly)",
+    "long_name": "Suppression flag: fewer than 10 all-cause weekly ED encounters in the strata",
+    "short_description": "Binary indicator: 1 if the all-cause weekly ED encounter count was suppressed, 0 otherwise.",
+    "long_description": "Binary indicator: 1 if fewer than 10 all-cause weekly emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_all_encounters_weekly) is imputed as 5.",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_pct_j12_j18_tested_rsv": {
+    "id": "epic_pct_j12_j18_tested_rsv",
+    "short_name": "Percent tested",
+    "long_name": "Percent of hospitalized pneumonia admissions (J12-J18) receiving a test for RSV",
+    "short_description": "Percent of hospitalized pneumonia admissions (J12-J18) receiving a test for RSV.",
+    "long_description": "Percent of hospitalized pneumonia admissions (ICD-10: J12-J18) receiving a test for RSV. This is among hospital admissions, including those that started in the emergency department. Data accessed via Epic Cosmos SlicerDicer.",
+    "measure_type": "percent",
+    "unit": "%",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "_sources": {
+    "epic_cosmos": {
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/",
+      "date_accessed": 2025,
+      "organization": "Epic Systems",
+      "organization_url": "https://www.epic.com/",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
+      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+    }
+  }
+}

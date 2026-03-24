@@ -389,6 +389,96 @@ Special restriction wording:
 
 ---
 
+## Bundle measure_info.json Schema
+
+Bundle `measure_info.json` files use a different schema from source files to handle tall-format data and multiple output files. Three special mechanisms are available.
+
+### 1. Path Prefix for Duplicate Column Names
+
+When the same column name (e.g., `measure`) appears in multiple dist files, prefix the key with the relative path from the data directory, separated by `|`:
+
+```
+"bundle_name/dist/file.parquet|column_name": { ... }
+```
+
+### 2. `levels` Entry for Tall-Format Data
+
+For tall-format data where a single column identifies which measure each row represents, use `levels` to map column values to measure metadata. Each level can:
+- Be empty `{}` to inherit info from a measure with the same name in a source's `measure_info.json`
+- Use `"source_id": "existing_measure_name"` to inherit from a differently-named measure
+
+```json
+"bundle_name/dist/rsv.parquet|measure": {
+  "levels": {
+    "epic_rsv":    { "source_id": "n_rsv" },
+    "gtrends_rsv": {},
+    "wastewater_rsv": {}
+  }
+}
+```
+
+### 3. `categories` and `variants` with Dynamic Placeholders
+
+Use `{category}` and `{variant}` placeholders in a measure key to document multiple files or value transformations without duplication. The `measure_column` entry points to the column containing measure identifiers.
+
+- **`categories`**: Typically the path prefix for each dist file (e.g., `"bundle_name/dist/rsv.parquet|"`)
+- **`variants`**: Different transformations of the same variable (e.g., raw value vs. scaled)
+- **`blank`**: Special value that expands to an empty string (use for the unmodified variant name)
+
+```json
+"{category}value{variant}": {
+  "measure_column": "{category}measure",
+  "categories": {
+    "bundle_tall/dist/rsv.parquet|": {},
+    "bundle_tall/dist/flu.parquet|": {}
+  },
+  "variants": {
+    "blank":   {},
+    "_scaled": { "description": "Values are min-max scaled and multiplied by 100." }
+  }
+}
+```
+
+This expands to four entries: `bundle_tall/dist/rsv.parquet|value`, `bundle_tall/dist/rsv.parquet|value_scaled`, `bundle_tall/dist/flu.parquet|value`, and `bundle_tall/dist/flu.parquet|value_scaled`.
+
+### Complete Bundle Example
+
+```json
+{
+  "bundle_tall/dist/rsv.parquet|measure": {
+    "levels": {
+      "epic_all_encounters": { "source_id": "n_all_encounters" },
+      "epic_rsv":            { "source_id": "n_rsv" },
+      "gtrends_rsv_vaccine": {},
+      "gtrends_rsv":         {},
+      "wastewater_rsv":      {}
+    }
+  },
+  "bundle_tall/dist/flu.parquet|measure": {
+    "levels": {
+      "epic_all_encounters": { "source_id": "n_all_encounters" },
+      "epic_flu":            { "source_id": "n_flu" },
+      "wastewater_flua":     {}
+    }
+  },
+  "{category}value{variant}": {
+    "measure_column": "{category}measure",
+    "categories": {
+      "bundle_tall/dist/rsv.parquet|": {},
+      "bundle_tall/dist/flu.parquet|": {}
+    },
+    "variants": {
+      "blank":   {},
+      "_scaled": { "description": "Values are min-max scaled and multiplied by 100." }
+    }
+  }
+}
+```
+
+> **Reference**: [dcf_measure_info bundle documentation](https://dissc-yale.github.io/dcf/reference/dcf_measure_info.html#bundle-entries) | [Example](https://github.com/DISSC-yale/pophive_demo/blob/main/data/bundle_tall/measure_info.json)
+
+---
+
 ## Common Data Source Patterns
 
 ### CDC data.gov (Socrata API)
