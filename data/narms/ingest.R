@@ -706,33 +706,40 @@ parse_pattern_response <- function(response, genus, species, test_method) {
 }
 
 # =============================================================================
-# Main Scraping Loop
+# Main Scraping Loop — writes raw data to raw/narms_now_agent.csv.gz
+# and raw/narms_now_pattern.csv.gz
 # =============================================================================
 
-# Check if NARMS Now data needs refresh (monthly re-scrape)
+# Determine if we need to scrape new data:
+# - First run (no state): full scrape
+# - New year available (YEAR_TO > last scraped year): incremental scrape
+# - Monthly refresh (>30 days since last scrape): incremental for latest year
 last_scrape <- process$narms_now_state$last_scrape_date
-needs_refresh <- is.null(last_scrape) ||
-  as.Date(last_scrape) < Sys.Date() - 30
+last_year_to <- process$narms_now_state$year_to
 
-if (needs_refresh) {
-  # Load FIPS crosswalk for site-to-FIPS mapping
-  # NARMSSiteName uses "District Of Columbia" (capital O); all_fips uses lowercase "of"
-  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
-  site_to_fips <- all_fips %>%
-    filter(nchar(geography) == 2, geography != "00") %>%
-    select(geography, geography_name) %>%
-    mutate(site_name = if_else(
-      geography_name == "District of Columbia",
-      "District Of Columbia",
-      geography_name
-    )) %>%
-    select(geography, site_name)
+needs_scrape <- is.null(last_scrape) ||
+  as.Date(last_scrape) < Sys.Date() - 30 ||
+  (!is.null(last_year_to) && YEAR_TO > last_year_to)
 
-  n_sites <- length(sites)  # includes NULL (national) as first element
+if (needs_scrape) {
+  # Determine year range for this scrape
+  if (is.null(last_year_to)) {
+    # First run: full scrape
+    scrape_year_from_ast <- YEAR_FROM_AST
+    scrape_year_from_wgs <- YEAR_FROM_WGS
+    message("=== Full NARMS Now scrape (first run) ===")
+  } else {
+    # Incremental: only scrape from last scraped year onward
+    # (re-scrape the last year too in case it was incomplete)
+    scrape_year_from_ast <- last_year_to
+    scrape_year_from_wgs <- max(last_year_to, YEAR_FROM_WGS)
+    message(sprintf("=== Incremental NARMS Now scrape (years %d-%d) ===",
+                    scrape_year_from_ast, YEAR_TO))
+  }
+
+  n_sites <- length(sites)
   total_queries <- length(organisms) * length(test_methods) * 2 * (n_sites + 1)
-  # +1 because NULL (national) is not in the sites vector but is the first iteration
 
-  message("=== Scraping NARMS Now Power BI dashboard ===")
   message(sprintf("Organisms: %d | Test methods: %d | Sites: %d (+ national) | Total queries: ~%d",
                   length(organisms), length(test_methods), n_sites, total_queries))
   message(sprintf("Estimated time: ~%.0f minutes (%.1fs delay between queries)",
@@ -751,7 +758,7 @@ if (needs_refresh) {
 
     for (org in organisms) {
       for (tm in test_methods) {
-        year_from <- if (tm == "WGS") YEAR_FROM_WGS else YEAR_FROM_AST
+        year_from <- if (tm == "WGS") scrape_year_from_wgs else scrape_year_from_ast
 
         # --- Resistance by Agent ---
         query_count <- query_count + 1
@@ -816,47 +823,40 @@ if (needs_refresh) {
     }
   }
 
-  # --- Write outputs ---
+  # --- Write raw scraped data ---
 
   if (length(all_agent_data) > 0) {
-    agent_df <- do.call(rbind, all_agent_data)
+    new_agent_df <- do.call(rbind, all_agent_data) %>%
+      rename(pct_resistant = narms_now_pct_resistant,
+             n_resistant = narms_now_n_resistant,
+             n_tested = narms_now_n_tested)
 
-    agent_standard <- agent_df %>%
-      # Map site_name to FIPS geography code
-      left_join(site_to_fips, by = "site_name") %>%
-      mutate(
-        # National (site_name = NA) -> "00", states -> FIPS code from lookup
-        geography = if_else(is.na(site_name), "00", geography),
-        time = paste0(year, "-12-31")
-      ) %>%
-      select(
-        geography, time, genus, species_serotype,
-        antimicrobial_class, antimicrobial_agent, test_method,
-        narms_now_pct_resistant, narms_now_n_resistant, narms_now_n_tested
-      )
+    # Incremental: load existing raw, remove overlapping years, append new
+    if (!is.null(last_year_to) && file.exists("raw/narms_now_agent.csv.gz")) {
+      existing <- vroom::vroom("raw/narms_now_agent.csv.gz", show_col_types = FALSE)
+      existing <- existing %>% filter(year < scrape_year_from_ast)
+      new_agent_df <- bind_rows(existing, new_agent_df)
+    }
 
-    vroom::vroom_write(agent_standard, "standard/data_resistance_agent.csv.gz", delim = ",")
-    message(sprintf("Wrote %d rows to standard/data_resistance_agent.csv.gz", nrow(agent_standard)))
+    vroom::vroom_write(new_agent_df, "raw/narms_now_agent.csv.gz", delim = ",")
+    message(sprintf("Wrote %d rows to raw/narms_now_agent.csv.gz", nrow(new_agent_df)))
   }
 
   if (length(all_pattern_data) > 0) {
-    pattern_df <- do.call(rbind, all_pattern_data)
+    new_pattern_df <- do.call(rbind, all_pattern_data) %>%
+      rename(pct_resistant = narms_now_pct_resistant,
+             n_resistant = narms_now_n_resistant,
+             n_tested = narms_now_n_tested)
 
-    pattern_standard <- pattern_df %>%
-      # Map site_name to FIPS geography code
-      left_join(site_to_fips, by = "site_name") %>%
-      mutate(
-        geography = if_else(is.na(site_name), "00", geography),
-        time = paste0(year, "-12-31")
-      ) %>%
-      select(
-        geography, time, genus, species_serotype,
-        pattern, test_method,
-        narms_now_pct_resistant, narms_now_n_resistant, narms_now_n_tested
-      )
+    # Incremental: load existing raw, remove overlapping years, append new
+    if (!is.null(last_year_to) && file.exists("raw/narms_now_pattern.csv.gz")) {
+      existing <- vroom::vroom("raw/narms_now_pattern.csv.gz", show_col_types = FALSE)
+      existing <- existing %>% filter(year < scrape_year_from_ast)
+      new_pattern_df <- bind_rows(existing, new_pattern_df)
+    }
 
-    vroom::vroom_write(pattern_standard, "standard/data_resistance_pattern.csv.gz", delim = ",")
-    message(sprintf("Wrote %d rows to standard/data_resistance_pattern.csv.gz", nrow(pattern_standard)))
+    vroom::vroom_write(new_pattern_df, "raw/narms_now_pattern.csv.gz", delim = ",")
+    message(sprintf("Wrote %d rows to raw/narms_now_pattern.csv.gz", nrow(new_pattern_df)))
   }
 
   # Log errors
@@ -869,8 +869,8 @@ if (needs_refresh) {
   # Update process state
   process$narms_now_state <- list(
     last_scrape_date = as.character(Sys.Date()),
-    n_agent_rows = if (length(all_agent_data) > 0) nrow(agent_df) else 0,
-    n_pattern_rows = if (length(all_pattern_data) > 0) nrow(pattern_df) else 0,
+    n_agent_rows = if (length(all_agent_data) > 0) nrow(new_agent_df) else 0,
+    n_pattern_rows = if (length(all_pattern_data) > 0) nrow(new_pattern_df) else 0,
     n_errors = length(error_log),
     n_sites = n_sites + 1,
     year_from_ast = YEAR_FROM_AST,
@@ -880,6 +880,68 @@ if (needs_refresh) {
   dcf::dcf_process_record(updated = process)
 
   message("=== NARMS Now scraping complete ===")
+}
+
+# =============================================================================
+# Standardize NARMS Now raw data → standard output
+# (Runs whenever raw files exist, even if scraping was skipped)
+# =============================================================================
+
+if (file.exists("raw/narms_now_agent.csv.gz")) {
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+  site_to_fips <- all_fips %>%
+    filter(nchar(geography) == 2, geography != "00",
+           !is.na(geography_name)) %>%
+    select(geography, geography_name) %>%
+    mutate(site_name = if_else(
+      geography_name == "District of Columbia",
+      "District Of Columbia",
+      geography_name
+    )) %>%
+    select(geography, site_name)
+
+  agent_raw <- vroom::vroom("raw/narms_now_agent.csv.gz", show_col_types = FALSE)
+  agent_standard <- agent_raw %>%
+    left_join(site_to_fips, by = "site_name") %>%
+    mutate(
+      geography = if_else(is.na(site_name), "00", geography),
+      time = paste0(year, "-12-31")
+    ) %>%
+    select(geography, time, genus, species_serotype,
+           antimicrobial_class, antimicrobial_agent, test_method,
+           pct_resistant, n_resistant, n_tested)
+
+  vroom::vroom_write(agent_standard, "standard/data_resistance_agent.csv.gz", delim = ",")
+  message(sprintf("Wrote %d rows to standard/data_resistance_agent.csv.gz", nrow(agent_standard)))
+}
+
+if (file.exists("raw/narms_now_pattern.csv.gz")) {
+  if (!exists("site_to_fips")) {
+    all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+    site_to_fips <- all_fips %>%
+      filter(nchar(geography) == 2, geography != "00") %>%
+      select(geography, geography_name) %>%
+      mutate(site_name = if_else(
+        geography_name == "District of Columbia",
+        "District Of Columbia",
+        geography_name
+      )) %>%
+      select(geography, site_name)
+  }
+
+  pattern_raw <- vroom::vroom("raw/narms_now_pattern.csv.gz", show_col_types = FALSE)
+  pattern_standard <- pattern_raw %>%
+    left_join(site_to_fips, by = "site_name") %>%
+    mutate(
+      geography = if_else(is.na(site_name), "00", geography),
+      time = paste0(year, "-12-31")
+    ) %>%
+    select(geography, time, genus, species_serotype,
+           pattern, test_method,
+           pct_resistant, n_resistant, n_tested)
+
+  vroom::vroom_write(pattern_standard, "standard/data_resistance_pattern.csv.gz", delim = ",")
+  message(sprintf("Wrote %d rows to standard/data_resistance_pattern.csv.gz", nrow(pattern_standard)))
 }
 
 # =============================================================================
