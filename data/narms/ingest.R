@@ -1066,7 +1066,7 @@ if (!identical(process$retail_meats_state, current_retail_state)) {
         .groups     = "drop"
       ) %>%
       mutate(
-        value = n_resistant / n_tested * 100,
+        pct_resistant = n_resistant / n_tested * 100,
         time  = paste0(YEAR, "-12-31")
       ) %>%
       rename(
@@ -1077,7 +1077,7 @@ if (!identical(process$retail_meats_state, current_retail_state)) {
       ) %>%
       select(
         geography, time, genus, species, serotype, meat_source,
-        antimicrobial, value, n_resistant, n_tested
+        antimicrobial, pct_resistant, n_resistant, n_tested
       )
 
     vroom::vroom_write(
