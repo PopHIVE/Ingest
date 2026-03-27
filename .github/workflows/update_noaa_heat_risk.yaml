@@ -1,0 +1,36 @@
+on:
+  schedule:
+    # 7am ET (12:00 UTC; during EDT this runs at 8am)
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-noaa-heat-risk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev libudunits2-dev libproj-dev libgdal-dev libgeos-dev cmake libnode-dev libfontconfig1-dev
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-renv@v2
+      - run: Rscript -e "renv::install('dissc-yale/dcf')"
+      - run: Rscript -e "dcf::dcf_process('noaa_heat_risk')"
+      - id: diff
+        run: |
+          if git diff --exit-code; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add -A
+          git commit -m "scheduled noaa heat risk update"
+          git push
