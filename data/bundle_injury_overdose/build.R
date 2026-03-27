@@ -297,14 +297,14 @@ od_county <- read_parquet('./dist/overdose_by_geography_and_source_county.parque
 
 od_state <- read_parquet('./dist/overdose_by_geography_and_source.parquet')
 
-p1 <- od_state %>%
-  filter(geography=='Ohio' & age=='Total') %>%
-  ggplot()+
-  geom_line(aes(x=date, y=value_scale, group=source, color=source)) +
-  theme_classic()
-p1
+# p1 <- od_state %>%
+#   filter(geography=='Ohio' & age=='Total') %>%
+#   ggplot()+
+#   geom_line(aes(x=date, y=value_scale, group=source, color=source)) +
+#   theme_classic()
+# p1
 
-plotly::ggplotly(p1)
+# plotly::ggplotly(p1)
 
 od_state_year <- od_state %>%
   mutate(year=year(date)) %>%
@@ -320,54 +320,54 @@ od_state_year %>%
   write_parquet(.,
                 './dist/overdose_by_geography_and_source_state_year.parquet')
 
-od_state_year %>%
-  filter(age=='Total' & geography=='United States') %>%
-  ggplot() +
-  geom_line(aes(x=year, y=value_year, group=source, color=source)) +
-  theme_classic() +
-  ylim(0,NA) +
-  facet_wrap(~source, scales='free_y', ncol=1)
+# od_state_year %>%
+#   filter(age=='Total' & geography=='United States') %>%
+#   ggplot() +
+#   geom_line(aes(x=year, y=value_year, group=source, color=source)) +
+#   theme_classic() +
+#   ylim(0,NA) +
+#   facet_wrap(~source, scales='free_y', ncol=1)
 
 ## Map of OD by month; county,--just take every 12th observation,
 ##NCHS deaths, CMS opioid use disorder
-library(usmap)
+# library(usmap)
 
-nchs_od_state %>%
-  filter(time=="2020-04-01") %>%
-  rename(state= geography_name) %>%
-  plot_usmap(data=., regions='state', values = "rate_deaths_overdose", color = NA) + 
-  scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
-  theme(legend.position = "right")
+# nchs_od_state %>%
+#   filter(time=="2020-04-01") %>%
+#   rename(state= geography_name) %>%
+#   plot_usmap(data=., regions='state', values = "rate_deaths_overdose", color = NA) + 
+#   scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
+#   theme(legend.position = "right")
 
-cms %>%
-  filter(time==max(time, na.rm=T) & age=='<65 Years') %>%
-  rename(fips=geography) %>%
-  plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
-  scale_fill_continuous(name = "Opioid use disorder prevalence, <65 years CMS", label = scales::comma) + 
-  theme(legend.position = "right")
+# cms %>%
+#   filter(time==max(time, na.rm=T) & age=='<65 Years') %>%
+#   rename(fips=geography) %>%
+#   plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
+#   scale_fill_continuous(name = "Opioid use disorder prevalence, <65 years CMS", label = scales::comma) + 
+#   theme(legend.position = "right")
 
-#County maps
-cms %>%
-  filter(time==max(time) & age=='65+ Years') %>%
-  rename(fips=geography) %>%
-  plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
-  scale_fill_continuous(name = "Prevalence", label = scales::comma) + 
-  theme(legend.position = "right")+
-  ggtitle('Opioid use disorder prevalence, 65+ years Medicare FFS')
+# #County maps
+# cms %>%
+#   filter(time==max(time) & age=='65+ Years') %>%
+#   rename(fips=geography) %>%
+#   plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
+#   scale_fill_continuous(name = "Prevalence", label = scales::comma) + 
+#   theme(legend.position = "right")+
+#   ggtitle('Opioid use disorder prevalence, 65+ years Medicare FFS')
 
-nchs_od_county %>%
-  filter(time=='2020-12-01') %>%
-  rename(fips = geography) %>%
-  plot_usmap(data=., regions='counties', values = "rate_deaths_overdose", color = NA) + 
-  scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
-  theme(legend.position = "right")+
-  ggtitle('Overdose deaths/100000 (NCHS)')
+# nchs_od_county %>%
+#   filter(time=='2020-12-01') %>%
+#   rename(fips = geography) %>%
+#   plot_usmap(data=., regions='counties', values = "rate_deaths_overdose", color = NA) + 
+#   scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
+#   theme(legend.position = "right")+
+#   ggtitle('Overdose deaths/100000 (NCHS)')
 
-wisqars %>%
-  filter(geography=='00') %>%
-  ggplot() +
-  geom_line(aes(x=time, y=wisqars_rate_firearm_intentional, group=age, color=age))+
-  theme_classic()
+# wisqars %>%
+#   filter(geography=='00') %>%
+#   ggplot() +
+#   geom_line(aes(x=time, y=wisqars_rate_firearm_intentional, group=age, color=age))+
+#   theme_classic()
 
 ##################
 ##Firearm by source
@@ -483,13 +483,13 @@ heat_by_source_year <- bind_rows(google_heat_year, epic_heat_year)
 
 #write_parquet(heat_by_source,'./dist/heat_related_geography_source.parquet')
 
-heat_by_source_year %>%
-  filter(age=='Total' & geography=='United States') %>%
-  ggplot() +
-  geom_line(aes(x=year, y=value, group=source, color=source)) +
-  theme_classic() +
-  ylim(0,NA)+
-  facet_wrap(~source, scales='free_y', ncol=1)
+# heat_by_source_year %>%
+#   filter(age=='Total' & geography=='United States') %>%
+#   ggplot() +
+#   geom_line(aes(x=year, y=value, group=source, color=source)) +
+#   theme_classic() +
+#   ylim(0,NA)+
+#   facet_wrap(~source, scales='free_y', ncol=1)
 
 heat_by_source_year %>%
   write_parquet(.,

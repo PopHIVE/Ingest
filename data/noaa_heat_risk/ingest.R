@@ -222,10 +222,10 @@ if (!identical(today_str, last_fcst_run)) {
   fcst_county_list <- list()
   fcst_state_list  <- list()
 
-  for (day in 1:7) {
+  for (day in 1:5) {
     tif_url   <- sprintf("%s/HeatRisk_%d_Mercator.tif", forecast_base_url, day)
     tmp_file  <- tempfile(fileext = ".tif")
-    valid_iso <- format(Sys.Date() + (day - 1L), "%Y-%m-%d")
+    valid_iso <- format(Sys.Date() + day, "%Y-%m-%d")
 
     success <- tryCatch({
       download.file(tif_url, tmp_file, mode = "wb", quiet = TRUE)
@@ -283,3 +283,15 @@ if (!identical(today_str, last_fcst_run)) {
 } else {
   message("Forecast already updated today, skipping.")
 }
+
+
+#Daily Heat risk ED bundled
+all_fips <- vroom::vroom('../../resources/all_fips.csv.gz') 
+
+heat_forecast <- vroom::vroom('./standard/data_county.csv.gz') %>%
+  filter(forecast_day >=1) %>%
+  left_join(all_fips, by='geography') %>%
+  dplyr::select(geography, time, value, forecast_day) %>%
+  ungroup()
+
+arrow::write_parquet(heat_forecast, "../bundle_injury_overdose/dist/heat_risk.parquet")
