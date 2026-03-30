@@ -172,6 +172,5 @@ medicaid_long <- medicaid_cancer %>%
 
 combined_screening <- medicare_long %>%
   left_join(medicaid_long, by = c("geography", "year", "outcome_name")) %>%
-  mutate(gap = value_medicare - value_medicaid)
 
 write_parquet(combined_screening, './dist/combined_cancer_screening.parquet')
