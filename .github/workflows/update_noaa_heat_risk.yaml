@@ -28,7 +28,9 @@ jobs:
           key: r-noaa-heat-risk-${{ hashFiles('.github/workflows/update_noaa_heat_risk.yaml') }}
           restore-keys: r-noaa-heat-risk-
       - name: Install R packages
-        run: Rscript -e "pak::pak(c('dplyr', 'terra', 'exactextractr', 'sf', 'tigris', 'vroom', 'arrow', 'dissc-yale/dcf'))"
+        run: |
+          Rscript -e "install.packages(c('dplyr', 'terra', 'exactextractr', 'sf', 'tigris', 'vroom', 'arrow', 'remotes'), repos = 'https://cloud.r-project.org')"
+          Rscript -e "remotes::install_github('dissc-yale/dcf')"
       - run: Rscript -e "dcf::dcf_process('noaa_heat_risk')"
       - id: diff
         run: |
