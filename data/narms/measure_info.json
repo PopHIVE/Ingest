@@ -1,197 +1,119 @@
 {
-  "narms_now_pct_resistant": {
-    "id": "narms_now_pct_resistant",
+  "pct_resistant": {
+    "id": "pct_resistant",
     "short_name": "Percent resistant to antimicrobial",
     "long_name": "Percentage of isolates resistant to a specific antimicrobial agent",
     "category": "antimicrobial_resistance",
-    "short_description": "Percentage of tested human clinical isolates showing resistance to a specific antimicrobial agent or matching a specific resistance pattern",
-    "long_description": "Percentage of human clinical isolates tested by NARMS showing resistance to a specific antimicrobial agent or matching a specific resistance pattern, as determined by AST (antimicrobial susceptibility testing) or WGS (whole genome sequencing). Resistance is based on CLSI breakpoints. Data extracted from the NARMS Now interactive dashboard. Missing values: NA indicates the agent was on the testing panel but marked 'Not Tested' for that organism/year (e.g., an agent discontinued mid-series). A value of 0 with n_tested=0 indicates the agent was on the panel but no isolates were available. If an agent is not part of a genus's testing panel at all, no row exists in the data (different genera have different antimicrobial panels).",
-    "statement": "In {location}, {value}% of {species} isolates were resistant to {agent}",
+    "short_description": "Percentage of isolates showing resistance to a specific antimicrobial agent",
+    "long_description": "Percentage of isolates tested by NARMS showing resistance to a specific antimicrobial agent, based on CLSI breakpoints. Calculated as n_resistant / n_tested * 100. Applies across all NARMS surveillance programs: human clinical isolates (CDC NARMS Now, AST and WGS methods), retail meat isolates (FDA, state-level), animal diagnostic pathogen isolates (FDA, state-level), and food-producing animal isolates (FDA HACCP/Cecal/Minor Species, national only). NA indicates the agent was on the testing panel but marked 'Not Tested' for that organism/year combination.",
+    "statement": "In {location}, {value}% of isolates were resistant to {antimicrobial}",
     "measure_type": "Percent",
     "unit": "Percent",
     "time_resolution": "Year",
-    "sources": [{ "id": "narms_now" }],
+    "sources": [
+      { "id": "narms_now" },
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
     "citations": [
       {
         "title": "NARMS Now: Human Data",
         "url": "https://www.cdc.gov/narms/data/index.html"
+      },
+      {
+        "title": "FDA NARMS Integrated Reports/Summaries",
+        "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries"
       }
     ]
   },
-  "narms_now_n_resistant": {
-    "id": "narms_now_n_resistant",
+  "n_resistant": {
+    "id": "n_resistant",
     "short_name": "Number of resistant isolates",
     "long_name": "Number of isolates resistant to a specific antimicrobial agent",
     "category": "antimicrobial_resistance",
-    "short_description": "Count of human clinical isolates showing resistance to a specific antimicrobial",
-    "long_description": "Number of human clinical isolates tested by NARMS showing resistance to a specific antimicrobial agent. Numerator of the resistance percentage. NA when the dashboard reports 'Not Tested' for that organism/year/agent combination. Zero when the agent was on the panel but no isolates were available. No row present when the agent is not part of that genus's testing panel.",
-    "statement": "In {location}, {value} isolates of {species} were resistant to {agent}",
+    "short_description": "Count of isolates showing resistance to a specific antimicrobial agent",
+    "long_description": "Number of isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. NA when the dashboard or source reports 'Not Tested' for that organism/year/agent combination. Zero when the agent was on the panel but no isolates were available.",
+    "statement": "In {location}, {value} isolates were resistant to {antimicrobial}",
     "measure_type": "Count",
     "unit": "Isolates",
     "time_resolution": "Year",
-    "sources": [{ "id": "narms_now" }],
+    "sources": [
+      { "id": "narms_now" },
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
     "citations": []
   },
-  "narms_now_n_tested": {
-    "id": "narms_now_n_tested",
+  "n_tested": {
+    "id": "n_tested",
     "short_name": "Number of isolates tested",
     "long_name": "Number of isolates tested for antimicrobial susceptibility",
     "category": "antimicrobial_resistance",
-    "short_description": "Total number of human clinical isolates tested for resistance to a specific antimicrobial",
-    "long_description": "Total number of human clinical isolates tested by NARMS for susceptibility to a specific antimicrobial agent. Denominator of the resistance percentage. NA when the dashboard reports 'Not Tested' for that organism/year/agent combination. Zero when the agent was on the panel but no isolates were available. No row present when the agent is not part of that genus's testing panel.",
-    "statement": "In {location}, {value} isolates of {species} were tested for {agent}",
+    "short_description": "Total number of isolates tested for resistance to a specific antimicrobial agent",
+    "long_description": "Total number of isolates tested for susceptibility to a specific antimicrobial agent. Denominator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. NA when the source reports 'Not Tested' for that organism/year/agent combination. Zero when the agent was on the panel but no isolates were available.",
+    "statement": "In {location}, {value} isolates were tested for {antimicrobial}",
     "measure_type": "Count",
     "unit": "Isolates",
     "time_resolution": "Year",
-    "sources": [{ "id": "narms_now" }],
+    "sources": [
+      { "id": "narms_now" },
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
     "citations": []
   },
-
-  "narms_retail_pct_resistant": {
-    "id": "narms_retail_pct_resistant",
-    "short_name": "Percent resistant (retail meats)",
-    "long_name": "Percentage of retail meat isolates resistant to a specific antimicrobial agent",
+  "mic50": {
+    "id": "mic50",
+    "short_name": "MIC50",
+    "long_name": "Median minimum inhibitory concentration (MIC50)",
     "category": "antimicrobial_resistance",
-    "short_description": "Percentage of retail meat isolates testing resistant (R) to a specific antimicrobial agent, among positive cultures",
-    "long_description": "Percentage of retail meat isolates with a Resistant (R) call for a specific antimicrobial agent, calculated from individual isolate-level FDA NARMS retail meats data. Only isolates with GROWTH=YES (positive cultures) are included. Resistance is determined by CLSI breakpoints. Data are aggregated nationally by year, organism genus/species/serotype, meat source, and antibiotic. NA values indicate no isolates were tested for that combination.",
-    "statement": "In {location}, {value}% of {genus} isolates from {meat_source} were resistant to {antimicrobial}",
-    "measure_type": "Percent",
-    "unit": "Percent",
+    "short_description": "Median MIC value across isolates tested for a specific antimicrobial",
+    "long_description": "The MIC50 is the minimum inhibitory concentration (in micrograms per milliliter) at which 50% of isolates are inhibited — i.e., the median MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages.",
+    "statement": "The MIC50 for {antimicrobial} was {value} µg/mL",
+    "measure_type": "Concentration",
+    "unit": "µg/mL",
     "time_resolution": "Year",
-    "sources": [{ "id": "narms_retail_meats" }],
-    "citations": [
-      {
-        "title": "FDA NARMS Retail Meats Integrated Report",
-        "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries"
-      }
-    ]
-  },
-  "narms_retail_n_resistant": {
-    "id": "narms_retail_n_resistant",
-    "short_name": "Number resistant (retail meats)",
-    "long_name": "Number of retail meat isolates resistant to a specific antimicrobial agent",
-    "category": "antimicrobial_resistance",
-    "short_description": "Count of retail meat isolates with a Resistant (R) call for a specific antimicrobial",
-    "long_description": "Number of retail meat isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage. Only positive cultures (GROWTH=YES) are included.",
-    "statement": "In {location}, {value} {genus} isolates from {meat_source} were resistant to {antimicrobial}",
-    "measure_type": "Count",
-    "unit": "Isolates",
-    "time_resolution": "Year",
-    "sources": [{ "id": "narms_retail_meats" }],
+    "sources": [
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
     "citations": []
   },
-  "narms_retail_n_tested": {
-    "id": "narms_retail_n_tested",
-    "short_name": "Number tested (retail meats)",
-    "long_name": "Number of retail meat isolates tested for antimicrobial susceptibility",
+  "mic90": {
+    "id": "mic90",
+    "short_name": "MIC90",
+    "long_name": "90th percentile minimum inhibitory concentration (MIC90)",
     "category": "antimicrobial_resistance",
-    "short_description": "Total number of retail meat isolates tested for resistance to a specific antimicrobial",
-    "long_description": "Total number of retail meat isolates (GROWTH=YES) with a non-missing SIR call for a specific antimicrobial agent. Denominator of the resistance percentage.",
-    "statement": "In {location}, {value} {genus} isolates from {meat_source} were tested for {antimicrobial}",
-    "measure_type": "Count",
-    "unit": "Isolates",
+    "short_description": "90th percentile MIC value across isolates tested for a specific antimicrobial",
+    "long_description": "The MIC90 is the minimum inhibitory concentration (in micrograms per milliliter) at which 90% of isolates are inhibited — i.e., the 90th percentile MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages.",
+    "statement": "The MIC90 for {antimicrobial} was {value} µg/mL",
+    "measure_type": "Concentration",
+    "unit": "µg/mL",
     "time_resolution": "Year",
-    "sources": [{ "id": "narms_retail_meats" }],
-    "citations": []
-  },
-
-  "narms_animal_pathogen_pct_resistant": {
-    "id": "narms_animal_pathogen_pct_resistant",
-    "short_name": "Percent resistant (animal pathogen)",
-    "long_name": "Percentage of animal pathogen isolates resistant to a specific antimicrobial agent",
-    "category": "antimicrobial_resistance",
-    "short_description": "Percentage of animal diagnostic pathogen isolates showing resistance to a specific antimicrobial agent",
-    "long_description": "Percentage of animal diagnostic pathogen isolates tested by NARMS showing resistance to a specific antimicrobial agent, based on CLSI breakpoints. Data are from the FDA NARMS animal pathogen surveillance program, which tests isolates from veterinary diagnostic laboratories. Available at state level. Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella from various host species.",
-    "statement": "In {location}, {value}% of {genus} isolates from {host_species} were resistant to {antimicrobial}",
-    "measure_type": "Percent",
-    "unit": "Percent",
-    "time_resolution": "Year",
-    "sources": [{ "id": "narms_animal_pathogen" }],
-    "citations": [
-      {
-        "title": "FDA NARMS Animal Pathogen Data",
-        "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries"
-      }
-    ]
-  },
-  "narms_animal_pathogen_n_resistant": {
-    "id": "narms_animal_pathogen_n_resistant",
-    "short_name": "Number resistant (animal pathogen)",
-    "long_name": "Number of animal pathogen isolates resistant to a specific antimicrobial agent",
-    "category": "antimicrobial_resistance",
-    "short_description": "Count of animal diagnostic pathogen isolates showing resistance to a specific antimicrobial",
-    "long_description": "Number of animal diagnostic pathogen isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage.",
-    "statement": "In {location}, {value} {genus} isolates from {host_species} were resistant to {antimicrobial}",
-    "measure_type": "Count",
-    "unit": "Isolates",
-    "time_resolution": "Year",
-    "sources": [{ "id": "narms_animal_pathogen" }],
-    "citations": []
-  },
-  "narms_animal_pathogen_n_tested": {
-    "id": "narms_animal_pathogen_n_tested",
-    "short_name": "Number tested (animal pathogen)",
-    "long_name": "Number of animal pathogen isolates tested for antimicrobial susceptibility",
-    "category": "antimicrobial_resistance",
-    "short_description": "Total number of animal diagnostic pathogen isolates tested for resistance to a specific antimicrobial",
-    "long_description": "Total number of animal diagnostic pathogen isolates with a non-missing SIR call for a specific antimicrobial agent. Denominator of the resistance percentage.",
-    "statement": "In {location}, {value} {genus} isolates from {host_species} were tested for {antimicrobial}",
-    "measure_type": "Count",
-    "unit": "Isolates",
-    "time_resolution": "Year",
-    "sources": [{ "id": "narms_animal_pathogen" }],
-    "citations": []
-  },
-
-  "narms_food_animal_pct_resistant": {
-    "id": "narms_food_animal_pct_resistant",
-    "short_name": "Percent resistant (food-producing animals)",
-    "long_name": "Percentage of food-producing animal isolates resistant to a specific antimicrobial agent",
-    "category": "antimicrobial_resistance",
-    "short_description": "Percentage of food-producing animal isolates showing resistance to a specific antimicrobial agent",
-    "long_description": "Percentage of food-producing animal isolates tested by NARMS showing resistance to a specific antimicrobial agent, based on CLSI breakpoints. Data combine four FDA NARMS programs: HACCP (slaughter surveillance, 1997-present), Cecal (cecal sampling at slaughter, 2013-present), and Minor Species (2020-2022). National-level data only (no state breakdown). Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella. Source program and source type columns differentiate the sampling programs.",
-    "statement": "{value}% of {genus} isolates from {source_program} ({source_type}) were resistant to {antimicrobial}",
-    "measure_type": "Percent",
-    "unit": "Percent",
-    "time_resolution": "Year",
-    "sources": [{ "id": "narms_food_animals" }],
-    "citations": [
-      {
-        "title": "FDA NARMS Food-Producing Animals Integrated Report",
-        "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries"
-      }
-    ]
-  },
-  "narms_food_animal_n_resistant": {
-    "id": "narms_food_animal_n_resistant",
-    "short_name": "Number resistant (food-producing animals)",
-    "long_name": "Number of food-producing animal isolates resistant to a specific antimicrobial agent",
-    "category": "antimicrobial_resistance",
-    "short_description": "Count of food-producing animal isolates showing resistance to a specific antimicrobial",
-    "long_description": "Number of food-producing animal isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage. Only positive cultures (GROWTH=YES) are included.",
-    "statement": "{value} {genus} isolates from {source_program} ({source_type}) were resistant to {antimicrobial}",
-    "measure_type": "Count",
-    "unit": "Isolates",
-    "time_resolution": "Year",
-    "sources": [{ "id": "narms_food_animals" }],
-    "citations": []
-  },
-  "narms_food_animal_n_tested": {
-    "id": "narms_food_animal_n_tested",
-    "short_name": "Number tested (food-producing animals)",
-    "long_name": "Number of food-producing animal isolates tested for antimicrobial susceptibility",
-    "category": "antimicrobial_resistance",
-    "short_description": "Total number of food-producing animal isolates tested for resistance to a specific antimicrobial",
-    "long_description": "Total number of food-producing animal isolates (GROWTH=YES) with a non-missing SIR call for a specific antimicrobial agent. Denominator of the resistance percentage.",
-    "statement": "{value} {genus} isolates from {source_program} ({source_type}) were tested for {antimicrobial}",
-    "measure_type": "Count",
-    "unit": "Isolates",
-    "time_resolution": "Year",
-    "sources": [{ "id": "narms_food_animals" }],
+    "sources": [
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
     "citations": []
   },
 
   "_sources": {
+    "narms_now": {
+      "name": "NARMS Now: Human Data - Antimicrobial Resistance",
+      "url": "https://www.cdc.gov/narms/data/index.html",
+      "location": "NARMS Now Interactive Dashboard - Human Data",
+      "location_url": "https://app.powerbigov.us/view?r=eyJrIjoiZmU5ZjA2ZDItNTU0MS00M2EzLWEyZmQtZmY3Y2RlZjdjYTdjIiwidCI6IjljZTcwODY5LTYwZGItNDRmZC1hYmU4LWQyNzY3MDc3ZmM4ZiJ9",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov",
+      "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella). Both AST (phenotypic) and WGS (genotypic) test method results are available. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
     "narms_retail_meats": {
       "name": "FDA NARMS Retail Meats Surveillance Data",
       "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
@@ -217,17 +139,6 @@
       "organization_url": "https://www.fda.gov/animal-veterinary",
       "description": "Isolate-level antimicrobial susceptibility data from four FDA NARMS food-producing animal surveillance programs: (1) HACCP slaughter surveillance (1997-present), covering federally inspected slaughter and processing plants; (2) Cecal sampling at slaughter (2013-present), testing cecal contents from food animals; (3) Minor Species (2020-2022), covering less common food animal species. Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella. SIR calls based on CLSI breakpoints. National-level data only (no state breakdown). Data span 1997-2023.",
       "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
-      "date_accessed": 2026
-    },
-    "narms_now": {
-      "name": "NARMS Now: Human Data - Antimicrobial Resistance",
-      "url": "https://www.cdc.gov/narms/data/index.html",
-      "location": "NARMS Now Interactive Dashboard - Human Data",
-      "location_url": "https://app.powerbigov.us/view?r=eyJrIjoiZmU5ZjA2ZDItNTU0MS00M2EzLWEyZmQtZmY3Y2RlZjdjYTdjIiwidCI6IjljZTcwODY5LTYwZGItNDRmZC1hYmU4LWQyNzY3MDc3ZmM4ZiJ9",
-      "organization": "Centers for Disease Control and Prevention",
-      "organization_url": "https://www.cdc.gov",
-      "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella). Both AST (phenotypic) and WGS (genotypic) test method results are available. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
-      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
       "date_accessed": 2026
     }
   }
