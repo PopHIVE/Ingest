@@ -59,7 +59,7 @@ if (!identical(process$raw_state, raw_state)) {
   top_states_standard <- top_states %>%
     # Convert to long format
     tidyr::pivot_longer(
-      cols = c(KS_cases, NM_cases, TX_cases),
+      cols = c( NM_cases, TX_cases),
       names_to = "state",
       values_to = "value"
     ) %>%
