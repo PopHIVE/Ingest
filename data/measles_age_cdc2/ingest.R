@@ -7,6 +7,7 @@
 # Output:
 #   standard/data.csv.gz - Combined data with type = "new_cases" | "cumulative"
 # =============================================================================
+#These files are processed on a separate repostory (https://github.com/PopHIVE/measles_age_cdc_scraper) and pulled in and formatted here. 
 library(tidyverse)
 
 
@@ -66,6 +67,7 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
 
   a1 <- vroom::vroom(cum_file) %>%
+  filter(snapshot_date >= '2025-02-18') %>%
     mutate(
       geography = "00",
       type      = "cumulative",
