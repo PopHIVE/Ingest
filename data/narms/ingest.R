@@ -1039,21 +1039,44 @@ if (!identical(process$retail_meats_state, current_retail_state)) {
 
     retail_raw <- readxl::read_excel(retail_raw_path, sheet = "Retail_Meats")
 
-    # Filter to positive cultures; pivot antibiotic SIR columns to long format
-    retail_long <- retail_raw %>%
+    # MIC concentration columns (bare antibiotic codes, no suffix)
+    mic_col_names <- sir_codes
+
+    # Filter to positive cultures and add a row ID for joining
+    retail_filtered <- retail_raw %>%
       filter(GROWTH == "YES") %>%
-      select(YEAR, GENUS_NAME, SPECIES, SEROTYPE, SOURCE, STATE,
-             any_of(sir_col_names)) %>%
+      mutate(.row_id = row_number())
+
+    # Pivot SIR values to long format
+    sir_long <- retail_filtered %>%
+      select(.row_id, any_of(sir_col_names)) %>%
       pivot_longer(
         cols = any_of(sir_col_names),
         names_to = "antimicrobial",
         values_to = "sir"
       ) %>%
-      mutate(
-        antimicrobial = sub(" SIR$", "", antimicrobial),
-        antimicrobial = antimicrobial_names[antimicrobial]
+      mutate(antimicrobial = sub(" SIR$", "", antimicrobial))
+
+    # Pivot MIC values to long format
+    mic_long <- retail_filtered %>%
+      select(.row_id, any_of(mic_col_names)) %>%
+      pivot_longer(
+        cols = any_of(mic_col_names),
+        names_to = "antimicrobial",
+        values_to = "mic"
       ) %>%
-      filter(!is.na(sir))
+      mutate(mic = as.numeric(mic))
+
+    # Join SIR + MIC by row and antibiotic, map codes to full names
+    retail_long <- sir_long %>%
+      left_join(mic_long, by = c(".row_id", "antimicrobial")) %>%
+      left_join(
+        retail_filtered %>% select(.row_id, YEAR, GENUS_NAME, SPECIES, SEROTYPE, SOURCE, STATE),
+        by = ".row_id"
+      ) %>%
+      mutate(antimicrobial = antimicrobial_names[antimicrobial]) %>%
+      filter(!is.na(sir)) %>%
+      select(-.row_id)
 
     # Aggregate by state, converting abbreviation to FIPS
     retail_standard <- retail_long %>%
@@ -1061,9 +1084,11 @@ if (!identical(process$retail_meats_state, current_retail_state)) {
       filter(!is.na(geography)) %>%
       group_by(YEAR, GENUS_NAME, SPECIES, SEROTYPE, SOURCE, antimicrobial, geography) %>%
       summarize(
-        n_tested    = n(),
-        n_resistant = sum(sir == "R"),
-        .groups     = "drop"
+        n_tested      = n(),
+        n_resistant   = sum(sir == "R"),
+        mic50         = median(mic, na.rm = TRUE),
+        mic90         = quantile(mic, 0.90, na.rm = TRUE),
+        .groups       = "drop"
       ) %>%
       mutate(
         pct_resistant = n_resistant / n_tested * 100,
@@ -1077,7 +1102,7 @@ if (!identical(process$retail_meats_state, current_retail_state)) {
       ) %>%
       select(
         geography, time, genus, species, serotype, meat_source,
-        antimicrobial, pct_resistant, n_resistant, n_tested
+        antimicrobial, pct_resistant, n_resistant, n_tested, mic50, mic90
       )
 
     vroom::vroom_write(
@@ -1091,5 +1116,76 @@ if (!identical(process$retail_meats_state, current_retail_state)) {
     ))
 
     process$retail_meats_state <- current_retail_state
+    dcf::dcf_process_record(updated = process)
+}
+
+# =============================================================================
+# Source 4: NARMS Animal Pathogen Data (FDA/CVM - Vet-LIRN/NAHLN)
+# Source: FDA NARMS Integrated Reports/Summaries
+# URL: https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries
+# =============================================================================
+
+animal_path_raw_path <- "raw/narms-animal-pathogen.xlsx"
+animal_path_url <- "https://www.fda.gov/media/132928/download?attachment"
+
+download.file(animal_path_url, animal_path_raw_path, mode = "wb", quiet = TRUE)
+current_animal_path_state <- list(hash = as.character(tools::md5sum(animal_path_raw_path)))
+
+if (!identical(process$animal_pathogen_state, current_animal_path_state)) {
+    message("Processing NARMS animal pathogen data...")
+
+    if (!requireNamespace("readxl", quietly = TRUE)) library(readxl)
+
+    # FIPS lookup: full state names -> 2-digit FIPS
+    all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+    state_fips_lookup <- all_fips %>%
+      filter(nchar(geography) == 2) %>%
+      select(geography, geography_name)
+
+    animal_raw <- readxl::read_excel(animal_path_raw_path, sheet = "2017-2021_data")
+
+    # Data is already in long format with one row per isolate/drug
+    # Filter to interpretable results, exclude non-US (Canada)
+    animal_standard <- animal_raw %>%
+      filter(Interpretation != "Non-Interpretable") %>%
+      left_join(state_fips_lookup, by = c("State" = "geography_name")) %>%
+      filter(!is.na(geography)) %>%
+      mutate(MIC = as.numeric(MIC)) %>%
+      group_by(
+        geography, Year, Genus, `Host Species`, `Collection Source`, `Drug Name`
+      ) %>%
+      summarize(
+        n_tested      = n(),
+        n_resistant   = sum(Interpretation == "Resistant"),
+        mic50         = median(MIC, na.rm = TRUE),
+        mic90         = quantile(MIC, 0.90, na.rm = TRUE),
+        .groups       = "drop"
+      ) %>%
+      mutate(
+        pct_resistant = n_resistant / n_tested * 100,
+        time          = paste0(Year, "-12-31")
+      ) %>%
+      rename(
+        genus             = Genus,
+        host_species      = `Host Species`,
+        collection_source = `Collection Source`,
+        antimicrobial     = `Drug Name`
+      ) %>%
+      select(
+        geography, time, genus, host_species, collection_source,
+        antimicrobial, pct_resistant, n_resistant, n_tested, mic50, mic90
+      )
+
+    vroom::vroom_write(
+      animal_standard,
+      "standard/data_animal_pathogen.csv.gz",
+      delim = ","
+    )
+    message(sprintf(
+      "Wrote %d rows to standard/data_animal_pathogen.csv.gz",
+      nrow(animal_standard)
+    ))
+
+    process$animal_pathogen_state <- current_animal_path_state
     dcf::dcf_process_record(updated = process)
 }
