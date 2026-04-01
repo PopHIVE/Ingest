@@ -1,0 +1,49 @@
+on:
+  schedule:
+    # 2am ET (07:00 UTC; during EDT this runs at 3am)
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-noaa-heat-risk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libudunits2-dev libproj-dev libgdal-dev libgeos-dev
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::dplyr
+            any::terra
+            any::exactextractr
+            any::sf
+            any::tigris
+            any::vroom
+            any::arrow
+            github::dissc-yale/dcf
+          cache-version: 1
+      - run: Rscript -e "dcf::dcf_process('noaa_heat_risk')"
+      - id: diff
+        run: |
+          if git diff --exit-code; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add -A
+          git commit -m "scheduled noaa heat risk update"
+          git push
