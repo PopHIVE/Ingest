@@ -71,8 +71,8 @@ if (!identical(process$raw_state, raw_state)) {
       type      = "cumulative",
       time      = as.Date(`update_date`, format = "%B %d, %Y"),
       time = lubridate::floor_date(time, unit = "week", week_start = 7) + 6, # Align to Saturday of current week (which will be partial--this is consistent with how national data are reported)
-      week = lubridate::week(time),
-      year= lubridate::year(time)
+      week = MMWRweek::MMWRweek(time)$MMWRweek,
+      year = MMWRweek::MMWRweek(time)$MMWRyear
     ) %>% 
     group_by(update_date) %>%
     mutate(updateN = row_number())%>%
