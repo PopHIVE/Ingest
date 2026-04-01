@@ -95,6 +95,102 @@
     "citations": []
   },
 
+  "narms_animal_pathogen_pct_resistant": {
+    "id": "narms_animal_pathogen_pct_resistant",
+    "short_name": "Percent resistant (animal pathogen)",
+    "long_name": "Percentage of animal pathogen isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Percentage of animal diagnostic pathogen isolates showing resistance to a specific antimicrobial agent",
+    "long_description": "Percentage of animal diagnostic pathogen isolates tested by NARMS showing resistance to a specific antimicrobial agent, based on CLSI breakpoints. Data are from the FDA NARMS animal pathogen surveillance program, which tests isolates from veterinary diagnostic laboratories. Available at state level. Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella from various host species.",
+    "statement": "In {location}, {value}% of {genus} isolates from {host_species} were resistant to {antimicrobial}",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_animal_pathogen" }],
+    "citations": [
+      {
+        "title": "FDA NARMS Animal Pathogen Data",
+        "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries"
+      }
+    ]
+  },
+  "narms_animal_pathogen_n_resistant": {
+    "id": "narms_animal_pathogen_n_resistant",
+    "short_name": "Number resistant (animal pathogen)",
+    "long_name": "Number of animal pathogen isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Count of animal diagnostic pathogen isolates showing resistance to a specific antimicrobial",
+    "long_description": "Number of animal diagnostic pathogen isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage.",
+    "statement": "In {location}, {value} {genus} isolates from {host_species} were resistant to {antimicrobial}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_animal_pathogen" }],
+    "citations": []
+  },
+  "narms_animal_pathogen_n_tested": {
+    "id": "narms_animal_pathogen_n_tested",
+    "short_name": "Number tested (animal pathogen)",
+    "long_name": "Number of animal pathogen isolates tested for antimicrobial susceptibility",
+    "category": "antimicrobial_resistance",
+    "short_description": "Total number of animal diagnostic pathogen isolates tested for resistance to a specific antimicrobial",
+    "long_description": "Total number of animal diagnostic pathogen isolates with a non-missing SIR call for a specific antimicrobial agent. Denominator of the resistance percentage.",
+    "statement": "In {location}, {value} {genus} isolates from {host_species} were tested for {antimicrobial}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_animal_pathogen" }],
+    "citations": []
+  },
+
+  "narms_food_animal_pct_resistant": {
+    "id": "narms_food_animal_pct_resistant",
+    "short_name": "Percent resistant (food-producing animals)",
+    "long_name": "Percentage of food-producing animal isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Percentage of food-producing animal isolates showing resistance to a specific antimicrobial agent",
+    "long_description": "Percentage of food-producing animal isolates tested by NARMS showing resistance to a specific antimicrobial agent, based on CLSI breakpoints. Data combine four FDA NARMS programs: HACCP (slaughter surveillance, 1997-present), Cecal (cecal sampling at slaughter, 2013-present), and Minor Species (2020-2022). National-level data only (no state breakdown). Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella. Source program and source type columns differentiate the sampling programs.",
+    "statement": "{value}% of {genus} isolates from {source_program} ({source_type}) were resistant to {antimicrobial}",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_food_animals" }],
+    "citations": [
+      {
+        "title": "FDA NARMS Food-Producing Animals Integrated Report",
+        "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries"
+      }
+    ]
+  },
+  "narms_food_animal_n_resistant": {
+    "id": "narms_food_animal_n_resistant",
+    "short_name": "Number resistant (food-producing animals)",
+    "long_name": "Number of food-producing animal isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Count of food-producing animal isolates showing resistance to a specific antimicrobial",
+    "long_description": "Number of food-producing animal isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage. Only positive cultures (GROWTH=YES) are included.",
+    "statement": "{value} {genus} isolates from {source_program} ({source_type}) were resistant to {antimicrobial}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_food_animals" }],
+    "citations": []
+  },
+  "narms_food_animal_n_tested": {
+    "id": "narms_food_animal_n_tested",
+    "short_name": "Number tested (food-producing animals)",
+    "long_name": "Number of food-producing animal isolates tested for antimicrobial susceptibility",
+    "category": "antimicrobial_resistance",
+    "short_description": "Total number of food-producing animal isolates tested for resistance to a specific antimicrobial",
+    "long_description": "Total number of food-producing animal isolates (GROWTH=YES) with a non-missing SIR call for a specific antimicrobial agent. Denominator of the resistance percentage.",
+    "statement": "{value} {genus} isolates from {source_program} ({source_type}) were tested for {antimicrobial}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [{ "id": "narms_food_animals" }],
+    "citations": []
+  },
+
   "_sources": {
     "narms_retail_meats": {
       "name": "FDA NARMS Retail Meats Surveillance Data",
@@ -104,6 +200,24 @@
       "description": "Isolate-level antimicrobial susceptibility data from the FDA NARMS retail meats program. Samples collected from retail stores in participating states. Organisms tested include Campylobacter (coli, jejuni), Enterococcus (faecalis, faecium), Escherichia coli, and Salmonella (multiple serotypes). Meat sources include retail chicken, ground beef, ground turkey, pork chops, and veal. SIR (Susceptible/Intermediate/Resistant) calls based on CLSI breakpoints. Data span 2002-2021.",
       "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
       "date_accessed": 2025
+    },
+    "narms_animal_pathogen": {
+      "name": "FDA NARMS Animal Pathogen Surveillance Data",
+      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
+      "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
+      "organization_url": "https://www.fda.gov/animal-veterinary",
+      "description": "Antimicrobial susceptibility data from the FDA NARMS animal diagnostic pathogen surveillance program. Isolates submitted by veterinary diagnostic laboratories across the United States. Organisms tested include Campylobacter, E. coli, Enterococcus, and Salmonella from various host species (cattle, swine, poultry, etc.). SIR calls based on CLSI breakpoints. Data available at state level.",
+      "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
+    "narms_food_animals": {
+      "name": "FDA NARMS Food-Producing Animals Surveillance Data",
+      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
+      "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
+      "organization_url": "https://www.fda.gov/animal-veterinary",
+      "description": "Isolate-level antimicrobial susceptibility data from four FDA NARMS food-producing animal surveillance programs: (1) HACCP slaughter surveillance (1997-present), covering federally inspected slaughter and processing plants; (2) Cecal sampling at slaughter (2013-present), testing cecal contents from food animals; (3) Minor Species (2020-2022), covering less common food animal species. Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella. SIR calls based on CLSI breakpoints. National-level data only (no state breakdown). Data span 1997-2023.",
+      "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
     },
     "narms_now": {
       "name": "NARMS Now: Human Data - Antimicrobial Resistance",
