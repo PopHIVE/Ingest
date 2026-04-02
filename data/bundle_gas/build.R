@@ -35,7 +35,14 @@ gas_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = 
   select(-state_name) %>%
   filter(geography != "United States") %>%
   mutate(source = "cdc_stss_cases_nnds_cum") %>%
-  dplyr::select(geography, date, year, week, value , source, new_value)
+  left_join(
+    vroom::vroom("../../resources/pop_state.csv.gz", show_col_types = FALSE) %>%
+      filter(age_level == "Total") %>%
+      select(geography = geography, popsize),
+    by = "geography"
+  ) %>%
+  mutate(value_incidence = new_value / popsize * 100000) %>%
+  dplyr::select(geography, date, year, week, value, source, new_value, popsize, value_incidence)
 
 # -----------------------------------------------------------------------------
 # 2. Load ABCs GAS standard files

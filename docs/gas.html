@@ -9,20 +9,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --purple:       #7e22ce;
-      --purple-dark:  #4c1d95;
-      --purple-mid:   #a855f7;
-      --purple-light: #ede9fe;
-      --purple-pale:  #f5f3ff;
-      --gray-50:  #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-400: #9ca3af;
-      --gray-600: #4b5563;
-      --gray-800: #1f2937;
-      --gray-900: #111827;
-      --red:   #dc2626;
-      --teal:  #0d9488;
+      --navy:        #032243;
+      --navy-mid:    #063066;
+      --navy-light:  #0a4080;
+      --accent:      #f97316;   /* orange — infectious diseases */
+      --accent-light:#fff7ed;
+      --accent-pale: #ffedd5;
+      --teal:        #14b8a6;
+      --purple:      #8b5cf6;
+      --red:         #ef4444;
+      --lime:        #84cc16;
+      --gray-50:     #f9fafb;
+      --gray-100:    #f3f4f6;
+      --gray-200:    #e5e7eb;
+      --gray-400:    #9ca3af;
+      --gray-500:    #6b7280;
+      --gray-600:    #4b5563;
+      --gray-800:    #1f2937;
+      --gray-900:    #111827;
+      --white:       #ffffff;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,59 +41,89 @@
 
     /* ── Header ── */
     header {
-      background: #fff;
-      border-bottom: 1px solid var(--gray-200);
+      background: var(--navy);
       padding: 0 2rem;
-      height: 58px;
+      height: 60px;
       display: flex;
       align-items: center;
       position: sticky;
       top: 0;
       z-index: 200;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
     }
-    .logo { font-weight: 700; font-size: 1.15rem; color: var(--purple); letter-spacing: -.5px; }
-    .logo span { color: var(--gray-600); font-weight: 400; }
-    nav { margin-left: auto; display: flex; gap: 1.5rem; font-size: .85rem; }
-    nav a { text-decoration: none; color: var(--gray-600); transition: color .15s; }
-    nav a:hover { color: var(--purple); }
-    .nav-tag {
-      background: var(--purple-light);
-      color: var(--purple);
+    .logo {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--white);
+      letter-spacing: -.5px;
+    }
+    .logo span { color: var(--accent); }
+    nav { margin-left: auto; display: flex; gap: 1.5rem; font-size: .85rem; align-items: center; }
+    nav a { text-decoration: none; color: rgba(255,255,255,.7); transition: color .15s; }
+    nav a:hover { color: var(--white); }
+    .nav-badge {
+      background: var(--accent);
+      color: #fff;
       border-radius: 999px;
-      padding: .15rem .65rem;
-      font-size: .7rem;
-      font-weight: 600;
-      letter-spacing: .04em;
+      padding: .18rem .7rem;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
     }
 
     /* ── Hero ── */
     .hero {
-      background: linear-gradient(135deg, var(--purple-dark) 0%, #6d28d9 60%, #7c3aed 100%);
+      background: var(--navy);
       color: #fff;
-      padding: 3rem 2rem 3.5rem;
+      padding: 3.5rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
     }
-    .hero-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: -80px; bottom: -80px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: rgba(249,115,22,.08);
+      pointer-events: none;
+    }
+    .hero-inner { max-width: 780px; margin: 0 auto; text-align: center; position: relative; }
     .hero-badge {
-      display: inline-block;
-      background: rgba(255,255,255,.18);
-      border: 1px solid rgba(255,255,255,.3);
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(249,115,22,.15);
+      border: 1px solid rgba(249,115,22,.35);
       border-radius: 999px;
-      padding: .2rem 1rem;
+      padding: .25rem 1rem;
       font-size: .7rem;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: .1em;
       text-transform: uppercase;
-      margin-bottom: .9rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
     }
-    .hero h1 { font-size: 2.4rem; font-weight: 700; line-height: 1.2; margin-bottom: .75rem; }
-    .hero p { font-size: 1.05rem; opacity: .88; max-width: 640px; margin: 0 auto; }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: .85rem;
+      letter-spacing: -.5px;
+    }
+    .hero p {
+      font-size: 1rem;
+      opacity: .82;
+      max-width: 660px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
 
     /* ── Key stats ── */
     .stats-bar {
-      background: var(--purple-pale);
-      border-bottom: 1px solid var(--purple-light);
-      padding: 1.25rem 2rem;
+      background: var(--navy-mid);
+      padding: 1.5rem 2rem;
     }
     .stats-grid {
       max-width: 1200px;
@@ -98,25 +133,25 @@
       gap: 1rem;
     }
     .stat-card {
-      background: #fff;
-      border: 1px solid var(--purple-light);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
       border-radius: 10px;
-      padding: 1rem 1.25rem;
+      padding: 1.1rem 1.25rem;
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: .9rem;
     }
     .stat-icon {
-      width: 42px; height: 42px;
-      background: var(--purple-light);
+      width: 40px; height: 40px;
+      background: rgba(249,115,22,.18);
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; flex-shrink: 0;
+      font-size: 1.15rem; flex-shrink: 0;
     }
-    .stat-num { font-size: 1.55rem; font-weight: 700; color: var(--purple); line-height: 1; }
-    .stat-label { font-size: .72rem; color: var(--gray-600); margin-top: .15rem; }
+    .stat-num { font-size: 1.6rem; font-weight: 800; color: var(--white); line-height: 1; }
+    .stat-label { font-size: .7rem; color: rgba(255,255,255,.6); margin-top: .2rem; }
 
-    /* ── Container + Sections ── */
+    /* ── Main layout ── */
     .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 
     .section { padding: 2.75rem 0; border-bottom: 1px solid var(--gray-200); }
@@ -124,12 +159,12 @@
 
     .section-header { margin-bottom: 1.5rem; }
     .section-tag {
-      font-size: .68rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .1em;
-      color: var(--purple); margin-bottom: .3rem;
+      font-size: .65rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--accent); margin-bottom: .3rem;
     }
-    .section-title { font-size: 1.4rem; font-weight: 700; margin-bottom: .4rem; }
-    .section-desc { font-size: .9rem; color: var(--gray-600); max-width: 700px; }
+    .section-title { font-size: 1.4rem; font-weight: 700; margin-bottom: .4rem; color: var(--navy); }
+    .section-desc { font-size: .88rem; color: var(--gray-500); max-width: 700px; line-height: 1.7; }
 
     /* ── Controls ── */
     .controls {
@@ -149,7 +184,7 @@
       appearance: none; cursor: pointer; color: var(--gray-900);
       transition: border-color .15s, box-shadow .15s;
     }
-    select:focus { outline: none; border-color: var(--purple-mid); box-shadow: 0 0 0 3px var(--purple-light); }
+    select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(249,115,22,.15); }
 
     .btn-group {
       display: flex; gap: .2rem;
@@ -162,7 +197,7 @@
       color: var(--gray-600); font-weight: 500;
       transition: all .15s;
     }
-    .btn.active { background: #fff; color: var(--purple); box-shadow: 0 1px 3px rgba(0,0,0,.1); font-weight: 600; }
+    .btn.active { background: #fff; color: var(--navy); box-shadow: 0 1px 3px rgba(0,0,0,.1); font-weight: 700; }
     .btn:hover:not(.active) { background: var(--gray-200); }
 
     /* ── Chart card ── */
@@ -175,8 +210,8 @@
       overflow: hidden;
     }
     .chart-title {
-      font-size: .82rem; font-weight: 600;
-      color: var(--gray-800); margin-bottom: .5rem;
+      font-size: .8rem; font-weight: 600;
+      color: var(--gray-600); margin-bottom: .5rem;
       padding: 0 .25rem;
     }
 
@@ -187,8 +222,8 @@
     /* ── Details / about ── */
     details { margin-top: .6rem; }
     summary {
-      cursor: pointer; color: var(--purple);
-      font-size: .82rem; font-weight: 500;
+      cursor: pointer; color: var(--accent);
+      font-size: .8rem; font-weight: 600;
       display: flex; align-items: center; gap: .3rem;
       list-style: none; user-select: none;
     }
@@ -196,35 +231,39 @@
     summary::before { content: '▸ '; }
     details[open] summary::before { content: '▾ '; }
     details .about-body {
-      margin-top: .6rem; font-size: .82rem;
+      margin-top: .6rem; font-size: .81rem;
       color: var(--gray-600); line-height: 1.75;
       padding: .75rem 1rem;
       background: var(--gray-50);
-      border-left: 3px solid var(--purple-light);
+      border-left: 3px solid var(--accent-pale);
       border-radius: 0 6px 6px 0;
     }
 
     /* ── Sources ── */
-    .sources-section { background: var(--gray-50); padding: 2.5rem 0; }
-    .sources-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    .sources-section { background: var(--navy); padding: 2.75rem 0; }
+    .sources-section .section-tag { color: var(--accent); }
+    .sources-section .section-title { color: #fff; font-size: 1.25rem; }
+    .sources-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem; }
     .source-card {
-      background: #fff; border: 1px solid var(--gray-200);
-      border-radius: 8px; padding: 1.1rem 1.25rem;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: 1.1rem 1.25rem;
     }
     .source-name { font-weight: 600; font-size: .875rem; margin-bottom: .3rem; }
-    .source-name a { color: var(--purple); text-decoration: none; }
+    .source-name a { color: var(--accent); text-decoration: none; }
     .source-name a:hover { text-decoration: underline; }
-    .source-desc { font-size: .8rem; color: var(--gray-600); line-height: 1.6; }
+    .source-desc { font-size: .8rem; color: rgba(255,255,255,.6); line-height: 1.65; }
 
     /* ── Footer ── */
     footer {
-      background: var(--gray-900);
-      color: var(--gray-400);
-      padding: 2rem 1.5rem;
-      font-size: .8rem;
+      background: #020f1e;
+      color: rgba(255,255,255,.45);
+      padding: 1.75rem 1.5rem;
+      font-size: .78rem;
       text-align: center;
     }
-    footer a { color: var(--purple-mid); text-decoration: none; }
+    footer strong { color: rgba(255,255,255,.85); }
+    footer a { color: var(--accent); text-decoration: none; }
 
     /* ── Responsive ── */
     @media (max-width: 900px) {
@@ -232,20 +271,20 @@
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
-      .hero h1 { font-size: 1.6rem; }
+      .hero h1 { font-size: 1.7rem; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
       nav { gap: .75rem; }
     }
 
-    /* ── Map note ── */
-    .map-note {
+    /* ── Data note ── */
+    .data-note {
       display: flex; align-items: flex-start; gap: .5rem;
-      background: var(--purple-pale); border: 1px solid var(--purple-light);
+      background: var(--accent-light);
+      border: 1px solid var(--accent-pale);
       border-radius: 8px; padding: .65rem .9rem;
-      font-size: .78rem; color: var(--purple-dark);
-      margin-bottom: 1rem;
+      font-size: .78rem; color: #92400e;
+      margin-bottom: 1.1rem;
     }
-    .map-note svg { flex-shrink: 0; margin-top: .1rem; }
   </style>
 </head>
 <body>
@@ -256,10 +295,10 @@
 <header>
   <div class="logo">Pop<span>HIVE</span></div>
   <nav>
-    <a href="#">Home</a>
-    <a href="#">About</a>
-    <a href="#">Dashboards</a>
-    <span class="nav-tag">Infectious Diseases</span>
+    <a href="https://pophive.org">Home</a>
+    <a href="https://pophive.org/about">About</a>
+    <a href="https://pophive.org/dashboards">Dashboards</a>
+    <span class="nav-badge">Infectious Diseases</span>
   </nav>
 </header>
 
@@ -271,45 +310,44 @@
     <div class="hero-badge">Infectious Diseases</div>
     <h1>Invasive Group A Streptococcus</h1>
     <p>
-      Group A <em>Streptococcus</em> (GAS) causes a wide spectrum of disease, from
-      mild pharyngitis to life-threatening invasive infections including necrotizing
-      fasciitis and streptococcal toxic shock syndrome. Rates of invasive GAS have
-      risen substantially since 2017. This dashboard draws on CDC Active Bacterial
-      Core (ABCs) surveillance data spanning 1997–2023.
+      Group A <em>Streptococcus</em> (GAS) causes a wide spectrum of disease—from mild
+      pharyngitis to life-threatening invasive infections including necrotizing fasciitis
+      and streptococcal toxic shock syndrome. This dashboard draws on CDC Active Bacterial
+      Core (ABCs) surveillance data from 1997–2023.
     </p>
   </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     KEY STATS
+     KEY STATS  (computed from real data)
 ═══════════════════════════════════════════════════════════ -->
 <div class="stats-bar">
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon">📈</div>
       <div>
-        <div class="stat-num">5.8</div>
+        <div class="stat-num">12.9</div>
         <div class="stat-label">Cases per 100k (2023, national)</div>
       </div>
     </div>
     <div class="stat-card">
       <div class="stat-icon">⬆️</div>
       <div>
-        <div class="stat-num">+66%</div>
+        <div class="stat-num">+111%</div>
         <div class="stat-label">Rise in incidence since 2017</div>
       </div>
     </div>
     <div class="stat-card">
       <div class="stat-icon">👴</div>
       <div>
-        <div class="stat-num">20.8</div>
+        <div class="stat-num">27.8</div>
         <div class="stat-label">Cases per 100k in adults 65+ (2023)</div>
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon">💊</div>
+      <div class="stat-icon">🔬</div>
       <div>
-        <div class="stat-num">36%</div>
+        <div class="stat-num">27%</div>
         <div class="stat-label">Isolates resistant to erythromycin (2023)</div>
       </div>
     </div>
@@ -318,50 +356,41 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     SECTION 1 — MAP
+     SECTION 1 — OVERALL TRENDS
 ═══════════════════════════════════════════════════════════ -->
 <div class="section">
   <div class="container">
     <div class="section-header">
-      <div class="section-tag">Geographic Distribution</div>
-      <h2 class="section-title">Invasive GAS Incidence by Surveillance Site</h2>
+      <div class="section-tag">National Trends</div>
+      <h2 class="section-title">Invasive GAS Case and Death Rates, 1997–2023</h2>
       <p class="section-desc">
-        Annual incidence rates (cases per 100,000 population) across the 10 states
-        participating in CDC Active Bacterial Core (ABCs) surveillance.
+        Annual incidence and mortality rates (per 100,000 population) from CDC Active
+        Bacterial Core (ABCs) national surveillance. Rates dropped sharply during the
+        COVID-19 pandemic, then rebounded to record highs in 2022–2023.
       </p>
     </div>
 
-    <div class="map-note">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="7" stroke="#6d28d9" stroke-width="1.5"/>
-        <path d="M8 7v4M8 5v.5" stroke="#6d28d9" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      ABCs surveillance covers approximately 15% of the U.S. population across
-      10 sites. States without ABCs coverage are shown in light gray.
-    </div>
-
     <div class="controls">
-      <span class="control-label">Year</span>
-      <select id="map-year"></select>
-      <span class="control-label" style="margin-left:.5rem;">Measure</span>
-      <select id="map-metric">
-        <option value="case">Case rate per 100,000</option>
-        <option value="death">Death rate per 100,000</option>
-      </select>
+      <span class="control-label">Measure</span>
+      <div class="btn-group" id="overall-metric-btns">
+        <button class="btn active" data-metric="cases">Case rate</button>
+        <button class="btn" data-metric="deaths">Death rate</button>
+      </div>
     </div>
 
     <div class="chart-box">
-      <div id="map-chart" style="height:430px;"></div>
+      <div id="overall-chart" style="height:380px;"></div>
     </div>
     <details>
       <summary>About this chart</summary>
       <div class="about-body">
         Rates are estimated from CDC Active Bacterial Core (ABCs) surveillance, a
         population-based active surveillance system that identifies all laboratory-confirmed
-        cases of invasive GAS disease (GAS isolated from a normally sterile site) in
-        defined geographic areas. Rates are calculated per 100,000 population using
+        cases of invasive GAS disease (GAS isolated from a normally sterile site such as
+        blood, CSF, or pleural fluid). Rates are calculated per 100,000 population using
         U.S. Census intercensal and postcensal estimates. Death rates reflect in-hospital
-        deaths among ABCs cases. Geographic coverage varies slightly across years.
+        deaths among ABCs cases. National data cover all surveillance sites.
+        ABCs surveillance covers approximately 15% of the U.S. population.
       </div>
     </details>
   </div>
@@ -369,16 +398,17 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     SECTION 2 — TRENDS
+     SECTION 2 — DEMOGRAPHIC TRENDS
 ═══════════════════════════════════════════════════════════ -->
 <div class="section">
   <div class="container">
     <div class="section-header">
-      <div class="section-tag">Temporal Trends</div>
-      <h2 class="section-title">Trends in Invasive GAS Disease, 1997–2023</h2>
+      <div class="section-tag">Demographic Trends</div>
+      <h2 class="section-title">Case Rates by Age, Sex, and Race/Ethnicity</h2>
       <p class="section-desc">
-        National trends stratified by age group, sex, or race/ethnicity. Use the
-        controls to switch between demographic strata and between case and death rates.
+        National invasive GAS incidence stratified by demographic group.
+        Older adults and males consistently bear the highest burden; Black Americans
+        had disproportionately high rates in earlier years.
       </p>
     </div>
 
@@ -386,13 +416,8 @@
       <span class="control-label">Stratify by</span>
       <div class="btn-group" id="strat-btns">
         <button class="btn active" data-strat="age">Age group</button>
-        <button class="btn" data-strat="race">Race/ethnicity</button>
         <button class="btn" data-strat="sex">Sex</button>
-      </div>
-      <span class="control-label" style="margin-left:.5rem;">Measure</span>
-      <div class="btn-group" id="metric-btns">
-        <button class="btn active" data-metric="case">Case rate</button>
-        <button class="btn" data-metric="death">Death rate</button>
+        <button class="btn" data-strat="race">Race/ethnicity</button>
       </div>
     </div>
 
@@ -402,11 +427,12 @@
     <details>
       <summary>About this chart</summary>
       <div class="about-body">
-        All rates are per 100,000 population, age-adjusted where applicable.
-        The sharp decline in 2020 reflects reduced transmission and healthcare
-        utilization during the COVID-19 pandemic, followed by a marked rebound
-        in 2021–2023. Race/ethnicity data are available for a subset of ABCs sites.
-        Rates for small demographic groups may be suppressed in some years.
+        All rates are case rates per 100,000 population from CDC ABCs national surveillance.
+        Age-specific rates use age-stratified population denominators. Race/ethnicity data
+        reflect the categories reported in ABCs surveillance (White, Black, Other); Hispanic
+        ethnicity is not reported separately in current ABCs summary data.
+        The sharp decline in 2020 reflects reduced transmission and healthcare utilization
+        during the COVID-19 pandemic, followed by a marked rebound through 2023.
       </div>
     </details>
   </div>
@@ -414,43 +440,61 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     SECTION 3 — BEESWARM / STATE COMPARISON
+     SECTION 3 — NNDS: STSS CUMULATIVE CASES + MAP
 ═══════════════════════════════════════════════════════════ -->
 <div class="section">
   <div class="container">
     <div class="section-header">
-      <div class="section-tag">State Comparison</div>
-      <h2 class="section-title">Comparing ABCs Sites by Demographic Stratum</h2>
+      <div class="section-tag">NNDSS Surveillance</div>
+      <h2 class="section-title">Streptococcal Toxic Shock Syndrome — Weekly Cumulative Cases</h2>
       <p class="section-desc">
-        Each point represents one ABCs surveillance site. Hover over a point to identify
-        the state. This view highlights which demographic groups drive the cross-state
-        variation in invasive GAS incidence.
+        Cumulative STSS case counts reported to the National Notifiable Diseases Surveillance
+        System (NNDSS), by MMWR week. Each line represents one reporting year. STSS is a
+        severe manifestation of invasive GAS infection. 2026 data are preliminary and incomplete.
       </p>
     </div>
 
-    <div class="controls">
-      <span class="control-label">Stratify by</span>
-      <div class="btn-group" id="bee-strat-btns">
-        <button class="btn active" data-strat="age">Age group</button>
-        <button class="btn" data-strat="race">Race/ethnicity</button>
-      </div>
-      <span class="control-label" style="margin-left:.5rem;">Year</span>
-      <select id="bee-year"></select>
-    </div>
-
     <div class="chart-box">
-      <div id="bee-chart" style="height:420px;"></div>
+      <div id="nnds-cum-chart" style="height:400px;"></div>
     </div>
     <details>
       <summary>About this chart</summary>
       <div class="about-body">
-        Each point is one ABCs surveillance state. The horizontal spread within each
-        category is a random jitter added for legibility; the y-axis value (rate per 100,000)
-        is exact. The box spans the interquartile range (IQR) of state rates; the line
-        shows the median. Wider spread indicates greater between-state heterogeneity.
-        New Mexico consistently reports the highest rates across demographic groups,
-        likely driven by higher prevalence of underlying risk conditions (e.g., diabetes,
-        homelessness, substance use disorder).
+        Data are cumulative nationally reported STSS cases from NNDSS (Table 1). Values
+        represent the running total of reported cases within each calendar year. Weeks with
+        no new data appear as flat segments. The sharp increase starting in 2023 reflects
+        both rising STSS incidence and improved state reporting. 2026 data through MMWR week 9 only.
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Geographic Distribution</div>
+      <h2 class="section-title">STSS Cases by State (NNDSS)</h2>
+      <p class="section-desc">
+        Total reported STSS cases by state for each year from NNDSS. States shown in gray
+        reported zero cases, which may reflect lack of STSS mandated reporting rather than true absence.
+      </p>
+    </div>
+
+    <div class="controls">
+      <span class="control-label">Year</span>
+      <select id="nnds-map-year"></select>
+    </div>
+
+    <div class="chart-box">
+      <div id="nnds-map-chart" style="height:460px;"></div>
+    </div>
+    <details>
+      <summary>About this chart</summary>
+      <div class="about-body">
+        Map shows total cumulative STSS cases reported to NNDSS by state for the selected year.
+        Not all states mandate STSS reporting; states with zero cases may lack reporting
+        requirements rather than having no cases. Reporting completeness has improved
+        substantially since 2022. Territories are excluded.
       </div>
     </details>
   </div>
@@ -458,22 +502,22 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     SECTION 4 — SYNDROME + RESISTANCE (2-up)
+     SECTION 4 — SYNDROME + RESISTANCE
 ═══════════════════════════════════════════════════════════ -->
 <div class="section">
   <div class="container">
     <div class="section-header">
       <div class="section-tag">Clinical Features &amp; Resistance</div>
-      <h2 class="section-title">Syndrome Distribution and Antibiotic Resistance</h2>
+      <h2 class="section-title">Syndrome Distribution and Antimicrobial Resistance</h2>
       <p class="section-desc">
-        How the clinical presentation of invasive GAS disease has shifted over time,
-        alongside trends in antimicrobial resistance among GAS isolates.
+        How the clinical presentation of invasive GAS has shifted over time, alongside
+        trends in antimicrobial resistance among GAS isolates.
       </p>
     </div>
 
     <div class="grid-2">
       <div>
-        <div class="chart-title">Syndrome distribution among invasive GAS cases (national)</div>
+        <div class="chart-title">Syndrome distribution (% of national invasive GAS cases)</div>
         <div class="chart-box">
           <div id="syndrome-chart" style="height:360px;"></div>
         </div>
@@ -481,14 +525,15 @@
           <summary>About this chart</summary>
           <div class="about-body">
             Percentages represent the proportion of invasive GAS cases with each clinical
-            syndrome recorded at the time of hospitalization. Cases can be assigned to more
+            syndrome recorded at the time of hospitalization. Cases may be assigned to more
             than one syndrome; totals may exceed 100%. STSS = streptococcal toxic shock
-            syndrome; NF = necrotizing fasciitis.
+            syndrome; NF = necrotizing fasciitis. Cellulitis has increased substantially
+            as a share of invasive GAS cases over the surveillance period.
           </div>
         </details>
       </div>
       <div>
-        <div class="chart-title">Antimicrobial resistance among invasive GAS isolates (national, % resistant)</div>
+        <div class="chart-title">Antimicrobial resistance (% isolates non-susceptible, national)</div>
         <div class="chart-box">
           <div id="resist-chart" style="height:360px;"></div>
         </div>
@@ -496,13 +541,48 @@
           <summary>About this chart</summary>
           <div class="about-body">
             Percent of invasive GAS isolates tested that were non-susceptible to each
-            antibiotic. GAS remains uniformly susceptible to penicillin and vancomycin;
-            those lines are omitted for clarity. Erythromycin and clindamycin resistance
-            are clinically relevant for patients with penicillin allergy.
+            antibiotic. Data for specific antibiotics are only available from 2006 onward
+            in this dataset. GAS remains universally susceptible to penicillin and vancomycin
+            (not shown). Erythromycin and clindamycin resistance are clinically relevant for
+            patients with penicillin allergy. Tetracycline resistance rose sharply through 2021.
           </div>
         </details>
       </div>
     </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 4 — EMM TYPES
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Molecular Epidemiology</div>
+      <h2 class="section-title">EMM Type Distribution, 1997–2023</h2>
+      <p class="section-desc">
+        The proportion of invasive GAS isolates belonging to key EMM types. EMM typing
+        identifies the surface protein gene that determines immune escape, vaccine targets,
+        and strain emergence. emm1 historically dominated; recent shifts show rising emm12
+        and declining emm89.
+      </p>
+    </div>
+
+    <div class="chart-box">
+      <div id="emm-chart" style="height:400px;"></div>
+    </div>
+    <details>
+      <summary>About this chart</summary>
+      <div class="about-body">
+        EMM type percentages represent the share of isolates typed each year belonging to
+        each EMM type. "Other" aggregates all remaining types. Null values indicate the type
+        was not yet tracked or represented fewer than the reporting threshold for that year.
+        The dramatic drop in emm1 and rise in emm12 in 2023 reflects an ongoing shift in
+        the circulating strains following the COVID-19 pandemic-era disruption of GAS
+        transmission dynamics.
+      </div>
+    </details>
   </div>
 </div>
 
@@ -513,7 +593,7 @@
 <div class="sources-section">
   <div class="container">
     <div class="section-tag">Data Sources</div>
-    <h2 class="section-title" style="font-size:1.25rem;">About the Data</h2>
+    <h2 class="section-title">About the Data</h2>
     <div class="sources-grid">
       <div class="source-card">
         <div class="source-name">
@@ -521,28 +601,31 @@
         </div>
         <div class="source-desc">
           Population-based active laboratory surveillance for invasive bacterial pathogens
-          in 10 U.S. states, covering ~15% of the U.S. population. Cases are defined by
-          isolation of GAS from a normally sterile site (blood, CSF, pleural fluid, etc.).
-          Annual data available 1997–2023. Includes demographic stratification, clinical
-          syndrome, and antimicrobial susceptibility data.
+          across U.S. surveillance sites, covering approximately 15% of the U.S. population.
+          Cases are defined by isolation of GAS from a normally sterile site (blood, CSF,
+          pleural fluid, etc.). Annual data available 1997–2023. Includes demographic
+          stratification, clinical syndrome, antimicrobial susceptibility, and EMM typing.
+          Public domain — CDC data is not subject to copyright restrictions.
         </div>
       </div>
       <div class="source-card">
         <div class="source-name">
-          <a href="https://data.cdc.gov" target="_blank">CDC WONDER / Surveillance Reports</a>
+          <a href="https://github.com/PopHIVE/Ingest" target="_blank">PopHIVE Ingest Pipeline</a>
         </div>
         <div class="source-desc">
-          Population denominators for rate calculations are derived from U.S. Census Bureau
-          intercensal and postcensal estimates. All incidence rates are per 100,000 persons
-          in the ABCs surveillance area. Data accessed via the PopHIVE ingest pipeline.
-          Public domain — CDC data is not subject to copyright restrictions.
+          All data shown here were processed through the PopHIVE standardized ingest
+          pipeline. Raw data were downloaded directly from CDC surveillance reports and
+          transformed into a consistent format. Source code and processed data files
+          are publicly available at the PopHIVE/Ingest GitHub repository under the
+          <code style="font-size:.75rem; background:rgba(255,255,255,.1); padding:.1rem .3rem; border-radius:3px;">gas</code>
+          branch. Data are updated annually following ABCs publication.
         </div>
       </div>
     </div>
-    <p style="margin-top:1rem; font-size:.78rem; color:var(--gray-600);">
-      <strong>Note:</strong> This dashboard uses representative estimates derived from ABCs surveillance
-      data. For clinical or policy decisions, consult the primary CDC surveillance reports.
-      Data are updated annually following ABCs publication.
+    <p style="margin-top:1.25rem; font-size:.77rem; color:rgba(255,255,255,.45);">
+      <strong style="color:rgba(255,255,255,.6);">Note:</strong>
+      This dashboard uses national aggregate estimates from ABCs surveillance.
+      For clinical or policy decisions, consult the primary CDC surveillance reports.
     </p>
   </div>
 </div>
@@ -553,9 +636,10 @@
 ═══════════════════════════════════════════════════════════ -->
 <footer>
   <div>
-    <strong style="color:#fff;">PopHIVE</strong> — Population Health Integrated Visualization Engine<br>
-    <span>Yale School of Public Health &amp; Yale DISSC · <a href="https://pophive.org">pophive.org</a></span><br>
-    <span style="margin-top:.4rem; display:block; font-size:.72rem;">
+    <strong>PopHIVE</strong> — Population Health Integrated Visualization Engine<br>
+    Yale School of Public Health &amp; Yale DISSC ·
+    <a href="https://pophive.org">pophive.org</a><br>
+    <span style="margin-top:.35rem; display:block; font-size:.72rem;">
       Research tool for public health professionals. Not intended for clinical decision-making.
     </span>
   </div>
@@ -563,424 +647,291 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     JAVASCRIPT — Data + Charts
+     JAVASCRIPT — Real Data + Charts
 ═══════════════════════════════════════════════════════════ -->
 <script>
 // ─────────────────────────────────────────────────────────────
-// DATA
+// REAL DATA — extracted from data/abcs_gas/standard/*.csv.gz
 // ─────────────────────────────────────────────────────────────
-
-const YEARS = Array.from({length: 27}, (_, i) => 1997 + i); // 1997–2023
-
-// National overall case rate per 100,000 (invasive GAS)
-const BASE_CASE = [
-  3.5, 3.8, 3.9, 4.1, 4.0, 3.8, 3.6, 3.7, 3.9, 4.0,
-  4.1, 4.2, 4.0, 3.8, 3.9, 4.0, 4.2, 4.3, 4.4, 4.5,
-  4.8, 5.0, 5.2, 4.2, 4.8, 5.5, 5.8
-];
-
-// Death rate ≈ 12% CFR, slightly higher in later years
-const BASE_DEATH = BASE_CASE.map((r, i) => +(r * (0.11 + i * 0.001)).toFixed(2));
-
-// Age multipliers (case rate relative to overall national)
-const AGE_MULT_CASE = {
-  'Overall': 1.00, '0–4': 1.22, '5–17': 0.24,
-  '18–49': 0.64, '50–64': 1.46, '65+': 3.58
-};
-// CFR multipliers by age (fraction of case rate)
-const AGE_CFR = {
-  'Overall': 0.12, '0–4': 0.04, '5–17': 0.02,
-  '18–49': 0.07, '50–64': 0.13, '65+': 0.22
-};
-
-// Race/ethnicity multipliers
-const RACE_MULT_CASE = { 'Overall': 1.00, 'White': 0.82, 'Black': 1.92, 'Hispanic': 0.87 };
-const RACE_CFR       = { 'Overall': 0.12, 'White': 0.11, 'Black': 0.15, 'Hispanic': 0.10 };
-
-// Sex multipliers
-const SEX_MULT_CASE = { 'Overall': 1.00, 'Male': 1.13, 'Female': 0.88 };
-const SEX_CFR       = { 'Overall': 0.12, 'Male': 0.13, 'Female': 0.11 };
-
-// ABCs surveillance states (10 sites)
-const STATES = {
-  abbr:   ['CA','CO','CT','GA','MD','MN','NM','NY','OR','TN'],
-  names:  ['California','Colorado','Connecticut','Georgia','Maryland',
-            'Minnesota','New Mexico','New York','Oregon','Tennessee'],
-  // State-specific factor relative to national overall
-  factor: [0.75, 1.02, 1.20, 0.92, 1.05, 0.94, 1.47, 1.15, 0.86, 1.00],
-  // Small state-specific age perturbation to add heterogeneity (additive, per 100k)
-  agePert: [
-    [-0.2, 0.0,  0.1, -0.1, 0.2],  // CA: slightly lower 0-4, higher 65+
-    [ 0.1,-0.1, -0.1,  0.3,-0.5],  // CO
-    [ 0.3, 0.1,  0.0, -0.2, 0.4],  // CT
-    [-0.1, 0.0,  0.2,  0.1,-0.3],  // GA
-    [ 0.0,-0.2,  0.0,  0.2, 0.5],  // MD
-    [-0.3, 0.1, -0.1,  0.0, 0.3],  // MN
-    [ 0.4, 0.2,  0.3,  0.5, 1.2],  // NM: consistently elevated
-    [ 0.1, 0.0,  0.0, -0.1, 0.6],  // NY
-    [-0.1,-0.1,  0.1,  0.0,-0.2],  // OR
-    [ 0.0, 0.1, -0.1,  0.2, 0.1]   // TN
-  ]
-};
-
-// Compute state case rate for a given year
-function stateRate(stateIdx, yearIdx) {
-  return BASE_CASE[yearIdx] * STATES.factor[stateIdx];
-}
-
-// Syndrome data — percentages of invasive GAS cases (national)
-const SYNDROMES = {
-  labels: ['Bacteremia w/o focus', 'Cellulitis / soft tissue', 'Pneumonia',
-           'STSS', 'Necrotizing fasciitis', 'Other'],
-  colors: ['#7c3aed','#a78bfa','#c4b5fd','#ddd6fe','#ede9fe','#d1fae5'],
-  // One array per syndrome, length = 27 (one per year)
-  data: [
-    // Bacteremia
-    [30.0,31.5,32.0,32.5,33.0,33.5,33.0,32.5,32.0,31.5,
-     31.8,32.2,32.5,33.0,33.5,34.0,34.5,34.8,35.0,35.3,
-     35.5,35.2,34.8,34.5,34.8,35.2,35.5],
-    // Cellulitis
-    [33.7,34.2,34.8,35.1,35.4,35.8,36.0,36.2,36.5,36.8,
-     36.5,36.2,36.0,35.8,35.5,35.2,35.0,34.8,34.5,34.2,
-     34.0,33.8,33.5,33.2,33.0,32.8,32.5],
-    // Pneumonia
-    [10.1,10.0, 9.8, 9.6, 9.5, 9.3, 9.2, 9.0, 8.9, 8.8,
-      8.7, 8.6, 8.5, 8.4, 8.3, 8.2, 8.1, 8.0, 8.2, 8.4,
-      8.6, 8.8, 9.0, 9.2, 9.5, 9.8,10.0],
-    // STSS
-    [6.5, 6.8, 7.0, 7.2, 7.5, 7.8, 8.0, 8.2, 8.3, 8.2,
-     8.0, 7.8, 7.6, 7.4, 7.2, 7.0, 6.8, 6.6, 6.5, 6.5,
-     6.8, 7.0, 7.2, 7.5, 7.8, 8.0, 8.2],
-    // NF
-    [4.2, 4.3, 4.4, 4.5, 4.6, 4.8, 5.0, 5.1, 5.2, 5.1,
-     5.0, 4.9, 4.8, 4.7, 4.6, 4.5, 4.5, 4.6, 4.8, 5.0,
-     5.2, 5.4, 5.5, 5.6, 5.8, 6.0, 6.2]
-    // "Other" is computed as residual below
-  ]
-};
-// Add "Other" as residual so bars sum to 100%
-SYNDROMES.data.push(
-  SYNDROMES.data[0].map((_, yi) =>
-    Math.max(0, 100 - SYNDROMES.data.slice(0, 5).reduce((s, arr) => s + arr[yi], 0))
-  )
-);
-
-// Resistance data (% of isolates resistant)
-const RESISTANCE = {
-  labels: ['Erythromycin','Clindamycin','Tetracycline'],
-  colors: ['#7c3aed','#0d9488','#dc2626'],
-  data: [
-    // Erythromycin
-    [ 8, 9,10,11,12,13,14,16,18,20,22,24,26,25,24,23,25,27,29,30,32,33,34,33,34,35,36],
-    // Clindamycin
-    [ 5, 5, 6, 7, 7, 8, 9,10,11,12,14,16,17,16,15,14,15,17,18,19,20,20,21,21,22,23,23],
-    // Tetracycline
-    [20,22,24,25,26,27,29,31,33,35,37,39,41,40,39,38,39,41,43,44,45,44,45,44,45,46,47]
-  ]
-};
-
+const DATA = {"years": [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023], "overall": {"cases": [3.5, 3.8, 3.5, 3.2, 3.7, 3.1, 3.8, 3.3, 3.6, 3.8, 3.8, 3.9, 3.6, 4.0, 4.2, 3.3, 3.6, 4.8, 4.8, 5.8, 7.2, 7.6, 7.6, 6.1, 6.3, 8.2, 12.9], "deaths": [0.4, 0.5, 0.45, 0.4, 0.5, 0.5, 0.59, 0.42, 0.49, 0.52, 0.44, 0.51, 0.41, 0.39, 0.49, 0.35, 0.36, 0.5, 0.47, 0.58, 0.59, 0.69, 0.67, 0.55, 0.56, 0.75, 1.26]}, "age": {"<1 years": [8.3, 7.5, 4.7, 5.2, 5.1, 6.9, 5.2, 4.3, 5.8, 5.1, 6.4, 6.4, 5.5, 5.2, 3.4, 5.2, 2.7, 3.9, 4.4, 4.9, 5.7, 5.1, 3.3, 2.9, 2.5, 1.9, 12.0], "1 year old": [3.7, 4.6, 6.7, 6.0, 2.6, 3.6, 2.7, 3.4, 5.1, 4.1, 4.0, 5.3, 5.0, 5.8, 3.4, 2.9, 2.5, 4.2, 4.2, 5.9, 2.7, 2.3, 7.1, 3.6, 1.1, 3.2, 8.2], "2-4 years old": [2.9, 2.8, 2.4, 1.7, 2.5, 2.7, 3.4, 2.2, 2.8, 2.6, 2.7, 2.4, 2.1, 2.8, 2.8, 2.0, 2.2, 2.9, 3.1, 2.1, 3.2, 2.7, 2.9, 0.9, 0.5, 2.0, 5.7], "5-17 years old": [1.2, 1.4, 1.4, 1.5, 1.3, 1.3, 1.6, 1.0, 1.4, 1.4, 1.2, 1.5, 1.3, 1.7, 1.6, 0.7, 1.1, 1.3, 1.5, 1.4, 1.6, 1.7, 1.4, 0.7, 0.4, 1.3, 3.4], "18-34 years old": [2.1, 2.2, 2.0, 1.8, 2.0, 1.6, 1.9, 2.1, 2.1, 1.9, 1.9, 2.0, 1.8, 1.9, 2.3, 2.0, 1.9, 3.0, 2.8, 3.7, 4.9, 5.1, 4.7, 4.7, 5.2, 5.3, 6.1], "35-49 years old": [3.3, 3.6, 3.4, 3.2, 4.1, 2.7, 3.6, 3.0, 3.4, 3.6, 3.7, 3.8, 3.7, 4.0, 3.7, 3.2, 3.1, 4.5, 4.7, 5.6, 7.6, 7.3, 7.5, 7.3, 7.0, 9.4, 12.5], "50-64 years old": [4.7, 4.8, 4.4, 3.5, 4.8, 4.0, 4.8, 4.3, 4.5, 5.0, 4.9, 5.3, 4.7, 5.0, 4.9, 4.5, 5.0, 6.7, 6.8, 8.3, 9.5, 10.1, 10.6, 8.4, 9.6, 12.0, 17.9], "65+ years olds": [9.2, 10.0, 8.5, 8.5, 9.8, 8.9, 10.7, 9.2, 8.9, 10.1, 9.8, 9.2, 8.9, 10.0, 11.8, 7.9, 9.2, 10.5, 10.0, 12.0, 15.0, 16.8, 16.1, 11.1, 10.7, 15.2, 27.8]}, "sex": {"Male": [3.9, 4.2, 3.9, 3.6, 4.1, 3.5, 4.1, 3.6, 3.9, 4.1, 3.9, 4.4, 3.9, 4.3, 4.5, 3.8, 4.1, 5.3, 5.7, 6.5, 8.3, 8.9, 8.9, 7.5, 7.6, 9.9, 15.0], "Female": [3.2, 3.4, 3.2, 2.9, 3.4, 2.9, 3.9, 3.1, 3.3, 3.5, 3.6, 3.4, 3.2, 3.6, 4.1, 3.0, 3.2, 4.4, 4.1, 5.0, 6.2, 6.3, 6.2, 4.8, 5.0, 6.6, 10.8]}, "race": {"White": [3.3, 3.2, 3.1, 2.9, 3.5, 3.0, 3.8, 3.1, 3.4, 3.5, 3.5, 3.6, 3.3, 3.9, 4.2, 3.2, 3.6, 4.7, 4.8, 5.7, 7.3, 7.8, 7.8, 6.3, 6.5, 9.1, 14.0], "Black": [5.5, 6.7, 5.3, 5.3, 5.0, 3.9, 4.8, 4.4, 4.4, 4.9, 4.7, 5.3, 4.3, 4.7, 4.0, 3.7, 3.4, 5.0, 5.0, 6.2, 6.9, 7.1, 6.9, 5.7, 5.7, 6.8, 11.9], "Other": [2.9, 3.3, 4.2, 2.1, 3.7, 2.4, 1.8, 3.2, 3.5, 3.8, 4.7, 3.6, 4.8, 3.4, 4.6, 3.9, 4.0, 5.1, 4.5, 5.7, 6.6, 6.7, 7.3, 5.5, 6.0, 5.4, 8.0]}, "syn_years": [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023], "syndromes": {"Cellulitis": [33.7, 34.2, 32.3, 33.3, 35.3, 36.4, 32.2, 31.7, 32.0, 31.8, 33.3, 31.5, 32.9, 37.0, 38.6, 39.4, 41.2, 42.7, 38.6, 42.6, 44.5, 42.1, 44.7, 48.7, 48.5, 47.8, 46.4], "Bacteremia (no focus)": [30.0, 35.6, 34.7, 35.3, 28.7, 27.9, 27.1, 30.1, 28.1, 32.5, 32.9, 30.0, 24.8, 22.5, 20.7, 24.0, 20.3, 19.6, 20.7, 21.1, 20.2, 21.2, 20.2, 21.2, 17.1, 15.0, 15.5], "Pneumonia": [11.3, 11.6, 11.9, 14.0, 12.9, 14.7, 17.3, 13.9, 16.5, 15.3, 12.2, 17.0, 15.7, 15.5, 17.8, 14.2, 13.2, 14.4, 17.8, 13.6, 12.6, 14.6, 15.0, 13.9, 10.5, 12.3, 14.4], "Necrotizing fasciitis": [7.8, 5.1, 6.2, 6.0, 7.0, 6.1, 7.1, 7.5, 7.1, 6.9, 6.3, 6.6, 5.8, 5.7, 7.7, 6.8, 7.8, 7.9, 7.7, 5.4, 4.9, 5.7, 4.5, 6.0, 4.5, 5.1, 5.9], "Strep toxic shock": [6.0, 5.1, 3.4, 4.0, 5.9, 6.0, 6.5, 5.7, 4.6, 5.1, 5.3, 5.2, 5.6, 3.3, 4.3, 3.7, 2.4, 2.7, 4.3, 2.9, 2.4, 1.8, 3.2, 2.3, 1.6, 2.3, 4.0]}, "res_years": [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023], "resistance": {"Erythromycin": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 11.9, 13.4, 13.7, 10.1, 8.2, 11.5, 13.2, 13.9, 14.5, 14.9, 16.0, 22.0, 24.8, 24.7, 29.8, 35.1, 33.9, 27.4], "Clindamycin": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.7, 2.7, 4.2, 3.6, 3.6, 8.9, 11.2, 12.5, 13.1, 13.1, 14.7, 21.3, 24.2, 23.8, 29.2, 34.7, 33.1, 26.4], "Tetracycline": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 15.4, 18.8, 18.0, 13.3, 12.6, 11.2, 15.7, 16.2, 16.3, 17.0, 20.1, 25.7, 27.0, 30.5, 37.3, 43.6, 45.1, 32.1]}, "emm_years": [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023], "emm": {"emm1": [22.5, 19.62, 16.94, 19.46, 21.31, 23.89, 23.13, 22.14, 17.81, 20.7, 25.47, 20.75, 17.7, 23.71, 25.25, 14.94, 18.99, 23.52, 22.02, 14.53, 14.46, 15.25, 16.58, 11.09, 1.21, 4.97, 19.63], "emm12": [11.14, 7.17, 4.2, 7.35, 8.99, 10.07, 8.83, 7.21, 7.25, 10.68, 10.85, 9.49, 8.34, 7.14, 10.19, 8.24, 8.33, 8.23, 9.41, 8.35, 6.21, 6.07, 6.01, 4.36, 1.21, 6.31, 14.71], "emm28": [7.5, 9.81, 9.0, 7.22, 9.74, 11.01, 8.16, 8.49, 8.85, 9.04, 8.53, 8.06, 8.23, 6.83, 5.23, 7.29, 8.33, 5.78, 6.49, 5.15, 4.58, 5.33, 6.62, 4.25, 3.24, 2.73, 2.2], "emm89": [3.41, 4.34, 3.75, 4.9, 6.75, 5.62, 5.85, 4.63, 4.3, 4.03, 4.21, 7.17, 8.34, 7.56, 8.84, 14.59, 14.66, 14.49, 12.26, 9.5, 10.43, 8.52, 6.44, 6.34, 4.44, 3.01, 2.89], "emm59": [1.82, 0.75, 0.45, 0.77, 0.43, 0.23, 0.19, null, 0.49, 0.98, 1.22, 0.88, 0.11, 0.21, 2.25, 4.59, 4.22, 3.8, 3.35, 2.8, 1.72, 2.84, 4.98, 4.69, 2.74, 1.87, 1.36], "other": [39.77, 42.45, 48.73, 43.43, 38.12, 36.3, 42.03, 46.2, 48.77, 42.37, 38.32, 43.93, 47.24, 42.24, 37.06, 36.0, 28.06, 28.19, 23.38, 31.58, 27.06, 22.89, 20.92, 20.3, 22.27, 22.79, 22.62]}};
 
 // ─────────────────────────────────────────────────────────────
-// UTILITIES
+// PLOTLY CONFIG
 // ─────────────────────────────────────────────────────────────
-
-const PURPLE_SEQ = [
-  '#f3e8ff','#ddd6fe','#c4b5fd','#a78bfa',
-  '#8b5cf6','#7c3aed','#6d28d9','#5b21b6','#4c1d95'
-];
-// Six colors for trend lines (age groups etc.)
-const LINE_COLORS = ['#6d28d9','#0d9488','#dc2626','#d97706','#0369a1','#1d4ed8'];
-
-const PLOT_CONFIG = {
-  responsive: true,
-  displaylogo: false,
-  modeBarButtonsToRemove: ['select2d','lasso2d','zoomIn2d','zoomOut2d','autoScale2d']
-};
-const BASE_LAYOUT = {
+const LAYOUT_BASE = {
+  margin: { t: 16, r: 24, b: 48, l: 56 },
   paper_bgcolor: 'rgba(0,0,0,0)',
   plot_bgcolor:  'rgba(0,0,0,0)',
-  font: { family: 'Inter, sans-serif', size: 11.5, color: '#374151' },
-  margin: { t: 20, b: 50, l: 55, r: 20 },
-  legend: { font: { size: 11 }, bgcolor: 'rgba(255,255,255,.85)', bordercolor: '#e5e7eb', borderwidth: 1 }
+  font: { family: 'Inter, -apple-system, sans-serif', size: 11.5, color: '#4b5563' },
+  xaxis: { gridcolor: '#f3f4f6', linecolor: '#e5e7eb', zerolinecolor: '#e5e7eb' },
+  yaxis: { gridcolor: '#f3f4f6', linecolor: '#e5e7eb', zerolinecolor: '#e5e7eb' },
+  legend: { bgcolor: 'rgba(0,0,0,0)', borderwidth: 0, font: { size: 11 } },
+  hovermode: 'x unified',
 };
+const CFG = { displayModeBar: false, responsive: true };
 
+// Accent palette — orange first (brand), then supporting colors
+const PALETTE = [
+  '#f97316', '#0ea5e9', '#8b5cf6', '#14b8a6', '#ef4444',
+  '#f59e0b', '#84cc16', '#ec4899', '#64748b', '#06b6d4'
+];
 
-// ─────────────────────────────────────────────────────────────
-// CHART 1 — MAP
-// ─────────────────────────────────────────────────────────────
-
-let mapMetric = 'case';
-
-function getMapRates(yearIdx) {
-  return STATES.abbr.map((_, si) => {
-    const cr = stateRate(si, yearIdx);
-    return mapMetric === 'case' ? cr : cr * 0.12;
-  });
-}
-
-function drawMap() {
-  const yearIdx = +document.getElementById('map-year').value - 1997;
-  const rates = getMapRates(yearIdx);
-
-  const mx = mapMetric === 'case' ? 10 : 1.5;
-  const trace = {
-    type: 'choropleth',
-    locationmode: 'USA-states',
-    locations: STATES.abbr,
-    z: rates.map(r => +r.toFixed(2)),
-    text: STATES.names.map((n, i) => `${n}<br>${rates[i].toFixed(1)} per 100k`),
-    hovertemplate: '%{text}<extra></extra>',
-    colorscale: [
-      [0,   '#f5f3ff'], [0.15,'#ddd6fe'], [0.35,'#a78bfa'],
-      [0.6, '#7c3aed'], [0.8, '#5b21b6'], [1,   '#3b0764']
-    ],
-    reversescale: false,
-    zmin: 0, zmax: mx,
-    colorbar: {
-      title: { text: mapMetric === 'case' ? 'Cases per 100k' : 'Deaths per 100k', font: { size: 11 } },
-      thickness: 14, len: .75, tickfont: { size: 10 }
-    },
-    marker: { line: { color: '#fff', width: 1.5 } }
-  };
-
-  const layout = {
-    ...BASE_LAYOUT,
-    margin: { t: 10, b: 10, l: 10, r: 10 },
-    geo: {
-      scope: 'usa',
-      projection: { type: 'albers usa' },
-      showlakes: true, lakecolor: '#f0f9ff',
-      bgcolor: 'rgba(0,0,0,0)',
-      landcolor: '#f3f4f6',
-      subunitcolor: '#d1d5db',
-      showsubunits: true
-    }
-  };
-
-  Plotly.react('map-chart', [trace], layout, PLOT_CONFIG);
-}
-
-
-// ─────────────────────────────────────────────────────────────
-// CHART 2 — TRENDS
-// ─────────────────────────────────────────────────────────────
-
-let trendStrat = 'age';
-let trendMetric = 'case';
-
-function getTrendTraces() {
-  const multMap   = trendStrat === 'age'  ? AGE_MULT_CASE  :
-                    trendStrat === 'race' ? RACE_MULT_CASE  : SEX_MULT_CASE;
-  const cfrMap    = trendStrat === 'age'  ? AGE_CFR         :
-                    trendStrat === 'race' ? RACE_CFR         : SEX_CFR;
-  const groups = Object.keys(multMap);
-
-  return groups.map((g, i) => {
-    const yVals = YEARS.map((_, yi) => {
-      const base = trendMetric === 'case'
-        ? BASE_CASE[yi] * multMap[g]
-        : BASE_CASE[yi] * multMap[g] * cfrMap[g];
-      return +base.toFixed(2);
-    });
-    return {
-      type: 'scatter', mode: 'lines+markers',
-      name: g,
-      x: YEARS, y: yVals,
-      line: {
-        color: LINE_COLORS[i % LINE_COLORS.length],
-        width: g === 'Overall' ? 2.5 : 1.8,
-        dash: g === 'Overall' ? 'solid' : 'solid'
-      },
-      marker: { size: g === 'Overall' ? 5 : 4, color: LINE_COLORS[i % LINE_COLORS.length] },
-      hovertemplate: `<b>${g}</b>: %{y:.1f} per 100k<extra></extra>`
-    };
-  });
-}
-
-function drawTrend() {
-  const traces = getTrendTraces();
-  const yTitle = trendMetric === 'case' ? 'Case rate per 100,000' : 'Death rate per 100,000';
-
-  const layout = {
-    ...BASE_LAYOUT,
-    xaxis: { title: '', tickfont: { size: 11 }, showgrid: false, zeroline: false },
-    yaxis: { title: yTitle, tickfont: { size: 11 }, gridcolor: '#f3f4f6', zeroline: false },
-    hovermode: 'x unified',
-    // COVID annotation
-    shapes: [{
-      type: 'line', x0: 2020, x1: 2020, y0: 0, y1: 1, yref: 'paper',
-      line: { color: '#9ca3af', width: 1, dash: 'dot' }
-    }],
-    annotations: [{
-      x: 2020.1, y: .97, xref: 'x', yref: 'paper',
-      text: 'COVID-19', font: { size: 9.5, color: '#6b7280' },
-      showarrow: false, xanchor: 'left'
-    }]
-  };
-
-  Plotly.react('trend-chart', traces, layout, PLOT_CONFIG);
-}
-
-
-// ─────────────────────────────────────────────────────────────
-// CHART 3 — BEESWARM
-// ─────────────────────────────────────────────────────────────
-
-let beeStrat = 'age';
-
-function getBeeTraces(yearIdx) {
-  const AGE_GROUPS  = ['0–4','5–17','18–49','50–64','65+'];
-  const RACE_GROUPS = ['White','Black','Hispanic'];
-  const groups = beeStrat === 'age' ? AGE_GROUPS : RACE_GROUPS;
-
-  const multMap = beeStrat === 'age' ? AGE_MULT_CASE : RACE_MULT_CASE;
-
-  return groups.map((g, gi) => {
-    const yVals = STATES.abbr.map((_, si) => {
-      let r = BASE_CASE[yearIdx] * STATES.factor[si] * multMap[g];
-      if (beeStrat === 'age') r += STATES.agePert[si][gi];
-      return +Math.max(0, r).toFixed(2);
-    });
-    return {
-      type: 'box',
-      name: g,
-      y: yVals,
-      text: STATES.names,
-      boxpoints: 'all',
-      jitter: 0.48,
-      pointpos: 0,
-      hovertemplate: '<b>%{text}</b><br>%{y:.1f} per 100k<extra></extra>',
-      marker: {
-        color: LINE_COLORS[gi % LINE_COLORS.length],
-        size: 9,
-        line: { color: '#fff', width: 1.5 }
-      },
-      line: { color: LINE_COLORS[gi % LINE_COLORS.length], width: 1.2 },
-      fillcolor: LINE_COLORS[gi % LINE_COLORS.length].replace(')', ',0.08)').replace('rgb', 'rgba') + '',
-      boxmean: false,
-      whiskerwidth: 0.4
-    };
-  });
-}
-
-function drawBee() {
-  const yearIdx = +document.getElementById('bee-year').value - 1997;
-  const traces = getBeeTraces(yearIdx);
-  const layout = {
-    ...BASE_LAYOUT,
-    margin: { t: 20, b: 40, l: 60, r: 10 },
-    xaxis: { tickfont: { size: 12 }, showgrid: false },
-    yaxis: {
-      title: 'Case rate per 100,000',
-      tickfont: { size: 11 }, gridcolor: '#f3f4f6', zeroline: false
-    },
-    showlegend: false,
-    hovermode: 'closest'
-  };
-  Plotly.react('bee-chart', traces, layout, PLOT_CONFIG);
-}
-
-
-// ─────────────────────────────────────────────────────────────
-// CHART 4 — SYNDROMES (stacked bar)
-// ─────────────────────────────────────────────────────────────
-
-function drawSyndrome() {
-  const traces = SYNDROMES.labels.map((label, i) => ({
-    type: 'bar',
-    name: label,
-    x: YEARS,
-    y: SYNDROMES.data[i],
-    marker: { color: SYNDROMES.colors[i] },
-    hovertemplate: `<b>${label}</b>: %{y:.1f}%<extra></extra>`
-  }));
-
-  const layout = {
-    ...BASE_LAYOUT,
-    barmode: 'stack',
-    margin: { t: 10, b: 50, l: 50, r: 10 },
-    xaxis: { title: '', tickfont: { size: 10 }, showgrid: false },
-    yaxis: { title: 'Percent of cases (%)', tickfont: { size: 10 }, gridcolor: '#f3f4f6', range: [0, 105] },
-    legend: { ...BASE_LAYOUT.legend, traceorder: 'normal', font: { size: 10 } }
-  };
-  Plotly.react('syndrome-chart', traces, layout, PLOT_CONFIG);
-}
-
-
-// ─────────────────────────────────────────────────────────────
-// CHART 5 — RESISTANCE (line)
-// ─────────────────────────────────────────────────────────────
-
-function drawResist() {
-  const traces = RESISTANCE.labels.map((label, i) => ({
+function mkLine(x, y, name, color, dash) {
+  return {
     type: 'scatter', mode: 'lines+markers',
-    name: label,
-    x: YEARS,
-    y: RESISTANCE.data[i],
-    line: { color: RESISTANCE.colors[i], width: 2 },
-    marker: { size: 4 },
-    hovertemplate: `<b>${label}</b>: %{y}%<extra></extra>`
-  }));
-
-  const layout = {
-    ...BASE_LAYOUT,
-    margin: { t: 10, b: 50, l: 50, r: 10 },
-    xaxis: { title: '', tickfont: { size: 10 }, showgrid: false, zeroline: false },
-    yaxis: { title: 'Resistant isolates (%)', tickfont: { size: 10 }, gridcolor: '#f3f4f6', zeroline: false, range: [0, 60] },
-    hovermode: 'x unified'
+    x, y, name,
+    line:   { color, width: 2.2, dash: dash || 'solid' },
+    marker: { color, size: 4 },
+    connectgaps: true,
   };
-  Plotly.react('resist-chart', traces, layout, PLOT_CONFIG);
 }
-
 
 // ─────────────────────────────────────────────────────────────
-// INIT — populate selects, attach events, draw all charts
+// 1. OVERALL TREND
 // ─────────────────────────────────────────────────────────────
+let overallMetric = 'cases';
 
-function populateYearSelect(id, defaultYear) {
-  const sel = document.getElementById(id);
-  [...YEARS].reverse().forEach(y => {
-    const opt = document.createElement('option');
-    opt.value = y; opt.textContent = y;
-    if (y === defaultYear) opt.selected = true;
-    sel.appendChild(opt);
-  });
+function drawOverall() {
+  const vals = DATA.overall[overallMetric];
+  const label = overallMetric === 'cases' ? 'Case rate per 100,000' : 'Death rate per 100,000';
+  const trace = mkLine(DATA.years, vals, label, '#f97316');
+  Plotly.react('overall-chart', [trace], {
+    ...LAYOUT_BASE,
+    yaxis: { ...LAYOUT_BASE.yaxis, title: { text: label, standoff: 8 }, rangemode: 'tozero' },
+    showlegend: false,
+  }, CFG);
 }
+drawOverall();
 
-function bindBtnGroup(groupId, onSelect) {
-  document.getElementById(groupId).addEventListener('click', e => {
-    const btn = e.target.closest('.btn');
-    if (!btn) return;
-    document.querySelectorAll(`#${groupId} .btn`).forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    onSelect(btn.dataset.strat || btn.dataset.metric);
-  });
-}
-
-// Populate year dropdowns
-populateYearSelect('map-year', 2023);
-populateYearSelect('bee-year', 2023);
-
-// Map controls
-document.getElementById('map-year').addEventListener('change', drawMap);
-document.getElementById('map-metric').addEventListener('change', e => {
-  mapMetric = e.target.value; drawMap();
+document.getElementById('overall-metric-btns').addEventListener('click', e => {
+  const btn = e.target.closest('[data-metric]');
+  if (!btn) return;
+  overallMetric = btn.dataset.metric;
+  document.querySelectorAll('#overall-metric-btns .btn').forEach(b => b.classList.toggle('active', b === btn));
+  drawOverall();
 });
 
-// Trend controls
-bindBtnGroup('strat-btns', v => { trendStrat = v; drawTrend(); });
-bindBtnGroup('metric-btns', v => { trendMetric = v; drawTrend(); });
+// ─────────────────────────────────────────────────────────────
+// 2. DEMOGRAPHIC TRENDS
+// ─────────────────────────────────────────────────────────────
+let currentStrat = 'age';
 
-// Beeswarm controls
-bindBtnGroup('bee-strat-btns', v => { beeStrat = v; drawBee(); });
-document.getElementById('bee-year').addEventListener('change', drawBee);
+const AGE_LABELS = {
+  '<1 years': '<1 yr', '1 year old': '1 yr', '2-4 years old': '2–4 yrs',
+  '5-17 years old': '5–17 yrs', '18-34 years old': '18–34 yrs',
+  '35-49 years old': '35–49 yrs', '50-64 years old': '50–64 yrs',
+  '65+ years olds': '65+ yrs'
+};
 
-// Initial render
-drawMap();
+// Subset age to key groups for clarity
+const AGE_SHOW = ['<1 years', '5-17 years old', '18-34 years old',
+                  '35-49 years old', '50-64 years old', '65+ years olds'];
+
+function drawTrend() {
+  let traces = [];
+  if (currentStrat === 'age') {
+    AGE_SHOW.forEach((ag, i) => {
+      traces.push(mkLine(DATA.years, DATA.age[ag], AGE_LABELS[ag] || ag, PALETTE[i]));
+    });
+  } else if (currentStrat === 'sex') {
+    Object.entries(DATA.sex).forEach(([sx, vals], i) => {
+      traces.push(mkLine(DATA.years, vals, sx, PALETTE[i]));
+    });
+  } else {
+    Object.entries(DATA.race).forEach(([rc, vals], i) => {
+      traces.push(mkLine(DATA.years, vals, rc, PALETTE[i]));
+    });
+  }
+  Plotly.react('trend-chart', traces, {
+    ...LAYOUT_BASE,
+    yaxis: { ...LAYOUT_BASE.yaxis, title: { text: 'Cases per 100,000', standoff: 8 }, rangemode: 'tozero' },
+    legend: { ...LAYOUT_BASE.legend, orientation: 'h', y: -0.18 },
+  }, CFG);
+}
 drawTrend();
-drawBee();
-drawSyndrome();
-drawResist();
+
+document.getElementById('strat-btns').addEventListener('click', e => {
+  const btn = e.target.closest('[data-strat]');
+  if (!btn) return;
+  currentStrat = btn.dataset.strat;
+  document.querySelectorAll('#strat-btns .btn').forEach(b => b.classList.toggle('active', b === btn));
+  drawTrend();
+});
+
+// ─────────────────────────────────────────────────────────────
+// 3a. SYNDROME CHART
+// ─────────────────────────────────────────────────────────────
+{
+  const synColors = ['#f97316', '#0ea5e9', '#8b5cf6', '#14b8a6', '#ef4444'];
+  const traces = Object.entries(DATA.syndromes).map(([name, vals], i) =>
+    mkLine(DATA.syn_years, vals, name, synColors[i])
+  );
+  Plotly.newPlot('syndrome-chart', traces, {
+    ...LAYOUT_BASE,
+    yaxis: { ...LAYOUT_BASE.yaxis, title: { text: '% of cases', standoff: 6 }, rangemode: 'tozero' },
+    legend: { ...LAYOUT_BASE.legend, orientation: 'h', y: -0.26, font: { size: 10 } },
+    margin: { ...LAYOUT_BASE.margin, b: 80 },
+  }, CFG);
+}
+
+// ─────────────────────────────────────────────────────────────
+// 3b. RESISTANCE CHART — only show years with non-zero data
+// ─────────────────────────────────────────────────────────────
+{
+  const resColors = ['#ef4444', '#f97316', '#8b5cf6'];
+  const resKeys = ['Erythromycin', 'Clindamycin', 'Tetracycline'];
+  // Filter to years where at least one value is non-zero
+  const validIdx = DATA.res_years.map((_, i) =>
+    resKeys.some(k => DATA.resistance[k][i] > 0) ? i : -1
+  ).filter(i => i >= 0);
+  const resYears = validIdx.map(i => DATA.res_years[i]);
+
+  const traces = resKeys.map((key, i) =>
+    mkLine(resYears, validIdx.map(i2 => DATA.resistance[key][i2]), key, resColors[i])
+  );
+  Plotly.newPlot('resist-chart', traces, {
+    ...LAYOUT_BASE,
+    yaxis: { ...LAYOUT_BASE.yaxis, title: { text: '% resistant', standoff: 6 }, rangemode: 'tozero' },
+    legend: { ...LAYOUT_BASE.legend, orientation: 'h', y: -0.26, font: { size: 10 } },
+    margin: { ...LAYOUT_BASE.margin, b: 80 },
+  }, CFG);
+}
+
+// ─────────────────────────────────────────────────────────────
+// NNDS DATA — STSS cumulative cases from data/nnds/standard/data.csv.gz
+// ─────────────────────────────────────────────────────────────
+const NNDS_CUM = {
+  "2022": {"weeks": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52], "cumulative": [0,0,0,1,3,4,7,7,8,12,13,14,16,23,26,30,32,33,32,32,36,41,47,50,51,53,55,59,59,59,68,70,71,74,78,85,93,98,98,101,103,104,111,112,119,125,127,131,137,144,148,163]},
+  "2023": {"weeks": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52], "cumulative": [8,9,12,24,34,34,42,51,65,75,84,94,107,117,131,145,160,203,224,236,253,270,281,292,299,306,324,342,345,360,366,382,384,394,399,419,428,434,441,450,461,463,466,482,485,496,499,510,531,543,547,556]},
+  "2024": {"weeks": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52], "cumulative": [5,10,23,30,38,58,69,84,99,133,150,171,189,228,243,264,279,282,314,351,372,387,395,403,413,421,432,439,445,453,457,465,477,483,486,507,512,516,524,529,530,534,563,571,584,594,597,605,614,628,640,647]},
+  "2025": {"weeks": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53], "cumulative": [1,12,21,30,39,44,47,59,65,80,91,103,108,125,131,136,135,143,157,178,192,207,208,223,225,231,238,241,246,251,254,288,295,321,329,335,343,346,353,359,360,366,373,380,391,395,400,411,431,438,449,454,469]},
+  "2026": {"weeks": [1,2,3,4,5,6,7,8,9], "cumulative": [4,9,14,25,29,34,42,47,58]}
+};
+
+const NNDS_MAP = {
+  "2022": {"fips":["01","02","04","05","06","08","09","10","11","12","13","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","44","45","46","47","48","49","50","51","53","54","55","56"],"values":[0,0,1,1,0,1,0,0,0,0,0,0,0,23,8,0,0,4,0,14,0,6,1,0,0,10,2,0,10,0,12,0,10,16,0,1,0,0,3,0,2,0,0,0,25,3,8,0,1,0,1],"abbr":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"names":["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]},
+  "2023": {"fips":["01","02","04","05","06","08","09","10","11","12","13","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","44","45","46","47","48","49","50","51","53","54","55","56"],"values":[0,0,0,0,0,1,0,0,0,0,0,0,0,106,39,0,2,9,2,19,0,18,15,0,0,29,3,2,23,4,36,0,16,95,0,14,0,0,3,0,20,0,1,0,36,8,52,0,2,0,0],"abbr":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"names":["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]},
+  "2024": {"fips":["01","02","04","05","06","08","09","10","11","12","13","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","44","45","46","47","48","49","50","51","53","54","55","56"],"values":[0,0,1,1,0,1,1,0,0,0,21,0,0,42,62,0,4,10,2,29,0,23,10,0,0,19,11,5,47,7,36,0,17,86,0,26,0,0,7,16,41,0,1,0,36,14,71,0,0,0,0],"abbr":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"names":["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]},
+  "2025": {"fips":["01","02","04","05","06","08","09","10","11","12","13","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","44","45","46","47","48","49","50","51","53","54","55","56"],"values":[0,0,0,2,0,0,0,0,0,0,20,0,2,34,26,0,1,9,0,33,0,17,3,0,0,14,6,2,50,3,47,0,29,24,0,18,0,0,15,7,10,0,1,0,42,16,38,0,0,0,0],"abbr":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"names":["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]},
+  "2026": {"fips":["01","02","04","05","06","08","09","10","11","12","13","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","44","45","46","47","48","49","50","51","53","54","55","56"],"values":[0,0,0,0,0,0,0,0,0,0,0,0,1,0,10,0,0,4,0,4,0,3,0,0,0,0,0,0,8,1,0,0,1,4,0,4,0,0,2,3,0,0,0,0,1,0,12,0,0,0,0],"abbr":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"names":["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]}
+};
+
+// ─────────────────────────────────────────────────────────────
+// NNDS 1: Cumulative STSS cases by year (spaghetti plot)
+// ─────────────────────────────────────────────────────────────
+{
+  const yearColors = { '2022':'#9ca3af', '2023':'#0ea5e9', '2024':'#8b5cf6', '2025':'#f97316', '2026':'#ef4444' };
+  const yearDash   = { '2022':'dot', '2023':'solid', '2024':'solid', '2025':'solid', '2026':'dash' };
+  const traces = Object.keys(NNDS_CUM).map(yr => ({
+    type: 'scatter', mode: 'lines',
+    x: NNDS_CUM[yr].weeks,
+    y: NNDS_CUM[yr].cumulative,
+    name: yr + (yr === '2026' ? ' (partial)' : ''),
+    line: { color: yearColors[yr], width: yr === '2025' ? 3 : 2, dash: yearDash[yr] },
+    hovertemplate: 'Week %{x}: %{y} cases<extra>' + yr + '</extra>',
+  }));
+
+  Plotly.newPlot('nnds-cum-chart', traces, {
+    ...LAYOUT_BASE,
+    xaxis: { ...LAYOUT_BASE.xaxis, title: { text: 'MMWR Week', standoff: 6 }, dtick: 4, range: [1, 53] },
+    yaxis: { ...LAYOUT_BASE.yaxis, title: { text: 'Cumulative STSS cases', standoff: 8 }, rangemode: 'tozero' },
+    legend: { ...LAYOUT_BASE.legend, orientation: 'h', y: -0.18 },
+  }, CFG);
+}
+
+// ─────────────────────────────────────────────────────────────
+// NNDS 2: STSS state map with year selector
+// ─────────────────────────────────────────────────────────────
+{
+  const mapYearSel = document.getElementById('nnds-map-year');
+  const mapYears = Object.keys(NNDS_MAP).sort();
+  mapYears.forEach(yr => {
+    const opt = document.createElement('option');
+    opt.value = yr; opt.textContent = yr;
+    if (yr === '2025') opt.selected = true;
+    mapYearSel.appendChild(opt);
+  });
+
+  function drawNndsMap(yr) {
+    const d = NNDS_MAP[yr];
+    // Filter out territories (fips > 56)
+    const idx = d.fips.map((f, i) => parseInt(f) <= 56 ? i : -1).filter(i => i >= 0);
+    const locs = idx.map(i => d.abbr[i]);
+    const vals = idx.map(i => d.values[i]);
+    const names = idx.map(i => d.names[i]);
+    const text = idx.map(i => d.names[i] + ': ' + d.values[i] + ' cases');
+    const maxVal = Math.max(...vals, 1);
+
+    Plotly.react('nnds-map-chart', [{
+      type: 'choropleth',
+      locationmode: 'USA-states',
+      locations: locs,
+      z: vals,
+      text: text,
+      hoverinfo: 'text',
+      colorscale: [
+        [0, '#fff7ed'],
+        [0.15, '#fed7aa'],
+        [0.4, '#fb923c'],
+        [0.7, '#ea580c'],
+        [1, '#9a3412']
+      ],
+      zmin: 0,
+      zmax: maxVal,
+      colorbar: {
+        title: { text: 'Cases', font: { size: 11 } },
+        thickness: 14,
+        len: 0.6,
+        tickfont: { size: 10 },
+      },
+      marker: { line: { color: '#fff', width: 0.8 } },
+    }], {
+      ...LAYOUT_BASE,
+      geo: {
+        scope: 'usa',
+        showlakes: false,
+        bgcolor: 'rgba(0,0,0,0)',
+        lakecolor: 'rgba(0,0,0,0)',
+        landcolor: '#f3f4f6',
+        subunitcolor: '#e5e7eb',
+      },
+      margin: { t: 8, r: 8, b: 8, l: 8 },
+      dragmode: false,
+    }, CFG);
+  }
+
+  drawNndsMap('2025');
+  mapYearSel.addEventListener('change', () => drawNndsMap(mapYearSel.value));
+}
+
+// ─────────────────────────────────────────────────────────────
+// 5. EMM TYPES — stacked area
+// ─────────────────────────────────────────────────────────────
+{
+  const emmColors = ['#f97316', '#0ea5e9', '#8b5cf6', '#14b8a6', '#f59e0b', '#9ca3af'];
+  const emmKeys = ['emm1', 'emm12', 'emm28', 'emm89', 'emm59', 'other'];
+  const emmLabels = { emm1:'emm1', emm12:'emm12', emm28:'emm28', emm89:'emm89', emm59:'emm59', other:'Other' };
+
+  const traces = emmKeys.map((key, i) => ({
+    type: 'scatter',
+    mode: 'lines',
+    stackgroup: 'one',
+    x: DATA.emm_years,
+    y: DATA.emm[key],
+    name: emmLabels[key],
+    line: { color: emmColors[i], width: 0.5 },
+    fillcolor: emmColors[i] + 'bb',
+    connectgaps: true,
+    hovertemplate: '%{y:.1f}%<extra>' + emmLabels[key] + '</extra>',
+  }));
+
+  Plotly.newPlot('emm-chart', traces, {
+    ...LAYOUT_BASE,
+    yaxis: { ...LAYOUT_BASE.yaxis, title: { text: '% of isolates', standoff: 8 }, range: [0, 100] },
+    legend: { ...LAYOUT_BASE.legend, orientation: 'h', y: -0.15 },
+    hovermode: 'x unified',
+  }, CFG);
+}
 </script>
 </body>
 </html>
