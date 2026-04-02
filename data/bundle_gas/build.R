@@ -17,7 +17,6 @@ state_fips_lookup <- all_fips %>%
   filter(nchar(geography) == 2) %>%
   select(fips = geography, state_name = geography_name)
 
-
 gas_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = FALSE) %>%
    dplyr::select(time, mmwr_year, mmwr_week, geography,
    streptococcal_toxic_shock_syndrome) %>%
@@ -36,6 +35,22 @@ gas_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = 
   select(-state_name) %>%
   filter(geography != "United States") %>%
   mutate(source = "cdc_stss_cases_nnds_cum") %>%
-  dplyr::select(geography, date, year, week, value , source, new_value) 
+  dplyr::select(geography, date, year, week, value , source, new_value)
 
-     
+# -----------------------------------------------------------------------------
+# 2. Load ABCs GAS standard files
+# -----------------------------------------------------------------------------
+abcs_gas <- vroom::vroom('../abcs_gas/standard/data.csv.gz', show_col_types = FALSE)
+abcs_gas_syndromes <- vroom::vroom('../abcs_gas/standard/data_syndromes.csv.gz', show_col_types = FALSE)
+abcs_gas_resistance <- vroom::vroom('../abcs_gas/standard/data_resistance.csv.gz', show_col_types = FALSE)
+abcs_gas_emm <- vroom::vroom('../abcs_gas/standard/data_emm.csv.gz', show_col_types = FALSE)
+
+# -----------------------------------------------------------------------------
+# 3. Write outputs
+# -----------------------------------------------------------------------------
+dir.create("dist", showWarnings = FALSE)
+
+arrow::write_parquet(abcs_gas, "dist/abcs_gas.parquet")
+arrow::write_parquet(abcs_gas_syndromes, "dist/abcs_gas_syndromes.parquet")
+arrow::write_parquet(abcs_gas_resistance, "dist/abcs_gas_resistance.parquet")
+arrow::write_parquet(abcs_gas_emm, "dist/abcs_gas_emm.parquet")

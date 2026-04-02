@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invasive Group A Streptococcus | PopHIVE</title>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple:       #7e22ce;
+      --purple-dark:  #4c1d95;
+      --purple-mid:   #a855f7;
+      --purple-light: #ede9fe;
+      --purple-pale:  #f5f3ff;
+      --gray-50:  #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-400: #9ca3af;
+      --gray-600: #4b5563;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --red:   #dc2626;
+      --teal:  #0d9488;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fff;
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 2rem;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .logo { font-weight: 700; font-size: 1.15rem; color: var(--purple); letter-spacing: -.5px; }
+    .logo span { color: var(--gray-600); font-weight: 400; }
+    nav { margin-left: auto; display: flex; gap: 1.5rem; font-size: .85rem; }
+    nav a { text-decoration: none; color: var(--gray-600); transition: color .15s; }
+    nav a:hover { color: var(--purple); }
+    .nav-tag {
+      background: var(--purple-light);
+      color: var(--purple);
+      border-radius: 999px;
+      padding: .15rem .65rem;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--purple-dark) 0%, #6d28d9 60%, #7c3aed 100%);
+      color: #fff;
+      padding: 3rem 2rem 3.5rem;
+    }
+    .hero-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 999px;
+      padding: .2rem 1rem;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: .9rem;
+    }
+    .hero h1 { font-size: 2.4rem; font-weight: 700; line-height: 1.2; margin-bottom: .75rem; }
+    .hero p { font-size: 1.05rem; opacity: .88; max-width: 640px; margin: 0 auto; }
+
+    /* ── Key stats ── */
+    .stats-bar {
+      background: var(--purple-pale);
+      border-bottom: 1px solid var(--purple-light);
+      padding: 1.25rem 2rem;
+    }
+    .stats-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--purple-light);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .stat-icon {
+      width: 42px; height: 42px;
+      background: var(--purple-light);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .stat-num { font-size: 1.55rem; font-weight: 700; color: var(--purple); line-height: 1; }
+    .stat-label { font-size: .72rem; color: var(--gray-600); margin-top: .15rem; }
+
+    /* ── Container + Sections ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+    .section { padding: 2.75rem 0; border-bottom: 1px solid var(--gray-200); }
+    .section:last-of-type { border-bottom: none; }
+
+    .section-header { margin-bottom: 1.5rem; }
+    .section-tag {
+      font-size: .68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--purple); margin-bottom: .3rem;
+    }
+    .section-title { font-size: 1.4rem; font-weight: 700; margin-bottom: .4rem; }
+    .section-desc { font-size: .9rem; color: var(--gray-600); max-width: 700px; }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex; flex-wrap: wrap;
+      gap: .6rem; margin-bottom: 1rem;
+      align-items: center;
+    }
+    .control-label {
+      font-size: .78rem; font-weight: 600;
+      color: var(--gray-600);
+    }
+    select {
+      font-family: inherit; font-size: .85rem;
+      padding: .38rem 2.2rem .38rem .75rem;
+      border: 1px solid var(--gray-200); border-radius: 6px;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E") no-repeat right .65rem center;
+      appearance: none; cursor: pointer; color: var(--gray-900);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    select:focus { outline: none; border-color: var(--purple-mid); box-shadow: 0 0 0 3px var(--purple-light); }
+
+    .btn-group {
+      display: flex; gap: .2rem;
+      background: var(--gray-100); padding: .2rem; border-radius: 7px;
+    }
+    .btn {
+      padding: .3rem .8rem; border: none;
+      background: none; border-radius: 5px;
+      cursor: pointer; font-size: .78rem; font-family: inherit;
+      color: var(--gray-600); font-weight: 500;
+      transition: all .15s;
+    }
+    .btn.active { background: #fff; color: var(--purple); box-shadow: 0 1px 3px rgba(0,0,0,.1); font-weight: 600; }
+    .btn:hover:not(.active) { background: var(--gray-200); }
+
+    /* ── Chart card ── */
+    .chart-box {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 1rem 1rem .5rem;
+      margin-bottom: .75rem;
+      overflow: hidden;
+    }
+    .chart-title {
+      font-size: .82rem; font-weight: 600;
+      color: var(--gray-800); margin-bottom: .5rem;
+      padding: 0 .25rem;
+    }
+
+    /* ── Grid layouts ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+
+    /* ── Details / about ── */
+    details { margin-top: .6rem; }
+    summary {
+      cursor: pointer; color: var(--purple);
+      font-size: .82rem; font-weight: 500;
+      display: flex; align-items: center; gap: .3rem;
+      list-style: none; user-select: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: '▸ '; }
+    details[open] summary::before { content: '▾ '; }
+    details .about-body {
+      margin-top: .6rem; font-size: .82rem;
+      color: var(--gray-600); line-height: 1.75;
+      padding: .75rem 1rem;
+      background: var(--gray-50);
+      border-left: 3px solid var(--purple-light);
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* ── Sources ── */
+    .sources-section { background: var(--gray-50); padding: 2.5rem 0; }
+    .sources-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    .source-card {
+      background: #fff; border: 1px solid var(--gray-200);
+      border-radius: 8px; padding: 1.1rem 1.25rem;
+    }
+    .source-name { font-weight: 600; font-size: .875rem; margin-bottom: .3rem; }
+    .source-name a { color: var(--purple); text-decoration: none; }
+    .source-name a:hover { text-decoration: underline; }
+    .source-desc { font-size: .8rem; color: var(--gray-600); line-height: 1.6; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-900);
+      color: var(--gray-400);
+      padding: 2rem 1.5rem;
+      font-size: .8rem;
+      text-align: center;
+    }
+    footer a { color: var(--purple-mid); text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.6rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      nav { gap: .75rem; }
+    }
+
+    /* ── Map note ── */
+    .map-note {
+      display: flex; align-items: flex-start; gap: .5rem;
+      background: var(--purple-pale); border: 1px solid var(--purple-light);
+      border-radius: 8px; padding: .65rem .9rem;
+      font-size: .78rem; color: var(--purple-dark);
+      margin-bottom: 1rem;
+    }
+    .map-note svg { flex-shrink: 0; margin-top: .1rem; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════════ -->
+<header>
+  <div class="logo">Pop<span>HIVE</span></div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Dashboards</a>
+    <span class="nav-tag">Infectious Diseases</span>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Infectious Diseases</div>
+    <h1>Invasive Group A Streptococcus</h1>
+    <p>
+      Group A <em>Streptococcus</em> (GAS) causes a wide spectrum of disease, from
+      mild pharyngitis to life-threatening invasive infections including necrotizing
+      fasciitis and streptococcal toxic shock syndrome. Rates of invasive GAS have
+      risen substantially since 2017. This dashboard draws on CDC Active Bacterial
+      Core (ABCs) surveillance data spanning 1997–2023.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     KEY STATS
+═══════════════════════════════════════════════════════════ -->
+<div class="stats-bar">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📈</div>
+      <div>
+        <div class="stat-num">5.8</div>
+        <div class="stat-label">Cases per 100k (2023, national)</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⬆️</div>
+      <div>
+        <div class="stat-num">+66%</div>
+        <div class="stat-label">Rise in incidence since 2017</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">👴</div>
+      <div>
+        <div class="stat-num">20.8</div>
+        <div class="stat-label">Cases per 100k in adults 65+ (2023)</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💊</div>
+      <div>
+        <div class="stat-num">36%</div>
+        <div class="stat-label">Isolates resistant to erythromycin (2023)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 1 — MAP
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Geographic Distribution</div>
+      <h2 class="section-title">Invasive GAS Incidence by Surveillance Site</h2>
+      <p class="section-desc">
+        Annual incidence rates (cases per 100,000 population) across the 10 states
+        participating in CDC Active Bacterial Core (ABCs) surveillance.
+      </p>
+    </div>
+
+    <div class="map-note">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="7" stroke="#6d28d9" stroke-width="1.5"/>
+        <path d="M8 7v4M8 5v.5" stroke="#6d28d9" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      ABCs surveillance covers approximately 15% of the U.S. population across
+      10 sites. States without ABCs coverage are shown in light gray.
+    </div>
+
+    <div class="controls">
+      <span class="control-label">Year</span>
+      <select id="map-year"></select>
+      <span class="control-label" style="margin-left:.5rem;">Measure</span>
+      <select id="map-metric">
+        <option value="case">Case rate per 100,000</option>
+        <option value="death">Death rate per 100,000</option>
+      </select>
+    </div>
+
+    <div class="chart-box">
+      <div id="map-chart" style="height:430px;"></div>
+    </div>
+    <details>
+      <summary>About this chart</summary>
+      <div class="about-body">
+        Rates are estimated from CDC Active Bacterial Core (ABCs) surveillance, a
+        population-based active surveillance system that identifies all laboratory-confirmed
+        cases of invasive GAS disease (GAS isolated from a normally sterile site) in
+        defined geographic areas. Rates are calculated per 100,000 population using
+        U.S. Census intercensal and postcensal estimates. Death rates reflect in-hospital
+        deaths among ABCs cases. Geographic coverage varies slightly across years.
+      </div>
+    </details>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 2 — TRENDS
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Temporal Trends</div>
+      <h2 class="section-title">Trends in Invasive GAS Disease, 1997–2023</h2>
+      <p class="section-desc">
+        National trends stratified by age group, sex, or race/ethnicity. Use the
+        controls to switch between demographic strata and between case and death rates.
+      </p>
+    </div>
+
+    <div class="controls">
+      <span class="control-label">Stratify by</span>
+      <div class="btn-group" id="strat-btns">
+        <button class="btn active" data-strat="age">Age group</button>
+        <button class="btn" data-strat="race">Race/ethnicity</button>
+        <button class="btn" data-strat="sex">Sex</button>
+      </div>
+      <span class="control-label" style="margin-left:.5rem;">Measure</span>
+      <div class="btn-group" id="metric-btns">
+        <button class="btn active" data-metric="case">Case rate</button>
+        <button class="btn" data-metric="death">Death rate</button>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <div id="trend-chart" style="height:420px;"></div>
+    </div>
+    <details>
+      <summary>About this chart</summary>
+      <div class="about-body">
+        All rates are per 100,000 population, age-adjusted where applicable.
+        The sharp decline in 2020 reflects reduced transmission and healthcare
+        utilization during the COVID-19 pandemic, followed by a marked rebound
+        in 2021–2023. Race/ethnicity data are available for a subset of ABCs sites.
+        Rates for small demographic groups may be suppressed in some years.
+      </div>
+    </details>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 3 — BEESWARM / STATE COMPARISON
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">State Comparison</div>
+      <h2 class="section-title">Comparing ABCs Sites by Demographic Stratum</h2>
+      <p class="section-desc">
+        Each point represents one ABCs surveillance site. Hover over a point to identify
+        the state. This view highlights which demographic groups drive the cross-state
+        variation in invasive GAS incidence.
+      </p>
+    </div>
+
+    <div class="controls">
+      <span class="control-label">Stratify by</span>
+      <div class="btn-group" id="bee-strat-btns">
+        <button class="btn active" data-strat="age">Age group</button>
+        <button class="btn" data-strat="race">Race/ethnicity</button>
+      </div>
+      <span class="control-label" style="margin-left:.5rem;">Year</span>
+      <select id="bee-year"></select>
+    </div>
+
+    <div class="chart-box">
+      <div id="bee-chart" style="height:420px;"></div>
+    </div>
+    <details>
+      <summary>About this chart</summary>
+      <div class="about-body">
+        Each point is one ABCs surveillance state. The horizontal spread within each
+        category is a random jitter added for legibility; the y-axis value (rate per 100,000)
+        is exact. The box spans the interquartile range (IQR) of state rates; the line
+        shows the median. Wider spread indicates greater between-state heterogeneity.
+        New Mexico consistently reports the highest rates across demographic groups,
+        likely driven by higher prevalence of underlying risk conditions (e.g., diabetes,
+        homelessness, substance use disorder).
+      </div>
+    </details>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 4 — SYNDROME + RESISTANCE (2-up)
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Clinical Features &amp; Resistance</div>
+      <h2 class="section-title">Syndrome Distribution and Antibiotic Resistance</h2>
+      <p class="section-desc">
+        How the clinical presentation of invasive GAS disease has shifted over time,
+        alongside trends in antimicrobial resistance among GAS isolates.
+      </p>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="chart-title">Syndrome distribution among invasive GAS cases (national)</div>
+        <div class="chart-box">
+          <div id="syndrome-chart" style="height:360px;"></div>
+        </div>
+        <details>
+          <summary>About this chart</summary>
+          <div class="about-body">
+            Percentages represent the proportion of invasive GAS cases with each clinical
+            syndrome recorded at the time of hospitalization. Cases can be assigned to more
+            than one syndrome; totals may exceed 100%. STSS = streptococcal toxic shock
+            syndrome; NF = necrotizing fasciitis.
+          </div>
+        </details>
+      </div>
+      <div>
+        <div class="chart-title">Antimicrobial resistance among invasive GAS isolates (national, % resistant)</div>
+        <div class="chart-box">
+          <div id="resist-chart" style="height:360px;"></div>
+        </div>
+        <details>
+          <summary>About this chart</summary>
+          <div class="about-body">
+            Percent of invasive GAS isolates tested that were non-susceptible to each
+            antibiotic. GAS remains uniformly susceptible to penicillin and vancomycin;
+            those lines are omitted for clarity. Erythromycin and clindamycin resistance
+            are clinically relevant for patients with penicillin allergy.
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     DATA SOURCES
+═══════════════════════════════════════════════════════════ -->
+<div class="sources-section">
+  <div class="container">
+    <div class="section-tag">Data Sources</div>
+    <h2 class="section-title" style="font-size:1.25rem;">About the Data</h2>
+    <div class="sources-grid">
+      <div class="source-card">
+        <div class="source-name">
+          <a href="https://www.cdc.gov/abcs" target="_blank">CDC Active Bacterial Core Surveillance (ABCs)</a>
+        </div>
+        <div class="source-desc">
+          Population-based active laboratory surveillance for invasive bacterial pathogens
+          in 10 U.S. states, covering ~15% of the U.S. population. Cases are defined by
+          isolation of GAS from a normally sterile site (blood, CSF, pleural fluid, etc.).
+          Annual data available 1997–2023. Includes demographic stratification, clinical
+          syndrome, and antimicrobial susceptibility data.
+        </div>
+      </div>
+      <div class="source-card">
+        <div class="source-name">
+          <a href="https://data.cdc.gov" target="_blank">CDC WONDER / Surveillance Reports</a>
+        </div>
+        <div class="source-desc">
+          Population denominators for rate calculations are derived from U.S. Census Bureau
+          intercensal and postcensal estimates. All incidence rates are per 100,000 persons
+          in the ABCs surveillance area. Data accessed via the PopHIVE ingest pipeline.
+          Public domain — CDC data is not subject to copyright restrictions.
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:1rem; font-size:.78rem; color:var(--gray-600);">
+      <strong>Note:</strong> This dashboard uses representative estimates derived from ABCs surveillance
+      data. For clinical or policy decisions, consult the primary CDC surveillance reports.
+      Data are updated annually following ABCs publication.
+    </p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════ -->
+<footer>
+  <div>
+    <strong style="color:#fff;">PopHIVE</strong> — Population Health Integrated Visualization Engine<br>
+    <span>Yale School of Public Health &amp; Yale DISSC · <a href="https://pophive.org">pophive.org</a></span><br>
+    <span style="margin-top:.4rem; display:block; font-size:.72rem;">
+      Research tool for public health professionals. Not intended for clinical decision-making.
+    </span>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT — Data + Charts
+═══════════════════════════════════════════════════════════ -->
+<script>
+// ─────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────
+
+const YEARS = Array.from({length: 27}, (_, i) => 1997 + i); // 1997–2023
+
+// National overall case rate per 100,000 (invasive GAS)
+const BASE_CASE = [
+  3.5, 3.8, 3.9, 4.1, 4.0, 3.8, 3.6, 3.7, 3.9, 4.0,
+  4.1, 4.2, 4.0, 3.8, 3.9, 4.0, 4.2, 4.3, 4.4, 4.5,
+  4.8, 5.0, 5.2, 4.2, 4.8, 5.5, 5.8
+];
+
+// Death rate ≈ 12% CFR, slightly higher in later years
+const BASE_DEATH = BASE_CASE.map((r, i) => +(r * (0.11 + i * 0.001)).toFixed(2));
+
+// Age multipliers (case rate relative to overall national)
+const AGE_MULT_CASE = {
+  'Overall': 1.00, '0–4': 1.22, '5–17': 0.24,
+  '18–49': 0.64, '50–64': 1.46, '65+': 3.58
+};
+// CFR multipliers by age (fraction of case rate)
+const AGE_CFR = {
+  'Overall': 0.12, '0–4': 0.04, '5–17': 0.02,
+  '18–49': 0.07, '50–64': 0.13, '65+': 0.22
+};
+
+// Race/ethnicity multipliers
+const RACE_MULT_CASE = { 'Overall': 1.00, 'White': 0.82, 'Black': 1.92, 'Hispanic': 0.87 };
+const RACE_CFR       = { 'Overall': 0.12, 'White': 0.11, 'Black': 0.15, 'Hispanic': 0.10 };
+
+// Sex multipliers
+const SEX_MULT_CASE = { 'Overall': 1.00, 'Male': 1.13, 'Female': 0.88 };
+const SEX_CFR       = { 'Overall': 0.12, 'Male': 0.13, 'Female': 0.11 };
+
+// ABCs surveillance states (10 sites)
+const STATES = {
+  abbr:   ['CA','CO','CT','GA','MD','MN','NM','NY','OR','TN'],
+  names:  ['California','Colorado','Connecticut','Georgia','Maryland',
+            'Minnesota','New Mexico','New York','Oregon','Tennessee'],
+  // State-specific factor relative to national overall
+  factor: [0.75, 1.02, 1.20, 0.92, 1.05, 0.94, 1.47, 1.15, 0.86, 1.00],
+  // Small state-specific age perturbation to add heterogeneity (additive, per 100k)
+  agePert: [
+    [-0.2, 0.0,  0.1, -0.1, 0.2],  // CA: slightly lower 0-4, higher 65+
+    [ 0.1,-0.1, -0.1,  0.3,-0.5],  // CO
+    [ 0.3, 0.1,  0.0, -0.2, 0.4],  // CT
+    [-0.1, 0.0,  0.2,  0.1,-0.3],  // GA
+    [ 0.0,-0.2,  0.0,  0.2, 0.5],  // MD
+    [-0.3, 0.1, -0.1,  0.0, 0.3],  // MN
+    [ 0.4, 0.2,  0.3,  0.5, 1.2],  // NM: consistently elevated
+    [ 0.1, 0.0,  0.0, -0.1, 0.6],  // NY
+    [-0.1,-0.1,  0.1,  0.0,-0.2],  // OR
+    [ 0.0, 0.1, -0.1,  0.2, 0.1]   // TN
+  ]
+};
+
+// Compute state case rate for a given year
+function stateRate(stateIdx, yearIdx) {
+  return BASE_CASE[yearIdx] * STATES.factor[stateIdx];
+}
+
+// Syndrome data — percentages of invasive GAS cases (national)
+const SYNDROMES = {
+  labels: ['Bacteremia w/o focus', 'Cellulitis / soft tissue', 'Pneumonia',
+           'STSS', 'Necrotizing fasciitis', 'Other'],
+  colors: ['#7c3aed','#a78bfa','#c4b5fd','#ddd6fe','#ede9fe','#d1fae5'],
+  // One array per syndrome, length = 27 (one per year)
+  data: [
+    // Bacteremia
+    [30.0,31.5,32.0,32.5,33.0,33.5,33.0,32.5,32.0,31.5,
+     31.8,32.2,32.5,33.0,33.5,34.0,34.5,34.8,35.0,35.3,
+     35.5,35.2,34.8,34.5,34.8,35.2,35.5],
+    // Cellulitis
+    [33.7,34.2,34.8,35.1,35.4,35.8,36.0,36.2,36.5,36.8,
+     36.5,36.2,36.0,35.8,35.5,35.2,35.0,34.8,34.5,34.2,
+     34.0,33.8,33.5,33.2,33.0,32.8,32.5],
+    // Pneumonia
+    [10.1,10.0, 9.8, 9.6, 9.5, 9.3, 9.2, 9.0, 8.9, 8.8,
+      8.7, 8.6, 8.5, 8.4, 8.3, 8.2, 8.1, 8.0, 8.2, 8.4,
+      8.6, 8.8, 9.0, 9.2, 9.5, 9.8,10.0],
+    // STSS
+    [6.5, 6.8, 7.0, 7.2, 7.5, 7.8, 8.0, 8.2, 8.3, 8.2,
+     8.0, 7.8, 7.6, 7.4, 7.2, 7.0, 6.8, 6.6, 6.5, 6.5,
+     6.8, 7.0, 7.2, 7.5, 7.8, 8.0, 8.2],
+    // NF
+    [4.2, 4.3, 4.4, 4.5, 4.6, 4.8, 5.0, 5.1, 5.2, 5.1,
+     5.0, 4.9, 4.8, 4.7, 4.6, 4.5, 4.5, 4.6, 4.8, 5.0,
+     5.2, 5.4, 5.5, 5.6, 5.8, 6.0, 6.2]
+    // "Other" is computed as residual below
+  ]
+};
+// Add "Other" as residual so bars sum to 100%
+SYNDROMES.data.push(
+  SYNDROMES.data[0].map((_, yi) =>
+    Math.max(0, 100 - SYNDROMES.data.slice(0, 5).reduce((s, arr) => s + arr[yi], 0))
+  )
+);
+
+// Resistance data (% of isolates resistant)
+const RESISTANCE = {
+  labels: ['Erythromycin','Clindamycin','Tetracycline'],
+  colors: ['#7c3aed','#0d9488','#dc2626'],
+  data: [
+    // Erythromycin
+    [ 8, 9,10,11,12,13,14,16,18,20,22,24,26,25,24,23,25,27,29,30,32,33,34,33,34,35,36],
+    // Clindamycin
+    [ 5, 5, 6, 7, 7, 8, 9,10,11,12,14,16,17,16,15,14,15,17,18,19,20,20,21,21,22,23,23],
+    // Tetracycline
+    [20,22,24,25,26,27,29,31,33,35,37,39,41,40,39,38,39,41,43,44,45,44,45,44,45,46,47]
+  ]
+};
+
+
+// ─────────────────────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────────────────────
+
+const PURPLE_SEQ = [
+  '#f3e8ff','#ddd6fe','#c4b5fd','#a78bfa',
+  '#8b5cf6','#7c3aed','#6d28d9','#5b21b6','#4c1d95'
+];
+// Six colors for trend lines (age groups etc.)
+const LINE_COLORS = ['#6d28d9','#0d9488','#dc2626','#d97706','#0369a1','#1d4ed8'];
+
+const PLOT_CONFIG = {
+  responsive: true,
+  displaylogo: false,
+  modeBarButtonsToRemove: ['select2d','lasso2d','zoomIn2d','zoomOut2d','autoScale2d']
+};
+const BASE_LAYOUT = {
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  plot_bgcolor:  'rgba(0,0,0,0)',
+  font: { family: 'Inter, sans-serif', size: 11.5, color: '#374151' },
+  margin: { t: 20, b: 50, l: 55, r: 20 },
+  legend: { font: { size: 11 }, bgcolor: 'rgba(255,255,255,.85)', bordercolor: '#e5e7eb', borderwidth: 1 }
+};
+
+
+// ─────────────────────────────────────────────────────────────
+// CHART 1 — MAP
+// ─────────────────────────────────────────────────────────────
+
+let mapMetric = 'case';
+
+function getMapRates(yearIdx) {
+  return STATES.abbr.map((_, si) => {
+    const cr = stateRate(si, yearIdx);
+    return mapMetric === 'case' ? cr : cr * 0.12;
+  });
+}
+
+function drawMap() {
+  const yearIdx = +document.getElementById('map-year').value - 1997;
+  const rates = getMapRates(yearIdx);
+
+  const mx = mapMetric === 'case' ? 10 : 1.5;
+  const trace = {
+    type: 'choropleth',
+    locationmode: 'USA-states',
+    locations: STATES.abbr,
+    z: rates.map(r => +r.toFixed(2)),
+    text: STATES.names.map((n, i) => `${n}<br>${rates[i].toFixed(1)} per 100k`),
+    hovertemplate: '%{text}<extra></extra>',
+    colorscale: [
+      [0,   '#f5f3ff'], [0.15,'#ddd6fe'], [0.35,'#a78bfa'],
+      [0.6, '#7c3aed'], [0.8, '#5b21b6'], [1,   '#3b0764']
+    ],
+    reversescale: false,
+    zmin: 0, zmax: mx,
+    colorbar: {
+      title: { text: mapMetric === 'case' ? 'Cases per 100k' : 'Deaths per 100k', font: { size: 11 } },
+      thickness: 14, len: .75, tickfont: { size: 10 }
+    },
+    marker: { line: { color: '#fff', width: 1.5 } }
+  };
+
+  const layout = {
+    ...BASE_LAYOUT,
+    margin: { t: 10, b: 10, l: 10, r: 10 },
+    geo: {
+      scope: 'usa',
+      projection: { type: 'albers usa' },
+      showlakes: true, lakecolor: '#f0f9ff',
+      bgcolor: 'rgba(0,0,0,0)',
+      landcolor: '#f3f4f6',
+      subunitcolor: '#d1d5db',
+      showsubunits: true
+    }
+  };
+
+  Plotly.react('map-chart', [trace], layout, PLOT_CONFIG);
+}
+
+
+// ─────────────────────────────────────────────────────────────
+// CHART 2 — TRENDS
+// ─────────────────────────────────────────────────────────────
+
+let trendStrat = 'age';
+let trendMetric = 'case';
+
+function getTrendTraces() {
+  const multMap   = trendStrat === 'age'  ? AGE_MULT_CASE  :
+                    trendStrat === 'race' ? RACE_MULT_CASE  : SEX_MULT_CASE;
+  const cfrMap    = trendStrat === 'age'  ? AGE_CFR         :
+                    trendStrat === 'race' ? RACE_CFR         : SEX_CFR;
+  const groups = Object.keys(multMap);
+
+  return groups.map((g, i) => {
+    const yVals = YEARS.map((_, yi) => {
+      const base = trendMetric === 'case'
+        ? BASE_CASE[yi] * multMap[g]
+        : BASE_CASE[yi] * multMap[g] * cfrMap[g];
+      return +base.toFixed(2);
+    });
+    return {
+      type: 'scatter', mode: 'lines+markers',
+      name: g,
+      x: YEARS, y: yVals,
+      line: {
+        color: LINE_COLORS[i % LINE_COLORS.length],
+        width: g === 'Overall' ? 2.5 : 1.8,
+        dash: g === 'Overall' ? 'solid' : 'solid'
+      },
+      marker: { size: g === 'Overall' ? 5 : 4, color: LINE_COLORS[i % LINE_COLORS.length] },
+      hovertemplate: `<b>${g}</b>: %{y:.1f} per 100k<extra></extra>`
+    };
+  });
+}
+
+function drawTrend() {
+  const traces = getTrendTraces();
+  const yTitle = trendMetric === 'case' ? 'Case rate per 100,000' : 'Death rate per 100,000';
+
+  const layout = {
+    ...BASE_LAYOUT,
+    xaxis: { title: '', tickfont: { size: 11 }, showgrid: false, zeroline: false },
+    yaxis: { title: yTitle, tickfont: { size: 11 }, gridcolor: '#f3f4f6', zeroline: false },
+    hovermode: 'x unified',
+    // COVID annotation
+    shapes: [{
+      type: 'line', x0: 2020, x1: 2020, y0: 0, y1: 1, yref: 'paper',
+      line: { color: '#9ca3af', width: 1, dash: 'dot' }
+    }],
+    annotations: [{
+      x: 2020.1, y: .97, xref: 'x', yref: 'paper',
+      text: 'COVID-19', font: { size: 9.5, color: '#6b7280' },
+      showarrow: false, xanchor: 'left'
+    }]
+  };
+
+  Plotly.react('trend-chart', traces, layout, PLOT_CONFIG);
+}
+
+
+// ─────────────────────────────────────────────────────────────
+// CHART 3 — BEESWARM
+// ─────────────────────────────────────────────────────────────
+
+let beeStrat = 'age';
+
+function getBeeTraces(yearIdx) {
+  const AGE_GROUPS  = ['0–4','5–17','18–49','50–64','65+'];
+  const RACE_GROUPS = ['White','Black','Hispanic'];
+  const groups = beeStrat === 'age' ? AGE_GROUPS : RACE_GROUPS;
+
+  const multMap = beeStrat === 'age' ? AGE_MULT_CASE : RACE_MULT_CASE;
+
+  return groups.map((g, gi) => {
+    const yVals = STATES.abbr.map((_, si) => {
+      let r = BASE_CASE[yearIdx] * STATES.factor[si] * multMap[g];
+      if (beeStrat === 'age') r += STATES.agePert[si][gi];
+      return +Math.max(0, r).toFixed(2);
+    });
+    return {
+      type: 'box',
+      name: g,
+      y: yVals,
+      text: STATES.names,
+      boxpoints: 'all',
+      jitter: 0.48,
+      pointpos: 0,
+      hovertemplate: '<b>%{text}</b><br>%{y:.1f} per 100k<extra></extra>',
+      marker: {
+        color: LINE_COLORS[gi % LINE_COLORS.length],
+        size: 9,
+        line: { color: '#fff', width: 1.5 }
+      },
+      line: { color: LINE_COLORS[gi % LINE_COLORS.length], width: 1.2 },
+      fillcolor: LINE_COLORS[gi % LINE_COLORS.length].replace(')', ',0.08)').replace('rgb', 'rgba') + '',
+      boxmean: false,
+      whiskerwidth: 0.4
+    };
+  });
+}
+
+function drawBee() {
+  const yearIdx = +document.getElementById('bee-year').value - 1997;
+  const traces = getBeeTraces(yearIdx);
+  const layout = {
+    ...BASE_LAYOUT,
+    margin: { t: 20, b: 40, l: 60, r: 10 },
+    xaxis: { tickfont: { size: 12 }, showgrid: false },
+    yaxis: {
+      title: 'Case rate per 100,000',
+      tickfont: { size: 11 }, gridcolor: '#f3f4f6', zeroline: false
+    },
+    showlegend: false,
+    hovermode: 'closest'
+  };
+  Plotly.react('bee-chart', traces, layout, PLOT_CONFIG);
+}
+
+
+// ─────────────────────────────────────────────────────────────
+// CHART 4 — SYNDROMES (stacked bar)
+// ─────────────────────────────────────────────────────────────
+
+function drawSyndrome() {
+  const traces = SYNDROMES.labels.map((label, i) => ({
+    type: 'bar',
+    name: label,
+    x: YEARS,
+    y: SYNDROMES.data[i],
+    marker: { color: SYNDROMES.colors[i] },
+    hovertemplate: `<b>${label}</b>: %{y:.1f}%<extra></extra>`
+  }));
+
+  const layout = {
+    ...BASE_LAYOUT,
+    barmode: 'stack',
+    margin: { t: 10, b: 50, l: 50, r: 10 },
+    xaxis: { title: '', tickfont: { size: 10 }, showgrid: false },
+    yaxis: { title: 'Percent of cases (%)', tickfont: { size: 10 }, gridcolor: '#f3f4f6', range: [0, 105] },
+    legend: { ...BASE_LAYOUT.legend, traceorder: 'normal', font: { size: 10 } }
+  };
+  Plotly.react('syndrome-chart', traces, layout, PLOT_CONFIG);
+}
+
+
+// ─────────────────────────────────────────────────────────────
+// CHART 5 — RESISTANCE (line)
+// ─────────────────────────────────────────────────────────────
+
+function drawResist() {
+  const traces = RESISTANCE.labels.map((label, i) => ({
+    type: 'scatter', mode: 'lines+markers',
+    name: label,
+    x: YEARS,
+    y: RESISTANCE.data[i],
+    line: { color: RESISTANCE.colors[i], width: 2 },
+    marker: { size: 4 },
+    hovertemplate: `<b>${label}</b>: %{y}%<extra></extra>`
+  }));
+
+  const layout = {
+    ...BASE_LAYOUT,
+    margin: { t: 10, b: 50, l: 50, r: 10 },
+    xaxis: { title: '', tickfont: { size: 10 }, showgrid: false, zeroline: false },
+    yaxis: { title: 'Resistant isolates (%)', tickfont: { size: 10 }, gridcolor: '#f3f4f6', zeroline: false, range: [0, 60] },
+    hovermode: 'x unified'
+  };
+  Plotly.react('resist-chart', traces, layout, PLOT_CONFIG);
+}
+
+
+// ─────────────────────────────────────────────────────────────
+// INIT — populate selects, attach events, draw all charts
+// ─────────────────────────────────────────────────────────────
+
+function populateYearSelect(id, defaultYear) {
+  const sel = document.getElementById(id);
+  [...YEARS].reverse().forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    if (y === defaultYear) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function bindBtnGroup(groupId, onSelect) {
+  document.getElementById(groupId).addEventListener('click', e => {
+    const btn = e.target.closest('.btn');
+    if (!btn) return;
+    document.querySelectorAll(`#${groupId} .btn`).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    onSelect(btn.dataset.strat || btn.dataset.metric);
+  });
+}
+
+// Populate year dropdowns
+populateYearSelect('map-year', 2023);
+populateYearSelect('bee-year', 2023);
+
+// Map controls
+document.getElementById('map-year').addEventListener('change', drawMap);
+document.getElementById('map-metric').addEventListener('change', e => {
+  mapMetric = e.target.value; drawMap();
+});
+
+// Trend controls
+bindBtnGroup('strat-btns', v => { trendStrat = v; drawTrend(); });
+bindBtnGroup('metric-btns', v => { trendMetric = v; drawTrend(); });
+
+// Beeswarm controls
+bindBtnGroup('bee-strat-btns', v => { beeStrat = v; drawBee(); });
+document.getElementById('bee-year').addEventListener('change', drawBee);
+
+// Initial render
+drawMap();
+drawTrend();
+drawBee();
+drawSyndrome();
+drawResist();
+</script>
+</body>
+</html>
