@@ -444,6 +444,35 @@ firearms_by_source_year <- firearms_by_source %>%
     TRUE ~ source
   ))
 
+## Medicaid injury and overdose
+vroom::vroom('../medicaid_quality/standard/data.csv.gz') %>%
+  filter(geography_level == 's') %>%
+  dplyr::select(geography, time, age, sex, race_ethnicity,
+                medicaid_oud_ad_rate,
+                medicaid_iet_ad_rate,
+                medicaid_fua_ad_30d_rate,
+                medicaid_cob_ad_rate) %>%
+  pivot_longer(
+    cols         = starts_with("medicaid_"),
+    names_to     = "outcome_name",
+    names_prefix = "medicaid_",
+    values_to    = "value"
+  ) %>%
+  mutate(
+    outcome_name = case_when(
+      outcome_name == "oud_ad_rate"      ~ "Opioid Use Disorder",
+      outcome_name == "iet_ad_rate"      ~ "Initiation and Engagement of Substance Use Treatment",
+      outcome_name == "fua_ad_30d_rate"  ~ "Follow-Up After ED Visit for Alcohol and Drug Abuse",
+      outcome_name == "cob_ad_rate"      ~ "Concurrent Use of Opioids and Benzodiazepines"
+    ),
+    year   = lubridate::year(time),
+    source = 'Medicaid'
+  ) %>%
+  filter(!is.na(value),
+         geography %in% c(state.name, "District of Columbia")) %>%
+  dplyr::select(geography, year, age, sex, race_ethnicity, outcome_name, source, value) %>%
+  arrow::write_parquet('./dist/medicaid_injury_overdose.parquet')
+
 firearms_by_source_year %>%
   write_parquet(.,
                 './dist/firearms_by_geography_and_source_state_year.parquet')
