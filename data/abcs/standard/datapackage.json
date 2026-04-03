@@ -1,17 +1,17 @@
 {
   "name": "abcs",
   "title": "Abcs",
-
   "resources": [
     {
-      "bytes": 483702,
+      "bytes": 561144,
       "encoding": "ISO-8859-1",
-      "md5": "41b56401d50eee965f6e420e1ecdc164",
+      "md5": "2fbaf3d6eb203d357076a38a5a9b424b",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "728c75f50da6bc5ac4e6dc9875982323973a8f93",
           "432d7011a45303b5fefbfc806251462a2afbea4c",
           "e9f5a7bf631b73df40570210c77f80a30f59a9de",
           "804ffce903920ce4644b2c636146c352c21a4cc9",
@@ -25,6 +25,7 @@
         "author": [
           "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>",
+          "weinbergerlab <dweinber@gmail.com>",
           "Weinberger <daniel.weinberger@yale.edu>",
           "Weinberger <daniel.weinberger@yale.edu>",
           "Weinberger <daniel.weinberger@yale.edu>",
@@ -34,6 +35,7 @@
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Thu Apr 2 14:11:58 2026 -0400",
           "Mon Jan 12 11:24:48 2026 -0500",
           "Mon Jan 12 11:19:25 2026 -0500",
           "Fri Nov 21 11:33:48 2025 -0500",
@@ -45,6 +47,7 @@
           "Mon Jul 14 16:42:11 2025 -0400"
         ],
         "message": [
+          "adds incidence to pneumococcal data, adds a master json with all of the sources listed",
           "fix bug on pneumococcal ingestion",
           "re-calculate 'all-site' ('United States' values for ABCs to only include the 8 sites that consistently report since 1998",
           "fix issue with age stratified data",
@@ -65,8 +68,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-03 00:41:04.00518",
-      "last_modified": "2026-03-03 00:41:04.00518",
+      "created": "2026-04-02 16:39:53",
+      "last_modified": "2025-07-14 19:55:37.170507",
       "vintage": {},
       "row_count": 100672,
       "entity_count": 11,
@@ -249,10 +252,32 @@
             "sd": 3.162154,
             "min": 0,
             "max": 66.666667
+          },
+          {
+            "name": "spn_surveillance_population",
+            "duplicates": 100413,
+            "time_range": [0, 25],
+            "type": "integer",
+            "missing": 76736,
+            "mean": 5181693.544118,
+            "sd": 6734841.351097,
+            "min": 745774,
+            "max": 30179960
+          },
+          {
+            "name": "rate_IPD",
+            "duplicates": 95863,
+            "time_range": [0, 25],
+            "type": "float",
+            "missing": 76736,
+            "mean": 0.142014,
+            "sd": 0.37769,
+            "min": 0,
+            "max": 6.830282
           }
         ]
       },
-      "sha512": "7424595f41e7427dbd3e707677b5d71f65fd2a6daa16634ef0e027a6a5065c711a87eb513f25de57e36067cf98bedb20393eb8476356aa8c38a4d62863747390"
+      "sha512": "a3aa921f3ca22ba41ed51d1b5800c6593cfc6926c5a3eec2ac85e4b06260c648ffba7ccd0979ee7adc13286eb74cf5b8326a64063b4dcb48339f18fc871cc981"
     },
     {
       "bytes": 160,
@@ -292,8 +317,8 @@
       "id_length": 11,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-03 00:41:04.006181",
-      "last_modified": "2026-03-03 00:41:04.006181",
+      "created": "2026-01-12 11:24:05",
+      "last_modified": "2025-07-18 22:50:56.057943",
       "vintage": {},
       "row_count": 17,
       "entity_count": 1,
@@ -421,6 +446,38 @@
       "short_description": "Pneumococcal serotype",
       "measure_type": "percent",
       "unit": "%",
+      "time_resolution": "year",
+      "sources": [
+        "abcs"
+      ],
+      "citations": []
+    },
+    "spn_surveillance_population": {
+      "id": "spn_surveillance_population",
+      "short_name": "ABCs surveillance population",
+      "long_name": "ABCs pneumococcal surveillance population",
+      "category": "Respiratory diseases",
+      "short_description": "Total population under active surveillance for invasive pneumococcal disease in the ABCs catchment area",
+      "long_description": "The number of persons living within the ABCs catchment area for pneumococcal disease surveillance in a given year. Catchment areas vary by state and over time as surveillance regions have expanded. The national total reflects the sum across the 8 sites that consistently report to ABCs (CA, CT, GA, MD, MN, NY, OR, TN).",
+      "statement": "In {location}, the ABCs surveillance population was {value}.",
+      "measure_type": "Count",
+      "unit": "Persons",
+      "time_resolution": "year",
+      "sources": [
+        "abcs"
+      ],
+      "citations": []
+    },
+    "rate_IPD": {
+      "id": "rate_IPD",
+      "short_name": "IPD incidence rate",
+      "long_name": "Invasive pneumococcal disease incidence rate per 100,000 population",
+      "category": "Respiratory diseases",
+      "short_description": "Annual rate of invasive pneumococcal disease cases per 100,000 persons in the ABCs catchment area",
+      "long_description": "Incidence rate of invasive pneumococcal disease (IPD) per 100,000 population, calculated as the number of IPD cases divided by the ABCs surveillance population multiplied by 100,000. Rates are reported by serotype and age group within the ABCs catchment area.",
+      "statement": "In {location}, the IPD incidence rate was {value} per 100,000 population.",
+      "measure_type": "Rate",
+      "unit": "Cases per 100,000",
       "time_resolution": "year",
       "sources": [
         "abcs"
