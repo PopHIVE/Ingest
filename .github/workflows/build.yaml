@@ -55,7 +55,7 @@ jobs:
       - name: Restore Renv
         run: |
           options(repos = c(CRAN = "https://cloud.r-project.org"))
-          source("renv/activate.R")
+          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
           renv::restore()
         shell: Rscript {0}
         env:
