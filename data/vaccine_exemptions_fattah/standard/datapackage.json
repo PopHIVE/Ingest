@@ -1,17 +1,185 @@
 {
   "name": "vaccine_exemptions_kiang",
   "title": "Vaccine Exemptions Kiang",
-
   "resources": [
     {
-      "bytes": 79194,
+      "bytes": 525,
       "encoding": "ISO-8859-1",
-      "md5": "74a0fa162267ca42cb2c915a63e8fb68",
+      "md5": "36ebfed8589fd4df642318882499f34e",
+      "format": "csv",
+      "name": "data.csv",
+      "filename": "data.csv.gz",
+      "versions": {
+        "hash": [
+          "afb78cfd6a75da139bb5e24e3e801cdedb0553f0",
+          "ac4e6801a3878349bd3156e32364d959dcc703d0",
+          "95807b7fba6bae7a8f3ac4bb7cd48599ac93c0cf",
+          "8c3f0b8d757896f913fde80835f22433e4257cf0",
+          "b588047aff549b5b11fe9e2c56e739c0638dfdda"
+        ],
+        "author": [
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "danweinberger <daniel.weinberger@yale.edu>"
+        ],
+        "date": [
+          "Wed Mar 11 17:12:10 2026 -0400",
+          "Wed Mar 11 15:48:16 2026 -0400",
+          "Thu Feb 19 10:43:57 2026 -0500",
+          "Tue Feb 3 00:20:55 2026 -0500",
+          "Mon Jan 19 23:44:15 2026 -0500"
+        ],
+        "message": [
+          "fix filtering of Stanford vaccine data",
+          "fix Standford vaccine output",
+          "update script and metadata for exemption data from kiang to use medical and ninmedical",
+          "update all metadata files tofill in source info and ensure proper formatting; correct formatting on newer process.json files",
+          "adds wahpost immunization data, Delphi ILI, others"
+        ]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-04-05 19:56:15.80085",
+      "last_modified": "2026-03-11 16:12:03.334005",
+      "vintage": {},
+      "row_count": 90,
+      "entity_count": 6,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 84,
+            "info": [],
+            "time_range": [0, 14],
+            "type": "integer",
+            "missing": 0,
+            "mean": 21.222222,
+            "sd": 20.81636,
+            "min": 0,
+            "max": 54
+          },
+          {
+            "name": "time",
+            "duplicates": 74,
+            "info": [],
+            "time_range": [0, 14],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "09-01-2009": 6,
+              "09-01-2010": 2,
+              "09-01-2011": 6,
+              "09-01-2012": 6,
+              "09-01-2013": 6,
+              "09-01-2014": 6,
+              "09-01-2015": 6,
+              "09-01-2016": 6,
+              "09-01-2017": 6,
+              "09-01-2018": 6,
+              "09-01-2019": 5,
+              "09-01-2020": 6,
+              "09-01-2021": 6,
+              "09-01-2022": 6,
+              "09-01-2023": 6,
+              "09-01-2024": 5
+            }
+          },
+          {
+            "name": "exemption_rate_mmr_med",
+            "duplicates": 82,
+            "info": {
+              "id": "exemption_rate_mmr_med",
+              "short_name": "MMR medical exemption rate",
+              "long_name": "Percentage of kindergartners with medical exemptions from MMR vaccination",
+              "category": "immunization",
+              "short_description": "Percentage of kindergarten children with medical exemptions from MMR vaccination requirements",
+              "long_description": "The percentage of kindergarten students with medical exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Medical exemptions are granted when a physician determines that vaccination poses a health risk to a specific child. This dataset aggregates state-reported exemption data at county and state levels. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods. NOTE: Alaska, Delaware, District of Columbia, Indiana, and Rhode Island do not have county-level data in the source; for these states, the state-level value has been assigned uniformly to all counties.",
+              "statement": "In {location}, {value}% of kindergartners had medical exemptions from MMR vaccination",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "fattah_exemptions"
+                }
+              ],
+              "citations": [
+                {
+                  "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
+                }
+              ]
+            },
+            "time_range": [0, 14],
+            "type": "float",
+            "missing": 3,
+            "mean": 0.186526,
+            "sd": 0.459982,
+            "min": 0,
+            "max": 2
+          },
+          {
+            "name": "exemption_rate_mmr_nonmed",
+            "duplicates": 68,
+            "info": {
+              "id": "exemption_rate_mmr_nonmed",
+              "short_name": "MMR non-medical exemption rate",
+              "long_name": "Percentage of kindergartners with non-medical exemptions from MMR vaccination",
+              "category": "immunization",
+              "short_description": "Percentage of kindergarten children with non-medical exemptions from MMR vaccination requirements",
+              "long_description": "The percentage of kindergarten students with non-medical (religious or philosophical) exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Non-medical exemptions are based on personal, religious, or philosophical beliefs rather than medical contraindications. Availability of non-medical exemptions varies by state. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods. NOTE: Alaska, Delaware, District of Columbia, Indiana, and Rhode Island do not have county-level data in the source; for these states, the state-level value has been assigned uniformly to all counties.",
+              "statement": "In {location}, {value}% of kindergartners had non-medical exemptions from MMR vaccination",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "fattah_exemptions"
+                }
+              ],
+              "citations": [
+                {
+                  "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
+                }
+              ]
+            },
+            "time_range": [0, 14],
+            "type": "float",
+            "missing": 0,
+            "mean": 1.755874,
+            "sd": 1.915641,
+            "min": 0,
+            "max": 9
+          }
+        ]
+      },
+      "sha512": "b6864fe4778f112ac32ccb5ee4d30a9a0ef09c7f8f7643c5eb46a9791f2fa586d9216f07392efc2be3d9c1d824c30df3a89f1642bfdfebbd79872f05fecb3033"
+    },
+    {
+      "bytes": 93158,
+      "encoding": "ISO-8859-1",
+      "md5": "b9090475796329fc82cb9d497340fc1c",
       "format": "csv",
       "name": "data_county.csv",
       "filename": "data_county.csv.gz",
       "versions": {
         "hash": [
+          "020c9a0afc1e9fa54a5570eaed77d37349f7cc10",
+          "750052134b9dfa4551a419a2facde81caf341a6e",
+          "9e20e654dd4a7b65fc9cab3627987d2f0b808850",
+          "afb78cfd6a75da139bb5e24e3e801cdedb0553f0",
+          "ac4e6801a3878349bd3156e32364d959dcc703d0",
           "50d4f2b177f33ceb4f6db59404d779f50f84603e",
           "95807b7fba6bae7a8f3ac4bb7cd48599ac93c0cf",
           "fbbece4f8763f802f070593d3dd168841505719e",
@@ -22,10 +190,20 @@
           "danweinberger <daniel.weinberger@yale.edu>",
           "danweinberger <daniel.weinberger@yale.edu>",
           "weinbergerlab <dweinber@gmail.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "danweinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Wed Mar 18 14:17:10 2026 -0400",
+          "Wed Mar 18 12:28:59 2026 -0400",
+          "Thu Mar 12 13:37:53 2026 -0400",
+          "Wed Mar 11 17:12:10 2026 -0400",
+          "Wed Mar 11 15:48:16 2026 -0400",
           "Thu Feb 19 12:44:40 2026 -0500",
           "Thu Feb 19 10:43:57 2026 -0500",
           "Tue Feb 3 16:02:56 2026 -0500",
@@ -33,6 +211,11 @@
           "Mon Jan 19 23:44:15 2026 -0500"
         ],
         "message": [
+          "add is_state_estimate file, ensure state and national CDC data use same week defs",
+          "add flag to exmptions data for state vs county",
+          "fill in the states on exemption data using state",
+          "fix filtering of Stanford vaccine data",
+          "fix Standford vaccine output",
           "fix combination of counties with duplicate values of fips",
           "update script and metadata for exemption data from kiang to use medical and ninmedical",
           "re-run build_dcf",
@@ -41,6 +224,7 @@
         ]
       },
       "source": [],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
@@ -49,105 +233,176 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-03 00:43:52.272494",
-      "last_modified": "2026-03-03 00:43:52.272494",
+      "created": "2026-04-05 19:56:15.734028",
+      "last_modified": "2026-03-11 16:12:03.323034",
       "vintage": {},
-      "row_count": 26236,
-      "entity_count": 2630,
+      "row_count": 30455,
+      "entity_count": 2917,
       "schema": {
         "fields": [
           {
             "name": "geography",
-            "duplicates": 23606,
-            "time_range": [14, 15],
+            "duplicates": 27538,
+            "info": [],
+            "time_range": [16, 17],
             "type": "integer",
             "missing": 0,
-            "mean": 29172.660352,
-            "sd": 14606.032552,
+            "mean": 29610.925398,
+            "sd": 15239.373668,
             "min": 1001,
             "max": 56045
           },
           {
             "name": "time",
-            "duplicates": 26220,
-            "time_range": [14, 15],
+            "duplicates": 30437,
+            "info": [],
+            "time_range": [16, 17],
             "type": "string",
             "missing": 0,
             "table": {
-              "09-01-2010": 496,
-              "09-01-2011": 682,
-              "09-01-2012": 821,
-              "09-01-2013": 962,
-              "09-01-2014": 1559,
-              "09-01-2015": 1704,
-              "09-01-2016": 1764,
-              "09-01-2017": 1958,
-              "09-01-2018": 2177,
-              "09-01-2019": 2246,
-              "09-01-2020": 2339,
-              "09-01-2021": 2467,
-              "09-01-2022": 2420,
-              "09-01-2023": 2397,
-              "09-01-2024": 2189,
-              "09-01-2025": 55
+              "09-01-2009": 136,
+              "09-01-2010": 639,
+              "09-01-2011": 962,
+              "09-01-2012": 1102,
+              "09-01-2013": 1246,
+              "09-01-2014": 1838,
+              "09-01-2015": 1987,
+              "09-01-2016": 2040,
+              "09-01-2017": 2239,
+              "09-01-2018": 2461,
+              "09-01-2019": 2527,
+              "09-01-2020": 2620,
+              "09-01-2021": 2748,
+              "09-01-2022": 2703,
+              "09-01-2023": 2680,
+              "09-01-2024": 2471,
+              "09-01-2025": 55,
+              "NA": 1
             }
           },
           {
             "name": "exemption_rate_mmr_med",
-            "duplicates": 26208,
-            "time_range": [14, 15],
+            "duplicates": 30408,
+            "info": {
+              "id": "exemption_rate_mmr_med",
+              "short_name": "MMR medical exemption rate",
+              "long_name": "Percentage of kindergartners with medical exemptions from MMR vaccination",
+              "category": "immunization",
+              "short_description": "Percentage of kindergarten children with medical exemptions from MMR vaccination requirements",
+              "long_description": "The percentage of kindergarten students with medical exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Medical exemptions are granted when a physician determines that vaccination poses a health risk to a specific child. This dataset aggregates state-reported exemption data at county and state levels. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods. NOTE: Alaska, Delaware, District of Columbia, Indiana, and Rhode Island do not have county-level data in the source; for these states, the state-level value has been assigned uniformly to all counties.",
+              "statement": "In {location}, {value}% of kindergartners had medical exemptions from MMR vaccination",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "fattah_exemptions"
+                }
+              ],
+              "citations": [
+                {
+                  "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
+                }
+              ]
+            },
+            "time_range": [15, 16],
             "type": "float",
-            "missing": 1661,
-            "mean": 0.24949,
-            "sd": 0.897367,
+            "missing": 1662,
+            "mean": 0.238678,
+            "sd": 0.851024,
             "min": 0,
             "max": 50
           },
           {
             "name": "exemption_rate_mmr_nonmed",
-            "duplicates": 26167,
-            "time_range": [14, 15],
+            "duplicates": 30315,
+            "info": {
+              "id": "exemption_rate_mmr_nonmed",
+              "short_name": "MMR non-medical exemption rate",
+              "long_name": "Percentage of kindergartners with non-medical exemptions from MMR vaccination",
+              "category": "immunization",
+              "short_description": "Percentage of kindergarten children with non-medical exemptions from MMR vaccination requirements",
+              "long_description": "The percentage of kindergarten students with non-medical (religious or philosophical) exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Non-medical exemptions are based on personal, religious, or philosophical beliefs rather than medical contraindications. Availability of non-medical exemptions varies by state. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods. NOTE: Alaska, Delaware, District of Columbia, Indiana, and Rhode Island do not have county-level data in the source; for these states, the state-level value has been assigned uniformly to all counties.",
+              "statement": "In {location}, {value}% of kindergartners had non-medical exemptions from MMR vaccination",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "fattah_exemptions"
+                }
+              ],
+              "citations": [
+                {
+                  "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
+                }
+              ]
+            },
+            "time_range": [15, 16],
             "type": "float",
-            "missing": 113,
-            "mean": 2.575461,
-            "sd": 3.444349,
+            "missing": 114,
+            "mean": 2.563171,
+            "sd": 3.354272,
             "min": 0,
             "max": 100
+          },
+          {
+            "name": "is_state_estimate",
+            "duplicates": 30453,
+            "info": [],
+            "time_range": [16, 17],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.066918,
+            "sd": 0.249885,
+            "min": 0,
+            "max": 1
           }
         ]
       },
-      "sha512": "684345896e43dd42493ee4af8ca092d36a53d7063bdac850362d011c2c05e6ffbd9bef825c41f5e3cca26ccce663731d014d125506ae933e96d81744f21f9d23"
+      "sha512": "33c9fa8eeb953e7c6212e5ddfd47baa4366692c2d6575c7e7c9c8e681304a191d41ce70ac5c275e464c93167243296f19f4597f20c781c681eeb655371b13f79"
     },
     {
       "bytes": 525,
       "encoding": "ISO-8859-1",
-      "md5": "614116d531a1bc16258b6e4a8eb2af8a",
+      "md5": "36ebfed8589fd4df642318882499f34e",
       "format": "csv",
       "name": "data_state.csv",
       "filename": "data_state.csv.gz",
       "versions": {
         "hash": [
+          "afb78cfd6a75da139bb5e24e3e801cdedb0553f0",
+          "ac4e6801a3878349bd3156e32364d959dcc703d0",
           "95807b7fba6bae7a8f3ac4bb7cd48599ac93c0cf",
           "8c3f0b8d757896f913fde80835f22433e4257cf0",
           "b588047aff549b5b11fe9e2c56e739c0638dfdda"
         ],
         "author": [
           "danweinberger <daniel.weinberger@yale.edu>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "danweinberger <daniel.weinberger@yale.edu>",
           "weinbergerlab <dweinber@gmail.com>",
           "danweinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Wed Mar 11 17:12:10 2026 -0400",
+          "Wed Mar 11 15:48:16 2026 -0400",
           "Thu Feb 19 10:43:57 2026 -0500",
           "Tue Feb 3 00:20:55 2026 -0500",
           "Mon Jan 19 23:44:15 2026 -0500"
         ],
         "message": [
+          "fix filtering of Stanford vaccine data",
+          "fix Standford vaccine output",
           "update script and metadata for exemption data from kiang to use medical and ninmedical",
           "update all metadata files tofill in source info and ensure proper formatting; correct formatting on newer process.json files",
           "adds wahpost immunization data, Delphi ILI, others"
         ]
       },
       "source": [],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
@@ -156,8 +411,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-03-03 00:43:52.221494",
-      "last_modified": "2026-03-03 00:43:52.221494",
+      "created": "2026-04-05 19:56:15.353048",
+      "last_modified": "2026-03-11 16:12:03.315542",
       "vintage": {},
       "row_count": 90,
       "entity_count": 6,
@@ -166,6 +421,7 @@
           {
             "name": "geography",
             "duplicates": 84,
+            "info": [],
             "time_range": [0, 14],
             "type": "integer",
             "missing": 0,
@@ -177,6 +433,7 @@
           {
             "name": "time",
             "duplicates": 74,
+            "info": [],
             "time_range": [0, 14],
             "type": "string",
             "missing": 0,
@@ -202,6 +459,29 @@
           {
             "name": "exemption_rate_mmr_med",
             "duplicates": 82,
+            "info": {
+              "id": "exemption_rate_mmr_med",
+              "short_name": "MMR medical exemption rate",
+              "long_name": "Percentage of kindergartners with medical exemptions from MMR vaccination",
+              "category": "immunization",
+              "short_description": "Percentage of kindergarten children with medical exemptions from MMR vaccination requirements",
+              "long_description": "The percentage of kindergarten students with medical exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Medical exemptions are granted when a physician determines that vaccination poses a health risk to a specific child. This dataset aggregates state-reported exemption data at county and state levels. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods. NOTE: Alaska, Delaware, District of Columbia, Indiana, and Rhode Island do not have county-level data in the source; for these states, the state-level value has been assigned uniformly to all counties.",
+              "statement": "In {location}, {value}% of kindergartners had medical exemptions from MMR vaccination",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "fattah_exemptions"
+                }
+              ],
+              "citations": [
+                {
+                  "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
+                }
+              ]
+            },
             "time_range": [0, 14],
             "type": "float",
             "missing": 3,
@@ -213,6 +493,29 @@
           {
             "name": "exemption_rate_mmr_nonmed",
             "duplicates": 68,
+            "info": {
+              "id": "exemption_rate_mmr_nonmed",
+              "short_name": "MMR non-medical exemption rate",
+              "long_name": "Percentage of kindergartners with non-medical exemptions from MMR vaccination",
+              "category": "immunization",
+              "short_description": "Percentage of kindergarten children with non-medical exemptions from MMR vaccination requirements",
+              "long_description": "The percentage of kindergarten students with non-medical (religious or philosophical) exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Non-medical exemptions are based on personal, religious, or philosophical beliefs rather than medical contraindications. Availability of non-medical exemptions varies by state. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods. NOTE: Alaska, Delaware, District of Columbia, Indiana, and Rhode Island do not have county-level data in the source; for these states, the state-level value has been assigned uniformly to all counties.",
+              "statement": "In {location}, {value}% of kindergartners had non-medical exemptions from MMR vaccination",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "fattah_exemptions"
+                }
+              ],
+              "citations": [
+                {
+                  "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
+                  "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
+                }
+              ]
+            },
             "time_range": [0, 14],
             "type": "float",
             "missing": 0,
@@ -223,114 +526,7 @@
           }
         ]
       },
-      "sha512": "54cc8c3ae8cce386455715566ffb094b51667949542fa829c6154ed1feee64ab3bd0d783bdb0fbfff290abdceb0b821a3a0d6495cb0e786a2d3ddc3be58da14e"
-    },
-    {
-      "bytes": 525,
-      "encoding": "ISO-8859-1",
-      "md5": "614116d531a1bc16258b6e4a8eb2af8a",
-      "format": "csv",
-      "name": "data.csv",
-      "filename": "data.csv.gz",
-      "versions": {
-        "hash": [
-          "95807b7fba6bae7a8f3ac4bb7cd48599ac93c0cf",
-          "8c3f0b8d757896f913fde80835f22433e4257cf0",
-          "b588047aff549b5b11fe9e2c56e739c0638dfdda"
-        ],
-        "author": [
-          "danweinberger <daniel.weinberger@yale.edu>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "danweinberger <daniel.weinberger@yale.edu>"
-        ],
-        "date": [
-          "Thu Feb 19 10:43:57 2026 -0500",
-          "Tue Feb 3 00:20:55 2026 -0500",
-          "Mon Jan 19 23:44:15 2026 -0500"
-        ],
-        "message": [
-          "update script and metadata for exemption data from kiang to use medical and ninmedical",
-          "update all metadata files tofill in source info and ensure proper formatting; correct formatting on newer process.json files",
-          "adds wahpost immunization data, Delphi ILI, others"
-        ]
-      },
-      "source": [],
-      "ids": [
-        {
-          "variable": "geography"
-        }
-      ],
-      "id_length": 0,
-      "time": "time",
-      "profile": "data-resource",
-      "created": "2026-03-03 00:43:52.280494",
-      "last_modified": "2026-03-03 00:43:52.280494",
-      "vintage": {},
-      "row_count": 90,
-      "entity_count": 6,
-      "schema": {
-        "fields": [
-          {
-            "name": "geography",
-            "duplicates": 84,
-            "time_range": [0, 14],
-            "type": "integer",
-            "missing": 0,
-            "mean": 21.222222,
-            "sd": 20.81636,
-            "min": 0,
-            "max": 54
-          },
-          {
-            "name": "time",
-            "duplicates": 74,
-            "time_range": [0, 14],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "09-01-2009": 6,
-              "09-01-2010": 2,
-              "09-01-2011": 6,
-              "09-01-2012": 6,
-              "09-01-2013": 6,
-              "09-01-2014": 6,
-              "09-01-2015": 6,
-              "09-01-2016": 6,
-              "09-01-2017": 6,
-              "09-01-2018": 6,
-              "09-01-2019": 5,
-              "09-01-2020": 6,
-              "09-01-2021": 6,
-              "09-01-2022": 6,
-              "09-01-2023": 6,
-              "09-01-2024": 5
-            }
-          },
-          {
-            "name": "exemption_rate_mmr_med",
-            "duplicates": 82,
-            "time_range": [0, 14],
-            "type": "float",
-            "missing": 3,
-            "mean": 0.186526,
-            "sd": 0.459982,
-            "min": 0,
-            "max": 2
-          },
-          {
-            "name": "exemption_rate_mmr_nonmed",
-            "duplicates": 68,
-            "time_range": [0, 14],
-            "type": "float",
-            "missing": 0,
-            "mean": 1.755874,
-            "sd": 1.915641,
-            "min": 0,
-            "max": 9
-          }
-        ]
-      },
-      "sha512": "54cc8c3ae8cce386455715566ffb094b51667949542fa829c6154ed1feee64ab3bd0d783bdb0fbfff290abdceb0b821a3a0d6495cb0e786a2d3ddc3be58da14e"
+      "sha512": "b6864fe4778f112ac32ccb5ee4d30a9a0ef09c7f8f7643c5eb46a9791f2fa586d9216f07392efc2be3d9c1d824c30df3a89f1642bfdfebbd79872f05fecb3033"
     }
   ],
   "measure_info": {
@@ -340,19 +536,19 @@
       "long_name": "Percentage of kindergartners with medical exemptions from MMR vaccination",
       "category": "immunization",
       "short_description": "Percentage of kindergarten children with medical exemptions from MMR vaccination requirements",
-      "long_description": "The percentage of kindergarten students with medical exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Medical exemptions are granted when a physician determines that vaccination poses a health risk to a specific child. This dataset aggregates state-reported exemption data at county and state levels. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods.",
+      "long_description": "The percentage of kindergarten students with medical exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Medical exemptions are granted when a physician determines that vaccination poses a health risk to a specific child. This dataset aggregates state-reported exemption data at county and state levels. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods. NOTE: Alaska, Delaware, District of Columbia, Indiana, and Rhode Island do not have county-level data in the source; for these states, the state-level value has been assigned uniformly to all counties.",
       "statement": "In {location}, {value}% of kindergartners had medical exemptions from MMR vaccination",
       "measure_type": "Percent",
       "unit": "Percent",
       "time_resolution": "Year",
       "sources": [
         {
-          "id": "kiang_exemptions"
+          "id": "fattah_exemptions"
         }
       ],
       "citations": [
         {
-          "title": "Kiang MV, Tsai AC, Basu S, Charlton BM, Perlis RH, Bassett MT. Medical Exemptions From Childhood Vaccination in the US. JAMA. 2025;333(2):168-171.",
+          "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
           "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
         }
       ]
@@ -363,19 +559,19 @@
       "long_name": "Percentage of kindergartners with non-medical exemptions from MMR vaccination",
       "category": "immunization",
       "short_description": "Percentage of kindergarten children with non-medical exemptions from MMR vaccination requirements",
-      "long_description": "The percentage of kindergarten students with non-medical (religious or philosophical) exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Non-medical exemptions are based on personal, religious, or philosophical beliefs rather than medical contraindications. Availability of non-medical exemptions varies by state. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods.",
+      "long_description": "The percentage of kindergarten students with non-medical (religious or philosophical) exemptions from state MMR (measles, mumps, rubella) vaccination requirements. Non-medical exemptions are based on personal, religious, or philosophical beliefs rather than medical contraindications. Availability of non-medical exemptions varies by state. IMPORTANT: Values are rounded for privacy protection, so small changes may not be reflected in the data. Data coverage and reporting methods vary by state and over time. The study compiled exemption data from all 50 U.S. states and Washington, DC, spanning prepandemic (2009-2019) and postpandemic (2020-2024) periods. NOTE: Alaska, Delaware, District of Columbia, Indiana, and Rhode Island do not have county-level data in the source; for these states, the state-level value has been assigned uniformly to all counties.",
       "statement": "In {location}, {value}% of kindergartners had non-medical exemptions from MMR vaccination",
       "measure_type": "Percent",
       "unit": "Percent",
       "time_resolution": "Year",
       "sources": [
         {
-          "id": "kiang_exemptions"
+          "id": "fattah_exemptions"
         }
       ],
       "citations": [
         {
-          "title": "Kiang MV, Tsai AC, Basu S, Charlton BM, Perlis RH, Bassett MT. Medical Exemptions From Childhood Vaccination in the US. JAMA. 2025;333(2):168-171.",
+          "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
           "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
         }
       ]
@@ -394,13 +590,13 @@
       "restrictions": "Attribution required - Cite Kiang et al. 2025",
       "sources": [
         {
-          "name": "Kiang MV et al. Medical Exemptions From Childhood Vaccination in the US. JAMA. 2025",
+          "name": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
           "url": "https://jamanetwork.com/journals/jama/fullarticle/2843870"
         }
       ],
       "citations": [
         {
-          "title": "Kiang MV, Tsai AC, Basu S, Charlton BM, Perlis RH, Bassett MT. Medical Exemptions From Childhood Vaccination in the US. JAMA. 2025;333(2):168-171.",
+          "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
           "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
         }
       ]
@@ -419,13 +615,13 @@
       "restrictions": "Attribution required - Cite Kiang et al. 2025",
       "sources": [
         {
-          "name": "Kiang MV et al. Medical Exemptions From Childhood Vaccination in the US. JAMA. 2025",
-          "url": "https://jamanetwork.com/journals/jama/fullarticle/2843870"
+          "name": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
         }
       ],
       "citations": [
         {
-          "title": "Kiang MV, Tsai AC, Basu S, Charlton BM, Perlis RH, Bassett MT. Medical Exemptions From Childhood Vaccination in the US. JAMA. 2025;333(2):168-171.",
+          "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
           "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
         }
       ]
@@ -444,24 +640,24 @@
       "restrictions": "Attribution required - Cite Kiang et al. 2025",
       "sources": [
         {
-          "id": "kiang_exemptions"
+          "id": "fattah_exemptions"
         }
       ],
       "citations": [
         {
-          "title": "Kiang MV, Tsai AC, Basu S, Charlton BM, Perlis RH, Bassett MT. Medical Exemptions From Childhood Vaccination in the US. JAMA. 2025;333(2):168-171.",
+          "title": "Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.",
           "url": "https://pubmed.ncbi.nlm.nih.gov/41533386/"
         }
       ]
     },
     "_sources": {
-      "kiang_exemptions": {
+      "fattah_exemptions": {
         "name": "Medical Exemptions From Childhood Vaccination in the US (Kiang et al. 2025)",
         "url": "https://jamanetwork.com/journals/jama/fullarticle/2843870",
         "organization": "Stanford University / Massachusetts General Hospital",
         "organization_url": "https://github.com/mkiang/vaccine_exemptions",
         "description": "A comprehensive study of medical vaccine exemption rates among U.S. kindergartners from 2009-2024, published in JAMA by Kiang et al. The study compiled exemption data from all 50 U.S. states and Washington, DC, providing state- and county-level medical exemption rates for MMR vaccination. The dataset spans prepandemic (2009-2019) and postpandemic (2020-2024) periods, enabling analysis of how exemption patterns changed over time and following the COVID-19 pandemic. Medical exemptions are granted when a physician determines that vaccination poses a health risk to a specific child, distinct from religious or philosophical exemptions. Values are rounded for privacy protection. The research was conducted in collaboration with NBC News and methodology is documented in an accompanying article. Full data and code are available on GitHub.",
-        "restrictions": "Attribution required. Cite Kiang MV, Tsai AC, Basu S, Charlton BM, Perlis RH, Bassett MT. Medical Exemptions From Childhood Vaccination in the US. JAMA. 2025;333(2):168-171."
+        "restrictions": "Attribution required. Cite Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488."
       },
       "id": "_sources"
     }
