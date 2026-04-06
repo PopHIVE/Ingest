@@ -48,7 +48,8 @@ jobs:
         with:
           cache-version: 2
         env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }} # Helps with the credential warnings
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+          RENV_CONFIG_REPOS_OVERRIDE: "https://cloud.r-project.org"
 
       - name: Install Custom Package
         run: Rscript -e "renv::install('dissc-yale/dcf')"
