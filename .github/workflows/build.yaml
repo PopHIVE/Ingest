@@ -6,6 +6,8 @@ on:
 jobs:
   process:
     runs-on: ubuntu-22.04
+    env:
+      RENV_PATHS_CACHE: /home/runner/.local/share/renv/cache
     permissions:
       contents: write
       pull-requests: write
@@ -43,13 +45,20 @@ jobs:
           r-version: '4.4'
           use-public-rspm: false
 
-      - name: Restore Renv
-        uses: r-lib/actions/setup-renv@v2
+      - name: Cache renv packages
+        uses: actions/cache@v4
         with:
-          cache-version: 2
+          path: ${{ env.RENV_PATHS_CACHE }}
+          key: ${{ runner.os }}-renv-3-${{ hashFiles('renv.lock') }}
+          restore-keys: ${{ runner.os }}-renv-3-
+
+      - name: Restore Renv
+        run: |
+          options(repos = c(CRAN = "https://cloud.r-project.org"))
+          renv::restore()
+        shell: Rscript {0}
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-          RENV_CONFIG_REPOS_OVERRIDE: "https://cloud.r-project.org"
 
       - name: Install Custom Package
         run: Rscript -e "renv::install('dissc-yale/dcf')"
