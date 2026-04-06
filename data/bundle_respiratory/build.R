@@ -54,10 +54,19 @@ data <- lapply(bundle_files, function(file) {
   if ("age" %in% colnames(d)) {
     d <- d[d$age == "Total", ] #all ages only
     d$age <- NULL
-    
+
   }
   d[!is.na(d$time) & as.character(d$time) > start_time, ]
 })
+
+# Load Kinsa daily data and aggregate to weekly (Saturday end-of-week)
+kinsa_weekly <- vroom::vroom('../kinsa_ili/standard/data.csv.gz', show_col_types = FALSE) %>%
+  mutate(time = lubridate::ceiling_date(as.Date(time), "week", week_start = 7) - 1) %>%
+  group_by(geography, time) %>%
+  summarise(kinsa_cough_cold_flu = mean(kinsa_cough_cold_flu, na.rm = TRUE), .groups = "drop") %>%
+  filter(as.character(time) > start_time)
+
+data <- c(data, list(kinsa_weekly))
 
 combined <- Reduce(
   function(a, b) merge(a, b, by = c("geography", "time"), all = TRUE),
@@ -148,17 +157,18 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth','delphi_fluview_wili')) %>%
+  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth','delphi_fluview_wili','kinsa_cough_cold_flu')) %>%
   mutate( source = if_else(variable=='epic_pct_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
-                                                   if_else(variable=='delphi_hospital_flu_smooth', 'Delphi Hospital Claims', 
-                                                       if_else(variable=='wastewater_flua', 'CDC NWSS', 
+                                                   if_else(variable=='delphi_hospital_flu_smooth', 'Delphi Hospital Claims',
+                                                       if_else(variable=='wastewater_flua', 'CDC NWSS',
                                                              if_else(variable=='delphi_nhsn_flu', 'CDC NHSN',
                                                                    if_else(variable=='delphi_fluview_wili', 'CDC ILINet',
+                                                                         if_else(variable=='kinsa_cough_cold_flu', 'Kinsa',
                                                            NA_character_
 
-                                                   )))))))
+                                                   ))))))))
   ) %>%
   left_join(suppressed_flu, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%

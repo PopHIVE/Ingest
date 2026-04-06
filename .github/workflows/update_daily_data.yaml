@@ -5,12 +5,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-noaa-heat-risk:
+  update-daily-data:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      KINSA_EMAIL: ${{ secrets.KINSA_EMAIL }}
+      KINSA_PASSWORD: ${{ secrets.KINSA_PASSWORD }}
     steps:
       - run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libudunits2-dev libproj-dev libgdal-dev libgeos-dev
       - uses: actions/checkout@v4
@@ -24,6 +26,8 @@ jobs:
         with:
           extra-packages: |
             any::dplyr
+            any::httr2
+            any::purrr
             any::terra
             any::exactextractr
             any::sf
@@ -33,6 +37,7 @@ jobs:
             github::dissc-yale/dcf
           cache-version: 1
       - run: Rscript -e "dcf::dcf_process('noaa_heat_risk')"
+      - run: Rscript -e "dcf::dcf_process('kinsa_ili')"
       - id: diff
         run: |
           if git diff --exit-code; then
@@ -45,5 +50,5 @@ jobs:
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
           git add -A
-          git commit -m "scheduled noaa heat risk update"
+          git commit -m "scheduled daily data update"
           git push
