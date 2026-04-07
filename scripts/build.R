@@ -4,6 +4,7 @@
 library(dcf)
 library(tidyverse)
 
+
 dcf_build()
 
 ##RUN ONCE from parent directory (not within an existing project) 
@@ -50,7 +51,9 @@ dcf_build()
 # dcf::dcf_process("epic")
 # dcf::dcf_process("brfss")
 # dcf_process("respnet")
-# dcf_process("delphi_doctors_claims")
+# dcf_process("delphi_hospital_claims")
+# dcf_process("delphi_ili_fluview")
+# dcf::dcf_process("schoolvax_washpost")
 # dcf_process("delphi_nhsn")
 # dcf_process("nis")
 # dcf_process("cms_mmd")
@@ -79,7 +82,7 @@ dcf_build()
 #run these from the relevant bundle directory
 # dcf::dcf_process("bundle_respiratory", ".")
 # dcf::dcf_process("bundle_childhood_immunizations", ".")
-# dcf::dcf_process("chronic_diseases", ".")
+# dcf::dcf_process("bundle_chronic_diseases", ".")
 # dcf::dcf_process("bundle_injury_overdose", ".")
 
 #Update mermaid diagram

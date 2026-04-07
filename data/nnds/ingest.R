@@ -22,26 +22,32 @@ raw_state <- dcf::dcf_download_cdc(
 
 if (!identical(process$raw_state, raw_state)) {
   data <- vroom::vroom("./raw/x9gk-5huc.csv.xz", show_col_types = FALSE) %>%
-    mutate(time = MMWRweek2Date(`Current MMWR Year`, `MMWR WEEK`, MMWRday = NULL)
-      )
-  
+    mutate(time = MMWRweek2Date(`Current MMWR Year`, `MMWR WEEK`, MMWRday = NULL)+6 #week ending date
+      ) %>%
+      rename(mmwr_year = `Current MMWR Year`,
+      mmwr_week = `MMWR WEEK`
+      ) 
+
+ 
   total_grp <- data %>%
     filter(!is.na(LOCATION1)) %>%
     group_by(Label ) %>%
-    summarize(total = sum(`Current week`, na.rm=T)
+    summarize(total = sum(`Cumulative YTD Current MMWR Year`, na.rm=T)
               )
 
   data_wide <- data %>%
     left_join(total_grp, by='Label') %>%
     filter(total>0)%>%
-     mutate(`Current week` = if_else(is.na(`Current week`),0,`Current week`)) %>%
-    filter(!is.na(LOCATION1)|`Reporting Area`=="US RESIDENTS") %>%
-    pivot_wider(id_cols = c(time, `Reporting Area` ), values_from= `Current week`, names_from=Label) %>%
+     mutate(`Cumulative YTD Current MMWR Year` = if_else(is.na(`Cumulative YTD Current MMWR Year`),0,`Cumulative YTD Current MMWR Year`),
+    `Reporting Area` = toupper(`Reporting Area`)
+     ) %>%
+    filter(!is.na(LOCATION1)|`Reporting Area`%in% c('TOTAL') )%>%
+    pivot_wider(id_cols = c(time,mmwr_year,mmwr_week, `Reporting Area` ), values_from= `Cumulative YTD Current MMWR Year`, names_from=Label) %>%
     clean_names() %>%
-    mutate(reporting_area = toupper(reporting_area),
-           reporting_area = if_else(reporting_area=='US RESIDENTS', 'UNITED STATES',reporting_area )) %>%
+    mutate(
+          reporting_area = if_else(reporting_area == 'TOTAL', 'UNITED STATES',reporting_area )) %>%
     left_join(all_fips, by=c('reporting_area'='geography_name')) %>%
-    dplyr::relocate(time, geography) %>%
+    dplyr::relocate(time,mmwr_year,mmwr_week, geography) %>%
     dplyr::select( -reporting_area, -state)
   
   vroom::vroom_write(
@@ -57,3 +63,4 @@ if (!identical(process$raw_state, raw_state)) {
  
   
 }
+

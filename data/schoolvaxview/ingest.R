@@ -11,7 +11,13 @@ raw_state <- dcf::dcf_download_cdc(
 )
 
 if (!identical(process$raw_state, raw_state)) {
-  
+
+  # Load FIPS crosswalk (preferred over cdlTools::fips())
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, geography_name)
+
   data <- vroom::vroom("./raw/ijqb-a7ye.csv.xz", show_col_types = FALSE) %>%
     #filter(!grepl('Exemption',dose)) %>%
     rename(vaccine = "Vaccine/Exemption") %>%
@@ -48,9 +54,9 @@ if (!identical(process$raw_state, raw_state)) {
       statename = Geography
     ) %>%
     filter(statename %in% c(state.name, 'District of Columbia', 'United States')) %>%
-    mutate(geography = cdlTools::fips(statename, to='FIPS'),
-           geography = if_else(statename=='United States',0,geography),
-           geography = sprintf("%02d", geography),
+    # Use FIPS lookup instead of cdlTools::fips()
+    left_join(state_fips_lookup, by = c("statename" = "geography_name")) %>%
+    mutate(geography = if_else(statename == 'United States', "00", geography),
            time = paste(substr(year,1,4),'09','01', sep='-'), #set date to start of academic year (Sept 1,YYYY)
            vax = if_else(
              grepl('1 dose', Dose), NA_character_, vax  #removes the 1 dose varicella category

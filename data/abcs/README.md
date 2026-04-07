@@ -13,3 +13,6 @@ And process it:
 ```R
 dcf_process("abcs", "..")
 ```
+
+
+Denominator data is obtained from the ABCs surveillance matrix for pneumococcal disease, extracted with Claude to a csv file. [https://www.cdc.gov/abcs/downloads/abcs_pop_matrix.pdf](https://www.cdc.gov/abcs/downloads/abcs-surveillance-matrix.pdf)

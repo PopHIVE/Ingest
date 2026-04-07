@@ -1,5 +1,6 @@
 #Medicare FFS uses the CCW algorithms https://www2.ccwdata.org/documents/10280/19139421/chr-chronic-condition-algorithms.pdfcms
 library(tidyverse)
+library(lubridate)
 library(arrow)
 
 ### FIPS codes
@@ -35,10 +36,11 @@ google <- vroom::vroom('../../data/gtrends/standard/data_year.csv.gz') %>%
 
 #### WISQARS data
 wisqars <- vroom::vroom('../../data/wisqars/standard/data.csv.gz') %>%
-  mutate( year= year(time),
+  mutate( year= lubridate::year(time),
           time = as.Date(paste(year, '07','01', sep='-')),
           age = if_else(age == "0-14 Years" , "<15 Years", age)
   ) #define based on end of period
+
 
 wisqars_aggregated <- wisqars %>%
   filter(sex == "All", race == "All", ethnicity == "All")
@@ -63,26 +65,32 @@ wisqars_long <- wisqars_aggregated %>%
                                'fire_flame',
                               'suffocation',
                                'motor_vehicle_traffic',
-                               #'firearm_accident',
-                              # 'firearm_intentional',
-                              # 'drug_poisoning',
+                               'firearm_accident',
+                               'firearm_intentional',
+                               'firearm_homicide',
+                               'firearm_suicide',
+                               'firearm_legal_intervention',
+                               'drug_poisoning',
                               'pedal_cyclist_mv_traffic',
                               "pedestrian_mv_traffic",
                                'non_drug_poisoning'
                                )) %>%
-  mutate(cause_of_death = gsub('natural_environmental', 'Natural/environmental', cause_of_death), 
+  mutate(cause_of_death = gsub('natural_environmental', 'Natural/environmental', cause_of_death),
     cause_of_death = gsub('drowning_includes_water_transport_', 'Drowning, including water transport', cause_of_death),
           cause_of_death = gsub( 'fall', 'Fall', cause_of_death),
           cause_of_death = gsub('fire_flame' , 'Exposure to smoke, fire, flame' , cause_of_death),
           cause_of_death = gsub('motor_vehicle_traffic' , 'Motor vehicle, traffic', cause_of_death),
           cause_of_death = gsub( 'non_drug_poisoning', 'Non-drug poisoning' , cause_of_death),
+          cause_of_death = gsub( 'drug_poisoning', 'Drug poisoning' , cause_of_death),
     cause_of_death = gsub( 'suffocation', 'Suffocation' , cause_of_death),
     cause_of_death = gsub( 'pedal_cyclist_mv_traffic', 'Pedal cyclist (motor vehicle)' , cause_of_death),
-    cause_of_death = gsub( 'pedestrian_mv_traffic', 'Pedestrian (motor vehicle traffic)' , cause_of_death)
-    
-        #  cause_of_death = gsub('firearm_accident' , , cause_of_death),
-         # cause_of_death = gsub('firearm_intentional' , , cause_of_death)
-          #cause_of_death = gsub( , , cause_of_death),
+    cause_of_death = gsub( 'pedestrian_mv_traffic', 'Pedestrian (motor vehicle traffic)' , cause_of_death),
+
+          cause_of_death = gsub('firearm_accident' ,'Firearm (unintentional)' , cause_of_death),
+          cause_of_death = gsub('firearm_legal_intervention' ,'Firearm (legal intervention)' , cause_of_death),
+          cause_of_death = gsub('firearm_intentional' ,'Firearm (intentional)' , cause_of_death),
+          cause_of_death = gsub('firearm_homicide' ,'Firearm (homicide)' , cause_of_death),
+          cause_of_death = gsub('firearm_suicide' ,'Firearm (suicide)' , cause_of_death)
           ) %>%
   dplyr::select(year, age, geography, cause_of_death, value, N)
 
@@ -196,12 +204,20 @@ write_parquet(. ,'./dist/overdose_deaths_county.parquet')
 nchs <- bind_rows(nchs_od_state, nchs_od_county)
 
 #epic
-epic <- vroom::vroom('../../data/epic/standard/monthly_injury.csv.gz') %>%
+epic <- vroom::vroom('../../data/epic_injury/standard/monthly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
                         if_else(age ==  "25-45 Years", '25-44 Years', age)),
-          epic_pct_ed_firearm = if_else(geography=='02',NA_real_,epic_pct_ed_firearm),
-          epic_pct_ed_opioid = if_else(geography=='02',NA_real_,epic_pct_ed_opioid),
-          epic_pct_ed_heat = if_else(geography=='02',NA_real_,epic_pct_ed_heat)
+          epic_rate_ed_firearm = if_else(geography=='02',NA_real_,epic_rate_ed_firearm),
+          epic_rate_ed_opioid = if_else(geography=='02',NA_real_,epic_rate_ed_opioid),
+          epic_rate_ed_heat = if_else(geography=='02',NA_real_,epic_rate_ed_heat)
+  )
+
+epic_year <- vroom::vroom('../../data/epic_injury/standard/yearly_injury.csv.gz') %>%
+  mutate( age = if_else(age == "15-25 Years", '15-24 Years', 
+                        if_else(age ==  "25-45 Years", '25-44 Years', age)),
+          epic_rate_ed_firearm = if_else(geography=='02',NA_real_,epic_rate_ed_firearm),
+          epic_rate_ed_opioid = if_else(geography=='02',NA_real_,epic_rate_ed_opioid),
+          epic_rate_ed_heat = if_else(geography=='02',NA_real_,epic_rate_ed_heat)
   )
 
 ## trends in overdoses
@@ -220,23 +236,27 @@ combine_long <- function() {
            time = as.Date(paste(year,'07','01', sep='-'))
     )
   
+  #yearly search 
   google_od <- google %>%
     arrange(time) %>%
     rename(value = gtrends_narcan) %>%
     dplyr::select(geography, time, value) %>%
     mutate(source = "Google Health Trends", age = 'Total')
   
+  #yearly cms
   cms_od <- cms %>%
     rename(value = cms_opioid_use_disorder_overarching) %>%
     dplyr::select(geography, time, age, value) %>%
     mutate(source = 'Medicare FFS')
   
+  #yearly death
   wisqars_od2 <- wisqars_od %>%
     rename(value = wisqars_rate_drug_poisoning) %>%
     mutate(source = 'CDC/WISQARS')
   
-  epic_od <- epic %>%
-    rename(value = epic_pct_ed_opioid) %>%
+  #yearly epic
+  epic_od <- epic_year %>%
+    rename(value = epic_rate_ed_opioid) %>%
     dplyr::select(time, geography, age, value, suppressed_opioid) %>%
     mutate(source = 'Epic Cosmos')
   
@@ -266,7 +286,7 @@ combine_long <- function() {
     rename(date = time) %>%
     dplyr::select(geography_name, date, source, value) %>%
     rename(geography = geography_name) %>%
-    filter(!is.na(value)) %>%
+    #filter(!is.na(value)) %>%
     write_parquet(.,
                   './dist/overdose_by_geography_and_source_county.parquet')
 }
@@ -277,14 +297,14 @@ od_county <- read_parquet('./dist/overdose_by_geography_and_source_county.parque
 
 od_state <- read_parquet('./dist/overdose_by_geography_and_source.parquet')
 
-p1 <- od_state %>%
-  filter(geography=='Ohio' & age=='Total') %>%
-  ggplot()+
-  geom_line(aes(x=date, y=value_scale, group=source, color=source)) +
-  theme_classic()
-p1
+# p1 <- od_state %>%
+#   filter(geography=='Ohio' & age=='Total') %>%
+#   ggplot()+
+#   geom_line(aes(x=date, y=value_scale, group=source, color=source)) +
+#   theme_classic()
+# p1
 
-plotly::ggplotly(p1)
+# plotly::ggplotly(p1)
 
 od_state_year <- od_state %>%
   mutate(year=year(date)) %>%
@@ -300,69 +320,78 @@ od_state_year %>%
   write_parquet(.,
                 './dist/overdose_by_geography_and_source_state_year.parquet')
 
-od_state_year %>%
-  filter(age=='Total' & geography=='United States') %>%
-  ggplot() +
-  geom_line(aes(x=year, y=value_year, group=source, color=source)) +
-  theme_classic() +
-  ylim(0,NA) +
-  facet_wrap(~source, scales='free_y', ncol=1)
+# od_state_year %>%
+#   filter(age=='Total' & geography=='United States') %>%
+#   ggplot() +
+#   geom_line(aes(x=year, y=value_year, group=source, color=source)) +
+#   theme_classic() +
+#   ylim(0,NA) +
+#   facet_wrap(~source, scales='free_y', ncol=1)
 
 ## Map of OD by month; county,--just take every 12th observation,
 ##NCHS deaths, CMS opioid use disorder
-library(usmap)
+# library(usmap)
 
-nchs_od_state %>%
-  filter(time=="2020-04-01") %>%
-  rename(state= geography_name) %>%
-  plot_usmap(data=., regions='state', values = "rate_deaths_overdose", color = NA) + 
-  scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
-  theme(legend.position = "right")
+# nchs_od_state %>%
+#   filter(time=="2020-04-01") %>%
+#   rename(state= geography_name) %>%
+#   plot_usmap(data=., regions='state', values = "rate_deaths_overdose", color = NA) + 
+#   scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
+#   theme(legend.position = "right")
 
-cms %>%
-  filter(time==max(time, na.rm=T) & age=='<65 Years') %>%
-  rename(fips=geography) %>%
-  plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
-  scale_fill_continuous(name = "Opioid use disorder prevalence, <65 years CMS", label = scales::comma) + 
-  theme(legend.position = "right")
+# cms %>%
+#   filter(time==max(time, na.rm=T) & age=='<65 Years') %>%
+#   rename(fips=geography) %>%
+#   plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
+#   scale_fill_continuous(name = "Opioid use disorder prevalence, <65 years CMS", label = scales::comma) + 
+#   theme(legend.position = "right")
 
-#County maps
-cms %>%
-  filter(time==max(time) & age=='65+ Years') %>%
-  rename(fips=geography) %>%
-  plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
-  scale_fill_continuous(name = "Prevalence", label = scales::comma) + 
-  theme(legend.position = "right")+
-  ggtitle('Opioid use disorder prevalence, 65+ years Medicare FFS')
+# #County maps
+# cms %>%
+#   filter(time==max(time) & age=='65+ Years') %>%
+#   rename(fips=geography) %>%
+#   plot_usmap(data=., regions='county', values = "cms_opioid_use_disorder_overarching", color = NA) + 
+#   scale_fill_continuous(name = "Prevalence", label = scales::comma) + 
+#   theme(legend.position = "right")+
+#   ggtitle('Opioid use disorder prevalence, 65+ years Medicare FFS')
 
-nchs_od_county %>%
-  filter(time=='2020-12-01') %>%
-  rename(fips = geography) %>%
-  plot_usmap(data=., regions='counties', values = "rate_deaths_overdose", color = NA) + 
-  scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
-  theme(legend.position = "right")+
-  ggtitle('Overdose deaths/100000 (NCHS)')
+# nchs_od_county %>%
+#   filter(time=='2020-12-01') %>%
+#   rename(fips = geography) %>%
+#   plot_usmap(data=., regions='counties', values = "rate_deaths_overdose", color = NA) + 
+#   scale_fill_continuous(name = "Deaths/100,000 that are overdose", label = scales::comma) + 
+#   theme(legend.position = "right")+
+#   ggtitle('Overdose deaths/100000 (NCHS)')
 
-wisqars %>%
-  filter(geography=='00') %>%
-  ggplot() +
-  geom_line(aes(x=time, y=wisqars_rate_firearm_intentional, group=age, color=age))+
-  theme_classic()
+# wisqars %>%
+#   filter(geography=='00') %>%
+#   ggplot() +
+#   geom_line(aes(x=time, y=wisqars_rate_firearm_intentional, group=age, color=age))+
+#   theme_classic()
 
 ##################
 ##Firearm by source
 ########################
 wisqars_firearm <- wisqars_aggregated %>%
-  dplyr::select(geography, time, age, wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident) %>%
-  pivot_longer(cols = c(wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident)) %>%
+  dplyr::select(geography, time, age, wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident,
+                wisqars_rate_firearm_homicide, wisqars_rate_firearm_suicide,
+                wisqars_rate_firearm_legal_intervention) %>%
+  pivot_longer(cols = c(wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident,
+                        wisqars_rate_firearm_homicide, wisqars_rate_firearm_suicide,
+                        wisqars_rate_firearm_legal_intervention)) %>%
   rename(source = name)
 
 # Demographic version
 wisqars_firearm_demo <- wisqars %>%
   left_join(all_fips, by = 'geography') %>%
-  dplyr::select(geography_name, time, age, sex, race, ethnicity, wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident) %>%
+  dplyr::select(geography_name, time, age, sex, race, ethnicity,
+                wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident,
+                wisqars_rate_firearm_homicide, wisqars_rate_firearm_suicide,
+                wisqars_rate_firearm_legal_intervention) %>%
   rename(geography = geography_name) %>%
-  pivot_longer(cols = c(wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident)) %>%
+  pivot_longer(cols = c(wisqars_rate_firearm_intentional, wisqars_rate_firearm_accident,
+                        wisqars_rate_firearm_homicide, wisqars_rate_firearm_suicide,
+                        wisqars_rate_firearm_legal_intervention)) %>%
   rename(source = name)
 
 write_parquet(wisqars_firearm_demo, './dist/firearms_by_demographics.parquet')
@@ -374,10 +403,20 @@ google_firearm <- google %>%
   mutate(age= 'Total')
 
 epic_firearms <- epic %>%
-  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_pct_ed_firearm) %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
   mutate(source='Epic Cosmos') %>%
-  rename(value = epic_pct_ed_firearm) %>%
+  rename(value = epic_rate_ed_firearm) %>%
   filter(!is.na(time))
+
+epic_firearms_year <- epic_year %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
+  mutate(source='Epic Cosmos') %>%
+  rename(value = epic_rate_ed_firearm) %>%
+  filter(!is.na(time)) %>%
+  mutate(year= lubridate::year(time)) %>%
+  left_join(state_cw, by=c('geography')) %>%
+  dplyr::select(-time, -geography, -state)  %>%
+  rename(geography = geography_name) 
 
 firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firearm) %>% 
   ungroup() %>%
@@ -389,22 +428,52 @@ firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firearm) 
 write_parquet(firearms_by_source,'./dist/firearms_geography_source.parquet')
 
 firearms_by_source_year <- firearms_by_source %>%
+  filter(!grepl('Epic', source)) %>%
   ungroup() %>%
   mutate(year= lubridate::year(time)) %>%
   group_by(age, geography, source, year) %>%
   summarize(value = mean(value)) %>%
-  mutate(value_scale = value/max(value, na.rm=T)) 
+  ungroup() %>%
+  bind_rows(epic_firearms_year)  %>%
+  mutate( source = case_when(
+    source == 'wisqars_rate_firearm_intentional' ~ 'CDC/WISQARS: Firearm (intentional)',
+    source == 'wisqars_rate_firearm_accident' ~ 'CDC/WISQARS: Firearm (unintentional)',
+    source == 'wisqars_rate_firearm_homicide' ~ 'CDC/WISQARS: Firearm (homicide)',
+    source == 'wisqars_rate_firearm_suicide' ~ 'CDC/WISQARS: Firearm (suicide)',
+    source == 'wisqars_rate_firearm_legal_intervention' ~ 'CDC/WISQARS: Firearm (legal intervention)',
+    TRUE ~ source
+  ))
+
+## Medicaid injury and overdose
+vroom::vroom('../medicaid_quality/standard/data.csv.gz') %>%
+  filter(geography_level == 's') %>%
+  dplyr::select(geography, time, age, sex, race_ethnicity,
+                medicaid_oud_ad_rate,
+                medicaid_iet_ad_rate,
+                medicaid_fua_ad_30d_rate,
+                medicaid_cob_ad_rate) %>%
+  pivot_longer(
+    cols         = starts_with("medicaid_"),
+    names_to     = "outcome_name",
+    names_prefix = "medicaid_",
+    values_to    = "value"
+  ) %>%
+  mutate(
+    outcome_name = case_when(
+      outcome_name == "oud_ad_rate"      ~ "Opioid Use Disorder",
+      outcome_name == "iet_ad_rate"      ~ "Initiation and Engagement of Substance Use Treatment",
+      outcome_name == "fua_ad_30d_rate"  ~ "Follow-Up After ED Visit for Alcohol and Drug Abuse",
+      outcome_name == "cob_ad_rate"      ~ "Concurrent Use of Opioids and Benzodiazepines"
+    ),
+    year   = lubridate::year(time),
+    source = 'Medicaid'
+  ) %>%
+  filter(!is.na(value),
+         geography %in% c(state.name, "District of Columbia")) %>%
+  dplyr::select(geography, year, age, sex, race_ethnicity, outcome_name, source, value) %>%
+  arrow::write_parquet('./dist/medicaid_injury_overdose.parquet')
 
 firearms_by_source_year %>%
-  filter(age=='Total' & geography=='United States') %>%
-  ggplot() +
-  geom_line(aes(x=year, y=value, group=source, color=source)) +
-  theme_classic() +
-  facet_wrap(~source, scales='free_y', ncol=1)+
-  ylim(0,NA)
-
-firearms_by_source_year %>%
-  dplyr::select(-value_scale) %>%
   write_parquet(.,
                 './dist/firearms_by_geography_and_source_state_year.parquet')
 
@@ -425,30 +494,31 @@ google_heat <- google %>%
   dplyr::select(geography, time, source, value) %>%
   mutate(age = 'Total')
 
-epic_heat <- epic %>%
-  rename(value = epic_pct_ed_heat) %>%
+epic_heat_year <- epic_year %>%
+  rename(value = epic_rate_ed_heat) %>%
   mutate(source = 'Epic Cosmos') %>%
   rename(fips = geography) %>%
   left_join(state_cw, by=c('fips'='geography')) %>%
-  dplyr::select(source, time, geography_name, age, value, suppressed_heat) %>%
-  rename(geography = geography_name)
+  mutate(year= lubridate::year(time)) %>%
+  dplyr::select(source, year, geography_name, age, value, suppressed_heat) %>%
+  rename(geography = geography_name) 
 
-heat_by_source <- bind_rows(google_heat, epic_heat)
-
-write_parquet(heat_by_source,'./dist/heat_related_geography_source.parquet')
-
-heat_by_source_year <- heat_by_source %>%
+google_heat_year <- google_heat %>%
   mutate(year= lubridate::year(time)) %>%
   group_by(year, source, geography, age) %>%
   summarize(value = mean(value, na.rm=T))
 
-heat_by_source_year %>%
-  filter(age=='Total' & geography=='United States') %>%
-  ggplot() +
-  geom_line(aes(x=year, y=value, group=source, color=source)) +
-  theme_classic() +
-  ylim(0,NA)+
-  facet_wrap(~source, scales='free_y', ncol=1)
+heat_by_source_year <- bind_rows(google_heat_year, epic_heat_year)
+
+#write_parquet(heat_by_source,'./dist/heat_related_geography_source.parquet')
+
+# heat_by_source_year %>%
+#   filter(age=='Total' & geography=='United States') %>%
+#   ggplot() +
+#   geom_line(aes(x=year, y=value, group=source, color=source)) +
+#   theme_classic() +
+#   ylim(0,NA)+
+#   facet_wrap(~source, scales='free_y', ncol=1)
 
 heat_by_source_year %>%
   write_parquet(.,

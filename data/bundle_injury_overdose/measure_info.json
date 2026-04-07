@@ -1,2 +1,265 @@
-{}
-
+{
+  "bundle_injury_overdose/dist/deaths_cause_age.parquet|cause_of_death": {
+    "levels": {
+      "Drug poisoning": { "source_id": "wisqars_rate_drug_poisoning" },
+      "Non-drug poisoning": { "source_id": "wisqars_rate_non_drug_poisoning" },
+      "Firearm (unintentional)": { "source_id": "wisqars_rate_firearm_accident" },
+      "Firearm (intentional)": { "source_id": "wisqars_rate_firearm_intentional" },
+      "Firearm (homicide)": { "source_id": "wisqars_rate_firearm_homicide" },
+      "Firearm (suicide)": { "source_id": "wisqars_rate_firearm_suicide" },
+      "Firearm (legal intervention)": { "source_id": "wisqars_rate_firearm_legal_intervention" },
+      "Motor vehicle, traffic": { "source_id": "wisqars_rate_motor_vehicle_traffic" },
+      "Pedal cyclist (motor vehicle)": { "source_id": "wisqars_rate_pedal_cyclist_mv_traffic" },
+      "Pedestrian (motor vehicle traffic)": { "source_id": "wisqars_rate_pedestrian_mv_traffic" },
+      "Fall": { "source_id": "wisqars_rate_fall" },
+      "Drowning, including water transport": { "source_id": "wisqars_rate_drowning_includes_water_transport_" },
+      "Exposure to smoke, fire, flame": { "source_id": "wisqars_rate_fire_flame" },
+      "Natural/environmental": { "source_id": "wisqars_rate_natural_environmental" },
+      "Suffocation": { "source_id": "wisqars_rate_suffocation" }
+    }
+  },
+  "bundle_injury_overdose/dist/deaths_cause_age.parquet|value": {
+    "id": "bundle_injury_overdose/dist/deaths_cause_age.parquet|value",
+    "short_name": "Injury death rate",
+    "long_name": "Age-Adjusted Injury Death Rate per 100,000 Population",
+    "category": "injury",
+    "short_description": "Age-adjusted death rate per 100,000 population by injury cause.",
+    "long_description": "Age-adjusted injury death rate per 100,000 population from CDC WISQARS, stratified by cause of death and age group. Cause of death is identified by the cause_of_death column.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Year",
+    "sources": [{ "id": "wisqars" }]
+  },
+  "bundle_injury_overdose/dist/deaths_cause_age.parquet|N": {
+    "id": "bundle_injury_overdose/dist/deaths_cause_age.parquet|N",
+    "short_name": "Injury death count",
+    "long_name": "Number of Injury Deaths by Cause",
+    "category": "injury",
+    "short_description": "Count of injury deaths by cause of death and age group.",
+    "long_description": "Total number of injury deaths from CDC WISQARS, stratified by cause of death and age group. Cause of death is identified by the cause_of_death column.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [{ "id": "wisqars" }]
+  },
+  "bundle_injury_overdose/dist/deaths_cause_age_demographics.parquet|cause_of_death": {
+    "levels": {
+      "Drug poisoning": { "source_id": "wisqars_rate_drug_poisoning" },
+      "Non-drug poisoning": { "source_id": "wisqars_rate_non_drug_poisoning" },
+      "Firearm (unintentional)": { "source_id": "wisqars_rate_firearm_accident" },
+      "Firearm (intentional)": { "source_id": "wisqars_rate_firearm_intentional" },
+      "Firearm (homicide)": { "source_id": "wisqars_rate_firearm_homicide" },
+      "Firearm (suicide)": { "source_id": "wisqars_rate_firearm_suicide" },
+      "Firearm (legal intervention)": { "source_id": "wisqars_rate_firearm_legal_intervention" },
+      "Motor vehicle, traffic": { "source_id": "wisqars_rate_motor_vehicle_traffic" },
+      "Pedal cyclist (motor vehicle)": { "source_id": "wisqars_rate_pedal_cyclist_mv_traffic" },
+      "Pedestrian (motor vehicle traffic)": { "source_id": "wisqars_rate_pedestrian_mv_traffic" },
+      "Fall": { "source_id": "wisqars_rate_fall" },
+      "Drowning, including water transport": { "source_id": "wisqars_rate_drowning_includes_water_transport_" },
+      "Exposure to smoke, fire, flame": { "source_id": "wisqars_rate_fire_flame" },
+      "Natural/environmental": { "source_id": "wisqars_rate_natural_environmental" },
+      "Suffocation": { "source_id": "wisqars_rate_suffocation" }
+    }
+  },
+  "bundle_injury_overdose/dist/deaths_cause_age_demographics.parquet|value": {
+    "source_id": "bundle_injury_overdose/dist/deaths_cause_age.parquet|value"
+  },
+  "bundle_injury_overdose/dist/deaths_cause_age_demographics.parquet|N": {
+    "source_id": "bundle_injury_overdose/dist/deaths_cause_age.parquet|N"
+  },
+  "bundle_injury_overdose/dist/overdose_by_demographics.parquet|wisqars_rate_drug_poisoning": {
+    "source_id": "wisqars_rate_drug_poisoning"
+  },
+  "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|source": {
+    "levels": {
+      "CDC/NCHS": { "source_id": "n_deaths_overdose" },
+      "Google Health Trends": { "source_id": "gtrends_narcan" },
+      "CDC/WISQARS": { "source_id": "wisqars_rate_drug_poisoning" },
+      "Epic Cosmos": { "source_id": "epic_rate_ed_opioid" },
+      "Medicare FFS": { "source_id": "cms_opioid_use_disorder_overarching" }
+    }
+  },
+  "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|value": {
+    "id": "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|value",
+    "short_name": "Overdose measure",
+    "long_name": "Overdose Surveillance Measure by Source",
+    "category": "injury",
+    "short_description": "Overdose-related surveillance measure; units and definition depend on the source (see source column).",
+    "long_description": "Multi-source overdose measure in long format. The source column identifies the data source: CDC/NCHS (overdose death rate per 100,000), CDC/WISQARS (drug poisoning death rate per 100,000), Epic Cosmos (opioid overdose ED rate per 100,000), Medicare FFS (opioid use disorder prevalence %), and Google Health Trends (naloxone search volume). Alaska is excluded from Epic Cosmos estimates.",
+    "measure_type": "Mixed (rate or probability, depending on source)",
+    "unit": "Varies by source",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "nchs_vsrr_provisional" },
+      { "id": "wisqars" },
+      { "id": "epic_cosmos" },
+      { "id": "cms_mmd" },
+      { "id": "gtrends" }
+    ]
+  },
+  "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|value_scale": {
+    "id": "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|value_scale",
+    "short_name": "Overdose measure (scaled 0–1)",
+    "long_name": "Overdose Surveillance Measure Scaled to 0–1",
+    "category": "injury",
+    "short_description": "Value rescaled to 0–1 relative to the geography and source maximum.",
+    "long_description": "The overdose surveillance value scaled to a 0–1 range by dividing by the maximum value within each geography-source combination. Enables visual comparison across sources with different units.",
+    "measure_type": "Scaled",
+    "unit": "0–1",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "nchs_vsrr_provisional" },
+      { "id": "wisqars" },
+      { "id": "epic_cosmos" },
+      { "id": "cms_mmd" },
+      { "id": "gtrends" }
+    ]
+  },
+  "bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet|source": {
+    "levels": {
+      "CDC/NCHS": { "source_id": "n_deaths_overdose" },
+      "Google Health Trends": { "source_id": "gtrends_narcan" },
+      "CDC/WISQARS": { "source_id": "wisqars_rate_drug_poisoning" },
+      "Epic Cosmos": { "source_id": "epic_rate_ed_opioid" },
+      "Medicare FFS": { "source_id": "cms_opioid_use_disorder_overarching" }
+    }
+  },
+  "bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet|value": {
+    "source_id": "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|value"
+  },
+  "bundle_injury_overdose/dist/overdose_by_geography_and_source_state_year.parquet|source": {
+    "levels": {
+      "CDC/NCHS": { "source_id": "n_deaths_overdose" },
+      "Google Health Trends": { "source_id": "gtrends_narcan" },
+      "CDC/WISQARS": { "source_id": "wisqars_rate_drug_poisoning" },
+      "Epic Cosmos": { "source_id": "epic_rate_ed_opioid" },
+      "Medicare FFS": { "source_id": "cms_opioid_use_disorder_overarching" }
+    }
+  },
+  "bundle_injury_overdose/dist/overdose_by_geography_and_source_state_year.parquet|value": {
+    "source_id": "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|value"
+  },
+  "bundle_injury_overdose/dist/overdose_deaths_state.parquet|n_deaths_overdose": {
+    "source_id": "n_deaths_overdose"
+  },
+  "bundle_injury_overdose/dist/overdose_deaths_state.parquet|rate_deaths_overdose": {
+    "id": "bundle_injury_overdose/dist/overdose_deaths_state.parquet|rate_deaths_overdose",
+    "short_name": "Overdose death rate",
+    "long_name": "Drug Overdose Death Rate per 100,000 Population",
+    "category": "injury",
+    "short_description": "Annual overdose deaths per 100,000 population from NCHS provisional data.",
+    "long_description": "Drug overdose deaths per 100,000 population for the 12-month period ending in December of each year. Calculated from NCHS provisional mortality data (n_deaths_overdose) divided by state population from 2021 Census estimates. December-filtered to represent complete annual data.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Year",
+    "sources": [{ "id": "nchs_vsrr_provisional" }]
+  },
+  "bundle_injury_overdose/dist/overdose_deaths_county.parquet|n_deaths_overdose": {
+    "source_id": "n_deaths_overdose"
+  },
+  "bundle_injury_overdose/dist/overdose_deaths_county.parquet|rate_deaths_overdose": {
+    "source_id": "bundle_injury_overdose/dist/overdose_deaths_state.parquet|rate_deaths_overdose"
+  },
+  "bundle_injury_overdose/dist/county_opioid_by_source.parquet|opioid_rate": {
+    "source_id": "cms_opioid_use_disorder_overarching"
+  },
+  "bundle_injury_overdose/dist/state_opioid_by_source.parquet|opioid_rate": {
+    "source_id": "cms_opioid_use_disorder_overarching"
+  },
+  "bundle_injury_overdose/dist/firearms_by_demographics.parquet|source": {
+    "levels": {
+      "wisqars_rate_firearm_intentional": { "source_id": "wisqars_rate_firearm_intentional" },
+      "wisqars_rate_firearm_accident": { "source_id": "wisqars_rate_firearm_accident" },
+      "wisqars_rate_firearm_homicide": { "source_id": "wisqars_rate_firearm_homicide" },
+      "wisqars_rate_firearm_suicide": { "source_id": "wisqars_rate_firearm_suicide" },
+      "wisqars_rate_firearm_legal_intervention": { "source_id": "wisqars_rate_firearm_legal_intervention" }
+    }
+  },
+  "bundle_injury_overdose/dist/firearms_by_demographics.parquet|value": {
+    "id": "bundle_injury_overdose/dist/firearms_by_demographics.parquet|value",
+    "short_name": "Firearm death rate",
+    "long_name": "Age-Adjusted Firearm Death Rate per 100,000 Population",
+    "category": "injury",
+    "short_description": "Firearm death rate per 100,000 population by intent, age, sex, race, and ethnicity.",
+    "long_description": "Age-adjusted firearm death rate per 100,000 population from CDC WISQARS, stratified by intent (intentional, unintentional, homicide, suicide, legal intervention), age group, sex, race, and ethnicity. The source column identifies the specific intent category.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Year",
+    "sources": [{ "id": "wisqars" }]
+  },
+  "bundle_injury_overdose/dist/firearms_geography_source.parquet|source": {
+    "levels": {
+      "gtrends_9mm": { "source_id": "gtrends_9mm" },
+      "gtrends_shotgun": { "source_id": "gtrends_shotgun" },
+      "Epic Cosmos": { "source_id": "epic_rate_ed_firearm" },
+      "wisqars_rate_firearm_intentional": { "source_id": "wisqars_rate_firearm_intentional" },
+      "wisqars_rate_firearm_accident": { "source_id": "wisqars_rate_firearm_accident" },
+      "wisqars_rate_firearm_homicide": { "source_id": "wisqars_rate_firearm_homicide" },
+      "wisqars_rate_firearm_suicide": { "source_id": "wisqars_rate_firearm_suicide" },
+      "wisqars_rate_firearm_legal_intervention": { "source_id": "wisqars_rate_firearm_legal_intervention" }
+    }
+  },
+  "bundle_injury_overdose/dist/firearms_geography_source.parquet|value": {
+    "id": "bundle_injury_overdose/dist/firearms_geography_source.parquet|value",
+    "short_name": "Firearm-related measure",
+    "long_name": "Firearms Surveillance Measure by Source",
+    "category": "injury",
+    "short_description": "Firearm-related measure; units depend on the source (see source column).",
+    "long_description": "Multi-source firearm measure in long format. The source column identifies the data source: gtrends (firearm-related search volume), Epic Cosmos (ED firearm injury rate per 100,000), or WISQARS (firearm death rate per 100,000). Alaska is excluded from Epic Cosmos estimates.",
+    "measure_type": "Mixed (rate or probability, depending on source)",
+    "unit": "Varies by source",
+    "time_resolution": "Mixed (weekly for Google, monthly for Epic, annual for WISQARS)",
+    "sources": [
+      { "id": "gtrends" },
+      { "id": "epic_cosmos" },
+      { "id": "wisqars" }
+    ]
+  },
+  "bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet|source": {
+    "levels": {
+      "CDC/WISQARS: Firearm (intentional)": { "source_id": "wisqars_rate_firearm_intentional" },
+      "CDC/WISQARS: Firearm (unintentional)": { "source_id": "wisqars_rate_firearm_accident" },
+      "CDC/WISQARS: Firearm (homicide)": { "source_id": "wisqars_rate_firearm_homicide" },
+      "CDC/WISQARS: Firearm (suicide)": { "source_id": "wisqars_rate_firearm_suicide" },
+      "CDC/WISQARS: Firearm (legal intervention)": { "source_id": "wisqars_rate_firearm_legal_intervention" },
+      "Epic Cosmos": { "source_id": "epic_rate_ed_firearm" }
+    }
+  },
+  "bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet|value": {
+    "source_id": "bundle_injury_overdose/dist/firearms_geography_source.parquet|value"
+  },
+  "bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet|source": {
+    "levels": {
+      "Google Health Trends: Heat Stroke": { "source_id": "gtrends_heat+stroke" },
+      "Google Health Trends: Heat Exhaustion": { "source_id": "gtrends_heat+exhaustion" },
+      "Epic Cosmos": { "source_id": "epic_rate_ed_heat" }
+    }
+  },
+  "bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet|value": {
+    "id": "bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet|value",
+    "short_name": "Heat-related measure",
+    "long_name": "Heat-Related Illness Surveillance Measure by Source",
+    "category": "injury",
+    "short_description": "Heat-related illness measure; units depend on the source (see source column).",
+    "long_description": "Annual heat-related measure in long format. The source column identifies the data source: Google Health Trends (heat stroke or heat exhaustion search volume, annual average) or Epic Cosmos (heat-related ED visit rate per 100,000). Alaska is excluded from Epic Cosmos estimates.",
+    "measure_type": "Mixed (rate or probability, depending on source)",
+    "unit": "Varies by source",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "gtrends" },
+      { "id": "epic_cosmos" }
+    ]
+  },
+  "bundle_injury_overdose/dist/google_dma.parquet|gtrends_narcan": {
+    "source_id": "gtrends_narcan"
+  },
+  "bundle_injury_overdose/dist/google_dma.parquet|gtrends_9mm": {
+    "source_id": "gtrends_9mm"
+  },
+  "bundle_injury_overdose/dist/google_dma.parquet|gtrends_shotgun": {
+    "source_id": "gtrends_shotgun"
+  },
+  "bundle_injury_overdose/dist/google_dma.parquet|gtrends_heat_exhaustion": {
+    "source_id": "gtrends_heat+exhaustion"
+  }
+}

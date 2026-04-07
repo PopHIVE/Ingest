@@ -35,11 +35,11 @@ nis_insurance <- vroom::vroom('../nis/standard/data_insurance.csv.gz') %>%
   ) %>%
     arrow::write_parquet( "dist/nis_insurance.parquet")
 
-epic <- vroom::vroom('../epic/standard/children.csv.gz') %>%
-  rename(N_epic = n_vaccine_mmr,
-         mmr_pct_epic = mmr_receipt)
+# epic <- vroom::vroom('../epic/standard/children.csv.gz') %>%
+#   rename(N_epic = n_vaccine_mmr,
+#          mmr_pct_epic = mmr_receipt)
 
-arrow::write_parquet( epic, "dist/mmr_rates_epic.parquet")
+# arrow::write_parquet( epic, "dist/mmr_rates_epic.parquet")
 
 ############################################################
 #Compare Epic Cosmos ( 1dose), NIS (1+ doses),and Epic (1+ dose)
@@ -60,19 +60,22 @@ nis <- vroom::vroom('../nis/standard/data.csv.gz'
          value_nis_ucl=vax_uptake_overall_ucl) %>%
   dplyr::select(value_nis,value_nis_lcl,value_nis_ucl, geography)
 
-vax_epic <- vroom::vroom('../epic/standard/children.csv.gz'
-  ) %>%
-  rename(value_epic = mmr_receipt,
-         N_patients_epic = n_vaccine_mmr) %>%
-  mutate(N_patients_epic = as.numeric(N_patients_epic)
-  ) %>%
-  filter(age == '3-4 Years') %>%
-  dplyr::select(value_epic, geography,N_patients_epic)
+# vax_epic <- vroom::vroom('../epic/standard/children.csv.gz'
+#   ) %>%
+#   rename(value_epic = mmr_receipt,
+#          N_patients_epic = n_vaccine_mmr) %>%
+#   mutate(N_patients_epic = as.numeric(N_patients_epic)
+#   ) %>%
+#   filter(age == '3-4 Years') %>%
+#   dplyr::select(value_epic, geography,N_patients_epic)
 
 vax_compare <- nis %>%
   full_join(vaxview, by = 'geography') %>%
-  full_join(vax_epic, by = 'geography') %>%
-  dplyr::select(geography, value_nis, value_nis_ucl,value_nis_lcl,value_vaxview, value_epic,vaxview_survey_type,N_patients_epic) %>%
+  #full_join(vax_epic, by = 'geography') %>%
+  dplyr::select(geography, value_nis, value_nis_ucl,value_nis_lcl,value_vaxview, 
+  #value_epic,
+  #N_patients_epic,
+  vaxview_survey_type) %>%
   filter(geography!='NA' & !is.na(value_nis))
 arrow::write_parquet(vax_compare, "dist/state_compare.parquet")
 
@@ -122,6 +125,15 @@ combo_school_NIS <- bind_rows(nis2, vaxview2) %>%
          geography = geography_name) %>%
   dplyr::select(-fips, -state ) %>%
   relocate(year, geography, vaccine)
-  
+
 
 write_parquet(combo_school_NIS, "./dist/overall_rates_by_source.parquet")
+
+############################################################
+# Washington Post school vaccination data - county level
+wapo_counties <- vroom::vroom('../schoolvax_washpost/standard/data_counties.csv.gz')
+arrow::write_parquet(wapo_counties, "dist/wapo_vax_counties.parquet")
+
+# Washington Post school vaccination data - school level
+wapo_schools <- vroom::vroom('../schoolvax_washpost/standard/data_schools.csv.gz')
+arrow::write_parquet(wapo_schools, "dist/wapo_vax_schools.parquet")

@@ -1,34 +1,36 @@
 {
   "name": "nis",
   "title": "Nis",
-  "licence": {
-    "url": "http://opendatacommons.org/licenses/pddl",
-    "name": "Open Data Commons Public Domain",
-    "version": "1.0",
-    "id": "odc-pddl"
-  },
   "resources": [
     {
-      "bytes": 21346,
+      "bytes": 21033,
       "encoding": "ISO-8859-1",
-      "md5": "bf65a0199f1cb92fa6b5e991f99efccf",
+      "md5": "aa92f269972eba8d193c665819711545",
       "format": "csv",
       "name": "data_insurance.csv",
       "filename": "data_insurance.csv.gz",
       "versions": {
         "hash": [
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
           "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
           "af6a3ca087a1d6a35a0f3dcb4a3925a10d35cd53"
         ],
         "author": [
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
           "Weinberger <daniel.weinberger@yale.edu>",
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
           "Wed Aug 20 22:32:02 2025 -0400",
           "Mon Aug 4 17:19:57 2025 -0400"
         ],
         "message": [
+          "partial update bundle",
+          "scheduled data build",
           "udpates build with some additional JSOn meta data",
           "add standardization for insurance status and urbanicity"
         ]
@@ -41,6 +43,7 @@
           "location_url": "https://www.cdc.gov/nis/about/index.html"
         }
       ],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
@@ -49,8 +52,9 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2025-10-27 01:07:08.891735",
-      "last_modified": "2025-10-27 01:07:08.891735",
+      "created": "2026-04-06 13:53:49.356264",
+      "last_modified": "2026-04-06 13:53:49.356264",
+      "vintage": {},
       "row_count": 2072,
       "entity_count": 52,
       "schema": {
@@ -58,6 +62,7 @@
           {
             "name": "geography",
             "duplicates": 2020,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -119,6 +124,19 @@
           {
             "name": "insurance",
             "duplicates": 2068,
+            "info": {
+              "id": "insurance",
+              "short_name": "Insurance Status",
+              "long_name": "Health Insurance Status",
+              "short_description": "Health insurance coverage status of the child.",
+              "long_description": "Health insurance status categories used in the National Immunization Survey to stratify vaccination coverage estimates.",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -132,6 +150,19 @@
           {
             "name": "birth_year",
             "duplicates": 2071,
+            "info": {
+              "id": "birth_year",
+              "short_name": "Birth Year",
+              "long_name": "Birth Year of Child",
+              "short_description": "Calendar year the child was born.",
+              "measure_type": "integer",
+              "unit": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -142,6 +173,19 @@
           {
             "name": "vaccine",
             "duplicates": 2058,
+            "info": {
+              "id": "vaccine",
+              "short_name": "Vaccine",
+              "long_name": "Vaccine Type",
+              "short_description": "Type of vaccine being measured.",
+              "long_description": "Type of vaccine measured in the survey (e.g., MMR, DTaP, Polio, Hib, HepB, Varicella, PCV).",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -165,6 +209,21 @@
           {
             "name": "vax_uptake_insurance",
             "duplicates": 1640,
+            "info": {
+              "id": "vax_uptake_insurance",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for insurance estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -176,6 +235,21 @@
           {
             "name": "vax_uptake_insurance_lcl",
             "duplicates": 1530,
+            "info": {
+              "id": "vax_uptake_insurance_lcl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for insurance_lcl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 1,
@@ -187,6 +261,21 @@
           {
             "name": "vax_uptake_insurance_ucl",
             "duplicates": 1742,
+            "info": {
+              "id": "vax_uptake_insurance_ucl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for insurance_ucl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 1,
@@ -198,6 +287,24 @@
           {
             "name": "sample_size_insurance",
             "duplicates": 1944,
+            "info": {
+              "id": "sample_size_insurance",
+              "short_name": "Sample size for survey responses",
+              "long_name": "Sample size for survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "name": "National Immunization Survey",
+                  "url": "https://www.cdc.gov/nis/about/index.html",
+                  "location": "About the National Immunization Surveys (NIS)",
+                  "location_url": "https://www.cdc.gov/nis/about/index.html"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -208,29 +315,37 @@
           }
         ]
       },
-      "sha512": "5355226155f838f059803b0780a57d18cea4198659a5c8ef5b88b80597f84467816e16a6acd61220aa4538f41916a35af8859759ffdd953a982540fa62f8381d"
+      "sha512": "6da0a2dde9993c55daaed27e95f35aebb52ec087fa85588d29dff97ed95528ecccef3c36e05f6d48f82d72b5c87a2a1580764dd87523550b2449bbbde96b0cb1"
     },
     {
-      "bytes": 20733,
+      "bytes": 21722,
       "encoding": "ISO-8859-1",
-      "md5": "ba165f8eec1e347b63b9e17103462d19",
+      "md5": "378fdb3e130f5eb5cd4d4ee04976b26f",
       "format": "csv",
       "name": "data_urban.csv",
       "filename": "data_urban.csv.gz",
       "versions": {
         "hash": [
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
           "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
           "af6a3ca087a1d6a35a0f3dcb4a3925a10d35cd53"
         ],
         "author": [
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
           "Weinberger <daniel.weinberger@yale.edu>",
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
           "Wed Aug 20 22:32:02 2025 -0400",
           "Mon Aug 4 17:19:57 2025 -0400"
         ],
         "message": [
+          "partial update bundle",
+          "scheduled data build",
           "udpates build with some additional JSOn meta data",
           "add standardization for insurance status and urbanicity"
         ]
@@ -243,6 +358,7 @@
           "location_url": "https://www.cdc.gov/nis/about/index.html"
         }
       ],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
@@ -251,8 +367,9 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2025-10-27 01:07:08.891735",
-      "last_modified": "2025-10-27 01:07:08.891735",
+      "created": "2026-04-06 13:53:49.356264",
+      "last_modified": "2026-04-06 13:53:49.356264",
+      "vintage": {},
       "row_count": 2072,
       "entity_count": 52,
       "schema": {
@@ -260,6 +377,7 @@
           {
             "name": "geography",
             "duplicates": 2020,
+            "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -321,6 +439,19 @@
           {
             "name": "urban",
             "duplicates": 2069,
+            "info": {
+              "id": "urban",
+              "short_name": "Urbanicity",
+              "long_name": "Urban-Rural Classification",
+              "short_description": "Urban or rural classification of residence.",
+              "long_description": "Urban-rural classification of the child's residence area, used to stratify vaccination coverage estimates by urbanicity.",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -333,6 +464,19 @@
           {
             "name": "birth_year",
             "duplicates": 2071,
+            "info": {
+              "id": "birth_year",
+              "short_name": "Birth Year",
+              "long_name": "Birth Year of Child",
+              "short_description": "Calendar year the child was born.",
+              "measure_type": "integer",
+              "unit": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -343,6 +487,19 @@
           {
             "name": "vaccine",
             "duplicates": 2058,
+            "info": {
+              "id": "vaccine",
+              "short_name": "Vaccine",
+              "long_name": "Vaccine Type",
+              "short_description": "Type of vaccine being measured.",
+              "long_description": "Type of vaccine measured in the survey (e.g., MMR, DTaP, Polio, Hib, HepB, Varicella, PCV).",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -366,6 +523,21 @@
           {
             "name": "vax_uptake_urban",
             "duplicates": 1702,
+            "info": {
+              "id": "vax_uptake_urban",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for urban estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
@@ -377,6 +549,21 @@
           {
             "name": "vax_uptake_urban_lcl",
             "duplicates": 1632,
+            "info": {
+              "id": "vax_uptake_urban_lcl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for urban_lcl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 6,
@@ -388,6 +575,21 @@
           {
             "name": "vax_uptake_urban_ucl",
             "duplicates": 1775,
+            "info": {
+              "id": "vax_uptake_urban_ucl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for urban_ucl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "float",
             "missing": 6,
@@ -399,6 +601,24 @@
           {
             "name": "sample_size_urban",
             "duplicates": 1936,
+            "info": {
+              "id": "sample_size_urban",
+              "short_name": "Sample size for survey responses",
+              "long_name": "Sample size for survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "name": "National Immunization Survey",
+                  "url": "https://www.cdc.gov/nis/about/index.html",
+                  "location": "About the National Immunization Surveys (NIS)",
+                  "location_url": "https://www.cdc.gov/nis/about/index.html"
+                }
+              ]
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -409,17 +629,19 @@
           }
         ]
       },
-      "sha512": "56e7441bd7f3945d0e46c3cdadcdf2042a92afd99b097261c6473e8aad205bfd9ce6b09b67d41997734d8f4b5c48836b8f6f4271c95c0688623619bcf236c88d"
+      "sha512": "15eec0e40938e55eebeee495a3c628196810f800a5bfd9db0e1ba952070e053b8a740ff604348ff7eb41752369ebf75099df79d3dfc84ff6db2c12f12fbf55e2"
     },
     {
-      "bytes": 460875,
+      "bytes": 458651,
       "encoding": "ISO-8859-1",
-      "md5": "5fb15010d2b9338148739e07a334fa36",
+      "md5": "07a186f645d90898413721af43d2a2d7",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
           "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
           "0729910fad06bceda1fac9cea35cae8b1c3312ba",
           "af6a3ca087a1d6a35a0f3dcb4a3925a10d35cd53",
@@ -428,6 +650,8 @@
           "7dd55dbb41be8fcba4fd4748f54d33ea0a5ab6fe"
         ],
         "author": [
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
           "Weinberger <daniel.weinberger@yale.edu>",
           "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>",
@@ -436,6 +660,8 @@
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
           "Wed Aug 20 22:32:02 2025 -0400",
           "Fri Aug 8 23:00:16 2025 -0400",
           "Mon Aug 4 17:19:57 2025 -0400",
@@ -444,6 +670,8 @@
           "Mon Jul 14 16:46:51 2025 -0400"
         ],
         "message": [
+          "partial update bundle",
+          "scheduled data build",
           "udpates build with some additional JSOn meta data",
           "rebuild database",
           "add standardization for insurance status and urbanicity",
@@ -460,6 +688,7 @@
           "location_url": "https://www.cdc.gov/nis/about/index.html"
         }
       ],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
@@ -468,189 +697,294 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2025-10-27 01:07:08.891735",
-      "last_modified": "2025-10-27 01:07:08.891735",
-      "row_count": 41748,
+      "created": "2026-04-06 13:53:49.356264",
+      "last_modified": "2026-04-06 13:53:49.356264",
+      "vintage": {},
+      "row_count": 45547,
       "entity_count": 52,
       "schema": {
         "fields": [
           {
             "name": "birth_year",
-            "duplicates": 41737,
-            "time_range": [6, 68],
+            "duplicates": 45535,
+            "info": {
+              "id": "birth_year",
+              "short_name": "Birth Year",
+              "long_name": "Birth Year of Child",
+              "short_description": "Calendar year the child was born.",
+              "measure_type": "integer",
+              "unit": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "integer",
             "missing": 0,
-            "mean": 2016.000072,
-            "sd": 3.162198,
+            "mean": 2016.500384,
+            "sd": 3.452034,
             "min": 2011,
-            "max": 2021
+            "max": 2022
           },
           {
             "name": "age",
-            "duplicates": 41737,
-            "time_range": [6, 68],
+            "duplicates": 45536,
+            "info": {
+              "id": "age",
+              "short_name": "Age",
+              "long_name": "Age Group",
+              "short_description": "Age group of surveyed children.",
+              "long_description": "Age group category used in the National Immunization Survey, typically 19-35 months for young children or 13-17 years for adolescents.",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "string",
             "missing": 0,
             "table": {
-              "0-1 Days": 572,
-              "0-2 Days": 572,
-              "0-3 Days": 572,
-              "13 Months": 5720,
-              "19 Months": 7435,
-              "24 Months": 8008,
-              "3 Months": 2860,
-              "35 Months": 8008,
-              "5 Months": 2860,
-              "7 Months": 4569,
-              "8 Months": 572
+              "0-1 Days": 624,
+              "0-2 Days": 624,
+              "0-3 Days": 624,
+              "13 Months": 6240,
+              "19 Months": 8111,
+              "24 Months": 8736,
+              "3 Months": 3120,
+              "35 Months": 8736,
+              "5 Months": 3120,
+              "7 Months": 4988,
+              "8 Months": 624
             }
           },
           {
             "name": "vaccine",
-            "duplicates": 41720,
-            "time_range": [6, 68],
+            "duplicates": 45519,
+            "info": {
+              "id": "vaccine",
+              "short_name": "Vaccine",
+              "long_name": "Vaccine Type",
+              "short_description": "Type of vaccine being measured.",
+              "long_description": "Type of vaccine measured in the survey (e.g., MMR, DTaP, Polio, Hib, HepB, Varicella, PCV).",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "string",
             "missing": 0,
             "table": {
-              "≥1 Dose MMR": 2288,
-              "≥1 Dose Varicella": 2288,
-              "Combined 7 Series": 1144,
-              "DTaP ≥1 Dose": 572,
-              "DTaP ≥2 Doses": 572,
-              "DTaP ≥3 Doses": 2860,
-              "DTaP ≥4 Doses": 1716,
-              "Hep A ≥1 Dose": 1716,
-              "Hep A ≥2 Doses": 1715,
-              "Hep B ≥1 Dose": 572,
-              "Hep B ≥1 Dose, 1 Day": 572,
-              "Hep B ≥1 Dose, 2 Day": 572,
-              "Hep B ≥1 Dose, 3 Day (Birth Dose)": 572,
-              "Hep B ≥2 Doses": 1716,
-              "Hep B ≥3 Doses": 2860,
-              "Hib ≥1 Dose": 572,
-              "Hib ≥2 Doses": 1716,
-              "Hib ≥3 Doses": 2853,
-              "Hib Full Series": 1716,
-              "Hib Primary Series": 2860,
-              "PCV ≥1 Dose": 572,
-              "PCV ≥2 Doses": 572,
-              "PCV ≥3 Doses": 2860,
-              "PCV ≥4 Doses": 1716,
-              "Polio ≥1 Dose": 572,
-              "Polio ≥2 Doses": 1716,
-              "Polio ≥3 Doses": 1716,
-              "Rotavirus": 572
+              "≥1 Dose MMR": 2496,
+              "≥1 Dose Varicella": 2496,
+              "Combined 7 Series": 1248,
+              "DTaP ≥1 Dose": 624,
+              "DTaP ≥2 Doses": 624,
+              "DTaP ≥3 Doses": 3120,
+              "DTaP ≥4 Doses": 1872,
+              "Hep A ≥1 Dose": 1872,
+              "Hep A ≥2 Doses": 1871,
+              "Hep B ≥1 Dose": 624,
+              "Hep B ≥1 Dose, 1 Day": 624,
+              "Hep B ≥1 Dose, 2 Day": 624,
+              "Hep B ≥1 Dose, 3 Day (Birth Dose)": 624,
+              "Hep B ≥2 Doses": 1872,
+              "Hep B ≥3 Doses": 3120,
+              "Hib ≥1 Dose": 624,
+              "Hib ≥2 Doses": 1872,
+              "Hib ≥3 Doses": 3116,
+              "Hib Full Series": 1872,
+              "Hib Primary Series": 3120,
+              "PCV ≥1 Dose": 624,
+              "PCV ≥2 Doses": 624,
+              "PCV ≥3 Doses": 3120,
+              "PCV ≥4 Doses": 1872,
+              "Polio ≥1 Dose": 624,
+              "Polio ≥2 Doses": 1872,
+              "Polio ≥3 Doses": 1872,
+              "Rotavirus": 624
             }
           },
           {
             "name": "vax_uptake_overall",
-            "duplicates": 40888,
-            "time_range": [6, 68],
+            "duplicates": 44691,
+            "info": {
+              "id": "vax_uptake_overall",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for overall estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "float",
-            "missing": 0,
-            "mean": 82.838917,
-            "sd": 13.62773,
+            "missing": 4,
+            "mean": 82.979376,
+            "sd": 13.543891,
             "min": 6.3,
             "max": 99.9
           },
           {
             "name": "vax_uptake_overall_lcl",
-            "duplicates": 40841,
-            "time_range": [6, 68],
+            "duplicates": 44643,
+            "info": {
+              "id": "vax_uptake_overall_lcl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for overall_lcl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "float",
-            "missing": 0,
-            "mean": 76.873994,
-            "sd": 14.55398,
+            "missing": 4,
+            "mean": 77.138135,
+            "sd": 14.467814,
             "min": 3.6,
             "max": 99.4
           },
           {
             "name": "vax_uptake_overall_ucl",
-            "duplicates": 40932,
-            "time_range": [6, 68],
+            "duplicates": 44734,
+            "info": {
+              "id": "vax_uptake_overall_ucl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for overall_ucl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "float",
-            "missing": 0,
-            "mean": 87.432596,
-            "sd": 12.351608,
-            "min": 10.5,
+            "missing": 4,
+            "mean": 87.488009,
+            "sd": 12.289489,
+            "min": 10.6,
             "max": 100
           },
           {
             "name": "sample_size_overall",
-            "duplicates": 41463,
-            "time_range": [6, 68],
+            "duplicates": 45242,
+            "info": {
+              "id": "sample_size_overall",
+              "short_name": "Sample size for survey responses",
+              "long_name": "Sample size for survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "name": "National Immunization Survey",
+                  "url": "https://www.cdc.gov/nis/about/index.html",
+                  "location": "About the National Immunization Surveys (NIS)",
+                  "location_url": "https://www.cdc.gov/nis/about/index.html"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "integer",
-            "missing": 0,
-            "mean": 607.17541,
-            "sd": 2149.096402,
+            "missing": 4,
+            "mean": 608.224096,
+            "sd": 2158.277786,
             "min": 88,
             "max": 18826
           },
           {
             "name": "geography",
-            "duplicates": 41696,
-            "time_range": [6, 68],
+            "duplicates": 45495,
+            "info": [],
+            "time_range": [72, 93],
             "type": "string",
             "missing": 0,
             "table": {
-              "00": 803,
-              "01": 803,
-              "02": 798,
-              "04": 803,
-              "05": 803,
-              "06": 803,
-              "08": 803,
-              "09": 803,
-              "10": 803,
-              "11": 803,
-              "12": 803,
-              "13": 803,
-              "15": 803,
-              "16": 803,
-              "17": 803,
-              "18": 803,
-              "19": 803,
-              "20": 803,
-              "21": 803,
-              "22": 803,
-              "23": 803,
-              "24": 803,
-              "25": 803,
-              "26": 803,
-              "27": 803,
-              "28": 803,
-              "29": 803,
-              "30": 802,
-              "31": 803,
-              "32": 803,
-              "33": 803,
-              "34": 803,
-              "35": 803,
-              "36": 803,
-              "37": 803,
-              "38": 803,
-              "39": 803,
-              "40": 803,
-              "41": 803,
-              "42": 803,
-              "44": 801,
-              "45": 803,
-              "46": 803,
-              "47": 803,
-              "48": 803,
-              "49": 803,
-              "50": 803,
-              "51": 803,
-              "53": 803,
-              "54": 803,
-              "55": 803,
-              "56": 803
+              "00": 876,
+              "01": 876,
+              "02": 874,
+              "04": 876,
+              "05": 876,
+              "06": 876,
+              "08": 876,
+              "09": 876,
+              "10": 876,
+              "11": 876,
+              "12": 876,
+              "13": 876,
+              "15": 876,
+              "16": 876,
+              "17": 876,
+              "18": 876,
+              "19": 876,
+              "20": 876,
+              "21": 876,
+              "22": 876,
+              "23": 876,
+              "24": 876,
+              "25": 876,
+              "26": 876,
+              "27": 876,
+              "28": 876,
+              "29": 876,
+              "30": 875,
+              "31": 876,
+              "32": 876,
+              "33": 876,
+              "34": 876,
+              "35": 876,
+              "36": 876,
+              "37": 876,
+              "38": 876,
+              "39": 876,
+              "40": 876,
+              "41": 876,
+              "42": 876,
+              "44": 874,
+              "45": 876,
+              "46": 876,
+              "47": 876,
+              "48": 876,
+              "49": 876,
+              "50": 876,
+              "51": 876,
+              "53": 876,
+              "54": 876,
+              "55": 876,
+              "56": 876
             }
           },
           {
             "name": "time",
-            "duplicates": 41660,
-            "time_range": [6, 68],
+            "duplicates": 45451,
+            "info": [],
+            "time_range": [72, 93],
             "type": "string",
             "missing": 0,
             "table": {
@@ -717,14 +1051,14 @@
               "2019-01-31": 520,
               "2019-04-02": 260,
               "2019-06-02": 260,
-              "2019-08-01": 1091,
+              "2019-08-01": 1092,
               "2019-09-01": 52,
               "2019-12-01": 728,
               "2020-01-01": 884,
               "2020-01-31": 520,
               "2020-04-01": 260,
               "2020-06-01": 260,
-              "2020-07-31": 1091,
+              "2020-07-31": 1092,
               "2020-08-31": 52,
               "2020-11-30": 728,
               "2020-12-31": 728,
@@ -733,29 +1067,102 @@
               "2021-04-02": 260,
               "2021-06-02": 260,
               "2021-07-31": 676,
-              "2021-08-01": 415,
+              "2021-08-01": 416,
               "2021-09-01": 52,
               "2021-11-30": 728,
               "2021-12-31": 728,
+              "2022-01-01": 156,
               "2022-01-31": 520,
-              "2022-08-01": 676,
+              "2022-04-02": 260,
+              "2022-06-02": 260,
+              "2022-08-01": 1092,
+              "2022-09-01": 52,
               "2022-11-30": 728,
               "2023-01-01": 728,
-              "2023-12-01": 728
+              "2023-01-31": 520,
+              "2023-08-01": 676,
+              "2023-12-01": 728,
+              "2024-01-01": 728,
+              "2024-11-30": 728
             }
           }
         ]
       },
-      "sha512": "99e36d34f5c02b9ff2c3f9cb074c54b282690ae043cb6443a0a2827f09e426f58111f9b01ac55b70f525d0c9982bc60a4646208719ee185b8f87e1218dc7307f"
+      "sha512": "11c43e05b3f74137bce75da7c6a95f1049bb5b7445804e56be9937289d1698f4fd9a51ab442b22ed91f209e762047487a3652519c09303931be353b823eed2f5"
     }
   ],
   "measure_info": {
+    "birth_year": {
+      "id": "birth_year",
+      "short_name": "Birth Year",
+      "long_name": "Birth Year of Child",
+      "short_description": "Calendar year the child was born.",
+      "measure_type": "integer",
+      "unit": "year",
+      "sources": [
+        {
+          "id": "nis"
+        }
+      ]
+    },
+    "age": {
+      "id": "age",
+      "short_name": "Age",
+      "long_name": "Age Group",
+      "short_description": "Age group of surveyed children.",
+      "long_description": "Age group category used in the National Immunization Survey, typically 19-35 months for young children or 13-17 years for adolescents.",
+      "measure_type": "categorical",
+      "sources": [
+        {
+          "id": "nis"
+        }
+      ]
+    },
+    "vaccine": {
+      "id": "vaccine",
+      "short_name": "Vaccine",
+      "long_name": "Vaccine Type",
+      "short_description": "Type of vaccine being measured.",
+      "long_description": "Type of vaccine measured in the survey (e.g., MMR, DTaP, Polio, Hib, HepB, Varicella, PCV).",
+      "measure_type": "categorical",
+      "sources": [
+        {
+          "id": "nis"
+        }
+      ]
+    },
+    "insurance": {
+      "id": "insurance",
+      "short_name": "Insurance Status",
+      "long_name": "Health Insurance Status",
+      "short_description": "Health insurance coverage status of the child.",
+      "long_description": "Health insurance status categories used in the National Immunization Survey to stratify vaccination coverage estimates.",
+      "measure_type": "categorical",
+      "sources": [
+        {
+          "id": "nis"
+        }
+      ]
+    },
+    "urban": {
+      "id": "urban",
+      "short_name": "Urbanicity",
+      "long_name": "Urban-Rural Classification",
+      "short_description": "Urban or rural classification of residence.",
+      "long_description": "Urban-rural classification of the child's residence area, used to stratify vaccination coverage estimates by urbanicity.",
+      "measure_type": "categorical",
+      "sources": [
+        {
+          "id": "nis"
+        }
+      ]
+    },
     "sample_size_overall": {
       "id": "sample_size_overall",
       "short_name": "Sample size for survey responses",
       "long_name": "Sample size for survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
@@ -774,7 +1181,7 @@
       "short_name": "Sample size for survey responses",
       "long_name": "Sample size for survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
@@ -793,7 +1200,7 @@
       "short_name": "Sample size for survey responses",
       "long_name": "Sample size for survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
@@ -812,16 +1219,13 @@
       "short_name": "Vaccine uptake for  estimated from survey responses",
       "long_name": "Vaccine uptake for overall estimated from survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Percent of survey respondents who received the indicated vaccine",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
       "sources": [
         {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
+          "id": "nis"
         }
       ],
       "citations": []
@@ -831,16 +1235,13 @@
       "short_name": "Vaccine uptake for  estimated from survey responses",
       "long_name": "Vaccine uptake for insurance estimated from survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Percent of survey respondents who received the indicated vaccine",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
       "sources": [
         {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
+          "id": "nis"
         }
       ],
       "citations": []
@@ -850,16 +1251,13 @@
       "short_name": "Vaccine uptake for  estimated from survey responses",
       "long_name": "Vaccine uptake for urban estimated from survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Percent of survey respondents who received the indicated vaccine",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
       "sources": [
         {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
+          "id": "nis"
         }
       ],
       "citations": []
@@ -869,16 +1267,13 @@
       "short_name": "Vaccine uptake for  estimated from survey responses",
       "long_name": "Vaccine uptake for overall_lcl estimated from survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Percent of survey respondents who received the indicated vaccine",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
       "sources": [
         {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
+          "id": "nis"
         }
       ],
       "citations": []
@@ -888,16 +1283,13 @@
       "short_name": "Vaccine uptake for  estimated from survey responses",
       "long_name": "Vaccine uptake for insurance_lcl estimated from survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Percent of survey respondents who received the indicated vaccine",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
       "sources": [
         {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
+          "id": "nis"
         }
       ],
       "citations": []
@@ -907,16 +1299,13 @@
       "short_name": "Vaccine uptake for  estimated from survey responses",
       "long_name": "Vaccine uptake for urban_lcl estimated from survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Percent of survey respondents who received the indicated vaccine",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
       "sources": [
         {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
+          "id": "nis"
         }
       ],
       "citations": []
@@ -926,16 +1315,13 @@
       "short_name": "Vaccine uptake for  estimated from survey responses",
       "long_name": "Vaccine uptake for overall_ucl estimated from survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Percent of survey respondents who received the indicated vaccine",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
       "sources": [
         {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
+          "id": "nis"
         }
       ],
       "citations": []
@@ -945,16 +1331,13 @@
       "short_name": "Vaccine uptake for  estimated from survey responses",
       "long_name": "Vaccine uptake for insurance_ucl estimated from survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Percent of survey respondents who received the indicated vaccine",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
       "sources": [
         {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
+          "id": "nis"
         }
       ],
       "citations": []
@@ -964,19 +1347,38 @@
       "short_name": "Vaccine uptake for  estimated from survey responses",
       "long_name": "Vaccine uptake for urban_ucl estimated from survey responses",
       "category": "childhood immunizations",
-      "long_description": "The NIS are a group of phone surveys used to monitor vaccination coverage among children 19–35 months and teens 13–17 years, flu vaccinations for children 6 months–17 years, and COVID-19 vaccination for children and teens in eligible age groups and for adults 18 years and older. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the Centers for Disease Control and Prevention (CDC) and authorized by the Public Health Service Act [Sections 306]. The NIS provides current, population-based, state and local area estimates of vaccination coverage among children and teens using a standard survey methodology. The surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll one or more age-eligible child or teen from the household. The parents and guardians of eligible children are asked during the interview for the names of their children's vaccination providers and permission to contact them. With this permission, a questionnaire is mailed to each child's vaccination provider(s) to collect the information on the types of vaccinations, number of doses, dates of administration, and other administrative data about the health care facility, and children and teens are classified as being up to date based on the ACIP-recommended numbers of doses for each vaccine.",
+      "long_description": "Percent of survey respondents who received the indicated vaccine",
       "measure_type": "percent",
       "unit": "percent",
       "time_resolution": "year",
       "sources": [
         {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
+          "id": "nis"
         }
       ],
       "citations": []
+    },
+    "_sources": {
+      "nis": {
+        "name": "National Immunization Survey (NIS)",
+        "url": "https://www.cdc.gov/nis/about/index.html",
+        "organization": "Centers for Disease Control and Prevention",
+        "organization_url": "https://www.cdc.gov/ncird/",
+        "description": "The National Immunization Surveys (NIS) are a group of telephone surveys used to monitor vaccination coverage among children 19-35 months, teens 13-17 years, flu vaccinations for children 6 months-17 years, and COVID-19 vaccination for children, teens, and adults. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the CDC and authorized by the Public Health Service Act. NIS provides population-based, state and local area estimates of vaccination coverage using a standard survey methodology. Surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll age-eligible children. With parental permission, vaccination providers are contacted to verify immunization records. Children and teens are classified as up to date based on ACIP-recommended vaccine doses.",
+        "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+      },
+      "id": "_sources"
+    }
+  },
+  "change_report": {
+    "data_insurance.csv.gz": {
+      "state": "unchanged"
+    },
+    "data_urban.csv.gz": {
+      "state": "unchanged"
+    },
+    "data.csv.gz": {
+      "state": "unchanged"
     }
   }
 }
