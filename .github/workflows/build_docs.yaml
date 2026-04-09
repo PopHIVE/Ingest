@@ -1,12 +1,8 @@
 name: Build Documentation
 
 on:
-  push:
-    paths:
-      - 'data/*/measure_info.json'
-      - 'data/*/standard/*.csv.gz'
-      - 'scripts/build_docs.R'
-    branches: [main]
+  schedule:
+    - cron: '0 0 * * 0'  # Every Sunday at midnight UTC
   workflow_dispatch:
 
 jobs:
@@ -23,7 +19,7 @@ jobs:
 
       - name: Install R dependencies
         run: |
-          install.packages(c("jsonlite", "vroom", "htmltools", "glue"))
+          install.packages(c("jsonlite", "vroom", "htmltools", "glue", "arrow"))
         shell: Rscript {0}
 
       - name: Build documentation

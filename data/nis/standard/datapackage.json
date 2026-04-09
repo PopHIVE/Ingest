@@ -1,22 +1,647 @@
 {
   "name": "nis",
   "title": "Nis",
-  "licence": {
-    "url": "http://opendatacommons.org/licenses/pddl",
-    "name": "Open Data Commons Public Domain",
-    "version": "1.0",
-    "id": "odc-pddl"
-  },
   "resources": [
     {
-      "bytes": 460875,
+      "bytes": 21033,
       "encoding": "ISO-8859-1",
-      "md5": "5fb15010d2b9338148739e07a334fa36",
+      "md5": "aa92f269972eba8d193c665819711545",
+      "format": "csv",
+      "name": "data_insurance.csv",
+      "filename": "data_insurance.csv.gz",
+      "versions": {
+        "hash": [
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
+          "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
+          "af6a3ca087a1d6a35a0f3dcb4a3925a10d35cd53"
+        ],
+        "author": [
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "Weinberger <daniel.weinberger@yale.edu>",
+          "weinbergerlab <dweinber@gmail.com>"
+        ],
+        "date": [
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
+          "Wed Aug 20 22:32:02 2025 -0400",
+          "Mon Aug 4 17:19:57 2025 -0400"
+        ],
+        "message": [
+          "partial update bundle",
+          "scheduled data build",
+          "udpates build with some additional JSOn meta data",
+          "add standardization for insurance status and urbanicity"
+        ]
+      },
+      "source": [
+        {
+          "name": "National Immunization Survey",
+          "url": "https://www.cdc.gov/nis/about/index.html",
+          "location": "About the National Immunization Surveys (NIS)",
+          "location_url": "https://www.cdc.gov/nis/about/index.html"
+        }
+      ],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-04-06 13:53:49.356264",
+      "last_modified": "2026-04-06 13:53:49.356264",
+      "vintage": {},
+      "row_count": 2072,
+      "entity_count": 52,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 2020,
+            "info": [],
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Alabama": 42,
+              "Alaska": 42,
+              "Arizona": 56,
+              "Arkansas": 56,
+              "California": 42,
+              "Colorado": 42,
+              "Connecticut": 42,
+              "Delaware": 42,
+              "District of Columbia": 28,
+              "Florida": 42,
+              "Georgia": 56,
+              "Hawaii": 28,
+              "Idaho": 56,
+              "Illinois": 42,
+              "Indiana": 28,
+              "Iowa": 42,
+              "Kansas": 56,
+              "Kentucky": 28,
+              "Louisiana": 28,
+              "Maine": 42,
+              "Maryland": 42,
+              "Massachusetts": 28,
+              "Michigan": 28,
+              "Minnesota": 28,
+              "Mississippi": 42,
+              "Missouri": 42,
+              "Montana": 42,
+              "Nebraska": 28,
+              "Nevada": 56,
+              "New Hampshire": 28,
+              "New Jersey": 28,
+              "New Mexico": 28,
+              "New York": 42,
+              "North Carolina": 42,
+              "North Dakota": 42,
+              "Ohio": 28,
+              "Oklahoma": 28,
+              "Oregon": 28,
+              "Pennsylvania": 56,
+              "Rhode Island": 28,
+              "South Carolina": 28,
+              "South Dakota": 42,
+              "Tennessee": 56,
+              "Texas": 56,
+              "United States": 56,
+              "Utah": 42,
+              "Vermont": 28,
+              "Virginia": 42,
+              "Washington": 42,
+              "West Virginia": 42,
+              "Wisconsin": 28,
+              "Wyoming": 56
+            }
+          },
+          {
+            "name": "insurance",
+            "duplicates": 2068,
+            "info": {
+              "id": "insurance",
+              "short_name": "Insurance Status",
+              "long_name": "Health Insurance Status",
+              "short_description": "Health insurance coverage status of the child.",
+              "long_description": "Health insurance status categories used in the National Immunization Survey to stratify vaccination coverage estimates.",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Medicaid": 728,
+              "Other": 350,
+              "Private": 728,
+              "Uninsured": 266
+            }
+          },
+          {
+            "name": "birth_year",
+            "duplicates": 2071,
+            "info": {
+              "id": "birth_year",
+              "short_name": "Birth Year",
+              "long_name": "Birth Year of Child",
+              "short_description": "Calendar year the child was born.",
+              "measure_type": "integer",
+              "unit": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2016-2019": 2072
+            }
+          },
+          {
+            "name": "vaccine",
+            "duplicates": 2058,
+            "info": {
+              "id": "vaccine",
+              "short_name": "Vaccine",
+              "long_name": "Vaccine Type",
+              "short_description": "Type of vaccine being measured.",
+              "long_description": "Type of vaccine measured in the survey (e.g., MMR, DTaP, Polio, Hib, HepB, Varicella, PCV).",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "≥1 Dose MMR": 148,
+              "≥1 Dose Varicella": 148,
+              "Combined 7 Series": 148,
+              "DTaP ≥3 Doses": 148,
+              "DTaP ≥4 Doses": 148,
+              "Hep A ≥1 Dose": 148,
+              "Hep A ≥2 Doses": 148,
+              "Hep B ≥1 Dose, 3 Day (Birth Dose)": 148,
+              "Hep B ≥3 Doses": 148,
+              "Hib Full Series": 148,
+              "PCV ≥3 Doses": 148,
+              "PCV ≥4 Doses": 148,
+              "Polio ≥3 Doses": 148,
+              "Rotavirus": 148
+            }
+          },
+          {
+            "name": "vax_uptake_insurance",
+            "duplicates": 1640,
+            "info": {
+              "id": "vax_uptake_insurance",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for insurance estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 0,
+            "mean": 83.215251,
+            "sd": 11.052473,
+            "min": 25.1,
+            "max": 100
+          },
+          {
+            "name": "vax_uptake_insurance_lcl",
+            "duplicates": 1530,
+            "info": {
+              "id": "vax_uptake_insurance_lcl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for insurance_lcl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 1,
+            "mean": 76.32057,
+            "sd": 15.364041,
+            "min": 6.7,
+            "max": 98.7
+          },
+          {
+            "name": "vax_uptake_insurance_ucl",
+            "duplicates": 1742,
+            "info": {
+              "id": "vax_uptake_insurance_ucl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for insurance_ucl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 1,
+            "mean": 89.980734,
+            "sd": 8.50707,
+            "min": 43.5,
+            "max": 100
+          },
+          {
+            "name": "sample_size_insurance",
+            "duplicates": 1944,
+            "info": {
+              "id": "sample_size_insurance",
+              "short_name": "Sample size for survey responses",
+              "long_name": "Sample size for survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "name": "National Immunization Survey",
+                  "url": "https://www.cdc.gov/nis/about/index.html",
+                  "location": "About the National Immunization Surveys (NIS)",
+                  "location_url": "https://www.cdc.gov/nis/about/index.html"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 0,
+            "mean": 850.040541,
+            "sd": 3512.224342,
+            "min": 30,
+            "max": 37121
+          }
+        ]
+      },
+      "sha512": "6da0a2dde9993c55daaed27e95f35aebb52ec087fa85588d29dff97ed95528ecccef3c36e05f6d48f82d72b5c87a2a1580764dd87523550b2449bbbde96b0cb1"
+    },
+    {
+      "bytes": 21722,
+      "encoding": "ISO-8859-1",
+      "md5": "378fdb3e130f5eb5cd4d4ee04976b26f",
+      "format": "csv",
+      "name": "data_urban.csv",
+      "filename": "data_urban.csv.gz",
+      "versions": {
+        "hash": [
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
+          "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
+          "af6a3ca087a1d6a35a0f3dcb4a3925a10d35cd53"
+        ],
+        "author": [
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "Weinberger <daniel.weinberger@yale.edu>",
+          "weinbergerlab <dweinber@gmail.com>"
+        ],
+        "date": [
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
+          "Wed Aug 20 22:32:02 2025 -0400",
+          "Mon Aug 4 17:19:57 2025 -0400"
+        ],
+        "message": [
+          "partial update bundle",
+          "scheduled data build",
+          "udpates build with some additional JSOn meta data",
+          "add standardization for insurance status and urbanicity"
+        ]
+      },
+      "source": [
+        {
+          "name": "National Immunization Survey",
+          "url": "https://www.cdc.gov/nis/about/index.html",
+          "location": "About the National Immunization Surveys (NIS)",
+          "location_url": "https://www.cdc.gov/nis/about/index.html"
+        }
+      ],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-04-06 13:53:49.356264",
+      "last_modified": "2026-04-06 13:53:49.356264",
+      "vintage": {},
+      "row_count": 2072,
+      "entity_count": 52,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 2020,
+            "info": [],
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Alabama": 42,
+              "Alaska": 42,
+              "Arizona": 42,
+              "Arkansas": 42,
+              "California": 42,
+              "Colorado": 42,
+              "Connecticut": 42,
+              "Delaware": 28,
+              "District of Columbia": 14,
+              "Florida": 28,
+              "Georgia": 42,
+              "Hawaii": 42,
+              "Idaho": 42,
+              "Illinois": 42,
+              "Indiana": 42,
+              "Iowa": 42,
+              "Kansas": 42,
+              "Kentucky": 42,
+              "Louisiana": 42,
+              "Maine": 42,
+              "Maryland": 42,
+              "Massachusetts": 28,
+              "Michigan": 42,
+              "Minnesota": 42,
+              "Mississippi": 42,
+              "Missouri": 42,
+              "Montana": 42,
+              "Nebraska": 42,
+              "Nevada": 42,
+              "New Hampshire": 42,
+              "New Jersey": 28,
+              "New Mexico": 42,
+              "New York": 42,
+              "North Carolina": 42,
+              "North Dakota": 42,
+              "Ohio": 42,
+              "Oklahoma": 42,
+              "Oregon": 42,
+              "Pennsylvania": 42,
+              "Rhode Island": 28,
+              "South Carolina": 42,
+              "South Dakota": 42,
+              "Tennessee": 42,
+              "Texas": 42,
+              "United States": 42,
+              "Utah": 42,
+              "Vermont": 42,
+              "Virginia": 42,
+              "Washington": 42,
+              "West Virginia": 42,
+              "Wisconsin": 42,
+              "Wyoming": 28
+            }
+          },
+          {
+            "name": "urban",
+            "duplicates": 2069,
+            "info": {
+              "id": "urban",
+              "short_name": "Urbanicity",
+              "long_name": "Urban-Rural Classification",
+              "short_description": "Urban or rural classification of residence.",
+              "long_description": "Urban-rural classification of the child's residence area, used to stratify vaccination coverage estimates by urbanicity.",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Larger City": 728,
+              "Rural": 644,
+              "Smaller City": 700
+            }
+          },
+          {
+            "name": "birth_year",
+            "duplicates": 2071,
+            "info": {
+              "id": "birth_year",
+              "short_name": "Birth Year",
+              "long_name": "Birth Year of Child",
+              "short_description": "Calendar year the child was born.",
+              "measure_type": "integer",
+              "unit": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2016-2019": 2072
+            }
+          },
+          {
+            "name": "vaccine",
+            "duplicates": 2058,
+            "info": {
+              "id": "vaccine",
+              "short_name": "Vaccine",
+              "long_name": "Vaccine Type",
+              "short_description": "Type of vaccine being measured.",
+              "long_description": "Type of vaccine measured in the survey (e.g., MMR, DTaP, Polio, Hib, HepB, Varicella, PCV).",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "≥1 Dose MMR": 148,
+              "≥1 Dose Varicella": 148,
+              "Combined 7 Series": 148,
+              "DTaP ≥3 Doses": 148,
+              "DTaP ≥4 Doses": 148,
+              "Hep A ≥1 Dose": 148,
+              "Hep A ≥2 Doses": 148,
+              "Hep B ≥1 Dose, 3 Day (Birth Dose)": 148,
+              "Hep B ≥3 Doses": 148,
+              "Hib Full Series": 148,
+              "PCV ≥3 Doses": 148,
+              "PCV ≥4 Doses": 148,
+              "Polio ≥3 Doses": 148,
+              "Rotavirus": 148
+            }
+          },
+          {
+            "name": "vax_uptake_urban",
+            "duplicates": 1702,
+            "info": {
+              "id": "vax_uptake_urban",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for urban estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 0,
+            "mean": 84.540396,
+            "sd": 8.988787,
+            "min": 44.3,
+            "max": 100
+          },
+          {
+            "name": "vax_uptake_urban_lcl",
+            "duplicates": 1632,
+            "info": {
+              "id": "vax_uptake_urban_lcl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for urban_lcl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 6,
+            "mean": 78.948838,
+            "sd": 11.207668,
+            "min": 15.7,
+            "max": 99.2
+          },
+          {
+            "name": "vax_uptake_urban_ucl",
+            "duplicates": 1775,
+            "info": {
+              "id": "vax_uptake_urban_ucl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for urban_ucl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 6,
+            "mean": 89.986883,
+            "sd": 7.488265,
+            "min": 61.1,
+            "max": 100
+          },
+          {
+            "name": "sample_size_urban",
+            "duplicates": 1936,
+            "info": {
+              "id": "sample_size_urban",
+              "short_name": "Sample size for survey responses",
+              "long_name": "Sample size for survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "name": "National Immunization Survey",
+                  "url": "https://www.cdc.gov/nis/about/index.html",
+                  "location": "About the National Immunization Surveys (NIS)",
+                  "location_url": "https://www.cdc.gov/nis/about/index.html"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 0,
+            "mean": 856.993243,
+            "sd": 3117.623942,
+            "min": 30,
+            "max": 27529
+          }
+        ]
+      },
+      "sha512": "15eec0e40938e55eebeee495a3c628196810f800a5bfd9db0e1ba952070e053b8a740ff604348ff7eb41752369ebf75099df79d3dfc84ff6db2c12f12fbf55e2"
+    },
+    {
+      "bytes": 458651,
+      "encoding": "ISO-8859-1",
+      "md5": "07a186f645d90898413721af43d2a2d7",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
           "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
           "0729910fad06bceda1fac9cea35cae8b1c3312ba",
           "af6a3ca087a1d6a35a0f3dcb4a3925a10d35cd53",
@@ -25,6 +650,8 @@
           "7dd55dbb41be8fcba4fd4748f54d33ea0a5ab6fe"
         ],
         "author": [
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
           "Weinberger <daniel.weinberger@yale.edu>",
           "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>",
@@ -33,6 +660,8 @@
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
           "Wed Aug 20 22:32:02 2025 -0400",
           "Fri Aug 8 23:00:16 2025 -0400",
           "Mon Aug 4 17:19:57 2025 -0400",
@@ -41,6 +670,8 @@
           "Mon Jul 14 16:46:51 2025 -0400"
         ],
         "message": [
+          "partial update bundle",
+          "scheduled data build",
           "udpates build with some additional JSOn meta data",
           "rebuild database",
           "add standardization for insurance status and urbanicity",
@@ -57,6 +688,7 @@
           "location_url": "https://www.cdc.gov/nis/about/index.html"
         }
       ],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
@@ -65,190 +697,294 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2025-10-24 23:25:56",
-      "last_modified": "2025-07-14 16:46:25.778158",
+      "created": "2026-04-06 13:53:49.356264",
+      "last_modified": "2026-04-06 13:53:49.356264",
       "vintage": {},
-      "row_count": 41748,
+      "row_count": 45547,
       "entity_count": 52,
       "schema": {
         "fields": [
           {
             "name": "birth_year",
-            "duplicates": 41737,
-            "time_range": [6, 68],
+            "duplicates": 45535,
+            "info": {
+              "id": "birth_year",
+              "short_name": "Birth Year",
+              "long_name": "Birth Year of Child",
+              "short_description": "Calendar year the child was born.",
+              "measure_type": "integer",
+              "unit": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "integer",
             "missing": 0,
-            "mean": 2016.000072,
-            "sd": 3.162198,
+            "mean": 2016.500384,
+            "sd": 3.452034,
             "min": 2011,
-            "max": 2021
+            "max": 2022
           },
           {
             "name": "age",
-            "duplicates": 41737,
-            "time_range": [6, 68],
+            "duplicates": 45536,
+            "info": {
+              "id": "age",
+              "short_name": "Age",
+              "long_name": "Age Group",
+              "short_description": "Age group of surveyed children.",
+              "long_description": "Age group category used in the National Immunization Survey, typically 19-35 months for young children or 13-17 years for adolescents.",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "string",
             "missing": 0,
             "table": {
-              "0-1 Days": 572,
-              "0-2 Days": 572,
-              "0-3 Days": 572,
-              "13 Months": 5720,
-              "19 Months": 7435,
-              "24 Months": 8008,
-              "3 Months": 2860,
-              "35 Months": 8008,
-              "5 Months": 2860,
-              "7 Months": 4569,
-              "8 Months": 572
+              "0-1 Days": 624,
+              "0-2 Days": 624,
+              "0-3 Days": 624,
+              "13 Months": 6240,
+              "19 Months": 8111,
+              "24 Months": 8736,
+              "3 Months": 3120,
+              "35 Months": 8736,
+              "5 Months": 3120,
+              "7 Months": 4988,
+              "8 Months": 624
             }
           },
           {
             "name": "vaccine",
-            "duplicates": 41720,
-            "time_range": [6, 68],
+            "duplicates": 45519,
+            "info": {
+              "id": "vaccine",
+              "short_name": "Vaccine",
+              "long_name": "Vaccine Type",
+              "short_description": "Type of vaccine being measured.",
+              "long_description": "Type of vaccine measured in the survey (e.g., MMR, DTaP, Polio, Hib, HepB, Varicella, PCV).",
+              "measure_type": "categorical",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "string",
             "missing": 0,
             "table": {
-              "≥1 Dose MMR": 2288,
-              "≥1 Dose Varicella": 2288,
-              "Combined 7 Series": 1144,
-              "DTaP ≥1 Dose": 572,
-              "DTaP ≥2 Doses": 572,
-              "DTaP ≥3 Doses": 2860,
-              "DTaP ≥4 Doses": 1716,
-              "Hep A ≥1 Dose": 1716,
-              "Hep A ≥2 Doses": 1715,
-              "Hep B ≥1 Dose": 572,
-              "Hep B ≥1 Dose, 1 Day": 572,
-              "Hep B ≥1 Dose, 2 Day": 572,
-              "Hep B ≥1 Dose, 3 Day (Birth Dose)": 572,
-              "Hep B ≥2 Doses": 1716,
-              "Hep B ≥3 Doses": 2860,
-              "Hib ≥1 Dose": 572,
-              "Hib ≥2 Doses": 1716,
-              "Hib ≥3 Doses": 2853,
-              "Hib Full Series": 1716,
-              "Hib Primary Series": 2860,
-              "PCV ≥1 Dose": 572,
-              "PCV ≥2 Doses": 572,
-              "PCV ≥3 Doses": 2860,
-              "PCV ≥4 Doses": 1716,
-              "Polio ≥1 Dose": 572,
-              "Polio ≥2 Doses": 1716,
-              "Polio ≥3 Doses": 1716,
-              "Rotavirus": 572
+              "≥1 Dose MMR": 2496,
+              "≥1 Dose Varicella": 2496,
+              "Combined 7 Series": 1248,
+              "DTaP ≥1 Dose": 624,
+              "DTaP ≥2 Doses": 624,
+              "DTaP ≥3 Doses": 3120,
+              "DTaP ≥4 Doses": 1872,
+              "Hep A ≥1 Dose": 1872,
+              "Hep A ≥2 Doses": 1871,
+              "Hep B ≥1 Dose": 624,
+              "Hep B ≥1 Dose, 1 Day": 624,
+              "Hep B ≥1 Dose, 2 Day": 624,
+              "Hep B ≥1 Dose, 3 Day (Birth Dose)": 624,
+              "Hep B ≥2 Doses": 1872,
+              "Hep B ≥3 Doses": 3120,
+              "Hib ≥1 Dose": 624,
+              "Hib ≥2 Doses": 1872,
+              "Hib ≥3 Doses": 3116,
+              "Hib Full Series": 1872,
+              "Hib Primary Series": 3120,
+              "PCV ≥1 Dose": 624,
+              "PCV ≥2 Doses": 624,
+              "PCV ≥3 Doses": 3120,
+              "PCV ≥4 Doses": 1872,
+              "Polio ≥1 Dose": 624,
+              "Polio ≥2 Doses": 1872,
+              "Polio ≥3 Doses": 1872,
+              "Rotavirus": 624
             }
           },
           {
             "name": "vax_uptake_overall",
-            "duplicates": 40888,
-            "time_range": [6, 68],
+            "duplicates": 44691,
+            "info": {
+              "id": "vax_uptake_overall",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for overall estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "float",
-            "missing": 0,
-            "mean": 82.838917,
-            "sd": 13.62773,
+            "missing": 4,
+            "mean": 82.979376,
+            "sd": 13.543891,
             "min": 6.3,
             "max": 99.9
           },
           {
             "name": "vax_uptake_overall_lcl",
-            "duplicates": 40841,
-            "time_range": [6, 68],
+            "duplicates": 44643,
+            "info": {
+              "id": "vax_uptake_overall_lcl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for overall_lcl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "float",
-            "missing": 0,
-            "mean": 76.873994,
-            "sd": 14.55398,
+            "missing": 4,
+            "mean": 77.138135,
+            "sd": 14.467814,
             "min": 3.6,
             "max": 99.4
           },
           {
             "name": "vax_uptake_overall_ucl",
-            "duplicates": 40932,
-            "time_range": [6, 68],
+            "duplicates": 44734,
+            "info": {
+              "id": "vax_uptake_overall_ucl",
+              "short_name": "Vaccine uptake for  estimated from survey responses",
+              "long_name": "Vaccine uptake for overall_ucl estimated from survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Percent of survey respondents who received the indicated vaccine",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "nis"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "float",
-            "missing": 0,
-            "mean": 87.432596,
-            "sd": 12.351608,
-            "min": 10.5,
+            "missing": 4,
+            "mean": 87.488009,
+            "sd": 12.289489,
+            "min": 10.6,
             "max": 100
           },
           {
             "name": "sample_size_overall",
-            "duplicates": 41463,
-            "time_range": [6, 68],
+            "duplicates": 45242,
+            "info": {
+              "id": "sample_size_overall",
+              "short_name": "Sample size for survey responses",
+              "long_name": "Sample size for survey responses",
+              "category": "childhood immunizations",
+              "long_description": "Number of children surveyed for vaccination coverage estimates in the National Immunization Survey (NIS).",
+              "measure_type": "percent",
+              "unit": "percent",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "name": "National Immunization Survey",
+                  "url": "https://www.cdc.gov/nis/about/index.html",
+                  "location": "About the National Immunization Surveys (NIS)",
+                  "location_url": "https://www.cdc.gov/nis/about/index.html"
+                }
+              ]
+            },
+            "time_range": [72, 93],
             "type": "integer",
-            "missing": 0,
-            "mean": 607.17541,
-            "sd": 2149.096402,
+            "missing": 4,
+            "mean": 608.224096,
+            "sd": 2158.277786,
             "min": 88,
             "max": 18826
           },
           {
             "name": "geography",
-            "duplicates": 41696,
-            "time_range": [6, 68],
+            "duplicates": 45495,
+            "info": [],
+            "time_range": [72, 93],
             "type": "string",
             "missing": 0,
             "table": {
-              "00": 803,
-              "01": 803,
-              "02": 798,
-              "04": 803,
-              "05": 803,
-              "06": 803,
-              "08": 803,
-              "09": 803,
-              "10": 803,
-              "11": 803,
-              "12": 803,
-              "13": 803,
-              "15": 803,
-              "16": 803,
-              "17": 803,
-              "18": 803,
-              "19": 803,
-              "20": 803,
-              "21": 803,
-              "22": 803,
-              "23": 803,
-              "24": 803,
-              "25": 803,
-              "26": 803,
-              "27": 803,
-              "28": 803,
-              "29": 803,
-              "30": 802,
-              "31": 803,
-              "32": 803,
-              "33": 803,
-              "34": 803,
-              "35": 803,
-              "36": 803,
-              "37": 803,
-              "38": 803,
-              "39": 803,
-              "40": 803,
-              "41": 803,
-              "42": 803,
-              "44": 801,
-              "45": 803,
-              "46": 803,
-              "47": 803,
-              "48": 803,
-              "49": 803,
-              "50": 803,
-              "51": 803,
-              "53": 803,
-              "54": 803,
-              "55": 803,
-              "56": 803
+              "00": 876,
+              "01": 876,
+              "02": 874,
+              "04": 876,
+              "05": 876,
+              "06": 876,
+              "08": 876,
+              "09": 876,
+              "10": 876,
+              "11": 876,
+              "12": 876,
+              "13": 876,
+              "15": 876,
+              "16": 876,
+              "17": 876,
+              "18": 876,
+              "19": 876,
+              "20": 876,
+              "21": 876,
+              "22": 876,
+              "23": 876,
+              "24": 876,
+              "25": 876,
+              "26": 876,
+              "27": 876,
+              "28": 876,
+              "29": 876,
+              "30": 875,
+              "31": 876,
+              "32": 876,
+              "33": 876,
+              "34": 876,
+              "35": 876,
+              "36": 876,
+              "37": 876,
+              "38": 876,
+              "39": 876,
+              "40": 876,
+              "41": 876,
+              "42": 876,
+              "44": 874,
+              "45": 876,
+              "46": 876,
+              "47": 876,
+              "48": 876,
+              "49": 876,
+              "50": 876,
+              "51": 876,
+              "53": 876,
+              "54": 876,
+              "55": 876,
+              "56": 876
             }
           },
           {
             "name": "time",
-            "duplicates": 41660,
-            "time_range": [6, 68],
+            "duplicates": 45451,
+            "info": [],
+            "time_range": [72, 93],
             "type": "string",
             "missing": 0,
             "table": {
@@ -315,14 +1051,14 @@
               "2019-01-31": 520,
               "2019-04-02": 260,
               "2019-06-02": 260,
-              "2019-08-01": 1091,
+              "2019-08-01": 1092,
               "2019-09-01": 52,
               "2019-12-01": 728,
               "2020-01-01": 884,
               "2020-01-31": 520,
               "2020-04-01": 260,
               "2020-06-01": 260,
-              "2020-07-31": 1091,
+              "2020-07-31": 1092,
               "2020-08-31": 52,
               "2020-11-30": 728,
               "2020-12-31": 728,
@@ -331,425 +1067,28 @@
               "2021-04-02": 260,
               "2021-06-02": 260,
               "2021-07-31": 676,
-              "2021-08-01": 415,
+              "2021-08-01": 416,
               "2021-09-01": 52,
               "2021-11-30": 728,
               "2021-12-31": 728,
+              "2022-01-01": 156,
               "2022-01-31": 520,
-              "2022-08-01": 676,
+              "2022-04-02": 260,
+              "2022-06-02": 260,
+              "2022-08-01": 1092,
+              "2022-09-01": 52,
               "2022-11-30": 728,
               "2023-01-01": 728,
-              "2023-12-01": 728
+              "2023-01-31": 520,
+              "2023-08-01": 676,
+              "2023-12-01": 728,
+              "2024-01-01": 728,
+              "2024-11-30": 728
             }
           }
         ]
       },
-      "sha512": "99e36d34f5c02b9ff2c3f9cb074c54b282690ae043cb6443a0a2827f09e426f58111f9b01ac55b70f525d0c9982bc60a4646208719ee185b8f87e1218dc7307f"
-    },
-    {
-      "bytes": 21346,
-      "encoding": "ISO-8859-1",
-      "md5": "bf65a0199f1cb92fa6b5e991f99efccf",
-      "format": "csv",
-      "name": "data_insurance.csv",
-      "filename": "data_insurance.csv.gz",
-      "versions": {
-        "hash": [
-          "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
-          "af6a3ca087a1d6a35a0f3dcb4a3925a10d35cd53"
-        ],
-        "author": [
-          "Weinberger <daniel.weinberger@yale.edu>",
-          "weinbergerlab <dweinber@gmail.com>"
-        ],
-        "date": [
-          "Wed Aug 20 22:32:02 2025 -0400",
-          "Mon Aug 4 17:19:57 2025 -0400"
-        ],
-        "message": [
-          "udpates build with some additional JSOn meta data",
-          "add standardization for insurance status and urbanicity"
-        ]
-      },
-      "source": [
-        {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
-        }
-      ],
-      "ids": [
-        {
-          "variable": "geography"
-        }
-      ],
-      "id_length": 0,
-      "time": "time",
-      "profile": "data-resource",
-      "created": "2025-10-24 23:25:57",
-      "last_modified": "2025-08-04 17:19:22.724127",
-      "vintage": {},
-      "row_count": 2072,
-      "entity_count": 52,
-      "schema": {
-        "fields": [
-          {
-            "name": "geography",
-            "duplicates": 2020,
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "Alabama": 42,
-              "Alaska": 42,
-              "Arizona": 56,
-              "Arkansas": 56,
-              "California": 42,
-              "Colorado": 42,
-              "Connecticut": 42,
-              "Delaware": 42,
-              "District of Columbia": 28,
-              "Florida": 42,
-              "Georgia": 56,
-              "Hawaii": 28,
-              "Idaho": 56,
-              "Illinois": 42,
-              "Indiana": 28,
-              "Iowa": 42,
-              "Kansas": 56,
-              "Kentucky": 28,
-              "Louisiana": 28,
-              "Maine": 42,
-              "Maryland": 42,
-              "Massachusetts": 28,
-              "Michigan": 28,
-              "Minnesota": 28,
-              "Mississippi": 42,
-              "Missouri": 42,
-              "Montana": 42,
-              "Nebraska": 28,
-              "Nevada": 56,
-              "New Hampshire": 28,
-              "New Jersey": 28,
-              "New Mexico": 28,
-              "New York": 42,
-              "North Carolina": 42,
-              "North Dakota": 42,
-              "Ohio": 28,
-              "Oklahoma": 28,
-              "Oregon": 28,
-              "Pennsylvania": 56,
-              "Rhode Island": 28,
-              "South Carolina": 28,
-              "South Dakota": 42,
-              "Tennessee": 56,
-              "Texas": 56,
-              "United States": 56,
-              "Utah": 42,
-              "Vermont": 28,
-              "Virginia": 42,
-              "Washington": 42,
-              "West Virginia": 42,
-              "Wisconsin": 28,
-              "Wyoming": 56
-            }
-          },
-          {
-            "name": "insurance",
-            "duplicates": 2068,
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "Medicaid": 728,
-              "Other": 350,
-              "Private": 728,
-              "Uninsured": 266
-            }
-          },
-          {
-            "name": "birth_year",
-            "duplicates": 2071,
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "2016-2019": 2072
-            }
-          },
-          {
-            "name": "vaccine",
-            "duplicates": 2058,
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "≥1 Dose MMR": 148,
-              "≥1 Dose Varicella": 148,
-              "Combined 7 Series": 148,
-              "DTaP ≥3 Doses": 148,
-              "DTaP ≥4 Doses": 148,
-              "Hep A ≥1 Dose": 148,
-              "Hep A ≥2 Doses": 148,
-              "Hep B ≥1 Dose, 3 Day (Birth Dose)": 148,
-              "Hep B ≥3 Doses": 148,
-              "Hib Full Series": 148,
-              "PCV ≥3 Doses": 148,
-              "PCV ≥4 Doses": 148,
-              "Polio ≥3 Doses": 148,
-              "Rotavirus": 148
-            }
-          },
-          {
-            "name": "vax_uptake_insurance",
-            "duplicates": 1640,
-            "time_range": [-1, -1],
-            "type": "float",
-            "missing": 0,
-            "mean": 83.215251,
-            "sd": 11.052473,
-            "min": 25.1,
-            "max": 100
-          },
-          {
-            "name": "vax_uptake_insurance_lcl",
-            "duplicates": 1530,
-            "time_range": [-1, -1],
-            "type": "float",
-            "missing": 1,
-            "mean": 76.32057,
-            "sd": 15.364041,
-            "min": 6.7,
-            "max": 98.7
-          },
-          {
-            "name": "vax_uptake_insurance_ucl",
-            "duplicates": 1742,
-            "time_range": [-1, -1],
-            "type": "float",
-            "missing": 1,
-            "mean": 89.980734,
-            "sd": 8.50707,
-            "min": 43.5,
-            "max": 100
-          },
-          {
-            "name": "sample_size_insurance",
-            "duplicates": 1944,
-            "time_range": [-1, -1],
-            "type": "integer",
-            "missing": 0,
-            "mean": 850.040541,
-            "sd": 3512.224342,
-            "min": 30,
-            "max": 37121
-          }
-        ]
-      },
-      "sha512": "5355226155f838f059803b0780a57d18cea4198659a5c8ef5b88b80597f84467816e16a6acd61220aa4538f41916a35af8859759ffdd953a982540fa62f8381d"
-    },
-    {
-      "bytes": 20733,
-      "encoding": "ISO-8859-1",
-      "md5": "ba165f8eec1e347b63b9e17103462d19",
-      "format": "csv",
-      "name": "data_urban.csv",
-      "filename": "data_urban.csv.gz",
-      "versions": {
-        "hash": [
-          "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
-          "af6a3ca087a1d6a35a0f3dcb4a3925a10d35cd53"
-        ],
-        "author": [
-          "Weinberger <daniel.weinberger@yale.edu>",
-          "weinbergerlab <dweinber@gmail.com>"
-        ],
-        "date": [
-          "Wed Aug 20 22:32:02 2025 -0400",
-          "Mon Aug 4 17:19:57 2025 -0400"
-        ],
-        "message": [
-          "udpates build with some additional JSOn meta data",
-          "add standardization for insurance status and urbanicity"
-        ]
-      },
-      "source": [
-        {
-          "name": "National Immunization Survey",
-          "url": "https://www.cdc.gov/nis/about/index.html",
-          "location": "About the National Immunization Surveys (NIS)",
-          "location_url": "https://www.cdc.gov/nis/about/index.html"
-        }
-      ],
-      "ids": [
-        {
-          "variable": "geography"
-        }
-      ],
-      "id_length": 0,
-      "time": "time",
-      "profile": "data-resource",
-      "created": "2025-10-24 23:25:57",
-      "last_modified": "2025-08-04 17:17:19.057152",
-      "vintage": {},
-      "row_count": 2072,
-      "entity_count": 52,
-      "schema": {
-        "fields": [
-          {
-            "name": "geography",
-            "duplicates": 2020,
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "Alabama": 42,
-              "Alaska": 42,
-              "Arizona": 42,
-              "Arkansas": 42,
-              "California": 42,
-              "Colorado": 42,
-              "Connecticut": 42,
-              "Delaware": 28,
-              "District of Columbia": 14,
-              "Florida": 28,
-              "Georgia": 42,
-              "Hawaii": 42,
-              "Idaho": 42,
-              "Illinois": 42,
-              "Indiana": 42,
-              "Iowa": 42,
-              "Kansas": 42,
-              "Kentucky": 42,
-              "Louisiana": 42,
-              "Maine": 42,
-              "Maryland": 42,
-              "Massachusetts": 28,
-              "Michigan": 42,
-              "Minnesota": 42,
-              "Mississippi": 42,
-              "Missouri": 42,
-              "Montana": 42,
-              "Nebraska": 42,
-              "Nevada": 42,
-              "New Hampshire": 42,
-              "New Jersey": 28,
-              "New Mexico": 42,
-              "New York": 42,
-              "North Carolina": 42,
-              "North Dakota": 42,
-              "Ohio": 42,
-              "Oklahoma": 42,
-              "Oregon": 42,
-              "Pennsylvania": 42,
-              "Rhode Island": 28,
-              "South Carolina": 42,
-              "South Dakota": 42,
-              "Tennessee": 42,
-              "Texas": 42,
-              "United States": 42,
-              "Utah": 42,
-              "Vermont": 42,
-              "Virginia": 42,
-              "Washington": 42,
-              "West Virginia": 42,
-              "Wisconsin": 42,
-              "Wyoming": 28
-            }
-          },
-          {
-            "name": "urban",
-            "duplicates": 2069,
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "Larger City": 728,
-              "Rural": 644,
-              "Smaller City": 700
-            }
-          },
-          {
-            "name": "birth_year",
-            "duplicates": 2071,
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "2016-2019": 2072
-            }
-          },
-          {
-            "name": "vaccine",
-            "duplicates": 2058,
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "≥1 Dose MMR": 148,
-              "≥1 Dose Varicella": 148,
-              "Combined 7 Series": 148,
-              "DTaP ≥3 Doses": 148,
-              "DTaP ≥4 Doses": 148,
-              "Hep A ≥1 Dose": 148,
-              "Hep A ≥2 Doses": 148,
-              "Hep B ≥1 Dose, 3 Day (Birth Dose)": 148,
-              "Hep B ≥3 Doses": 148,
-              "Hib Full Series": 148,
-              "PCV ≥3 Doses": 148,
-              "PCV ≥4 Doses": 148,
-              "Polio ≥3 Doses": 148,
-              "Rotavirus": 148
-            }
-          },
-          {
-            "name": "vax_uptake_urban",
-            "duplicates": 1702,
-            "time_range": [-1, -1],
-            "type": "float",
-            "missing": 0,
-            "mean": 84.540396,
-            "sd": 8.988787,
-            "min": 44.3,
-            "max": 100
-          },
-          {
-            "name": "vax_uptake_urban_lcl",
-            "duplicates": 1632,
-            "time_range": [-1, -1],
-            "type": "float",
-            "missing": 6,
-            "mean": 78.948838,
-            "sd": 11.207668,
-            "min": 15.7,
-            "max": 99.2
-          },
-          {
-            "name": "vax_uptake_urban_ucl",
-            "duplicates": 1775,
-            "time_range": [-1, -1],
-            "type": "float",
-            "missing": 6,
-            "mean": 89.986883,
-            "sd": 7.488265,
-            "min": 61.1,
-            "max": 100
-          },
-          {
-            "name": "sample_size_urban",
-            "duplicates": 1936,
-            "time_range": [-1, -1],
-            "type": "integer",
-            "missing": 0,
-            "mean": 856.993243,
-            "sd": 3117.623942,
-            "min": 30,
-            "max": 27529
-          }
-        ]
-      },
-      "sha512": "56e7441bd7f3945d0e46c3cdadcdf2042a92afd99b097261c6473e8aad205bfd9ce6b09b67d41997734d8f4b5c48836b8f6f4271c95c0688623619bcf236c88d"
+      "sha512": "11c43e05b3f74137bce75da7c6a95f1049bb5b7445804e56be9937289d1698f4fd9a51ab442b22ed91f209e762047487a3652519c09303931be353b823eed2f5"
     }
   ],
   "measure_info": {
@@ -1029,6 +1368,17 @@
         "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
       },
       "id": "_sources"
+    }
+  },
+  "change_report": {
+    "data_insurance.csv.gz": {
+      "state": "unchanged"
+    },
+    "data_urban.csv.gz": {
+      "state": "unchanged"
+    },
+    "data.csv.gz": {
+      "state": "unchanged"
     }
   }
 }

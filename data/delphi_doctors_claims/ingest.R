@@ -9,6 +9,15 @@ end.date <- lubridate::floor_date(Sys.Date(), 'week') - 1 #most recent saturday
 
 timepoints <- seq.Date(from=as.Date('2020-01-04'), to=end.date, by='week')
 
+delphi_maxdate <- epidatr::pub_covidcast_meta() %>%
+  filter(signal %in% select_endpoints & data_source == 'doctor-visits') %>%
+  pull(last_update) %>%
+  max() %>%
+  as.character()
+
+
+if (!identical(process$delphi_maxdate, delphi_maxdate)) {
+
 #the smoothed data are available daily from the API, but we just take the most recent saturday value
 state <- epidatr::pub_covidcast(
   source = "doctor-visits", signal = select_endpoints,
@@ -43,7 +52,6 @@ raw_state <- as.list(tools::md5sum(list.files(
 states.avail <- tolower(c(state.abb, 'us'))
 
 #process raw if state has changed
-if (!identical(process$raw_state, raw_state)) {
   data <- vroom::vroom('./raw/data.csv.xz') %>%
     mutate(geography = if_else(geo_value %in% states.avail,
                                sprintf("%02d",cdlTools::fips(geo_value, to='fips') ),
@@ -67,6 +75,7 @@ if (!identical(process$raw_state, raw_state)) {
   
   # record processed raw state
   process$raw_state <- raw_state
+  process$delphi_maxdate <- delphi_maxdate
   dcf::dcf_process_record(updated = process)
   
   

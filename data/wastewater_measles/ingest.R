@@ -37,7 +37,7 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   data_raw <- vroom::vroom("raw/akvg-8vrb.csv.xz", delim = ",", show_col_types = FALSE) %>%
     mutate(
-      detected = if_else(pcr_target_avg_conc > 0, 1, 0),
+      detected = if_else(pcr_target_detect == 'yes', 1, 0),
       # Convert to Saturday at end of week (epiweek convention)
       # floor_date with week_start=7 (Sunday) gives start of week, add 6 days for Saturday
       weekdate = lubridate::floor_date(as.Date(sample_collect_date), unit = "week", week_start = 7) + 6
@@ -47,7 +47,7 @@ if (!identical(process$raw_state, raw_state)) {
   # 4. State-level aggregation
   # ---------------------------------------------------------------------------
   data_state <- data_raw %>%
-    group_by(wwtp_jurisdiction, weekdate) %>%
+    group_by(state_territory, weekdate) %>%
     summarize(
       detection_count = sum(detected, na.rm = TRUE),
       sample_count = n(),
@@ -60,7 +60,7 @@ if (!identical(process$raw_state, raw_state)) {
       .groups = "drop"
     ) %>%
     # Convert state abbreviation to FIPS code
-    left_join(state_fips_lookup, by = c("wwtp_jurisdiction" = "state")) %>%
+    left_join(state_fips_lookup, by = c("state_territory" = "state")) %>%
     # Format time as MM-DD-YYYY
     mutate(
       time = format(weekdate, "%m-%d-%Y")
@@ -130,6 +130,10 @@ if (!identical(process$raw_state, raw_state)) {
       ),
       .groups = "drop"
     ) %>%
+    tidyr::complete(geography, weekdate, fill = list(detection_count = NA, 
+            sample_count = NA, 
+            population_served = NA)
+            ) %>%
     # Format time as MM-DD-YYYY
     mutate(
       time = format(weekdate, "%m-%d-%Y")

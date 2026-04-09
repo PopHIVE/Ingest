@@ -4,57 +4,57 @@ library(dplyr)
 library(tidyverse)
 
 get_medicaid_data_complete <- function(dataset_id, limit = 1000) {
-  
+
   # First, get metadata
   metadata_url <- paste0("https://data.medicaid.gov/api/1/metastore/schemas/dataset/items/", dataset_id)
   metadata_response <- GET(metadata_url)
-  
+
   if (status_code(metadata_response) == 200) {
     metadata <- fromJSON(content(metadata_response, "text", encoding = "UTF-8"))
     cat("Dataset:", metadata$title, "\n")
   }
-  
+
   # Try to get data with pagination
   all_data <- list()
   offset <- 0
-  
+
   repeat {
     # Try the datastore endpoint with pagination
-    data_url <- paste0("https://data.medicaid.gov/api/1/datastore/query/", 
+    data_url <- paste0("https://data.medicaid.gov/api/1/datastore/query/",
                        dataset_id, "/0?offset=", offset, "&limit=", limit)
-    
+
     response <- GET(data_url)
-    
+
     if (status_code(response) != 200) {
       cat("Request failed at offset", offset, "with status:", status_code(response), "\n")
       break
     }
-    
+
     data_raw <- content(response, "text", encoding = "UTF-8")
     data_list <- fromJSON(data_raw)
-    
+
     # Extract results
     if ("results" %in% names(data_list) && length(data_list$results) > 0) {
       current_batch <- data_list$results
       all_data[[length(all_data) + 1]] <- current_batch
-      
+
       cat("Downloaded batch with", nrow(current_batch), "rows (total offset:", offset, ")\n")
-      
+
       # Check if we got less than the limit (indicating last page)
       if (nrow(current_batch) < limit) {
         break
       }
-      
+
       offset <- offset + limit
     } else {
       cat("No more results found\n")
       break
     }
-    
+
     # Add a small delay to be respectful to the API
     Sys.sleep(0.1)
   }
-  
+
   # Combine all data
   if (length(all_data) > 0) {
     final_data <- do.call(rbind, all_data)
@@ -66,34 +66,86 @@ get_medicaid_data_complete <- function(dataset_id, limit = 1000) {
   }
 }
 
+# Query the Medicaid catalog to discover available Child/Adult Core Set datasets.
+# Returns a named character vector: names are years (e.g. "2023"), values are dataset IDs.
+# Sorted by year for deterministic hashing. Falls back to the known list if unreachable.
+discover_core_set_datasets <- function() {
+  known <- c(
+    "2023" = "e85033c7-367e-467e-9e81-8e85048102b8",
+    "2022" = "dfd13757-d763-4f7a-9641-3f06ce21b4c6",
+    "2021" = "a058ef78-e18b-4435-94aa-b70ab6ce5904",
+    "2020" = "fbbe1734-b448-4e5a-bc94-3f8688534741",
+    "2019" = "e36d89c0-f62e-56d5-bc7e-b0adf89262b8",
+    "2018" = "229d6279-e614-5353-9226-f6a6f37d06c3",
+    "2017" = "c1028fdf-2e43-5d5e-990b-51ed03428625",
+    "2016" = "fc3c7c14-4b08-59c2-97db-0726e478dfdf",
+    "2015" = "45a28339-17a5-55e6-8e74-e9004fc703d8",
+    "2014" = "2b6a0ec0-efe6-5aec-9fe4-e168b8b6f553"
+  )
+
+  catalog_url <- "https://data.medicaid.gov/api/1/metastore/schemas/dataset/items"
+  response <- tryCatch(GET(catalog_url, timeout(30)), error = function(e) NULL)
+
+  if (is.null(response) || status_code(response) != 200) {
+    cat("Could not reach Medicaid catalog; using known dataset IDs\n")
+    return(known[order(names(known))])
+  }
+
+  catalog <- tryCatch(
+    fromJSON(content(response, "text", encoding = "UTF-8"), simplifyDataFrame = TRUE),
+    error = function(e) NULL
+  )
+
+  if (is.null(catalog) || !is.data.frame(catalog) ||
+      !all(c("title", "identifier") %in% names(catalog))) {
+    cat("Unexpected catalog format; using known dataset IDs\n")
+    return(known[order(names(known))])
+  }
+
+  # Keep datasets whose title mentions "core set" (Child or Adult Core Set annual reports)
+  mask <- grepl("core set", catalog$title, ignore.case = TRUE)
+  discovered <- catalog[mask, c("identifier", "title")]
+
+  if (nrow(discovered) == 0) {
+    cat("No core set datasets found in catalog; using known dataset IDs\n")
+    return(known[order(names(known))])
+  }
+
+  # Extract 4-digit year from each title (e.g. "FFY 2024" -> "2024")
+  discovered$year <- regmatches(
+    discovered$title,
+    regexpr("\\b20\\d{2}\\b", discovered$title)
+  )
+  discovered <- discovered[nchar(discovered$year) == 4, ]
+
+  # Build named vector from catalog, then merge with known IDs
+  catalog_ids <- setNames(discovered$identifier, discovered$year)
+  all_ids <- c(catalog_ids, known[!names(known) %in% names(catalog_ids)])
+
+  new_years <- setdiff(names(catalog_ids), names(known))
+  if (length(new_years) > 0) {
+    cat("New year(s) found in catalog:", paste(sort(new_years), collapse = ", "), "\n")
+  }
+  cat("Total core set datasets:", length(all_ids), "\n")
+
+  return(all_ids[order(names(all_ids))])
+}
+
 #initialize dcf process
 process <- dcf::dcf_process_record()
 
-# https://data.medicaid.gov/datasets?theme%5B0%5D=Quality
-data_ids <- list(
-  "e85033c7-367e-467e-9e81-8e85048102b8", #2023
-  "dfd13757-d763-4f7a-9641-3f06ce21b4c6", #2022
-  "a058ef78-e18b-4435-94aa-b70ab6ce5904", #2021
-  "fbbe1734-b448-4e5a-bc94-3f8688534741", #2020
-  "e36d89c0-f62e-56d5-bc7e-b0adf89262b8", #2019
-  "229d6279-e614-5353-9226-f6a6f37d06c3", #2018
-  "c1028fdf-2e43-5d5e-990b-51ed03428625", #2017
-  "fc3c7c14-4b08-59c2-97db-0726e478dfdf", #2016
-  "45a28339-17a5-55e6-8e74-e9004fc703d8", #2015
-  "2b6a0ec0-efe6-5aec-9fe4-e168b8b6f553"  #2014
-)
+# Discover available datasets — triggers reprocessing only when new years appear
+data_ids <- discover_core_set_datasets()
 
-#raw state tracking
-raw_state <- digest::digest(list(
-  dataset_ids = data_ids,
-  timestamp = format(Sys.time(), "%Y-%m-%d")
-))
+# raw_state is based solely on the set of available dataset IDs (no timestamp),
+# so reprocessing only occurs when new year datasets are published on the portal.
+raw_state <- digest::digest(data_ids)
 
 #processing if raw data has changed
 if (!identical(process$raw_state, raw_state)) {
   
- df_ls <- lapply(data_ids, get_medicaid_data_complete)
-  names(df_ls) <- paste0('year', 2014:2023)
+  df_ls <- lapply(data_ids, get_medicaid_data_complete)
+  names(df_ls) <- paste0('year', names(data_ids))
   
   #save the raw files
  lapply(names(df_ls), function(X) {

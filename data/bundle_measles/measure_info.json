@@ -1,2 +1,137 @@
-{}
-
+{
+  "bundle_measles/dist/measles_state.parquet|source": {
+    "levels": {
+      "wastewater_detection_rate": { "source_id": "ww_detection_rate" },
+      "vaccine_exemption_rate": {
+        "id": "bundle_measles/dist/measles_state.parquet|source=vaccine_exemption_rate",
+        "short_name": "MMR vaccine exemption rate",
+        "long_name": "Kindergarten MMR Vaccine Exemption Rate (State)",
+        "category": "immunization",
+        "short_description": "Percentage of kindergartners with non-medical exemptions from MMR vaccination requirements at state level.",
+        "long_description": "State-level percentage of kindergartners with non-medical exemptions from MMR vaccination requirements. Compiled from state-reported exemption data spanning 2009–2024, covering prepandemic (2009–2019) and postpandemic (2020–2024) periods. Data from Fattah et al. 2026 (JAMA).",
+        "measure_type": "Percent",
+        "unit": "%",
+        "time_resolution": "Year",
+        "sources": [{ "id": "fattah_exemptions" }]
+      },
+      "jhu_measles_cases": { "source_id": "measles_cases_state_jhu" },
+      "mmr_coverage_healthmap": { "source_id": "mmr_coverage_state" },
+      "cdc_measles_cases": { "source_id": "cdc_measles_cases" }
+    }
+  },
+  "bundle_measles/dist/measles_county.parquet|source": {
+    "levels": {
+      "wastewater_detection_rate": { "source_id": "ww_detection_rate" },
+      "vaccine_exemption_rate": {
+        "id": "bundle_measles/dist/measles_county.parquet|source=vaccine_exemption_rate",
+        "short_name": "MMR vaccine exemption rate",
+        "long_name": "Kindergarten non-medical MMR Vaccine Exemption Rate (County)",
+        "category": "immunization",
+        "short_description": "Percentage of kindergartners with non-medical exemptions from MMR vaccination requirements at county level.",
+        "long_description": "County-level percentage of kindergartners with non-medical exemptions from MMR vaccination requirements. Compiled from state-reported exemption data spanning 2009–2024. County-level coverage varies by state, as not all states report at the county level. Data from Fattah et al. 2026 (JAMA).",
+        "measure_type": "Percent",
+        "unit": "%",
+        "time_resolution": "Year",
+        "sources": [{ "id": "fattah_exemptions"}]
+      },
+      "jhu_measles_cases": { "source_id": "measles_cases_county_jhu" },
+      "mmr_coverage_healthmap": { "source_id": "mmr_coverage_county" },
+      "wapo_county_vax_rate": { "source_id": "wapo_county_vax_rate" }
+    }
+  },
+  "bundle_measles/dist/measles_cases_by_age.parquet|source": {
+    "levels": {
+      "cdc_measles_cases_age": { "source_id": "cdc_cum_cases" }
+    }
+  },
+  "bundle_measles/dist/measles_cases_by_age.parquet|type": {
+    "levels": {
+      "cumulative": { "source_id": "cdc_cum_cases" },
+      "new_cases": { "source_id": "cdc_new_cases" }
+    }
+  },
+  "bundle_measles/dist/measles_cases_by_age.parquet|age": {
+    "id": "bundle_measles/dist/measles_cases_by_age.parquet|age",
+    "short_name": "Age group",
+    "long_name": "Age group stratification for measles cases",
+    "category": "immunization",
+    "short_description": "Age group of measles cases. When an age-specific group is shown, vax_group is 'Total'.",
+    "long_description": "Age group stratification for measles case counts. Values include '<5 years', '5-19 years', '20+ years', and 'Total'. When age is one of the age-specific values, vax_group is always 'Total'. When age is 'Total', vax_group varies across vaccination status categories.",
+    "measure_type": "Category",
+    "unit": "Category",
+    "time_resolution": "Week",
+    "sources": [{ "id": "cdc_measles_age2" }]
+  },
+  "bundle_measles/dist/measles_cases_by_age.parquet|vax_group": {
+    "id": "bundle_measles/dist/measles_cases_by_age.parquet|vax_group",
+    "short_name": "Vaccination status group",
+    "long_name": "Vaccination status stratification for measles cases",
+    "category": "immunization",
+    "short_description": "Vaccination status of measles cases. Only varies when age is 'Total'.",
+    "long_description": "Vaccination status stratification for measles case counts. Values include 'Total', 'Unvaccinated/Unknown', 'One dose MMR', and 'Two doses MMR'. Rows with age-specific groups (<5, 5-19, 20+) always have vax_group set to 'Total'. 'Unvaccinated/Unknown' includes persons with no measles-containing vaccine doses or unknown vaccination history.",
+    "measure_type": "Category",
+    "unit": "Category",
+    "time_resolution": "Week",
+    "sources": [{ "id": "cdc_measles_age2" }]
+  },
+  "bundle_measles/dist/measles_state.parquet|value": {
+    "id": "bundle_measles/dist/measles_state.parquet|value",
+    "short_name": "State measles indicator value",
+    "long_name": "State-Level Measles-Related Indicator Value",
+    "category": "immunization",
+    "short_description": "Value for the measles-related measure identified by the source column. Units vary by source.",
+    "long_description": "Combined state-level measles indicators from multiple sources in long format. The source column identifies the measure type: wastewater_detection_rate (% wastewater samples positive for measles RNA; CDC NWSS), vaccine_exemption_rate (% kindergartners with MMR exemptions; Kiang et al.), jhu_measles_cases (weekly confirmed case counts from JHU), mmr_coverage_healthmap (estimated % children with MMR coverage; HealthMap), cdc_measles_cases (national weekly CDC case counts). Units and time resolutions differ by source.",
+    "measure_type": "Varies by source",
+    "unit": "Varies by source",
+    "time_resolution": "Week or Year",
+    "sources": [
+      { "id": "nwss_measles" },
+      { "id": "fattah_exemptions" },
+      { "id": "jhu_measles" },
+      { "id": "healthmap_mmr" },
+      { "id": "cdc_measles" }
+    ]
+  },
+  "bundle_measles/dist/measles_county.parquet|value": {
+    "id": "bundle_measles/dist/measles_county.parquet|value",
+    "short_name": "County measles indicator value",
+    "long_name": "County-Level Measles-Related Indicator Value",
+    "category": "immunization",
+    "short_description": "Value for the measles-related measure identified by the source column. Units vary by source.",
+    "long_description": "Combined county-level measles indicators from multiple sources in long format. The source column identifies the measure type: wastewater_detection_rate (% wastewater samples positive; CDC NWSS), vaccine_exemption_rate (% kindergartners with MMR exemptions; Kiang et al.), jhu_measles_cases (weekly confirmed case counts; JHU), mmr_coverage_healthmap (estimated % children with MMR coverage; HealthMap), wapo_county_vax_rate (county MMR vaccination rate; Washington Post). Units and time resolutions differ by source.",
+    "measure_type": "Varies by source",
+    "unit": "Varies by source",
+    "time_resolution": "Week or Year",
+    "sources": [
+      { "id": "nwss_measles" },
+      { "id": "fattah_exemptions" },
+      { "id": "jhu_measles" },
+      { "id": "healthmap_mmr" },
+      { "id": "wapo_school_vax" }
+    ]
+  },
+  "bundle_measles/dist/measles_cases_by_age.parquet|value": {
+    "id": "bundle_measles/dist/measles_cases_by_age.parquet|value",
+    "short_name": "Measles case count",
+    "long_name": "Measles case count (cumulative or new, by age and vaccination status)",
+    "category": "immunization",
+    "short_description": "Count of measles cases, either cumulative year-to-date or new for the reporting week, stratified by age group and vaccination status.",
+    "long_description": "Count of confirmed measles cases in the United States, stratified by age group and vaccination status. The type column indicates whether the value is a cumulative year-to-date count ('cumulative') or a newly reported count for the reporting week ('new_cases'). Negative values may reflect retroactive corrections by the CDC. Cases are classified as confirmed or probable following CSTE case definitions.",
+    "statement": "In the United States, {value} measles cases were reported.",
+    "measure_type": "Count",
+    "unit": "Cases",
+    "time_resolution": "Week",
+    "sources": [{ "id": "cdc_measles_age2" }]
+  },
+  "_sources": {
+    "cdc_measles_age2": {
+      "name": "CDC Measles Cases and Outbreaks - Age and Vaccination Status",
+      "url": "https://www.cdc.gov/measles/data-research/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/measles/",
+      "description": "Weekly new and cumulative case counts for measles in the United States, stratified by age group (<5, 5-19, 20+, and Total) and vaccination status (Total, Unvaccinated/Unknown, One dose MMR, Two doses MMR). Data are updated weekly on the CDC Measles Cases and Outbreaks surveillance page. Negative values in case counts reflect retroactive corrections by the CDC. Cases are classified as confirmed or probable following CSTE case definitions. New weekly counts are derived from successive differences in cumulative counts. Vaccination status case counts are approximated by multiplying cumulative totals by the reported percentage in each status category.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    }
+  }
+}

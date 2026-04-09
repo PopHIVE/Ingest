@@ -59,7 +59,7 @@ if (!identical(process$raw_state, raw_state)) {
   top_states_standard <- top_states %>%
     # Convert to long format
     tidyr::pivot_longer(
-      cols = c(KS_cases, NM_cases, TX_cases),
+      cols = c( NM_cases, TX_cases),
       names_to = "state",
       values_to = "value"
     ) %>%
@@ -71,8 +71,8 @@ if (!identical(process$raw_state, raw_state)) {
     # Use week_end date and convert to MM-DD-YYYY format
     mutate(
       # Week ends on Saturday (adjust if needed)
-      week_end_date = as.Date(week_end),
-      time = format(week_end_date, "%Y-%m-%d")
+      week_end_date = as.Date(week_end, "%m/%d/%y"),
+      time = format(week_end_date)
     ) %>%
     # Ensure value is numeric and select standard columns
     mutate(value = as.numeric(value)) %>%
@@ -83,13 +83,71 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   # 3. Read and transform County-level data
   # ---------------------------------------------------------------------------
-  county_data <- vroom::vroom("raw/measles_county_all_updates_detailed.csv.xz", show_col_types = FALSE)
+  county_data <- vroom::vroom("raw/measles_county_all_updates_detailed.csv.xz", show_col_types = FALSE) %>%
+    filter(outcome_type == 'case_lab-confirmed')
+    
+
 
   # Transform to standard format for county-level daily data
+  # Manual FIPS mapping for non-standard geographic regions (location_id = 0).
+  # These regions span multiple counties; each is mapped to the primary/largest
+  # county in the region.
+  manual_fips_map <- c(
+    "Upstate, South Carolina"                     = "45045",  # Greenville County, SC
+    "Southwest Health District, Utah"             = "49053",  # Washington County, UT
+    "Bear River, Utah"                            = "49005",  # Cache County, UT
+    "Central, Utah"                               = "49041",  # Sevier County, UT
+    "Southeast Health District, Utah"             = "49007",  # Carbon County, UT
+    "Mid-Cumberland Region, Tennessee"            = "47037",  # Davidson County, TN
+    "Nashville-Davidson County Region, Tennessee" = "47037",  # Davidson County, TN
+    "Upper Cumberland Region, Tennessee"          = "47141",  # Putnam County, TN
+    "Central Region, Virginia"                    = "51087",  # Henrico County, VA
+    "Eastern Region, Virginia"                    = "51810",  # Virginia Beach city, VA
+    "Northern Region, Virginia"                   = "51059",  # Fairfax County, VA
+    "Northwest Region, Virginia"                  = "51171",  # Shenandoah County, VA
+    "Region 9, Louisiana"                         = "22071"   # Orleans Parish, LA
+  )
+
+  # Manual FIPS mapping for non-standard regions that use state FIPS codes as
+  # location_id (values 1-999). Regional entries are mapped to the primary county;
+  # unknown-county entries use the 2-digit state FIPS to indicate state-level.
+  regional_fips_map <- c(
+    "Central, Iowa"                     = "19153",  # Polk County, IA
+    "Eastern, Iowa"                     = "19113",  # Linn County, IA
+    "Western, Iowa"                     = "19193",  # Woodbury County, IA
+    "North, Alabama"                    = "01089",  # Madison County, AL
+    "Twin Cities Metro Area, Minnesota" = "27053",  # Hennepin County, MN
+    "Coastal Health District, Georgia"  = "13051",  # Chatham County, GA
+    "Metro East , Illinois"             = "17163",  # St. Clair County, IL
+    "Unknown County, California"        = "06",     # State-level, county unknown
+    "Unknown County, Idaho"             = "16",     # State-level, county unknown
+    "Unknown County, Illinois"          = "17",     # State-level, county unknown
+    "Unknown County, Kansas"            = "20",     # State-level, county unknown
+    "Unknown County, Kentucky"          = "21067",  # Fayette County, KY
+    "Unknown County, Minnesota"         = "27",     # State-level, county unknown
+    "Unknown County, Nebraska"          = "31141",  # Platte County, NE
+    "Unknown County, Oregon"            = "41",     # State-level, county unknown
+    "Unknown County, Pennsylvania"      = "42",     # State-level, county unknown
+    "Unknown County, Texas"             = "48"      # State-level, county unknown
+  )
+
   county_standard <- county_data %>%
-    # Pad FIPS codes to 5 digits
     mutate(
-      geography = stringr::str_pad(as.character(location_id), width = 5, pad = "0")
+      geography = case_when(
+        location_id == 0 ~
+          manual_fips_map[location_name],
+        # Date-specific mapping for New Jersey unknown county
+        location_name == "Unknown County, New Jersey" & date == "2025-08-29" ~
+          "34003",  # Bergen County, NJ
+        location_name == "Unknown County, New Jersey" & date == "2025-10-29" ~
+          "34",     # State-level, county unknown
+        # Regional/unknown entries using state FIPS as location_id
+        location_name %in% names(regional_fips_map) ~
+          regional_fips_map[location_name],
+        # Standard county FIPS: pad location_id to 5 digits
+        TRUE ~
+          stringr::str_pad(as.character(location_id), width = 5, pad = "0")
+      )
     ) %>%
     # Convert date to MM-DD-YYYY format
     mutate(
@@ -119,6 +177,7 @@ if (!identical(process$raw_state, raw_state)) {
       time = format(week_end, "%Y-%m-%d")
     ) %>%
     select(geography, time, value) %>%
+     tidyr::complete(geography, time, fill = list(value = 0)) %>%
     arrange(geography, time)
 
   # Aggregate county data to state level for comparison
@@ -126,6 +185,7 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(
       state_fips = substr(geography, 1, 2)
     ) %>%
+    filter(state_fips != "00") %>%  # Exclude any non-county entries
     group_by(state_fips, time) %>%
     summarize(
       value = as.numeric(sum(value, na.rm = TRUE)),
@@ -159,6 +219,7 @@ if (!identical(process$raw_state, raw_state)) {
 
   # Combine state and national data
   state_final <- bind_rows(all_states_weekly, national_weekly) %>%
+      tidyr::complete(geography, time, fill = list(value = 0)) %>%
     arrange(geography, time)
 
   # ---------------------------------------------------------------------------
@@ -179,12 +240,13 @@ if (!identical(process$raw_state, raw_state)) {
     delim = ","
   )
 
-  # Combined (state + county) for comprehensive view
+  # Combined (state + county) for comprehensive view, filling missing geography/time combos with 0
   combined_final <- bind_rows(
     state_final %>% mutate(geographic_level = "state"),
     county_weekly %>% mutate(geographic_level = "county")
   ) %>%
     select(-geographic_level) %>%
+    tidyr::complete(geography, time, fill = list(value = 0)) %>%
     arrange(geography, time)
 
   vroom::vroom_write(

@@ -14,6 +14,13 @@ process <- dcf::dcf_process_record()
 # 1. Download raw data from Delphi FluView API
 # -----------------------------------------------------------------------------
 
+delphi_maxdate <- epidatr::pub_fluview_meta() %>%
+  pull(latest_update) %>%
+  max() %>%
+  as.character()
+
+if (!identical(process$delphi_maxdate, delphi_maxdate)) {
+
 # National data (nat = national)
 epidata_fluview_nat <- pub_fluview(
   regions = "nat",
@@ -41,7 +48,7 @@ raw_state <- as.list(tools::md5sum(list.files(
   full.names = TRUE
 )))
 
-if (!identical(process$raw_state, raw_state)) {
+#if (!identical(process$raw_state, raw_state)) {
 
   # ---------------------------------------------------------------------------
   # 3. Read and transform data
@@ -91,5 +98,7 @@ if (!identical(process$raw_state, raw_state)) {
   # 5. Record processed state
   # ---------------------------------------------------------------------------
   process$raw_state <- raw_state
+  process$delphi_maxdate <- delphi_maxdate
+
   dcf::dcf_process_record(updated = process)
 }

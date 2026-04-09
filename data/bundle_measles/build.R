@@ -1,7 +1,7 @@
 # =============================================================================
 # Bundle: Measles
-# Combines: wastewater_measles, vaccine_exemptions_kiang, measles_jhu, mmr_healthmap,
-#           measles_cdc, schoolvaxview (WaPo), measles_age_cdc
+# Combines: wastewater_measles, vaccine_exemptions_fattah, measles_jhu, mmr_healthmap,
+#           measles_cdc, schoolvaxview (WaPo), measles_age_cdc2
 # Output: Three consolidated files in long format:
 #   1. measles_state.parquet - State-level data with geography = state name
 #   2. measles_county.parquet - County-level data with geography = county FIPS
@@ -12,6 +12,7 @@ library(dplyr)
 library(tidyr)
 library(arrow)
 library(lubridate)
+library(MMWRweek)
 
 process <- dcf::dcf_process_record()
 standard_files <- paste0("../", names(process$source_files))
@@ -30,17 +31,49 @@ state_fips_lookup <- all_fips %>%
 # -----------------------------------------------------------------------------
 wastewater_measles <- vroom::vroom('../wastewater_measles/standard/data.csv.gz', show_col_types = FALSE)
 wastewater_measles_county <- vroom::vroom('../wastewater_measles/standard/data_county.csv.gz', show_col_types = FALSE)
-vaccine_exemptions <- vroom::vroom('../vaccine_exemptions_kiang/standard/data.csv.gz', show_col_types = FALSE)
-vaccine_exemptions_county <- vroom::vroom('../vaccine_exemptions_kiang/standard/data_county.csv.gz', show_col_types = FALSE)
+vaccine_exemptions <- vroom::vroom('../vaccine_exemptions_fattah/standard/data.csv.gz', show_col_types = FALSE)
+vaccine_exemptions_county <- vroom::vroom('../vaccine_exemptions_fattah/standard/data_county.csv.gz', show_col_types = FALSE)
 measles_jhu_state <- vroom::vroom('../measles_jhu/standard/data_state.csv.gz', show_col_types = FALSE)
 measles_jhu_county <- vroom::vroom('../measles_jhu/standard/data_county.csv.gz', show_col_types = FALSE)
 mmr_healthmap_state <- vroom::vroom('../mmr_healthmap/standard/data_state.csv.gz', show_col_types = FALSE)
 mmr_healthmap_county <- vroom::vroom('../mmr_healthmap/standard/data_county.csv.gz', show_col_types = FALSE)
-wapo_counties <- vroom::vroom('../schoolvaxview/standard/data_wapo_counties.csv.gz', show_col_types = FALSE)
-wapo_schools <- vroom::vroom('../schoolvaxview/standard/data_wapo_schools.csv.gz', show_col_types = FALSE)
+wapo_counties <- vroom::vroom('../schoolvax_washpost/standard/data_counties.csv.gz', show_col_types = FALSE)
+wapo_schools <- vroom::vroom('../schoolvax_washpost/standard/data_schools.csv.gz', show_col_types = FALSE)
 
 measles_cdc <- vroom::vroom('../measles_cdc/standard/data.csv.gz', show_col_types = FALSE)
-measles_age_cdc <- vroom::vroom('../measles_age_cdc/standard/data.csv.gz', show_col_types = FALSE)
+measles_age_cdc2 <- vroom::vroom('../measles_age_cdc2/standard/data.csv.gz', show_col_types = FALSE)
+
+
+measles_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = FALSE) %>%
+    mutate(value = measles_imported + measles_indigenous,
+    value = if_else(value==0, NA_real_, value)
+     ) %>%
+       rename(year = mmwr_year,
+          week = mmwr_week) %>%
+     arrange(geography, time, year) %>%
+     group_by(geography, year) %>%
+     tidyr::fill(value, .direction = "down") %>%
+     ungroup() %>%
+        dplyr::select(geography, time, year, week, value ) %>%
+        filter(!is.na(geography)) %>%
+         mutate(
+   # time = if_else(week == 53,  as.Date(paste0(year, "-12-31")), time),
+    date = as.Date(time, format = "%m-%d-%Y"),
+    source = "cdc_measles_cases_nnds_cum",
+    value = if_else(is.na(value), 0, value)
+         )%>%
+  arrange(geography, date) %>%
+  group_by(geography) %>%
+  tidyr::fill(value, .direction = "down") %>%
+  ungroup() %>%
+  group_by(geography, year) %>%
+  mutate(new_value = value - lag(value, default = 0)) %>%
+  ungroup() %>%
+  left_join(state_fips_lookup, by = c("geography" = "fips")) %>%
+  mutate(geography = if_else(geography == "00", "United States", state_name)) %>%
+  select(-state_name) %>%
+  filter(geography != "United States") %>%
+  dplyr::select(geography, date, year, week, value , source, new_value) 
 
 
 mmr_county_summary <- wapo_schools %>% 
@@ -98,6 +131,7 @@ exemptions_state <- vaccine_exemptions %>%
   ) %>%
   left_join(state_fips_lookup, by = c("geography" = "fips")) %>%
   mutate(
+    exemption_rate_mmr = exemption_rate_mmr_med + exemption_rate_mmr_nonmed,
     geography = if_else(geography == "00", "United States", state_name)
   ) %>%
   select(geography, date, year, week, value = exemption_rate_mmr) %>%
@@ -147,9 +181,9 @@ cdc_national <- measles_cdc %>%
   filter(geography == "00") %>%
   mutate(
     date = as.Date(time, format = "%m-%d-%Y"),
-    year = year(date),
-    week = isoweek(date),
-    geography = "United States"
+    year = MMWRweek::MMWRweek(date)$MMWRyear,
+    week = MMWRweek::MMWRweek(date)$MMWRweek,
+      geography = "United States"
   ) %>%
   select(geography, date, year, week, value) %>%
   filter(!is.na(value)) %>%
@@ -163,6 +197,7 @@ measles_state_long <- bind_rows(
   exemptions_state,
   jhu_state,
   mmr_state,
+  measles_state_nnds,
   cdc_national
 ) %>%
   arrange(geography, source, date) %>%
@@ -212,9 +247,11 @@ exemptions_county <- vaccine_exemptions_county %>%
   mutate(
     date = as.Date(time, format = "%m-%d-%Y"),
     year = year(date),
-    week = NA_integer_
+    week = NA_integer_,
+    #exemption_rate_mmr_med = if_else(is.na(exemption_rate_mmr_med), 0, exemption_rate_mmr_med),
+    #exemption_rate_mmr_nonmed =  exemption_rate_mmr_nonmed
   ) %>%
-  select(geography, date, year, week, value = exemption_rate_mmr) %>%
+  select(geography, is_state_estimate, date, year,  value = exemption_rate_mmr_nonmed) %>%
   filter(!is.na(value)) %>%
   mutate(source = "vaccine_exemption_rate")
 
@@ -241,7 +278,7 @@ wastewater_county <- wastewater_measles_county %>%
     week = isoweek(date)
   ) %>%
   select(geography, date, year, week, value = ww_detection_rate) %>%
-  filter(!is.na(value)) %>%
+  #filter(!is.na(value)) %>%
   mutate(source = "wastewater_detection_rate")
 
 # -----------------------------------------------------------------------------
@@ -255,7 +292,9 @@ measles_county_long <- bind_rows(
   wastewater_county
 ) %>%
   arrange(geography, source, date) %>%
-  select(geography, date, year, week, source, value)
+  select(geography, is_state_estimate,date, year, week, source, value) %>%
+  mutate(is_state_estimate = if_else(is.na(is_state_estimate), 0, is_state_estimate)
+  )
 
 # Write county-level parquet
 arrow::write_parquet(
@@ -271,17 +310,32 @@ arrow::write_parquet(
 # -----------------------------------------------------------------------------
 # 8. CDC age-stratified measles cases (national-level, weekly)
 # -----------------------------------------------------------------------------
-measles_age_long <- measles_age_cdc %>%
+measles_age_long <- measles_age_cdc2 %>%
   mutate(
-    date = as.Date(time, format = "%m-%d-%Y"),
-    year = year(date),
-    week = isoweek(date),
+    date = as.Date(time),
     geography = "United States"
   ) %>%
-  select(geography, date, year, week, age, value = cum_cases_measles_age) %>%
+  pivot_longer(
+    cols = c(cdc_cum_cases, cdc_new_cases,cdc_new_hosp,cdc_cum_hosp),
+    names_to = "type",
+    values_to = "value"
+  ) %>%
+  mutate(
+    type = case_when(
+      type == "cdc_cum_cases" ~ "cumulative cases",
+      type == "cdc_new_cases" ~ "new cases",
+      type == "cdc_new_hosp" ~ "new hospitalizations",
+      type == "cdc_cum_hosp" ~ "cumulative hospitalizations",
+    ),
+    age = age_group
+  ) %>%
   filter(!is.na(value)) %>%
   mutate(source = "cdc_measles_cases_age") %>%
-  arrange(date, age)
+  select(geography, date, year, week, type, age, vax_group, value, source) %>%
+  arrange( type, age, vax_group,date) %>%
+  mutate( source = if_else(vax_group != 'Total', 'cdc_measles_cases_vax', source)
+  )
+ 
 
 # Write age-stratified parquet
 arrow::write_parquet(
@@ -289,17 +343,5 @@ arrow::write_parquet(
   "dist/measles_cases_by_age.parquet",
   compression = "snappy"
 )
-
-# =============================================================================
-# Summary
-# =============================================================================
-cat("Measles bundle created:\n")
-cat("  - State-level:", nrow(measles_state_long), "records from",
-    length(unique(measles_state_long$source)), "sources\n")
-cat("  - County-level:", nrow(measles_county_long), "records from",
-    length(unique(measles_county_long$source)), "sources\n")
-cat("  - Age-stratified:", nrow(measles_age_long), "records\n")
-
-
 
 

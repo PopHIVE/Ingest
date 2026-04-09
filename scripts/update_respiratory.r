@@ -12,4 +12,7 @@ dcf_process("nssp")
 dcf_process("respnet")
 dcf_process("wastewater")
 
+dcf::dcf_process("epic_resp_infections")
+
+
 dcf::dcf_process("bundle_respiratory", ".")

@@ -1,2 +1,236 @@
-{}
-
+{
+  "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|outcome_name": {
+    "levels": {
+      "Diabetes": {},
+      "Obesity": {}
+    }
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|outcome_name": {
+    "levels": {
+      "Diabetes": {},
+      "Obesity": {}
+    }
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet|outcome_name": {
+    "levels": {
+      "Diabetes": {},
+      "Obesity": {}
+    }
+  },
+  "bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet|outcome_name": {
+    "levels": {
+      "Diabetes": {
+        "id": "bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet|outcome_name=Diabetes",
+        "short_name": "Diabetes",
+        "long_name": "Diabetes Prevalence",
+        "category": "chronic_disease",
+        "short_description": "Estimated prevalence of diabetes among adults.",
+        "long_description": "Estimated prevalence of diabetes among adults, from BRFSS (self-reported diagnosis), Epic Cosmos (HbA1c ≥6.5% or ICD-10 diagnosis codes), and Medicare FFS (CCW algorithm). The source column identifies the data source and clinical definition used.",
+        "measure_type": "Percent",
+        "unit": "%",
+        "time_resolution": "Year",
+        "sources": [
+          { "id": "brfss" },
+          { "id": "epic" },
+          { "id": "cms_mmd" }
+        ]
+      },
+      "Obesity": {
+        "id": "bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet|outcome_name=Obesity",
+        "short_name": "Obesity",
+        "long_name": "Obesity Prevalence",
+        "category": "chronic_disease",
+        "short_description": "Estimated prevalence of obesity (BMI ≥30) among adults.",
+        "long_description": "Estimated prevalence of obesity among adults, from BRFSS (self-reported height/weight, BMI ≥30), Epic Cosmos (measured BMI ≥30 or ICD-10 diagnosis codes), and Medicare FFS (CCW algorithm). The source column identifies the data source and clinical definition used.",
+        "measure_type": "Percent",
+        "unit": "%",
+        "time_resolution": "Year",
+        "sources": [
+          { "id": "brfss" },
+          { "id": "epic" },
+          { "id": "cms_mmd" }
+        ]
+      }
+    }
+  },
+  "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|source": {
+    "levels": {
+      "CDC BRFSS": { "source_id": "prev_diabetes_survey" }
+    }
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|source": {
+    "levels": {
+      "Epic Cosmos: HbA1c": { "source_id": "diabetes_a1c_6_5" },
+      "Epic Cosmos: ICD10": { "source_id": "diabetes_dx_ccw" },
+      "Epic Cosmos: BMI": { "source_id": "obesity_bmi" }
+    }
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet|source": {
+    "levels": {
+      "Epic Cosmos: HbA1c": { "source_id": "diabetes_a1c_6_5" },
+      "Epic Cosmos: BMI": { "source_id": "obesity_bmi" },
+      "Medicare FFS": { "source_id": "cms_diabetes" }
+    }
+  },
+  "bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet|source": {
+    "levels": {
+      "CDC BRFSS": { "source_id": "prev_diabetes_survey" },
+      "Epic Cosmos: HbA1c": { "source_id": "diabetes_a1c_6_5" },
+      "Epic Cosmos: ICD10": { "source_id": "diabetes_dx_ccw" },
+      "Epic Cosmos: BMI": { "source_id": "obesity_bmi" },
+      "Medicare FFS": { "source_id": "cms_diabetes" }
+    }
+  },
+  "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|value": {
+    "id": "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|value",
+    "short_name": "Chronic disease prevalence (BRFSS)",
+    "long_name": "BRFSS Chronic Disease Prevalence Estimate",
+    "category": "chronic_disease",
+    "short_description": "Estimated prevalence of diabetes or obesity from BRFSS telephone survey, by state and year.",
+    "long_description": "Age-stratified state-level prevalence estimates for diabetes and obesity from the CDC Behavioral Risk Factor Surveillance System (BRFSS). Diabetes prevalence is based on self-reported ever-diagnosis; obesity is based on calculated BMI ≥30 from self-reported height and weight. The outcome_name column identifies the condition. Includes 95% confidence intervals (value_lcl, value_ucl) and survey sample size.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "brfss" }]
+  },
+  "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|value_lcl": {
+    "id": "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|value_lcl",
+    "short_name": "Prevalence lower 95% CI (BRFSS)",
+    "long_name": "Lower 95% Confidence Interval for BRFSS Prevalence",
+    "category": "chronic_disease",
+    "short_description": "Lower bound of the 95% confidence interval for BRFSS chronic disease prevalence.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "brfss" }]
+  },
+  "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|value_ucl": {
+    "id": "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|value_ucl",
+    "short_name": "Prevalence upper 95% CI (BRFSS)",
+    "long_name": "Upper 95% Confidence Interval for BRFSS Prevalence",
+    "category": "chronic_disease",
+    "short_description": "Upper bound of the 95% confidence interval for BRFSS chronic disease prevalence.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "brfss" }]
+  },
+  "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|sample_size": {
+    "id": "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|sample_size",
+    "short_name": "Sample size (BRFSS)",
+    "long_name": "BRFSS Survey Sample Size",
+    "category": "chronic_disease",
+    "short_description": "Number of BRFSS survey respondents used to estimate chronic disease prevalence.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [{ "id": "brfss" }]
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|value": {
+    "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|value",
+    "short_name": "Chronic disease prevalence (Epic, state)",
+    "long_name": "Epic Cosmos State-Level Chronic Disease Prevalence",
+    "category": "chronic_disease",
+    "short_description": "Estimated prevalence of diabetes or obesity from Epic Cosmos EHR, by state and year.",
+    "long_description": "State-level prevalence estimates for diabetes and obesity from Epic Cosmos electronic health records. The source column identifies the clinical definition: 'Epic Cosmos: HbA1c' uses HbA1c ≥6.5% for diabetes; 'Epic Cosmos: ICD10' uses CCW ICD-10 diagnosis codes for both conditions; 'Epic Cosmos: BMI' uses measured BMI ≥30 for obesity. Values represent the percentage of active Epic patients meeting the specified criterion.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic" }]
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|pct_captured": {
+    "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|pct_captured",
+    "short_name": "Epic population capture (%)",
+    "long_name": "Percentage of 2021 State Population Captured in Epic Cosmos",
+    "category": "chronic_disease",
+    "short_description": "Percentage of the 2021 state population represented in the Epic Cosmos patient panel, by age group.",
+    "long_description": "Estimated percentage of the 2021 Census population in each age group that is represented in the Epic Cosmos patient panel for a given state. Used as an indicator of Epic's geographic coverage and potential selection bias. Lower values indicate that Epic data covers a smaller fraction of the state's population.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic" }]
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|sample_size": {
+    "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_year.parquet|sample_size",
+    "short_name": "Epic patient count (state)",
+    "long_name": "Number of Epic Cosmos Patients in State-Level Analysis",
+    "category": "chronic_disease",
+    "short_description": "Number of Epic Cosmos patients in the state-level analysis. Values ≤10 are reported as '10 or fewer'.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic" }]
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet|value": {
+    "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet|value",
+    "short_name": "Chronic disease prevalence (county)",
+    "long_name": "County-Level Chronic Disease Prevalence from Epic and Medicare",
+    "category": "chronic_disease",
+    "short_description": "Estimated prevalence of diabetes or obesity at county level from Epic Cosmos or Medicare FFS.",
+    "long_description": "County-level prevalence estimates for diabetes and obesity from Epic Cosmos (2025 snapshot) and Medicare Fee-for-Service (CMS, most recent year). For Epic Cosmos: 'Epic Cosmos: HbA1c' uses HbA1c ≥6.5% for diabetes; 'Epic Cosmos: BMI' uses measured BMI ≥30 for obesity. For Medicare FFS: diagnosis based on CCW ICD-10 algorithm. The source column identifies the data source and clinical definition.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "epic" },
+      { "id": "cms_mmd" }
+    ]
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet|pct_captured": {
+    "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet|pct_captured",
+    "short_name": "Epic population capture (%, county)",
+    "long_name": "Percentage of 2021 County Population Captured in Epic Cosmos",
+    "category": "chronic_disease",
+    "short_description": "Percentage of the 2021 county population represented in the Epic Cosmos patient panel, by age group.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic" }]
+  },
+  "bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet|sample_size": {
+    "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet|sample_size",
+    "short_name": "Patient count (county)",
+    "long_name": "Number of Patients in County-Level Analysis",
+    "category": "chronic_disease",
+    "short_description": "Number of patients used in the county-level analysis. Small counts from Epic Cosmos are reported as '10 or fewer'.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "epic" },
+      { "id": "cms_mmd" }
+    ]
+  },
+  "bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet|value": {
+    "id": "bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet|value",
+    "short_name": "Chronic disease prevalence",
+    "long_name": "Chronic Disease Prevalence by Geography, Year, and Source",
+    "category": "chronic_disease",
+    "short_description": "Estimated prevalence of diabetes or obesity by state and year from multiple sources.",
+    "long_description": "Combined state-level prevalence estimates for diabetes and obesity from CDC BRFSS (telephone survey), Epic Cosmos EHR (HbA1c, ICD-10, and BMI-based definitions), and Medicare Fee-for-Service administrative claims. The outcome_name column identifies the condition (Diabetes or Obesity); the source column identifies the data source and clinical definition. These sources are not directly comparable due to differences in population covered (all adults vs. Epic patients vs. Medicare beneficiaries ≥65), case definitions, and ascertainment methodology.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "brfss" },
+      { "id": "epic" },
+      { "id": "cms_mmd" }
+    ]
+  },
+  "bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet|sample_size": {
+    "id": "bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet|sample_size",
+    "short_name": "Sample size",
+    "long_name": "Sample Size for Prevalence Estimate",
+    "category": "chronic_disease",
+    "short_description": "Survey respondents (BRFSS), patient count (Epic), or beneficiary count (Medicare) for the prevalence estimate.",
+    "long_description": "Sample size underlying the prevalence estimate. Interpretation varies by source: for BRFSS, this is the number of survey respondents; for Epic Cosmos, this is the number of active patients (values ≤10 are reported as '10 or fewer'); for Medicare FFS, this is the number of beneficiaries with a Medicare claim.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "brfss" },
+      { "id": "epic" },
+      { "id": "cms_mmd" }
+    ]
+  }
+}
