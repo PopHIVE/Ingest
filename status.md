@@ -130,7 +130,7 @@ flowchart LR
     end
     subgraph measles_cdc["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/measles_cdc" target="_blank" rel="noreferrer">measles_cdc</a></strong>`"]
         direction LR
-        n39["`data.csv.gz<br/><br/><ul><li><code>type_changed: geography</code></li></ul>`"]:::warn
+        n39["`data.csv.gz`"]:::pass
     end
     subgraph measles_jhu["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/measles_jhu" target="_blank" rel="noreferrer">measles_jhu</a></strong>`"]
         direction LR
@@ -157,8 +157,8 @@ flowchart LR
     subgraph nchs_mortality["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nchs_mortality" target="_blank" rel="noreferrer">nchs_mortality</a></strong>`"]
         direction LR
         n47["`data_county.csv.gz`"]:::pass
-        n48["`data_state_21_causes.csv.gz<br/><br/><ul><li><code>type_changed: geography</code></li></ul>`"]:::warn
-        n49["`data.csv.gz<br/><br/><ul><li><code>type_changed: geography</code></li></ul>`"]:::warn
+        n48["`data_state_21_causes.csv.gz`"]:::pass
+        n49["`data.csv.gz`"]:::pass
     end
     subgraph nis["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nis" target="_blank" rel="noreferrer">nis</a></strong>`"]
         direction LR
@@ -168,12 +168,12 @@ flowchart LR
     end
     subgraph nnds["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nnds" target="_blank" rel="noreferrer">nnds</a></strong>`"]
         direction LR
-        n53["`data.csv.gz<br/><br/><ul><li><code>missing_info: mmwr_year, mmwr_week, anthrax, cholera, plague, rabies_human, rubella_congenital_syndrome, novel_influenza_a_virus_infections_total, novel_influenza_a_virus_infections_confirmed</code></li></ul>`"]:::warn
+        n53["`data.csv.gz<br/><br/><ul><li><code>missing_info: mmwr_year, mmwr_week, anthrax, cholera, plague, rabies_human, rubella_congenital_syndrome, novel_influenza_a_virus_infections_total, novel_influenza_a_virus_infections_confirmed</code></li></ul><br />Script Failed:<br />In argument: 'time = +...'.`"]:::fail
     end
     subgraph noaa_heat_risk["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/noaa_heat_risk" target="_blank" rel="noreferrer">noaa_heat_risk</a></strong>`"]
         direction LR
-        n54["`data_county.csv.gz<br/><br/><ul><li><code>missing_info: value, forecast_day, low_coverage_flag</code></li><li><code>type_changed: geography</code></li></ul><br />Script Failed:<br />`"]:::fail
-        n55["`data_state.csv.gz<br/><br/><ul><li><code>missing_info: value, forecast_day</code></li><li><code>type_changed: geography</code></li></ul><br />Script Failed:<br />`"]:::fail
+        n54["`data_county.csv.gz<br/><br/><ul><li><code>missing_info: value, forecast_day, low_coverage_flag</code></li></ul><br />Script Failed:<br />`"]:::fail
+        n55["`data_state.csv.gz<br/><br/><ul><li><code>missing_info: value, forecast_day</code></li></ul><br />Script Failed:<br />`"]:::fail
     end
     subgraph NREVSS["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/NREVSS" target="_blank" rel="noreferrer">NREVSS</a></strong>`"]
         direction LR
@@ -213,7 +213,7 @@ flowchart LR
     end
     subgraph wastewater["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/wastewater" target="_blank" rel="noreferrer">wastewater</a></strong>`"]
         direction LR
-        n68["`data.csv.gz<br/><br/><ul><li><code>type_changed: geography</code></li></ul>`"]:::warn
+        n68["`data.csv.gz`"]:::pass
     end
     subgraph wisqars["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/wisqars" target="_blank" rel="noreferrer">wisqars</a></strong>`"]
         direction LR
@@ -226,86 +226,85 @@ flowchart LR
         n72["`cms_cancer_screening_state.parquet`"]
         n73["`combined_cancer_screening.parquet`"]
         n74["`medicaid_cancer_screening.parquet`"]
-        n75["`medicaid_quality.parquet`"]
     end
     subgraph bundle_childhood_immunizations["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_childhood_immunizations" target="_blank" rel="noreferrer">bundle_childhood_immunizations</a></strong>`"]
         direction LR
-        n76["`mmr_rates_epic.parquet`"]
-        n77["`nis_insurance.parquet`"]
-        n78["`nis_overall.parquet`"]
-        n79["`nis_urban.parquet`"]
-        n80["`overall_rates_by_source.parquet`"]
-        n81["`schoolvaxview_exemptions.parquet`"]
-        n82["`schoolvaxview_overall.parquet`"]
-        n83["`state_compare.parquet`"]
-        n84["`wapo_vax_counties.parquet`"]
-        n85["`wapo_vax_schools.parquet`"]
+        n75["`mmr_rates_epic.parquet`"]
+        n76["`nis_insurance.parquet`"]
+        n77["`nis_overall.parquet`"]
+        n78["`nis_urban.parquet`"]
+        n79["`overall_rates_by_source.parquet`"]
+        n80["`schoolvaxview_exemptions.parquet`"]
+        n81["`schoolvaxview_overall.parquet`"]
+        n82["`state_compare.parquet`"]
+        n83["`wapo_vax_counties.parquet`"]
+        n84["`wapo_vax_schools.parquet`"]
     end
     subgraph bundle_chronic_diseases["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_chronic_diseases" target="_blank" rel="noreferrer">bundle_chronic_diseases</a></strong>`"]
         direction LR
-        n86["`brfss_prevalence_by_geography.parquet`"]
-        n87["`county_opioid_by_source.parquet`"]
-        n88["`deaths_cause_age.parquet`"]
-        n89["`epic_prevalence_by_geography_county_and_source.parquet`"]
-        n90["`epic_prevalence_by_geography_county.parquet`"]
-        n91["`epic_prevalence_by_geography_year.parquet`"]
-        n92["`epic_prevalence_by_geography.parquet`"]
-        n93["`overdose_by_geography_and_source_county.parquet`"]
-        n94["`overdose_by_geography_and_source.parquet`"]
-        n95["`overdose_deaths_county.parquet`"]
-        n96["`overdose_deaths_state.parquet`"]
-        n97["`prevalence_by_geography_and_source.csv`"]
-        n98["`prevalence_by_geography_and_source.parquet`"]
-        n99["`prevalence_by_geography_and_year_and_source.parquet`"]
-        n100["`prevalence_by_geography_year_and_source.parquet`"]
+        n85["`brfss_prevalence_by_geography.parquet`"]
+        n86["`county_opioid_by_source.parquet`"]
+        n87["`deaths_cause_age.parquet`"]
+        n88["`epic_prevalence_by_geography_county_and_source.parquet`"]
+        n89["`epic_prevalence_by_geography_county.parquet`"]
+        n90["`epic_prevalence_by_geography_year.parquet`"]
+        n91["`epic_prevalence_by_geography.parquet`"]
+        n92["`overdose_by_geography_and_source_county.parquet`"]
+        n93["`overdose_by_geography_and_source.parquet`"]
+        n94["`overdose_deaths_county.parquet`"]
+        n95["`overdose_deaths_state.parquet`"]
+        n96["`prevalence_by_geography_and_source.csv`"]
+        n97["`prevalence_by_geography_and_source.parquet`"]
+        n98["`prevalence_by_geography_and_year_and_source.parquet`"]
+        n99["`prevalence_by_geography_year_and_source.parquet`"]
     end
     subgraph bundle_injury_overdose["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_injury_overdose" target="_blank" rel="noreferrer">bundle_injury_overdose</a></strong>`"]
         direction LR
-        n101["`brfss_prevalence_by_geography.parquet`"]
-        n102["`county_opioid_by_source.parquet`"]
-        n103["`deaths_cause_age_demographics.parquet`"]
-        n104["`deaths_cause_age.parquet`"]
-        n105["`epic_prevalence_by_geography_year.parquet`"]
-        n106["`firearms_by_demographics.parquet`"]
-        n107["`firearms_by_geography_and_source_state_year.parquet`"]
-        n108["`firearms_geography_source.parquet`"]
-        n109["`google_dma.parquet`"]
-        n110["`heat_by_geography_and_source_state_year.parquet`"]
-        n111["`heat_related_geography_source.parquet`"]
-        n112["`heat_risk.parquet`"]
-        n113["`medicaid_injury_overdose.parquet`"]
-        n114["`overdose_by_demographics.parquet`"]
-        n115["`overdose_by_geography_and_source_county.parquet`"]
-        n116["`overdose_by_geography_and_source_state_year.parquet`"]
-        n117["`overdose_by_geography_and_source.parquet`"]
-        n118["`overdose_deaths_county.parquet`"]
-        n119["`overdose_deaths_state.parquet`"]
-        n120["`state_opioid_by_source.parquet`"]
+        n100["`brfss_prevalence_by_geography.parquet`"]
+        n101["`county_opioid_by_source.parquet`"]
+        n102["`deaths_cause_age_demographics.parquet`"]
+        n103["`deaths_cause_age.parquet`"]
+        n104["`epic_prevalence_by_geography_year.parquet`"]
+        n105["`firearms_by_demographics.parquet`"]
+        n106["`firearms_by_geography_and_source_state_year.parquet`"]
+        n107["`firearms_geography_source.parquet`"]
+        n108["`google_dma.parquet`"]
+        n109["`heat_by_geography_and_source_state_year.parquet`"]
+        n110["`heat_related_geography_source.parquet`"]
+        n111["`heat_risk.parquet`"]
+        n112["`medicaid_injury_overdose.parquet`"]
+        n113["`overdose_by_demographics.parquet`"]
+        n114["`overdose_by_geography_and_source_county.parquet`"]
+        n115["`overdose_by_geography_and_source_state_year.parquet`"]
+        n116["`overdose_by_geography_and_source.parquet`"]
+        n117["`overdose_deaths_county.parquet`"]
+        n118["`overdose_deaths_state.parquet`"]
+        n119["`state_opioid_by_source.parquet`"]
     end
     subgraph bundle_measles["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_measles" target="_blank" rel="noreferrer">bundle_measles</a></strong>`"]
         direction LR
-        n121["`measles_cases_by_age.parquet`"]
-        n122["`measles_county.parquet`"]
-        n123["`measles_state.parquet`"]
+        n120["`measles_cases_by_age.parquet`"]
+        n121["`measles_county.parquet`"]
+        n122["`measles_state.parquet`"]
     end
     subgraph bundle_respiratory["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_respiratory" target="_blank" rel="noreferrer">bundle_respiratory</a></strong>`"]
         direction LR
-        n124["`covid_ed_visits_by_county.parquet`"]
-        n125["`covid_overall_trends.parquet`"]
-        n126["`covid_trends_by_age.parquet`"]
-        n127["`flu_ed_visits_by_county.parquet`"]
-        n128["`flu_overall_trends.parquet`"]
-        n129["`flu_trends_by_age.parquet`"]
-        n130["`pneumococcus_by_geography_year.parquet`"]
-        n131["`pneumococcus_by_geography.parquet`"]
-        n132["`pneumococcus_comparison.parquet`"]
-        n133["`pneumococcus_serotype_trends.parquet`"]
-        n134["`rsv_ed_visits_by_county.parquet`"]
-        n135["`rsv_google_dma.parquet`"]
-        n136["`rsv_overall_trends.parquet`"]
-        n137["`rsv_positive_tests.parquet`"]
-        n138["`rsv_testing_pct.parquet`"]
-        n139["`rsv_trends_by_age.parquet`"]
+        n123["`covid_ed_visits_by_county.parquet`"]
+        n124["`covid_overall_trends.parquet`"]
+        n125["`covid_trends_by_age.parquet`"]
+        n126["`flu_ed_visits_by_county.parquet`"]
+        n127["`flu_overall_trends.parquet`"]
+        n128["`flu_trends_by_age.parquet`"]
+        n129["`pneumococcus_by_geography_year.parquet`"]
+        n130["`pneumococcus_by_geography.parquet`"]
+        n131["`pneumococcus_comparison.parquet`"]
+        n132["`pneumococcus_serotype_trends.parquet`"]
+        n133["`rsv_ed_visits_by_county.parquet`"]
+        n134["`rsv_google_dma.parquet`"]
+        n135["`rsv_overall_trends.parquet`"]
+        n136["`rsv_positive_tests.parquet`"]
+        n137["`rsv_testing_pct.parquet`"]
+        n138["`rsv_trends_by_age.parquet`"]
     end
     s0---s1["<strong><a href="https://data.cdc.gov/resource/qvzb-qs6p/" target="_blank" rel="noreferrer">Serotype Data for Invasive Pneumococcal Disease Cases by Age Group from Active Bacterial Core surveillance</a></strong>"]
     s1 --> n1
