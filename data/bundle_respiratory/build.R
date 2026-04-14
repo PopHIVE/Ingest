@@ -385,10 +385,10 @@ d3 <- vroom::vroom('../gtrends/standard/data_dma.csv.gz') %>%
   
 d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
     filter(geography=='00') %>%
-    rename(value = N_IPD) %>%
+    rename(value = N_IPD, value_incidence = rate_IPD) %>%
     mutate(year = lubridate::year(time)
            ) %>%
-    dplyr::select(serotype, year, age, value)
+    dplyr::select(serotype, year, age, value, value_incidence)
   
   arrow::write_parquet(d4, "dist/pneumococcus_serotype_trends.parquet")
 

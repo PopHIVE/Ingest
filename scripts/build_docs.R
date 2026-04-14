@@ -815,4 +815,46 @@ output_path <- "docs/index.html"
 cat(sprintf("Writing documentation to %s...\n", output_path))
 save_html(html_page, output_path)
 
+# -----------------------------------------------------------------------------
+# Build master sources JSON
+# Collects all _sources entries from each measure_info.json
+# -----------------------------------------------------------------------------
+
+cat("Building master sources JSON...\n")
+
+master_sources <- list()
+
+all_info_dirs <- c(source_dirs, bundle_dirs)
+all_info_names <- c(source_names, bundle_names)
+
+for (i in seq_along(all_info_dirs)) {
+  measure_info_path <- file.path(all_info_dirs[i], "measure_info.json")
+  measure_info <- tryCatch({
+    fromJSON(measure_info_path, simplifyVector = FALSE)
+  }, error = function(e) list())
+
+  sources_meta <- measure_info[["_sources"]]
+  if (!is.null(sources_meta) && length(sources_meta) > 0) {
+    for (src_key in names(sources_meta)) {
+      entry <- sources_meta[[src_key]]
+      # Tag which data directory this source belongs to
+      entry[["data_source"]] <- all_info_names[i]
+      # Use source key as identifier; if already seen, append data_source
+      if (src_key %in% names(master_sources)) {
+        existing <- master_sources[[src_key]]
+        existing_ds <- existing[["data_source"]]
+        existing[["data_source"]] <- unique(c(existing_ds, all_info_names[i]))
+        master_sources[[src_key]] <- existing
+      } else {
+        master_sources[[src_key]] <- entry
+      }
+    }
+  }
+}
+
+master_sources_path <- "resources/sources_master.json"
+write(toJSON(master_sources, auto_unbox = TRUE, pretty = TRUE), master_sources_path)
+cat(sprintf("Master sources JSON written to %s (%d sources)\n",
+            master_sources_path, length(master_sources)))
+
 cat("Done! Documentation generated successfully.\n")
