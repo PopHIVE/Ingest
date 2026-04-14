@@ -3,14 +3,17 @@
   "title": "Bundle Chronic Diseases",
   "resources": [
     {
-      "bytes": 318980,
+      "bytes": 319812,
       "encoding": "ISO-8859-1",
-      "md5": "a8ead1c7e35fe1a215c20da11f85f6dd",
+      "md5": "b064b35427de273ecaa85b289988b4b7",
       "format": "parquet",
       "name": "brfss_prevalence_by_geography",
       "filename": "brfss_prevalence_by_geography.parquet",
       "versions": {
         "hash": [
+          "ced52d1dcc8a2480e24171fb109df5c383d9b088",
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
           "98b37166e6c21d05dafb50cb668c5fe26b32289f",
           "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "1a28469dd4a514054e5edaf1711313968ced0670",
@@ -64,6 +67,9 @@
           "0729910fad06bceda1fac9cea35cae8b1c3312ba"
         ],
         "author": [
+          "weinbergerlab <dweinber@gmail.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
@@ -117,6 +123,9 @@
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Sun Apr 5 21:44:32 2026 -0400",
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
           "Fri Mar 13 15:04:44 2026 +0000",
           "Wed Mar 11 11:41:55 2026 -0400",
           "Tue Mar 3 00:46:06 2026 +0000",
@@ -170,6 +179,9 @@
           "Fri Aug 8 23:00:16 2025 -0400"
         ],
         "message": [
+          "update bundle to check that all run OK; update medicaid quality package to only download new datasets",
+          "partial update bundle",
+          "scheduled data build",
           "scheduled data build",
           "Squashed ",
           "scheduled data build",
@@ -233,20 +245,20 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:43:51.543693",
-      "last_modified": "2026-04-01 02:43:51.543693",
+      "created": "2026-04-06 13:58:44.036415",
+      "last_modified": "2026-04-06 13:58:44.036415",
       "vintage": {},
-      "row_count": 5292,
+      "row_count": 5306,
       "entity_count": 55,
       "schema": {
         "fields": [
           {
             "name": "geography",
-            "duplicates": 5237,
+            "duplicates": 5251,
             "info": [],
             "time_range": [-1, -1],
             "type": "string",
-            "missing": 42,
+            "missing": 0,
             "table": {
               "Alabama": 98,
               "Alaska": 98,
@@ -297,6 +309,7 @@
               "United States": 98,
               "Utah": 98,
               "Vermont": 98,
+              "Virgin Islands": 56,
               "Virginia": 98,
               "Washington": 98,
               "West Virginia": 98,
@@ -306,36 +319,36 @@
           },
           {
             "name": "year",
-            "duplicates": 5285,
+            "duplicates": 5299,
             "info": [],
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
-            "mean": 2020.989418,
-            "sd": 1.992208,
+            "mean": 2020.997361,
+            "sd": 1.995564,
             "min": 2018,
             "max": 2024
           },
           {
             "name": "age",
-            "duplicates": 5285,
+            "duplicates": 5299,
             "info": [],
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
             "table": {
-              "18-24 Years": 756,
-              "25-34 Years": 756,
-              "35-44 Years": 756,
-              "45-54 Years": 756,
-              "55-64 Years": 756,
-              "65+ Years": 756,
-              "Total": 756
+              "18-24 Years": 758,
+              "25-34 Years": 758,
+              "35-44 Years": 758,
+              "45-54 Years": 758,
+              "55-64 Years": 758,
+              "65+ Years": 758,
+              "Total": 758
             }
           },
           {
             "name": "source",
-            "duplicates": 5291,
+            "duplicates": 5305,
             "info": {
               "levels": {
                 "CDC BRFSS": {
@@ -343,16 +356,6 @@
                   "id": "CDC BRFSS",
                   "name": "prev_diabetes_survey",
                   "duplicates": 149,
-                  "time_range": [
-                    0,
-                    7
-                  ],
-                  "type": "float",
-                  "missing": 0,
-                  "mean": 10.662075,
-                  "sd": 9.28104,
-                  "min": 0,
-                  "max": 100,
                   "info": {
                     "id": "prev_diabetes_survey",
                     "short_name": "Diabetes Prevalence (Survey)",
@@ -371,7 +374,17 @@
                       "data_dir": "/data/brfss/standard",
                       "file": "data_survey.csv.gz"
                     }
-                  }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 10.662075,
+                  "sd": 9.28104,
+                  "min": 0,
+                  "max": 100
                 }
               },
               "id": "source"
@@ -380,12 +393,12 @@
             "type": "string",
             "missing": 0,
             "table": {
-              "CDC BRFSS": 5292
+              "CDC BRFSS": 5306
             }
           },
           {
             "name": "outcome_name",
-            "duplicates": 5290,
+            "duplicates": 5304,
             "info": {
               "levels": {
                 "Diabetes": {
@@ -401,13 +414,13 @@
             "type": "string",
             "missing": 0,
             "table": {
-              "Diabetes": 2646,
-              "Obesity": 2646
+              "Diabetes": 2653,
+              "Obesity": 2653
             }
           },
           {
             "name": "value",
-            "duplicates": 30,
+            "duplicates": 31,
             "info": {
               "id": "value",
               "short_name": "Chronic disease prevalence (BRFSS)",
@@ -427,14 +440,14 @@
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
-            "mean": 21.576591,
-            "sd": 13.567501,
+            "mean": 21.588551,
+            "sd": 13.579858,
             "min": 0,
             "max": 63.869665
           },
           {
             "name": "value_lcl",
-            "duplicates": 30,
+            "duplicates": 31,
             "info": {
               "id": "value_lcl",
               "short_name": "Prevalence lower 95% CI (BRFSS)",
@@ -453,14 +466,14 @@
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
-            "mean": 18.549308,
-            "sd": 12.752572,
+            "mean": 18.537919,
+            "sd": 12.756422,
             "min": -13.927186,
             "max": 48.12937
           },
           {
             "name": "value_ucl",
-            "duplicates": 30,
+            "duplicates": 31,
             "info": {
               "id": "value_ucl",
               "short_name": "Prevalence upper 95% CI (BRFSS)",
@@ -479,14 +492,14 @@
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
-            "mean": 24.603874,
-            "sd": 14.720485,
+            "mean": 24.639183,
+            "sd": 14.76453,
             "min": 0,
             "max": 96.015273
           },
           {
             "name": "sample_size",
-            "duplicates": 3753,
+            "duplicates": 3767,
             "info": {
               "id": "sample_size",
               "short_name": "Sample size (BRFSS)",
@@ -505,14 +518,14 @@
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
-            "mean": 985.030234,
-            "sd": 5708.560528,
+            "mean": 982.677723,
+            "sd": 5701.209337,
             "min": 0,
             "max": 141073
           }
         ]
       },
-      "sha512": "4c9a605e9ec966ac88e6f84c8ffda00b8f1b8d769d7fc7c53ae1cc0ac5371e5c1f3bba4dd7a6ad29ba524cf18fa855bebe079e7a16aa91865f9e0d82d872ec88"
+      "sha512": "03f02aa271380ccd89b38843b69941ed296e0461a91a3948d6ec8d30444b0dd385983bc3fea13edb00e3dd2de4ed5f5cbbfb3c08a462e7d4d8a4a23e30611f0e"
     },
     {
       "bytes": 29976,
@@ -545,8 +558,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.271017",
-      "last_modified": "2026-04-01 02:19:15.271017",
+      "created": "2026-04-06 13:53:47.318268",
+      "last_modified": "2026-04-06 13:53:47.318268",
       "vintage": {},
       "row_count": 9848,
       "entity_count": 3298,
@@ -3930,8 +3943,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.275017",
-      "last_modified": "2026-04-01 02:19:15.275017",
+      "created": "2026-04-06 13:53:47.324268",
+      "last_modified": "2026-04-06 13:53:47.324268",
       "vintage": {},
       "row_count": 143520,
       "entity_count": 52,
@@ -4086,14 +4099,17 @@
       "sha512": "f3760e85f5470c50311e19ae221f17df477aa69dbc11ee229ba7516e596f37c09086946b983bcdc416188889e28978555ed1cc20a51bd2266bdc69ec9d7c721c"
     },
     {
-      "bytes": 496108,
+      "bytes": 521740,
       "encoding": "ISO-8859-1",
-      "md5": "d9d5c4acd78e9dd0c217b9ec41890469",
+      "md5": "e5c19d31c6f9bc3e292f4a79c53d3915",
       "format": "parquet",
       "name": "epic_prevalence_by_geography_county_and_source",
       "filename": "epic_prevalence_by_geography_county_and_source.parquet",
       "versions": {
         "hash": [
+          "ced52d1dcc8a2480e24171fb109df5c383d9b088",
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
           "98b37166e6c21d05dafb50cb668c5fe26b32289f",
           "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "1a28469dd4a514054e5edaf1711313968ced0670",
@@ -4127,6 +4143,9 @@
           "e8347cc0c48b509d48c585808391325219b3f7df"
         ],
         "author": [
+          "weinbergerlab <dweinber@gmail.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
@@ -4160,6 +4179,9 @@
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Sun Apr 5 21:44:32 2026 -0400",
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
           "Fri Mar 13 15:04:44 2026 +0000",
           "Wed Mar 11 11:41:55 2026 -0400",
           "Tue Mar 3 00:46:06 2026 +0000",
@@ -4193,6 +4215,9 @@
           "Wed Aug 27 22:50:21 2025 -0400"
         ],
         "message": [
+          "update bundle to check that all run OK; update medicaid quality package to only download new datasets",
+          "partial update bundle",
+          "scheduled data build",
           "scheduled data build",
           "Squashed ",
           "scheduled data build",
@@ -4236,8 +4261,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:43:57.411744",
-      "last_modified": "2026-04-01 02:43:57.411744",
+      "created": "2026-04-06 13:58:49.5054",
+      "last_modified": "2026-04-06 13:58:49.5054",
       "vintage": {},
       "row_count": 71376,
       "entity_count": 3244,
@@ -7537,16 +7562,6 @@
                   "id": "Medicare FFS",
                   "name": "cms_diabetes",
                   "duplicates": 58592,
-                  "time_range": [
-                    0,
-                    2
-                  ],
-                  "type": "integer",
-                  "missing": 24,
-                  "mean": 26.589188,
-                  "sd": 6.276079,
-                  "min": 0,
-                  "max": 78,
                   "info": {
                     "full_name": "cms_diabetes",
                     "measure": "cms_diabetes",
@@ -7583,7 +7598,17 @@
                       "data_dir": "/data/cms_mmd/standard",
                       "file": "data_state_county_age.csv.gz"
                     }
-                  }
+                  },
+                  "time_range": [
+                    0,
+                    2
+                  ],
+                  "type": "integer",
+                  "missing": 24,
+                  "mean": 26.589188,
+                  "sd": 6.276079,
+                  "min": 0,
+                  "max": 78
                 }
               },
               "id": "source"
@@ -7718,7 +7743,7 @@
           }
         ]
       },
-      "sha512": "e963fef72175b16bd7c390a7d3c8b34ee306c625a087282141b5600547d5a152c220bda9c3a591ef95787edd5adb61dd037f125e921a40f833296c59209566d2"
+      "sha512": "3d36ae72153be479356f03832a48a46f3838178040cda30ff7aa9a5cdac74ce48df4550dc1adea9f20d037d8c2ab1efefd504b26fb53410656663e3aa87c5cae"
     },
     {
       "bytes": 388767,
@@ -7811,8 +7836,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.277017",
-      "last_modified": "2026-04-01 02:19:15.277017",
+      "created": "2026-04-06 13:53:47.327268",
+      "last_modified": "2026-04-06 13:53:47.327268",
       "vintage": {},
       "row_count": 34126,
       "entity_count": 3018,
@@ -10930,12 +10955,15 @@
     {
       "bytes": 121277,
       "encoding": "ISO-8859-1",
-      "md5": "29ff3c3b3fb52ae508913069eeaa41cf",
+      "md5": "916791dffc1e96cf51b26864431a15d6",
       "format": "parquet",
       "name": "epic_prevalence_by_geography_year",
       "filename": "epic_prevalence_by_geography_year.parquet",
       "versions": {
         "hash": [
+          "ced52d1dcc8a2480e24171fb109df5c383d9b088",
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
           "98b37166e6c21d05dafb50cb668c5fe26b32289f",
           "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "1a28469dd4a514054e5edaf1711313968ced0670",
@@ -10959,6 +10987,9 @@
           "ab11e30d790bab0f1c98ecd30e4e8f4c2520bafd"
         ],
         "author": [
+          "weinbergerlab <dweinber@gmail.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
@@ -10982,6 +11013,9 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Sun Apr 5 21:44:32 2026 -0400",
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
           "Fri Mar 13 15:04:44 2026 +0000",
           "Wed Mar 11 11:41:55 2026 -0400",
           "Tue Mar 3 00:46:06 2026 +0000",
@@ -11005,6 +11039,9 @@
           "Tue Nov 11 22:49:35 2025 -0500"
         ],
         "message": [
+          "update bundle to check that all run OK; update medicaid quality package to only download new datasets",
+          "partial update bundle",
+          "scheduled data build",
           "scheduled data build",
           "Squashed ",
           "scheduled data build",
@@ -11038,8 +11075,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:43:51.638694",
-      "last_modified": "2026-04-01 02:43:51.638694",
+      "created": "2026-04-06 13:58:44.149414",
+      "last_modified": "2026-04-06 13:58:44.149414",
       "vintage": {},
       "row_count": 13312,
       "entity_count": 52,
@@ -11332,7 +11369,7 @@
           }
         ]
       },
-      "sha512": "d492de7af262c4b68aadc49353de2053703f2afb997a498a1892027510940503bd3aef5284d88e604b663f763e907efd9b4f8c59429b2e690a24b20274e52cff"
+      "sha512": "b53b58f57ac907d842d19cdebd59f682c9e0f1d40680336d66e4c303946175939b29bd3d9e403dbce9aebd73a5bb20609ff660e8d9c5a5f28c420dcfe5d0b9c1"
     },
     {
       "bytes": 38943,
@@ -11489,8 +11526,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.275017",
-      "last_modified": "2026-04-01 02:19:15.275017",
+      "created": "2026-04-06 13:53:47.325268",
+      "last_modified": "2026-04-06 13:53:47.325268",
       "vintage": {},
       "row_count": 842,
       "entity_count": 53,
@@ -11734,8 +11771,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.287017",
-      "last_modified": "2026-04-01 02:19:15.287017",
+      "created": "2026-04-06 13:53:47.337268",
+      "last_modified": "2026-04-06 13:53:47.337268",
       "vintage": {},
       "row_count": 188837,
       "entity_count": 1876,
@@ -13828,8 +13865,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.284017",
-      "last_modified": "2026-04-01 02:19:15.284017",
+      "created": "2026-04-06 13:53:47.334268",
+      "last_modified": "2026-04-06 13:53:47.334268",
       "vintage": {},
       "row_count": 29459,
       "entity_count": 52,
@@ -14284,8 +14321,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.290017",
-      "last_modified": "2026-04-01 02:19:15.290017",
+      "created": "2026-04-06 13:53:47.341268",
+      "last_modified": "2026-04-06 13:53:47.341268",
       "vintage": {},
       "row_count": 188520,
       "entity_count": 3142,
@@ -17592,8 +17629,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.290017",
-      "last_modified": "2026-04-01 02:19:15.290017",
+      "created": "2026-04-06 13:53:47.341268",
+      "last_modified": "2026-04-06 13:53:47.341268",
       "vintage": {},
       "row_count": 583,
       "entity_count": 53,
@@ -17777,8 +17814,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.291017",
-      "last_modified": "2026-04-01 02:19:15.291017",
+      "created": "2026-04-06 13:53:47.342268",
+      "last_modified": "2026-04-06 13:53:47.342268",
       "vintage": {},
       "row_count": 2140,
       "entity_count": 51,
@@ -18111,8 +18148,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.291017",
-      "last_modified": "2026-04-01 02:19:15.291017",
+      "created": "2026-04-06 13:53:47.342268",
+      "last_modified": "2026-04-06 13:53:47.342268",
       "vintage": {},
       "row_count": 2140,
       "entity_count": 51,
@@ -18291,14 +18328,17 @@
       "sha512": "de0d486b317a11601104565f29df1e7e4e6680681267d8effd3df3022b265da2de2c44b02558b67d7c3f808cc2a01027ea7fb536f6e18fd494fa5bf36909100d"
     },
     {
-      "bytes": 297701,
+      "bytes": 299602,
       "encoding": "ISO-8859-1",
-      "md5": "27cc920e9991be338b7642760e0ae434",
+      "md5": "09676a9292b9d10380d6126d2d8af3f3",
       "format": "parquet",
       "name": "prevalence_by_geography_and_year_and_source",
       "filename": "prevalence_by_geography_and_year_and_source.parquet",
       "versions": {
         "hash": [
+          "ced52d1dcc8a2480e24171fb109df5c383d9b088",
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
           "98b37166e6c21d05dafb50cb668c5fe26b32289f",
           "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "1a28469dd4a514054e5edaf1711313968ced0670",
@@ -18323,6 +18363,9 @@
           "ab11e30d790bab0f1c98ecd30e4e8f4c2520bafd"
         ],
         "author": [
+          "weinbergerlab <dweinber@gmail.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
@@ -18347,6 +18390,9 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Sun Apr 5 21:44:32 2026 -0400",
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
           "Fri Mar 13 15:04:44 2026 +0000",
           "Wed Mar 11 11:41:55 2026 -0400",
           "Tue Mar 3 00:46:06 2026 +0000",
@@ -18371,6 +18417,9 @@
           "Tue Nov 11 22:49:35 2025 -0500"
         ],
         "message": [
+          "update bundle to check that all run OK; update medicaid quality package to only download new datasets",
+          "partial update bundle",
+          "scheduled data build",
           "scheduled data build",
           "Squashed ",
           "scheduled data build",
@@ -18405,8 +18454,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:43:52.136698",
-      "last_modified": "2026-04-01 02:43:52.136698",
+      "created": "2026-04-06 13:58:44.626413",
+      "last_modified": "2026-04-06 13:58:44.626413",
       "vintage": {},
       "row_count": 19848,
       "entity_count": 51,
@@ -18577,16 +18626,6 @@
                   "id": "CDC BRFSS",
                   "name": "prev_diabetes_survey",
                   "duplicates": 149,
-                  "time_range": [
-                    0,
-                    7
-                  ],
-                  "type": "float",
-                  "missing": 0,
-                  "mean": 10.662075,
-                  "sd": 9.28104,
-                  "min": 0,
-                  "max": 100,
                   "info": {
                     "id": "prev_diabetes_survey",
                     "short_name": "Diabetes Prevalence (Survey)",
@@ -18605,7 +18644,17 @@
                       "data_dir": "/data/brfss/standard",
                       "file": "data_survey.csv.gz"
                     }
-                  }
+                  },
+                  "time_range": [
+                    0,
+                    7
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 10.662075,
+                  "sd": 9.28104,
+                  "min": 0,
+                  "max": 100
                 },
                 "Epic Cosmos: HbA1c": {
                   "source_id": "diabetes_a1c_6_5",
@@ -18624,16 +18673,6 @@
                   "id": "Medicare FFS",
                   "name": "cms_diabetes",
                   "duplicates": 58592,
-                  "time_range": [
-                    0,
-                    2
-                  ],
-                  "type": "integer",
-                  "missing": 24,
-                  "mean": 26.589188,
-                  "sd": 6.276079,
-                  "min": 0,
-                  "max": 78,
                   "info": {
                     "full_name": "cms_diabetes",
                     "measure": "cms_diabetes",
@@ -18670,7 +18709,17 @@
                       "data_dir": "/data/cms_mmd/standard",
                       "file": "data_state_county_age.csv.gz"
                     }
-                  }
+                  },
+                  "time_range": [
+                    0,
+                    2
+                  ],
+                  "type": "integer",
+                  "missing": 24,
+                  "mean": 26.589188,
+                  "sd": 6.276079,
+                  "min": 0,
+                  "max": 78
                 }
               },
               "id": "source"
@@ -18790,7 +18839,7 @@
           }
         ]
       },
-      "sha512": "0b6c59b233e89813291595afa679796185e62ce876ebff3bcb6fb93e96ed1faf2c4c4602d4a1cda7ceb6fed3f506067c64950845b46a3ea266f81abd40365d0e"
+      "sha512": "ac67662eb8731bc3b3a7f2818a29f7cab827e3328e2f7873b0ab9883d8ca187f018e2af43a626c7b826e15e42a1b2b3dec873e5e69dda60165e6800c26c2689c"
     },
     {
       "bytes": 37378,
@@ -18871,8 +18920,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-01 02:19:15.293017",
-      "last_modified": "2026-04-01 02:19:15.293017",
+      "created": "2026-04-06 13:53:47.344268",
+      "last_modified": "2026-04-06 13:53:47.344268",
       "vintage": {},
       "row_count": 904,
       "entity_count": 57,
@@ -19190,16 +19239,6 @@
           "id": "CDC BRFSS",
           "name": "prev_diabetes_survey",
           "duplicates": 149,
-          "time_range": [
-            0,
-            7
-          ],
-          "type": "float",
-          "missing": 0,
-          "mean": 10.662075,
-          "sd": 9.28104,
-          "min": 0,
-          "max": 100,
           "info": {
             "id": "prev_diabetes_survey",
             "short_name": "Diabetes Prevalence (Survey)",
@@ -19218,7 +19257,17 @@
               "data_dir": "/data/brfss/standard",
               "file": "data_survey.csv.gz"
             }
-          }
+          },
+          "time_range": [
+            0,
+            7
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 10.662075,
+          "sd": 9.28104,
+          "min": 0,
+          "max": 100
         }
       },
       "id": "bundle_chronic_diseases/dist/brfss_prevalence_by_geography.parquet|source"
@@ -19255,16 +19304,6 @@
           "id": "Medicare FFS",
           "name": "cms_diabetes",
           "duplicates": 58592,
-          "time_range": [
-            0,
-            2
-          ],
-          "type": "integer",
-          "missing": 24,
-          "mean": 26.589188,
-          "sd": 6.276079,
-          "min": 0,
-          "max": 78,
           "info": {
             "full_name": "cms_diabetes",
             "measure": "cms_diabetes",
@@ -19301,7 +19340,17 @@
               "data_dir": "/data/cms_mmd/standard",
               "file": "data_state_county_age.csv.gz"
             }
-          }
+          },
+          "time_range": [
+            0,
+            2
+          ],
+          "type": "integer",
+          "missing": 24,
+          "mean": 26.589188,
+          "sd": 6.276079,
+          "min": 0,
+          "max": 78
         }
       },
       "id": "bundle_chronic_diseases/dist/epic_prevalence_by_geography_county_and_source.parquet|source"
@@ -19313,16 +19362,6 @@
           "id": "CDC BRFSS",
           "name": "prev_diabetes_survey",
           "duplicates": 149,
-          "time_range": [
-            0,
-            7
-          ],
-          "type": "float",
-          "missing": 0,
-          "mean": 10.662075,
-          "sd": 9.28104,
-          "min": 0,
-          "max": 100,
           "info": {
             "id": "prev_diabetes_survey",
             "short_name": "Diabetes Prevalence (Survey)",
@@ -19341,7 +19380,17 @@
               "data_dir": "/data/brfss/standard",
               "file": "data_survey.csv.gz"
             }
-          }
+          },
+          "time_range": [
+            0,
+            7
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 10.662075,
+          "sd": 9.28104,
+          "min": 0,
+          "max": 100
         },
         "Epic Cosmos: HbA1c": {
           "source_id": "diabetes_a1c_6_5",
@@ -19360,16 +19409,6 @@
           "id": "Medicare FFS",
           "name": "cms_diabetes",
           "duplicates": 58592,
-          "time_range": [
-            0,
-            2
-          ],
-          "type": "integer",
-          "missing": 24,
-          "mean": 26.589188,
-          "sd": 6.276079,
-          "min": 0,
-          "max": 78,
           "info": {
             "full_name": "cms_diabetes",
             "measure": "cms_diabetes",
@@ -19406,7 +19445,17 @@
               "data_dir": "/data/cms_mmd/standard",
               "file": "data_state_county_age.csv.gz"
             }
-          }
+          },
+          "time_range": [
+            0,
+            2
+          ],
+          "type": "integer",
+          "missing": 24,
+          "mean": 26.589188,
+          "sd": 6.276079,
+          "min": 0,
+          "max": 78
         }
       },
       "id": "bundle_chronic_diseases/dist/prevalence_by_geography_and_year_and_source.parquet|source"
@@ -19623,8 +19672,8 @@
         "geography": {
           "status": "present",
           "same_type": true,
-          "added_levels": [],
-          "dropped_levels": "Virgin Islands"
+          "added_levels": "Virgin Islands",
+          "dropped_levels": []
         },
         "year": {
           "status": "present",

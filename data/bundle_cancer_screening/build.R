@@ -8,32 +8,29 @@ all_fips = vroom::vroom('../../resources/all_fips.csv.gz')
 medicaid_data <- vroom::vroom('../medicaid_quality/standard/data.csv.gz')
 
 medicaid_cancer <- medicaid_data %>%
-  filter(grepl("Breast Cancer Screening|Cervical Cancer Screening|Colorectal Cancer Screening",
-               measure_name)) %>%
+  filter(geography_level == 's') %>%
+  dplyr::select(geography, time, age, sex, race_ethnicity,
+                medicaid_bcs_ad_rate,
+                medicaid_ccs_ad_rate,
+                medicaid_col_ad_rate) %>%
+  pivot_longer(
+    cols         = starts_with("medicaid_"),
+    names_to     = "outcome_name",
+    names_prefix = "medicaid_",
+    values_to    = "value"
+  ) %>%
   mutate(
     outcome_name = case_when(
-      grepl("Breast",     measure_name) ~ "Breast Cancer Screening",
-      grepl("Cervical",   measure_name) ~ "Cervical Cancer Screening",
-      grepl("Colorectal", measure_name) ~ "Colorectal Cancer Screening"
+      outcome_name == "bcs_ad_rate" ~ "Breast Cancer Screening",
+      outcome_name == "ccs_ad_rate" ~ "Cervical Cancer Screening",
+      outcome_name == "col_ad_rate" ~ "Colorectal Cancer Screening"
     ),
-    value = as.numeric(value),
-    year  = as.integer(time_year)
+    year   = lubridate::year(time),
+    source = 'Medicaid'
   ) %>%
-  filter(state %in% c(state.name, "District of Columbia")) %>%
-  dplyr::select(
-    geography = state,
-    year,
-    outcome_name,
-    measure_abbr,
-    reporting_program,
-    population,
-    source,
-    value,
-    median,
-    pct25,
-    pct75,
-    n_states
-  )
+  filter(!is.na(value),
+         geography %in% c(state.name, "District of Columbia")) %>%
+  dplyr::select(geography, year, age, sex, race_ethnicity, outcome_name, source, value)
 
 write_parquet(medicaid_cancer, './dist/medicaid_cancer_screening.parquet')
 
@@ -171,6 +168,6 @@ medicaid_long <- medicaid_cancer %>%
   summarise(value_medicaid = mean(value, na.rm = TRUE), .groups = "drop")
 
 combined_screening <- medicare_long %>%
-  left_join(medicaid_long, by = c("geography", "year", "outcome_name")) %>%
+  left_join(medicaid_long, by = c("geography", "year", "outcome_name")) 
 
 write_parquet(combined_screening, './dist/combined_cancer_screening.parquet')

@@ -643,6 +643,19 @@ data %>%
   summarize(value = sum(value), .groups = "drop")
 ```
 
+### Issue: Source not running during dcf_build() (misidentified as bundle)
+
+When creating a new data source, **always use `dcf::dcf_add_source("source_name")`** to initialize the `process.json`. If a `process.json` is copied from a bundle directory or manually created with incorrect fields, the source will be silently skipped or treated as a bundle during `dcf_build()`.
+
+**Critical fields that must be correct in `process.json` for sources:**
+- `"name"` must match the directory name (e.g., `"respnet"` not `"bundle_respiratory"`)
+- `"type"` must be `"source"` (not `"bundle"`)
+- `"scripts"` must reference `"ingest.R"` (not `"build.R"`)
+
+**Symptoms:** `dcf_build()` output shows `"no standard data files found"` or `"processing bundle"` for what should be a source directory.
+
+**Fix:** Update the `name`, `type`, and `scripts` fields to match the source template (see manual fix below). Never copy a bundle's `process.json` into a source directory.
+
 ### Issue: Error "process file process.json does not exist"
 This is caused by failure to initialize a new datasource with `dcf::dcf_add_source()`. If this is not done, the process.json file is not properly initialized.
 
