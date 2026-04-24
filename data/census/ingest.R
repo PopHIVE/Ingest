@@ -6,7 +6,6 @@
 #It can be read into memory using arrow::open_dataset("standard/data_zcta") %>% collect(). You can insert a filter as needed prior to collect()
 #
 # Outputs:
-#   standard/data.csv.gz         -- combined all geographies, vintage years 2009-2024
 #   standard/data_state.csv.gz   -- 2-digit FIPS, vintage years 2009-2024
 #   standard/data_county.csv.gz  -- 5-digit FIPS, vintage years 2009-2024
 #   standard/data_zcta.csv.gz    -- 5-digit ZCTA, vintage years 2009-2024
