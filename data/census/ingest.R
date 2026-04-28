@@ -29,6 +29,7 @@
 library(dplyr)
 library(vroom)
 library(censusapi)
+library(readxl)
 
 # -----------------------------------------------------------------------------
 # Read Census API key
@@ -582,4 +583,49 @@ if (!output_exists || is.null(last_vintage) || last_vintage < current_max) {
 
 } else {
   message("Census SDOH data is up to date (last vintage: ", last_vintage, ")")
+}
+
+# =============================================================================
+# Urban-Rural Classification (2020 Census UA-to-County allocation file)
+# Source: https://www2.census.gov/geo/docs/reference/ua/2020_UA_COUNTY.xlsx
+# Appended as new columns to standard/data_county.csv.gz.
+# =============================================================================
+
+ur_url      <- "https://www2.census.gov/geo/docs/reference/ua/2020_UA_COUNTY.xlsx"
+ur_raw_path <- "raw/2020_UA_COUNTY.xlsx"
+
+if (!file.exists(ur_raw_path)) {
+  download.file(ur_url, ur_raw_path, mode = "wb")
+}
+ur_hash <- unname(tools::md5sum(ur_raw_path))
+
+county_file     <- "standard/data_county.csv.gz"
+ur_cols_present <- file.exists(county_file) &&
+  "census_ur_pct_urban_pop" %in% names(
+    vroom::vroom(county_file, n_max = 1, show_col_types = FALSE)
+  )
+
+if (!identical(process$ur_state, list(hash = ur_hash)) || !ur_cols_present) {
+  ur_raw <- readxl::read_excel(ur_raw_path)
+
+  # One row per county; STATE + COUNTY give the 5-digit FIPS. Values are
+  # already in 0-1 proportion scale (fully rural counties are present with 0).
+  ur_county <- ur_raw %>%
+    mutate(geography = paste0(STATE, COUNTY)) %>%
+    select(geography,
+      census_ur_pct_urban_pop  = POPPCT_URB,
+      census_ur_pct_urban_land = ALAND_PCT_URB,
+      census_ur_pct_urban_hu   = HOUPCT_URB
+    )
+
+  if (file.exists(county_file)) {
+    data_county <- vroom::vroom(county_file, show_col_types = FALSE) %>%
+      select(-any_of(c("census_ur_pct_urban_pop", "census_ur_pct_urban_land", "census_ur_pct_urban_hu"))) %>%
+      left_join(ur_county, by = "geography")
+    vroom::vroom_write(data_county, county_file, delim = ",")
+    message("Urban-rural classification joined to ", county_file)
+  }
+
+  process$ur_state <- list(hash = ur_hash)
+  dcf::dcf_process_record(updated = process)
 }
