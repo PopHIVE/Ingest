@@ -185,7 +185,7 @@ flowchart LR
     end
     subgraph respnet["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/respnet" target="_blank" rel="noreferrer">respnet</a></strong>`"]
         direction LR
-        n57["`data.csv.gz<br /><br />Script Failed:<br />Can't combine '..1$time' <character> and '..2$time' <date>.`"]:::fail
+        n57["`data.csv.gz`"]:::pass
     end
     subgraph schoolvax_washpost["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/schoolvax_washpost" target="_blank" rel="noreferrer">schoolvax_washpost</a></strong>`"]
         direction LR
