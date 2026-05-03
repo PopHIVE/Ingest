@@ -1,0 +1,111 @@
+{
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|source": {
+    "levels": {
+      "NARMS Now (Human Clinical)": {},
+      "FDA Retail Meats": {},
+      "FDA Animal Pathogen": {},
+      "FDA Food Animals (HACCP)": {},
+      "FDA Food Animals (Cecal)": {},
+      "FDA Food Animals (Minor Species)": {}
+    }
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|source": {
+    "levels": {
+      "NARMS Now (Human Clinical)": {}
+    }
+  },
+  "{category}pct_resistant": {
+    "measure_column": "{category}source",
+    "short_name": "Percent resistant to antimicrobial",
+    "long_name": "Percentage of isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "categories": {
+      "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|": {},
+      "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|": {}
+    }
+  },
+  "{category}n_resistant": {
+    "measure_column": "{category}source",
+    "short_name": "Number of resistant isolates",
+    "long_name": "Number of isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "categories": {
+      "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|": {},
+      "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|": {}
+    }
+  },
+  "{category}n_tested": {
+    "measure_column": "{category}source",
+    "short_name": "Number of isolates tested",
+    "long_name": "Number of isolates tested for antimicrobial susceptibility",
+    "category": "antimicrobial_resistance",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "categories": {
+      "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|": {},
+      "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|": {}
+    }
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|mic50": {
+    "short_name": "MIC50",
+    "long_name": "Median minimum inhibitory concentration",
+    "category": "antimicrobial_resistance",
+    "measure_type": "Concentration",
+    "unit": "ug/mL",
+    "time_resolution": "Year"
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|mic90": {
+    "short_name": "MIC90",
+    "long_name": "90th percentile minimum inhibitory concentration",
+    "category": "antimicrobial_resistance",
+    "measure_type": "Concentration",
+    "unit": "ug/mL",
+    "time_resolution": "Year"
+  },
+
+  "_sources": {
+    "narms_now": {
+      "name": "NARMS Now: Human Data - Antimicrobial Resistance",
+      "url": "https://www.cdc.gov/narms/data/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov",
+      "description": "Antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual agent and by multi-drug resistance pattern. Data from the NARMS Now Power BI dashboard.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
+    "narms_retail_meats": {
+      "name": "FDA NARMS Retail Meats Surveillance Data",
+      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
+      "organization": "U.S. Food and Drug Administration",
+      "organization_url": "https://www.fda.gov",
+      "description": "Isolate-level antimicrobial susceptibility data from the FDA NARMS retail meats program. State-level sampling from retail stores.",
+      "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2025
+    },
+    "narms_animal_pathogen": {
+      "name": "FDA NARMS Animal Pathogen Surveillance Data",
+      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
+      "organization": "U.S. Food and Drug Administration",
+      "organization_url": "https://www.fda.gov",
+      "description": "Antimicrobial susceptibility data from veterinary diagnostic laboratories. State-level data.",
+      "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
+    "narms_food_animals": {
+      "name": "FDA NARMS Food-Producing Animals Surveillance Data",
+      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
+      "organization": "U.S. Food and Drug Administration",
+      "organization_url": "https://www.fda.gov",
+      "description": "Isolate-level data from HACCP slaughter surveillance, cecal sampling, and minor species programs. National-level only.",
+      "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    }
+  }
+}
