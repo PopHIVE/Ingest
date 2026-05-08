@@ -146,10 +146,12 @@ age_mapping_intercensal <- bind_rows(
 )
 
 # Helper: parse the wide intercensal format into long county_fips/year/AGEGRP/pop
+# The national county file co-est00int-agesex-5yr.csv contains both county
+# records (SUMLEV=50) and state summary records (SUMLEV=40); geo_type selects which.
 parse_intercensal_wide <- function(raw, geo_type) {
   if (geo_type == "county") {
     raw <- raw %>%
-      filter(SEX == 0, AGEGRP > 0) %>%
+      filter(SEX == 0, AGEGRP > 0, SUMLEV == 50) %>%
       mutate(county_fips = paste0(
         formatC(STATE,  width = 2, flag = "0"),
         formatC(COUNTY, width = 3, flag = "0")
@@ -172,67 +174,51 @@ parse_intercensal_wide <- function(raw, geo_type) {
     filter(year %in% 2000:2008)
 }
 
-# Download all county intercensal data (single national file)
-download_county_intercensal <- function(needed_fips) {
-  url <- paste0(
-    "https://www2.census.gov/programs-surveys/popest/datasets/",
-    "2000-2010/intercensal/county/co-est00int-agesex-5yr.csv"
-  )
-  tryCatch({
-    tmp <- tempfile(fileext = ".csv")
-    on.exit(unlink(tmp))
-    download.file(url, tmp, mode = "wb", method = "libcurl", quiet = TRUE)
-    raw <- read.csv(tmp, check.names = FALSE, fileEncoding = "latin1")
-    parse_intercensal_wide(raw, "county") %>%
-      filter(county_fips %in% needed_fips)
-  }, error = function(e) {
-    message("  [intercensal county]: ", conditionMessage(e))
-    NULL
-  })
-}
-
-# Download state-level intercensal file (one file, all states)
-download_state_intercensal <- function(needed_state_fips) {
-  url <- paste0(
-    "https://www2.census.gov/programs-surveys/popest/datasets/",
-    "2000-2010/intercensal/state/st-est00int-agesex.csv"
-  )
-  tryCatch({
-    tmp <- tempfile(fileext = ".csv")
-    on.exit(unlink(tmp))
-    download.file(url, tmp, mode = "wb", method = "libcurl", quiet = TRUE)
-    raw <- read.csv(tmp, check.names = FALSE, fileEncoding = "latin1")
-    parse_intercensal_wide(raw, "state") %>%
-      filter(county_fips %in% needed_state_fips)
-  }, error = function(e) {
-    message("  [intercensal state]: ", conditionMessage(e))
-    NULL
-  })
-}
-
-# Pull county data (single national file, filter to needed counties)
-cat("Downloading 2000-2008 intercensal county estimates (national file)...\n")
+# Download the national county intercensal file once (SUMLEV=50 records only).
+# State-level totals are derived by aggregating all counties within each state.
 needed_county_fips <- needed_2000_2008 %>%
   filter(geo_type == "county") %>%
   pull(county_fips) %>%
   unique()
 
-intercensal_county <- download_county_intercensal(needed_county_fips)
-cat("  County rows pulled:", nrow(intercensal_county), "\n")
-
-# Pull state data (for CT, MN statewide, NM statewide)
 statewide_fips <- needed_2000_2008 %>%
   filter(geo_type == "state") %>%
   pull(county_fips) %>%
   unique()
 
-if (length(statewide_fips) > 0) {
-  cat("Downloading 2000-2008 intercensal state estimates...\n")
-  intercensal_state <- download_state_intercensal(statewide_fips)
-  cat("  State rows pulled:", nrow(intercensal_state), "\n")
-} else {
-  intercensal_state <- tibble()
-}
+cat("Downloading 2000-2008 intercensal estimates (national county file)...\n")
+raw_intercensal <- tryCatch({
+  url <- paste0(
+    "https://www2.census.gov/programs-surveys/popest/datasets/",
+    "2000-2010/intercensal/county/co-est00int-agesex-5yr.csv"
+  )
+  tmp <- tempfile(fileext = ".csv")
+  on.exit(unlink(tmp))
+  download.file(url, tmp, mode = "wb", method = "libcurl", quiet = TRUE)
+  read.csv(tmp, check.names = FALSE, fileEncoding = "latin1")
+}, error = function(e) {
+  message("  [intercensal download]: ", conditionMessage(e))
+  NULL
+})
+
+# Parse all county records once; reuse for both county and state aggregation
+raw_counties_all <- if (!is.null(raw_intercensal)) {
+  parse_intercensal_wide(raw_intercensal, "county")
+} else tibble()
+
+intercensal_county <- raw_counties_all %>%
+  filter(county_fips %in% needed_county_fips)
+cat("  County rows pulled:", nrow(intercensal_county), "\n")
+
+# State-level: aggregate every county in the state (the county file has no SUMLEV=40)
+intercensal_state <- if (length(statewide_fips) > 0) {
+  raw_counties_all %>%
+    mutate(state_fips2 = substr(county_fips, 1, 2)) %>%
+    filter(state_fips2 %in% statewide_fips) %>%
+    group_by(county_fips = state_fips2, AGEGRP, year) %>%
+    summarise(pop = sum(pop, na.rm = TRUE), .groups = "drop")
+} else tibble()
+cat("  State rows pulled:", nrow(intercensal_state), "\n")
 
 intercensal_all <- bind_rows(intercensal_county, intercensal_state)
 
