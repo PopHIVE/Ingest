@@ -246,15 +246,15 @@ d3 <- vroom::vroom('../nssp/standard/data.csv.gz') %>%
          source = 'CDC NSSP') 
 
 d3 %>%
-  dplyr::select(source, fips,week_end, percent_visits_rsv) %>%
+  dplyr::select(source, fips,week_end, percent_visits_rsv,is_state_estimate) %>%
   arrow::write_parquet(., "dist/rsv_ed_visits_by_county.parquet")
 
 d3 %>%
-  dplyr::select(source, fips, week_end, percent_visits_flu) %>%
+  dplyr::select(source, fips, week_end, percent_visits_flu,is_state_estimate) %>%
   arrow::write_parquet(., "dist/flu_ed_visits_by_county.parquet")
 
 d3 %>%
-  dplyr::select(source,fips, week_end, percent_visits_covid) %>%
+  dplyr::select(source,fips, week_end, percent_visits_covid,is_state_estimate) %>%
   arrow::write_parquet(., "dist/covid_ed_visits_by_county.parquet")
 
 #############
