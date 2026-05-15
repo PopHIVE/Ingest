@@ -122,7 +122,7 @@ abcs_areas <- bind_rows(
 
   ## ---- Oregon (state FIPS 41) ----
   # Clackamas, Multnomah, Washington
-  make_rows("OR", 2004:2024, c("41005","41051","41067"), "total"),
+  make_rows("OR", 1998:2024, c("41005","41051","41067"), "total"),
 
   ## ---- Tennessee (state FIPS 47) ----
   # 1989-1994: 4-county (Davidson, Hamilton, Knox, Shelby)
@@ -448,7 +448,7 @@ abcs_areas <- bind_rows(
   make_rows("OK", 1989:1994, "40", "total"),
 
   ## Oregon
-  make_rows("OR", 2004:2024, c("41005","41051","41067"), "total"),
+  make_rows("OR", 1998:2024, c("41005","41051","41067"), "total"),
 
   ## Tennessee
   make_rows("TN", 1989:1994,
