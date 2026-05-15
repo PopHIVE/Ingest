@@ -1,10 +1,11 @@
 # ==============================================================================
 # ABCs Denominator Census Validation
+#There are two parts to this script- part 1 includes more recent ACS data, part 2 includes data before 2009.
+#Part 1: More recent data
 #
 # 1. Defines ABCs surveillance areas (counties + age restrictions) per state/year
-# 2. Pulls Census Bureau total population estimates (2000-2024) for each area
-# 3. Compares with spn_surveillance_population to validate alignment
-# 4. Extracts ACS 5-year age-stratified population data (2009-2024) for the
+# 2. Pulls Census Bureau total population estimates for each area
+# 3. Extracts ACS 5-year age-stratified population data (2009-2024) for the
 #    same areas, using standard age groups: 0-4, 5-17, 18-49, 50-64, 65+
 #
 # Requirements:
@@ -16,7 +17,6 @@
 #   raw/census_validation_comparison.csv   -- ACS-derived vs reported populations
 #   raw/abcs_census_age_stratified_pop.csv -- age-stratified pops by state/year
 # ==============================================================================
-##RUN THIS FILE FIRST, THEN census_pop_historical.R to combine with older data pre 2009
 
 library(dplyr)
 library(tidyr)
@@ -349,7 +349,7 @@ age_strat_pop <- bind_rows(age_strat_pop, age_strat_pop_total) %>%
 
 
 # ==============================================================================
-# ABCs Census Population Estimates: 1998–2008 (Pre-ACS era)
+# PART 2: ABCs Census Population Estimates: 1998–2008 (Pre-ACS era)
 #
 # Extends abcs_census_age_stratified_pop.csv back to 1998 using:
 #
