@@ -3,14 +3,16 @@
   "title": "Abcs",
   "resources": [
     {
-      "bytes": 561144,
+      "bytes": 815700,
       "encoding": "ISO-8859-1",
-      "md5": "2fbaf3d6eb203d357076a38a5a9b424b",
+      "md5": "78b8a12d7aaea3c489c200214226a7a7",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "8a1608905b65c579f63a08f7dc964c70dbd02e66",
+          "2357ea1ae48e880443bfa5e9d4f98d213e1fc510",
           "728c75f50da6bc5ac4e6dc9875982323973a8f93",
           "432d7011a45303b5fefbfc806251462a2afbea4c",
           "e9f5a7bf631b73df40570210c77f80a30f59a9de",
@@ -24,6 +26,8 @@
         ],
         "author": [
           "weinbergerlab <dweinber@gmail.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "Weinberger <daniel.weinberger@yale.edu>",
@@ -35,6 +39,8 @@
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Thu May 14 22:56:22 2026 -0400",
+          "Wed May 13 22:47:32 2026 -0400",
           "Thu Apr 2 14:11:58 2026 -0400",
           "Mon Jan 12 11:24:48 2026 -0500",
           "Mon Jan 12 11:19:25 2026 -0500",
@@ -47,6 +53,8 @@
           "Mon Jul 14 16:42:11 2025 -0400"
         ],
         "message": [
+          "add missing OR population data to ABCs; check all plots",
+          "fixed denominators for incidence on ABCs standard file",
           "adds incidence to pneumococcal data, adds a master json with all of the sources listed",
           "fix bug on pneumococcal ingestion",
           "re-calculate 'all-site' ('United States' values for ABCs to only include the 8 sites that consistently report since 1998",
@@ -69,8 +77,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-06 13:53:45.639272",
-      "last_modified": "2026-04-06 13:53:45.639272",
+      "created": "2026-05-15 19:14:37.466722",
+      "last_modified": "2026-05-15 19:14:37.466722",
       "vintage": {},
       "row_count": 100672,
       "entity_count": 11,
@@ -314,34 +322,20 @@
             "max": 66.666667
           },
           {
-            "name": "spn_surveillance_population",
-            "duplicates": 100413,
-            "info": {
-              "id": "spn_surveillance_population",
-              "short_name": "ABCs surveillance population",
-              "long_name": "ABCs pneumococcal surveillance population",
-              "category": "Respiratory diseases",
-              "short_description": "Total population under active surveillance for invasive pneumococcal disease in the ABCs catchment area",
-              "long_description": "The number of persons living within the ABCs catchment area for pneumococcal disease surveillance in a given year. Catchment areas vary by state and over time as surveillance regions have expanded. The national total reflects the sum across the 8 sites that consistently report to ABCs (CA, CT, GA, MD, MN, NY, OR, TN).",
-              "statement": "In {location}, the ABCs surveillance population was {value}.",
-              "measure_type": "Count",
-              "unit": "Persons",
-              "time_resolution": "year",
-              "sources": [
-                "abcs"
-              ]
-            },
+            "name": "pop",
+            "duplicates": 99583,
+            "info": [],
             "time_range": [0, 25],
-            "type": "integer",
-            "missing": 76736,
-            "mean": 5181693.544118,
-            "sd": 6734841.351097,
-            "min": 745774,
-            "max": 30179960
+            "type": "float",
+            "missing": 2816,
+            "mean": 2540321.456835,
+            "sd": 4441104.294675,
+            "min": 31633,
+            "max": 30045353
           },
           {
             "name": "rate_IPD",
-            "duplicates": 95863,
+            "duplicates": 87385,
             "info": {
               "id": "rate_IPD",
               "short_name": "IPD incidence rate",
@@ -359,15 +353,15 @@
             },
             "time_range": [0, 25],
             "type": "float",
-            "missing": 76736,
-            "mean": 0.142014,
-            "sd": 0.37769,
+            "missing": 2816,
+            "mean": 0.181448,
+            "sd": 0.748749,
             "min": 0,
-            "max": 6.830282
+            "max": 38.221966
           }
         ]
       },
-      "sha512": "a3aa921f3ca22ba41ed51d1b5800c6593cfc6926c5a3eec2ac85e4b06260c648ffba7ccd0979ee7adc13286eb74cf5b8326a64063b4dcb48339f18fc871cc981"
+      "sha512": "92c86d5d22979cc86e06248136346fba5c6e628c27d6bd3d9a3bb6c139189195bd14851ec61b7d5ca8ad81def6fecbea4bbb07e00c053d78e59de79048c2b099"
     },
     {
       "bytes": 160,
@@ -408,8 +402,8 @@
       "id_length": 11,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-04-06 13:53:45.639272",
-      "last_modified": "2026-04-06 13:53:45.639272",
+      "created": "2026-05-15 19:14:37.466722",
+      "last_modified": "2026-05-15 19:14:37.466722",
       "vintage": {},
       "row_count": 17,
       "entity_count": 1,
@@ -628,7 +622,51 @@
   },
   "change_report": {
     "data.csv.gz": {
-      "state": "unchanged"
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "age": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "serotype": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "time": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "N_IPD": {
+          "status": "present",
+          "same_type": true
+        },
+        "pct_IPD": {
+          "status": "present",
+          "same_type": true
+        },
+        "pop": {
+          "status": "added"
+        },
+        "rate_IPD": {
+          "status": "present",
+          "same_type": true
+        },
+        "spn_surveillance_population": {
+          "status": "removed"
+        }
+      }
     },
     "uad.csv.gz": {
       "state": "unchanged"
