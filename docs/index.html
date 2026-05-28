@@ -24,7 +24,7 @@
     <nav class="navbar navbar-dark fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
-        <span class="navbar-text text-light">Last updated: April 19, 2026</span>
+        <span class="navbar-text text-light">Last updated: May 24, 2026</span>
       </div>
     </nav>
     <div class="container-fluid">
@@ -295,12 +295,12 @@
                     </tr>
                     <tr>
                       <td>
-                        <code>spn_surveillance_population</code>
+                        <code>pop</code>
                       </td>
-                      <td>ABCs surveillance population</td>
-                      <td>Total population under active surveillance for invasive pneumococcal disease in the ABCs catchment area</td>
-                      <td>Count</td>
-                      <td>Persons</td>
+                      <td>pop</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
                     <tr>
                       <td>
@@ -709,9 +709,16 @@
             </section>
             <section id="census" class="mb-5">
               <h2 class="border-bottom pb-2">Census</h2>
-              <p class="lead">Extraction and formatting provided by Metopio, The American Community Survey (ACS) is an ongoing survey conducted by the U.S. Census Bureau that provides detailed demographic, social, economic, and housing data for communities across the United States. The 5-year estimates pool data over a 60-month period, providing greater statistical reliability for small geographic areas (including ZIP Code Tabulation Areas) at the cost of timeliness. Variables cover a broad range of social determinants of health including poverty, housing, education, employment, insurance coverage, and racial/ethnic composition. Data are retrieved via the Census Bureau's public API using the censusapi R package.</p>
+              <p class="lead">The 2020 Census Urban Area to County Allocation File maps Census-defined urban areas (urbanized areas with population ≥ 50,000 and urban clusters with population 2,500–49,999) to counties. Each row represents a county-urban area intersection and includes the share of county population, land area, and housing units within that urban area. Summing across all urban areas for a county yields total percent urban. Counties not appearing in the file have no urban area and are considered 100% rural. Urban area boundaries are based on the 2020 decennial Census and reflect the updated delineation methodology that increased the minimum population threshold for urbanized areas from 50,000 to 50,000 and revised cluster definitions.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.census.gov/programs-surveys/geography/guidance/geo-areas/urban-rural.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.census.gov" target="_blank">U.S. Census Bureau</a>
+                   | 
+                  <a href="https://www2.census.gov/geo/docs/reference/ua/2020_UA_COUNTY.xlsx" target="_blank">API/Data Location</a>
+                </li>
                 <li>
                   <a href="https://www.census.gov/programs-surveys/acs/data.html" target="_blank">Data Source</a>
                    | 
@@ -721,8 +728,23 @@
                 </li>
               </ul>
               <div class="alert alert-warning">
-                <strong>Restrictions: </strong>
-                Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.
+                <strong>Restrictions:</strong>
+                <ul class="mb-0 mt-2">
+                  <li>
+                    <strong>
+                      2020 Census Urban Area to County Allocation File
+                      : 
+                    </strong>
+                    Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.
+                  </li>
+                  <li>
+                    <strong>
+                      2024 American Community Survey 5-Year Estimates, Powered by Metopio
+                      : 
+                    </strong>
+                    Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.
+                  </li>
+                </ul>
               </div>
               <h4 class="mt-4">Variables</h4>
               <h5 class="mt-3">
@@ -1394,6 +1416,33 @@
                       </td>
                       <td>Medicaid coverage rate</td>
                       <td>Share of the civilian noninstitutionalized population covered by Medicaid or other means-tested public insurance.</td>
+                      <td>Percent</td>
+                      <td>Proportion (0–1)</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>census_ur_pct_urban_pop</code>
+                      </td>
+                      <td>Percent urban population</td>
+                      <td>Share of county population residing in Census-defined urban areas.</td>
+                      <td>Percent</td>
+                      <td>Proportion (0–1)</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>census_ur_pct_urban_land</code>
+                      </td>
+                      <td>Percent urban land area</td>
+                      <td>Share of county land area within Census-defined urban areas.</td>
+                      <td>Percent</td>
+                      <td>Proportion (0–1)</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>census_ur_pct_urban_hu</code>
+                      </td>
+                      <td>Percent urban housing units</td>
+                      <td>Share of county housing units located in Census-defined urban areas.</td>
                       <td>Percent</td>
                       <td>Proportion (0–1)</td>
                     </tr>
@@ -12875,7 +12924,7 @@ Suggested citation: Food and Drug Administration (FDA). NARMS Now. Rockville, MD
             </section>
             <section id="nssp" class="mb-5">
               <h2 class="border-bottom pb-2">NSSP</h2>
-              <p class="lead">This dataset provides the percentage of emergency department patient visits for the specified pathogen of all ED patient visits for the specified geographic part of the country that were observed for the given week from data submitted to the National Syndromic Surveillance Program (NSSP). In addition, the trend over time is characterized as increasing, decreasing or no change, with exceptions for when there are no data available, the data are too sparse, or there are not enough data to compute a trend. These data are to provide awareness of how the weekly trend is changing for the given geographic region. Note that the reported sub-state trends are from Health Service Areas (HSA) and the data reported from the health care facilities located within the given HSA. Health Service Areas are regions of one or more counties that align to patterns of care seeking. The HSA level data are reported for each county in the HSA.. These data are made available by the CDC.</p>
+              <p class="lead">This dataset provides the percentage of emergency department patient visits for the specified pathogen of all ED patient visits for the specified geographic part of the country that were observed for the given week from data submitted to the National Syndromic Surveillance Program (NSSP). Note that the reported sub-state trends are from Health Service Areas (HSA) and the data reported from the health care facilities located within the given HSA. Health Service Areas are regions of one or more counties that align to patterns of care seeking. The HSA level data are reported for each county in the HSA. Some states report state-level data but not county-level data. In these instances, PopHIVE maps the state-level data to the counties in that state so that all counties in the state share the same value. These data are made available by the CDC.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
@@ -12948,6 +12997,15 @@ Suggested citation: Food and Drug Administration (FDA). NARMS Now. Rockville, MD
                       </td>
                       <td>COVID-19 Percent in the ED</td>
                       <td>Percent of ED visits due to COVID-19 in each week</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>is_state_estimate</code>
+                      </td>
+                      <td>State-level estimate flag</td>
+                      <td>Flag indicating county values were imputed from state-level data</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -17159,7 +17217,7 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
             <section id="bundle-injury-overdose" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: Injury Overdose</h2>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 20 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 21 parquet file(s).</em>
               </p>
               <h4 class="mt-4">Output Files (dist/)</h4>
               <h5 class="mt-3">
@@ -18122,6 +18180,60 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                         <code>suppressed_heat</code>
                       </td>
                       <td>suppressed_heat</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>heat_risk-MWMJ0G3P8D.parquet</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>value</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>forecast_day</code>
+                      </td>
+                      <td>forecast_day</td>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -19598,7 +19710,7 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
             <section id="bundle-respiratory" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: Respiratory</h2>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 16 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 17 parquet file(s).</em>
               </p>
               <h4 class="mt-4">Output Files (dist/)</h4>
               <h5 class="mt-3">
@@ -19649,6 +19761,15 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                       </td>
                       <td>percent_visits_covid</td>
                       <td>(source variable: percent_visits_covid)</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>is_state_estimate</code>
+                      </td>
+                      <td>is_state_estimate</td>
+                      <td></td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -19915,6 +20036,15 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                       </td>
                       <td>percent_visits_flu</td>
                       <td>(source variable: percent_visits_flu)</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>is_state_estimate</code>
+                      </td>
+                      <td>is_state_estimate</td>
+                      <td></td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -20332,6 +20462,69 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                 </table>
               </div>
               <h5 class="mt-3">
+                <code>pneumococcus_serotype_trends-MWMJ0G3P8D.parquet</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>serotype</code>
+                      </td>
+                      <td>Serotype</td>
+                      <td>Disease serotype/variant</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>year</code>
+                      </td>
+                      <td>Year</td>
+                      <td>Calendar year</td>
+                      <td>date</td>
+                      <td>year</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age Group</td>
+                      <td>Age group category</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>value</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value_incidence</code>
+                      </td>
+                      <td>value_incidence</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
                 <code>pneumococcus_serotype_trends.parquet</code>
               </h5>
               <div class="table-responsive">
@@ -20442,6 +20635,15 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                       </td>
                       <td>percent_visits_rsv</td>
                       <td>(source variable: percent_visits_rsv)</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>is_state_estimate</code>
+                      </td>
+                      <td>is_state_estimate</td>
+                      <td></td>
                       <td></td>
                       <td></td>
                     </tr>

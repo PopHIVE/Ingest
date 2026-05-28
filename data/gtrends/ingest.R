@@ -199,7 +199,7 @@ for (term in terms) {
   
   
   dma_link1 <- cbind.data.frame(
-    'DMA_name' = metros$name,
+    'DMA_name' = toupper(metros$name),
     'DMA' = metros$numeric.sub.area
   ) %>%
     rename(DMA_ID = DMA) %>%
@@ -209,36 +209,33 @@ for (term in terms) {
     filter(!is.na(DMA_ID))
   
   
-  g_states <- paste('US', state.abb, sep = '-')
-  
   #
   #
   # ##Google metro data
   #view_dma <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/google_dma.parquet')
   g1_metro <- data_dma %>%
    # reshape2::melt(.,id.vars=c('geography','time')) %>%
-    filter(!(geography %in% g_states)) %>%
     group_by(geography, time, resolution) %>%
     summarise(across(
       c(`gtrends_drug+overdose`,gtrends_naloxone, gtrends_narcan, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv, `gtrends_heat+exhaustion`,`gtrends_heat+stroke`, gtrends_9mm, gtrends_shotgun ),
       ~ mean(.x, na.rm = TRUE)
     ), .groups = "drop") %>% #averages over duplicate pulls
     ungroup() %>%
-    collect() %>%
     mutate(
       time = as.character(as.Date(time)+ 6) # week end date
     ) %>%
     filter(!is.na(geography)) %>%
-    filter(time >= as.Date('2018-07-01')) %>%
+    filter(time >= '2018-07-01') %>%
     rename(DMA_ID = geography) %>%
     mutate(DMA_ID = as.numeric(DMA_ID)) %>%
-    left_join(dma_link1, by = c('DMA_ID' = 'DMA_ID'),relationship = "many-to-many") %>% #many to many join by date and counties
-    group_by(STATEFP, CNTYFP) %>%
+    left_join(dma_link1, by = c('DMA_ID' = 'DMA_ID'), relationship = "many-to-many") %>%
+    filter(!is.na(STATEFP), !is.na(CNTYFP)) %>%
+    group_by(time, resolution, STATEFP, CNTYFP) %>%
+    summarise(across(starts_with("gtrends"), ~ mean(.x, na.rm = TRUE)), .groups = "drop") %>%
     mutate(
       STATEFP = sprintf("%02d", STATEFP),
       geography = paste0(STATEFP, sprintf("%03d", CNTYFP)),
     ) %>%
-    ungroup()%>%
     mutate(across(
       c(`gtrends_drug+overdose`, gtrends_narcan,gtrends_naloxone, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv, `gtrends_heat+exhaustion`,`gtrends_heat+stroke`, gtrends_9mm, gtrends_shotgun),
       \(x) {

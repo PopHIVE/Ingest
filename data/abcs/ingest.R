@@ -96,35 +96,42 @@ if (!identical(process$raw_state, raw_state)) {
   
    data2 <- bind_rows(data_age2, data_total)
 
-   # Load denominators and merge into data2 for age == 'Total'
-   denoms <- read.csv("raw/abcs_denominators.csv") %>%
-     filter(!is.na(spn_surveillance_population)) %>%
-     select(state, year, spn_surveillance_population)
+   # Load denominators and merge into data2, aligning age groups
+   denoms_raw <- read.csv("raw/abcs_census_age_stratified_pop_full.csv")
 
    state_fips_lookup <- all_fips %>%
      filter(nchar(geography) == 2) %>%
      select(geography, state)
 
-   denoms_state <- denoms %>%
+   # Map denoms age groups to data2's age groups and sum populations
+   denoms_state <- denoms_raw %>%
      left_join(state_fips_lookup, by = "state") %>%
      filter(!is.na(geography)) %>%
-     select(geography, year, spn_surveillance_population)
+     mutate(age = case_when(
+       age == "0-4"               ~ "<5 years",
+       age %in% c("5-17", "18-49") ~ "5-49 years",
+       age %in% c("50-64", "65+") ~ "50+ years",
+       age == "Total"             ~ "Total",
+       TRUE                       ~ NA_character_
+     )) %>%
+     filter(!is.na(age)) %>%
+     group_by(geography, year, age) %>%
+     summarize(pop = sum(pop, na.rm = TRUE), .groups = "drop")
 
-   # Sum across the 8 selected states for national total
+   # Sum across the 8 selected states for the national total
    denoms_nat <- denoms_state %>%
      filter(geography %in% c('06','09','13','24','27','36','41','47')) %>%
-     group_by(year) %>%
-     summarize(spn_surveillance_population = sum(spn_surveillance_population, na.rm = TRUE),
-               .groups = 'drop') %>%
+     group_by(year, age) %>%
+     summarize(pop = sum(pop, na.rm = TRUE), .groups = "drop") %>%
      mutate(geography = '00')
 
-   denoms_all <- bind_rows(denoms_state, denoms_nat) %>%
-     mutate(age = 'Total')
+   denoms_all <- bind_rows(denoms_state, denoms_nat)
 
    data2 <- data2 %>%
-     mutate(year = as.integer(format(time, "%Y"))) %>%
+     mutate(year = as.integer(format(time, "%Y")),
+            age = as.character(age)) %>%
      left_join(denoms_all, by = c("geography", "year", "age")) %>%
-     mutate(rate_IPD = N_IPD / spn_surveillance_population * 100000) %>%
+     mutate(rate_IPD = N_IPD / pop * 100000) %>%
      select(-year)
 
   vroom::vroom_write(

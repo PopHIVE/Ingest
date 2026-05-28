@@ -77,6 +77,10 @@ if (!identical(process$raw_state, raw_state)) {
      left_join(data_state_merge, by = c('week_end', 'state_fips')) %>%
       rename(fips_code = fips) %>%
       mutate(
+        is_state_estimate = if_else(
+          is.na(percent_visits_covid) | is.na(percent_visits_influenza) | is.na(percent_visits_rsv),
+          1L, 0L
+        ),
         percent_visits_covid = if_else(
           is.na(percent_visits_covid),
           percent_visits_covid_state,
@@ -141,11 +145,12 @@ if (!identical(process$raw_state, raw_state)) {
         time,
         percent_visits_covid,
         percent_visits_flu,
-        percent_visits_rsv
+        percent_visits_rsv,
+        is_state_estimate
       )
-  
-  
-  data <- bind_rows(data_state, data_county) 
+
+
+  data <- bind_rows(data_state, data_county)
   
   vroom::vroom_write(
     data,

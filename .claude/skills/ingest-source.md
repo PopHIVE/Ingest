@@ -1,3 +1,8 @@
+---
+name: ingest-source
+description: Ingest a new data source into the PopHIVE/Ingest repository — creates the folder structure, writes an ingest.R script that standardizes raw data into wide format, and generates measure_info.json. Use when the user wants to add a new CDC/Socrata/URL/file-based data source, mentions "ingest", "new data source", or provides a dataset ID to onboard.
+---
+
 # ingest-source
 
 Ingest a new data source: create the folder structure, write the ingest.R script to standardize raw data, and create the measure_info.json.
@@ -12,7 +17,7 @@ Ingest a new data source: create the folder structure, write the ingest.R script
 
 End-to-end skill for adding and ingesting a new data source into the PopHIVE/Ingest repository. This skill:
 
-1. Creates the folder structure via the `add-source` skill
+1. Creates the folder structure via `dcf::dcf_add_source()`
 2. Examines the raw data to understand its structure
 3. Writes an `ingest.R` script that transforms raw data into the standard wide format
 4. Creates a `measure_info.json` documenting all output variables
@@ -23,7 +28,41 @@ When the user invokes this skill:
 
 ### Phase 1: Create Folder Structure
 
-Run the `add-source` skill with the provided source name to initialize the directory structure (`data/<source_name>/raw/`, `standard/`, `process.json`, etc.). Follow all steps in that skill (detect R version, run `dcf::dcf_add_source()`, verify structure).
+Initialize the directory structure for the new source by running `dcf::dcf_add_source()`.
+
+1. **Validate the source name**:
+   - Must be lowercase with underscores (e.g., `cdc_flu_data`, `epic_diabetes`)
+   - No spaces or special characters
+   - Should be descriptive of the data source
+
+2. **Detect the R installation** (Windows only). Find available R versions:
+   ```bash
+   powershell -Command "Get-ChildItem 'C:\Program Files\R' | Select-Object Name"
+   ```
+   Use the most recent version found (e.g., `R-4.3.0`).
+
+3. **Run the dcf command** from the project root:
+
+   **On Windows**, use PowerShell with the detected R version:
+   ```bash
+   cd "<project_root>" && powershell -Command "& 'C:\Program Files\R\<R_VERSION>\bin\Rscript.exe' -e \"dcf::dcf_add_source('<source_name>')\""
+   ```
+   Replace `<R_VERSION>` with the detected version (e.g., `R-4.3.0`).
+
+   **On macOS/Linux**:
+   ```bash
+   cd "<project_root>" && Rscript -e 'dcf::dcf_add_source("<source_name>")'
+   ```
+
+4. **Verify the created structure**:
+   ```
+   data/<source_name>/
+   ├── raw/                  # For downloaded source files
+   ├── standard/             # For standardized output files
+   ├── ingest.R              # Transformation script (filled in below)
+   ├── measure_info.json     # Variable metadata (filled in below)
+   └── process.json          # Processing state (auto-generated)
+   ```
 
 ### Phase 2: Gather Information
 

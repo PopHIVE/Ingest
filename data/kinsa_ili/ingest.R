@@ -95,8 +95,10 @@ if (!identical(process$last_date, latest_date)) {
 
   existing_df <- NULL
   if (file.exists(raw_file)) {
-    existing_df <- vroom::vroom(raw_file, show_col_types = FALSE)
-    start       <- max(as.Date(existing_df$yyyymmdd)) + 1
+    existing_df <- vroom::vroom(raw_file, show_col_types = FALSE,
+                                col_types = vroom::cols(yyyymmdd = vroom::col_character())) %>%
+      filter(!is.na(yyyymmdd))
+    start       <- max(as.Date(existing_df$yyyymmdd), na.rm = TRUE) + 1
     message("Cache found (", nrow(existing_df), " rows). Pulling from: ", start)
   } else {
     start <- default_start
@@ -151,7 +153,8 @@ if (!identical(process$last_date, latest_date)) {
       geography = "00",
       time      = format(as.Date(yyyymmdd), "%Y-%m-%d")
     ) %>%
-    select(geography, time, kinsa_cough_cold_flu = percent_ill)
+    select(geography, time, kinsa_cough_cold_flu = percent_ill) %>%
+    filter(!is.na(kinsa_cough_cold_flu))
 
   vroom::vroom_write(data_standard, "standard/data.csv.gz", delim = ",")
   message("Wrote ", nrow(data_standard), " rows to standard/data.csv.gz")
