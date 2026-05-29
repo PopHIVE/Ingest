@@ -111,8 +111,8 @@ flowchart LR
     end
     subgraph gtrends["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/gtrends" target="_blank" rel="noreferrer">gtrends</a></strong>`"]
         direction LR
-        n31["`data_dma_year.csv.gz`"]:::pass
-        n32["`data_dma.csv.gz`"]:::pass
+        n31["`data_dma_year.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li></ul>`"]:::warn
+        n32["`data_dma.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li></ul>`"]:::warn
         n33["`data_year.csv.gz`"]:::pass
         n34["`data.csv.gz`"]:::pass
     end
