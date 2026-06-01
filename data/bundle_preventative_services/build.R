@@ -9,7 +9,7 @@ medicaid_data <- vroom::vroom('../medicaid_quality/standard/data.csv.gz')
 ## Medicaid preventative services
 medicaid_data %>%
   filter(geography_level == 's') %>%
-  dplyr::select(geography, time, age, sex, race_ethnicity,
+  dplyr::select(geography, time, age, sex, race_ethnicity, payer,
                 medicaid_fva_ad_rate,
                 medicaid_chl_ad_rate,
                 medicaid_ha1c_ad_rate,
@@ -34,7 +34,7 @@ medicaid_data %>%
   ) %>%
   filter(!is.na(value),
          geography %in% c(state.name, "District of Columbia")) %>%
-  dplyr::select(geography, year, age, sex, race_ethnicity, outcome_name, source, value) %>%
+  dplyr::select(geography, year, age, sex, race_ethnicity, payer, outcome_name, source, value) %>%
   arrow::write_parquet('dist/medicaid_preventative_services.parquet')
 
 
