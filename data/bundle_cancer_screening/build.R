@@ -9,7 +9,7 @@ medicaid_data <- vroom::vroom('../medicaid_quality/standard/data.csv.gz')
 
 medicaid_cancer <- medicaid_data %>%
   filter(geography_level == 's') %>%
-  dplyr::select(geography, time, age, sex, race_ethnicity,
+  dplyr::select(geography, time, age, sex, race_ethnicity, payer,
                 medicaid_bcs_ad_rate,
                 medicaid_ccs_ad_rate,
                 medicaid_col_ad_rate) %>%
@@ -30,7 +30,7 @@ medicaid_cancer <- medicaid_data %>%
   ) %>%
   filter(!is.na(value),
          geography %in% c(state.name, "District of Columbia")) %>%
-  dplyr::select(geography, year, age, sex, race_ethnicity, outcome_name, source, value)
+  dplyr::select(geography, year, age, sex, race_ethnicity, payer, outcome_name, source, value)
 
 write_parquet(medicaid_cancer, './dist/medicaid_cancer_screening.parquet')
 
