@@ -174,11 +174,15 @@ for (term in terms) {
   )
   colnames(data_dma)[1L:3L] <- c("geography", "time", "resolution")
   
-  data_dma <- data_dma %>% 
+  data_dma <- data_dma %>%
     ungroup() %>%
     as.data.frame() %>%
-    filter(!grepl('US', geography))
-  
+    filter(!grepl('US', geography)) %>%
+    mutate(across(starts_with("gtrends_"), ~{
+      threshold <- quantile(.x, 0.999, na.rm = TRUE)
+      ifelse(.x > threshold, NA, .x)
+    }))
+
    #
   # ##Metro; Crosswalk the DMA to counties FIPS codes
   # #https://www.kaggle.com/datasets/kapastor/google-trends-countydma-mapping?resource=download
