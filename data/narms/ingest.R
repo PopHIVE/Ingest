@@ -66,7 +66,7 @@ organisms <- list(
 test_methods <- c("AST", "WGS")
 YEAR_FROM_AST <- 1999
 YEAR_FROM_WGS <- 2016
-YEAR_TO <- 2024
+YEAR_TO <- 2025
 
 # --- Site definitions ---
 # NARMSSiteName entity values from the Power BI model (51 states + DC)
@@ -954,7 +954,16 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
 retail_raw_path <- "raw/cvm-narms-retail-meats.xlsx"
 retail_url <- "https://www.fda.gov/files/animal%20%26%20veterinary/published/cvm-narms-retail-meats_0.xlsx"
 
-download.file(retail_url, retail_raw_path, mode = "wb", quiet = TRUE)
+tryCatch(
+  download.file(retail_url, retail_raw_path, mode = "wb", quiet = TRUE),
+  error = function(e) {
+    if (file.exists(retail_raw_path)) {
+      message("Retail meats download failed (", conditionMessage(e), "); using existing raw file")
+    } else {
+      stop(e)
+    }
+  }
+)
 current_retail_state <- list(hash = as.character(tools::md5sum(retail_raw_path)))
 
 if (!identical(process$retail_meats_state, current_retail_state)) {
@@ -1128,7 +1137,16 @@ if (!identical(process$retail_meats_state, current_retail_state)) {
 animal_path_raw_path <- "raw/narms-animal-pathogen.xlsx"
 animal_path_url <- "https://www.fda.gov/media/132928/download?attachment"
 
-download.file(animal_path_url, animal_path_raw_path, mode = "wb", quiet = TRUE)
+tryCatch(
+  download.file(animal_path_url, animal_path_raw_path, mode = "wb", quiet = TRUE),
+  error = function(e) {
+    if (file.exists(animal_path_raw_path)) {
+      message("Animal pathogen download failed (", conditionMessage(e), "); using existing raw file")
+    } else {
+      stop(e)
+    }
+  }
+)
 current_animal_path_state <- list(hash = as.character(tools::md5sum(animal_path_raw_path)))
 
 if (!identical(process$animal_pathogen_state, current_animal_path_state)) {
@@ -1230,7 +1248,16 @@ food_animal_files <- list(
 # Download all files and compute combined hash
 food_animal_hashes <- character()
 for (f in food_animal_files) {
-  download.file(f$url, f$raw, mode = "wb", quiet = TRUE)
+  tryCatch(
+    download.file(f$url, f$raw, mode = "wb", quiet = TRUE),
+    error = function(e) {
+      if (file.exists(f$raw)) {
+        message("Download failed for ", f$raw, " (", conditionMessage(e), "); using existing raw file")
+      } else {
+        stop(e)
+      }
+    }
+  )
   food_animal_hashes <- c(food_animal_hashes, as.character(tools::md5sum(f$raw)))
 }
 current_food_animal_state <- list(hash = paste(food_animal_hashes, collapse = "_"))
