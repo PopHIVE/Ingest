@@ -2,125 +2,129 @@
 # Download
 #
 
-base_url <- "https://www.cdc.gov/wcms/vizdata/NCEZID_DIDRI/"
-files <- c(
-  rsv = "rsv/nwssrsvstateactivitylevel.csv",
-  flua = "FluA/nwssfluastateactivitylevelDL.csv",
-  covid = "SC2/nwsssc2stateactivitylevelDL.csv"
+library(dplyr)
+
+process <- dcf::dcf_process_record()
+
+# Single combined dataset for all three pathogens (replaces three separate CSV URLs)
+raw_state <- dcf::dcf_download_cdc(
+  "atcp-73re",
+  "raw",
+  process$raw_state
 )
-for (file in names(files)) {
-  url <- paste0(base_url, files[[file]])
-  path <- paste0("raw/", file, ".csv")
-  download.file(url, path)
-  unlink(paste0(path, ".xz"))
-  system2("xz", c("-f", path))
-}
 
 #
 # Reformat
 #
 
-# check raw state
-raw_state <- as.list(tools::md5sum(list.files(
-  "raw",
-  "csv",
-  recursive = TRUE,
-  full.names = TRUE
-)))
-process <- dcf::dcf_process_record()
-
 if (!identical(process$raw_state, raw_state)) {
-  data <- do.call(
-    rbind,
-    lapply(list.files("raw", "xz", full.names = TRUE), function(file) {
-      d <- vroom::vroom(
-        file,
-        ",",
-        col_types = list(
-          `State/Territory` = "c",
-          Week_Ending_Date = "c",
-          Data_Collection_Period = "c",
-          `State/Territory_WVAL` = "d"
-        ),
-        col_select = c(
-          "State/Territory",
-          "Week_Ending_Date",
-          "Data_Collection_Period",
-          "State/Territory_WVAL"
-        )
-      )
-      d <- d[
-        !is.na(d$`State/Territory`) & d$Data_Collection_Period == "All Results",
-        -3L
-      ]
-      colnames(d) <- c("geography", "time", "value")
-      d$variable <- paste0(
-        "wastewater_",
-        strsplit(basename(file), ".", fixed = TRUE)[[1]][[1]]
-      )
-      d
-    })
-  )
-  data <- tidyr::pivot_wider(
-    data,
-    id_cols = c("geography", "time"),
-    names_from = "variable"
-  )
 
-  # convert state names to GEOIDs
-  state_ids <- vroom::vroom(
-    "https://www2.census.gov/geo/docs/reference/codes2020/national_state2020.txt",
-    delim = "|",
-    col_types = list(STATE = "c", STATEFP = "c")
-  )
-  data$geography <- structure(state_ids$STATEFP, names = state_ids$STATE_NAME)[
-    data$geography
-  ]
-  
-  state_ids <- dcf::dcf_load_census(
-    out_dir = "../../resources", 
-    state_only = TRUE
-  )
-  
-  nat_ave <- data %>%
-    left_join(state_ids, by=c('geography'='GEOID'))%>%
+  # Load FIPS crosswalk (state names → 2-digit FIPS)
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2, geography != "00") %>%
+    select(geography, geography_name)
+
+  # Read raw data - site-level, all pathogens in one file
+  # Column names use Title_Case in the CDC export (e.g. Pathogen_Target, Site_WVAL)
+  data_raw <- vroom::vroom(
+    "raw/atcp-73re.csv.xz",
+    col_types = list(
+      `State/Territory` = "c",
+      Week_End           = "c",
+      Pathogen_Target    = "c",
+      Site_WVAL          = "d",
+      Population_Served  = "d"
+    ),
+    col_select = c("State/Territory", "Week_End", "Pathogen_Target", "Site_WVAL", "Population_Served"),
+    show_col_types = FALSE
+  ) %>%
+    rename(
+      state_territory   = `State/Territory`,
+      week_end          = Week_End,
+      pathogen_target   = Pathogen_Target,
+      site_wval         = Site_WVAL,
+      population_served = Population_Served
+    )
+
+  # Map pathogen names to variable names used in standard output
+  data_raw <- data_raw %>%
     mutate(
-      #occasional extreme values. if value >95th percentile, set at 95th percentile
-      covid_95 = quantile(wastewater_covid, probs=0.95, na.rm=T),
-      flu_95 = quantile(wastewater_flua, probs=0.95, na.rm=T),
-      rsv_95 = quantile(wastewater_rsv, probs=0.95, na.rm=T),
-      
+      variable = case_when(
+        pathogen_target == "SARS-CoV-2"       ~ "wastewater_covid",
+        pathogen_target == "Influenza A virus" ~ "wastewater_flua",
+        pathogen_target == "RSV"               ~ "wastewater_rsv",
+        TRUE ~ NA_character_
+      )
+    ) %>%
+    filter(!is.na(variable), !is.na(site_wval), !is.na(state_territory))
+
+  # Aggregate site → state level using population-weighted mean
+  data_state <- data_raw %>%
+    mutate(population_served = if_else(is.na(population_served), 1, population_served)) %>%
+    group_by(state_territory, week_end, variable) %>%
+    summarize(
+      value = weighted.mean(site_wval, population_served, na.rm = TRUE),
+      .groups = "drop"
+    )
+
+  # Pivot to wide format (one column per pathogen)
+  data <- data_state %>%
+    tidyr::pivot_wider(
+      id_cols      = c("state_territory", "week_end"),
+      names_from   = "variable",
+      values_from  = "value"
+    )
+
+  # Convert state names to FIPS codes
+  data <- data %>%
+    left_join(state_fips_lookup, by = c("state_territory" = "geography_name")) %>%
+    filter(!is.na(geography)) %>%
+    mutate(time = format(as.Date(week_end), "%Y-%m-%d")) %>%
+    select(geography, time, wastewater_covid, wastewater_flua, wastewater_rsv)
+
+  # Apply 95th percentile cap to suppress occasional extreme values
+  data <- data %>%
+    mutate(
+      covid_95 = quantile(wastewater_covid, probs = 0.95, na.rm = TRUE),
+      flu_95   = quantile(wastewater_flua,  probs = 0.95, na.rm = TRUE),
+      rsv_95   = quantile(wastewater_rsv,   probs = 0.95, na.rm = TRUE),
       wastewater_covid = if_else(wastewater_covid > covid_95, covid_95, wastewater_covid),
-      wastewater_flua = if_else(wastewater_flua > flu_95, flu_95, wastewater_flua),
-      wastewater_rsv = if_else(wastewater_rsv > rsv_95, rsv_95, wastewater_rsv)
-    )%>%
+      wastewater_flua  = if_else(wastewater_flua  > flu_95,  flu_95,  wastewater_flua),
+      wastewater_rsv   = if_else(wastewater_rsv   > rsv_95,  rsv_95,  wastewater_rsv)
+    ) %>%
+    select(-covid_95, -flu_95, -rsv_95)
+
+  # Compute population-weighted national average from state-level data
+  state_ids <- dcf::dcf_load_census(out_dir = "../../resources", state_only = TRUE)
+
+  nat_ave <- data %>%
+    left_join(state_ids, by = c("geography" = "GEOID")) %>%
     group_by(time) %>%
     mutate(
-           wgt_covid = (Total*!is.na(wastewater_covid))/sum(Total*!is.na(wastewater_covid), na.rm=T), #population weight
-           wgt_rsv = (Total*!is.na(wastewater_rsv))/sum(Total*!is.na(wastewater_rsv), na.rm=T), #population weight
-           wgt_flua = (Total*!is.na(wastewater_flua))/sum(Total*!is.na(wastewater_flua), na.rm=T), #population weight
-           wgt_part_covid = wgt_covid*wastewater_covid,
-           wgt_part_rsv = wgt_rsv*wastewater_rsv,
-           wgt_part_flua = wgt_flua*wastewater_flua
-           ) %>% 
-    summarize(wastewater_covid = sum(wgt_part_covid, na.rm=T),
-              wastewater_rsv= sum(wgt_part_rsv, na.rm=T),
-              wastewater_flua= sum(wgt_part_flua, na.rm=T),
-              wgt_check_rsv =sum(wgt_rsv, na.rm=T),
-              wgt_check_flua =sum(wgt_flua, na.rm=T),
-              wgt_check_covid =sum(wgt_covid, na.rm=T)
-              ) %>%
-    mutate(wastewater_covid = if_else(wgt_check_covid==1,  wastewater_covid,NA_real_),
-           wastewater_flua = if_else(wgt_check_flua==1, wastewater_flua,NA_real_),
-           wastewater_rsv = if_else(wgt_check_rsv==1,  wastewater_rsv,NA_real_)
-           ) %>%
-    dplyr::select(time, wastewater_covid,wastewater_flua,wastewater_rsv) %>%
-    mutate(geography = '00')
+      wgt_covid = (Total * !is.na(wastewater_covid)) / sum(Total * !is.na(wastewater_covid), na.rm = TRUE),  #only counts pop for state if the state contributes WW data
+      wgt_rsv   = (Total * !is.na(wastewater_rsv))   / sum(Total * !is.na(wastewater_rsv),   na.rm = TRUE),
+      wgt_flua  = (Total * !is.na(wastewater_flua))  / sum(Total * !is.na(wastewater_flua),  na.rm = TRUE)
+    ) %>%
+    summarize(
+      wastewater_covid    = sum(wgt_covid * wastewater_covid, na.rm = TRUE),
+      wastewater_rsv      = sum(wgt_rsv   * wastewater_rsv,   na.rm = TRUE),
+      wastewater_flua     = sum(wgt_flua  * wastewater_flua,  na.rm = TRUE),
+      wgt_check_rsv       = sum(wgt_rsv,   na.rm = TRUE),
+      wgt_check_flua      = sum(wgt_flua,  na.rm = TRUE),
+      wgt_check_covid     = sum(wgt_covid, na.rm = TRUE)
+    ) %>%
+    mutate(
+      wastewater_covid = if_else(wgt_check_covid == 1, wastewater_covid, NA_real_),
+      wastewater_flua  = if_else(wgt_check_flua  == 1, wastewater_flua,  NA_real_),
+      wastewater_rsv   = if_else(wgt_check_rsv   == 1, wastewater_rsv,   NA_real_)
+    ) %>%
+    select(time, wastewater_covid, wastewater_flua, wastewater_rsv) %>%
+    mutate(geography = "00")
 
-  data_combined <- bind_rows(data,nat_ave )
+  data_combined <- bind_rows(data, nat_ave)
   vroom::vroom_write(data_combined, "standard/data.csv.gz", ",")
 
   process$raw_state <- raw_state
   dcf::dcf_process_record(updated = process)
 }
-
