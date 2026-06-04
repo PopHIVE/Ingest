@@ -261,7 +261,6 @@ for (term in terms) {
       \(x) x / max(x, na.rm = TRUE) * 100  #scales each value to 100
     )) %>%
     dplyr::select(geography, time, resolution, starts_with("gtrends"))
-  
 
   g1_metro %>%
     filter(resolution == 'week') %>%
