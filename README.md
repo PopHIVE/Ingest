@@ -82,6 +82,9 @@ We have updated several aspects of the obesity and diabetes definitions from Epi
 **November 21,2025**
 The CDC updated their invsdive pneumococcal disease file to i clude geographic site for 1998-2023. The file with geographic stratification by serotype has been updated accordingly, and the dashboard now shows 2023 instead of 2019
 
+**June 5, 2026**
+The county-level MMR school vaccine coverage data obtained from the Washington Post for Tennessee was flagged as inaccurate by the Tennessee Department of Health, and they provided an alternative data source that is collected with a more robust methodology, which has now been included in the schoolvax_washpost data in its place
+
 # Guide to adding data and rebuilding the bundle
 
 ## Steps for adding new datasets

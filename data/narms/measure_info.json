@@ -1,32 +1,145 @@
 {
-  "example_variable": {
-    "id": "example_variable",
-    "short_name": "",
-    "long_name": "",
-    "category": "",
-    "short_description": "",
-    "long_description": "",
-    "statement": "",
-    "measure_type": "",
-    "unit": "",
-    "time_resolution": "",
-    "restrictions": "",
-      "sources": [
-          {
-            "id": "narms"
-          }
-        ],    "citations": []
+  "pct_resistant": {
+    "id": "pct_resistant",
+    "short_name": "Percent resistant to antimicrobial",
+    "long_name": "Percentage of isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Percentage of isolates showing resistance to a specific antimicrobial agent",
+    "long_description": "Percentage of isolates tested by NARMS showing resistance to a specific antimicrobial agent, based on CLSI breakpoints. Calculated as n_resistant / n_tested * 100. Applies across all NARMS surveillance programs: human clinical isolates (CDC NARMS Now, AST and WGS methods), retail meat isolates (FDA, state-level), animal diagnostic pathogen isolates (FDA, state-level), and food-producing animal isolates (FDA HACCP/Cecal/Minor Species, national only). NA indicates the agent was on the testing panel but marked 'Not Tested' for that organism/year combination.",
+    "statement": "In {location}, {value}% of isolates were resistant to {antimicrobial}",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "narms_now" },
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
+    "citations": [
+      {
+        "title": "NARMS Now: Human Data",
+        "url": "https://www.cdc.gov/narms/data/index.html"
+      },
+      {
+        "title": "FDA NARMS Integrated Reports/Summaries",
+        "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries"
+      }
+    ]
   },
+  "n_resistant": {
+    "id": "n_resistant",
+    "short_name": "Number of resistant isolates",
+    "long_name": "Number of isolates resistant to a specific antimicrobial agent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Count of isolates showing resistance to a specific antimicrobial agent",
+    "long_description": "Number of isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. NA when the dashboard or source reports 'Not Tested' for that organism/year/agent combination. Zero when the agent was on the panel but no isolates were available.",
+    "statement": "In {location}, {value} isolates were resistant to {antimicrobial}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "narms_now" },
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
+    "citations": []
+  },
+  "n_tested": {
+    "id": "n_tested",
+    "short_name": "Number of isolates tested",
+    "long_name": "Number of isolates tested for antimicrobial susceptibility",
+    "category": "antimicrobial_resistance",
+    "short_description": "Total number of isolates tested for resistance to a specific antimicrobial agent",
+    "long_description": "Total number of isolates tested for susceptibility to a specific antimicrobial agent. Denominator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. NA when the source reports 'Not Tested' for that organism/year/agent combination. Zero when the agent was on the panel but no isolates were available.",
+    "statement": "In {location}, {value} isolates were tested for {antimicrobial}",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "narms_now" },
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
+    "citations": []
+  },
+  "mic50": {
+    "id": "mic50",
+    "short_name": "MIC50",
+    "long_name": "Median minimum inhibitory concentration (MIC50)",
+    "category": "antimicrobial_resistance",
+    "short_description": "Median MIC value across isolates tested for a specific antimicrobial",
+    "long_description": "The MIC50 is the minimum inhibitory concentration (in micrograms per milliliter) at which 50% of isolates are inhibited — i.e., the median MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages.",
+    "statement": "The MIC50 for {antimicrobial} was {value} µg/mL",
+    "measure_type": "Concentration",
+    "unit": "µg/mL",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
+    "citations": []
+  },
+  "mic90": {
+    "id": "mic90",
+    "short_name": "MIC90",
+    "long_name": "90th percentile minimum inhibitory concentration (MIC90)",
+    "category": "antimicrobial_resistance",
+    "short_description": "90th percentile MIC value across isolates tested for a specific antimicrobial",
+    "long_description": "The MIC90 is the minimum inhibitory concentration (in micrograms per milliliter) at which 90% of isolates are inhibited — i.e., the 90th percentile MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages.",
+    "statement": "The MIC90 for {antimicrobial} was {value} µg/mL",
+    "measure_type": "Concentration",
+    "unit": "µg/mL",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
+    "citations": []
+  },
+
   "_sources": {
-    "narms": {
-      "name": "National Antimicobial Resistance Monitoring System (NARMS)",
-      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/narms-now-integrated-data",
-      "location": "BEAM Dashboard - Report Data",
-      "location_url": "https://data.cdc.gov/Foodborne-Waterborne-and-Related-Diseases/BEAM-Dashboard-Report-Data/jbhn-e8xn/about_data",
+    "narms_now": {
+      "name": "NARMS Now: Human Data - Antimicrobial Resistance",
+      "url": "https://www.cdc.gov/narms/data/index.html",
+      "location": "NARMS Now Interactive Dashboard - Human Data",
+      "location_url": "https://app.powerbigov.us/view?r=eyJrIjoiZmU5ZjA2ZDItNTU0MS00M2EzLWEyZmQtZmY3Y2RlZjdjYTdjIiwidCI6IjljZTcwODY5LTYwZGItNDRmZC1hYmU4LWQyNzY3MDc3ZmM4ZiJ9",
       "organization": "Centers for Disease Control and Prevention",
       "organization_url": "https://www.cdc.gov",
-      "restrictions": "Public Domain, US Government Data.",
-      "description": "What is NARMS? The National Antimicrobial Resistance Monitoring System (NARMS) is a U.S. public health monitoring system that tracks antimicrobial resistance (AMR) in foodborne and other intestinal bacteria using a One Health approach. As outlined in the NARMS Strategic Plan: 2021-2025, the overall purpose of NARMS is to: Monitor trends in antimicrobial resistance among enteric bacteria from humans, retail meats, and animals at the time of slaughter;  Disseminate timely information on antimicrobial resistance in pathogenic and commensal microorganisms to stakeholders in the U.S. and abroad to promote interventions that reduce resistance among foodborne bacteria; Conduct research to better understand the emergence, persistence, and spread of antimicrobial resistance; Provide timely antimicrobial resistance data for outbreak investigations; and Provide data that assist the FDA in making decisions related to the approval of safe and effective antimicrobial drugs for animals. What are the different components of NARMS? NARMS was established in 1996 as a partnership between the Food and Drug Administration (FDA), the Centers for Disease Control and Prevention (CDC), and the U.S. Department of Agriculture (USDA) to track antibiotic resistance in foodborne bacteria from retail meats, human illnesses, and food producing animals. In partnership with FDA’s Veterinary Laboratory Investigation and Response Network (Vet-LIRN) and USDA’s National Animal Health Laboratory Network (NAHLN), NARMS was expanded to encompass select animal pathogens. In partnership with the Environmental Protection Agency (EPA), NARMS is also working to understand antimicrobial resistance in environmental waters following the One Health paradigm to understand AMR in the environment. NARMS works closely with other Agencies in the USDA including the Animal and Plant Health Inspection Service (APHIS) and the Agricultural Research Service (ARS) to collect animal data and develop microbiological methods, the National Center for Biotechnology Information (NCBI) to publish genomic data, and state public health and agriculture agencies and universities to collect retail meat samples. Guidance to viewers: Antimicrobial resistance is extremely complex and driven by many factors. In general, it is difficult to draw meaningful conclusions by comparing just one year to another. Instead, it is best to look for patterns that emerge over several years. Genotypic resistance data available in NARMS Now will be updated on a rolling basis. NARMS human isolate data are available only from states that have given CDC permission to share it; however aggregate data from all states are included in the total counts in tables, graphs, and maps in the interactive displays. Note: Persons who use these data should cite the National Antimicrobial Resistance Monitoring System (NARMS) as the source of the original data. The data in these tables and displays are not confidential. Additional information on sampling and testing methodologies can be found here.\n\nSuggested citation: Food and Drug Administration (FDA). NARMS Now. Rockville, MD: U.S. Department of Health and Human Services. Available from URL: https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/narms-now-integrated-data. Accessed MM/DD/YYYY"
+      "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella). Both AST (phenotypic) and WGS (genotypic) test method results are available. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
+    "narms_retail_meats": {
+      "name": "FDA NARMS Retail Meats Surveillance Data",
+      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
+      "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
+      "organization_url": "https://www.fda.gov/animal-veterinary",
+      "description": "Isolate-level antimicrobial susceptibility data from the FDA NARMS retail meats program. Samples collected from retail stores in participating states. Organisms tested include Campylobacter (coli, jejuni), Enterococcus (faecalis, faecium), Escherichia coli, and Salmonella (multiple serotypes). Meat sources include retail chicken, ground beef, ground turkey, pork chops, and veal. SIR (Susceptible/Intermediate/Resistant) calls based on CLSI breakpoints. Data span 2002-2021.",
+      "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2025
+    },
+    "narms_animal_pathogen": {
+      "name": "FDA NARMS Animal Pathogen Surveillance Data",
+      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
+      "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
+      "organization_url": "https://www.fda.gov/animal-veterinary",
+      "description": "Antimicrobial susceptibility data from the FDA NARMS animal diagnostic pathogen surveillance program. Isolates submitted by veterinary diagnostic laboratories across the United States. Organisms tested include Campylobacter, E. coli, Enterococcus, and Salmonella from various host species (cattle, swine, poultry, etc.). SIR calls based on CLSI breakpoints. Data available at state level.",
+      "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
+    "narms_food_animals": {
+      "name": "FDA NARMS Food-Producing Animals Surveillance Data",
+      "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
+      "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
+      "organization_url": "https://www.fda.gov/animal-veterinary",
+      "description": "Isolate-level antimicrobial susceptibility data from four FDA NARMS food-producing animal surveillance programs: (1) HACCP slaughter surveillance (1997-present), covering federally inspected slaughter and processing plants; (2) Cecal sampling at slaughter (2013-present), testing cecal contents from food animals; (3) Minor Species (2020-2022), covering less common food animal species. Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella. SIR calls based on CLSI breakpoints. National-level data only (no state breakdown). Data span 1997-2023.",
+      "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    }
   }
-}
 }
