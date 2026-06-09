@@ -64,9 +64,10 @@ if (!identical(process$raw_state, raw_state)) {
            age = gsub('Total Years', 'Total', age),
            race_ethnicity = if_else(race_ethnicity == 'All_Races', 'Total', race_ethnicity),
            sex = if_else(sex == 'All_Sexes', 'Total', sex)
-    )
-    
-    
+    ) %>%
+    mutate(geography = if_else(geography == "46113", "46102", geography))
+
+
   #aggregated total
   data_total <- data %>%
     filter(race_ethnicity == 'Total', sex == 'Total')

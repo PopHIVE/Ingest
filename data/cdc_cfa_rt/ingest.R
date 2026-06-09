@@ -26,14 +26,25 @@ if (!identical(process$raw_state, raw_state)) {
     filter(nchar(geography) == 2, !is.na(geography_name)) |>
     select(geography, geography_name)
 
-  data_raw <- vroom::vroom("raw/5dqz-y4ea.csv.xz", show_col_types = FALSE)
+  data_raw <- vroom::vroom(
+    "raw/5dqz-y4ea.csv.xz",
+    show_col_types = FALSE,
+    col_types = list(
+      median    = vroom::col_double(),
+      lower     = vroom::col_double(),
+      upper     = vroom::col_double(),
+      p_growing = vroom::col_double()
+    )
+  ) %>%
+  mutate( date = as.Date(date,"%m/%d/%Y"),
+          as_of=as.Date(as_of,"%m/%d/%Y")
+    )
 
   # --- 3. Transform data ---
-  # Keep only the most recent model run (as_of) per state/disease/date
+  # Keep only rows from the single most recent model run (global max as_of)
+  latest_as_of <- max(data_raw$as_of, na.rm = TRUE)
   data_latest <- data_raw |>
-    group_by(state, disease, date) |>
-    slice_max(as_of, n = 1, with_ties = FALSE) |>
-    ungroup()
+    filter(as_of == latest_as_of)
 
   data_prepared <- data_latest |>
     mutate(
@@ -43,8 +54,8 @@ if (!identical(process$raw_state, raw_state)) {
         disease == "RSV"       ~ "rsv",
         TRUE ~ NA_character_
       ),
-      time = format(as.Date(date), "%Y-%m-%d")
     ) |>
+    rename(time= date) %>%
     filter(!is.na(disease_key)) |>
     left_join(state_fips_lookup, by = c("state" = "geography_name")) |>
     mutate(
