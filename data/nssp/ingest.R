@@ -150,8 +150,9 @@ if (!identical(process$raw_state, raw_state)) {
       )
 
 
-  data <- bind_rows(data_state, data_county)
-  
+  data <- bind_rows(data_state, data_county) %>%
+    mutate(geography = if_else(geography == "46113", "46102", geography))
+
   vroom::vroom_write(
     data,
     "standard/data.csv.gz",

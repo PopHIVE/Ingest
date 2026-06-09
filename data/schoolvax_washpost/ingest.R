@@ -2,6 +2,7 @@
 library(dplyr)
 library(vroom)
 library(readr)
+library(readxl)
 library(digest)
 library(data.table)
 
@@ -14,6 +15,13 @@ fips_lookup <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = 
   as.data.frame() %>%
   filter(nchar(geography) == 2) %>%  # State-level only
   select(geography, geography_name, state)
+
+# TN county FIPS lookup (state FIPS "47" = Tennessee)
+county_fips_tn <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE, altrep = FALSE) %>%
+  as.data.frame() %>%
+  filter(nchar(geography) == 5, substr(geography, 1, 2) == "47") %>%
+  mutate(county_name_clean = tolower(sub(" County$", "", geography_name))) %>%
+  select(geography, county_name_clean)
 
 process <- dcf::dcf_process_record()
 
@@ -32,9 +40,9 @@ urls <- list(
   schools = paste0(base_url, "vaxrates_schools.csv")
 )
 
-# # Read files directly from URLs
-# # Use altrep = FALSE to avoid arrow backend issues with digest and string operations
-# # Force full materialization with as.data.frame() to prevent Arrow type issues in dcf_process()
+# Read files directly from URLs
+# Use altrep = FALSE to avoid arrow backend issues with digest and string operations
+# Force full materialization with as.data.frame() to prevent Arrow type issues in dcf_process()
 counties_raw_temp <- vroom::vroom(urls$counties, show_col_types = FALSE, altrep = FALSE) %>%
   as.data.frame()
 
@@ -48,14 +56,19 @@ current_wapo_state <- list(
   schools_hash = digest::digest(schools_raw_temp)
 )
 
-# # Only process if data has changed
-if (!identical(process$wapo_state, current_wapo_state)) {
+# -----------------------------------------------------------------------------
+# 2. Check TN state Kindergarten Survey Excel file for changes
+# -----------------------------------------------------------------------------
+tn_excel_path <- "raw/KMMRCoverage_County.xlsx"
+current_tn_state <- list(hash = tools::md5sum(tn_excel_path)[[1]])
+
+# Only process if WaPo data or TN state data has changed
+if (!identical(process$wapo_state, current_wapo_state) || !identical(process$tn_state, current_tn_state)) {
 
   # ---------------------------------------------------------------------------
-  # 1a. Process county-level data
+  # 2a. Process WaPo county-level data
   # ---------------------------------------------------------------------------
 
-  # Use the data already loaded from URL
   counties_standard <- counties_raw_temp %>%
     # Select relevant columns and rename
     select(
@@ -79,7 +92,7 @@ if (!identical(process$wapo_state, current_wapo_state)) {
       values_to = "wapo_county_vax_rate",
       names_prefix = "year_"
     ) %>%
-    
+
     # Convert school year to time (use September 1st as start of academic year)
     mutate(
       school_year = gsub("_", "-", school_year),
@@ -104,18 +117,42 @@ if (!identical(process$wapo_state, current_wapo_state)) {
       wapo_postpand_herd
     ) %>%
     distinct() %>%
-    group_by(geography,time) %>%
-    mutate(id1=row_number()) %>%
-    filter(id1==1) %>%
+    group_by(geography, time) %>%
+    mutate(id1 = row_number()) %>%
+    filter(id1 == 1) %>%
     ungroup() %>%
     dplyr::select(-id1) %>%
     filter(!is.na(geography))
 
   # ---------------------------------------------------------------------------
-  # 1b. Process school-level data
+  # 2b. Process TN state Kindergarten Survey data (2024-25)
+  # Tennessee 2024-25 data replaces WaPo county data for TN
   # ---------------------------------------------------------------------------
 
-  # Use the data already loaded from URL
+  tn_raw <- readxl::read_excel(tn_excel_path, sheet = "Data") %>%
+    as.data.frame()
+
+  tn_standard <- tn_raw %>%
+    mutate(county_lower = tolower(trimws(county))) %>%
+    left_join(county_fips_tn, by = c("county_lower" = "county_name_clean")) %>%
+    mutate(
+      time = "09-01-2024",
+      wapo_county_vax_rate = as.numeric(percent_mmr),
+      wapo_prepand_herd = NA_character_,
+      wapo_postpand_herd = NA_character_
+    ) %>%
+    filter(!is.na(geography)) %>%
+    select(geography, time, wapo_county_vax_rate, wapo_prepand_herd, wapo_postpand_herd)
+
+  # Remove WaPo TN county rows and replace with TN state source data
+  counties_standard <- counties_standard %>%
+    filter(!(substr(geography, 1, 2) == "47" )) %>%
+    bind_rows(tn_standard)
+
+  # ---------------------------------------------------------------------------
+  # 2c. Process school-level data (unchanged from WaPo)
+  # ---------------------------------------------------------------------------
+
   schools_standard <- schools_raw_temp %>%
     # Parse school year to extract start year
     mutate(
@@ -165,7 +202,7 @@ if (!identical(process$wapo_state, current_wapo_state)) {
     distinct()
 
   # ---------------------------------------------------------------------------
-  # 1c. Write standardized output files
+  # 2d. Write standardized output files
   # ---------------------------------------------------------------------------
 
   # Convert to plain data.frame to avoid vctrs/Arrow issues when dcf reads metadata
@@ -173,26 +210,15 @@ if (!identical(process$wapo_state, current_wapo_state)) {
   schools_standard <- as.data.frame(schools_standard)
 
   # Use data.table::fwrite() which produces cleaner CSV that avoids Arrow binary issues
-  # Write county-level data
-  data.table::fwrite(
-    counties_standard,
-    "standard/data_counties.csv.gz",
-    compress = "gzip"
-  )
+  data.table::fwrite(counties_standard, "standard/data_counties.csv.gz", compress = "gzip")
+  data.table::fwrite(schools_standard, "standard/data_schools.csv.gz", compress = "gzip")
 
-  # Write school-level data
-  data.table::fwrite(
-    schools_standard,
-    "standard/data_schools.csv.gz",
-    compress = "gzip"
-  )
-
-   # ---------------------------------------------------------------------------
-  # 1d. Record processed state
+  # ---------------------------------------------------------------------------
+  # 2e. Record processed state
   # ---------------------------------------------------------------------------
 
   process$wapo_state <- current_wapo_state
+  process$tn_state <- current_tn_state
   dcf::dcf_process_record(updated = process)
 
 }
-

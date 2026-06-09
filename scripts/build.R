@@ -84,6 +84,7 @@ dcf_build()
 # dcf::dcf_process("bundle_childhood_immunizations", ".")
 # dcf::dcf_process("bundle_chronic_diseases", ".")
 # dcf::dcf_process("bundle_injury_overdose", ".")
+# dcf::dcf_process("bundle_measles", ".")
 
 #Update mermaid diagram
 #dcf_status_diagram()

@@ -239,6 +239,7 @@ for (term in terms) {
     mutate(
       STATEFP = sprintf("%02d", STATEFP),
       geography = paste0(STATEFP, sprintf("%03d", CNTYFP)),
+      geography = if_else(geography == "46113", "46102", geography),
     ) %>%
     mutate(across(
       c(`gtrends_drug+overdose`, gtrends_narcan,gtrends_naloxone, gtrends_overdose,gtrends_rsv_vaccine, gtrends_rsv, `gtrends_heat+exhaustion`,`gtrends_heat+stroke`, gtrends_9mm, gtrends_shotgun),
