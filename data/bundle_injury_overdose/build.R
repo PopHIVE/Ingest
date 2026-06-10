@@ -164,9 +164,9 @@ nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
   rename(nchs_pct_complete = pct_complete,
          nchs_pct_pending_invest = pct_pending_invest) %>%
   relocate(geography_name, state, geography) %>%
-  mutate(rate_deaths_overdose = n_deaths_overdose / pop *100000,
-         suppressed = if_else(is.na(n_deaths_overdose),1,0)) %>%
-  dplyr::select(geography, geography_name,time,n_deaths_overdose,rate_deaths_overdose)
+  mutate(suppressed = if_else(is.na(n_deaths_overdose) | n_deaths_overdose %in% 5, 1, 0),
+         rate_deaths_overdose = if_else(suppressed == 1, NA_real_, n_deaths_overdose / pop * 100000)) %>%
+  dplyr::select(geography, geography_name, time, n_deaths_overdose, rate_deaths_overdose, suppressed)
 
 nchs_od_state %>%
   dplyr::select(-geography) %>%
@@ -175,7 +175,7 @@ nchs_od_state %>%
          max_month = month(max_date),
          month = month(time)) %>%
   filter(month==12) %>%
-  dplyr::select(geography, time,n_deaths_overdose,rate_deaths_overdose) %>%
+  dplyr::select(geography, time, n_deaths_overdose, rate_deaths_overdose, suppressed) %>%
   write_parquet(.,'./dist/overdose_deaths_state.parquet')
 
 nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') %>%
@@ -185,11 +185,10 @@ nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') 
   left_join(pop, by='geography') %>%
   mutate(month=month(time),
          year= year(time),
-         suppressed = if_else(is.na(n_deaths_overdose),1,0),
-         n_deaths_overdose = if_else(is.na(n_deaths_overdose),NA_real_,n_deaths_overdose),
-         rate_deaths_overdose = n_deaths_overdose / pop*100000
+         suppressed = if_else(is.na(n_deaths_overdose) | n_deaths_overdose %in% 5, 1, 0),
+         rate_deaths_overdose = if_else(suppressed == 1, NA_real_, n_deaths_overdose / pop * 100000)
   ) %>%
-  dplyr::select(geography,time,n_deaths_overdose,rate_deaths_overdose, suppressed) %>%
+  dplyr::select(geography, time, n_deaths_overdose, rate_deaths_overdose, suppressed) %>%
   unique() %>%
   filter(!is.na(time))
 
@@ -207,17 +206,23 @@ nchs <- bind_rows(nchs_od_state, nchs_od_county)
 epic <- vroom::vroom('../../data/epic_injury/standard/monthly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years',
                         if_else(age ==  "25-45 Years", '25-44 Years', age)),
+          suppressed_firearm = as.integer(suppressed_firearm %in% 1 | epic_n_ed_firearm %in% 5),
+          suppressed_opioid  = as.integer(suppressed_opioid  %in% 1 | epic_n_ed_opioid  %in% 5),
+          suppressed_heat    = as.integer(suppressed_heat    %in% 1 | epic_n_ed_heat    %in% 5),
           epic_rate_ed_firearm = if_else(geography=='02' | suppressed_firearm==1, NA_real_, epic_rate_ed_firearm),
-          epic_rate_ed_opioid = if_else(geography=='02' | suppressed_opioid==1, NA_real_, epic_rate_ed_opioid),
-          epic_rate_ed_heat = if_else(geography=='02' | suppressed_heat==1, NA_real_, epic_rate_ed_heat)
+          epic_rate_ed_opioid  = if_else(geography=='02' | suppressed_opioid==1,  NA_real_, epic_rate_ed_opioid),
+          epic_rate_ed_heat    = if_else(geography=='02' | suppressed_heat==1,    NA_real_, epic_rate_ed_heat)
   )
 
 epic_year <- vroom::vroom('../../data/epic_injury/standard/yearly_injury.csv.gz') %>%
   mutate( age = if_else(age == "15-25 Years", '15-24 Years',
                         if_else(age ==  "25-45 Years", '25-44 Years', age)),
+          suppressed_firearm = as.integer(suppressed_firearm %in% 1 | epic_n_ed_firearm %in% 5),
+          suppressed_opioid  = as.integer(suppressed_opioid  %in% 1 | epic_n_ed_opioid  %in% 5),
+          suppressed_heat    = as.integer(suppressed_heat    %in% 1 | epic_n_ed_heat    %in% 5),
           epic_rate_ed_firearm = if_else(geography=='02' | suppressed_firearm==1, NA_real_, epic_rate_ed_firearm),
-          epic_rate_ed_opioid = if_else(geography=='02' | suppressed_opioid==1, NA_real_, epic_rate_ed_opioid),
-          epic_rate_ed_heat = if_else(geography=='02' | suppressed_heat==1, NA_real_, epic_rate_ed_heat)
+          epic_rate_ed_opioid  = if_else(geography=='02' | suppressed_opioid==1,  NA_real_, epic_rate_ed_opioid),
+          epic_rate_ed_heat    = if_else(geography=='02' | suppressed_heat==1,    NA_real_, epic_rate_ed_heat)
   )
 
 ## trends in overdoses
@@ -403,20 +408,20 @@ google_firearm <- google %>%
   mutate(age= 'Total')
 
 epic_firearms <- epic %>%
-  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm, suppressed_firearm) %>%
   mutate(source='Epic Cosmos') %>%
   rename(value = epic_rate_ed_firearm) %>%
   filter(!is.na(time))
 
 epic_firearms_year <- epic_year %>%
-  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm, suppressed_firearm) %>%
   mutate(source='Epic Cosmos') %>%
   rename(value = epic_rate_ed_firearm) %>%
   filter(!is.na(time)) %>%
   mutate(year= lubridate::year(time)) %>%
   left_join(state_cw, by=c('geography')) %>%
   dplyr::select(-time, -geography, -state)  %>%
-  rename(geography = geography_name) 
+  rename(geography = geography_name)
 
 firearms_by_source <- bind_rows(google_firearm, epic_firearms, wisqars_firearm) %>% 
   ungroup() %>%
