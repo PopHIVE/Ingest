@@ -186,7 +186,7 @@ nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') 
   mutate(month=month(time),
          year= year(time),
          suppressed = if_else(is.na(n_deaths_overdose),1,0),
-         n_deaths_overdose = if_else(is.na(n_deaths_overdose),5,n_deaths_overdose),
+         n_deaths_overdose = if_else(is.na(n_deaths_overdose),NA_real_,n_deaths_overdose),
          rate_deaths_overdose = n_deaths_overdose / pop*100000
   ) %>%
   dplyr::select(geography,time,n_deaths_overdose,rate_deaths_overdose, suppressed) %>%
@@ -198,7 +198,7 @@ mutate(max_date = max(time),
        max_month = month(max_date),
        month = month(time)) %>%
   filter(month==12) %>%
-  dplyr::select(geography, time,n_deaths_overdose,rate_deaths_overdose) %>%
+  dplyr::select(geography, time,n_deaths_overdose,rate_deaths_overdose, suppressed) %>%
 write_parquet(. ,'./dist/overdose_deaths_county.parquet')
 
 nchs <- bind_rows(nchs_od_state, nchs_od_county)

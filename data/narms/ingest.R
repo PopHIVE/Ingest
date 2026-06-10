@@ -905,7 +905,16 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
     left_join(site_to_fips, by = "site_name") %>%
     mutate(
       geography = if_else(is.na(site_name), "00", geography),
-      time = paste0(year, "-12-31")
+      time = paste0(year, "-12-31"),
+      # State rows where n_resistant > n_tested carry the national-level numerator
+      # instead of the state numerator — a Power BI DSC measure site-filter defect
+      # (the site filter does not reach the DSC numerator). Invalidate those cells.
+      # Also apply a blanket guard so no pct_resistant > 100 reaches standard output.
+      .bad = !is.na(n_resistant) & !is.na(n_tested) & n_resistant > n_tested,
+      pct_resistant = if_else(.bad | (!is.na(pct_resistant) & pct_resistant > 100),
+                              NA_real_, pct_resistant),
+      n_resistant   = if_else(.bad, NA_integer_, as.integer(n_resistant)),
+      n_tested      = if_else(.bad, NA_integer_, as.integer(n_tested))
     ) %>%
     select(geography, time, genus, species_serotype,
            antimicrobial_class, antimicrobial_agent, test_method,
