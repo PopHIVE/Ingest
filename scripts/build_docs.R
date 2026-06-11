@@ -857,4 +857,180 @@ write(toJSON(master_sources, auto_unbox = TRUE, pretty = TRUE), master_sources_p
 cat(sprintf("Master sources JSON written to %s (%d sources)\n",
             master_sources_path, length(master_sources)))
 
+# =====================================================================
+# Build machine-readable data manifest (bundles + sources)
+# Includes URLs, columns, units, descriptions for programmatic use
+# =====================================================================
+
+cat("Building data manifest JSON...\n")
+
+# Configuration: set GitHub repo URL (customize as needed)
+GITHUB_REPO <- "PopHIVE/Ingest"
+GITHUB_RAW_BASE <- sprintf("https://raw.githubusercontent.com/%s/main", GITHUB_REPO)
+
+# Helper: Build manifest entry for a dist file
+make_manifest_file_entry <- function(filepath, measure_info, bundle_name) {
+  filename <- basename(filepath)
+  columns <- get_parquet_columns(filepath)
+
+  if (length(columns) == 0) {
+    return(NULL)
+  }
+
+  # Build URL to the dist file (relative path from repo root)
+  rel_path <- file.path("data", bundle_name, "dist", filename)
+  rel_path <- gsub("\\\\", "/", rel_path)  # Convert Windows backslashes to forward slashes
+  file_url <- paste0(GITHUB_RAW_BASE, "/", rel_path)
+
+  # Build column entries
+  col_entries <- lapply(columns, function(col) {
+    var_info <- get_bundle_variable_info(measure_info, bundle_name, filename, col)
+    if (is.null(var_info)) {
+      var_info <- list(
+        short_name = col,
+        description = "",
+        measure_type = "",
+        unit = ""
+      )
+    }
+
+    list(
+      name = col,
+      short_name = var_info$short_name %||% col,
+      description = var_info$short_description %||% var_info$description %||%
+                   var_info$long_description %||% "",
+      measure_type = var_info$measure_type %||% "",
+      unit = var_info$unit %||% "",
+      levels = var_info$levels  # Include levels for tall-format columns
+    )
+  })
+
+  list(
+    filename = filename,
+    path = rel_path,
+    url = file_url,
+    columns = col_entries
+  )
+}
+
+# Helper: Build manifest entry for a source file
+make_manifest_source_file_entry <- function(filepath, measure_info) {
+  filename <- basename(filepath)
+  columns <- get_csv_columns(filepath)
+
+  if (length(columns) == 0) {
+    return(NULL)
+  }
+
+  # Build column entries
+  col_entries <- lapply(columns, function(col) {
+    var_info <- get_variable_info(measure_info, col)
+    if (is.null(var_info)) {
+      var_info <- list(
+        short_name = col,
+        description = "",
+        measure_type = "",
+        unit = ""
+      )
+    }
+
+    list(
+      name = col,
+      short_name = var_info$short_name %||% col,
+      description = var_info$short_description %||% var_info$description %||%
+                   var_info$long_description %||% "",
+      measure_type = var_info$measure_type %||% "",
+      unit = var_info$unit %||% ""
+    )
+  })
+
+  list(
+    filename = filename,
+    columns = col_entries
+  )
+}
+
+# Build manifest structure
+manifest <- list(
+  generated = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ"),
+  repository = GITHUB_REPO,
+  github_raw_base = GITHUB_RAW_BASE,
+  bundles = list(),
+  data_sources = list()
+)
+
+# Add bundle entries
+cat("Adding bundle entries to manifest...\n")
+for (i in seq_along(bundle_dirs)) {
+  bundle_name <- bundle_names[i]
+  bundle_dir <- bundle_dirs[i]
+  measure_info_path <- file.path(bundle_dir, "measure_info.json")
+
+  measure_info <- tryCatch({
+    fromJSON(measure_info_path, simplifyVector = FALSE)
+  }, error = function(e) list())
+
+  dist_files <- get_dist_files(bundle_dir)
+
+  # Build file entries
+  file_entries <- lapply(dist_files, function(f) {
+    make_manifest_file_entry(f, measure_info, bundle_name)
+  })
+  file_entries <- Filter(Negate(is.null), file_entries)
+
+  if (length(file_entries) > 0) {
+    manifest$bundles[[bundle_name]] <- list(
+      name = bundle_name,
+      display_name = format_bundle_name(bundle_name),
+      dist_files = file_entries
+    )
+    cat(sprintf("  Added bundle %s with %d dist file(s)\n", bundle_name, length(file_entries)))
+  }
+}
+
+# Add data source entries
+cat("Adding data source entries to manifest...\n")
+for (i in seq_along(source_dirs)) {
+  source_name <- source_names[i]
+  source_dir <- source_dirs[i]
+  measure_info_path <- file.path(source_dir, "measure_info.json")
+
+  measure_info <- tryCatch({
+    fromJSON(measure_info_path, simplifyVector = FALSE)
+  }, error = function(e) list())
+
+  standard_files <- get_standard_files(source_dir)
+
+  # Build file entries
+  file_entries <- lapply(standard_files, function(f) {
+    make_manifest_source_file_entry(f, measure_info)
+  })
+  file_entries <- Filter(Negate(is.null), file_entries)
+
+  if (length(file_entries) > 0) {
+    # Get source metadata
+    sources_meta <- measure_info[["_sources"]]
+    description <- ""
+    if (!is.null(sources_meta) && length(sources_meta) > 0) {
+      first_source <- sources_meta[[1]]
+      description <- first_source$description %||% ""
+    }
+
+    manifest$data_sources[[source_name]] <- list(
+      name = source_name,
+      display_name = format_source_name(source_name),
+      description = description,
+      standard_files = file_entries
+    )
+    cat(sprintf("  Added source %s with %d standard file(s)\n", source_name, length(file_entries)))
+  }
+}
+
+# Write manifest to JSON
+manifest_path <- "resources/data_manifest.json"
+write(toJSON(manifest, auto_unbox = TRUE, pretty = TRUE), manifest_path)
+cat(sprintf("Data manifest written to %s\n", manifest_path))
+cat(sprintf("  - %d bundles\n", length(manifest$bundles)))
+cat(sprintf("  - %d data sources\n", length(manifest$data_sources)))
+
 cat("Done! Documentation generated successfully.\n")

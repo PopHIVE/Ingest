@@ -786,9 +786,101 @@ dcf::dcf_build()
 source("scripts/validate_standard.R")
 validate_standard_file("data/source_name/standard/data.csv.gz")
 
-# Rebuild data source documentation (generates docs/index.html)
+# Rebuild data source documentation (generates docs/index.html + resources/data_manifest.json)
 Rscript scripts/build_docs.R
 ```
+
+---
+
+## Data Manifest (Machine-Readable API)
+
+`scripts/build_docs.R` generates two outputs:
+1. **HTML documentation** (`docs/index.html`) — human-readable with tables and source links
+2. **JSON manifest** (`resources/data_manifest.json`) — machine-readable contract for programmatic use
+
+The manifest includes:
+- **Direct URLs** to each dist parquet file (GitHub raw content links)
+- **Column metadata** (short names, descriptions, types, units)
+- **Tall-format support** — `levels` field for categorical measure columns
+- **Source metadata** — description, organization, and restrictions
+- **Generation timestamp** — for freshness validation
+
+### Manifest Structure
+
+```json
+{
+  "generated": "2026-06-11T14:18:00Z",
+  "repository": "PopHIVE/Ingest",
+  "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
+  "bundles": {
+    "bundle_respiratory": {
+      "name": "bundle_respiratory",
+      "display_name": "Bundle: Respiratory",
+      "dist_files": [
+        {
+          "filename": "rsv.parquet",
+          "path": "data/bundle_respiratory/dist/rsv.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_respiratory/dist/rsv.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "levels": null
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "Tall-format identifier",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "epic_rsv": {"source_id": "n_rsv"},
+                "gtrends_rsv": {}
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "data_sources": {
+    "epic": {
+      "name": "epic",
+      "display_name": "Epic",
+      "description": "Epic Cosmos encounter data...",
+      "standard_files": [...]
+    }
+  }
+}
+```
+
+### Key Advantages Over HTML
+
+- **Schema validation**: Programmatically compare actual parquets against expected schema
+- **Automated download**: Use URLs directly in ingestion pipelines
+- **Freshness**: Regenerate on every data update (not weekly), so URLs stay synchronized
+- **Tool integration**: Parse JSON for dashboards, validation scripts, or metadata services
+
+### CI/CD Integration
+
+Update your daily data workflow to rebuild docs after each data commit:
+
+```yaml
+# .github/workflows/update_daily_data.yaml
+- name: Rebuild documentation and manifest
+  run: Rscript scripts/build_docs.R
+- name: Commit documentation
+  if: success()
+  run: |
+    git add docs/ resources/data_manifest.json
+    git commit -m "docs: rebuild on data update"
+    git push
+```
+
+This ensures `data_manifest.json` is fresh every time data changes, keeping URLs and metadata current.
 
 ---
 
