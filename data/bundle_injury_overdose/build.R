@@ -284,7 +284,7 @@ combine_long <- function() {
       geography_name %in% c('United States', 'District of Columbia', state.name)
     )) %>%
     rename(date = time) %>%
-    dplyr::select(fips, geography_name, date, age, source, value, suppressed) %>%
+    dplyr::select(geography_name, date, source, value) %>%
     rename(geography = geography_name) %>%
     #filter(!is.na(value)) %>%
     write_parquet(.,
