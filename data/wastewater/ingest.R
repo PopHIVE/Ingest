@@ -83,6 +83,18 @@ if (!identical(process$raw_state, raw_state)) {
     mutate(time = format(as.Date(week_end), "%Y-%m-%d")) %>%
     select(geography, time, wastewater_covid, wastewater_flua, wastewater_rsv)
 
+  # Apply 95th percentile cap to suppress occasional extreme values
+  data <- data %>%
+    mutate(
+      covid_95 = quantile(wastewater_covid, probs = 0.95, na.rm = TRUE),
+      flu_95   = quantile(wastewater_flua,  probs = 0.95, na.rm = TRUE),
+      rsv_95   = quantile(wastewater_rsv,   probs = 0.95, na.rm = TRUE),
+      wastewater_covid = if_else(wastewater_covid > covid_95, covid_95, wastewater_covid),
+      wastewater_flua  = if_else(wastewater_flua  > flu_95,  flu_95,  wastewater_flua),
+      wastewater_rsv   = if_else(wastewater_rsv   > rsv_95,  rsv_95,  wastewater_rsv)
+    ) %>%
+    select(-covid_95, -flu_95, -rsv_95)
+
   # Compute population-weighted national average from state-level data
   state_ids <- dcf::dcf_load_census(out_dir = "../../resources", state_only = TRUE)
 
