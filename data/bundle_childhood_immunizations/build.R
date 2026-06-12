@@ -44,7 +44,7 @@ nis_insurance <- vroom::vroom('../nis/standard/data_insurance.csv.gz') %>%
 ############################################################
 #Compare Epic Cosmos ( 1dose), NIS (1+ doses),and Epic (1+ dose)
 vaxview <- vroom::vroom('../schoolvaxview/standard/data.csv.gz') %>%
-  filter(grepl('mmr', vax) & time == '2023-09-01') %>%
+  filter(vax == 'mmr' & time == '2023-09-01') %>%
   rename(value_vaxview = value,
          vaxview_survey_type = survey_type) %>%
   dplyr::select(value_vaxview, geography,vaxview_survey_type) %>%
