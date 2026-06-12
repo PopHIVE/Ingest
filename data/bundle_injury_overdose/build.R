@@ -284,8 +284,8 @@ combine_long <- function() {
       geography_name %in% c('United States', 'District of Columbia', state.name)
     )) %>%
     rename(date = time) %>%
-    dplyr::select(fips, geography_name, date, age, source, value) %>%
-    rename(geography = fips) %>%
+    dplyr::select(geography_name, fips, date, age, source, value) %>%
+    rename(geography = geography_name, geography_fips = fips) %>%
     #filter(!is.na(value)) %>%
     write_parquet(.,
                   './dist/overdose_by_geography_and_source_county.parquet')
