@@ -1,120 +1,420 @@
 {
-  "geography_name": {
-    "name": "geography_name",
-    "description": "Name of the geographic area",
-    "measure_type": "Geography",
-    "unit": "text",
-    "time_resolution": "N/A"
+  "n_deaths_cocaine": {
+    "id": "n_deaths_cocaine",
+    "short_name": "Cocaine overdose deaths",
+    "long_name": "Provisional cocaine overdose death count (12-month rolling total)",
+    "short_description": "12-month rolling total of provisional death counts involving cocaine.",
+    "long_description": "Provisional count of deaths involving cocaine (ICD-10 T40.5), reported as a 12-month backward rolling total. Data are provisional and subject to revision as death certificates are processed. National and state level.",
+    "statement": "In {location}, there were {value} provisional cocaine overdose deaths in the 12 months ending {time}.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Month",
+    "sources": [{ "id": "nchs_vsrr_state" }]
   },
+
+  "n_deaths_heroin": {
+    "id": "n_deaths_heroin",
+    "short_name": "Heroin overdose deaths",
+    "long_name": "Provisional heroin overdose death count (12-month rolling total)",
+    "short_description": "12-month rolling total of provisional death counts involving heroin.",
+    "long_description": "Provisional count of deaths involving heroin (ICD-10 T40.1), reported as a 12-month backward rolling total. Data are provisional and subject to revision as death certificates are processed. National and state level.",
+    "statement": "In {location}, there were {value} provisional heroin overdose deaths in the 12 months ending {time}.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Month",
+    "sources": [{ "id": "nchs_vsrr_state" }]
+  },
+
+  "n_deaths_methadone": {
+    "id": "n_deaths_methadone",
+    "short_name": "Methadone overdose deaths",
+    "long_name": "Provisional methadone overdose death count (12-month rolling total)",
+    "short_description": "12-month rolling total of provisional death counts involving methadone.",
+    "long_description": "Provisional count of deaths involving methadone (ICD-10 T40.3), reported as a 12-month backward rolling total. Data are provisional and subject to revision as death certificates are processed. National and state level.",
+    "statement": "In {location}, there were {value} provisional methadone overdose deaths in the 12 months ending {time}.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Month",
+    "sources": [{ "id": "nchs_vsrr_state" }]
+  },
+
+  "n_deaths_any_opioid": {
+    "id": "n_deaths_any_opioid",
+    "short_name": "Opioid overdose deaths",
+    "long_name": "Provisional opioid overdose death count (12-month rolling total)",
+    "short_description": "12-month rolling total of provisional death counts involving natural, semi-synthetic, or synthetic opioids including methadone.",
+    "long_description": "Provisional count of deaths involving natural, semi-synthetic, and synthetic opioids including methadone (ICD-10 T40.2–T40.4), reported as a 12-month backward rolling total. Data are provisional and subject to revision as death certificates are processed. National and state level.",
+    "statement": "In {location}, there were {value} provisional opioid overdose deaths in the 12 months ending {time}.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Month",
+    "sources": [{ "id": "nchs_vsrr_state" }]
+  },
+
   "n_deaths_all_cause": {
-    "name": "n_deaths_all_cause",
-    "description": "Number of deaths due to any cause over past 12 months",
-    "measure_type": "Number of deaths",
-    "unit": "count",
-    "time_resolution": "12 months",
-    "sources": ["nchs_vsrr_provisional"]
+    "id": "n_deaths_all_cause",
+    "short_name": "All-cause deaths",
+    "long_name": "Provisional all-cause death count (12-month rolling total)",
+    "short_description": "12-month rolling total of provisional all-cause death counts.",
+    "long_description": "Provisional count of deaths from all causes, reported as a 12-month backward rolling total. Data are provisional and subject to revision as death certificates are processed. National and state level.",
+    "statement": "In {location}, there were {value} provisional all-cause deaths in the 12 months ending {time}.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Month",
+    "sources": [{ "id": "nchs_vsrr_state" }]
   },
+
   "n_deaths_overdose": {
-    "name": "n_deaths_overdose",
-    "description": "Number of deaths due to an overdose over past 12 months",
-    "measure_type": "Number of deaths",
-    "unit": "count",
-    "time_resolution": "12 months",
-    "sources": ["nchs_vsrr_provisional"]
+    "id": "n_deaths_overdose",
+    "short_name": "Drug overdose deaths",
+    "long_name": "Provisional drug overdose death count",
+    "short_description": "Provisional count of drug overdose deaths. State-level data are 12-month rolling totals; county-level data are monthly.",
+    "long_description": "Provisional count of deaths from drug overdose. State-level values (data.csv.gz) are 12-month backward rolling totals. County-level values (data_county.csv.gz) are monthly provisional counts. Data are provisional and subject to revision. Counts of 1–9 at the county level are suppressed by NCHS and imputed as 5; see suppressed_flag.",
+    "statement": "In {location}, there were {value} provisional drug overdose deaths.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Month",
+    "sources": [{ "id": "nchs_vsrr_state" }, { "id": "nchs_vsrr_county" }]
   },
-  "pct_drug_specified": {
-    "name": "pct_drug_specified",
-    "description": "Percentage of overdose deaths where drug is specified",
-    "measure_type": "Percentage of deaths",
-    "unit": "percent",
-    "time_resolution": "12 months",
-    "sources": ["nchs_vsrr_provisional"]
-  },
-  "pct_pending_invest": {
-    "name": "pct_pending_invest",
-    "description": "Percentage of deaths pending investigation",
-    "measure_type": "Percentage of deaths",
-    "unit": "percent",
-    "time_resolution": "12 months",
-    "sources": ["nchs_vsrr_provisional"]
-  },
+
   "pct_complete": {
-    "name": "pct_complete",
-    "description": "Expected completeness of death records",
-    "measure_type": "Percentage of deaths",
-    "unit": "percent",
-    "time_resolution": "12 months",
-    "sources": ["nchs_vsrr_provisional"]
+    "id": "pct_complete",
+    "short_name": "Percent complete",
+    "long_name": "Percent of death records complete",
+    "short_description": "Percentage of death records that have been fully processed for the reporting period.",
+    "long_description": "Percentage of death records that are complete (i.e., not pending investigation or correction) for the given state and time period. Higher values indicate more finalized data. National and state level.",
+    "statement": "In {location}, {value}% of death records were complete as of {time}.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Month",
+    "sources": [{ "id": "nchs_vsrr_state" }]
   },
+
+  "pct_pending_invest": {
+    "id": "pct_pending_invest",
+    "short_name": "Percent pending investigation",
+    "long_name": "Percent of death records pending investigation",
+    "short_description": "Percentage of death records still pending investigation for the reporting period.",
+    "long_description": "Percentage of death records that are still under investigation (e.g., awaiting toxicology results or cause-of-death determination). Records pending investigation may have incomplete drug involvement information. Available at the state level (data.csv.gz) and county level (data_county.csv.gz).",
+    "statement": "In {location}, {value}% of death records were pending investigation as of {time}.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Month",
+    "sources": [{ "id": "nchs_vsrr_state" }, { "id": "nchs_vsrr_county" }]
+  },
+
   "suppressed_flag": {
-    "name": "suppressed_flag",
-    "description": "1 if the death count was suppressed by NCHS (reported as 5 to indicate a count between 1 and 9) and imputed, 0 otherwise",
-    "measure_type": "Flag",
-    "unit": "binary",
-    "time_resolution": "12 months",
-    "sources": ["nchs_vsrr_provisional"]
+    "id": "suppressed_flag",
+    "short_name": "Suppressed flag",
+    "long_name": "NCHS death count suppression flag",
+    "short_description": "Indicates whether the death count was suppressed by NCHS due to small cell size.",
+    "long_description": "Value is 1 if the death count was suppressed by NCHS (0–9 events) and 0 otherwise. A value of 5 is used as a placeholder for suppressed counts. County-level only (data_county.csv.gz).",
+    "statement": "The death count for {location} at {time} was {value} (suppressed).",
+    "measure_type": "Binary",
+    "unit": "Binary indicator",
+    "time_resolution": "Month",
+    "sources": [{ "id": "nchs_vsrr_county" }]
   },
-  "n_deaths_{variant.name}": {
-    "name_template": "n_deaths_{variant.name}",
-    "description_template": "Number of deaths due to {variant.name} over past 12 months",
-    "measure_type": "Number of deaths",
-    "unit": "count",
-    "time_resolution": "12 months",
-    "sources": ["nchs_vsrr_provisional"],
-    "variants": {
-      "cocaine": {"default": "cocaine" , "short_description": "T40.5" },
-      "heroin": { "default": "heroin", "short_description": "T40.1" },
-      "methadone": { "default": "methadone", "short_description": "T40.3" },
-      "any_opioid": { "default": "any_opioid", "short_description": "T40.2-T40.4" }
-    }
+
+  "rate_all_causes": {
+    "id": "rate_all_causes",
+    "short_name": "All-cause mortality rate",
+    "long_name": "Age-adjusted all-cause mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from all causes per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for all causes of death, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted all-cause mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
   },
-  "rate_{variant.name}": {
-    "name_template": "rate_{variant.name}",
-    "description_template": "Age-adjusted death rate from {variant.name} per 100,000 population",
-    "measure_type": "Death rate",
-    "unit": "rate per 100,000",
-    "time_resolution": "yearly",
-    "sources": ["nvss_21_causes"],
-    "variants": {
-      "all_causes": { "default": "all_causes", "Cause_label.1": "all causes" },
-      "alzheimer_disease": { "default": "alzheimer_disease", "Cause_label.1": "Alzheimer's disease" },
-      "cancer": { "default": "cancer", "Cause_label.1": "cancer" },
-      "chronic_liver_disease_and_cirrhosis": { "default": "chronic_liver_disease_and_cirrhosis", "Cause_label.1": "chronic liver disease and cirrhosis" },
-      "chronic_lower_respiratory_diseases": { "default": "chronic_lower_respiratory_diseases", "Cause_label.1": "chronic lower respiratory diseases" },
-      "covid_19": { "default": "covid_19", "Cause_label.1": "COVID-19" },
-      "diabetes": { "default": "diabetes", "Cause_label.1": "diabetes" },
-      "drug_overdose": { "default": "drug_overdose", "Cause_label.1": "drug overdose" },
-      "heart_disease": { "default": "heart_disease", "Cause_label.1": "heart disease" },
-      "suicide": { "default": "suicide", "Cause_label.1": "suicide" },
-      "unintentional_injuries": { "default": "unintentional_injuries", "Cause_label.1": "unintentional injuries" },
-      "falls_ages_65_and_over": { "default": "falls_ages_65_and_over", "Cause_label.1": "falls_ages_65_and_over" },
-      "firearm_related_injury": { "default": "firearm_related_injury", "Cause_label.1": "firearm_related_injury" },
-      "hiv_disease": { "default": "hiv_disease", "Cause_label.1": "hiv_disease" },
-      "homicide": { "default": "homicide", "Cause_label.1": "homicide" },
-      "hypertension": { "default": "hypertension", "Cause_label.1": "hypertension" },
-      "influenza_and_pneumonia": { "default": "influenza_and_pneumonia", "Cause_label.1": "influenza_and_pneumonia" },
-      "kidney_disease": { "default": "kidney_disease", "Cause_label.1": "kidney_disease" },
-      "parkinson_disease": { "default": "parkinson_disease", "Cause_label.1": "parkinson_disease" },
-      "pneumonitis_due_to_solids_and_liquids": { "default": "pneumonitis_due_to_solids_and_liquids", "Cause_label.1": "pneumonitis_due_to_solids_and_liquids" },
-      "stroke": { "default": "stroke", "Cause_label.1": "stroke" }
-    }
+
+  "rate_alzheimer_disease": {
+    "id": "rate_alzheimer_disease",
+    "short_name": "Alzheimer's mortality rate",
+    "long_name": "Age-adjusted Alzheimer's disease mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from Alzheimer's disease per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for Alzheimer's disease, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted Alzheimer's disease mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
   },
+
+  "rate_covid_19": {
+    "id": "rate_covid_19",
+    "short_name": "COVID-19 mortality rate",
+    "long_name": "Age-adjusted COVID-19 mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from COVID-19 per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for COVID-19, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted COVID-19 mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_cancer": {
+    "id": "rate_cancer",
+    "short_name": "Cancer mortality rate",
+    "long_name": "Age-adjusted cancer (malignant neoplasms) mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from cancer per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for malignant neoplasms (cancer), expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted cancer mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_chronic_liver_disease_and_cirrhosis": {
+    "id": "rate_chronic_liver_disease_and_cirrhosis",
+    "short_name": "Liver disease mortality rate",
+    "long_name": "Age-adjusted chronic liver disease and cirrhosis mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from chronic liver disease and cirrhosis per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for chronic liver disease and cirrhosis, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted chronic liver disease and cirrhosis mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_chronic_lower_respiratory_diseases": {
+    "id": "rate_chronic_lower_respiratory_diseases",
+    "short_name": "CLRD mortality rate",
+    "long_name": "Age-adjusted chronic lower respiratory diseases mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from chronic lower respiratory diseases per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for chronic lower respiratory diseases (including COPD), expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted chronic lower respiratory disease mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_diabetes": {
+    "id": "rate_diabetes",
+    "short_name": "Diabetes mortality rate",
+    "long_name": "Age-adjusted diabetes mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from diabetes per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for diabetes, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted diabetes mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_drug_overdose": {
+    "id": "rate_drug_overdose",
+    "short_name": "Drug overdose mortality rate",
+    "long_name": "Age-adjusted drug overdose mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from drug overdose per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for drug overdose deaths, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted drug overdose mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_falls_ages_65_and_over": {
+    "id": "rate_falls_ages_65_and_over",
+    "short_name": "Falls mortality rate (65+)",
+    "long_name": "Age-adjusted mortality rate from falls (ages 65 and over)",
+    "short_description": "Quarterly age-adjusted death rate from falls among adults 65 and over per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for deaths due to falls among adults aged 65 and over, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted falls mortality rate (65+) was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_firearm_related_injury": {
+    "id": "rate_firearm_related_injury",
+    "short_name": "Firearm injury mortality rate",
+    "long_name": "Age-adjusted firearm-related injury mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from firearm-related injuries per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for firearm-related injuries (including homicide, suicide, and unintentional), expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted firearm-related injury mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_heart_disease": {
+    "id": "rate_heart_disease",
+    "short_name": "Heart disease mortality rate",
+    "long_name": "Age-adjusted heart disease mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from heart disease per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for heart disease, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted heart disease mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_hiv_disease": {
+    "id": "rate_hiv_disease",
+    "short_name": "HIV mortality rate",
+    "long_name": "Age-adjusted HIV disease mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from HIV disease per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for HIV disease, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted HIV mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_homicide": {
+    "id": "rate_homicide",
+    "short_name": "Homicide mortality rate",
+    "long_name": "Age-adjusted homicide mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from homicide per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for homicide, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted homicide mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_hypertension": {
+    "id": "rate_hypertension",
+    "short_name": "Hypertension mortality rate",
+    "long_name": "Age-adjusted hypertension mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from hypertension per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for hypertension (high blood pressure), expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted hypertension mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_influenza_and_pneumonia": {
+    "id": "rate_influenza_and_pneumonia",
+    "short_name": "Flu & pneumonia mortality rate",
+    "long_name": "Age-adjusted influenza and pneumonia mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from influenza and pneumonia per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for influenza and pneumonia, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted influenza and pneumonia mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_kidney_disease": {
+    "id": "rate_kidney_disease",
+    "short_name": "Kidney disease mortality rate",
+    "long_name": "Age-adjusted kidney disease mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from kidney disease per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for kidney disease (nephritis, nephrotic syndrome, and nephrosis), expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted kidney disease mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_parkinson_disease": {
+    "id": "rate_parkinson_disease",
+    "short_name": "Parkinson's mortality rate",
+    "long_name": "Age-adjusted Parkinson's disease mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from Parkinson's disease per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for Parkinson's disease, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted Parkinson's disease mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_pneumonitis_due_to_solids_and_liquids": {
+    "id": "rate_pneumonitis_due_to_solids_and_liquids",
+    "short_name": "Aspiration pneumonitis mortality rate",
+    "long_name": "Age-adjusted pneumonitis due to solids and liquids mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from pneumonitis due to solids and liquids per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for pneumonitis due to solids and liquids (aspiration pneumonitis), expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted aspiration pneumonitis mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_stroke": {
+    "id": "rate_stroke",
+    "short_name": "Stroke mortality rate",
+    "long_name": "Age-adjusted stroke mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from stroke per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for stroke (cerebrovascular diseases), expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted stroke mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_suicide": {
+    "id": "rate_suicide",
+    "short_name": "Suicide mortality rate",
+    "long_name": "Age-adjusted suicide mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from suicide per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for intentional self-harm (suicide), expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted suicide mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
+  "rate_unintentional_injuries": {
+    "id": "rate_unintentional_injuries",
+    "short_name": "Unintentional injury mortality rate",
+    "long_name": "Age-adjusted unintentional injury mortality rate",
+    "short_description": "Quarterly age-adjusted death rate from unintentional injuries per 100,000 population.",
+    "long_description": "Provisional quarterly age-adjusted mortality rate for unintentional injuries (accidents), expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+    "statement": "In {location}, the age-adjusted unintentional injury mortality rate was {value} per 100,000 for the quarter ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "nchs_vsrr_quarterly" }]
+  },
+
   "_sources": {
-    "nchs_vsrr_provisional": {
-      "organization": "Centers for Disease Control and Prevention (NCHS)",
-      "organization_url": "https://www.cdc.gov/nchs/nvss/vsrr/drug-overdose-data.htm",
-      "name": "VSRR Provisional Drug Overdose Death Counts",
-      "url": "https://data.cdc.gov/National-Center-for-Health-Statistics/VSRR-Provisional-Drug-Overdose-Death-Counts/xkb8-kh2a/about_data",
-      "description": "Provisional counts for drug overdose deaths from the National Vital Statistics System. Provisional counts may be incomplete and causes may be pending investigation; methods exist to adjust for reporting delays. Data updated monthly.",
-      "date_accessed": "2025",
+    "nchs_vsrr_state": {
+      "name": "NCHS VSRR Provisional Drug Overdose Death Counts (State)",
+      "url": "https://data.cdc.gov/d/xkb8-kh2a",
+      "date_accessed": 2025,
+      "organization": "National Center for Health Statistics (NCHS)",
+      "organization_url": "https://www.cdc.gov/nchs/",
+      "description": "Provisional monthly counts of drug overdose deaths by type of drug, reported as 12-month backward rolling totals. Includes deaths involving cocaine, heroin, methadone, and opioids broadly. Data are from the Vital Statistics Rapid Release (VSRR) program and are provisional, meaning they are subject to revision as more death certificates are received and processed. Covers national and state levels. New York City and New York State are combined.",
       "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions."
     },
-    "nvss_21_causes": {
+    "nchs_vsrr_county": {
+      "name": "NCHS VSRR Provisional County-Level Drug Overdose Death Counts",
+      "url": "https://data.cdc.gov/d/gb4e-yj24",
+      "date_accessed": 2025,
       "organization": "National Center for Health Statistics (NCHS)",
-      "organization_url": "https://www.cdc.gov/nchs",
-      "name": "NVSS - 21 Cause of Death Groupings (state-level)",
-      "description": "State-level counts grouped into the standard 21 cause categories (from NVSS)",
-      "date_accessed": "2025",
+      "organization_url": "https://www.cdc.gov/nchs/",
+      "description": "Provisional monthly counts of drug overdose deaths at the county level, from the Vital Statistics Rapid Release (VSRR) program. Data are provisional and subject to revision. Counts of 1–9 deaths are suppressed to protect privacy and imputed as 5; the suppressed_flag column identifies these records.",
+      "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions."
+    },
+    "nchs_vsrr_quarterly": {
+      "name": "NCHS VSRR Quarterly Provisional Estimates for Selected Indicators of Mortality",
+      "url": "https://data.cdc.gov/d/489q-934x",
+      "date_accessed": 2025,
+      "organization": "National Center for Health Statistics (NCHS)",
+      "organization_url": "https://www.cdc.gov/nchs/",
+      "description": "Provisional quarterly age-adjusted mortality rates for 21 selected causes of death, from the Vital Statistics Rapid Release (VSRR) program. Rates are based on 3-month period estimates and are expressed per 100,000 population. Covers national and state levels. Data are provisional and subject to revision.",
       "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions."
     }
   }
