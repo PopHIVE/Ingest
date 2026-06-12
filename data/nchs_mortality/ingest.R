@@ -144,7 +144,8 @@ if (!identical(process2$raw_state, raw_state2)) {
     rename(n_deaths_overdose='Provisional Drug Overdose Deaths',
            pct_pending_invest = 'Percentage Of Records Pending Investigation',
            ) %>%
-    dplyr::select(geography, time, n_deaths_overdose,pct_pending_invest)
+    mutate(suppressed_flag = if_else(n_deaths_overdose == 5, 1L, 0L)) %>%
+    dplyr::select(geography, time, n_deaths_overdose, suppressed_flag, pct_pending_invest)
  
   
   vroom::vroom_write(
