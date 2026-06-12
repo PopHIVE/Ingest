@@ -403,13 +403,13 @@ google_firearm <- google %>%
   mutate(age= 'Total')
 
 epic_firearms <- epic %>%
-  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm, suppressed_firearm) %>%
   mutate(source='Epic Cosmos') %>%
   rename(value = epic_rate_ed_firearm) %>%
   filter(!is.na(time))
 
 epic_firearms_year <- epic_year %>%
-  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm, suppressed_firearm) %>%
   mutate(source='Epic Cosmos') %>%
   rename(value = epic_rate_ed_firearm) %>%
   filter(!is.na(time)) %>%
