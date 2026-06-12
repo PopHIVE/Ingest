@@ -185,8 +185,8 @@ nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') 
   left_join(pop, by='geography') %>%
   mutate(month=month(time),
          year= year(time),
-         suppressed_flag = if_else(suppressed_flag == 1, 1L, 0L),
-         rate_deaths_overdose = if_else(suppressed_flag == 1, NA_real_, n_deaths_overdose / pop * 100000)
+         n_deaths_overdose = if_else(is.na(n_deaths_overdose), 5, n_deaths_overdose),
+         rate_deaths_overdose = if_else(n_deaths_overdose == 5, NA_real_, n_deaths_overdose / pop * 100000)
   ) %>%
   rename(suppressed = suppressed_flag) %>%
   dplyr::select(geography, time, n_deaths_overdose, rate_deaths_overdose, suppressed) %>%
