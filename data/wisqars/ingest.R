@@ -112,6 +112,37 @@ dcf_download_wisqars_patched <- function(
   invisible(params)
 }
 
+# Probes the WISQARS fatal-injury API to find the latest year with available data.
+# Starts from current year - 1 (WISQARS data typically lags ~1 year) and walks
+# back up to 3 years until a request returns rows.
+wisqars_latest_year <- function() {
+  start <- as.integer(format(Sys.Date(), "%Y")) - 1
+  for (yr in seq(start, start - 3)) {
+    params <- lapply(list(
+      TotalLine = "NO", intent = "0", mech = "20810", sex = "0", race = "0",
+      race_yr = "0", year1 = yr, year2 = yr, agebuttn = "ALL",
+      fiveyr1 = "65", fiveyr2 = "199", c_age1 = "0", c_age2 = "199",
+      groupby1 = "NONE", groupby2 = "NONE", groupby3 = "NONE",
+      groupby4 = "NONE", groupby5 = "NONE", groupby6 = "NONE",
+      state = "00", ethnicty = "0", ypllage = "65", urbrul = "0", tbi = "0",
+      app_id = "1002", component_id = "1000"
+    ), as.character)
+    found <- tryCatch({
+      h <- curl::new_handle()
+      curl::handle_setheaders(h, `Content-Type` = "application/json")
+      curl::handle_setopt(h, copypostfields = jsonlite::toJSON(list(parameters = params), auto_unbox = TRUE))
+      req <- curl::curl_fetch_memory("https://wisqars.cdc.gov/api/cost-fatal", handle = h)
+      req$status_code == 200 && length(jsonlite::fromJSON(rawToChar(req$content))) > 0
+    }, error = function(e) FALSE)
+    if (found) {
+      message("Detected latest WISQARS year: ", yr)
+      return(yr)
+    }
+  }
+  message("Could not auto-detect latest WISQARS year, defaulting to ", start - 1)
+  start - 1
+}
+
 #
 # Download
 #
@@ -125,7 +156,7 @@ agegrps <- list(c(0,14),
 #Use custom age groups
 #violence, stratified by age and state
 
-wisqars_downloader <- function(max_year = 2024, min_year = 2001, raw_dir = "raw") {
+wisqars_downloader <- function(max_year = wisqars_latest_year(), min_year = 2001, raw_dir = "raw") {
 
   dir.create(raw_dir, showWarnings = FALSE, recursive = TRUE)
 
@@ -381,7 +412,7 @@ wisqars_downloader <- function(max_year = 2024, min_year = 2001, raw_dir = "raw"
 
 # Downloads only new_year from the API and appends it to the existing raw files.
 # Much faster than re-scraping all years. Run this when a new year of data is released.
-wisqars_append_year <- function(new_year = 2024) {
+wisqars_append_year <- function(new_year = wisqars_latest_year()) {
   tmp_dir <- "raw_tmp"
 
   wisqars_downloader(max_year = new_year, min_year = new_year, raw_dir = tmp_dir)
@@ -399,7 +430,7 @@ wisqars_append_year <- function(new_year = 2024) {
       existing <- vroom::vroom(raw_file, show_col_types = FALSE)
       new_rows  <- vroom::vroom(tmp_file, show_col_types = FALSE)
       message("  ", basename(raw_file), ": existing rows=", nrow(existing),
-              ", new 2024 rows=", nrow(new_rows))
+              ", new ", new_year, " rows=", nrow(new_rows))
       combined  <- dplyr::bind_rows(
         coerce_val_cols(existing %>% dplyr::filter(as.integer(year) != new_year)),
         coerce_val_cols(new_rows)
@@ -414,11 +445,11 @@ wisqars_append_year <- function(new_year = 2024) {
 
 
 
-# Add 2024 data without re-scraping everything:
-wisqars_append_year(2024)
+# Add latest year data without re-scraping everything:
+wisqars_append_year()
 
 # Full re-scrape (slow):
-#wisqars_downloader(max_year = 2024)
+#wisqars_downloader()
   
 #
 # Reformat
