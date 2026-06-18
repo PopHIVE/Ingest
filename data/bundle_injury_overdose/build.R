@@ -185,11 +185,11 @@ nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') 
   left_join(pop, by='geography') %>%
   mutate(month=month(time),
          year= year(time),
-         suppressed = if_else(is.na(n_deaths_overdose),1,0),
-         n_deaths_overdose = if_else(is.na(n_deaths_overdose),5,n_deaths_overdose),
-         rate_deaths_overdose = n_deaths_overdose / pop*100000
+         n_deaths_overdose = if_else(is.na(n_deaths_overdose), 5, n_deaths_overdose),
+         rate_deaths_overdose = if_else(n_deaths_overdose == 5, NA_real_, n_deaths_overdose / pop * 100000)
   ) %>%
-  dplyr::select(geography,time,n_deaths_overdose,rate_deaths_overdose, suppressed) %>%
+  rename(suppressed = suppressed_flag) %>%
+  dplyr::select(geography, time, n_deaths_overdose, rate_deaths_overdose, suppressed) %>%
   unique() %>%
   filter(!is.na(time))
 
@@ -403,13 +403,13 @@ google_firearm <- google %>%
   mutate(age= 'Total')
 
 epic_firearms <- epic %>%
-  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm, suppressed_firearm) %>%
   mutate(source='Epic Cosmos') %>%
   rename(value = epic_rate_ed_firearm) %>%
   filter(!is.na(time))
 
 epic_firearms_year <- epic_year %>%
-  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm) %>%
+  dplyr::select(geography, time, age, epic_n_ed_firearm, epic_rate_ed_firearm, suppressed_firearm) %>%
   mutate(source='Epic Cosmos') %>%
   rename(value = epic_rate_ed_firearm) %>%
   filter(!is.na(time)) %>%
