@@ -164,8 +164,7 @@ nchs_od_state <- vroom::vroom('../nchs_mortality/standard/data.csv.gz') %>%
   rename(nchs_pct_complete = pct_complete,
          nchs_pct_pending_invest = pct_pending_invest) %>%
   relocate(geography_name, state, geography) %>%
-  mutate(rate_deaths_overdose = n_deaths_overdose / pop *100000,
-         suppressed = if_else(is.na(n_deaths_overdose),1,0)) %>%
+  mutate(rate_deaths_overdose = n_deaths_overdose / pop *100000)  %>%
   dplyr::select(geography, geography_name,time,n_deaths_overdose,rate_deaths_overdose)
 
 nchs_od_state %>%
@@ -185,10 +184,7 @@ nchs_od_county <- vroom::vroom('../nchs_mortality/standard/data_county.csv.gz') 
   left_join(pop, by='geography') %>%
   mutate(month=month(time),
          year= year(time),
-         n_deaths_overdose = if_else(is.na(n_deaths_overdose), 5, n_deaths_overdose),
-         rate_deaths_overdose = if_else(n_deaths_overdose == 5, NA_real_, n_deaths_overdose / pop * 100000)
-  ) %>%
-  rename(suppressed = suppressed_flag) %>%
+         rate_deaths_overdose =n_deaths_overdose / pop *100000  ) %>%
   dplyr::select(geography, time, n_deaths_overdose, rate_deaths_overdose, suppressed) %>%
   unique() %>%
   filter(!is.na(time))
