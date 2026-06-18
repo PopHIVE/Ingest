@@ -68,7 +68,7 @@ county_chronic <- chr_raw %>%
     values_to = "value"
   ) %>%
   filter(!is.na(value)) %>%
-  arrange(geography, time, outcome_name)
+  arrange(outcome_name, geography, time)
 
 # -----------------------------------------------------------------------------
 # 3. Validate — check for duplicate geography-time-outcome_name rows
