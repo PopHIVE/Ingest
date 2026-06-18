@@ -53,25 +53,20 @@ ACS5         <- "acs/acs5"
 ACS5_SUBJECT <- "acs/acs5/subject"
 
 FIRST_YEAR <- 2019L  # schema was different before 2019
-FLOOR_YEAR <- 2024L  # last known available vintage year at time of writing
 
-# Probe the Census API to discover if new vintage years have been released.
-# ACS 5-year estimates are released each December; start one year beyond the
-# known floor and advance until the API rejects a year.
-latest_vintage <- FLOOR_YEAR
-.probe_ceiling <- as.integer(format(Sys.Date(), "%Y")) - 1L
-.yr <- FLOOR_YEAR + 1L
-while (.yr <= .probe_ceiling) {
-  .ok <- tryCatch({
-    censusapi::getCensus(
-      name = "acs/acs5", vars = "B01001_001E",
-      vintage = .yr, region = "state:06", key = api_key
-    )
-    TRUE
-  }, error = function(e) FALSE)
-  if (.ok) { latest_vintage <- .yr; .yr <- .yr + 1L } else break
-}
-rm(.yr, .ok, .probe_ceiling)
+# Discover the latest available ACS 5-year vintage from the Census API
+# discovery endpoint (api.census.gov/data.json) — no probing loop needed.
+# Falls back to process$last_vintage_year, then FIRST_YEAR, if the call fails.
+latest_vintage <- tryCatch({
+  censusapi::listCensusApis() %>%
+    filter(name == "acs/acs5") %>%
+    pull(vintage) %>%
+    as.integer() %>%
+    max(na.rm = TRUE)
+}, error = function(e) {
+  message("[WARN] Could not fetch Census API metadata: ", conditionMessage(e))
+  if (!is.null(process$last_vintage_year)) as.integer(process$last_vintage_year) else FIRST_YEAR
+})
 message("ACS latest vintage year: ", latest_vintage)
 
 YEARS <- FIRST_YEAR:latest_vintage
