@@ -111,7 +111,25 @@ if (!identical(process1$raw_state, raw_state1)) {
   
  data <- data_type %>%
    full_join(data_completeness, by=c('geography', 'time')) %>%
-   full_join(data_pct_specified, by=c('geography', 'time')) 
+   full_join(data_pct_specified, by=c('geography', 'time')) %>%
+   mutate(suppressed_heroin = if_else(is.na(n_deaths_heroin), 1, 0L), 
+          n_deaths_heroin = if_else(suppressed_heroin == 1, 5, n_deaths_heroin),
+          
+          suppressed_methadone = if_else(is.na(n_deaths_methadone), 1, 0L), 
+          n_deaths_methadone = if_else(suppressed_methadone == 1, 5, n_deaths_methadone),
+          
+          suppressed_cocaine = if_else(is.na(n_deaths_cocaine), 1, 0L), 
+          n_deaths_cocaine = if_else(suppressed_cocaine == 1, 5, n_deaths_cocaine),
+
+          suppressed_any_opioid = if_else(is.na(n_deaths_any_opioid), 1, 0L), 
+          n_deaths_any_opioid = if_else(suppressed_any_opioid ==  1, 5, n_deaths_any_opioid),
+
+          suppressed_all_cause = if_else(is.na(n_deaths_all_cause), 1, 0L), 
+          n_deaths_all_cause = if_else(suppressed_all_cause == 1  , 5, n_deaths_all_cause), 
+          
+          suppressed_overdose = if_else(is.na(n_deaths_overdose), 1, 0L), 
+          n_deaths_overdose = if_else(suppressed_overdose == 1, 5, n_deaths_overdose)
+          )
  
   vroom::vroom_write(
     data,
@@ -144,8 +162,9 @@ if (!identical(process2$raw_state, raw_state2)) {
     rename(n_deaths_overdose='Provisional Drug Overdose Deaths',
            pct_pending_invest = 'Percentage Of Records Pending Investigation',
            ) %>%
-    mutate(suppressed_flag = if_else(n_deaths_overdose == 5, 1L, 0L)) %>%
-    dplyr::select(geography, time, n_deaths_overdose, suppressed_flag, pct_pending_invest)
+    mutate(suppressed = if_else(is.na(n_deaths_overdose), 1, 0L), 
+           n_deaths_overdose = if_else(suppressed == 1, 5, n_deaths_overdose) ) %>%
+    dplyr::select(geography, time, n_deaths_overdose, suppressed, pct_pending_invest)
  
   
   vroom::vroom_write(
