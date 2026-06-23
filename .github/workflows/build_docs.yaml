@@ -28,7 +28,7 @@ jobs:
       - name: Check for changes
         id: diff
         run: |
-          if git diff --exit-code docs/; then
+          if git diff --exit-code docs/ resources/data_manifest.json; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -39,6 +39,6 @@ jobs:
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
-          git add docs/
-          git commit -m "Update data documentation"
+          git add docs/ resources/data_manifest.json
+          git commit -m "docs: rebuild documentation and data manifest"
           git push

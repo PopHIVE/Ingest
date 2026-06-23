@@ -11,6 +11,18 @@
     "sources": [{ "id": "epic_cosmos" }]
   },
 
+  "n_patients_chronic": {
+    "id": "n_patients_chronic",
+    "short_name": "Number of patients (chronic)",
+    "long_name": "Number of patients in the chronic disease sample",
+    "short_description": "Total number of patients in the state-level chronic disease sample.",
+    "long_description": "Total number of patients in the state-level chronic disease sample (diabetes denominator). Data accessed via Epic Cosmos SlicerDicer. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Count",
+    "unit": "patients",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
   "n_obesity_county": {
     "id": "n_obesity_county",
     "short_name": "Number of patients (chronic, county)",
@@ -25,10 +37,10 @@
 
   "obesity_bmi": {
     "id": "obesity_bmi",
-    "short_name": "BMI 30-49.8",
-    "long_name": "Body Mass Index (BMI) between 30 and 49.8",
-    "short_description": "Percent of sample with a BMI between 30 and 49.8 in the past 2 years.",
-    "long_description": "Percent of sample with a Body Mass Index (BMI) measurement between 30 and 49.8 in the past 2 years. Data accessed via Epic Cosmos SlicerDicer.",
+    "short_name": "BMI >= 30",
+    "long_name": "Body Mass Index (BMI) 30 or more",
+    "short_description": "Percent of sample with a BMI of 30 or more in the past 2 years.",
+    "long_description": "Percent of sample with a Body Mass Index (BMI) measurement of 30 or more in the past 2 years. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
     "unit": "%",
     "time_resolution": "Year",
@@ -59,6 +71,18 @@
     "sources": [{ "id": "epic_cosmos" }]
   },
 
+  "suppressed_flag": {
+    "id": "suppressed_flag",
+    "short_name": "Suppressed flag",
+    "long_name": "Suppression flag for imputed counts",
+    "short_description": "Indicates whether the value was suppressed and imputed.",
+    "long_description": "Flag indicating whether the original count was suppressed due to privacy protections (counts fewer than 10) and imputed as 5. A value of 1 indicates the count was suppressed and imputed; 0 indicates the reported value is exact.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
   "diabetes_dx_ccw": {
     "id": "diabetes_dx_ccw",
     "short_name": "Diabetes CCW definition",
@@ -71,47 +95,11 @@
     "sources": [{ "id": "epic_cosmos" }]
   },
 
-  "hemoglobin_a1c_7": {
-    "id": "hemoglobin_a1c_7",
-    "short_name": "HA1C >= 7%",
-    "long_name": "Hemoglobin A1C 7% or more",
-    "short_description": "Percent of sample with Hemoglobin A1C test results of 7% or more.",
-    "long_description": "Percent of sample with Hemoglobin A1C test results of 7% or more. Data accessed via Epic Cosmos SlicerDicer.",
-    "measure_type": "percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
-  "bmi_30_49_8": {
-    "id": "bmi_30_49_8",
-    "short_name": "BMI 30-49.8",
-    "long_name": "Body Mass Index (BMI) between 30 and 49.8",
-    "short_description": "Percent of sample with a BMI between 30 and 49.8.",
-    "long_description": "Percent of sample with a Body Mass Index (BMI) measurement between 30 and 49.8. Data accessed via Epic Cosmos SlicerDicer.",
-    "measure_type": "percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
-  "percentage_with_base_patient_followed_by_hemoglobin_a1c_6_5_or_more_within_10_years": {
-    "id": "percentage_with_base_patient_followed_by_hemoglobin_a1c_6_5_or_more_within_10_years",
-    "short_name": "HA1C >= 6.5%",
-    "long_name": "Hemoglobin A1C 6.5% or more",
-    "short_description": "Percent of sample with Hemoglobin A1C test results of 6.5% or more.",
-    "long_description": "Percent of sample with Hemoglobin A1C test results of 6.5% or more. Data accessed via Epic Cosmos SlicerDicer.",
-    "measure_type": "percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
   "_sources": {
     "epic_cosmos": {
       "name": "Epic Cosmos",
       "url": "https://cosmos.epic.com/",
-      "date_accessed": 2025,
+      "date_accessed": 2026,
       "organization": "Epic Systems",
       "organization_url": "https://www.epic.com/",
       "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",

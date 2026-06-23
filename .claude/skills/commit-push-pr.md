@@ -1,3 +1,8 @@
+---
+name: commit-push-pr
+description: Stage, commit, push, and open a pull request in one workflow for the PopHIVE/Ingest repository. Use when the user is ready to ship a completed change and wants to wrap up the git workflow — runs pre-commit checks (R syntax, compressed data files), commits with Conventional Commits prefixes (feat/fix/docs/refactor/data/chore), pushes the branch, and creates a GitHub PR via gh.
+---
+
 # Commit, Push, and Create PR
 
 Automate the git workflow for completing a feature or fix.
