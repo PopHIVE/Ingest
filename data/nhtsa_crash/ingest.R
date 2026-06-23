@@ -14,9 +14,31 @@ library(vroom)
 process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
-# 1. Download raw FARS zip files (2000-2023)
+# 1. Download raw FARS zip files (2000-latest)
 # -----------------------------------------------------------------------------
-years <- 2000:2023
+find_latest_fars_year <- function() {
+  yr <- as.integer(format(Sys.Date(), "%Y"))
+  while (yr >= 2020) {
+    url <- sprintf(
+      paste0(
+        "https://static.nhtsa.gov/nhtsa/downloads/FARS/",
+        "%d/National/FARS%dNationalCSV.zip"
+      ),
+      yr, yr
+    )
+    status <- tryCatch(
+      attr(curlGetHeaders(url), "status"),
+      error = function(e) 0L
+    )
+    if (identical(status, 200L)) return(yr)
+    yr <- yr - 1
+  }
+  stop("Could not determine latest available FARS year")
+}
+
+years <- 200:find_latest_fars_year()
+
+dir.create("raw", showWarnings = FALSE)
 
 download_fars_zip <- function(yr) {
   url <- sprintf(
@@ -107,7 +129,7 @@ if (!identical(process$raw_state, raw_state_new)) {
 
   message("Reading person files...")
   person_all <- map_dfr(years, read_fars_file, file_pattern = "^person\\.csv$")
-
+  
   # ---------------------------------------------------------------------------
   # 5. Build geography fields and normalize key columns
   # ---------------------------------------------------------------------------
@@ -124,16 +146,8 @@ if (!identical(process$raw_state, raw_state_new)) {
         if ("RUR_URB"   %in% names(.)) as.integer(RUR_URB)   else NA_integer_,
         if ("LAND_USE"  %in% names(.)) as.integer(LAND_USE)  else NA_integer_
       ),
-      # Alcohol involvement: DRUNK_DR = number of drunk drivers
-      alcohol_related = !is.na(DRUNK_DR) & as.integer(DRUNK_DR) >= 1,
-      # Speeding: SPEEDREL only available from 2010 onward
-      speeding_related = if ("SPEEDREL" %in% names(.)) {
-        YEAR >= 2010 & !is.na(SPEEDREL) & as.integer(SPEEDREL) %in% 1:4
-      } else {
-        NA
-      },
       single_vehicle   = !is.na(VE_TOTAL) & as.integer(VE_TOTAL) == 1
-    )
+    ) 
 
   # ---------------------------------------------------------------------------
   # 6. Output 1: data.csv.gz — Annual fatalities & crashes
@@ -267,7 +281,7 @@ if (!identical(process$raw_state, raw_state_new)) {
   # Build person-level dataset with crash type flags inherited from the crash
   crash_flags <- accident_all %>%
     mutate(ST_CASE = as.integer(ST_CASE)) %>%
-    select(ST_CASE, YEAR, alcohol_related, speeding_related, single_vehicle, rural_urban)
+    select(ST_CASE, YEAR, single_vehicle, rural_urban)
 
   person_crash_flags <- person_all %>%
     mutate(YEAR = as.integer(YEAR), ST_CASE = as.integer(ST_CASE)) %>%
@@ -293,8 +307,6 @@ if (!identical(process$raw_state, raw_state_new)) {
         TRUE                 ~ NA_character_
       ),
       per_typ_int              = as.integer(PER_TYP),
-      nhtsa_alcohol_related     = !is.na(alcohol_related)  & alcohol_related,
-      nhtsa_speeding_related    = !is.na(speeding_related) & speeding_related,
       nhtsa_single_vehicle      = !is.na(single_vehicle)   & single_vehicle,
       nhtsa_rural               = !is.na(rural_urban) & rural_urban == 1,
       nhtsa_urban               = !is.na(rural_urban) & rural_urban == 2,
@@ -302,8 +314,7 @@ if (!identical(process$raw_state, raw_state_new)) {
       nhtsa_cyclist_involved    = per_typ_int %in% 6:7
     )
 
-  crash_type_cols <- c("nhtsa_alcohol_related", "nhtsa_speeding_related",
-                       "nhtsa_single_vehicle", "nhtsa_rural", "nhtsa_urban",
+  crash_type_cols <- c("nhtsa_single_vehicle", "nhtsa_rural", "nhtsa_urban",
                        "nhtsa_pedestrian_involved", "nhtsa_cyclist_involved")
 
   agg_crash_demo <- function(df, geo_col, group_vars) {
@@ -351,3 +362,4 @@ if (!identical(process$raw_state, raw_state_new)) {
 
   message("NHTSA FARS ingestion complete.")
 }
+ 
