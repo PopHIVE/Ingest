@@ -14,31 +14,9 @@ library(vroom)
 process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
-# 1. Download raw FARS zip files (2000-latest)
+# 1. Download raw FARS zip files (2000-2023)
 # -----------------------------------------------------------------------------
-find_latest_fars_year <- function() {
-  yr <- as.integer(format(Sys.Date(), "%Y"))
-  while (yr >= 2020) {
-    url <- sprintf(
-      paste0(
-        "https://static.nhtsa.gov/nhtsa/downloads/FARS/",
-        "%d/National/FARS%dNationalCSV.zip"
-      ),
-      yr, yr
-    )
-    status <- tryCatch(
-      attr(curlGetHeaders(url), "status"),
-      error = function(e) 0L
-    )
-    if (identical(status, 200L)) return(yr)
-    yr <- yr - 1
-  }
-  stop("Could not determine latest available FARS year")
-}
-
-years <- 2000:find_latest_fars_year()
-
-dir.create("raw", showWarnings = FALSE)
+years <- 2000:2023
 
 download_fars_zip <- function(yr) {
   url <- sprintf(
