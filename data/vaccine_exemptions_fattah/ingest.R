@@ -150,11 +150,14 @@ if (!identical(process$raw_state, raw_state)) {
   county_from_state <- state_only_counties %>%
     left_join(
       data_state %>% rename(state_fips = geography),
-      by = "state_fips"
+      by = "state_fips",relationship = "many-to-many"
     ) %>%
     select(-state_fips)
 
-  data_county <- bind_rows(data_county, county_from_state)
+  data_county <- bind_rows(
+    data_county %>% mutate(is_state_estimate = 0),
+    county_from_state %>% mutate(is_state_estimate = 1)
+  )
 
   # ---------------------------------------------------------------------------
   # 4. Write standardized outputs

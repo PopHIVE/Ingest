@@ -1,0 +1,93 @@
+{
+  "cdc_rt_{variant}": {
+    "id": "cdc_rt_{variant}",
+    "short_name": "Rt ({variant.short_name})",
+    "long_name": "Effective Reproduction Number (Rt) for {variant.short_name}",
+    "category": "respiratory",
+    "short_description": "Median estimate of the effective reproduction number (Rt) for {variant.short_name}, indicating whether the epidemic is growing (Rt > 1) or declining (Rt < 1).",
+    "long_description": "The effective reproduction number (Rt) estimates the average number of secondary infections caused by one infectious person at a given time, accounting for population immunity and interventions. Values above 1.0 indicate epidemic growth; values below 1.0 indicate decline. Produced by CDC's Center for Forecasting and Outbreak Analytics (CFA) using EpiNow2 (through May 2026) and hierarchical generalized additive models (HGAM) with spatial partial pooling (June 2026 onward). Estimates are available at the state and national level.",
+    "statement": "In {location}, the estimated Rt for {variant.short_name} was {value}.",
+    "measure_type": "Rate",
+    "unit": "Reproduction number",
+    "time_resolution": "Day",
+    "sources": [{ "id": "cdc_cfa_rt" }],
+    "citations": [],
+    "variants": {
+      "covid": { "short_name": "COVID-19" },
+      "flu":   { "short_name": "Influenza" },
+      "rsv":   { "short_name": "RSV" }
+    }
+  },
+
+  "cdc_rt_{variant}_lower": {
+    "id": "cdc_rt_{variant}_lower",
+    "short_name": "Rt lower 95% CI ({variant.short_name})",
+    "long_name": "Effective Reproduction Number (Rt) Lower 95% Credible Interval for {variant.short_name}",
+    "category": "respiratory",
+    "short_description": "Lower bound of the 95% credible interval for the Rt estimate for {variant.short_name}.",
+    "long_description": "Lower bound of the 95% credible interval for the effective reproduction number (Rt) for {variant.short_name}. Used together with the upper bound to convey uncertainty in the Rt estimate.",
+    "statement": "In {location}, the lower 95% credible interval bound for the {variant.short_name} Rt was {value}.",
+    "measure_type": "Rate",
+    "unit": "Reproduction number",
+    "time_resolution": "Day",
+    "sources": [{ "id": "cdc_cfa_rt" }],
+    "citations": [],
+    "variants": {
+      "covid": { "short_name": "COVID-19" },
+      "flu":   { "short_name": "Influenza" },
+      "rsv":   { "short_name": "RSV" }
+    }
+  },
+
+  "cdc_rt_{variant}_upper": {
+    "id": "cdc_rt_{variant}_upper",
+    "short_name": "Rt upper 95% CI ({variant.short_name})",
+    "long_name": "Effective Reproduction Number (Rt) Upper 95% Credible Interval for {variant.short_name}",
+    "category": "respiratory",
+    "short_description": "Upper bound of the 95% credible interval for the Rt estimate for {variant.short_name}.",
+    "long_description": "Upper bound of the 95% credible interval for the effective reproduction number (Rt) for {variant.short_name}. Used together with the lower bound to convey uncertainty in the Rt estimate.",
+    "statement": "In {location}, the upper 95% credible interval bound for the {variant.short_name} Rt was {value}.",
+    "measure_type": "Rate",
+    "unit": "Reproduction number",
+    "time_resolution": "Day",
+    "sources": [{ "id": "cdc_cfa_rt" }],
+    "citations": [],
+    "variants": {
+      "covid": { "short_name": "COVID-19" },
+      "flu":   { "short_name": "Influenza" },
+      "rsv":   { "short_name": "RSV" }
+    }
+  },
+
+  "cdc_rt_{variant}_p_growing": {
+    "id": "cdc_rt_{variant}_p_growing",
+    "short_name": "Probability growing ({variant.short_name})",
+    "long_name": "Probability of Epidemic Growth (Rt > 1) for {variant.short_name}",
+    "category": "respiratory",
+    "short_description": "Probability that Rt is above 1.0, indicating epidemic growth, for {variant.short_name}.",
+    "long_description": "The probability that the effective reproduction number (Rt) is above 1.0 for {variant.short_name}, derived from the posterior credible interval of the Rt estimate. Values near 1.0 indicate high confidence the epidemic is growing; values near 0.0 indicate high confidence it is declining.",
+    "statement": "In {location}, the probability that {variant.short_name} was growing was {value}.",
+    "measure_type": "Percent",
+    "unit": "Probability (0-1)",
+    "time_resolution": "Day",
+    "sources": [{ "id": "cdc_cfa_rt" }],
+    "citations": [],
+    "variants": {
+      "covid": { "short_name": "COVID-19" },
+      "flu":   { "short_name": "Influenza" },
+      "rsv":   { "short_name": "RSV" }
+    }
+  },
+
+  "_sources": {
+    "cdc_cfa_rt": {
+      "name": "CDC Epidemic Trends and Rt",
+      "url": "https://data.cdc.gov/Public-Health-Surveillance/CDC-Epidemic-Trends-and-Rt/5dqz-y4ea/",
+      "organization": "CDC Center for Forecasting and Outbreak Analytics (CFA)",
+      "organization_url": "https://www.cdc.gov/forecast-outbreak-analytics/",
+      "description": "Weekly estimates of the effective reproduction number (Rt) for COVID-19, Influenza, and RSV at the US national and state level. Rt represents the average number of secondary infections generated by one infectious person and is a key indicator of epidemic trajectory. Values above 1 indicate growth; below 1 indicate decline. Data include the median Rt estimate, 95% credible intervals, and the probability that Rt exceeds 1.0. Through May 2026, estimates were produced using EpiNow2 with independent state-level models; from June 2026 onward, estimates use hierarchical generalized additive models (HGAM) with spatial partial pooling across states. Coverage begins September 2024.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    }
+  }
+}

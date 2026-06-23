@@ -12,6 +12,7 @@ library(dplyr)
 library(tidyr)
 library(arrow)
 library(lubridate)
+library(MMWRweek)
 
 process <- dcf::dcf_process_record()
 standard_files <- paste0("../", names(process$source_files))
@@ -56,6 +57,7 @@ measles_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_type
         dplyr::select(geography, time, year, week, value ) %>%
         filter(!is.na(geography)) %>%
          mutate(
+   # time = if_else(week == 53,  as.Date(paste0(year, "-12-31")), time),
     date = as.Date(time, format = "%m-%d-%Y"),
     source = "cdc_measles_cases_nnds_cum",
     value = if_else(is.na(value), 0, value)
@@ -179,9 +181,9 @@ cdc_national <- measles_cdc %>%
   filter(geography == "00") %>%
   mutate(
     date = as.Date(time, format = "%m-%d-%Y"),
-    year = year(date),
-    week = isoweek(date),
-    geography = "United States"
+    year = MMWRweek::MMWRweek(date)$MMWRyear,
+    week = MMWRweek::MMWRweek(date)$MMWRweek,
+      geography = "United States"
   ) %>%
   select(geography, date, year, week, value) %>%
   filter(!is.na(value)) %>%
@@ -249,7 +251,7 @@ exemptions_county <- vaccine_exemptions_county %>%
     #exemption_rate_mmr_med = if_else(is.na(exemption_rate_mmr_med), 0, exemption_rate_mmr_med),
     #exemption_rate_mmr_nonmed =  exemption_rate_mmr_nonmed
   ) %>%
-  select(geography, date, year,  value = exemption_rate_mmr_nonmed) %>%
+  select(geography, is_state_estimate, date, year,  value = exemption_rate_mmr_nonmed) %>%
   filter(!is.na(value)) %>%
   mutate(source = "vaccine_exemption_rate")
 
@@ -290,7 +292,9 @@ measles_county_long <- bind_rows(
   wastewater_county
 ) %>%
   arrange(geography, source, date) %>%
-  select(geography, date, year, week, source, value)
+  select(geography, is_state_estimate,date, year, week, source, value) %>%
+  mutate(is_state_estimate = if_else(is.na(is_state_estimate), 0, is_state_estimate)
+  )
 
 # Write county-level parquet
 arrow::write_parquet(
@@ -339,4 +343,5 @@ arrow::write_parquet(
   "dist/measles_cases_by_age.parquet",
   compression = "snappy"
 )
+
 
