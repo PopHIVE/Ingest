@@ -15,22 +15,34 @@
     "id": "n_patients_chronic",
     "short_name": "Number of patients (chronic)",
     "long_name": "Number of patients in the chronic disease sample",
-    "short_description": "Total number of patients in the state-level chronic disease sample.",
-    "long_description": "Total number of patients in the state-level chronic disease sample (diabetes denominator). Data accessed via Epic Cosmos SlicerDicer. Counts fewer than 10 are suppressed and imputed as 5.",
+    "short_description": "Total number of patients in the chronic disease sample.",
+    "long_description": "Total number of patients in the chronic disease sample (diabetes denominator). Data accessed via Epic Cosmos SlicerDicer. Counts fewer than 10 are suppressed and imputed as 5.",
     "measure_type": "Count",
     "unit": "patients",
     "time_resolution": "Year",
     "sources": [{ "id": "epic_cosmos" }]
   },
 
-  "n_obesity_county": {
-    "id": "n_obesity_county",
-    "short_name": "Number of patients (chronic, county)",
+  "n_patients_ob": {
+    "id": "n_patients_ob",
+    "short_name": "Number of patients (obesity, state)",
+    "long_name": "Number of patients in the state-level obesity sample",
+    "short_description": "Total number of patients in the state-level obesity sample.",
+    "long_description": "Total number of patients in the state-level obesity sample. Data accessed via Epic Cosmos SlicerDicer. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Count",
+    "unit": "patients",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "n_patients_ob_county": {
+    "id": "n_patients_ob_county",
+    "short_name": "Number of patients (obesity, county)",
     "long_name": "Number of patients in the county-level obesity sample",
     "short_description": "Total number of patients in the county-level obesity sample.",
-    "long_description": "Total number of patients within the county-level obesity sample. Data from Epic Cosmos. County-level data may have high missingness in some states.",
-    "measure_type": "integer",
-    "unit": "patient",
+    "long_description": "Total number of patients in the county-level obesity sample. Data accessed via Epic Cosmos SlicerDicer. County-level data may have high missingness in some states. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Count",
+    "unit": "patients",
     "time_resolution": "Year",
     "sources": [{ "id": "epic_cosmos" }]
   },
@@ -71,18 +83,6 @@
     "sources": [{ "id": "epic_cosmos" }]
   },
 
-  "suppressed_flag": {
-    "id": "suppressed_flag",
-    "short_name": "Suppressed flag",
-    "long_name": "Suppression flag for imputed counts",
-    "short_description": "Indicates whether the value was suppressed and imputed.",
-    "long_description": "Flag indicating whether the original count was suppressed due to privacy protections (counts fewer than 10) and imputed as 5. A value of 1 indicates the count was suppressed and imputed; 0 indicates the reported value is exact.",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Year",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
   "diabetes_dx_ccw": {
     "id": "diabetes_dx_ccw",
     "short_name": "Diabetes CCW definition",
@@ -91,6 +91,90 @@
     "long_description": "Percent of sample with a diagnostic code for diabetes on an encounter in the past 2 years, similar to the CCW definition: https://www2.ccwdata.org/web/guest/condition-categories-chronic. Data accessed via Epic Cosmos SlicerDicer.",
     "measure_type": "percent",
     "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_diabetes_a1c_6_5": {
+    "id": "suppressed_diabetes_a1c_6_5",
+    "short_name": "Suppressed flag (diabetes A1c)",
+    "long_name": "Suppression flag for diabetes A1c >= 6.5% percent",
+    "short_description": "Indicates whether the diabetes_a1c_6_5 value was suppressed.",
+    "long_description": "Due to privacy protections, percents with fewer than 5 events are suppressed and coded as 0.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_diabetes_dx_ccw": {
+    "id": "suppressed_diabetes_dx_ccw",
+    "short_name": "Suppressed flag (diabetes CCW)",
+    "long_name": "Suppression flag for diabetes CCW definition percent",
+    "short_description": "Indicates whether the diabetes_dx_ccw value was suppressed.",
+    "long_description": "Due to privacy protections, percents with fewer than 5 events are suppressed and coded as 0.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_obesity_bmi": {
+    "id": "suppressed_obesity_bmi",
+    "short_name": "Suppressed flag (BMI)",
+    "long_name": "Suppression flag for BMI >= 30 percent",
+    "short_description": "Indicates whether the obesity_bmi value was suppressed.",
+    "long_description": "Due to privacy protections, percents with fewer than 5 events are suppressed and coded as 0.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_obesity_dx_ccw": {
+    "id": "suppressed_obesity_dx_ccw",
+    "short_name": "Suppressed flag (obesity CCW)",
+    "long_name": "Suppression flag for obesity CCW definition percent",
+    "short_description": "Indicates whether the obesity_dx_ccw value was suppressed.",
+    "long_description": "Due to privacy protections, percents with fewer than 5 events are suppressed and coded as 0.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_n_patients_chronic": {
+    "id": "suppressed_n_patients_chronic",
+    "short_name": "Suppressed flag (chronic patients)",
+    "long_name": "Suppression flag for number of patients in the chronic disease sample",
+    "short_description": "Indicates whether the n_patients_chronic value was suppressed.",
+    "long_description": "Due to privacy protections, percents with fewer than 5 events are suppressed and coded as 0.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_n_patients_ob": {
+    "id": "suppressed_n_patients_ob",
+    "short_name": "Suppressed flag (obesity patients, state)",
+    "long_name": "Suppression flag for number of patients in the state-level obesity sample",
+    "short_description": "Indicates whether the n_patients_ob value was suppressed.",
+    "long_description": "Due to privacy protections, percents with fewer than 5 events are suppressed and coded as 0.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_n_patients_ob_county": {
+    "id": "suppressed_n_patients_ob_county",
+    "short_name": "Suppressed flag (obesity patients, county)",
+    "long_name": "Suppression flag for number of patients in the county-level obesity sample",
+    "short_description": "Indicates whether the n_patients_ob_county value was suppressed.",
+    "long_description": "Due to privacy protections, percents with fewer than 5 events are suppressed and coded as 0.",
+    "measure_type": "Binary",
+    "unit": "0/1",
     "time_resolution": "Year",
     "sources": [{ "id": "epic_cosmos" }]
   },
