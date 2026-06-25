@@ -48,7 +48,8 @@ SELECT_CODES <- c(
   # C02 Tobacco
   "H31", "H33", "H35", "H36", "H38",
   # C03 Alcohol & Other Drug Use
-  "H42", "H46", "H48", "H49", "QNCURRENTOPIOID",
+  "H42", "H43", "H46", "H47", "H48", "H49", "QNCURRENTOPIOID",
+  "H50", "H51", "H52", "H53", "H54", "QNHALLUCDRUG", "H55", "QNILLICT",
   # C05 Dietary
   "QNFR0", "QNVEG0", "H75", "QNBK7DAY",
   # C08 Other Health Topics
@@ -88,10 +89,20 @@ measure_dict <- tibble::tribble(
   "H38",              "pct_current_smokeless_tobacco","Currently used smokeless tobacco", "Currently used smokeless tobacco",                                                                                      "Tobacco Use",
   # ---- Alcohol and Other Drug Use (category: chronic) ----
   "H42",              "pct_current_alcohol",          "Currently drank alcohol",          "Currently drank alcohol",                                                                                               "Alcohol and Other Drug Use",
+  "H43",              "pct_binge_drinking",           "Currently binge drinking",         "Currently were binge drinking",                                                                                         "Alcohol and Other Drug Use",
   "H46",              "pct_ever_marijuana",           "Ever used marijuana",              "Ever used marijuana",                                                                                                   "Alcohol and Other Drug Use",
+  "H47",              "pct_early_marijuana",          "Tried marijuana before age 13",    "Tried marijuana for the first time before age 13 years",                                                                "Alcohol and Other Drug Use",
   "H48",              "pct_current_marijuana",        "Currently used marijuana",         "Currently used marijuana",                                                                                              "Alcohol and Other Drug Use",
   "H49",              "pct_ever_rx_opioid_misuse",    "Ever misused Rx opioids",          "Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it","Alcohol and Other Drug Use",
   "QNCURRENTOPIOID",  "pct_current_rx_opioid_misuse", "Currently misused Rx opioids",     "Currently took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it","Alcohol and Other Drug Use",
+  "H50",              "pct_ever_cocaine",             "Ever used cocaine",                "Ever used cocaine",                                                                                                     "Alcohol and Other Drug Use",
+  "H51",              "pct_ever_inhalants",           "Ever used inhalants",              "Ever used inhalants",                                                                                                   "Alcohol and Other Drug Use",
+  "H52",              "pct_ever_heroin",              "Ever used heroin",                 "Ever used heroin",                                                                                                      "Alcohol and Other Drug Use",
+  "H53",              "pct_ever_methamphetamines",    "Ever used methamphetamines",       "Ever used methamphetamines",                                                                                            "Alcohol and Other Drug Use",
+  "H54",              "pct_ever_ecstasy",             "Ever used ecstasy",                "Ever used ecstasy",                                                                                                     "Alcohol and Other Drug Use",
+  "QNHALLUCDRUG",     "pct_ever_hallucinogens",       "Ever used hallucinogens",          "Ever used hallucinogenic drugs",                                                                                        "Alcohol and Other Drug Use",
+  "H55",              "pct_ever_inject_drug",         "Ever injected illegal drug",       "Ever injected any illegal drug",                                                                                        "Alcohol and Other Drug Use",
+  "QNILLICT",         "pct_ever_illicit_drug",        "Ever used select illicit drugs",   "Ever used select illicit drugs",                                                                                        "Alcohol and Other Drug Use",
   # ---- Dietary Behaviors (category: chronic) ----
   "H75",              "pct_no_breakfast",             "Did not eat breakfast",            "Did not eat breakfast (during the 7 days before the survey)",                                                           "Dietary Behaviors",
   "QNBK7DAY",         "pct_no_breakfast_7days",       "No breakfast on all 7 days",       "Did not eat breakfast on all 7 days (before the survey)",                                                               "Dietary Behaviors",
