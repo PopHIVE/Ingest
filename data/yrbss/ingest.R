@@ -43,7 +43,7 @@ FULL_TOPICS <- c("C06")                                # all Physical Activity
 # Individual question codes to include (in addition to FULL_TOPICS)
 SELECT_CODES <- c(
   # C01 Injuries & Violence
-  "H8", "H9", "H10", "H11", "H15", "H24", "H25", "H14",
+  "H8", "H9", "H10", "H11", "H12", "H13", "H15", "H24", "H25", "H14",
   "H27", "H28", "H29", "H30",
   # C02 Tobacco
   "H31", "H33", "H35", "H36", "H38",
@@ -70,6 +70,8 @@ measure_dict <- tibble::tribble(
   "H9",               "pct_rode_drinking_driver",     "Rode with a drinking driver",      "Rode with a driver who had been drinking alcohol",                                                                      "Unintentional Injuries and Violence",
   "H10",              "pct_drove_drinking",           "Drove after drinking alcohol",     "Drove when they had been drinking alcohol",                                                                             "Unintentional Injuries and Violence",
   "H11",              "pct_text_while_driving",       "Texted/e-mailed while driving",    "Texted or e-mailed while driving a car or other vehicle",                                                               "Unintentional Injuries and Violence",
+  "H12",              "pct_carried_weapon_school",    "Carried a weapon at school",       "Carried a weapon on school property",                                                                                   "Unintentional Injuries and Violence",
+  "H13",              "pct_carried_gun",              "Carried a gun",                    "Carried a gun",                                                                                                         "Unintentional Injuries and Violence",
   "H14",              "pct_unsafe_at_school",         "Did not go to school, unsafe",     "Did not go to school because they felt unsafe at school or on their way to or from school",                              "Unintentional Injuries and Violence",
   "H15",              "pct_threatened_weapon_school", "Threatened with weapon at school", "Were threatened or injured with a weapon on school property",                                                           "Unintentional Injuries and Violence",
   "H24",              "pct_bullied_at_school",        "Bullied on school property",       "Were bullied on school property",                                                                                       "Unintentional Injuries and Violence",
