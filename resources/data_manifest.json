@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-24T10:21:04Z",
+  "generated": "2026-06-25T10:17:20Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -12712,10 +12712,10 @@
             },
             {
               "name": "n_obesity_county",
-              "short_name": "Number of patients (chronic, county)",
-              "description": "Total number of patients in the county-level obesity sample.",
-              "measure_type": "integer",
-              "unit": "patient"
+              "short_name": "n_obesity_county",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
             },
             {
               "name": "Year",
@@ -12788,9 +12788,58 @@
             {
               "name": "n_patients_chronic",
               "short_name": "Number of patients (chronic)",
-              "description": "Total number of patients in the state-level chronic disease sample.",
+              "description": "Total number of patients in the chronic disease sample.",
               "measure_type": "Count",
               "unit": "patients"
+            },
+            {
+              "name": "n_patients_ob_county",
+              "short_name": "Number of patients (obesity, county)",
+              "description": "Total number of patients in the county-level obesity sample.",
+              "measure_type": "Count",
+              "unit": "patients"
+            },
+            {
+              "name": "suppressed_diabetes_a1c_6_5",
+              "short_name": "Suppressed flag (diabetes A1c)",
+              "description": "Indicates whether the diabetes_a1c_6_5 value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_diabetes_dx_ccw",
+              "short_name": "Suppressed flag (diabetes CCW)",
+              "description": "Indicates whether the diabetes_dx_ccw value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_obesity_bmi",
+              "short_name": "Suppressed flag (BMI)",
+              "description": "Indicates whether the obesity_bmi value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_obesity_dx_ccw",
+              "short_name": "Suppressed flag (obesity CCW)",
+              "description": "Indicates whether the obesity_dx_ccw value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_n_patients_chronic",
+              "short_name": "Suppressed flag (chronic patients)",
+              "description": "Indicates whether the n_patients_chronic value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_n_patients_ob_county",
+              "short_name": "Suppressed flag (obesity patients, county)",
+              "description": "Indicates whether the n_patients_ob_county value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
             }
           ]
         },
@@ -12903,9 +12952,58 @@
             {
               "name": "n_patients_chronic",
               "short_name": "Number of patients (chronic)",
-              "description": "Total number of patients in the state-level chronic disease sample.",
+              "description": "Total number of patients in the chronic disease sample.",
               "measure_type": "Count",
               "unit": "patients"
+            },
+            {
+              "name": "n_patients_ob",
+              "short_name": "Number of patients (obesity, state)",
+              "description": "Total number of patients in the state-level obesity sample.",
+              "measure_type": "Count",
+              "unit": "patients"
+            },
+            {
+              "name": "suppressed_diabetes_a1c_6_5",
+              "short_name": "Suppressed flag (diabetes A1c)",
+              "description": "Indicates whether the diabetes_a1c_6_5 value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_diabetes_dx_ccw",
+              "short_name": "Suppressed flag (diabetes CCW)",
+              "description": "Indicates whether the diabetes_dx_ccw value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_obesity_bmi",
+              "short_name": "Suppressed flag (BMI)",
+              "description": "Indicates whether the obesity_bmi value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_obesity_dx_ccw",
+              "short_name": "Suppressed flag (obesity CCW)",
+              "description": "Indicates whether the obesity_dx_ccw value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_n_patients_chronic",
+              "short_name": "Suppressed flag (chronic patients)",
+              "description": "Indicates whether the n_patients_chronic value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "suppressed_n_patients_ob",
+              "short_name": "Suppressed flag (obesity patients, state)",
+              "description": "Indicates whether the n_patients_ob value was suppressed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
             }
           ]
         }
@@ -16808,6 +16906,222 @@
               "description": "Indicates whether the state drug overdose death count was suppressed by NCHS.",
               "measure_type": "Binary",
               "unit": "Binary indicator"
+            }
+          ]
+        }
+      ]
+    },
+    "nhtsa_crash": {
+      "name": "nhtsa_crash",
+      "display_name": "Nhtsa Crash",
+      "description": "FARS is a nationwide census providing NHTSA, Congress, and the American public with yearly data on fatal injuries suffered in motor vehicle traffic crashes. FARS contains data on all crashes in the United States involving a fatality in a motor vehicle traffic crash on a public road. A fatal crash is one in which a motor vehicle is involved and at least one person dies within 30 days of the crash. Data are collected from police crash reports, state vehicle registration files, state driver licensing files, state highway department data, vital statistics, and other sources. FARS has been operational since 1975 and covers all 50 states, the District of Columbia, and Puerto Rico (national files cover the 50 states and DC).",
+      "standard_files": [
+        {
+          "filename": "data_age_sex.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age Group",
+              "description": "Age group category",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex category (Male, Female, Overall)",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "nhtsa_fatalities",
+              "short_name": "Motor vehicle fatalities",
+              "description": "Annual count of persons killed in motor vehicle traffic crashes.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            }
+          ]
+        },
+        {
+          "filename": "data_crash_type.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age Group",
+              "description": "Age group category",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex category (Male, Female, Overall)",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "nhtsa_fatalities",
+              "short_name": "Motor vehicle fatalities",
+              "description": "Annual count of persons killed in motor vehicle traffic crashes.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nhtsa_fatal_crashes",
+              "short_name": "Fatal crashes",
+              "description": "Annual count of motor vehicle crashes resulting in at least one fatality.",
+              "measure_type": "Count",
+              "unit": "Crashes"
+            },
+            {
+              "name": "nhtsa_alcohol_related",
+              "short_name": "Alcohol-related fatalities",
+              "description": "Annual fatalities in crashes involving at least one drunk driver.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nhtsa_speeding_related",
+              "short_name": "Speeding-related fatalities",
+              "description": "Annual fatalities in crashes where speeding was a contributing factor (2010+).",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nhtsa_single_vehicle",
+              "short_name": "Single-vehicle crash fatalities",
+              "description": "Annual fatalities in crashes involving only one vehicle.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nhtsa_rural",
+              "short_name": "Rural crash fatalities",
+              "description": "Annual fatalities in crashes occurring on rural roadways.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nhtsa_urban",
+              "short_name": "Urban crash fatalities",
+              "description": "Annual fatalities in crashes occurring on urban roadways.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nhtsa_pedestrian_involved",
+              "short_name": "Pedestrian-involved crash fatalities",
+              "description": "Annual fatalities in crashes where at least one pedestrian was killed.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nhtsa_cyclist_involved",
+              "short_name": "Cyclist-involved crash fatalities",
+              "description": "Annual fatalities in crashes where at least one cyclist was killed.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            }
+          ]
+        },
+        {
+          "filename": "data_person_type.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "person_type",
+              "short_name": "person_type",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
+            },
+            {
+              "name": "nhtsa_fatalities",
+              "short_name": "Motor vehicle fatalities",
+              "description": "Annual count of persons killed in motor vehicle traffic crashes.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            }
+          ]
+        },
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "nhtsa_fatalities",
+              "short_name": "Motor vehicle fatalities",
+              "description": "Annual count of persons killed in motor vehicle traffic crashes.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nhtsa_fatal_crashes",
+              "short_name": "Fatal crashes",
+              "description": "Annual count of motor vehicle crashes resulting in at least one fatality.",
+              "measure_type": "Count",
+              "unit": "Crashes"
+            },
+            {
+              "name": "nhtsa_fatality_rate",
+              "short_name": "Fatality rate (per 100k)",
+              "description": "Annual motor vehicle fatalities per 100,000 residents. Population denominator is 2021 Census.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000"
             }
           ]
         }
