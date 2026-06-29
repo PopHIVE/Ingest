@@ -1,0 +1,826 @@
+---
+title: "PopHIVE Standard Dataset Validation Report"
+author: "PopHIVE / Ingest"
+date: "`r format(Sys.Date(), '%Y-%m-%d')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    df_print: paged
+    code_folding: hide
+params:
+  # ----- Required: the standardized file to validate -----------------------
+  data_file: "data/nhtsa_crash/standard/data.csv.gz"
+  # ----- Optional: a previous version of the SAME dataset ------------------
+  #   Used to confirm the same demographic categories / measures still exist.
+  #   If left blank, the script automatically pulls the previous committed
+  #   version of the same file from git history (see git_compare below).
+  old_data_file: ""
+  # ----- Git history comparison --------------------------------------------
+  #   When old_data_file is blank, compare the current file against its prior
+  #   git version (working-tree edits vs HEAD, else HEAD vs the commit before).
+  git_compare: true
+  #   Optionally pin the previous version to a specific git ref (commit/tag).
+  git_ref: ""
+  # ----- Optional: a different source capturing SIMILAR data ---------------
+  #   Used to overlay national trends for comparison.
+  compare_file: "data/wisqars/standard/data.csv.gz"
+  compare_label: "Comparison source"
+  #   Optional manual measure mapping (parallel comma-separated lists). Leave
+  #   blank to auto-match measures that share the same column name.
+  main_measures: "nhtsa_fatality_rate"
+  compare_measures: "wisqars_rate_motor_vehicle_traffic"
+  # ----- Paths / behaviour -------------------------------------------------
+  project_root: ".."     # resolved relative to this .Rmd's directory
+  n_states: 5            # number of random states for the time-series section
+  n_map_measures: 5      # max measures to map (random sample if more exist)
+  make_maps: true        # set FALSE to skip choropleths (no internet needed)
+  seed: 1                # for reproducible random state / measure selection
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.width = 14, fig.height = 6, dpi = 110
+)
+
+# Faceted small-multiples are drawn 4 panels per row; this gives the figure
+# height (inches) needed for `n` panels so each panel stays large and legible.
+FACET_NCOL <- 4
+facet_height <- function(n, ncol = FACET_NCOL, per = 2.4, base = 1.4) {
+  ceiling(max(n, 1) / ncol) * per + base
+}
+
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(tidyr)
+  library(vroom)
+  library(ggplot2)
+  library(scales)
+  library(knitr)
+})
+
+set.seed(params$seed)
+
+# Resolve project root and a helper that turns a project-root-relative path
+# into an absolute one. Paths in params are relative to project_root.
+PROJECT_ROOT <- normalizePath(params$project_root, mustWork = FALSE)
+proj_path <- function(p) {
+  if (is.null(p) || !nzchar(p)) return("")
+  if (file.exists(p)) return(normalizePath(p, mustWork = FALSE))
+  normalizePath(file.path(PROJECT_ROOT, p), mustWork = FALSE)
+}
+
+# ---------------------------------------------------------------------------
+# Column-role detection. The standard format uses a small, known set of id /
+# demographic columns; everything numeric beyond them is a "measure". Measures
+# are sub-classified by suffix into value / confidence-bound / flag columns.
+# ---------------------------------------------------------------------------
+ID_COLS   <- c("geography", "time")
+DEMO_COLS <- c("age", "sex", "race_ethnicity", "race", "ethnicity", "virus")
+
+BOUND_RE <- "_(lcl|ucl|lower|upper|lb|ub|ci_lower|ci_upper|low|high)$"
+FLAG_RE  <- "_(suppressed|suppression|not_asked|not_collected|not_reported|flag|missing|imputed)$"
+
+classify_columns <- function(d) {
+  nms <- names(d)
+  demo <- intersect(DEMO_COLS, nms)
+  # any extra non-numeric, non-id column is treated as an additional stratifier
+  extra_demo <- setdiff(
+    nms[vapply(d, function(x) is.character(x) || is.factor(x), logical(1))],
+    c(ID_COLS, demo)
+  )
+  demo <- c(demo, extra_demo)
+  measure_cols <- setdiff(nms, c(ID_COLS, demo))
+  measure_cols <- measure_cols[vapply(d[measure_cols], is.numeric, logical(1))]
+  bounds <- grep(BOUND_RE, measure_cols, value = TRUE)
+  flags  <- grep(FLAG_RE,  measure_cols, value = TRUE)
+  values <- setdiff(measure_cols, c(bounds, flags))
+  list(id = intersect(ID_COLS, nms), demo = demo,
+       values = values, bounds = bounds, flags = flags)
+}
+
+# Representative ("overall") level of a demographic column: a recognised total
+# label if present, otherwise the most frequent level. Returned with a flag for
+# whether it is a true "Overall"-type label so we can annotate plots honestly.
+OVERALL_LABELS <- c("Overall", "Total", "All", "All ages", "All Ages",
+                    "All races", "Both sexes")
+representative_level <- function(x) {
+  lv <- unique(stats::na.omit(x))
+  hit <- intersect(OVERALL_LABELS, lv)
+  if (length(hit)) return(list(level = hit[1], is_overall = TRUE))
+  tab <- sort(table(x), decreasing = TRUE)
+  list(level = names(tab)[1], is_overall = FALSE)
+}
+
+# Filter a data frame so every demographic column (except `keep`) is held at its
+# representative level. Returns the filtered frame plus a note of what was held.
+hold_overall <- function(d, demo, keep = character(0)) {
+  notes <- character(0)
+  for (col in setdiff(demo, keep)) {
+    rep <- representative_level(d[[col]])
+    d <- d[d[[col]] == rep$level, , drop = FALSE]
+    if (!rep$is_overall) notes <- c(notes, sprintf("%s = %s", col, rep$level))
+  }
+  attr(d, "held_notes") <- notes
+  d
+}
+
+fmt_pct <- function(x) sprintf("%.1f%%", 100 * x)
+
+# ---------------------------------------------------------------------------
+# Git history: extract the previous committed version of the SAME data file so
+# its variables and demographic levels can be diffed automatically. Returns
+# NULL if git is unavailable, the file is untracked, or there is no distinct
+# prior version. Otherwise list(path = <temp .csv.gz>, ref, meta).
+# ---------------------------------------------------------------------------
+git_lines <- function(args) {
+  out <- suppressWarnings(tryCatch(
+    system2("git", args, stdout = TRUE, stderr = FALSE),
+    error = function(e) character(0)))
+  if (length(out) && any(grepl("^fatal", out))) character(0) else out
+}
+
+extract_git_version <- function(data_path, ref_hint = "") {
+  if (!nzchar(Sys.which("git"))) return(NULL)
+  dpath <- normalizePath(data_path, winslash = "/", mustWork = FALSE)
+  root  <- git_lines(c("-C", shQuote(dirname(dpath)), "rev-parse", "--show-toplevel"))
+  if (!length(root)) return(NULL)
+  root  <- normalizePath(root[1], winslash = "/", mustWork = FALSE)
+  relpath <- if (startsWith(dpath, paste0(root, "/")))
+    substring(dpath, nchar(root) + 2) else basename(dpath)
+
+  log <- git_lines(c("-C", shQuote(root), "log", "--format=%H|%ad|%s",
+                     "--date=short", "--", shQuote(relpath)))
+  if (!length(log)) return(NULL)                       # untracked / no history
+  parts <- strsplit(log, "|", fixed = TRUE)
+
+  # Does the working tree differ from HEAD for this file?
+  diff_rc <- suppressWarnings(system2(
+    "git", c("-C", shQuote(root), "diff", "--quiet", "HEAD", "--", shQuote(relpath)),
+    stdout = FALSE, stderr = FALSE))
+
+  if (nzchar(ref_hint)) {
+    prev_ref  <- ref_hint
+    prev_meta <- ref_hint
+  } else if (length(diff_rc) && diff_rc != 0) {        # uncommitted edits -> vs HEAD
+    prev_ref  <- parts[[1]][1]
+    prev_meta <- sprintf("HEAD %s (%s) — %s", substr(parts[[1]][1], 1, 8),
+                         parts[[1]][2], parts[[1]][3])
+  } else if (length(parts) >= 2) {                     # committed -> vs prior commit
+    prev_ref  <- parts[[2]][1]
+    prev_meta <- sprintf("%s (%s) — %s", substr(parts[[2]][1], 1, 8),
+                         parts[[2]][2], parts[[2]][3])
+  } else {
+    return(NULL)                                       # only one version ever
+  }
+
+  tmp <- tempfile(fileext = ".csv.gz")
+  suppressWarnings(tryCatch(system2(
+    "git", c("-C", shQuote(root), "show", shQuote(paste0(prev_ref, ":", relpath))),
+    stdout = tmp, stderr = FALSE), error = function(e) NULL))
+  if (!file.exists(tmp) || file.size(tmp) == 0) return(NULL)
+  list(path = tmp, ref = prev_ref, meta = prev_meta)
+}
+```
+
+```{r load-data}
+data_path <- proj_path(params$data_file)
+stopifnot("data_file does not exist" = file.exists(data_path))
+
+# Read with geography + time forced to character so FIPS leading zeros survive.
+dat <- vroom(
+  data_path, show_col_types = FALSE,
+  col_types = cols(geography = "c", time = "c")
+)
+roles <- classify_columns(dat)
+```
+
+# 1. Overview {#overview}
+
+```{r overview, results='asis'}
+cat(sprintf("- **File:** `%s`\n", params$data_file))
+cat(sprintf("- **Rows:** %s &nbsp;&nbsp; **Columns:** %s\n",
+            format(nrow(dat), big.mark = ","), ncol(dat)))
+cat(sprintf("- **ID columns:** %s\n", paste(roles$id, collapse = ", ")))
+cat(sprintf("- **Demographic columns:** %s\n",
+            if (length(roles$demo)) paste(roles$demo, collapse = ", ") else "_none_"))
+cat(sprintf("- **Value measures (%d):** %s\n", length(roles$values),
+            paste(roles$values, collapse = ", ")))
+
+# Confidence-bound / flag coverage: rather than listing every bound/flag column,
+# check whether any value measure is MISSING its bounds or flag (only meaningful
+# if the dataset uses them at all).
+parent_of <- function(cols, re) unique(sub(re, "", cols))
+meas_with_bounds <- intersect(roles$values, parent_of(roles$bounds, BOUND_RE))
+meas_with_flags  <- intersect(roles$values, parent_of(roles$flags,  FLAG_RE))
+
+if (length(roles$bounds) == 0) {
+  cat("- **Confidence bounds:** none present (not applicable)\n")
+} else {
+  miss <- setdiff(roles$values, meas_with_bounds)
+  cat(sprintf("- **Confidence bounds:** %d/%d value measures have them%s\n",
+              length(meas_with_bounds), length(roles$values),
+              if (length(miss))
+                sprintf(" — **missing for:** %s", paste(miss, collapse = ", "))
+              else " (all present)"))
+}
+if (length(roles$flags) == 0) {
+  cat("- **Flag columns:** none present (not applicable)\n")
+} else {
+  miss <- setdiff(roles$values, meas_with_flags)
+  cat(sprintf("- **Flag columns:** %d/%d value measures have at least one flag%s\n",
+              length(meas_with_flags), length(roles$values),
+              if (length(miss))
+                sprintf(" — **missing for:** %s", paste(miss, collapse = ", "))
+              else " (all present)"))
+}
+
+# Geographic coverage
+gl <- nchar(dat$geography)
+geo_levels <- c("national (00)" = sum(dat$geography == "00"),
+                "state (2-digit)" = sum(gl == 2 & dat$geography != "00"),
+                "county (5-digit)" = sum(gl == 5))
+geo_levels <- geo_levels[geo_levels > 0]
+cat(sprintf("- **Geographic coverage:** %s\n",
+            paste(sprintf("%s rows %s", format(geo_levels, big.mark=","), names(geo_levels)),
+                  collapse = "; ")))
+cat(sprintf("- **Time range:** %s to %s (%d distinct periods)\n",
+            min(dat$time), max(dat$time), length(unique(dat$time))))
+```
+
+## Format checks
+
+```{r overview-format-checks, results='asis'}
+# Basic standard-format sanity checks on the id columns.
+bad_geo <- dat$geography[!grepl("^[0-9]{2}$|^[0-9]{5}$", dat$geography)]
+cat(sprintf("- Geography codes are valid FIPS (2- or 5-digit): %s\n",
+            if (length(bad_geo) == 0) "PASS" else
+              sprintf("FAIL (%d bad, e.g. %s)", length(bad_geo),
+                      paste(head(unique(bad_geo), 5), collapse=", "))))
+parsed <- suppressWarnings(as.Date(dat$time))
+cat(sprintf("- Time parses as YYYY-mm-dd date: %s\n",
+            if (!any(is.na(parsed))) "PASS" else
+              sprintf("FAIL (%d unparseable)", sum(is.na(parsed)))))
+dups <- dat %>% count(across(all_of(c(roles$id, roles$demo)))) %>% filter(n > 1)
+cat(sprintf("- Unique rows per geography/time/demographics: %s\n",
+            if (nrow(dups) == 0) "PASS" else sprintf("FAIL (%d duplicate keys)", nrow(dups))))
+```
+
+# 2. Demographic categories {#categories}
+
+For every demographic variable, the number of categories and the categories
+themselves. A previous version is then compared to confirm nothing was silently
+added or dropped: either the file named in `old_data_file`, or — when that is
+blank — the **previous version of this same file pulled from git history**
+(working-tree edits vs the last commit, otherwise the last commit vs the one
+before it).
+
+```{r categories}
+if (length(roles$demo) == 0) {
+  cat("_No demographic columns in this dataset._\n")
+} else {
+  cat_tab <- lapply(roles$demo, function(col) {
+    lv <- sort(unique(as.character(dat[[col]])))
+    data.frame(variable = col, n_categories = length(lv),
+               categories = paste(lv, collapse = " | "),
+               stringsAsFactors = FALSE)
+  })
+  kable(bind_rows(cat_tab), caption = "Demographic categories in the new dataset")
+}
+```
+
+```{r categories-compare, results='asis'}
+# Prefer an explicit old_data_file; otherwise fall back to the previous git
+# version of the same file.
+old_path <- proj_path(params$old_data_file)
+old_label <- NULL
+git_info  <- NULL
+if (nzchar(old_path) && file.exists(old_path)) {
+  old_label <- sprintf("`%s`", params$old_data_file)
+} else if (isTRUE(params$git_compare)) {
+  git_info <- extract_git_version(data_path, params$git_ref)
+  if (!is.null(git_info)) {
+    old_path  <- git_info$path
+    old_label <- paste0("its previous **git** version: ", git_info$meta)
+  }
+}
+
+if (!is.null(old_label) && file.exists(old_path)) {
+  old <- vroom(old_path, show_col_types = FALSE,
+               col_types = cols(geography = "c", time = "c"))
+  old_roles <- classify_columns(old)
+
+  cat("## Comparison with previous version\n\n")
+  cat(sprintf("Comparing the current file against %s.\n\n", old_label))
+
+  # --- did the data change at all? (signed change new-old, then the old total) ---
+  sgn <- function(x) paste0(if (x > 0) "+" else "", format(x, big.mark = ","))
+  cat(sprintf("- **Dimensions:** %s rows / %s cols vs previous (previous had %s rows / %d cols)%s\n\n",
+              sgn(nrow(dat) - nrow(old)), sgn(ncol(dat) - ncol(old)),
+              format(nrow(old), big.mark = ","), ncol(old),
+              if (nrow(dat) == nrow(old) && identical(sort(names(dat)), sort(names(old))))
+                " — same shape & columns" else " — **changed**"))
+
+  # --- demographic category comparison ---
+  shared_demo <- intersect(roles$demo, old_roles$demo)
+  cmp <- lapply(shared_demo, function(col) {
+    new_lv <- sort(unique(as.character(dat[[col]])))
+    old_lv <- sort(unique(as.character(old[[col]])))
+    added   <- setdiff(new_lv, old_lv)
+    removed <- setdiff(old_lv, new_lv)
+    data.frame(
+      variable = col,
+      n_new = length(new_lv), n_old = length(old_lv),
+      added   = if (length(added))   paste(added, collapse = " | ")   else "-",
+      removed = if (length(removed)) paste(removed, collapse = " | ") else "-",
+      match = if (!length(added) && !length(removed)) "OK" else "DIFF",
+      stringsAsFactors = FALSE
+    )
+  })
+  if (length(cmp))
+    print(kable(bind_rows(cmp),
+                caption = "Category changes vs. previous version (added/removed levels)"))
+
+  only_new_demo <- setdiff(roles$demo, old_roles$demo)
+  only_old_demo <- setdiff(old_roles$demo, roles$demo)
+  if (length(only_new_demo))
+    cat(sprintf("\n- **Demographic columns only in NEW:** %s\n", paste(only_new_demo, collapse=", ")))
+  if (length(only_old_demo))
+    cat(sprintf("\n- **Demographic columns only in OLD:** %s\n", paste(only_old_demo, collapse=", ")))
+
+  # --- measure (value-column) comparison ---
+  added_m   <- setdiff(roles$values, old_roles$values)
+  removed_m <- setdiff(old_roles$values, roles$values)
+  cat("\n\n**Value measures:** ")
+  cat(sprintf("%d new, %d old. ", length(added_m), length(old_roles$values)))
+  cat(if (!length(added_m) && !length(removed_m)) "Identical set.\n" else
+      sprintf("Added: %s. Removed: %s.\n",
+              if (length(added_m)) paste(added_m, collapse=", ") else "none",
+              if (length(removed_m)) paste(removed_m, collapse=", ") else "none"))
+} else if (nzchar(proj_path(params$old_data_file))) {
+  cat("_`old_data_file` was supplied but could not be found, skipping category comparison._\n")
+} else if (isTRUE(params$git_compare)) {
+  cat("_No `old_data_file` supplied and no distinct prior version of this file was found in git history (untracked, only one commit, or git unavailable), skipping comparison._\n")
+} else {
+  cat("_No previous version supplied and git comparison disabled, skipping category comparison._\n")
+}
+```
+
+# 3. Missing / NA values {#missing}
+
+Per-column NA counts and percentages. For datasets that encode missingness with
+flag columns (e.g. `_suppressed`, `_not_collected`), value measures that are
+**>50% suppressed** or **>50% not asked / collected** are listed below, with the
+contributing flag(s) — these are the variables with the sparsest real data.
+
+```{r missing-na}
+na_tab <- data.frame(
+  column = names(dat),
+  n_missing = vapply(dat, function(x) sum(is.na(x)), integer(1)),
+  stringsAsFactors = FALSE
+)
+na_tab$pct_missing <- fmt_pct(na_tab$n_missing / nrow(dat))
+na_with <- na_tab[na_tab$n_missing > 0, ]
+if (nrow(na_with) == 0) {
+  cat("**No NA values found in any column.**\n\n")
+} else {
+  kable(na_with[order(-na_with$n_missing), ], row.names = FALSE,
+        caption = "Columns containing NA values")
+}
+```
+
+```{r missing-flags, results='asis'}
+if (!length(roles$flags)) {
+  cat("_No flag columns in this dataset._\n")
+} else {
+  flag_parent <- sub(FLAG_RE, "", roles$flags)
+  # Share of rows in which ANY of the given flag columns is 1.
+  pct_any <- function(cols) {
+    if (!length(cols)) return(0)
+    hit <- Reduce(`|`, lapply(cols, function(c) {
+      v <- suppressWarnings(as.numeric(dat[[c]])); !is.na(v) & v == 1
+    }))
+    mean(hit)
+  }
+  fl <- bind_rows(lapply(roles$values, function(m) {
+    supp_cols <- roles$flags[flag_parent == m & grepl("suppress", roles$flags)]
+    miss_cols <- roles$flags[flag_parent == m &
+                               grepl("not_asked|not_collected|not_reported", roles$flags)]
+    data.frame(variable = m,
+               pct_not_asked  = pct_any(miss_cols),
+               pct_suppressed = pct_any(supp_cols),
+               stringsAsFactors = FALSE)
+  }))
+
+  flagged_vars <- fl %>% filter(pct_not_asked > 0.5 | pct_suppressed > 0.5)
+  if (nrow(flagged_vars) == 0) {
+    cat("**No value measure is >50% suppressed or >50% not asked / collected.**\n\n")
+  } else {
+    out <- flagged_vars %>%
+      rowwise() %>%
+      mutate(contributing_flag = paste(c(
+        if (pct_not_asked  > 0.5) sprintf("not asked / collected (%s)", fmt_pct(pct_not_asked)),
+        if (pct_suppressed > 0.5) sprintf("suppressed (%s)", fmt_pct(pct_suppressed))
+      ), collapse = "; ")) %>%
+      ungroup() %>%
+      arrange(desc(pmax(pct_not_asked, pct_suppressed))) %>%
+      transmute(variable,
+                pct_not_asked  = fmt_pct(pct_not_asked),
+                pct_suppressed = fmt_pct(pct_suppressed),
+                contributing_flag)
+    print(kable(out, row.names = FALSE,
+          caption = sprintf("%d value measure(s) >50%% suppressed or >50%% not asked / collected",
+                            nrow(out))))
+  }
+}
+```
+
+# 4. National & state time series {#timeseries}
+
+National trends, shown overall and stratified by each demographic, plus
+`r params$n_states` randomly selected states (overall). Confidence-bound and
+flag columns are excluded. Where a demographic has no true "Overall" level, the
+other demographics are held at their most common level (noted in each title).
+
+Observations that were **suppressed or not asked/collected** (flagged 1 in a
+`_suppressed` / `_not_asked` / `_not_collected` column, with the value typically
+imputed to 0) are drawn as **hollow points but dropped from the connecting
+line**, so imputed zeros do not distort the trend.
+
+```{r ts-helpers}
+plot_measures <- roles$values
+demo_cols <- roles$demo
+
+# Flag columns belonging to a given value measure (e.g. measure_suppressed).
+measure_flag_cols <- function(m) {
+  if (!length(roles$flags)) return(character(0))
+  roles$flags[sub(FLAG_RE, "", roles$flags) == m]
+}
+
+# Per-row logical: was this measure suppressed / not asked / not collected?
+# (any of the measure's flag columns equal to 1).
+flagged_vec <- function(d, m) {
+  fcs <- measure_flag_cols(m)
+  if (!length(fcs)) return(rep(FALSE, nrow(d)))
+  mat <- vapply(fcs, function(fc) {
+    v <- suppressWarnings(as.numeric(d[[fc]]))
+    !is.na(v) & v == 1
+  }, logical(nrow(d)))
+  rowSums(matrix(mat, nrow = nrow(d))) > 0
+}
+
+# Long-format a held subset and draw faceted trends. Flagged (suppressed /
+# not-asked) observations are shown as hollow points but excluded from the line.
+trend_plot <- function(d, color_col, title, subtitle = NULL) {
+  if (nrow(d) == 0 || length(plot_measures) == 0) return(invisible(NULL))
+  keys <- c("time", if (!is.null(color_col)) color_col)
+
+  val_long <- d %>%
+    select(all_of(keys), all_of(plot_measures)) %>%
+    pivot_longer(all_of(plot_measures), names_to = "measure", values_to = "value")
+
+  # Build the flagged indicator in the SAME row/measure order as val_long.
+  flag_df <- as.data.frame(
+    vapply(plot_measures, function(m) flagged_vec(d, m), logical(nrow(d)))
+  )
+  names(flag_df) <- plot_measures
+  flag_long <- bind_cols(d %>% select(all_of(keys)), flag_df) %>%
+    pivot_longer(all_of(plot_measures), names_to = "measure", values_to = "flagged")
+
+  long <- val_long %>%
+    mutate(flagged = flag_long$flagged, time = as.Date(time)) %>%
+    filter(!is.na(value)) %>%
+    mutate(value_line = ifelse(flagged, NA_real_, value))  # NA breaks the line
+  if (nrow(long) == 0) return(invisible(NULL))
+
+  p <- if (is.null(color_col)) ggplot(long, aes(x = time)) else
+    ggplot(long, aes(x = time, color = .data[[color_col]], group = .data[[color_col]]))
+
+  # Line: only connects unflagged values. Solid points: real values.
+  p <- p +
+    geom_line(aes(y = value_line), linewidth = 0.6, na.rm = TRUE) +
+    geom_point(data = long[!long$flagged, , drop = FALSE],
+               aes(y = value), size = 0.9, na.rm = TRUE)
+  # Hollow points: suppressed / not-asked values (shown, but not on the line).
+  if (any(long$flagged)) {
+    p <- p +
+      geom_point(data = long[long$flagged, , drop = FALSE],
+                 aes(y = value, shape = "suppressed / not asked"),
+                 size = 1.5, stroke = 0.5, fill = NA, na.rm = TRUE) +
+      scale_shape_manual(values = c("suppressed / not asked" = 21), name = NULL)
+  }
+  p <- p +
+    facet_wrap(~measure, scales = "free_y", ncol = FACET_NCOL) +
+    labs(title = title, subtitle = subtitle, x = NULL, y = NULL,
+         color = color_col) +
+    theme_bw(base_size = 11) +
+    theme(legend.position = "bottom",
+          plot.title = element_text(face = "bold"),
+          strip.text = element_text(size = 9),
+          axis.text.x = element_text(angle = 45, hjust = 1))
+  print(p)
+}
+
+held_subtitle <- function(d) {
+  n <- attr(d, "held_notes")
+  if (length(n)) paste0("Held at: ", paste(n, collapse = "; ")) else NULL
+}
+```
+
+```{r ts-national, results='asis', fig.width=14, fig.height=facet_height(length(roles$values))}
+nat <- dat %>% filter(geography == "00")
+if (nrow(nat) == 0) {
+  cat("_No national (geography == \"00\") rows; skipping national trends._\n")
+} else {
+  cat("## National — overall\n\n")
+  nat_overall <- hold_overall(nat, demo_cols)
+  trend_plot(nat_overall, NULL, "National overall trend",
+             held_subtitle(nat_overall))
+
+  for (col in demo_cols) {
+    if (length(unique(nat[[col]])) < 2) next
+    cat(sprintf("\n\n## National — by %s\n\n", col))
+    sub <- hold_overall(nat, demo_cols, keep = col)
+    trend_plot(sub, col, sprintf("National trend by %s", col),
+               held_subtitle(sub))
+  }
+}
+```
+
+```{r ts-states, results='asis', fig.width=14, fig.height=facet_height(length(roles$values))}
+state_codes <- dat %>%
+  filter(nchar(geography) == 2, geography != "00") %>%
+  distinct(geography) %>% pull(geography)
+
+if (length(state_codes) == 0) {
+  cat("_No state-level rows; skipping state trends._\n")
+} else {
+  pick <- sort(sample(state_codes, min(params$n_states, length(state_codes))))
+  # Friendly state names from the FIPS crosswalk, if available.
+  fips_path <- proj_path("resources/all_fips.csv.gz")
+  lab <- pick
+  if (file.exists(fips_path)) {
+    fips <- vroom(fips_path, show_col_types = FALSE,
+                  col_types = cols(geography = "c"))
+    nm <- fips$geography_name[match(pick, fips$geography)]
+    lab <- ifelse(is.na(nm), pick, paste0(nm, " (", pick, ")"))
+  }
+  cat(sprintf("## %d random states — overall\n\n", length(pick)))
+  cat(sprintf("States: %s\n\n", paste(lab, collapse = ", ")))
+
+  st <- dat %>% filter(geography %in% pick)
+  st <- hold_overall(st, demo_cols)  # overall demographics only
+  st$geography <- factor(st$geography, levels = pick, labels = lab)
+  trend_plot(st, "geography", "State trends (overall)", held_subtitle(st))
+}
+```
+
+# 5. Choropleth maps {#maps}
+
+For up to `r params$n_map_measures` measures, each map shows **4 random years in a
+2&times;2 grid** (overall demographics). Cells that were **suppressed are white
+with a diagonal hatch** and cells **not asked / not collected that year are solid
+black** (shown in the legend); other cells use the viridis value scale and cells
+with no data are grey. State maps use 2-digit FIPS; county maps use 5-digit FIPS.
+AK, HI and territories are dropped for display.
+
+```{r maps, results='asis', fig.width=11, fig.height=8.5, eval=params$make_maps}
+map_ok <- requireNamespace("sf", quietly = TRUE) &&
+          requireNamespace("tigris", quietly = TRUE)
+
+if (!map_ok) {
+  cat("_`sf`/`tigris` not available; skipping maps._\n")
+} else {
+  suppressPackageStartupMessages({ library(sf); library(tigris) })
+  options(tigris_use_cache = TRUE)
+  DROP_ST <- c("02", "15", "60", "66", "69", "72", "78")  # AK, HI, territories
+
+  # choose measures to map
+  map_measures <- roles$values
+  if (length(map_measures) > params$n_map_measures)
+    map_measures <- sort(sample(map_measures, params$n_map_measures))
+
+  # choose up to 4 random years (shared across measures for comparability)
+  all_times <- sort(unique(dat$time))
+  map_times <- sort(sample(all_times, min(4, length(all_times))))
+
+  base <- dat %>% filter(time %in% map_times) %>% hold_overall(demo_cols)
+
+  has_ggnewscale <- requireNamespace("ggnewscale", quietly = TRUE)
+  has_ggpattern  <- requireNamespace("ggpattern",  quietly = TRUE)
+  FLAG_FILL    <- c("Suppressed" = "white", "Not asked / collected" = "black")
+  # Suppressed cells also get a diagonal hatch so white doesn't read as a high
+  # viridis value; not-asked cells stay solid black.
+  FLAG_PATTERN <- c("Suppressed" = "stripe", "Not asked / collected" = "none")
+  # Flagged cells get a grey border so white (suppressed) cells stay visible
+  # against the white page background.
+  FLAG_BORDER <- "grey50"
+
+  # For one measure, build a geometry x year grid and draw a 2x2 (year) facet.
+  # Suppressed cells are filled red and not-asked/not-collected cells yellow
+  # (on top of the viridis value scale, via a second fill scale).
+  draw_maps <- function(geoms, df, level_label) {
+    for (m in map_measures) {
+      fcs      <- measure_flag_cols(m)
+      supp_col <- fcs[grepl("suppress", fcs)]
+      miss_col <- fcs[grepl("not_asked|not_collected|not_reported", fcs)]
+
+      sub <- df %>%
+        transmute(
+          geography, time,
+          value = .data[[m]],
+          supp  = if (length(supp_col)) as.numeric(.data[[supp_col[1]]]) == 1 else FALSE,
+          miss  = if (length(miss_col)) as.numeric(.data[[miss_col[1]]]) == 1 else FALSE
+        )
+      if (all(is.na(sub$value)) && !any(sub$supp, na.rm = TRUE) &&
+          !any(sub$miss, na.rm = TRUE)) next
+
+      md <- expand.grid(geography = geoms$geography, time = map_times,
+                        stringsAsFactors = FALSE) %>%
+        left_join(sub, by = c("geography", "time")) %>%
+        mutate(flag_label = case_when(
+          coalesce(supp, FALSE) ~ "Suppressed",
+          coalesce(miss, FALSE) ~ "Not asked / collected",
+          TRUE                  ~ NA_character_
+        )) %>%
+        left_join(geoms, by = "geography") %>%
+        sf::st_as_sf() %>%
+        mutate(year = factor(substr(time, 1, 4),
+                             levels = substr(map_times, 1, 4)))
+
+      md_norm <- md %>% filter(is.na(flag_label))
+      md_flag <- md %>% filter(!is.na(flag_label)) %>%
+        mutate(flag_label = factor(flag_label, levels = names(FLAG_FILL)))
+
+      # Base layer: viridis value scale (flagged cells excluded -> drawn below).
+      p <- ggplot() +
+        geom_sf(data = md_norm, aes(fill = value),
+                color = "white", linewidth = 0.08) +
+        scale_fill_viridis_c(option = "viridis", trans = "sqrt",
+                             na.value = "grey85", labels = label_number(),
+                             name = "value")
+
+      # Overlay layer: suppressed (red) / not-asked (yellow), with its own scale.
+      if (nrow(md_flag) > 0 && has_ggnewscale && has_ggpattern) {
+        # White suppressed cells get a diagonal hatch; not-asked stay solid
+        # black. fill + pattern both keyed to flag_label -> one merged legend.
+        p <- p + ggnewscale::new_scale_fill() +
+          ggpattern::geom_sf_pattern(
+            data = md_flag, aes(fill = flag_label, pattern = flag_label),
+            pattern_fill = "grey20", pattern_colour = NA,
+            pattern_density = 0.3, pattern_spacing = 0.018, pattern_angle = 45,
+            colour = FLAG_BORDER, linewidth = 0.08) +
+          scale_fill_manual(values = FLAG_FILL, name = NULL, drop = TRUE) +
+          ggpattern::scale_pattern_manual(values = FLAG_PATTERN, name = NULL, drop = TRUE)
+      } else if (nrow(md_flag) > 0 && has_ggnewscale) {
+        # No ggpattern: solid white/black fills, still with a legend.
+        p <- p + ggnewscale::new_scale_fill() +
+          geom_sf(data = md_flag, aes(fill = flag_label),
+                  color = FLAG_BORDER, linewidth = 0.08) +
+          scale_fill_manual(values = FLAG_FILL, name = NULL, drop = TRUE)
+      } else if (nrow(md_flag) > 0) {
+        # Neither helper: constant fills + a caption instead of a legend.
+        p <- p +
+          geom_sf(data = md_flag %>% filter(flag_label == "Suppressed"),
+                  fill = FLAG_FILL[["Suppressed"]], color = FLAG_BORDER, linewidth = 0.08) +
+          geom_sf(data = md_flag %>% filter(flag_label == "Not asked / collected"),
+                  fill = FLAG_FILL[["Not asked / collected"]], color = FLAG_BORDER, linewidth = 0.08)
+      }
+
+      cap <- if (nrow(md_flag) > 0 && !has_ggnewscale)
+        "White (hatched) = suppressed; black = not asked / collected (install 'ggnewscale'/'ggpattern' for a legend)." else NULL
+
+      p <- p +
+        facet_wrap(~year, ncol = 2) +
+        coord_sf(crs = 5070, datum = NA) +
+        labs(title = sprintf("%s — %s", m, level_label), caption = cap) +
+        theme_void(base_size = 11) +
+        theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 12),
+              plot.caption = element_text(hjust = 0.5, color = "grey40", size = 8),
+              strip.text = element_text(face = "bold", size = 11),
+              legend.position = "right")
+      print(p)
+    }
+  }
+
+  # ---- state maps ----
+  state_df <- base %>% filter(nchar(geography) == 2, geography != "00")
+  if (nrow(state_df) > 0) {
+    cat(sprintf("## State maps (%d measures; years %s)\n\n",
+                length(map_measures), paste(substr(map_times, 1, 4), collapse = ", ")))
+    states_sf <- tryCatch(
+      tigris::states(cb = TRUE, resolution = "5m", year = 2022,
+                     progress_bar = FALSE) %>%
+        filter(!STATEFP %in% DROP_ST) %>%
+        transmute(geography = as.character(GEOID)),
+      error = function(e) { cat("_Could not fetch state geometry: ", conditionMessage(e), "_\n"); NULL })
+    if (!is.null(states_sf)) draw_maps(states_sf, state_df, "state")
+  }
+
+  # ---- county maps ----
+  county_df <- base %>% filter(nchar(geography) == 5)
+  if (nrow(county_df) > 0) {
+    cat(sprintf("\n\n## County maps (%d measures; years %s)\n\n",
+                length(map_measures), paste(substr(map_times, 1, 4), collapse = ", ")))
+    counties_sf <- tryCatch(
+      tigris::counties(cb = TRUE, resolution = "5m", year = 2022,
+                       progress_bar = FALSE) %>%
+        filter(!STATEFP %in% DROP_ST) %>%
+        transmute(geography = as.character(GEOID)),
+      error = function(e) { cat("_Could not fetch county geometry: ", conditionMessage(e), "_\n"); NULL })
+    if (!is.null(counties_sf)) draw_maps(counties_sf, county_df, "county")
+  }
+
+  if (nrow(state_df) == 0 && nrow(county_df) == 0)
+    cat("_No state- or county-level rows; skipping maps._\n")
+}
+```
+
+```{r maps-skip, results='asis', eval=!params$make_maps}
+cat("_Maps disabled (`make_maps: false`)._\n")
+```
+
+# 6. Comparison with a similar source {#compare}
+
+If `compare_file` is supplied, national overall trends for measures present in
+both datasets are overlaid. Measures are matched by column name, or by the
+explicit `main_measures` / `compare_measures` mapping if provided.
+
+```{r compare, results='asis', fig.width=14, fig.height=10}
+cmp_path <- proj_path(params$compare_file)
+if (!nzchar(cmp_path) || !file.exists(cmp_path)) {
+  cat("_No comparison source supplied (`compare_file` is blank), skipping._\n")
+} else {
+  # Build the measure mapping (main measure -> comparison measure).
+  mm <- trimws(strsplit(params$main_measures, ",")[[1]])
+  cm <- trimws(strsplit(params$compare_measures, ",")[[1]])
+  mm <- mm[nzchar(mm)]; cm <- cm[nzchar(cm)]
+  if (length(mm) && length(mm) == length(cm)) {
+    pairs <- data.frame(main = mm, comp = cm, stringsAsFactors = FALSE)
+  } else {
+    # Read header only to find shared measure names — avoid loading all data.
+    cdat_hdr <- vroom(cmp_path, show_col_types = FALSE, n_max = 0,
+                      col_types = cols(geography = "c", time = "c"))
+    shared <- intersect(roles$values, classify_columns(cdat_hdr)$values)
+    pairs <- data.frame(main = shared, comp = shared, stringsAsFactors = FALSE)
+  }
+
+  if (nrow(pairs) == 0) {
+    cat("_No measures matched between the two sources. Provide `main_measures` / `compare_measures` to map them manually._\n")
+  } else {
+    # Load only the columns needed: id cols + demo cols + the comparison measures.
+    cdat_hdr <- vroom(cmp_path, show_col_types = FALSE, n_max = 0,
+                      col_types = cols(geography = "c", time = "c"))
+    cmp_demo_cols <- setdiff(
+      names(cdat_hdr)[vapply(cdat_hdr, function(x) is.character(x) || is.factor(x), logical(1))],
+      c("geography", "time")
+    )
+    cdat <- vroom(cmp_path, show_col_types = FALSE,
+                  col_types = cols(geography = "c", time = "c"),
+                  col_select = any_of(c("geography", "time", cmp_demo_cols, pairs$comp)))
+    croles <- classify_columns(cdat)
+
+    cat(sprintf("Overlaying **%d** measure(s) at the national level vs. **%s**.\n\n",
+                nrow(pairs), params$compare_label))
+    main_nat  <- hold_overall(dat  %>% filter(geography == "00"), roles$demo)
+    comp_nat  <- hold_overall(cdat %>% filter(geography == "00"), croles$demo)
+
+    main_name <- basename(dirname(dirname(params$data_file)))
+    cmp_name  <- basename(dirname(dirname(params$compare_file)))
+    combined <- bind_rows(
+      lapply(seq_len(nrow(pairs)), function(i) {
+        bind_rows(
+          main_nat %>% transmute(time = as.Date(time), measure = pairs$main[i],
+                                 value = .data[[pairs$main[i]]],
+                                 source = paste0(main_name, ": ", pairs$main[i])),
+          comp_nat %>% transmute(time = as.Date(time), measure = pairs$main[i],
+                                 value = .data[[pairs$comp[i]]],
+                                 source = paste0(cmp_name, ": ", pairs$comp[i]))
+        )
+      })
+    ) %>% filter(!is.na(value))
+
+    p <- ggplot(combined, aes(time, value, color = source, group = source)) +
+      geom_line(linewidth = 0.6) + geom_point(size = 0.8) +
+      facet_wrap(~measure, scales = "free_y", ncol = FACET_NCOL) +
+      labs(title = "National overall: this dataset vs. comparison source",
+           x = NULL, y = NULL, color = NULL) +
+      theme_bw(base_size = 11) +
+      theme(legend.position = "bottom",
+            plot.title = element_text(face = "bold"),
+            strip.text = element_text(size = 9),
+            axis.text.x = element_text(angle = 45, hjust = 1))
+    print(p)
+  }
+}
+```
+
+---
+
+```{r session, results='asis'}
+cat("<details><summary>Session info</summary>\n\n```\n")
+cat(paste(capture.output(sessionInfo()), collapse = "\n"))
+cat("\n```\n</details>\n")
+```
