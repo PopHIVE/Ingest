@@ -36,16 +36,22 @@ find_latest_fars_year <- function() {
   stop("Could not determine latest available FARS year")
 }
 
-years <- 200:find_latest_fars_year()
+years <- 2000:find_latest_fars_year()
 
-dir.create("raw", showWarnings = FALSE)
+# Anchor raw/ to the script's own location so it lands in data/nhtsa_crash/raw/
+# regardless of what the working directory is when the script is run.
+RAW_DIR <- file.path(
+  dirname(tryCatch(normalizePath(sys.frame(0)$ofile), error = function(e) "ingest.R")),
+  "raw"
+)
+dir.create(RAW_DIR, showWarnings = FALSE)
 
 download_fars_zip <- function(yr) {
   url <- sprintf(
     "https://static.nhtsa.gov/nhtsa/downloads/FARS/%d/National/FARS%dNationalCSV.zip",
     yr, yr
   )
-  dest <- sprintf("raw/FARS%dNationalCSV.zip", yr)
+  dest <- file.path(RAW_DIR, sprintf("FARS%dNationalCSV.zip", yr))
   if (!file.exists(dest)) {
     message(sprintf("Downloading FARS %d...", yr))
     download.file(url, dest, mode = "wb", quiet = TRUE)
@@ -94,7 +100,7 @@ if (!identical(process$raw_state, raw_state_new)) {
   #    Handles case-insensitive file names and subdirectory paths
   # ---------------------------------------------------------------------------
   read_fars_file <- function(yr, file_pattern) {
-    zip_path <- sprintf("raw/FARS%dNationalCSV.zip", yr)
+    zip_path <- file.path(RAW_DIR, sprintf("FARS%dNationalCSV.zip", yr))
 
     # List contents to find the right file (case-insensitive)
     zip_contents <- tryCatch(
@@ -129,18 +135,39 @@ if (!identical(process$raw_state, raw_state_new)) {
 
   message("Reading person files...")
   person_all <- map_dfr(years, read_fars_file, file_pattern = "^person\\.csv$")
-  
+
   # ---------------------------------------------------------------------------
   # 5. Build geography fields and normalize key columns
   # ---------------------------------------------------------------------------
+  # Old -> current county FIPS crosswalk. Counties that were renamed, merged,
+  # or split between 2000 and 2023 carry retired FIPS codes in the older FARS
+  # years; those codes are absent from the (single-year, 2021) population
+  # reference, which produced NA fatality rates. Remapping to the current code
+  # lets each historical row inherit its successor's population. Renames/merges
+  # are exact; 1->many splits are mapped to the primary (most populous)
+  # successor, which slightly approximates the denominator for those few
+  # extremely rural Alaska county-years.
+  county_fips_crosswalk <- c(
+    "02201" = "02198",  # Prince of Wales-Outer Ketchikan -> Prince of Wales-Hyder (split)
+    "02232" = "02105",  # Skagway-Hoonah-Angoon -> Hoonah-Angoon (split)
+    "02261" = "02063",  # Valdez-Cordova -> Chugach (split, 2019)
+    "02270" = "02158",  # Wade Hampton -> Kusilvak (rename, 2015)
+    "02280" = "02195",  # Wrangell-Petersburg -> Petersburg (split)
+    "12025" = "12086",  # Dade -> Miami-Dade (rename, 1997)
+    "46113" = "46102",  # Shannon -> Oglala Lakota (rename, 2015)
+    "51515" = "51019"   # Bedford (independent city) -> Bedford County (merge, 2013)
+  )
+
   accident_all <- accident_all %>%
     mutate(
       # County FIPS: 2-digit state + 3-digit county
       geography_county = sprintf("%02d%03d", as.integer(STATE), as.integer(COUNTY)),
+      # Remap retired codes to their current successor before any joins
+      geography_county = dplyr::recode(geography_county, !!!county_fips_crosswalk),
       geography_state  = sprintf("%02d", as.integer(STATE)),
       time             = paste0(YEAR, "-12-31"),
-      # Unknown county codes: 0 = not reported, 999 = unknown
-      county_known     = as.integer(COUNTY) > 0 & as.integer(COUNTY) < 999,
+      # Real county codes are < 997; 997/998 = not reported, 999 = unknown
+      county_known     = as.integer(COUNTY) > 0 & as.integer(COUNTY) < 997,
       # Rural/urban: handle both old (LAND_USE) and new (RUR_URB) column names
       rural_urban = dplyr::coalesce(
         if ("RUR_URB"   %in% names(.)) as.integer(RUR_URB)   else NA_integer_,
