@@ -11,7 +11,7 @@ output:
     code_folding: hide
 params:
   # ----- Required: the standardized file to validate -----------------------
-  data_file: "data/nhtsa_crash/standard/data.csv.gz"
+  data_file: "data/yrbss/standard/data_age_ethnicity.csv.gz"
   # ----- Optional: a previous version of the SAME dataset ------------------
   #   Used to confirm the same demographic categories / measures still exist.
   #   If left blank, the script automatically pulls the previous committed
@@ -25,12 +25,12 @@ params:
   git_ref: ""
   # ----- Optional: a different source capturing SIMILAR data ---------------
   #   Used to overlay national trends for comparison.
-  compare_file: "data/wisqars/standard/data.csv.gz"
-  compare_label: "Comparison source"
+  compare_file: ""
+  compare_label: ""
   #   Optional manual measure mapping (parallel comma-separated lists). Leave
   #   blank to auto-match measures that share the same column name.
-  main_measures: "nhtsa_fatality_rate"
-  compare_measures: "wisqars_rate_motor_vehicle_traffic"
+  main_measures: ""
+  compare_measures: ""
   # ----- Paths / behaviour -------------------------------------------------
   project_root: ".."     # resolved relative to this .Rmd's directory
   n_states: 5            # number of random states for the time-series section
@@ -59,6 +59,7 @@ suppressPackageStartupMessages({
   library(ggplot2)
   library(scales)
   library(knitr)
+  library(jsonlite)
 })
 
 set.seed(params$seed)
@@ -106,10 +107,22 @@ classify_columns <- function(d) {
 # whether it is a true "Overall"-type label so we can annotate plots honestly.
 OVERALL_LABELS <- c("Overall", "Total", "All", "All ages", "All Ages",
                     "All races", "Both sexes")
-representative_level <- function(x) {
+representative_level <- function(x, col_name = NULL) {
   lv <- unique(stats::na.omit(x))
   hit <- intersect(OVERALL_LABELS, lv)
   if (length(hit)) return(list(level = hit[1], is_overall = TRUE))
+  # For age columns, prefer the range that starts at 0 with the largest upper bound.
+  # This handles datasets like nccr where "0-39" is the broadest group but
+  # "<1" is the most frequent row, so frequency-based selection would be wrong.
+  if (!is.null(col_name) && col_name == "age" && length(lv) > 1) {
+    zero_upper <- vapply(lv, function(s) {
+      if (grepl("^0[-][0-9]+$", s)) as.numeric(sub("^0[-]", "", s))
+      else if (grepl("^[<][=]?[0-9]", s)) as.numeric(gsub("[^0-9]", "", s))
+      else NA_real_
+    }, numeric(1))
+    if (any(!is.na(zero_upper)))
+      return(list(level = lv[which.max(zero_upper)], is_overall = FALSE))
+  }
   tab <- sort(table(x), decreasing = TRUE)
   list(level = names(tab)[1], is_overall = FALSE)
 }
@@ -119,9 +132,9 @@ representative_level <- function(x) {
 hold_overall <- function(d, demo, keep = character(0)) {
   notes <- character(0)
   for (col in setdiff(demo, keep)) {
-    rep <- representative_level(d[[col]])
+    rep <- representative_level(d[[col]], col_name = col)
     d <- d[d[[col]] == rep$level, , drop = FALSE]
-    if (!rep$is_overall) notes <- c(notes, sprintf("%s = %s", col, rep$level))
+    if (!rep$is_overall) notes <- c(notes, sprintf("%s = %s (overall)", col, rep$level))
   }
   attr(d, "held_notes") <- notes
   d
@@ -195,6 +208,24 @@ dat <- vroom(
   col_types = cols(geography = "c", time = "c")
 )
 roles <- classify_columns(dat)
+
+# Load measure_info.json for short-name lookups (gracefully absent)
+measure_info <- NULL
+mi_path <- file.path(dirname(dirname(data_path)), "measure_info.json")
+if (file.exists(mi_path)) {
+  measure_info <- tryCatch(jsonlite::read_json(mi_path), error = function(e) NULL)
+}
+short_name_fn <- function(v) {
+  if (!is.null(measure_info) && !is.null(measure_info[[v]]) &&
+      !is.null(measure_info[[v]]$short_name))
+    measure_info[[v]]$short_name else v
+}
+measure_label <- function(vars) {
+  vapply(vars, function(v) {
+    sn <- short_name_fn(v)
+    if (identical(sn, v)) v else sprintf("%s (%s)", sn, v)
+  }, character(1), USE.NAMES = FALSE)
+}
 ```
 
 # 1. Overview {#overview}
@@ -473,9 +504,12 @@ flagged_vec <- function(d, m) {
 
 # Long-format a held subset and draw faceted trends. Flagged (suppressed /
 # not-asked) observations are shown as hollow points but excluded from the line.
-trend_plot <- function(d, color_col, title, subtitle = NULL) {
+trend_plot <- function(d, color_col, title, subtitle = NULL, facet_col = NULL) {
   if (nrow(d) == 0 || length(plot_measures) == 0) return(invisible(NULL))
-  keys <- c("time", if (!is.null(color_col)) color_col)
+  facet_cols <- if (!is.null(facet_col)) trimws(strsplit(facet_col, "\\+")[[1]]) else NULL
+  keys <- unique(c("time",
+                   if (!is.null(color_col)) color_col,
+                   facet_cols))
 
   val_long <- d %>%
     select(all_of(keys), all_of(plot_measures)) %>%
@@ -511,10 +545,19 @@ trend_plot <- function(d, color_col, title, subtitle = NULL) {
                  size = 1.5, stroke = 0.5, fill = NA, na.rm = TRUE) +
       scale_shape_manual(values = c("suppressed / not asked" = 21), name = NULL)
   }
+  if (!is.null(facet_col)) {
+    p <- p + facet_grid(
+      as.formula(paste0(facet_col, " ~ measure")),
+      scales = "free_y",
+      labeller = labeller(measure = measure_label, .default = label_value)
+    )
+  } else {
+    p <- p + facet_wrap(~measure, scales = "free_y", ncol = FACET_NCOL,
+                        labeller = labeller(measure = measure_label))
+  }
   p <- p +
-    facet_wrap(~measure, scales = "free_y", ncol = FACET_NCOL) +
     labs(title = title, subtitle = subtitle, x = NULL, y = NULL,
-         color = color_col) +
+         color = if (!is.null(color_col) && color_col == "geography") NULL else color_col) +
     theme_bw(base_size = 11) +
     theme(legend.position = "bottom",
           plot.title = element_text(face = "bold"),
@@ -522,6 +565,8 @@ trend_plot <- function(d, color_col, title, subtitle = NULL) {
           axis.text.x = element_text(angle = 45, hjust = 1))
   print(p)
 }
+
+has_true_overall <- function(v) any(na.omit(v) %in% OVERALL_LABELS)
 
 held_subtitle <- function(d) {
   n <- attr(d, "held_notes")
@@ -534,17 +579,11 @@ nat <- dat %>% filter(geography == "00")
 if (nrow(nat) == 0) {
   cat("_No national (geography == \"00\") rows; skipping national trends._\n")
 } else {
-  cat("## National — overall\n\n")
-  nat_overall <- hold_overall(nat, demo_cols)
-  trend_plot(nat_overall, NULL, "National overall trend",
-             held_subtitle(nat_overall))
-
   for (col in demo_cols) {
     if (length(unique(nat[[col]])) < 2) next
-    cat(sprintf("\n\n## National — by %s\n\n", col))
-    sub <- hold_overall(nat, demo_cols, keep = col)
-    trend_plot(sub, col, sprintf("National trend by %s", col),
-               held_subtitle(sub))
+    sub <- hold_overall(nat, setdiff(demo_cols, col))
+    cat(sprintf("<h2>National — by %s</h2>\n\n", col))
+    trend_plot(sub, col, "", held_subtitle(sub))
   }
 }
 ```
@@ -558,22 +597,25 @@ if (length(state_codes) == 0) {
   cat("_No state-level rows; skipping state trends._\n")
 } else {
   pick <- sort(sample(state_codes, min(params$n_states, length(state_codes))))
-  # Friendly state names from the FIPS crosswalk, if available.
   fips_path <- proj_path("resources/all_fips.csv.gz")
   lab <- pick
   if (file.exists(fips_path)) {
     fips <- vroom(fips_path, show_col_types = FALSE,
                   col_types = cols(geography = "c"))
     nm <- fips$geography_name[match(pick, fips$geography)]
-    lab <- ifelse(is.na(nm), pick, paste0(nm, " (", pick, ")"))
+    lab <- ifelse(is.na(nm), pick, nm)
   }
-  cat(sprintf("## %d random states — overall\n\n", length(pick)))
-  cat(sprintf("States: %s\n\n", paste(lab, collapse = ", ")))
 
-  st <- dat %>% filter(geography %in% pick)
-  st <- hold_overall(st, demo_cols)  # overall demographics only
-  st$geography <- factor(st$geography, levels = pick, labels = lab)
-  trend_plot(st, "geography", "State trends (overall)", held_subtitle(st))
+  for (i in seq_along(pick)) {
+    cat(sprintf("<h2>%s</h2>\n\n", lab[i]))
+    st_i <- dat %>% filter(geography == pick[i])
+    for (col in demo_cols) {
+      if (length(unique(st_i[[col]])) < 2) next
+      sub <- hold_overall(st_i, setdiff(demo_cols, col))
+      cat(sprintf("<h3>by %s</h3>\n\n", col))
+      trend_plot(sub, col, "")
+    }
+  }
 }
 ```
 
@@ -610,10 +652,12 @@ if (!map_ok) {
 
   has_ggnewscale <- requireNamespace("ggnewscale", quietly = TRUE)
   has_ggpattern  <- requireNamespace("ggpattern",  quietly = TRUE)
-  FLAG_FILL    <- c("Suppressed" = "white", "Not asked / collected" = "black")
+  FLAG_FILL    <- c("Suppressed" = "white", "Not asked / collected" = "black",
+                    "Not available" = "grey75")
   # Suppressed cells also get a diagonal hatch so white doesn't read as a high
-  # viridis value; not-asked cells stay solid black.
-  FLAG_PATTERN <- c("Suppressed" = "stripe", "Not asked / collected" = "none")
+  # viridis value; not-asked cells stay solid black; not-available cells grey.
+  FLAG_PATTERN <- c("Suppressed" = "stripe", "Not asked / collected" = "none",
+                    "Not available" = "none")
   # Flagged cells get a grey border so white (suppressed) cells stay visible
   # against the white page background.
   FLAG_BORDER <- "grey50"
@@ -643,6 +687,7 @@ if (!map_ok) {
         mutate(flag_label = case_when(
           coalesce(supp, FALSE) ~ "Suppressed",
           coalesce(miss, FALSE) ~ "Not asked / collected",
+          is.na(value)          ~ "Not available",
           TRUE                  ~ NA_character_
         )) %>%
         left_join(geoms, by = "geography") %>%
@@ -683,6 +728,8 @@ if (!map_ok) {
       } else if (nrow(md_flag) > 0) {
         # Neither helper: constant fills + a caption instead of a legend.
         p <- p +
+          geom_sf(data = md_flag %>% filter(flag_label == "Not available"),
+                  fill = FLAG_FILL[["Not available"]], color = FLAG_BORDER, linewidth = 0.08) +
           geom_sf(data = md_flag %>% filter(flag_label == "Suppressed"),
                   fill = FLAG_FILL[["Suppressed"]], color = FLAG_BORDER, linewidth = 0.08) +
           geom_sf(data = md_flag %>% filter(flag_label == "Not asked / collected"),
@@ -690,12 +737,12 @@ if (!map_ok) {
       }
 
       cap <- if (nrow(md_flag) > 0 && !has_ggnewscale)
-        "White (hatched) = suppressed; black = not asked / collected (install 'ggnewscale'/'ggpattern' for a legend)." else NULL
+        "White (hatched) = suppressed; black = not asked / collected; grey = not available for this geography (install 'ggnewscale'/'ggpattern' for a legend)." else NULL
 
       p <- p +
         facet_wrap(~year, ncol = 2) +
         coord_sf(crs = 5070, datum = NA) +
-        labs(title = sprintf("%s — %s", m, level_label), caption = cap) +
+        labs(title = measure_label(m), caption = cap) +
         theme_void(base_size = 11) +
         theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 12),
               plot.caption = element_text(hjust = 0.5, color = "grey40", size = 8),
@@ -787,6 +834,17 @@ if (!nzchar(cmp_path) || !file.exists(cmp_path)) {
     main_nat  <- hold_overall(dat  %>% filter(geography == "00"), roles$demo)
     comp_nat  <- hold_overall(cdat %>% filter(geography == "00"), croles$demo)
 
+    cmp_measure_info <- NULL
+    cmp_mi_path <- file.path(dirname(dirname(cmp_path)), "measure_info.json")
+    if (file.exists(cmp_mi_path)) {
+      cmp_measure_info <- tryCatch(jsonlite::read_json(cmp_mi_path), error = function(e) NULL)
+    }
+    cmp_short_name_fn <- function(v) {
+      if (!is.null(cmp_measure_info) && !is.null(cmp_measure_info[[v]]) &&
+          !is.null(cmp_measure_info[[v]]$short_name))
+        cmp_measure_info[[v]]$short_name else v
+    }
+
     main_name <- basename(dirname(dirname(params$data_file)))
     cmp_name  <- basename(dirname(dirname(params$compare_file)))
     combined <- bind_rows(
@@ -794,10 +852,12 @@ if (!nzchar(cmp_path) || !file.exists(cmp_path)) {
         bind_rows(
           main_nat %>% transmute(time = as.Date(time), measure = pairs$main[i],
                                  value = .data[[pairs$main[i]]],
-                                 source = paste0(main_name, ": ", pairs$main[i])),
+                                 source = sprintf("%s (%s: %s)", short_name_fn(pairs$main[i]),
+                                                  main_name, pairs$main[i])),
           comp_nat %>% transmute(time = as.Date(time), measure = pairs$main[i],
                                  value = .data[[pairs$comp[i]]],
-                                 source = paste0(cmp_name, ": ", pairs$comp[i]))
+                                 source = sprintf("%s (%s: %s)", cmp_short_name_fn(pairs$comp[i]),
+                                                  cmp_name, pairs$comp[i]))
         )
       })
     ) %>% filter(!is.na(value))
@@ -805,12 +865,11 @@ if (!nzchar(cmp_path) || !file.exists(cmp_path)) {
     p <- ggplot(combined, aes(time, value, color = source, group = source)) +
       geom_line(linewidth = 0.6) + geom_point(size = 0.8) +
       facet_wrap(~measure, scales = "free_y", ncol = FACET_NCOL) +
-      labs(title = "National overall: this dataset vs. comparison source",
-           x = NULL, y = NULL, color = NULL) +
+      labs(title = NULL, x = NULL, y = NULL, color = NULL) +
       theme_bw(base_size = 11) +
       theme(legend.position = "bottom",
-            plot.title = element_text(face = "bold"),
-            strip.text = element_text(size = 9),
+            strip.text = element_blank(),
+            strip.background = element_blank(),
             axis.text.x = element_text(angle = 45, hjust = 1))
     print(p)
   }
