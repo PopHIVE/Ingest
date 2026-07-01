@@ -1141,7 +1141,8 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
     ) %>%
     select(geography, time, genus, species_serotype,
            antimicrobial_class, antimicrobial_agent, test_method,
-           pct_resistant, n_resistant, n_tested)
+           pct_resistant, n_resistant, n_tested) %>%
+    distinct()
 
   # Validate: warn if any pct_resistant > 100
   bad_rows <- agent_standard %>% filter(!is.na(pct_resistant) & pct_resistant > 100)
@@ -1182,7 +1183,8 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
     ) %>%
     select(geography, time, genus, species_serotype,
            pattern, test_method,
-           pct_resistant, n_resistant, n_tested)
+           pct_resistant, n_resistant, n_tested) %>%
+    distinct()
 
   bad_rows <- pattern_standard %>% filter(!is.na(pct_resistant) & pct_resistant > 100)
   if (nrow(bad_rows) > 0) {
