@@ -6,9 +6,9 @@
 #It can be read into memory using arrow::open_dataset("standard/data_zcta") %>% collect(). You can insert a filter as needed prior to collect()
 #
 # Outputs:
-#   standard/data_state.csv.gz   -- 2-digit FIPS, vintage years 2009-2024
-#   standard/data_county.csv.gz  -- 5-digit FIPS, vintage years 2009-2024
-#   standard/data_zcta.csv.gz    -- 5-digit ZCTA, vintage years 2009-2024
+#   standard/data_state.csv.gz        -- 2-digit FIPS, vintage years 2019 to latest available
+#   standard/data_county.csv.gz       -- 5-digit FIPS, vintage years 2019 to latest available
+#   standard/data_zcta_YYYY_YYYY.csv.gz -- 5-digit ZCTA, split into pairs of years
 #
 # Variable legend (all computed variables carry a "acs_" prefix)
 #   Race/Ethnicity: W=Non-Hispanic White, B=Non-Hispanic Black, A=Asian,
@@ -52,9 +52,24 @@ if (!file.exists("process.json")) {
 ACS5         <- "acs/acs5"
 ACS5_SUBJECT <- "acs/acs5/subject"
 
-# ACS 5-year vintage years (each vintage = 5-year period ending that year)
-# 2009 is the first available; 2024 is the most recent as of early 2026; schema was different before 2019
-YEARS <- 2019:2024
+FIRST_YEAR <- 2019L  # schema was different before 2019
+
+# Discover the latest available ACS 5-year vintage from the Census API
+# discovery endpoint (api.census.gov/data.json) — no probing loop needed.
+# Falls back to process$last_vintage_year, then FIRST_YEAR, if the call fails.
+latest_vintage <- tryCatch({
+  censusapi::listCensusApis() %>%
+    filter(name == "acs/acs5") %>%
+    pull(vintage) %>%
+    as.integer() %>%
+    max(na.rm = TRUE)
+}, error = function(e) {
+  message("[WARN] Could not fetch Census API metadata: ", conditionMessage(e))
+  if (!is.null(process$last_vintage_year)) as.integer(process$last_vintage_year) else FIRST_YEAR
+})
+message("ACS latest vintage year: ", latest_vintage)
+
+YEARS <- FIRST_YEAR:latest_vintage
 
 # =============================================================================
 # Core ingestion function: fetch all SDOH variables for one year + geo level
@@ -525,14 +540,19 @@ fetch_all_years <- function(geo_level, api_key, years = YEARS) {
 # =============================================================================
 # Run ingest when output files are absent or a new vintage year is available
 # =============================================================================
+# Determine the expected filename for the most recent ZCTA chunk.
+# Years are paired consecutively from FIRST_YEAR: (2019,2020), (2021,2022), ...
+.lps           <- FIRST_YEAR + 2L * ((latest_vintage - FIRST_YEAR) %/% 2L)
+last_zcta_file <- sprintf("standard/data_zcta_%d_%d.csv.gz", .lps, min(.lps + 1L, latest_vintage))
+rm(.lps)
+
 output_files  <- c("standard/data_state.csv.gz",
                    "standard/data_county.csv.gz",
-                   "standard/data_zcta_2023_2024.csv.gz")
+                   last_zcta_file)
 output_exists <- all(file.exists(output_files))
 last_vintage  <- process$last_vintage_year
-current_max   <- max(YEARS)
 
-if (!output_exists || is.null(last_vintage) || last_vintage < current_max) {
+if (!output_exists || is.null(last_vintage) || last_vintage < latest_vintage) {
 
   # Fetch all geographies and combine into a single data frame
   data_all <- bind_rows(
@@ -557,28 +577,25 @@ if (!output_exists || is.null(last_vintage) || last_vintage < current_max) {
                     select(-geo_level) %>%
                     rename(geography_zcta=geography)
 
-      data_zcta_2019_2020  <- data_all %>%
-                    filter(geo_level == "zcta" & time %in% c("2019-12-31", "2020-12-31")) %>%
-                    select(-geo_level) %>%
-                    rename(geography_zcta=geography)
-      data_zcta_2021_2022  <- data_all %>%
-                    filter(geo_level == "zcta" & time %in% c("2021-12-31", "2022-12-31")) %>%
-                    select(-geo_level) %>%
-                    rename(geography_zcta=geography)
-      data_zcta_2023_2024  <- data_all %>%
-                    filter(geo_level == "zcta" & time %in% c("2023-12-31", "2024-12-31")) %>%
-                    select(-geo_level) %>%
-                    rename(geography_zcta=geography)
+   # Write ZCTA data in consecutive pairs of years for manageability.
+   # If an odd number of years is available the last file covers a single year
+   # and will be extended (overwritten) when the next vintage is released.
+   .zcta_years       <- sort(unique(as.integer(substr(data_zcta$time, 1, 4))))
+   .zcta_pair_starts <- .zcta_years[seq(1, length(.zcta_years), by = 2)]
+   for (.s in .zcta_pair_starts) {
+     .e     <- min(.s + 1L, max(.zcta_years))
+     .times <- paste0(.s:.e, "-12-31")
+     .chunk <- data_zcta %>% filter(time %in% .times)
+     if (nrow(.chunk) > 0)
+       vroom::vroom_write(.chunk, sprintf("./standard/data_zcta_%d_%d.csv.gz", .s, .e), delim = ",")
+   }
+   rm(.s, .e, .times, .chunk, .zcta_years, .zcta_pair_starts)
 
-   if (nrow(data_zcta_2019_2020) > 0) vroom::vroom_write(data_zcta_2019_2020, './standard/data_zcta_2019_2020.csv.gz', delim = ",")
-   if (nrow(data_zcta_2021_2022) > 0) vroom::vroom_write(data_zcta_2021_2022, './standard/data_zcta_2021_2022.csv.gz', delim = ",")
-   if (nrow(data_zcta_2023_2024) > 0) vroom::vroom_write(data_zcta_2023_2024, './standard/data_zcta_2023_2024.csv.gz', delim = ",")
-   
    if (nrow(data_state) > 0) vroom::vroom_write(data_state, "standard/data_state.csv.gz", delim = ",")
    if (nrow(data_county) > 0) vroom::vroom_write(data_county, "standard/data_county.csv.gz", delim = ",")
   }
 
-  process$last_vintage_year <- current_max
+  process$last_vintage_year <- latest_vintage
   dcf::dcf_process_record(updated = process)
 
 } else {
@@ -629,3 +646,4 @@ if (!identical(process$ur_state, list(hash = ur_hash)) || !ur_cols_present) {
   process$ur_state <- list(hash = ur_hash)
   dcf::dcf_process_record(updated = process)
 }
+

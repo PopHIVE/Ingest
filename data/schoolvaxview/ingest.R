@@ -84,7 +84,7 @@ if (!identical(process$raw_state, raw_state)) {
   
 
     vroom::vroom_write(
-      data,
+      vax2,
       "standard/data.csv.gz",
       ","
     )
