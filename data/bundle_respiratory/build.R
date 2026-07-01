@@ -73,10 +73,6 @@ combined <- Reduce(
   data
 )
 
-### added 7/1 to test switching to daily kinsa ###
-kinsa_daily <- vroom::vroom('../kinsa_ili/standard/data.csv.gz', show_col_types = FALSE) 
-arrow::write_parquet(kinsa_daily, "dist/kinsa_daily_test.parquet")
-### end addition ###
 
 #colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
 
