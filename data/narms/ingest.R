@@ -705,6 +705,185 @@ parse_pattern_response <- function(response, genus, species, test_method) {
   do.call(rbind, rows)
 }
 
+#' Build a corrected DSC query that groups by state using the NARMS fact table.
+#' The standard agent query uses NARMSSiteName for state filtering, which causes
+#' the ResistByAgentCell numerator to leak national counts for Shigella DSC.
+#' This query uses the NARMS entity's SiteName for grouping, which works correctly.
+build_dsc_state_query <- function(species, test_method,
+                                   year_from = YEAR_FROM_AST, year_to = YEAR_TO) {
+  list(
+    version = "1.0.0",
+    queries = list(list(
+      Query = list(Commands = list(list(
+        SemanticQueryDataShapeCommand = list(
+          Query = list(
+            Version = 2L,
+            From = list(
+              list(Name = "n", Entity = "NARMS", Type = 0L),
+              list(Name = "n1", Entity = "NARMSTest", Type = 0L),
+              list(Name = "n11", Entity = "NARMSLookupGenus", Type = 0L),
+              list(Name = "n111", Entity = "NARMSLookupSpecies", Type = 0L),
+              list(Name = "n2", Entity = "NARMSYear", Type = 0L),
+              list(Name = "n3", Entity = "NARMSAgent", Type = 0L),
+              list(Name = "r", Entity = "NARMSResultAST", Type = 0L)
+            ),
+            Select = list(
+              list(
+                Column = list(Expression = list(SourceRef = list(Source = "n")),
+                              Property = "SiteName"),
+                Name = "NARMS.SiteName", NativeReferenceName = "SiteName"
+              ),
+              list(
+                Column = list(Expression = list(SourceRef = list(Source = "n2")),
+                              Property = "DataYear"),
+                Name = "NARMSYear.DataYear", NativeReferenceName = "Year"
+              ),
+              list(
+                Measure = list(Expression = list(SourceRef = list(Source = "r")),
+                               Property = "ResistByAgentCell"),
+                Name = "NARMSResultAST.ResistByAgentCell",
+                NativeReferenceName = "ResistByAgentCell"
+              )
+            ),
+            Where = list(
+              list(Condition = list(In = list(
+                Expressions = list(list(Column = list(
+                  Expression = list(SourceRef = list(Source = "n1")),
+                  Property = "TestMethod"))),
+                Values = list(list(list(Literal = list(
+                  Value = paste0("'", test_method, "'")))))
+              ))),
+              list(Condition = list(In = list(
+                Expressions = list(
+                  list(Column = list(Expression = list(SourceRef = list(Source = "n11")),
+                                     Property = "Genus")),
+                  list(Column = list(Expression = list(SourceRef = list(Source = "n111")),
+                                     Property = "SpeciesSerotype"))
+                ),
+                Values = list(list(
+                  list(Literal = list(Value = "'Shigella'")),
+                  list(Literal = list(Value = paste0("'", species, "'")))
+                ))
+              ))),
+              list(Condition = list(And = list(
+                Left = list(Comparison = list(ComparisonKind = 2L,
+                  Left = list(Column = list(Expression = list(SourceRef = list(Source = "n2")),
+                                             Property = "DataYear")),
+                  Right = list(Literal = list(Value = paste0(year_from, "D"))))),
+                Right = list(Comparison = list(ComparisonKind = 4L,
+                  Left = list(Column = list(Expression = list(SourceRef = list(Source = "n2")),
+                                             Property = "DataYear")),
+                  Right = list(Literal = list(Value = paste0(year_to, "D")))))
+              ))),
+              list(Condition = list(In = list(
+                Expressions = list(
+                  list(Column = list(Expression = list(SourceRef = list(Source = "n3")),
+                                     Property = "SearchType")),
+                  list(Column = list(Expression = list(SourceRef = list(Source = "n3")),
+                                     Property = "Display")),
+                  list(Column = list(Expression = list(SourceRef = list(Source = "n3")),
+                                     Property = "Antimicrobial Agent"))
+                ),
+                Values = list(list(
+                  list(Literal = list(Value = "'By Agent'")),
+                  list(Literal = list(Value = "'Select Agent'")),
+                  list(Literal = list(Value = "'Ciprofloxacin (DSC)'"))
+                ))
+              )))
+            )
+          ),
+          Binding = list(
+            Primary = list(Groupings = list(list(Projections = list(0L)))),
+            Secondary = list(Groupings = list(list(Projections = list(1L, 2L)))),
+            DataReduction = list(DataVolume = 4L,
+              Primary = list(Window = list(Count = 200L)),
+              Secondary = list(Top = list(Count = 100L))),
+            Version = 1L
+          ),
+          ExecutionMetricsKind = 1L
+        )
+      ))),
+      QueryId = "",
+      ApplicationContext = list(
+        DatasetId = POWERBI_DATASET_ID,
+        Sources = list(list(ReportId = POWERBI_REPORT_ID,
+                            VisualId = AGENT_VISUAL_ID))
+      )
+    )),
+    cancelQueries = list(),
+    modelId = POWERBI_MODEL_ID
+  )
+}
+
+#' Parse DSC state query response (state × year matrix) into a data frame
+parse_dsc_state_response <- function(response, species, test_method) {
+  dsr <- response$results[[1]]$result$data$dsr
+
+  if (is.null(dsr$DS)) {
+    warning(sprintf("No data returned for Shigella / %s / %s (DSC state)", species, test_method))
+    return(NULL)
+  }
+
+  ds <- dsr$DS[[1]]
+  cell_values <- ds$ValueDicts$D0
+
+  # Years from secondary header
+  sh_key <- names(ds$SH[[1]])[grep("^DM", names(ds$SH[[1]]))]
+  years <- sapply(ds$SH[[1]][[sh_key]], function(x) x[[grep("^G", names(x))[1]]])
+
+  # Parse primary groups (states)
+  ph_key <- names(ds$PH[[1]])[grep("^DM", names(ds$PH[[1]]))]
+  groups <- ds$PH[[1]][[ph_key]]
+
+  rows <- list()
+  for (g in groups) {
+    if (!is.null(g[["Ø"]])) next
+
+    state_name <- g$G0
+    if (is.null(state_name) || !is.character(state_name)) next
+    if (is.null(g$X)) next
+
+    prev_value <- NULL
+    for (i in seq_along(g$X)) {
+      cell <- g$X[[i]]
+
+      if (!is.null(cell$R)) {
+        cell_text <- prev_value
+      } else if (!is.null(cell$M0)) {
+        if (is.character(cell$M0)) {
+          cell_text <- cell$M0
+        } else {
+          cell_text <- cell_values[[cell$M0 + 1]]
+        }
+        prev_value <- cell_text
+      } else {
+        cell_text <- NULL
+        prev_value <- NULL
+      }
+
+      if (is.null(cell_text)) next
+      parsed <- parse_cell_value(cell_text)
+
+      rows[[length(rows) + 1]] <- data.frame(
+        year = years[i],
+        genus = "Shigella",
+        species_serotype = species,
+        antimicrobial_class = "Quinolones",
+        antimicrobial_agent = "Ciprofloxacin (DSC)",
+        test_method = test_method,
+        narms_now_pct_resistant = parsed$pct_resistant,
+        narms_now_n_resistant = parsed$n_resistant,
+        narms_now_n_tested = parsed$n_tested,
+        site_name = state_name,
+        stringsAsFactors = FALSE
+      )
+    }
+  }
+
+  if (length(rows) == 0) return(NULL)
+  do.call(rbind, rows)
+}
+
 # =============================================================================
 # Main Scraping Loop — writes raw data to raw/narms_now_agent.csv.gz
 # and raw/narms_now_pattern.csv.gz
@@ -842,6 +1021,58 @@ if (needs_scrape) {
     message(sprintf("Wrote %d rows to raw/narms_now_agent.csv.gz", nrow(new_agent_df)))
   }
 
+  # --- Fix Shigella DSC state-level data ---
+  # The main scrape returns wrong state-level values for Ciprofloxacin (DSC)
+  # because the ResistByAgentCell measure leaks national counts when filtered
+  # by NARMSSiteName. Re-scrape using the NARMS fact table for state grouping,
+  # which returns correct values (6 queries total).
+  if (file.exists("raw/narms_now_agent.csv.gz")) {
+    message("=== Correcting Shigella DSC state-level data (6 queries) ===")
+    shigella_species <- c("flexneri", "other", "sonnei")
+    dsc_corrected <- list()
+
+    for (sp in shigella_species) {
+      for (tm in test_methods) {
+        year_from <- if (tm == "WGS") YEAR_FROM_WGS else YEAR_FROM_AST
+        message(sprintf("  DSC fix: Shigella %s / %s", sp, tm))
+
+        tryCatch({
+          query <- build_dsc_state_query(sp, tm, year_from = year_from, year_to = YEAR_TO)
+          response <- execute_powerbi_query(query)
+          parsed <- parse_dsc_state_response(response, sp, tm)
+
+          if (!is.null(parsed) && nrow(parsed) > 0) {
+            dsc_corrected[[length(dsc_corrected) + 1]] <- parsed
+            message(sprintf("    -> %d rows", nrow(parsed)))
+          }
+        }, error = function(e) {
+          warning(sprintf("    -> DSC fix ERROR: %s", conditionMessage(e)))
+        })
+        Sys.sleep(QUERY_DELAY)
+      }
+    }
+
+    if (length(dsc_corrected) > 0) {
+      dsc_df <- do.call(rbind, dsc_corrected) %>%
+        rename(pct_resistant = narms_now_pct_resistant,
+               n_resistant = narms_now_n_resistant,
+               n_tested = narms_now_n_tested)
+
+      agent_raw <- vroom::vroom("raw/narms_now_agent.csv.gz", show_col_types = FALSE)
+
+      # Remove bad Shigella DSC state rows and replace with corrected data
+      agent_fixed <- agent_raw %>%
+        filter(!(genus == "Shigella" &
+                 antimicrobial_agent == "Ciprofloxacin (DSC)" &
+                 !is.na(site_name))) %>%
+        bind_rows(dsc_df)
+
+      vroom::vroom_write(agent_fixed, "raw/narms_now_agent.csv.gz", delim = ",")
+      message(sprintf("DSC fix: replaced Shigella DSC state rows. %d -> %d total rows",
+                      nrow(agent_raw), nrow(agent_fixed)))
+    }
+  }
+
   if (length(all_pattern_data) > 0) {
     new_pattern_df <- do.call(rbind, all_pattern_data) %>%
       rename(pct_resistant = narms_now_pct_resistant,
@@ -905,11 +1136,23 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
     left_join(site_to_fips, by = "site_name") %>%
     mutate(
       geography = if_else(is.na(site_name), "00", geography),
-      time = paste0(year, "-12-31")
+      time = paste0(year, "-12-31"),
+      pct_resistant = if_else(n_tested == 0 & !is.na(n_tested), NA_real_, pct_resistant)
     ) %>%
     select(geography, time, genus, species_serotype,
            antimicrobial_class, antimicrobial_agent, test_method,
            pct_resistant, n_resistant, n_tested)
+
+  # Validate: warn if any pct_resistant > 100
+  bad_rows <- agent_standard %>% filter(!is.na(pct_resistant) & pct_resistant > 100)
+  if (nrow(bad_rows) > 0) {
+    warning(sprintf(
+      "%d agent rows have pct_resistant > 100%%. Top offenders: %s",
+      nrow(bad_rows),
+      paste(unique(bad_rows$antimicrobial_agent)[1:min(5, length(unique(bad_rows$antimicrobial_agent)))],
+            collapse = ", ")
+    ))
+  }
 
   vroom::vroom_write(agent_standard, "standard/data_resistance_agent.csv.gz", delim = ",")
   message(sprintf("Wrote %d rows to standard/data_resistance_agent.csv.gz", nrow(agent_standard)))
@@ -934,11 +1177,22 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
     left_join(site_to_fips, by = "site_name") %>%
     mutate(
       geography = if_else(is.na(site_name), "00", geography),
-      time = paste0(year, "-12-31")
+      time = paste0(year, "-12-31"),
+      pct_resistant = if_else(n_tested == 0 & !is.na(n_tested), NA_real_, pct_resistant)
     ) %>%
     select(geography, time, genus, species_serotype,
            pattern, test_method,
            pct_resistant, n_resistant, n_tested)
+
+  bad_rows <- pattern_standard %>% filter(!is.na(pct_resistant) & pct_resistant > 100)
+  if (nrow(bad_rows) > 0) {
+    warning(sprintf(
+      "%d pattern rows have pct_resistant > 100%%. Top offenders: %s",
+      nrow(bad_rows),
+      paste(unique(bad_rows$pattern)[1:min(5, length(unique(bad_rows$pattern)))],
+            collapse = ", ")
+    ))
+  }
 
   vroom::vroom_write(pattern_standard, "standard/data_resistance_pattern.csv.gz", delim = ",")
   message(sprintf("Wrote %d rows to standard/data_resistance_pattern.csv.gz", nrow(pattern_standard)))
