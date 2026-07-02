@@ -176,7 +176,7 @@ overall_trends %>%
   filter(N_obs >=52) %>%
   ungroup() %>%
   dplyr::select(-variable, -fips,-N_obs) %>%
-  arrow::write_parquet(., "dist/flu_overall_trends_test.parquet")
+  arrow::write_parquet(., "dist/flu_overall_trends.parquet")
 
 overall_trends %>% 
   filter(grepl('covid',variable) & !is.na(value)) %>%
@@ -456,3 +456,4 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
   
   arrow::write_parquet(uad, "dist/pneumococcus_comparison.parquet")
   
+
