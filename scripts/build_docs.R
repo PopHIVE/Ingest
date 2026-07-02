@@ -750,8 +750,12 @@ html_page <- tags$html(lang = "en",
     tags$nav(class = "navbar navbar-dark fixed-top",
       tags$div(class = "container-fluid",
         tags$a(class = "navbar-brand", href = "#", "PopHIVE Data Documentation"),
-        tags$span(class = "navbar-text text-light",
-          sprintf("Last updated: %s", format(Sys.Date(), "%B %d, %Y"))
+        tags$div(class = "d-flex align-items-center",
+          tags$a(class = "btn btn-outline-light btn-sm me-3", href = "data-table.html",
+                 "Data Table →"),
+          tags$span(class = "navbar-text text-light",
+            sprintf("Last updated: %s", format(Sys.Date(), "%B %d, %Y"))
+          )
         )
       )
     ),
