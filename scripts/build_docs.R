@@ -1033,4 +1033,144 @@ cat(sprintf("Data manifest written to %s\n", manifest_path))
 cat(sprintf("  - %d bundles\n", length(manifest$bundles)))
 cat(sprintf("  - %d data sources\n", length(manifest$data_sources)))
 
+# =====================================================================
+# Build data sources index (docs/data_sources_index.json)
+# Lightweight per-source catalog: name, links, latest date, bundle
+# membership, and a one-line summary derived from _sources$description.
+# All fields are auto-derived, so this stays fresh on every build.
+# =====================================================================
+
+cat("Building data sources index JSON...\n")
+
+# Helper: find the most recent date across a source's standard files
+get_latest_date <- function(source_dir) {
+  files <- get_standard_files(source_dir)
+  if (length(files) == 0) return(NA_character_)
+
+  date_candidates <- c("time", "date", "week_end", "week_ending",
+                       "week_ending_date", "week_end_date")
+  latest_dates <- as.Date(character(0))
+  latest_year <- NA_integer_
+
+  # Read a single named column from a csv.gz (altrep off to force materializing)
+  read_column <- function(filepath, col_name) {
+    tryCatch(
+      vroom::vroom(filepath, show_col_types = FALSE, altrep = FALSE)[[col_name]],
+      error = function(e) NULL
+    )
+  }
+
+  # Parse dates defensively: as.Date() errors on non-standard strings, so try
+  # a few explicit formats and keep the first that yields any valid date.
+  parse_dates <- function(x) {
+    x <- as.character(x)
+    for (fmt in c("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%m-%d-%Y")) {
+      d <- suppressWarnings(as.Date(x, format = fmt))
+      if (any(!is.na(d))) return(d)
+    }
+    as.Date(rep(NA_character_, length(x)))
+  }
+
+  for (f in files) {
+    cols <- get_csv_columns(f)
+    if (length(cols) == 0) next
+    lower_cols <- tolower(cols)
+
+    match_idx <- match(date_candidates, lower_cols)
+    match_idx <- match_idx[!is.na(match_idx)]
+
+    if (length(match_idx) > 0) {
+      d <- parse_dates(read_column(f, cols[match_idx[1]]))
+      d <- d[!is.na(d)]
+      if (length(d) > 0) latest_dates <- c(latest_dates, max(d))
+    } else if ("year" %in% lower_cols) {
+      vals <- read_column(f, cols[match("year", lower_cols)])
+      yrs <- suppressWarnings(as.integer(vals))
+      yrs <- yrs[!is.na(yrs)]
+      if (length(yrs) > 0) latest_year <- max(c(latest_year, yrs), na.rm = TRUE)
+    }
+  }
+
+  if (length(latest_dates) > 0) {
+    return(format(max(latest_dates), "%Y-%m-%d"))
+  } else if (!is.na(latest_year)) {
+    return(sprintf("%d-12-31", latest_year))
+  }
+  return(NA_character_)
+}
+
+# Map each source -> the bundles that consume it (from bundle process.json)
+source_to_bundles <- list()
+for (i in seq_along(bundle_dirs)) {
+  bproc <- tryCatch(
+    fromJSON(file.path(bundle_dirs[i], "process.json"), simplifyVector = FALSE),
+    error = function(e) NULL
+  )
+  if (is.null(bproc) || is.null(bproc$source_files)) next
+  # Keys look like "epic/standard/weekly.csv.gz"; first segment is the source dir
+  srcs <- unique(sub("/.*$", "", names(bproc$source_files)))
+  for (s in srcs) {
+    source_to_bundles[[s]] <- unique(c(source_to_bundles[[s]], bundle_names[i]))
+  }
+}
+
+# Only index sources that have at least one standard data file (mirrors the
+# manifest); this excludes template/scratch dirs with no output.
+index_source_idx <- Filter(
+  function(i) length(get_standard_files(source_dirs[i])) > 0,
+  seq_along(source_dirs)
+)
+
+index_datasets <- lapply(index_source_idx, function(i) {
+  source_name <- source_names[i]
+  source_dir <- source_dirs[i]
+
+  measure_info <- tryCatch(
+    fromJSON(file.path(source_dir, "measure_info.json"), simplifyVector = FALSE),
+    error = function(e) list()
+  )
+  sources_meta <- measure_info[["_sources"]]
+  first_source <- if (!is.null(sources_meta) && length(sources_meta) > 0) {
+    sources_meta[[1]]
+  } else {
+    list()
+  }
+
+  description <- first_source$description %||% ""
+  section_id <- gsub("[^a-zA-Z0-9]", "-", source_name)
+  bundles <- source_to_bundles[[source_name]]
+  if (is.null(bundles)) bundles <- character(0)
+  bundles <- sort(bundles)
+
+  cat(sprintf("  Indexing %s (%d/%d)\n", source_name, i, length(source_dirs)))
+
+  list(
+    dataset = source_name,
+    name = first_source$name %||% format_source_name(source_name),
+    github_folder = sprintf("https://github.com/%s/tree/main/data/%s",
+                            GITHUB_REPO, source_name),
+    data_url = first_source$url %||% "",
+    data_dictionary = sprintf("https://pophive.github.io/Ingest/#%s", section_id),
+    latest_date = get_latest_date(source_dir),
+    bundles = I(bundles),
+    summary = if (nchar(description) > 0) description else NA
+  )
+})
+
+data_sources_index <- list(
+  description = "Index of PopHIVE/Ingest standardized data sources (excludes bundle_* directories).",
+  repository = GITHUB_REPO,
+  n_datasets = length(index_datasets),
+  datasets = index_datasets
+)
+
+if (!dir.exists("docs")) dir.create("docs")
+index_path <- "docs/data_sources_index.json"
+write(
+  toJSON(data_sources_index, auto_unbox = TRUE, pretty = TRUE, na = "null"),
+  index_path
+)
+cat(sprintf("Data sources index written to %s (%d datasets)\n",
+            index_path, length(index_datasets)))
+
 cat("Done! Documentation generated successfully.\n")
