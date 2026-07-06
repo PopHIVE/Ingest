@@ -1,0 +1,111 @@
+{
+  "age": {
+    "id": "age",
+    "short_name": "Age",
+    "long_name": "Age group of the mother",
+    "short_description": "Age group of the mother at the time of the maternal death.",
+    "measure_type": "age",
+    "unit": "age group (years)"
+  },
+
+  "race_ethnicity": {
+    "id": "race_ethnicity",
+    "short_name": "Race/ethnicity",
+    "long_name": "Race and Hispanic origin of the mother",
+    "short_description": "Race and Hispanic origin of the mother.",
+    "measure_type": "race_ethnicity",
+    "unit": "category"
+  },
+
+  "vssr_maternal_deaths": {
+    "id": "vssr_maternal_deaths",
+    "short_name": "Maternal deaths",
+    "long_name": "Provisional maternal death count (12-month rolling total)",
+    "category": "maternal",
+    "short_description": "Provisional count of maternal deaths in the 12 months ending in the reference month.",
+    "long_description": "Provisional count of maternal deaths, defined as the death of a woman while pregnant or within 42 days of termination of pregnancy from any cause related to or aggravated by the pregnancy or its management (ICD-10 codes A34, O00-O95, O98-O99). Reported as a 12-month backward rolling total. National level, overall and by age and race/Hispanic origin. Counts of 1-9 are suppressed by NCHS to protect confidentiality and imputed as 5; see vssr_suppressed_flag. Data are provisional and subject to revision as death certificates are processed.",
+    "statement": "In {location}, there were {value} provisional maternal deaths in the 12 months ending {time}.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Month",
+    "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions.",
+    "sources": [{ "id": "nchs_vsrr_maternal" }],
+    "citations": []
+  },
+
+  "vssr_live_births": {
+    "id": "vssr_live_births",
+    "short_name": "Live births",
+    "long_name": "Live births (12-month rolling total, denominator for maternal mortality rate)",
+    "category": "maternal",
+    "short_description": "Number of live births in the 12 months ending in the reference month, used as the denominator for the maternal mortality rate.",
+    "long_description": "Provisional count of live births in the 12-month backward rolling period ending in the reference month, from the National Vital Statistics System. Serves as the denominator for vssr_maternal_mortality_rate. National level, overall and by age and race/Hispanic origin of the mother. Data are provisional and subject to revision.",
+    "statement": "In {location}, there were {value} live births in the 12 months ending {time}.",
+    "measure_type": "Count",
+    "unit": "Live births",
+    "time_resolution": "Month",
+    "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions.",
+    "sources": [{ "id": "nchs_vsrr_maternal" }],
+    "citations": []
+  },
+
+  "vssr_maternal_mortality_rate": {
+    "id": "vssr_maternal_mortality_rate",
+    "short_name": "Maternal mortality rate",
+    "long_name": "Provisional maternal mortality rate (12-month rolling)",
+    "category": "maternal",
+    "short_description": "Provisional maternal deaths per 100,000 live births in the 12 months ending in the reference month.",
+    "long_description": "Provisional maternal mortality rate, calculated as maternal deaths per 100,000 live births over the 12-month backward rolling period ending in the reference month. National level, overall and by age and race/Hispanic origin of the mother. Rates based on death counts under 20 are considered unreliable by NCHS and are not reported; see vssr_rate_unreliable_flag. Evaluation of trends should compare estimates from the same month in different years rather than adjacent months, since 12-month periods overlap. Data are provisional and subject to revision as more death certificates and birth records are received and processed.",
+    "statement": "In {location}, the provisional maternal mortality rate was {value} per 100,000 live births in the 12 months ending {time}.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000 live births",
+    "time_resolution": "Month",
+    "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions.",
+    "sources": [{ "id": "nchs_vsrr_maternal" }],
+    "citations": []
+  },
+
+  "vssr_suppressed_flag": {
+    "id": "vssr_suppressed_flag",
+    "short_name": "Maternal death count suppressed",
+    "long_name": "Flag indicating the maternal death count was suppressed and imputed",
+    "category": "maternal",
+    "short_description": "1 if the maternal death count was suppressed (1-9 deaths) and imputed as 5, 0 otherwise.",
+    "long_description": "NCHS suppresses maternal death counts between 1 and 9 in accordance with confidentiality standards. When suppressed, vssr_maternal_deaths is imputed as 5 (the midpoint of the suppressed range) and this flag is set to 1. When suppressed, vssr_maternal_mortality_rate is also unreported.",
+    "statement": "In {location}, the maternal death count in the 12 months ending {time} was {value_label}.",
+    "measure_type": "Count",
+    "unit": "Flag (0/1)",
+    "time_resolution": "Month",
+    "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions.",
+    "sources": [{ "id": "nchs_vsrr_maternal" }],
+    "citations": []
+  },
+
+  "vssr_rate_unreliable_flag": {
+    "id": "vssr_rate_unreliable_flag",
+    "short_name": "Maternal mortality rate unreliable",
+    "long_name": "Flag indicating the maternal mortality rate is unreliable or unreported",
+    "category": "maternal",
+    "short_description": "1 if the maternal mortality rate is based on a death count under 20 and considered unreliable by NCHS (rate not reported), 0 otherwise.",
+    "long_description": "NCHS considers maternal mortality rates based on fewer than 20 deaths unreliable, and does not report a rate in these cases (vssr_maternal_mortality_rate is missing). This flag identifies those cases, including cases where the underlying death count is also suppressed.",
+    "statement": "In {location}, the maternal mortality rate in the 12 months ending {time} was {value_label}.",
+    "measure_type": "Count",
+    "unit": "Flag (0/1)",
+    "time_resolution": "Month",
+    "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions.",
+    "sources": [{ "id": "nchs_vsrr_maternal" }],
+    "citations": []
+  },
+
+  "_sources": {
+    "nchs_vsrr_maternal": {
+      "name": "NCHS VSRR Provisional Maternal Death Counts and Rates",
+      "url": "https://data.cdc.gov/d/e2d5-ggg7",
+      "date_accessed": 2026,
+      "organization": "National Center for Health Statistics (NCHS)",
+      "organization_url": "https://www.cdc.gov/nchs/",
+      "description": "National-level provisional maternal mortality rates based on a current flow of mortality and natality data in the National Vital Statistics System (NVSS). A maternal death is the death of a woman while pregnant or within 42 days of termination of pregnancy, from any cause related to or aggravated by the pregnancy or its management (ICD-10 codes A34, O00-O95, O98-O99). Rates are reported as 12-month backward rolling periods, overall and by age and race/Hispanic origin. Death counts of 1-9 are suppressed per NCHS confidentiality standards; rates based on fewer than 20 deaths are considered unreliable and not reported. Updated quarterly by NCHS; previously released estimates are revised as additional records are received.",
+      "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions."
+    }
+  }
+}
