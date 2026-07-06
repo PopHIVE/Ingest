@@ -41,10 +41,13 @@ if (!identical(process$raw_state, raw_state)) {
     )
 
   # --- 3. Transform data ---
-  # Keep only rows from the single most recent model run (global max as_of)
-  latest_as_of <- max(data_raw$as_of, na.rm = TRUE)
+  # Keep only the most recent model run per state. The national ("United
+  # States") model runs on a slower/staggered cadence than the state models,
+  # so a single global latest as_of would silently drop national estimates.
   data_latest <- data_raw |>
-    filter(as_of == latest_as_of)
+    group_by(state) |>
+    filter(as_of == max(as_of, na.rm = TRUE)) |>
+    ungroup()
 
   data_prepared <- data_latest |>
     mutate(
@@ -65,7 +68,7 @@ if (!identical(process$raw_state, raw_state)) {
         TRUE                     ~ NA_character_
       )
     ) |>
-    filter(!is.na(geography)) |>
+    filter(!is.na(geography), !is.na(median)) |>
     select(geography, time, disease_key, median, lower, upper, p_growing) |>
     distinct(geography, time, disease_key, .keep_all = TRUE)
 
@@ -76,12 +79,18 @@ if (!identical(process$raw_state, raw_state)) {
       values_from = c(median, lower, upper, p_growing),
       names_glue  = "cdc_rt_{disease_key}_{.value}"
     ) |>
-    rename(
-      cdc_rt_covid = cdc_rt_covid_median,
-      cdc_rt_flu   = cdc_rt_flu_median,
-      cdc_rt_rsv   = cdc_rt_rsv_median
-    ) |>
+    rename_with(~ sub("_median$", "", .x), ends_with("_median")) |>
     arrange(geography, time)
+
+  # Guarantee a fixed column set even if a disease has zero estimates for the
+  # whole period (e.g. flu/RSV fully "Not Estimated" off-season) - downstream
+  # bundle_respiratory/build.R references these columns by name unconditionally
+  expected_cols <- paste0(
+    "cdc_rt_", rep(c("covid", "flu", "rsv"), each = 4),
+    c("", "_lower", "_upper", "_p_growing")
+  )
+  missing_cols <- setdiff(expected_cols, names(data_wide))
+  data_wide[missing_cols] <- NA_real_
 
   # --- 4. Write standardized output ---
   vroom::vroom_write(data_wide, "standard/data.csv.gz", delim = ",")
