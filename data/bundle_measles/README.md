@@ -78,6 +78,19 @@ Combined view of exemption rates with latest wastewater detection status.
 - `detection_rate`: Latest wastewater detection rate
 - `detection_count`: Latest detection count
 
+### measles_imported_indigenous.parquet
+Long-format weekly measles case counts by importation status, from CDC NNDS, at
+state and national level.
+
+**Columns:**
+- `geography`: State name or "United States"
+- `date`: MMWR week-ending date
+- `year`: MMWR year
+- `week`: MMWR week
+- `source`: `measles_imported` or `measles_indigenous`
+- `value`: Cumulative year-to-date case count
+- `new_value`: New cases reported for that MMWR week (resets each year)
+
 ## Building the Bundle
 
 From the project root:
