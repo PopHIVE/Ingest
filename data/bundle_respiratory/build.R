@@ -455,5 +455,73 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
     rename( ipd = value, pneumonia = N_SSUAD)
   
   arrow::write_parquet(uad, "dist/pneumococcus_comparison.parquet")
-  
+
+###############################################
+# CDC CFA Rt, NCHS cause-specific mortality rates, and NNDSS notifiable diseases
+################################################
+
+cfa_rt_raw <- vroom::vroom('../cdc_cfa_rt/standard/data.csv.gz', show_col_types = FALSE) %>%
+  rename(fips = geography) %>%
+  left_join(state_name_lookup, by = c("fips" = "geography")) %>%
+  mutate(geography = if_else(fips == '00', 'United States', geography_name)) %>%
+  filter(geography %in% c(state.name, 'District of Columbia', 'United States')) %>%
+  rename(date = time)
+
+cfa_rt <- bind_rows(
+  cfa_rt_raw %>% transmute(geography, date, source = 'CDC CFA Rt', variable = 'cdc_rt_covid', value = as.numeric(cdc_rt_covid)),
+  cfa_rt_raw %>% transmute(geography, date, source = 'CDC CFA Rt', variable = 'cdc_rt_covid_lower', value = as.numeric(cdc_rt_covid_lower)),
+  cfa_rt_raw %>% transmute(geography, date, source = 'CDC CFA Rt', variable = 'cdc_rt_covid_upper', value = as.numeric(cdc_rt_covid_upper)),
+  cfa_rt_raw %>% transmute(geography, date, source = 'CDC CFA Rt', variable = 'cdc_rt_flu', value = as.numeric(cdc_rt_flu)),
+  cfa_rt_raw %>% transmute(geography, date, source = 'CDC CFA Rt', variable = 'cdc_rt_flu_lower', value = as.numeric(cdc_rt_flu_lower)),
+  cfa_rt_raw %>% transmute(geography, date, source = 'CDC CFA Rt', variable = 'cdc_rt_flu_upper', value = as.numeric(cdc_rt_flu_upper)),
+  cfa_rt_raw %>% transmute(geography, date, source = 'CDC CFA Rt', variable = 'cdc_rt_rsv', value = as.numeric(cdc_rt_rsv)),
+  cfa_rt_raw %>% transmute(geography, date, source = 'CDC CFA Rt', variable = 'cdc_rt_rsv_lower', value = as.numeric(cdc_rt_rsv_lower)),
+  cfa_rt_raw %>% transmute(geography, date, source = 'CDC CFA Rt', variable = 'cdc_rt_rsv_upper', value = as.numeric(cdc_rt_rsv_upper))
+) %>%
+  filter(!is.na(value))
+
+nchs_rates <- vroom::vroom('../nchs_mortality/standard/data_state_21_causes.csv.gz', show_col_types = FALSE) %>%
+  rename(fips = geography) %>%
+  left_join(state_name_lookup, by = c("fips" = "geography")) %>%
+  mutate(geography = if_else(fips == '00', 'United States', geography_name)) %>%
+  filter(geography %in% c(state.name, 'District of Columbia', 'United States')) %>%
+  dplyr::select(geography, date = time,
+                rate_covid_19, rate_chronic_lower_respiratory_diseases, rate_influenza_and_pneumonia) %>%
+  reshape2::melt(id.vars = c('geography', 'date'), variable.name = 'variable', value.name = 'value') %>%
+  mutate(variable = as.character(variable),
+         value = suppressWarnings(as.numeric(value)),
+         source = 'CDC NCHS Mortality') %>%
+  filter(!is.na(value))
+
+nnds_vars <- c(
+  'influenza_associated_pediatric_mortality',
+  'pertussis',
+  'novel_influenza_a_virus_infections_confirmed',
+  'novel_influenza_a_virus_infections_total',
+  'haemophilus_influenzae_invasive_disease_age_5_years_non_b_serotype',
+  'haemophilus_influenzae_invasive_disease_age_5_years_nontypeable',
+  'haemophilus_influenzae_invasive_disease_age_5_years_serotype_b',
+  'haemophilus_influenzae_invasive_disease_age_5_years_unknown_serotype',
+  'haemophilus_influenzae_invasive_disease_all_ages_all_serotypes'
+)
+
+nnds_long <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = FALSE) %>%
+  filter(!is.na(geography)) %>%
+  rename(fips = geography) %>%
+  left_join(state_name_lookup, by = c("fips" = "geography")) %>%
+  mutate(geography = if_else(fips == '00', 'United States', geography_name)) %>%
+  filter(geography %in% c(state.name, 'District of Columbia', 'United States')) %>%
+  dplyr::select(geography, date = time, all_of(nnds_vars)) %>%
+  reshape2::melt(id.vars = c('geography', 'date'), variable.name = 'variable', value.name = 'value') %>%
+  mutate(variable = as.character(variable),
+         value = suppressWarnings(as.numeric(value)),
+         source = 'CDC NNDSS') %>%
+  filter(!is.na(value))
+
+other_measures_trends <- bind_rows(cfa_rt, nchs_rates, nnds_long) %>%
+  dplyr::select(geography, date, source, variable, value) %>%
+  arrange(source, variable, geography, date)
+
+arrow::write_parquet(other_measures_trends, "dist/other_measures_trends.parquet")
+
 
