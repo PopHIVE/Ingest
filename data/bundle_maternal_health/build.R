@@ -11,11 +11,18 @@
 #                                                          state-level only)
 #   - cdc_vssr/standard/data.csv.gz                       (NCHS VSRR maternal
 #                                                          mortality, national
-#                                                          only, overall only)
+#                                                          only, monthly, by
+#                                                          age & race/ethnicity)
 #
 # Outputs:
-#   - dist/maternal_state.parquet  : geography(2-digit) x time x measure x value
-#   - dist/maternal_county.parquet : geography(5-digit) x time x measure x value
+#   - dist/maternal_state.parquet    : geography(2-digit) x time x measure x value
+#   - dist/maternal_county.parquet   : geography(5-digit) x time x measure x value
+#   - dist/maternal_mortality.parquet: geography("00") x time x age x
+#                                       race_ethnicity x measure x value
+#                                       (national only, monthly — kept separate
+#                                       from maternal_state.parquet because it
+#                                       has different time resolution and
+#                                       demographic stratification)
 # =============================================================================
 
 library(dplyr)
@@ -66,9 +73,9 @@ VSSR_MEASURES <- c(
 # 1. Helpers
 # -----------------------------------------------------------------------------
 
-# Pivot a set of wide measure columns to tall (geography, time, measure, value),
+# Pivot a set of wide measure columns to tall (id_cols + measure, value),
 # renaming source columns to bundle measure ids and dropping missing values.
-pivot_measures <- function(df, mapping) {
+pivot_measures <- function(df, mapping, id_cols = c("geography", "time")) {
   present <- intersect(names(mapping), colnames(df))
   missing <- setdiff(names(mapping), colnames(df))
   if (length(missing) > 0) {
@@ -78,7 +85,7 @@ pivot_measures <- function(df, mapping) {
     )
   }
   df %>%
-    select(geography, time, all_of(present)) %>%
+    select(all_of(id_cols), all_of(present)) %>%
     rename(!!!setNames(present, unname(mapping[present]))) %>%
     pivot_longer(
       cols = all_of(unname(mapping[present])),
@@ -87,6 +94,32 @@ pivot_measures <- function(df, mapping) {
     ) %>%
     mutate(value = suppressWarnings(as.numeric(value))) %>%
     filter(!is.na(value))
+}
+
+# No duplicate rows for the given key columns with differing values; drops
+# exact duplicates, stops if the same key has conflicting values (usually
+# means a stratification column is missing from `key_cols`).
+check_dupes <- function(df, label, key_cols = c("geography", "time", "measure")) {
+  dupes <- df %>%
+    group_by(across(all_of(key_cols))) %>%
+    summarize(n = n(), n_distinct_values = n_distinct(value), .groups = "drop") %>%
+    filter(n > 1)
+  if (nrow(dupes) > 0) {
+    if (any(dupes$n_distinct_values > 1)) {
+      stop(
+        label, ": ", sum(dupes$n_distinct_values > 1),
+        " duplicate ", paste(key_cols, collapse = "-"),
+        " rows have differing values — a stratification column may be missing."
+      )
+    }
+    warning(label, ": ", nrow(dupes),
+            " duplicate rows with identical values; keeping first occurrence.")
+    df <- df %>%
+      group_by(across(all_of(key_cols))) %>%
+      slice(1) %>%
+      ungroup()
+  }
+  df
 }
 
 # -----------------------------------------------------------------------------
@@ -110,8 +143,8 @@ chr_state_long  <- pivot_measures(chr_state,  CHR_MEASURES)
 chr_county_long <- pivot_measures(chr_county, CHR_MEASURES)
 
 # Drop corrupt 2013 infant_mortality values: the CHR 2013 release stored a
-# mis-scaled metric here (483-3042 vs the expected 2-32 per 1,000). Proper fix
-# belongs upstream in county_health_rankings/ingest.R.
+# mis-scaled/unrelated metric here (483-3042 vs the expected 2-32 per 1,000).
+# Proper fix belongs upstream in county_health_rankings/ingest.R.
 drop_bad_2013_infant <- function(df) {
   df %>% filter(!(measure == "infant_mortality" &
                     format(as.Date(time), "%Y") == "2013"))
@@ -141,24 +174,13 @@ medicaid_long <- medicaid_raw %>%
   pivot_measures(MEDICAID_MEASURES)
 
 # -----------------------------------------------------------------------------
-# 5. CDC VSRR provisional maternal mortality — national only, overall only
-# -----------------------------------------------------------------------------
-
-vssr_raw <- read_chr("../cdc_vssr/standard/data.csv.gz")
-
-vssr_long <- vssr_raw %>%
-  filter(age == "Overall", race_ethnicity == "Overall") %>%
-  pivot_measures(VSSR_MEASURES)
-
-# -----------------------------------------------------------------------------
-# 6. Assemble state and county outputs
+# 5. Assemble state and county outputs
 # -----------------------------------------------------------------------------
 
 maternal_state <- bind_rows(
   census_state_long,
   chr_state_long,
-  medicaid_long,
-  vssr_long
+  medicaid_long
 ) %>%
   mutate(time = as.Date(time)) %>%
   arrange(measure, geography, time)
@@ -173,52 +195,47 @@ maternal_county <- bind_rows(
   ) %>%
   arrange(measure, geography, time)
 
-# -----------------------------------------------------------------------------
-# 7. Validate — no duplicate geography-time-measure rows with differing values
-# -----------------------------------------------------------------------------
-
-check_dupes <- function(df, label) {
-  dupes <- df %>%
-    group_by(geography, time, measure) %>%
-    summarize(n = n(), n_distinct_values = n_distinct(value), .groups = "drop") %>%
-    filter(n > 1)
-  if (nrow(dupes) > 0) {
-    if (any(dupes$n_distinct_values > 1)) {
-      stop(
-        label, ": ", sum(dupes$n_distinct_values > 1),
-        " duplicate geography-time-measure rows have differing values — ",
-        "a stratification column may be missing."
-      )
-    }
-    warning(label, ": ", nrow(dupes),
-            " duplicate rows with identical values; keeping first occurrence.")
-    df <- df %>%
-      group_by(geography, time, measure) %>%
-      slice(1) %>%
-      ungroup()
-  }
-  df
-}
-
 maternal_state  <- check_dupes(maternal_state,  "maternal_state")
 maternal_county <- check_dupes(maternal_county, "maternal_county")
 
 # -----------------------------------------------------------------------------
-# 8. Write outputs
+# 6. CDC VSRR provisional maternal mortality — national only, monthly, kept in
+#    its own output (different time resolution + demographic stratification
+#    than the annual, non-stratified maternal_state/county measures above).
+# -----------------------------------------------------------------------------
+
+vssr_raw <- read_chr("../cdc_vssr/standard/data.csv.gz")
+
+maternal_mortality <- vssr_raw %>%
+  pivot_measures(VSSR_MEASURES, id_cols = c("geography", "time", "age", "race_ethnicity")) %>%
+  mutate(time = as.Date(time)) %>%
+  arrange(measure, age, race_ethnicity, time)
+
+maternal_mortality <- check_dupes(
+  maternal_mortality, "maternal_mortality",
+  key_cols = c("geography", "time", "age", "race_ethnicity", "measure")
+)
+
+# -----------------------------------------------------------------------------
+# 7. Write outputs
 # -----------------------------------------------------------------------------
 
 dir.create("dist", showWarnings = FALSE)
-write_parquet(maternal_state,  "dist/maternal_state.parquet")
-write_parquet(maternal_county, "dist/maternal_county.parquet")
+write_parquet(maternal_state,      "dist/maternal_state.parquet")
+write_parquet(maternal_county,     "dist/maternal_county.parquet")
+write_parquet(maternal_mortality,  "dist/maternal_mortality.parquet")
 
 message(
   "bundle_maternal_health:\n",
-  "  maternal_state.parquet : ", nrow(maternal_state), " rows, ",
+  "  maternal_state.parquet     : ", nrow(maternal_state), " rows, ",
   n_distinct(maternal_state$measure), " measures, ",
   n_distinct(maternal_state$geography), " geographies\n",
-  "  maternal_county.parquet: ", nrow(maternal_county), " rows, ",
+  "  maternal_county.parquet    : ", nrow(maternal_county), " rows, ",
   n_distinct(maternal_county$measure), " measures, ",
   n_distinct(maternal_county$geography), " geographies\n",
+  "  maternal_mortality.parquet : ", nrow(maternal_mortality), " rows, ",
+  n_distinct(maternal_mortality$age), " age groups, ",
+  n_distinct(maternal_mortality$race_ethnicity), " race/ethnicity groups\n",
   "  state measures: ", paste(sort(unique(maternal_state$measure)), collapse = ", "), "\n",
   "  county measures: ", paste(sort(unique(maternal_county$measure)), collapse = ", ")
 )
