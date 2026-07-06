@@ -60,19 +60,18 @@ data <- lapply(bundle_files, function(file) {
 })
 
 # Load Kinsa daily data and aggregate to weekly (Saturday end-of-week)
-kinsa_weekly <- vroom::vroom('../kinsa_ili/standard/data.csv.gz', show_col_types = FALSE) %>%
-  mutate(time = lubridate::ceiling_date(as.Date(time), "week", week_start = 7) - 1) %>%
-  group_by(geography, time) %>%
-  summarise(kinsa_cough_cold_flu = mean(kinsa_cough_cold_flu, na.rm = TRUE), .groups = "drop") %>%
+kinsa_daily <- vroom::vroom('../kinsa_ili/standard/data.csv.gz', show_col_types = FALSE) %>%
+  #mutate(time = lubridate::ceiling_date(as.Date(time), "week", week_start = 7) - 1) %>%
+  #group_by(geography, time) %>%
+  #summarise(kinsa_cough_cold_flu = mean(kinsa_cough_cold_flu, na.rm = TRUE), .groups = "drop") %>%
   filter(as.character(time) > start_time)
 
-data <- c(data, list(kinsa_weekly))
+data <- c(data, list(kinsa_daily))
 
 combined <- Reduce(
   function(a, b) merge(a, b, by = c("geography", "time"), all = TRUE),
   data
 )
-
 
 #colnames(combined) <- sub("n_", "epic_", colnames(combined), fixed = TRUE)
 
@@ -457,3 +456,4 @@ d4 <- vroom::vroom('../abcs/standard/data.csv.gz') %>%
   
   arrow::write_parquet(uad, "dist/pneumococcus_comparison.parquet")
   
+
