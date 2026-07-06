@@ -339,7 +339,7 @@ Each `measure_info.json` file should include variable definitions and a centrali
     "id": "variable_name",
     "short_name": "Brief description (< 100 chars)",
     "long_name": "Full descriptive name",
-    "category": "respiratory|immunization|chronic|injury",
+    "category": "respiratory|immunization|chronic|injury|demographic|access|environment|utilization",
     "short_description": "One sentence description",
     "long_description": "Detailed description with methodology notes",
     "statement": "Template for narrative: 'In {location}, {value} cases were reported'",
@@ -789,6 +789,75 @@ validate_standard_file("data/source_name/standard/data.csv.gz")
 # Rebuild data source documentation (generates docs/index.html + resources/data_manifest.json)
 Rscript scripts/build_docs.R
 ```
+
+---
+
+## Validating a New Dataset (Visual QA Report)
+
+`scripts/validate_dataset.Rmd` is a parameterized R Markdown report for visually
+QA-ing any standardized dataset. It tabulates demographic categories (and diffs
+them against a prior version — by default the **previous git version of the same
+file**, pulled automatically: working-tree edits vs the last commit, otherwise
+the last commit vs the one before, so you can see whether variables or demographic
+levels changed since the last ingest without specifying anything; set
+`git_compare: false` or an explicit `old_data_file` to override), reports NA
+values and lists value measures that
+are >50% suppressed or >50% not asked/collected, runs format checks, plots
+national + random-state time series (4 panels/row; suppressed/not-asked points
+are shown but dropped from the trend line), draws state/county choropleths
+(4 random years per measure in a 2×2 grid, with suppressed cells white-hatched
+and not-asked/not-collected cells solid black), and can overlay a comparison
+source. Confidence-bound (`_lcl`/`_ucl`) columns are auto-excluded from plots and
+maps. The suppressed/not-asked map legend uses the `ggnewscale` and `ggpattern`
+packages (install once with `install.packages(c("ggnewscale", "ggpattern"))`);
+without them the map degrades gracefully to solid fills (and, lacking
+`ggnewscale`, a caption instead of a legend entry).
+
+Render it from R (or via "Knit with Parameters" in RStudio / VS Code):
+
+```r
+rmarkdown::render(
+  "scripts/validate_dataset.Rmd",
+  params = list(
+    data_file     = "data/source_name/standard/data.csv.gz",  # required
+    old_data_file = "",   # optional: prior version of the SAME dataset
+    compare_file  = "",   # optional: a different source with SIMILAR measures
+    make_maps     = TRUE  # set FALSE to skip choropleths (no internet needed)
+  )
+)
+```
+
+### Pandoc requirement (rendering any .Rmd outside RStudio)
+
+RStudio bundles pandoc, but the VS Code R extension and bare `Rscript` do not, so
+`rmarkdown::render()` fails with *"pandoc version 1.12.3 or higher is required
+and was not found."* This repo installs and locates pandoc without admin rights:
+
+```r
+# One-time install of a user-managed pandoc (run once per machine).
+# Note: if downloads fail with an SSL error, switch the method first:
+#   options(download.file.method = "wininet")
+install.packages("pandoc")
+pandoc::pandoc_install("latest")
+```
+
+Pandoc is then activated automatically via two `.Rprofile` files, each calling
+`pandoc::pandoc_activate("latest")` (version-independent — survives upgrades):
+
+- **Project `.Rprofile`** (repo root) — sourced when R starts in the project root
+  (RStudio, R console).
+- **Home `.Rprofile`** (`path.expand("~")`, e.g. `…\OneDrive\Documents\.Rprofile`)
+  — sourced when R starts in any other directory. **This is the one the VS Code R
+  extension needs:** its "Knit" spawns R with the working directory set to the
+  *document's* folder (`scripts/`), which has no `.Rprofile`, so R falls back to
+  the home one. The home file is **not** in the repo, so re-create it on a new
+  machine (same guarded `pandoc_activate` block as the project `.Rprofile`).
+
+Both blocks are guarded, so they are silent no-ops if pandoc is not installed.
+The pandoc binary lives in the user profile (`%LOCALAPPDATA%\r-pandoc\`) and is
+**not** committed to the repo. After a fresh clone on a new machine, run the
+one-time install above. Because each Knit launches a fresh R process, the fix
+takes effect on the next Knit — no editor restart required.
 
 ---
 
