@@ -1,6 +1,23 @@
 {
   "bundle_maternal_health/dist/maternal_state.parquet|measure": {
     "levels": {
+      "maternal_mortality_rate": {
+        "id": "bundle_maternal_health/dist/maternal_state.parquet|measure=maternal_mortality_rate",
+        "short_name": "Maternal Mortality Rate",
+        "long_name": "Provisional Maternal Mortality Rate",
+        "category": "maternal",
+        "short_description": "Provisional maternal deaths per 100,000 live births in the 12 months ending in the reference month.",
+        "long_description": "Provisional maternal mortality rate, calculated as maternal deaths per 100,000 live births over the 12-month backward rolling period ending in the reference month, from the CDC NCHS Vital Statistics Rapid Release (VSRR) program. National level only. Rates based on death counts under 20 are considered unreliable by NCHS and are not reported.",
+        "statement": "In {location}, the provisional maternal mortality rate was {value} per 100,000 live births.",
+        "measure_type": "Rate",
+        "unit": "Per 100,000 live births",
+        "time_resolution": "Month",
+        "sources": [
+          {
+            "id": "nchs_vsrr_maternal"
+          }
+        ]
+      },
       "birth_rate": {
         "id": "bundle_maternal_health/dist/maternal_state.parquet|measure=birth_rate",
         "short_name": "Birth rate (women 15–50)",
@@ -383,6 +400,9 @@
       },
       {
         "id": "medicaid_quality_cms"
+      },
+      {
+        "id": "nchs_vsrr_maternal"
       }
     ]
   },
@@ -409,6 +429,17 @@
     ]
   },
   "_sources": {
+    "nchs_vsrr_maternal": {
+      "name": "NCHS VSRR Provisional Maternal Death Counts and Rates",
+      "url": "https://data.cdc.gov/d/e2d5-ggg7",
+      "organization": "National Center for Health Statistics (NCHS)",
+      "organization_url": "https://www.cdc.gov/nchs/",
+      "location": "CDC Socrata — VSRR Provisional Maternal Death Counts and Rates",
+      "location_url": "https://data.cdc.gov/d/e2d5-ggg7",
+      "description": "National-level provisional maternal mortality rates from the Vital Statistics Rapid Release (VSRR) program, based on a current flow of mortality and natality data in the National Vital Statistics System. The maternal bundle uses the overall (all ages, all races/ethnicities) 12-month rolling rate; the underlying source also provides breakdowns by age and race/Hispanic origin.",
+      "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
     "acs5": {
       "name": "American Community Survey 5-Year Estimates",
       "url": "https://www.census.gov/programs-surveys/acs/data.html",

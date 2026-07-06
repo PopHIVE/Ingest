@@ -8,7 +8,7 @@ one row per geography × year × measure.
 
 | File | Geography | Measures |
 |------|-----------|----------|
-| `maternal_state.parquet`  | 2-digit FIPS (+ `00` national) | all 14 |
+| `maternal_state.parquet`  | 2-digit FIPS (+ `00` national) | all 15 |
 | `maternal_county.parquet` | 5-digit FIPS | 7 (census + CHR only) |
 
 ## Sources
@@ -18,6 +18,7 @@ one row per geography × year × measure.
 | `census` (ACS) | `birth_rate` | state + county |
 | `county_health_rankings` | `teen_birth_rate`, `low_birth_weight`, `infant_mortality`, `child_mortality`, `smoking_during_pregnancy`, `breastfeeding` | state + county |
 | `medicaid_quality` (CMS Core Set, Medicaid payer) | `medicaid_prenatal_postpartum_care_adult`/`_child`, `medicaid_first_prenatal_visit`, `medicaid_contraceptive_postpartum_adult`/`_child`, `medicaid_low_birthweight`, `medicaid_low_birthweight_risk_adjusted` | state only |
+| `cdc_vssr` (NCHS VSRR, provisional) | `maternal_mortality_rate` | national only |
 
 ## Known data-quality handling
 
@@ -28,12 +29,16 @@ one row per geography × year × measure.
 - `medicaid_quality` is filtered to `payer == "Medicaid"` to avoid duplicate
   geography–year–measure rows across the Medicaid/CHIP/Total payer splits; its
   state names are mapped to FIPS via `resources/all_fips.csv.gz`.
+- `cdc_vssr` is filtered to `age == "Overall" & race_ethnicity == "Overall"`
+  before pivoting — the bundle's tall format has no demographic dimension, so
+  only the national all-ages/all-races rate is included here. The full
+  age/race-stratified breakdown is available directly from
+  `cdc_vssr/standard/data.csv.gz`.
 
 ## Roadmap
 
 Additional indicators depend on sources not yet ingested:
 
-- **Maternal mortality** — CDC VSRR
 - **Causes of pregnancy-related death** — CDC PMSS
 - **Gestational diabetes / hypertension, delivery method & location** — CDC WONDER / Epic Cosmos
 - **Prenatal care adequacy** — PeriStats / March of Dimes
