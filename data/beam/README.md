@@ -1,4 +1,4 @@
-# beams
+# beam
 
 This is a dcf data source project, initialized with `dcf::dcf_add_source`.
 

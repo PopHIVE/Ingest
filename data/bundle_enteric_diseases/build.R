@@ -1,7 +1,7 @@
 # =============================================================================
 # Bundle: Enteric Diseases
 # Combines: nnds (NNDSS enteric/gastrointestinal disease case counts),
-#           beams (CDC BEAM Dashboard enteric pathogen isolate counts/rates),
+#           beam (CDC BEAM Dashboard enteric pathogen isolate counts/rates),
 #           narms (antimicrobial resistance surveillance for enteric pathogens)
 # Output:
 #   1. enteric_diseases.parquet      - NNDSS case counts + BEAM isolate counts,
@@ -53,20 +53,20 @@ nnds_long <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = FALSE
          source = 'CDC NNDSS') %>%
   filter(!is.na(value))
 
-beams_long <- vroom::vroom('../beams/standard/data.csv.gz', show_col_types = FALSE) %>%
+beam_long <- vroom::vroom('../beam/standard/data.csv.gz', show_col_types = FALSE) %>%
   filter(!is.na(geography)) %>%
   rename(fips = geography) %>%
   left_join(state_name_lookup, by = c("fips" = "geography")) %>%
   mutate(geography = if_else(fips == '00', 'United States', geography_name)) %>%
   filter(geography %in% c(state.name, 'District of Columbia', 'United States')) %>%
-  dplyr::select(geography, date = time, starts_with('beams_')) %>%
+  dplyr::select(geography, date = time, starts_with('beam_')) %>%
   reshape2::melt(id.vars = c('geography', 'date'), variable.name = 'measure', value.name = 'value') %>%
   mutate(measure = as.character(measure),
          value = suppressWarnings(as.numeric(value)),
          source = 'CDC BEAM Dashboard') %>%
   filter(!is.na(value))
 
-enteric_diseases <- bind_rows(nnds_long, beams_long) %>%
+enteric_diseases <- bind_rows(nnds_long, beam_long) %>%
   arrange(source, measure, geography, date)
 
 arrow::write_parquet(enteric_diseases, "dist/enteric_diseases.parquet")

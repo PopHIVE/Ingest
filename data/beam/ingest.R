@@ -106,17 +106,17 @@ if (!identical(process$raw_state, raw_state)) {
       id_cols = c(geography, time),
       names_from = pathogen,
       values_from = c(isolates, outbreak_isolates, isolates_rate),
-      names_glue = "beams_{.value}_{pathogen}",
+      names_glue = "beam_{.value}_{pathogen}",
       values_fill = 0
     ) %>%
     mutate(across(
-      starts_with("beams_isolates_rate_"),
+      starts_with("beam_isolates_rate_"),
       ~ if_else(geography %in% geo_no_pop, NA_real_, .x)
     )) %>%
-    arrange(geography, time) %>% 
-    select(geography:beams_isolates_vibrio, 
-          beams_isolates_rate_campylobacter:beams_isolates_rate_vibrio,
-          beams_outbreak_isolates_campylobacter:beams_outbreak_isolates_vibrio)
+    arrange(geography, time) %>%
+    select(geography:beam_isolates_vibrio,
+          beam_isolates_rate_campylobacter:beam_isolates_rate_vibrio,
+          beam_outbreak_isolates_campylobacter:beam_outbreak_isolates_vibrio)
 
   vroom::vroom_write(
     data_standard,
