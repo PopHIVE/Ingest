@@ -919,10 +919,8 @@ if (needs_scrape) {
   n_sites <- length(sites)
   total_queries <- length(organisms) * length(test_methods) * 2 * (n_sites + 1)
 
-  message(sprintf("Organisms: %d | Test methods: %d | Sites: %d (+ national) | Total queries: ~%d",
-                  length(organisms), length(test_methods), n_sites, total_queries))
-  message(sprintf("Estimated time: ~%.0f minutes (%.1fs delay between queries)",
-                  total_queries * QUERY_DELAY / 60, QUERY_DELAY))
+  message(sprintf("Organisms: %d | Test methods: %d | Sites: %d (+ national) | Total queries: ~%d (%.1fs delay between queries)",
+                  length(organisms), length(test_methods), n_sites, total_queries, QUERY_DELAY))
 
   all_agent_data <- list()
   all_pattern_data <- list()
@@ -1137,15 +1135,20 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
     mutate(
       geography = if_else(is.na(site_name), "00", geography),
       time = paste0(year, "-12-31"),
-      pct_resistant = if_else(n_tested == 0 & !is.na(n_tested), NA_real_, pct_resistant)
+      flag_not_tested = if_else(is.na(pct_resistant) & is.na(n_resistant) & is.na(n_tested), 1L, 0L),
+      flag_no_isolates_tested = if_else(flag_not_tested == 0L & !is.na(n_tested) & n_tested == 0, 1L, 0L),
+      pct_resistant = replace(pct_resistant, is.na(pct_resistant), 0),
+      n_resistant = replace(n_resistant, is.na(n_resistant), 0),
+      n_tested = replace(n_tested, is.na(n_tested), 0)
     ) %>%
     select(geography, time, genus, species_serotype,
            antimicrobial_class, antimicrobial_agent, test_method,
-           pct_resistant, n_resistant, n_tested) %>%
+           pct_resistant, n_resistant, n_tested,
+           flag_not_tested, flag_no_isolates_tested) %>%
     distinct()
 
   # Validate: warn if any pct_resistant > 100
-  bad_rows <- agent_standard %>% filter(!is.na(pct_resistant) & pct_resistant > 100)
+  bad_rows <- agent_standard %>% filter(pct_resistant > 100)
   if (nrow(bad_rows) > 0) {
     warning(sprintf(
       "%d agent rows have pct_resistant > 100%%. Top offenders: %s",
@@ -1179,14 +1182,19 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
     mutate(
       geography = if_else(is.na(site_name), "00", geography),
       time = paste0(year, "-12-31"),
-      pct_resistant = if_else(n_tested == 0 & !is.na(n_tested), NA_real_, pct_resistant)
+      flag_not_tested = if_else(is.na(pct_resistant) & is.na(n_resistant) & is.na(n_tested), 1L, 0L),
+      flag_no_isolates_tested = if_else(flag_not_tested == 0L & !is.na(n_tested) & n_tested == 0, 1L, 0L),
+      pct_resistant = replace(pct_resistant, is.na(pct_resistant), 0),
+      n_resistant = replace(n_resistant, is.na(n_resistant), 0),
+      n_tested = replace(n_tested, is.na(n_tested), 0)
     ) %>%
     select(geography, time, genus, species_serotype,
            pattern, test_method,
-           pct_resistant, n_resistant, n_tested) %>%
+           pct_resistant, n_resistant, n_tested,
+           flag_not_tested, flag_no_isolates_tested) %>%
     distinct()
 
-  bad_rows <- pattern_standard %>% filter(!is.na(pct_resistant) & pct_resistant > 100)
+  bad_rows <- pattern_standard %>% filter(pct_resistant > 100)
   if (nrow(bad_rows) > 0) {
     warning(sprintf(
       "%d pattern rows have pct_resistant > 100%%. Top offenders: %s",
