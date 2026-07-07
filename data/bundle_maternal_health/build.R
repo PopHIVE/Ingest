@@ -142,16 +142,6 @@ chr_county <- read_chr("../county_health_rankings/standard/data_county.csv.gz")
 chr_state_long  <- pivot_measures(chr_state,  CHR_MEASURES)
 chr_county_long <- pivot_measures(chr_county, CHR_MEASURES)
 
-# Drop corrupt 2013 infant_mortality values: the CHR 2013 release stored a
-# mis-scaled/unrelated metric here (483-3042 vs the expected 2-32 per 1,000).
-# Proper fix belongs upstream in county_health_rankings/ingest.R.
-drop_bad_2013_infant <- function(df) {
-  df %>% filter(!(measure == "infant_mortality" &
-                    format(as.Date(time), "%Y") == "2013"))
-}
-chr_state_long  <- drop_bad_2013_infant(chr_state_long)
-chr_county_long <- drop_bad_2013_infant(chr_county_long)
-
 # -----------------------------------------------------------------------------
 # 4. Medicaid quality (CMS) — state only; geography stored as state name
 # -----------------------------------------------------------------------------
