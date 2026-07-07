@@ -79,7 +79,7 @@
     "description": "Extraction and formatting provided by Metopio, The American Community Survey (ACS) is an ongoing survey conducted by the U.S. Census Bureau that provides detailed demographic, social, economic, and housing data for communities across the United States. The 5-year estimates pool data over a 60-month period, providing greater statistical reliability for small geographic areas (including ZIP Code Tabulation Areas) at the cost of timeliness. Variables cover a broad range of social determinants of health including poverty, housing, education, employment, insurance coverage, and racial/ethnic composition. Data are retrieved via the Census Bureau's public API using the censusapi R package.",
     "restrictions": "Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.",
     "date_accessed": 2026,
-    "data_source": "census"
+    "data_source": ["census", "bundle_maternal_health"]
   },
   "cms_mmd": {
     "name": "Mapping Medicare Disparities by Population Tool",
@@ -100,7 +100,7 @@
     "description": "The County Health Rankings & Roadmaps (CHR&R) program, a collaboration between the Robert Wood Johnson Foundation and the University of Wisconsin Population Health Institute, ranks the health of nearly all counties in the nation. The annual rankings measure vital health factors including high school graduation rates, obesity, smoking, unemployment, access to healthy foods, the quality of air and water, income inequality, and teen births that influence how long and how well we live. Data are released annually and cover all U.S. counties. Raw data are publicly available through the Zenodo repository (https://doi.org/10.5281/zenodo.18157681) and span release years 2010 through the present.",
     "restrictions": "CC BY 4.0. Attribution required. Cite as: University of Wisconsin Population Health Institute. County Health Rankings & Roadmaps. https://www.countyhealthrankings.org.",
     "date_accessed": 2025,
-    "data_source": ["county_health_rankings", "bundle_county_access", "bundle_county_chronic"]
+    "data_source": ["county_health_rankings", "bundle_county_access", "bundle_county_chronic", "bundle_maternal_health"]
   },
   "delphi_doctor_visits": {
     "name": "CMU Delphi COVIDcast - Doctor Visits",
@@ -216,7 +216,7 @@
     "description": "Annual state-level performance data on the Medicaid and CHIP Adult Core Set and Child Core Set quality measures, as voluntarily reported by states to CMS and analyzed by Mathematica via the Quality Measure Reporting (QMR) system. Measures span behavioral health (e.g., follow-up after ED visits for mental illness, substance use disorder treatment), primary and preventive care (e.g., well-child visits, immunizations), maternal and perinatal health (e.g., prenatal and postpartum care, low birthweight), dental health, care of chronic conditions (e.g., diabetes, asthma, hypertension), and long-term services and supports. Each annual dataset includes state rates and national 25th and 75th percentile benchmarks. Data cover federal fiscal years 2014–2023. Reporting is voluntary; not all states report all measures each year. The wide-format standard file contains one row per state-year-payer-domain combination, with each measure-statistic combination as a separate column following the naming convention medicaid_{measure_abbr}_{population}_{sub_metric}_{stat} where population is 'ch' (child) or 'ad' (adult), sub_metric captures time windows or sub-components, and stat is 'rate', 'pct_25', or 'pct_75'.",
     "restrictions": "Public domain. CMS/Medicaid.gov data is generally not subject to copyright restrictions.",
     "date_accessed": 2025,
-    "data_source": "medicaid_quality"
+    "data_source": ["medicaid_quality", "bundle_maternal_health"]
   },
   "healthmap_mmr": {
     "name": "HealthMap MMR Vaccine Coverage Estimates",
@@ -268,6 +268,18 @@
     "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
     "date_accessed": 2026,
     "data_source": ["narms", "bundle_antimicrobial_resistance"]
+  },
+  "nccr": {
+    "name": "National Childhood Cancer Registry Explorer (NCCR*Explorer)",
+    "url": "https://nccrexplorer.ccdi.cancer.gov/",
+    "organization": "National Cancer Institute (NCI), Childhood Cancer Data Initiative",
+    "organization_url": "https://www.cancer.gov/",
+    "location": "NCCR*Explorer: An interactive website for NCCR cancer statistics",
+    "location_url": "https://nccrexplorer.ccdi.cancer.gov/application.html",
+    "description": "The National Childhood Cancer Registry (NCCR) is a federated data resource maintained by the National Cancer Institute (NCI) as part of the Childhood Cancer Data Initiative (CCDI). NCCR*Explorer provides precalculated incidence, survival, and prevalence statistics for cancers among children, adolescents, and young adults (ages 0-39) diagnosed from 2001 forward. Incidence data are pooled from up to 29 U.S. cancer registries representing approximately 76% of the U.S. population ages 0-39. Cancers are classified using the International Classification of Childhood Cancer (ICCC). Rates are age-adjusted to the 2000 U.S. standard population and reported at the national level only; NCCR*Explorer does not provide state- or registry-level breakdowns. Statistics are available by sex, race/ethnicity, and age group. This dataset was harvested from the NCCR*Explorer application data API (incidence, trends over time).",
+    "restrictions": "Public domain. Data from the National Childhood Cancer Registry, produced by the National Cancer Institute, is generally not subject to copyright restrictions. Suggested attribution: National Childhood Cancer Registry Explorer (NCCR*Explorer), National Cancer Institute.",
+    "date_accessed": 2026,
+    "data_source": "nccr"
   },
   "nchs_vsrr_state": {
     "name": "NCHS VSRR Provisional Drug Overdose Death Counts (State)",
@@ -449,5 +461,15 @@
     "description": "WISQARS (Web-based Injury Statistics Query and Reporting System) is an interactive, online database that provides fatal and nonfatal injury, violent death, and cost of injury data from a variety of trusted sources. Maintained by CDC's National Center for Injury Prevention and Control, WISQARS enables public health professionals and researchers to access injury-related mortality data from the National Vital Statistics System, nonfatal injury data from the National Electronic Injury Surveillance System (NEISS), and violent death data from the National Violent Death Reporting System (NVDRS). Data are available at national and state levels for various injury mechanisms including motor vehicle crashes, falls, poisonings (including drug overdoses), firearms, and self-harm. WISQARS supports injury surveillance, research, and prevention program planning.",
     "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
     "data_source": "wisqars"
+  },
+  "yrbss": {
+    "name": "CDC Youth Risk Behavior Surveillance System (YRBSS)",
+    "url": "https://yrbs-explorer.services.cdc.gov/",
+    "date_accessed": 2025,
+    "organization": "Centers for Disease Control and Prevention",
+    "organization_url": "https://www.cdc.gov/yrbs/",
+    "description": "The Youth Risk Behavior Surveillance System (YRBSS) is a set of school-based surveys conducted by the CDC that monitor health-related behaviors among U.S. high school students. The biennial national, state, and local surveys provide weighted prevalence estimates of behaviors contributing to the leading causes of death and disability. Data were accessed via the YRBS Explorer API. Estimates are provided overall and stratified (separately, not crossed) by sex, race/ethnicity, and grade. Estimates that CDC suppressed (e.g., small sample sizes) are omitted rather than imputed. State estimates are available only for jurisdictions that share data with CDC; Minnesota, Oregon, and Washington are not included, and New York state excludes New York City.",
+    "restrictions": "Public domain. Suggested attribution: Centers for Disease Control and Prevention (CDC). Youth Risk Behavior Surveillance System (YRBSS).",
+    "data_source": "yrbss"
   }
 }
