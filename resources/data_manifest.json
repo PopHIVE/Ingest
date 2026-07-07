@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-06T15:10:25Z",
+  "generated": "2026-07-07T11:51:41Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -2435,22 +2435,6 @@
               "levels": {}
             },
             {
-              "name": "year",
-              "short_name": "Year",
-              "description": "Calendar year",
-              "measure_type": "date",
-              "unit": "year",
-              "levels": {}
-            },
-            {
-              "name": "week",
-              "short_name": "ISO Week",
-              "description": "ISO week number within the year",
-              "measure_type": "integer",
-              "unit": "week number",
-              "levels": {}
-            },
-            {
               "name": "measure",
               "short_name": "measure",
               "description": "",
@@ -2466,13 +2450,28 @@
                 "salmonella_paratyphi_infection": {},
                 "shiga_toxin_producing_escherichia_coli_stec": {},
                 "shigellosis": {},
-                "salmonella_paratyphi_infection_2": {}
+                "salmonella_paratyphi_infection_2": {},
+                "beams_isolates_campylobacter": {},
+                "beams_isolates_salmonella": {},
+                "beams_isolates_shigella": {},
+                "beams_isolates_stec": {},
+                "beams_isolates_vibrio": {},
+                "beams_outbreak_isolates_campylobacter": {},
+                "beams_outbreak_isolates_salmonella": {},
+                "beams_outbreak_isolates_shigella": {},
+                "beams_outbreak_isolates_stec": {},
+                "beams_outbreak_isolates_vibrio": {},
+                "beams_isolates_rate_campylobacter": {},
+                "beams_isolates_rate_salmonella": {},
+                "beams_isolates_rate_shigella": {},
+                "beams_isolates_rate_stec": {},
+                "beams_isolates_rate_vibrio": {}
               }
             },
             {
               "name": "value",
               "short_name": "Value",
-              "description": "Cumulative year-to-date case count for the enteric disease identified by the measure column, as reported through the NNDSS.",
+              "description": "Value for the enteric disease measure identified by the measure column: cumulative year-to-date case counts as reported through the NNDSS, or monthly isolate counts/rates as reported through the CDC BEAM Dashboard.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -2483,6 +2482,245 @@
               "description": "Data source identifier for tall-format files",
               "measure_type": "category",
               "unit": "",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "resistance_by_agent.parquet",
+          "path": "data/bundle_enteric_diseases/dist/resistance_by_agent.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_enteric_diseases/dist/resistance_by_agent.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)",
+              "measure_type": "identifier",
+              "unit": "name or FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "NARMS Now (Human Clinical)": {},
+                "FDA Retail Meats": {},
+                "FDA Animal Pathogen": {},
+                "FDA Food Animals (HACCP)": {},
+                "FDA Food Animals (Cecal)": {},
+                "FDA Food Animals (Minor Species)": {}
+              }
+            },
+            {
+              "name": "genus",
+              "short_name": "genus",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "species_serotype",
+              "short_name": "species_serotype",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "antimicrobial_class",
+              "short_name": "antimicrobial_class",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "antimicrobial",
+              "short_name": "antimicrobial",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "test_method",
+              "short_name": "test_method",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "pct_resistant",
+              "short_name": "Percent resistant to antimicrobial",
+              "description": "",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "levels": {}
+            },
+            {
+              "name": "n_resistant",
+              "short_name": "Number of resistant isolates",
+              "description": "",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "n_tested",
+              "short_name": "Number of isolates tested",
+              "description": "",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "meat_source",
+              "short_name": "meat_source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "mic50",
+              "short_name": "MIC50",
+              "description": "",
+              "measure_type": "Concentration",
+              "unit": "ug/mL",
+              "levels": {}
+            },
+            {
+              "name": "mic90",
+              "short_name": "MIC90",
+              "description": "",
+              "measure_type": "Concentration",
+              "unit": "ug/mL",
+              "levels": {}
+            },
+            {
+              "name": "host_species",
+              "short_name": "host_species",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "collection_source",
+              "short_name": "collection_source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source_type",
+              "short_name": "source_type",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "resistance_by_pattern.parquet",
+          "path": "data/bundle_enteric_diseases/dist/resistance_by_pattern.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_enteric_diseases/dist/resistance_by_pattern.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)",
+              "measure_type": "identifier",
+              "unit": "name or FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "NARMS Now (Human Clinical)": {}
+              }
+            },
+            {
+              "name": "genus",
+              "short_name": "genus",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "species_serotype",
+              "short_name": "species_serotype",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "pattern",
+              "short_name": "pattern",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "test_method",
+              "short_name": "test_method",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "pct_resistant",
+              "short_name": "Percent resistant to antimicrobial",
+              "description": "",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "levels": {}
+            },
+            {
+              "name": "n_resistant",
+              "short_name": "Number of resistant isolates",
+              "description": "",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "n_tested",
+              "short_name": "Number of isolates tested",
+              "description": "",
+              "measure_type": "Count",
+              "unit": "Isolates",
               "levels": {}
             }
           ]
@@ -4524,6 +4762,76 @@
               "description": "Value for the measles-related measure identified by the source column. Units vary by source.",
               "measure_type": "Varies by source",
               "unit": "Varies by source",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "measles_imported_indigenous.parquet",
+          "path": "data/bundle_measles/dist/measles_imported_indigenous.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_measles/dist/measles_imported_indigenous.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)",
+              "measure_type": "identifier",
+              "unit": "name or FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "date",
+              "short_name": "Date",
+              "description": "Date (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year",
+              "measure_type": "date",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "week",
+              "short_name": "ISO Week",
+              "description": "ISO week number within the year",
+              "measure_type": "integer",
+              "unit": "week number",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "measles_imported": {
+                  "source_id": "measles_imported"
+                },
+                "measles_indigenous": {
+                  "source_id": "measles_indigenous"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Measles cases by importation status",
+              "description": "Cumulative year-to-date count of measles cases classified as imported or indigenous, by state or nationally.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases",
+              "levels": {}
+            },
+            {
+              "name": "new_value",
+              "short_name": "new_value",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
               "levels": {}
             }
           ]
@@ -6734,6 +7042,137 @@
               "description": "County ED visit rate among traditional Medicare fee-for-service enrollees.",
               "measure_type": "Rate",
               "unit": "ED visits per 1,000 Medicare FFS beneficiaries"
+            }
+          ]
+        }
+      ]
+    },
+    "beams": {
+      "name": "beams",
+      "display_name": "Beams",
+      "description": "The BEAM Dashboard is an interactive tool built on the System for Enteric Disease Response, Investigation, and Coordination (SEDRIC) that provides timely data on enteric pathogen trends and serotype details to support prevention of illnesses from food, water, and animal contact. This source uses the state-level 'Report Data' export (dataset jbhn-e8xn) rather than the HHS-region export, so isolate counts can be represented with standard state FIPS codes. Raw records are aggregated across source type (human, food, animal, environment), source site, and serotype/species to produce a monthly isolate count per state and pathogen. National values are computed by PopHIVE/Ingest as the sum across all reporting states. Isolate rates per 100,000 population use a single 2021 Census population denominator for all years. Counts reflect isolates sequenced and reported by participating state and local public health laboratories, which varies by jurisdiction and pathogen, so trends should not be interpreted as complete disease incidence.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "beams_isolates_campylobacter",
+              "short_name": "Campylobacter",
+              "description": "Monthly count of Campylobacter isolates reported through the BEAM Dashboard.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_isolates_salmonella",
+              "short_name": "Salmonella",
+              "description": "Monthly count of Salmonella isolates reported through the BEAM Dashboard.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_isolates_shigella",
+              "short_name": "Shigella",
+              "description": "Monthly count of Shigella isolates reported through the BEAM Dashboard.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_isolates_stec",
+              "short_name": "Shiga toxin-producing E. coli (STEC)",
+              "description": "Monthly count of Shiga toxin-producing E. coli (STEC) isolates reported through the BEAM Dashboard.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_isolates_vibrio",
+              "short_name": "Vibrio",
+              "description": "Monthly count of Vibrio isolates reported through the BEAM Dashboard.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_outbreak_isolates_campylobacter",
+              "short_name": "Campylobacter",
+              "description": "Monthly count of Campylobacter isolates linked to a recognized outbreak.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_outbreak_isolates_salmonella",
+              "short_name": "Salmonella",
+              "description": "Monthly count of Salmonella isolates linked to a recognized outbreak.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_outbreak_isolates_shigella",
+              "short_name": "Shigella",
+              "description": "Monthly count of Shigella isolates linked to a recognized outbreak.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_outbreak_isolates_stec",
+              "short_name": "Shiga toxin-producing E. coli (STEC)",
+              "description": "Monthly count of Shiga toxin-producing E. coli (STEC) isolates linked to a recognized outbreak.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_outbreak_isolates_vibrio",
+              "short_name": "Vibrio",
+              "description": "Monthly count of Vibrio isolates linked to a recognized outbreak.",
+              "measure_type": "Count",
+              "unit": "Number of isolates"
+            },
+            {
+              "name": "beams_isolates_rate_campylobacter",
+              "short_name": "Campylobacter",
+              "description": "Monthly Campylobacter isolates per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Isolates per 100,000 population"
+            },
+            {
+              "name": "beams_isolates_rate_salmonella",
+              "short_name": "Salmonella",
+              "description": "Monthly Salmonella isolates per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Isolates per 100,000 population"
+            },
+            {
+              "name": "beams_isolates_rate_shigella",
+              "short_name": "Shigella",
+              "description": "Monthly Shigella isolates per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Isolates per 100,000 population"
+            },
+            {
+              "name": "beams_isolates_rate_stec",
+              "short_name": "Shiga toxin-producing E. coli (STEC)",
+              "description": "Monthly Shiga toxin-producing E. coli (STEC) isolates per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Isolates per 100,000 population"
+            },
+            {
+              "name": "beams_isolates_rate_vibrio",
+              "short_name": "Vibrio",
+              "description": "Monthly Vibrio isolates per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Isolates per 100,000 population"
             }
           ]
         }
