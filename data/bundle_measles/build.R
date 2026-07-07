@@ -1,13 +1,11 @@
 # =============================================================================
 # Bundle: Measles
 # Combines: wastewater_measles, vaccine_exemptions_fattah, measles_jhu, mmr_healthmap,
-#           measles_cdc, schoolvaxview (WaPo), measles_age_cdc2, nnds
-# Output: Four consolidated files in long format:
+#           measles_cdc, schoolvaxview (WaPo), measles_age_cdc2
+# Output: Three consolidated files in long format:
 #   1. measles_state.parquet - State-level data with geography = state name
 #   2. measles_county.parquet - County-level data with geography = county FIPS
 #   3. measles_cases_by_age.parquet - National age-stratified cases
-#   4. measles_imported_indigenous.parquet - State/national NNDS cases by
-#      importation status (measles_imported, measles_indigenous)
 # =============================================================================
 
 library(dplyr)
@@ -45,6 +43,37 @@ wapo_schools <- vroom::vroom('../schoolvax_washpost/standard/data_schools.csv.gz
 measles_cdc <- vroom::vroom('../measles_cdc/standard/data.csv.gz', show_col_types = FALSE)
 measles_age_cdc2 <- vroom::vroom('../measles_age_cdc2/standard/data.csv.gz', show_col_types = FALSE)
 
+
+measles_state_nnds <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = FALSE) %>%
+    mutate(value = measles_imported + measles_indigenous,
+    value = if_else(value==0, NA_real_, value)
+     ) %>%
+       rename(year = mmwr_year,
+          week = mmwr_week) %>%
+     arrange(geography, time, year) %>%
+     group_by(geography, year) %>%
+     tidyr::fill(value, .direction = "down") %>%
+     ungroup() %>%
+        dplyr::select(geography, time, year, week, value ) %>%
+        filter(!is.na(geography)) %>%
+         mutate(
+   # time = if_else(week == 53,  as.Date(paste0(year, "-12-31")), time),
+    date = as.Date(time, format = "%m-%d-%Y"),
+    source = "cdc_measles_cases_nnds_cum",
+    value = if_else(is.na(value), 0, value)
+         )%>%
+  arrange(geography, date) %>%
+  group_by(geography) %>%
+  tidyr::fill(value, .direction = "down") %>%
+  ungroup() %>%
+  group_by(geography, year) %>%
+  mutate(new_value = value - lag(value, default = 0)) %>%
+  ungroup() %>%
+  left_join(state_fips_lookup, by = c("geography" = "fips")) %>%
+  mutate(geography = if_else(geography == "00", "United States", state_name)) %>%
+  select(-state_name) %>%
+  filter(geography != "United States") %>%
+  dplyr::select(geography, date, year, week, value , source, new_value) 
 
 
 mmr_county_summary <- wapo_schools %>% 
@@ -168,6 +197,7 @@ measles_state_long <- bind_rows(
   exemptions_state,
   jhu_state,
   mmr_state,
+  measles_state_nnds,
   cdc_national
 ) %>%
   arrange(geography, source, date) %>%
@@ -177,50 +207,6 @@ measles_state_long <- bind_rows(
 arrow::write_parquet(
   measles_state_long,
   "dist/measles_state.parquet",
-  compression = "snappy"
-)
-
-# =============================================================================
-# MEASLES IMPORTED VS INDIGENOUS FILE (NNDS)
-# =============================================================================
-
-# -----------------------------------------------------------------------------
-# 5a. CDC NNDS measles cases by importation status (state + national, weekly)
-# -----------------------------------------------------------------------------
-measles_imported_indigenous <- vroom::vroom('../nnds/standard/data.csv.gz', show_col_types = FALSE) %>%
-  rename(year = mmwr_year, week = mmwr_week) %>%
-  dplyr::select(geography, time, year, week, measles_imported, measles_indigenous) %>%
-  tidyr::pivot_longer(
-    cols = c(measles_imported, measles_indigenous),
-    names_to = "source",
-    values_to = "value"
-  ) %>%
-  mutate(value = if_else(value == 0, NA_real_, value)) %>%
-  arrange(geography, source, time, year) %>%
-  group_by(geography, source, year) %>%
-  tidyr::fill(value, .direction = "down") %>%
-  ungroup() %>%
-  filter(!is.na(geography)) %>%
-  mutate(
-    date = as.Date(time, format = "%m-%d-%Y"),
-    value = if_else(is.na(value), 0, value)
-  ) %>%
-  arrange(geography, source, date) %>%
-  group_by(geography, source) %>%
-  tidyr::fill(value, .direction = "down") %>%
-  ungroup() %>%
-  group_by(geography, source, year) %>%
-  mutate(new_value = value - lag(value, default = 0)) %>%
-  ungroup() %>%
-  left_join(state_fips_lookup, by = c("geography" = "fips")) %>%
-  mutate(geography = if_else(geography == "00", "United States", state_name)) %>%
-  select(-state_name) %>%
-  dplyr::select(geography, date, year, week, source, value, new_value)
-
-# Write imported vs indigenous parquet
-arrow::write_parquet(
-  measles_imported_indigenous,
-  "dist/measles_imported_indigenous.parquet",
   compression = "snappy"
 )
 
