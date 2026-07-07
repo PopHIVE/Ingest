@@ -24,7 +24,7 @@
     <nav class="navbar navbar-dark fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
-        <span class="navbar-text text-light">Last updated: July 06, 2026</span>
+        <span class="navbar-text text-light">Last updated: July 07, 2026</span>
       </div>
     </nav>
     <div class="container-fluid">
@@ -34,9 +34,6 @@
             <h6 class="sidebar-heading px-3 mt-1 mb-1 text-muted">Data Sources</h6>
             <ul class="nav flex-column nav-pills">
               <li class="nav-item">
-                <a class="nav-link" href="#-"> </a>
-              </li>
-              <li class="nav-item">
                 <a class="nav-link" href="#abcs">Abcs</a>
               </li>
               <li class="nav-item">
@@ -44,6 +41,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#atlas-amr">Atlas AMR</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#beams">Beams</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#brfss">BRFSS</a>
@@ -217,10 +217,6 @@
             </p>
             <hr/>
             <h2 class="text-muted mb-4" id="data-sources">Data Sources</h2>
-            <section id="-" class="mb-5">
-              <h2 class="border-bottom pb-2"> </h2>
-              <p class="text-muted">No standard data files found.</p>
-            </section>
             <section id="abcs" class="mb-5">
               <h2 class="border-bottom pb-2">Abcs</h2>
               <p class="lead">CDC monitors invasive bacterial infections that cause bloodstream infections, sepsis, and meningitis in persons living in the community through Active Bacterial Core surveillance (ABCs). ABCs conducts laboratory- and population-based surveillance for invasive pneumococcal disease (IPD). ABCs serotype data are used to measure the impact of vaccine use in the United States on vaccine-type IPD. This table reports IPD case counts in the ABCs catchment area by serotype for years 1998 through 2022. Cases are grouped into the following mutually exclusive age groups: age &lt;2 years old, age 2-4 years old, age 5-17 years old, age 18-49 years old, age 50-64 years old, and age &gt;=65 years old. ABCs methods and surveillance areas reporting IPD cases has changed over time. Given these changes, trends in serotype distribution by year and age group should be interpreted with caution. The all-site summary presented here is calculated based on the 8 sites that consistently report to ABCs and differs from the All-site measure provided by the source. Additional information on ABCs methods and surveillance population is available at https://www.cdc.gov/abcs/methodology/index.html. Analyze and visualize data using the ABCs Bact Facts Interactive Data Dashboard at https://www.cdc.gov/abcs/bact-facts-interactive-dashboard. ABCs IPD Isolates were serotyped by Quellung, PCR, or whole genome sequencing (WGS). Cases without an isolate available or with mixed serotypes reported are listed on the table as MISS. Additionally, non-typeable IPD cases are shown as NT. Zero cell rows were not included in this dataset. Minor changes to previous years serotype data can occur as additional isolates and serotype data become available. Cases were excluded from this dataset if the ABCs site did not perform surveillance in the catchment area for a full calendar year. As a result, cases were excluded from the following sites: TN, 11 counties, Jul-Dec 1999; CO, 5 counties, Jul-Dec 2000; CA, 2 counties (aged &lt;5 years), Oct-Dec 2000.</p>
@@ -608,6 +604,196 @@
             <section id="atlas-amr" class="mb-5">
               <h2 class="border-bottom pb-2">Atlas AMR</h2>
               <p class="text-muted">No standard data files found.</p>
+            </section>
+            <section id="beams" class="mb-5">
+              <h2 class="border-bottom pb-2">Beams</h2>
+              <p class="lead">The BEAM Dashboard is an interactive tool built on the System for Enteric Disease Response, Investigation, and Coordination (SEDRIC) that provides timely data on enteric pathogen trends and serotype details to support prevention of illnesses from food, water, and animal contact. This source uses the state-level 'Report Data' export (dataset jbhn-e8xn) rather than the HHS-region export, so isolate counts can be represented with standard state FIPS codes. Raw records are aggregated across source type (human, food, animal, environment), source site, and serotype/species to produce a monthly isolate count per state and pathogen. National values are computed by PopHIVE/Ingest as the sum across all reporting states. Isolate rates per 100,000 population use a single 2021 Census population denominator for all years. Counts reflect isolates sequenced and reported by participating state and local public health laboratories, which varies by jurisdiction and pathogen, so trends should not be interpreted as complete disease incidence.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://data.cdc.gov/Foodborne-Waterborne-and-Related-Diseases/BEAM-Dashboard-Report-Data/jbhn-e8xn/about_data" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/" target="_blank">Centers for Disease Control and Prevention</a>
+                   | 
+                  <a href="https://www.cdc.gov/beam/dashboard/" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Public domain. CDC data is generally not subject to copyright restrictions.
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_campylobacter</code>
+                      </td>
+                      <td>Campylobacter</td>
+                      <td>Monthly count of Campylobacter isolates reported through the BEAM Dashboard.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_salmonella</code>
+                      </td>
+                      <td>Salmonella</td>
+                      <td>Monthly count of Salmonella isolates reported through the BEAM Dashboard.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_shigella</code>
+                      </td>
+                      <td>Shigella</td>
+                      <td>Monthly count of Shigella isolates reported through the BEAM Dashboard.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_stec</code>
+                      </td>
+                      <td>Shiga toxin-producing E. coli (STEC)</td>
+                      <td>Monthly count of Shiga toxin-producing E. coli (STEC) isolates reported through the BEAM Dashboard.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_vibrio</code>
+                      </td>
+                      <td>Vibrio</td>
+                      <td>Monthly count of Vibrio isolates reported through the BEAM Dashboard.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_outbreak_isolates_campylobacter</code>
+                      </td>
+                      <td>Campylobacter</td>
+                      <td>Monthly count of Campylobacter isolates linked to a recognized outbreak.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_outbreak_isolates_salmonella</code>
+                      </td>
+                      <td>Salmonella</td>
+                      <td>Monthly count of Salmonella isolates linked to a recognized outbreak.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_outbreak_isolates_shigella</code>
+                      </td>
+                      <td>Shigella</td>
+                      <td>Monthly count of Shigella isolates linked to a recognized outbreak.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_outbreak_isolates_stec</code>
+                      </td>
+                      <td>Shiga toxin-producing E. coli (STEC)</td>
+                      <td>Monthly count of Shiga toxin-producing E. coli (STEC) isolates linked to a recognized outbreak.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_outbreak_isolates_vibrio</code>
+                      </td>
+                      <td>Vibrio</td>
+                      <td>Monthly count of Vibrio isolates linked to a recognized outbreak.</td>
+                      <td>Count</td>
+                      <td>Number of isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_rate_campylobacter</code>
+                      </td>
+                      <td>Campylobacter</td>
+                      <td>Monthly Campylobacter isolates per 100,000 population.</td>
+                      <td>Rate</td>
+                      <td>Isolates per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_rate_salmonella</code>
+                      </td>
+                      <td>Salmonella</td>
+                      <td>Monthly Salmonella isolates per 100,000 population.</td>
+                      <td>Rate</td>
+                      <td>Isolates per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_rate_shigella</code>
+                      </td>
+                      <td>Shigella</td>
+                      <td>Monthly Shigella isolates per 100,000 population.</td>
+                      <td>Rate</td>
+                      <td>Isolates per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_rate_stec</code>
+                      </td>
+                      <td>Shiga toxin-producing E. coli (STEC)</td>
+                      <td>Monthly Shiga toxin-producing E. coli (STEC) isolates per 100,000 population.</td>
+                      <td>Rate</td>
+                      <td>Isolates per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>beams_isolates_rate_vibrio</code>
+                      </td>
+                      <td>Vibrio</td>
+                      <td>Monthly Vibrio isolates per 100,000 population.</td>
+                      <td>Rate</td>
+                      <td>Isolates per 100,000 population</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
             <section id="brfss" class="mb-5">
               <h2 class="border-bottom pb-2">BRFSS</h2>
@@ -30022,7 +30208,7 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
             <section id="bundle-enteric-diseases" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: Enteric Diseases</h2>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 1 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 3 parquet file(s).</em>
               </p>
               <h4 class="mt-4">Output Files (dist/)</h4>
               <h5 class="mt-3">
@@ -30060,24 +30246,6 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                     </tr>
                     <tr>
                       <td>
-                        <code>year</code>
-                      </td>
-                      <td>Year</td>
-                      <td>Calendar year</td>
-                      <td>date</td>
-                      <td>year</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>week</code>
-                      </td>
-                      <td>ISO Week</td>
-                      <td>ISO week number within the year</td>
-                      <td>integer</td>
-                      <td>week number</td>
-                    </tr>
-                    <tr>
-                      <td>
                         <code>measure</code>
                       </td>
                       <td>measure</td>
@@ -30097,6 +30265,21 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                           <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">shiga_toxin_producing_escherichia_coli_stec</span>
                           <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">shigellosis</span>
                           <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">salmonella_paratyphi_infection_2</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_campylobacter</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_salmonella</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_shigella</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_stec</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_vibrio</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_outbreak_isolates_campylobacter</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_outbreak_isolates_salmonella</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_outbreak_isolates_shigella</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_outbreak_isolates_stec</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_outbreak_isolates_vibrio</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_rate_campylobacter</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_rate_salmonella</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_rate_shigella</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_rate_stec</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">beams_isolates_rate_vibrio</span>
                         </div>
                       </td>
                       <td></td>
@@ -30107,7 +30290,7 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                         <code>value</code>
                       </td>
                       <td>Value</td>
-                      <td>Cumulative year-to-date case count for the enteric disease identified by the measure column, as reported through the NNDSS.</td>
+                      <td>Value for the enteric disease measure identified by the measure column: cumulative year-to-date case counts as reported through the NNDSS, or monthly isolate counts/rates as reported through the CDC BEAM Dashboard.</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -30119,6 +30302,306 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                       <td>Data source identifier for tall-format files</td>
                       <td>category</td>
                       <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>resistance_by_agent.parquet</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>source</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">NARMS Now (Human Clinical)</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Retail Meats</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Animal Pathogen</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals (HACCP)</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals (Cecal)</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals (Minor Species)</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>genus</code>
+                      </td>
+                      <td>genus</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>species_serotype</code>
+                      </td>
+                      <td>species_serotype</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>antimicrobial_class</code>
+                      </td>
+                      <td>antimicrobial_class</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>antimicrobial</code>
+                      </td>
+                      <td>antimicrobial</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>test_method</code>
+                      </td>
+                      <td>test_method</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>pct_resistant</code>
+                      </td>
+                      <td>Percent resistant to antimicrobial</td>
+                      <td></td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>n_resistant</code>
+                      </td>
+                      <td>Number of resistant isolates</td>
+                      <td></td>
+                      <td>Count</td>
+                      <td>Isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>n_tested</code>
+                      </td>
+                      <td>Number of isolates tested</td>
+                      <td></td>
+                      <td>Count</td>
+                      <td>Isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>meat_source</code>
+                      </td>
+                      <td>meat_source</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>mic50</code>
+                      </td>
+                      <td>MIC50</td>
+                      <td></td>
+                      <td>Concentration</td>
+                      <td>ug/mL</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>mic90</code>
+                      </td>
+                      <td>MIC90</td>
+                      <td></td>
+                      <td>Concentration</td>
+                      <td>ug/mL</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>host_species</code>
+                      </td>
+                      <td>host_species</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>collection_source</code>
+                      </td>
+                      <td>collection_source</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source_type</code>
+                      </td>
+                      <td>source_type</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>resistance_by_pattern.parquet</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>source</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">NARMS Now (Human Clinical)</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>genus</code>
+                      </td>
+                      <td>genus</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>species_serotype</code>
+                      </td>
+                      <td>species_serotype</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>pattern</code>
+                      </td>
+                      <td>pattern</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>test_method</code>
+                      </td>
+                      <td>test_method</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>pct_resistant</code>
+                      </td>
+                      <td>Percent resistant to antimicrobial</td>
+                      <td></td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>n_resistant</code>
+                      </td>
+                      <td>Number of resistant isolates</td>
+                      <td></td>
+                      <td>Count</td>
+                      <td>Isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>n_tested</code>
+                      </td>
+                      <td>Number of isolates tested</td>
+                      <td></td>
+                      <td>Count</td>
+                      <td>Isolates</td>
                     </tr>
                   </tbody>
                 </table>
@@ -31981,7 +32464,7 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
             <section id="bundle-measles" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: Measles</h2>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 3 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 4 parquet file(s).</em>
               </p>
               <h4 class="mt-4">Output Files (dist/)</h4>
               <h5 class="mt-3">
@@ -32189,6 +32672,96 @@ Knowingly filing a false VAERS report is a violation of Federal law (18 U.S. Cod
                       <td>Value for the measles-related measure identified by the source column. Units vary by source.</td>
                       <td>Varies by source</td>
                       <td>Varies by source</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>measles_imported_indigenous.parquet</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date</code>
+                      </td>
+                      <td>Date</td>
+                      <td>Date (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>year</code>
+                      </td>
+                      <td>Year</td>
+                      <td>Calendar year</td>
+                      <td>date</td>
+                      <td>year</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>week</code>
+                      </td>
+                      <td>ISO Week</td>
+                      <td>ISO week number within the year</td>
+                      <td>integer</td>
+                      <td>week number</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>source</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">measles_imported</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">measles_indigenous</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Measles cases by importation status</td>
+                      <td>Cumulative year-to-date count of measles cases classified as imported or indigenous, by state or nationally.</td>
+                      <td>Cumulative Count</td>
+                      <td>Cumulative cases</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>new_value</code>
+                      </td>
+                      <td>new_value</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
                   </tbody>
                 </table>
