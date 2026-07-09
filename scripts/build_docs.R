@@ -1046,18 +1046,20 @@ cat(sprintf("  - %d data sources\n", length(manifest$data_sources)))
 
 # =====================================================================
 # Build data sources index (docs/data_sources_index.json)
-# Lightweight per-source catalog: name, links (folder + direct csv.gz link),
-# latest date, bundle membership, and a concise summary. Sources with more
-# than one standard csv.gz also get a `files` array, one entry per file, with
-# a direct `dataset_link` and a short `dataset_stratification` blurb.
+# Lightweight per-source catalog: name, github_folder, data_url,
+# data_dictionary, latest_date, category, summary, and a `files` array (one
+# entry per standardized csv.gz, each with a direct `dataset_link` and a short
+# `dataset_stratification` blurb).
 #
-# The two hand-editable text fields (`summary` and each `dataset_stratification`)
-# are PRESERVED from the existing docs/data_sources_index.json on rebuild --
-# edit them directly in that file and they are maintained. A brand-new dataset
-# with no existing text falls back to a concise extractive summary (first
-# sentence of its _sources description) and, for its files, a
-# `dataset_stratification` from resources/stratification_cache.json or a
-# filename-derived blurb. Fill those in and future rebuilds keep them.
+# Four hand-editable fields are PRESERVED from the existing
+# docs/data_sources_index.json on rebuild -- edit them directly in that file and
+# they are maintained: `name`, `summary`, `category`, and each file's
+# `dataset_stratification`. When absent they are derived: name from measure_info,
+# summary as a concise extractive first sentence, category from bundle
+# membership (bundle_* -> human-readable label), and dataset_stratification from
+# resources/stratification_cache.json or a filename-derived blurb. To re-derive
+# a preserved field, clear it in the JSON and rebuild. All other fields (links,
+# latest_date) are always recomputed.
 # =====================================================================
 
 cat("Building data sources index JSON...\n")
@@ -1083,13 +1085,14 @@ github_raw_file <- function(source_name, filename) {
   paste0(GITHUB_RAW_BASE, "/data/", source_name, "/standard/", filename)
 }
 
-# Pick the "primary" standard file for a source: prefer data.csv.gz, otherwise
-# the shortest-named csv.gz (usually the least-stratified base file).
-get_primary_standard_file <- function(files) {
-  if (length(files) == 0) return(NA_character_)
-  bn <- basename(files)
-  if ("data.csv.gz" %in% bn) return(files[bn == "data.csv.gz"][1])
-  files[order(nchar(bn))][1]
+# Format a bundle directory name as a human-readable category: strip the
+# "bundle_" prefix, turn remaining underscores into spaces, and capitalize the
+# first letter (e.g. bundle_chronic_diseases -> "Chronic diseases").
+format_category <- function(bundle_name) {
+  x <- sub("^bundle_", "", bundle_name)
+  x <- gsub("_", " ", x)
+  if (nchar(x) > 0) x <- paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
+  x
 }
 
 # Fallback stratification blurb derived from a standard file's name, used only
@@ -1111,11 +1114,18 @@ derive_stratification <- function(filename) {
 stratification_cache <- load_stratification_cache()
 
 # Preserve hand-edited text from the existing index so manual edits to
-# docs/data_sources_index.json survive a rebuild. `summary` (per dataset) and
-# `dataset_stratification` (per file) are treated as authoritative if already
-# present; only new datasets/files fall back to the caches or derived text.
-# Every other field (links, latest_date, bundles) is always recomputed.
+# docs/data_sources_index.json survive a rebuild. `name`, `summary`, `category`
+# (per dataset) and `dataset_stratification` (per file) are treated as
+# authoritative if already present; otherwise they are derived (name from
+# measure_info, summary extractively, category from bundle membership,
+# stratification from the cache or file name). Links and latest_date are always
+# recomputed. To re-derive name/summary/stratification, blank them and rebuild;
+# to re-derive category, DELETE the category field entirely (an empty [] is
+# respected as an intentional "no categories", so it is not re-derived).
+existing_name <- list()
 existing_summary <- list()
+existing_category <- list()
+existing_category_present <- character(0)  # datasets whose entry has a category field
 existing_strat <- list()
 existing_index_path <- "docs/data_sources_index.json"
 if (file.exists(existing_index_path)) {
@@ -1124,8 +1134,16 @@ if (file.exists(existing_index_path)) {
   if (!is.null(prev) && !is.null(prev$datasets)) {
     for (d in prev$datasets) {
       if (is.null(d$dataset)) next
+      if (!is.null(d$name) && nzchar(d$name)) {
+        existing_name[[d$dataset]] <- d$name
+      }
       if (!is.null(d$summary) && nzchar(d$summary)) {
         existing_summary[[d$dataset]] <- d$summary
+      }
+      if (!is.null(d$category)) {  # field present (even []): preserve verbatim
+        vals <- unlist(d$category)
+        existing_category[[d$dataset]] <- if (is.null(vals)) character(0) else vals
+        existing_category_present <- c(existing_category_present, d$dataset)
       }
       if (!is.null(d$files)) {
         for (f in d$files) {
@@ -1254,57 +1272,55 @@ index_datasets <- lapply(index_source_idx, function(i) {
   }
   fallback_summary <- paste(unique(short_descs), collapse = " ")
 
-  display_name <- first_source$name %||% format_source_name(source_name)
+  # name: a hand-edited value in the index wins; otherwise the measure_info name.
+  display_name <- existing_name[[source_name]] %||%
+    first_source$name %||% format_source_name(source_name)
   # A hand-edited summary already in the index wins and is preserved; a
   # brand-new dataset falls back to a concise extractive summary.
   dataset_summary <- existing_summary[[source_name]] %||% fallback_summary
 
   section_id <- gsub("[^a-zA-Z0-9]", "-", source_name)
-  bundles <- source_to_bundles[[source_name]]
-  if (is.null(bundles)) bundles <- character(0)
-  bundles <- sort(bundles)
+
+  # category: preserved whenever the existing entry HAS a category field (even an
+  # empty [] -- so removing categories sticks). Derived from bundle membership
+  # only when the field is entirely absent, i.e. a brand-new dataset. To re-derive
+  # later, delete the category field in the JSON and rebuild.
+  if (source_name %in% existing_category_present) {
+    category <- existing_category[[source_name]]
+  } else {
+    bundles <- source_to_bundles[[source_name]]
+    if (is.null(bundles)) bundles <- character(0)
+    category <- sort(unique(vapply(bundles, format_category, character(1))))
+  }
 
   cat(sprintf("  Indexing %s (%d/%d)\n", source_name, i, length(source_dirs)))
 
-  # Direct link to the source's primary standardized csv.gz on GitHub.
+  # One entry per standardized csv.gz: a short stratification blurb and a direct
+  # link. Blurb precedence: a hand-edited value already in the index, then the
+  # cache, then a value derived from the file name.
   standard_files <- get_standard_files(source_dir)
-  primary_file <- get_primary_standard_file(standard_files)
-  github_link <- if (!is.na(primary_file)) {
-    github_raw_file(source_name, basename(primary_file))
-  } else {
-    ""
-  }
-
-  # When a source ships more than one standard csv.gz, break out each file with
-  # a short stratification blurb and a direct link. Blurb precedence: a
-  # hand-edited value already in the index, then the cache, then a value
-  # derived from the file name.
-  files_entry <- NULL
-  if (length(standard_files) > 1) {
-    files_entry <- lapply(sort(basename(standard_files)), function(fn) {
-      cache_key <- paste0(source_name, "/", fn)
-      strat <- existing_strat[[cache_key]] %||% stratification_cache[[cache_key]]
-      if (is.null(strat) || !nzchar(strat)) strat <- derive_stratification(fn)
-      list(
-        dataset_stratification = strat,
-        dataset_link = github_raw_file(source_name, fn)
-      )
-    })
-  }
+  files_entry <- lapply(sort(basename(standard_files)), function(fn) {
+    cache_key <- paste0(source_name, "/", fn)
+    strat <- existing_strat[[cache_key]] %||% stratification_cache[[cache_key]]
+    if (is.null(strat) || !nzchar(strat)) strat <- derive_stratification(fn)
+    list(
+      dataset_stratification = strat,
+      dataset_link = github_raw_file(source_name, fn)
+    )
+  })
 
   entry <- list(
     dataset = source_name,
     name = display_name,
     github_folder = sprintf("https://github.com/%s/tree/main/data/%s",
                             GITHUB_REPO, source_name),
-    github_link = github_link,
     data_url = first_source$url %||% "",
     data_dictionary = sprintf("https://pophive.github.io/Ingest/#%s", section_id),
     latest_date = get_latest_date(source_dir),
-    bundles = I(bundles),
+    category = I(category),
     summary = if (nchar(dataset_summary) > 0) dataset_summary else NA
   )
-  if (!is.null(files_entry)) entry$files <- I(files_entry)
+  entry$files <- I(files_entry)
   entry
 })
 
