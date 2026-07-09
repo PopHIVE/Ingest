@@ -362,6 +362,17 @@ format_bundle_name <- function(name) {
   paste0("Bundle: ", display)
 }
 
+# Short one-sentence summary of a (possibly long) description.
+short_summary <- function(x, max_chars = 300) {
+  x <- x %||% ""
+  x <- trimws(gsub("\\s+", " ", x))
+  if (!nzchar(x)) return("")
+  first <- strsplit(x, "(?<=[.!?])\\s+", perl = TRUE)[[1]][1]
+  if (is.na(first)) first <- x
+  if (nchar(first) > max_chars) first <- paste0(substr(first, 1, max_chars - 1), "…")
+  first
+}
+
 #' Generate HTML badge list for levels of a tall-format column
 make_levels_display <- function(levels_info) {
   if (is.null(levels_info) || length(levels_info) == 0) return(NULL)
@@ -1035,12 +1046,99 @@ cat(sprintf("  - %d data sources\n", length(manifest$data_sources)))
 
 # =====================================================================
 # Build data sources index (docs/data_sources_index.json)
-# Lightweight per-source catalog: name, links, latest date, bundle
-# membership, and a one-line summary derived from _sources$description.
-# All fields are auto-derived, so this stays fresh on every build.
+# Lightweight per-source catalog: name, links (folder + direct csv.gz link),
+# latest date, bundle membership, and a concise summary. Sources with more
+# than one standard csv.gz also get a `files` array, one entry per file, with
+# a direct `dataset_link` and a short `dataset_stratification` blurb.
+#
+# The two hand-editable text fields (`summary` and each `dataset_stratification`)
+# are PRESERVED from the existing docs/data_sources_index.json on rebuild --
+# edit them directly in that file and they are maintained. A brand-new dataset
+# with no existing text falls back to a concise extractive summary (first
+# sentence of its _sources description) and, for its files, a
+# `dataset_stratification` from resources/stratification_cache.json or a
+# filename-derived blurb. Fill those in and future rebuilds keep them.
 # =====================================================================
 
 cat("Building data sources index JSON...\n")
+
+# Cache of short, human-authored stratification blurbs for individual standard
+# files, keyed by "dataset/filename.csv.gz". Populated by the
+# update-data-sources-index skill (Claude writes the blurbs); this script only
+# reads it and falls back to a filename-derived blurb when a key is missing.
+STRATIFICATION_CACHE_PATH <- "resources/stratification_cache.json"
+
+load_stratification_cache <- function() {
+  if (!file.exists(STRATIFICATION_CACHE_PATH)) return(list())
+  fromJSON(STRATIFICATION_CACHE_PATH, simplifyVector = FALSE)
+}
+
+save_stratification_cache <- function(cache) {
+  if (length(cache) > 0) cache <- cache[order(names(cache))]
+  write(toJSON(cache, auto_unbox = TRUE, pretty = TRUE), STRATIFICATION_CACHE_PATH)
+}
+
+# Direct raw-content URL to a standardized csv.gz file on GitHub.
+github_raw_file <- function(source_name, filename) {
+  paste0(GITHUB_RAW_BASE, "/data/", source_name, "/standard/", filename)
+}
+
+# Pick the "primary" standard file for a source: prefer data.csv.gz, otherwise
+# the shortest-named csv.gz (usually the least-stratified base file).
+get_primary_standard_file <- function(files) {
+  if (length(files) == 0) return(NA_character_)
+  bn <- basename(files)
+  if ("data.csv.gz" %in% bn) return(files[bn == "data.csv.gz"][1])
+  files[order(nchar(bn))][1]
+}
+
+# Fallback stratification blurb derived from a standard file's name, used only
+# when the stratification cache has no Claude-authored blurb for the file.
+# Strips the data/ prefix, extension, and geography tokens, leaving the
+# distinguishing tokens that describe the file's stratification dimension.
+derive_stratification <- function(filename) {
+  stem <- sub("\\.csv\\.gz$", "", basename(filename))
+  stem <- sub("^data_?", "", stem)
+  tokens <- strsplit(stem, "_")[[1]]
+  geo_tokens <- c("", "state", "county", "national", "nation", "us", "usa", "overall")
+  tokens <- tokens[!tolower(tokens) %in% geo_tokens]
+  if (length(tokens) == 0) {
+    return("Overall; no stratification beyond time and geography.")
+  }
+  paste0("Stratified by ", gsub("_", " ", paste(tokens, collapse = " ")), ".")
+}
+
+stratification_cache <- load_stratification_cache()
+
+# Preserve hand-edited text from the existing index so manual edits to
+# docs/data_sources_index.json survive a rebuild. `summary` (per dataset) and
+# `dataset_stratification` (per file) are treated as authoritative if already
+# present; only new datasets/files fall back to the caches or derived text.
+# Every other field (links, latest_date, bundles) is always recomputed.
+existing_summary <- list()
+existing_strat <- list()
+existing_index_path <- "docs/data_sources_index.json"
+if (file.exists(existing_index_path)) {
+  prev <- tryCatch(fromJSON(existing_index_path, simplifyVector = FALSE),
+                   error = function(e) NULL)
+  if (!is.null(prev) && !is.null(prev$datasets)) {
+    for (d in prev$datasets) {
+      if (is.null(d$dataset)) next
+      if (!is.null(d$summary) && nzchar(d$summary)) {
+        existing_summary[[d$dataset]] <- d$summary
+      }
+      if (!is.null(d$files)) {
+        for (f in d$files) {
+          if (!is.null(f$dataset_link) && !is.null(f$dataset_stratification) &&
+              nzchar(f$dataset_stratification)) {
+            fn <- sub(".*/standard/", "", f$dataset_link)
+            existing_strat[[paste0(d$dataset, "/", fn)]] <- f$dataset_stratification
+          }
+        }
+      }
+    }
+  }
+}
 
 # Helper: find the most recent date across a source's standard files
 get_latest_date <- function(source_dir) {
@@ -1099,16 +1197,23 @@ get_latest_date <- function(source_dir) {
   return(NA_character_)
 }
 
-# Map each source -> the bundles that consume it (from bundle process.json)
+# Map each source -> the bundles that consume it, by scanning each bundle's
+# build.R for references to `../<source>/standard/...`. build.R is what actually
+# reads the source files, so it is the source of truth. (The bundle
+# process.json `source_files` record was previously used but is unreliable: it
+# reflects the LAST build, so it goes stale under old source names -- e.g.
+# `epic` after the source was split into epic_* dirs, or `vaccine_exemptions_kiang`
+# after a rename -- and is empty for bundles that have not been rebuilt.)
 source_to_bundles <- list()
 for (i in seq_along(bundle_dirs)) {
-  bproc <- tryCatch(
-    fromJSON(file.path(bundle_dirs[i], "process.json"), simplifyVector = FALSE),
-    error = function(e) NULL
-  )
-  if (is.null(bproc) || is.null(bproc$source_files)) next
-  # Keys look like "epic/standard/weekly.csv.gz"; first segment is the source dir
-  srcs <- unique(sub("/.*$", "", names(bproc$source_files)))
+  build_r <- file.path(bundle_dirs[i], "build.R")
+  if (!file.exists(build_r)) next
+  lines <- readLines(build_r, warn = FALSE)
+  lines <- lines[!grepl("^\\s*#", lines)]  # drop full-line comments
+  matches <- unlist(regmatches(
+    lines, gregexpr("\\.\\./[A-Za-z0-9_]+/standard/", lines)
+  ))
+  srcs <- unique(sub("^\\.\\./([A-Za-z0-9_]+)/standard/$", "\\1", matches))
   for (s in srcs) {
     source_to_bundles[[s]] <- unique(c(source_to_bundles[[s]], bundle_names[i]))
   }
@@ -1136,7 +1241,24 @@ index_datasets <- lapply(index_source_idx, function(i) {
     list()
   }
 
-  description <- first_source$description %||% ""
+  # Concise extractive fallback (first sentence of each source description).
+  # Descriptions span ALL sources so multi-source datasets aren't
+  # misrepresented by only the first (e.g. NCHS covers overdose AND 21 causes
+  # of mortality). Used only for a brand-new dataset with no summary yet.
+  short_descs <- character(0)
+  if (!is.null(sources_meta)) {
+    for (s in sources_meta) {
+      ss <- short_summary(trimws(s$description %||% ""))
+      if (nzchar(ss)) short_descs <- c(short_descs, ss)
+    }
+  }
+  fallback_summary <- paste(unique(short_descs), collapse = " ")
+
+  display_name <- first_source$name %||% format_source_name(source_name)
+  # A hand-edited summary already in the index wins and is preserved; a
+  # brand-new dataset falls back to a concise extractive summary.
+  dataset_summary <- existing_summary[[source_name]] %||% fallback_summary
+
   section_id <- gsub("[^a-zA-Z0-9]", "-", source_name)
   bundles <- source_to_bundles[[source_name]]
   if (is.null(bundles)) bundles <- character(0)
@@ -1144,18 +1266,49 @@ index_datasets <- lapply(index_source_idx, function(i) {
 
   cat(sprintf("  Indexing %s (%d/%d)\n", source_name, i, length(source_dirs)))
 
-  list(
+  # Direct link to the source's primary standardized csv.gz on GitHub.
+  standard_files <- get_standard_files(source_dir)
+  primary_file <- get_primary_standard_file(standard_files)
+  github_link <- if (!is.na(primary_file)) {
+    github_raw_file(source_name, basename(primary_file))
+  } else {
+    ""
+  }
+
+  # When a source ships more than one standard csv.gz, break out each file with
+  # a short stratification blurb and a direct link. Blurb precedence: a
+  # hand-edited value already in the index, then the cache, then a value
+  # derived from the file name.
+  files_entry <- NULL
+  if (length(standard_files) > 1) {
+    files_entry <- lapply(sort(basename(standard_files)), function(fn) {
+      cache_key <- paste0(source_name, "/", fn)
+      strat <- existing_strat[[cache_key]] %||% stratification_cache[[cache_key]]
+      if (is.null(strat) || !nzchar(strat)) strat <- derive_stratification(fn)
+      list(
+        dataset_stratification = strat,
+        dataset_link = github_raw_file(source_name, fn)
+      )
+    })
+  }
+
+  entry <- list(
     dataset = source_name,
-    name = first_source$name %||% format_source_name(source_name),
+    name = display_name,
     github_folder = sprintf("https://github.com/%s/tree/main/data/%s",
                             GITHUB_REPO, source_name),
+    github_link = github_link,
     data_url = first_source$url %||% "",
     data_dictionary = sprintf("https://pophive.github.io/Ingest/#%s", section_id),
     latest_date = get_latest_date(source_dir),
     bundles = I(bundles),
-    summary = if (nchar(description) > 0) description else NA
+    summary = if (nchar(dataset_summary) > 0) dataset_summary else NA
   )
+  if (!is.null(files_entry)) entry$files <- I(files_entry)
+  entry
 })
+
+save_stratification_cache(stratification_cache)
 
 data_sources_index <- list(
   description = "Index of PopHIVE/Ingest standardized data sources (excludes bundle_* directories).",
