@@ -364,6 +364,26 @@
       }
     }
   },
+  "bundle_maternal_health/dist/maternal_state.parquet|geography": {
+    "id": "bundle_maternal_health/dist/maternal_state.parquet|geography",
+    "short_name": "Geography (state)",
+    "short_description": "2-digit state FIPS code identifier (\"00\" = national)."
+  },
+  "bundle_maternal_health/dist/maternal_state.parquet|time": {
+    "id": "bundle_maternal_health/dist/maternal_state.parquet|time",
+    "short_name": "Year",
+    "short_description": "End-of-period date for the annual observation (YYYY-mm-dd)."
+  },
+  "bundle_maternal_health/dist/maternal_county.parquet|geography": {
+    "id": "bundle_maternal_health/dist/maternal_county.parquet|geography",
+    "short_name": "Geography (county)",
+    "short_description": "5-digit county FIPS code identifier."
+  },
+  "bundle_maternal_health/dist/maternal_county.parquet|time": {
+    "id": "bundle_maternal_health/dist/maternal_county.parquet|time",
+    "short_name": "Year",
+    "short_description": "End-of-period date for the annual observation (YYYY-mm-dd)."
+  },
   "bundle_maternal_health/dist/maternal_state.parquet|value": {
     "id": "bundle_maternal_health/dist/maternal_state.parquet|value",
     "short_name": "Value (state)",
@@ -441,6 +461,38 @@
       "description": "Annual state-level performance data on the Medicaid and CHIP Adult and Child Core Set quality measures, voluntarily reported by states to CMS. The maternal bundle uses the Maternal and Perinatal Health domain measures (prenatal and postpartum care, first prenatal visit, postpartum contraceptive care, and low birthweight), restricted to the Medicaid payer. State-level only; values are state rates.",
       "restrictions": "Public domain. CMS/Medicaid.gov data is generally not subject to copyright restrictions.",
       "date_accessed": 2025
+    }
+  },
+  "_bundle": {
+    "name": "bundle_maternal_health",
+    "sources": [
+      "census",
+      "county_health_rankings",
+      "medicaid_quality"
+    ],
+    "dist_files": {
+      "maternal_state.parquet": {
+        "sources": [
+          "census",
+          "county_health_rankings",
+          "medicaid_quality"
+        ],
+        "source_files": [
+          "census/standard/data_state.csv.gz",
+          "county_health_rankings/standard/data_state.csv.gz",
+          "medicaid_quality/standard/data.csv.gz"
+        ]
+      },
+      "maternal_county.parquet": {
+        "sources": [
+          "census",
+          "county_health_rankings"
+        ],
+        "source_files": [
+          "census/standard/data_county.csv.gz",
+          "county_health_rankings/standard/data_county.csv.gz"
+        ]
+      }
     }
   }
 }
