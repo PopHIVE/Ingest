@@ -1,5 +1,15 @@
 {
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "Geographic area as a display name: 'United States' for national, or the full state name (e.g. 'California'). Note: unlike most standard files, this column holds names rather than FIPS codes."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|time": {
+    "short_name": "Year",
+    "short_description": "Surveillance year, as an end-of-year date (YYYY-12-31)."
+  },
   "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|source": {
+    "short_name": "Data source / surveillance program",
+    "short_description": "NARMS surveillance program the isolates come from.",
     "levels": {
       "NARMS Now (Human Clinical)": {},
       "FDA Retail Meats": {},
@@ -9,9 +19,79 @@
       "FDA Food Animals (Minor Species)": {}
     }
   },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|genus": {
+    "short_name": "Bacterial genus",
+    "short_description": "Genus of the bacterial isolate tested (e.g. Campylobacter, Escherichia, Enterococcus, Salmonella, Shigella, Vibrio)."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|species_serotype": {
+    "short_name": "Species / serotype",
+    "short_description": "Bacterial species and, where available, serotype of the isolate (e.g. 'Salmonella Typhimurium', 'E. coli O157')."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|antimicrobial_class": {
+    "short_name": "Antimicrobial class",
+    "short_description": "CLSI drug class of the antimicrobial agent (e.g. Aminoglycosides, Beta-lactams, Macrolides, Quinolones). Populated for human clinical isolates."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|antimicrobial": {
+    "short_name": "Antimicrobial agent",
+    "short_description": "Specific antimicrobial drug the isolate was tested against (e.g. Ciprofloxacin, Azithromycin, Tetracycline)."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|test_method": {
+    "short_name": "Test method",
+    "short_description": "Method used to determine resistance.",
+    "levels": {
+      "AST": { "short_name": "AST", "short_description": "Antimicrobial susceptibility testing (phenotypic)." },
+      "WGS": { "short_name": "WGS", "short_description": "Whole-genome sequencing (genotypic resistance prediction)." }
+    }
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|meat_source": {
+    "short_name": "Retail meat source",
+    "short_description": "Retail meat product the isolate was recovered from (e.g. chicken, ground beef, ground turkey, pork chops). Populated for FDA Retail Meats isolates."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|host_species": {
+    "short_name": "Host species",
+    "short_description": "Animal host the isolate was recovered from (e.g. cattle, swine, chicken, turkey). Populated for animal pathogen and food-producing animal isolates."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|collection_source": {
+    "short_name": "Collection source",
+    "short_description": "Specimen or collection context for the isolate (e.g. diagnostic submission type). Populated for FDA Animal Pathogen isolates."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|source_type": {
+    "short_name": "Sampling source type",
+    "short_description": "Type of sample within the food-producing animal program (e.g. carcass, cecal). Populated for FDA Food Animals isolates."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "Geographic area as a display name: 'United States' for national, or the full state name (e.g. 'California'). Note: unlike most standard files, this column holds names rather than FIPS codes."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|time": {
+    "short_name": "Year",
+    "short_description": "Surveillance year, as an end-of-year date (YYYY-12-31)."
+  },
   "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|source": {
+    "short_name": "Data source / surveillance program",
+    "short_description": "NARMS surveillance program the isolates come from (human clinical only for resistance patterns).",
     "levels": {
       "NARMS Now (Human Clinical)": {}
+    }
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|genus": {
+    "short_name": "Bacterial genus",
+    "short_description": "Genus of the bacterial isolate tested (e.g. Campylobacter, Escherichia, Salmonella, Shigella, Vibrio)."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|species_serotype": {
+    "short_name": "Species / serotype",
+    "short_description": "Bacterial species and, where available, serotype of the isolate (e.g. 'Salmonella Typhimurium', 'E. coli O157')."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|pattern": {
+    "short_name": "Resistance pattern",
+    "short_description": "Multidrug resistance profile describing the combination of antimicrobial classes/agents an isolate is resistant to."
+  },
+  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|test_method": {
+    "short_name": "Test method",
+    "short_description": "Method used to determine resistance.",
+    "levels": {
+      "AST": { "short_name": "AST", "short_description": "Antimicrobial susceptibility testing (phenotypic)." },
+      "WGS": { "short_name": "WGS", "short_description": "Whole-genome sequencing (genotypic resistance prediction)." }
     }
   },
   "{category}pct_resistant": {
@@ -68,6 +148,28 @@
     "measure_type": "Concentration",
     "unit": "ug/mL",
     "time_resolution": "Year"
+  },
+
+  "_bundle": {
+    "name": "bundle_antimicrobial_resistance",
+    "sources": ["narms"],
+    "dist_files": {
+      "resistance_by_agent.parquet": {
+        "sources": ["narms"],
+        "source_files": [
+          "narms/standard/data_resistance_agent.csv.gz",
+          "narms/standard/data_retail_meats.csv.gz",
+          "narms/standard/data_animal_pathogen.csv.gz",
+          "narms/standard/data_food_animals.csv.gz"
+        ]
+      },
+      "resistance_by_pattern.parquet": {
+        "sources": ["narms"],
+        "source_files": [
+          "narms/standard/data_resistance_pattern.csv.gz"
+        ]
+      }
+    }
   },
 
   "_sources": {
