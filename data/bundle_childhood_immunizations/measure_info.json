@@ -1,4 +1,29 @@
 {
+  "bundle_childhood_immunizations/dist/schoolvaxview_overall.parquet|time": {
+    "short_name": "Time",
+    "short_description": "School-year end date for the vaccination assessment (YYYY-mm-dd; academic year start convention, e.g. 2023-09-01)."
+  },
+  "bundle_childhood_immunizations/dist/schoolvaxview_overall.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "FIPS code identifier (00 = national, 2-digit = state)."
+  },
+  "bundle_childhood_immunizations/dist/schoolvaxview_overall.parquet|grade": {
+    "source_id": "grade"
+  },
+  "bundle_childhood_immunizations/dist/schoolvaxview_overall.parquet|vax": {
+    "short_name": "Vaccine / exemption code",
+    "levels": {
+      "mmr": {},
+      "mmr (pac)": {},
+      "dtap": {},
+      "polio": {},
+      "varicella": {},
+      "hep_b": {},
+      "full_exempt": {},
+      "personal_exempt": {},
+      "medical_exempt": {}
+    }
+  },
   "bundle_childhood_immunizations/dist/schoolvaxview_overall.parquet|value": {
     "source_id": "value"
   },
@@ -10,6 +35,28 @@
   },
   "bundle_childhood_immunizations/dist/schoolvaxview_overall.parquet|survey_type": {
     "source_id": "survey_type"
+  },
+  "bundle_childhood_immunizations/dist/schoolvaxview_exemptions.parquet|time": {
+    "short_name": "Time",
+    "short_description": "School-year end date for the exemption assessment (YYYY-mm-dd; academic year start convention)."
+  },
+  "bundle_childhood_immunizations/dist/schoolvaxview_exemptions.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "FIPS code identifier (00 = national, 2-digit = state)."
+  },
+  "bundle_childhood_immunizations/dist/schoolvaxview_exemptions.parquet|grade": {
+    "source_id": "grade"
+  },
+  "bundle_childhood_immunizations/dist/schoolvaxview_exemptions.parquet|N": {
+    "source_id": "N"
+  },
+  "bundle_childhood_immunizations/dist/schoolvaxview_exemptions.parquet|vax": {
+    "short_name": "Exemption type",
+    "levels": {
+      "full_exempt": {},
+      "personal_exempt": {},
+      "medical_exempt": {}
+    }
   },
   "bundle_childhood_immunizations/dist/schoolvaxview_exemptions.parquet|value": {
     "id": "bundle_childhood_immunizations/dist/schoolvaxview_exemptions.parquet|value",
@@ -23,6 +70,29 @@
     "time_resolution": "Year",
     "sources": [{ "id": "SchoolVaxView" }]
   },
+  "bundle_childhood_immunizations/dist/schoolvaxview_exemptions.parquet|percent_surveyed": {
+    "source_id": "percent_surveyed"
+  },
+  "bundle_childhood_immunizations/dist/schoolvaxview_exemptions.parquet|survey_type": {
+    "source_id": "survey_type"
+  },
+  "bundle_childhood_immunizations/dist/nis_overall.parquet|birth_year": {
+    "source_id": "birth_year"
+  },
+  "bundle_childhood_immunizations/dist/nis_overall.parquet|age": {
+    "source_id": "age"
+  },
+  "bundle_childhood_immunizations/dist/nis_overall.parquet|vaccine": {
+    "source_id": "vaccine"
+  },
+  "bundle_childhood_immunizations/dist/nis_overall.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "FIPS code identifier (00 = national, 2-digit = state)."
+  },
+  "bundle_childhood_immunizations/dist/nis_overall.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Date corresponding to the child's age within the birth cohort (YYYY-mm-dd)."
+  },
   "bundle_childhood_immunizations/dist/nis_overall.parquet|pct_uptake": {
     "source_id": "vax_uptake_overall"
   },
@@ -34,6 +104,19 @@
   },
   "bundle_childhood_immunizations/dist/nis_overall.parquet|sample_size": {
     "source_id": "sample_size_overall"
+  },
+  "bundle_childhood_immunizations/dist/nis_urban.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "FIPS code identifier (00 = national, 2-digit = state)."
+  },
+  "bundle_childhood_immunizations/dist/nis_urban.parquet|urban": {
+    "source_id": "urban"
+  },
+  "bundle_childhood_immunizations/dist/nis_urban.parquet|birth_year": {
+    "source_id": "birth_year"
+  },
+  "bundle_childhood_immunizations/dist/nis_urban.parquet|vaccine": {
+    "source_id": "vaccine"
   },
   "bundle_childhood_immunizations/dist/nis_urban.parquet|pct_uptake": {
     "source_id": "vax_uptake_urban"
@@ -47,6 +130,19 @@
   "bundle_childhood_immunizations/dist/nis_urban.parquet|sample_size": {
     "source_id": "sample_size_urban"
   },
+  "bundle_childhood_immunizations/dist/nis_insurance.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "FIPS code identifier (00 = national, 2-digit = state)."
+  },
+  "bundle_childhood_immunizations/dist/nis_insurance.parquet|insurance": {
+    "source_id": "insurance"
+  },
+  "bundle_childhood_immunizations/dist/nis_insurance.parquet|birth_year": {
+    "source_id": "birth_year"
+  },
+  "bundle_childhood_immunizations/dist/nis_insurance.parquet|vaccine": {
+    "source_id": "vaccine"
+  },
   "bundle_childhood_immunizations/dist/nis_insurance.parquet|pct_uptake": {
     "source_id": "vax_uptake_insurance"
   },
@@ -59,41 +155,32 @@
   "bundle_childhood_immunizations/dist/nis_insurance.parquet|sample_size": {
     "source_id": "sample_size_insurance"
   },
-  "bundle_childhood_immunizations/dist/state_compare.parquet|value_nis": {
-    "id": "bundle_childhood_immunizations/dist/state_compare.parquet|value_nis",
-    "short_name": "MMR uptake (NIS, 35 months)",
-    "long_name": "MMR Vaccination Coverage at 35 Months (NIS, 2021 Birth Cohort)",
-    "category": "immunization",
-    "short_description": "Percent of 2021 birth cohort with ≥1 dose MMR by 35 months, from CDC NIS.",
-    "long_description": "Percentage of children born in 2021 who received at least one dose of MMR vaccine by age 35 months, from the CDC National Immunization Survey (NIS). Used for cross-source comparison with SchoolVaxView kindergarten coverage.",
-    "measure_type": "Percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [{ "id": "nis" }]
+  "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of the vaccination coverage estimate."
   },
-  "bundle_childhood_immunizations/dist/state_compare.parquet|value_nis_lcl": {
-    "source_id": "vax_uptake_overall_lcl"
+  "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet|geography": {
+    "short_name": "Geography (name)",
+    "short_description": "Geography name (e.g. state name or \"United States\"), not a FIPS code, from a join to the FIPS crosswalk."
   },
-  "bundle_childhood_immunizations/dist/state_compare.parquet|value_nis_ucl": {
-    "source_id": "vax_uptake_overall_ucl"
+  "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet|vaccine": {
+    "source_id": "vaccine"
   },
-  "bundle_childhood_immunizations/dist/state_compare.parquet|value_vaxview": {
-    "id": "bundle_childhood_immunizations/dist/state_compare.parquet|value_vaxview",
-    "short_name": "MMR coverage (SchoolVaxView, kindergarten)",
-    "long_name": "MMR Vaccination Coverage among Kindergartners (SchoolVaxView, 2023–24)",
-    "category": "immunization",
-    "short_description": "Percent of kindergartners with MMR vaccination, from CDC SchoolVaxView (2023–24 school year).",
-    "long_description": "Percentage of kindergartners with MMR vaccination from CDC SchoolVaxView for the 2023–24 school year (time = 2023-09-01). Used for cross-source comparison with NIS coverage at 35 months.",
-    "measure_type": "Percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [{ "id": "SchoolVaxView" }]
+  "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet|age": {
+    "source_id": "age"
   },
   "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "CDC NIS": {},
       "CDC SchoolVaxView": {}
     }
+  },
+  "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet|percent_surveyed": {
+    "source_id": "percent_surveyed"
+  },
+  "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet|survey_type": {
+    "source_id": "survey_type"
   },
   "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet|value": {
     "id": "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet|value",
@@ -101,7 +188,7 @@
     "long_name": "Childhood Vaccination Coverage Rate",
     "category": "immunization",
     "short_description": "Percentage of children up to date on the indicated vaccine, by source and year.",
-    "long_description": "Combined childhood vaccination coverage from CDC NIS and CDC SchoolVaxView in long format. NIS data represents children 19–35 months; SchoolVaxView represents kindergartners (~5 years). The source column identifies the survey. The vaccine column identifies the vaccine type (MMR, DTaP, Polio, Varicella, Hep B). The age column reflects survey-specific age categories.",
+    "long_description": "Combined childhood vaccination coverage from CDC NIS and CDC SchoolVaxView in long format. NIS data represents children 19-35 months; SchoolVaxView represents kindergartners (~5 years). The source column identifies the survey. The vaccine column identifies the vaccine type (MMR, DTaP, Polio, Varicella, Hep B). The age column reflects survey-specific age categories.",
     "measure_type": "Percent",
     "unit": "%",
     "time_resolution": "Year",
@@ -146,6 +233,51 @@
       { "id": "SchoolVaxView" }
     ]
   },
+  "bundle_childhood_immunizations/dist/state_compare.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "FIPS code identifier (00 = national, 2-digit = state)."
+  },
+  "bundle_childhood_immunizations/dist/state_compare.parquet|value_nis": {
+    "id": "bundle_childhood_immunizations/dist/state_compare.parquet|value_nis",
+    "short_name": "MMR uptake (NIS, 35 months)",
+    "long_name": "MMR Vaccination Coverage at 35 Months (NIS, 2021 Birth Cohort)",
+    "category": "immunization",
+    "short_description": "Percent of 2021 birth cohort with ≥1 dose MMR by 35 months, from CDC NIS.",
+    "long_description": "Percentage of children born in 2021 who received at least one dose of MMR vaccine by age 35 months, from the CDC National Immunization Survey (NIS). Used for cross-source comparison with SchoolVaxView kindergarten coverage.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "nis" }]
+  },
+  "bundle_childhood_immunizations/dist/state_compare.parquet|value_nis_lcl": {
+    "source_id": "vax_uptake_overall_lcl"
+  },
+  "bundle_childhood_immunizations/dist/state_compare.parquet|value_nis_ucl": {
+    "source_id": "vax_uptake_overall_ucl"
+  },
+  "bundle_childhood_immunizations/dist/state_compare.parquet|value_vaxview": {
+    "id": "bundle_childhood_immunizations/dist/state_compare.parquet|value_vaxview",
+    "short_name": "MMR coverage (SchoolVaxView, kindergarten)",
+    "long_name": "MMR Vaccination Coverage among Kindergartners (SchoolVaxView, 2023-24)",
+    "category": "immunization",
+    "short_description": "Percent of kindergartners with MMR vaccination, from CDC SchoolVaxView (2023-24 school year).",
+    "long_description": "Percentage of kindergartners with MMR vaccination from CDC SchoolVaxView for the 2023-24 school year (time = 2023-09-01). Used for cross-source comparison with NIS coverage at 35 months.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Year",
+    "sources": [{ "id": "SchoolVaxView" }]
+  },
+  "bundle_childhood_immunizations/dist/state_compare.parquet|vaxview_survey_type": {
+    "source_id": "survey_type"
+  },
+  "bundle_childhood_immunizations/dist/wapo_vax_counties.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "County FIPS code identifier (5-digit)."
+  },
+  "bundle_childhood_immunizations/dist/wapo_vax_counties.parquet|time": {
+    "short_name": "Time",
+    "short_description": "School-year date for the county vaccination rate (YYYY-mm-dd)."
+  },
   "bundle_childhood_immunizations/dist/wapo_vax_counties.parquet|wapo_county_vax_rate": {
     "source_id": "wapo_county_vax_rate"
   },
@@ -154,6 +286,23 @@
   },
   "bundle_childhood_immunizations/dist/wapo_vax_counties.parquet|wapo_postpand_herd": {
     "source_id": "wapo_postpand_herd"
+  },
+  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "FIPS code identifier for the school's county (5-digit)."
+  },
+  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|time": {
+    "short_name": "Time",
+    "short_description": "School-year date for the school vaccination record (YYYY-mm-dd)."
+  },
+  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_name": {
+    "source_id": "wapo_school_name"
+  },
+  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_type": {
+    "source_id": "wapo_school_type"
+  },
+  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_students_enrolled": {
+    "source_id": "wapo_students_enrolled"
   },
   "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_mmr_rate": {
     "source_id": "wapo_school_mmr_rate"
@@ -176,14 +325,11 @@
   "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_overall_exemption_rate": {
     "source_id": "wapo_school_overall_exemption_rate"
   },
-  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_students_enrolled": {
-    "source_id": "wapo_students_enrolled"
+  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_lat": {
+    "source_id": "wapo_school_lat"
   },
-  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_type": {
-    "source_id": "wapo_school_type"
-  },
-  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_name": {
-    "source_id": "wapo_school_name"
+  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_lon": {
+    "source_id": "wapo_school_lon"
   },
   "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_county": {
     "source_id": "wapo_school_county"
@@ -194,10 +340,52 @@
   "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_grade": {
     "source_id": "wapo_school_grade"
   },
-  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_lat": {
-    "source_id": "wapo_school_lat"
-  },
-  "bundle_childhood_immunizations/dist/wapo_vax_schools.parquet|wapo_school_lon": {
-    "source_id": "wapo_school_lon"
+  "_bundle": {
+    "name": "bundle_childhood_immunizations",
+    "sources": ["nis", "schoolvax_washpost", "schoolvaxview"],
+    "dist_files": {
+      "schoolvaxview_overall.parquet": {
+        "sources": ["schoolvaxview"],
+        "source_files": ["schoolvaxview/standard/data.csv.gz"]
+      },
+      "schoolvaxview_exemptions.parquet": {
+        "sources": ["schoolvaxview"],
+        "source_files": ["schoolvaxview/standard/data_exemptions.csv.gz"]
+      },
+      "nis_overall.parquet": {
+        "sources": ["nis"],
+        "source_files": ["nis/standard/data.csv.gz"]
+      },
+      "nis_urban.parquet": {
+        "sources": ["nis"],
+        "source_files": ["nis/standard/data_urban.csv.gz"]
+      },
+      "nis_insurance.parquet": {
+        "sources": ["nis"],
+        "source_files": ["nis/standard/data_insurance.csv.gz"]
+      },
+      "state_compare.parquet": {
+        "sources": ["nis", "schoolvaxview"],
+        "source_files": [
+          "nis/standard/data.csv.gz",
+          "schoolvaxview/standard/data.csv.gz"
+        ]
+      },
+      "overall_rates_by_source.parquet": {
+        "sources": ["nis", "schoolvaxview"],
+        "source_files": [
+          "nis/standard/data.csv.gz",
+          "schoolvaxview/standard/data.csv.gz"
+        ]
+      },
+      "wapo_vax_counties.parquet": {
+        "sources": ["schoolvax_washpost"],
+        "source_files": ["schoolvax_washpost/standard/data_counties.csv.gz"]
+      },
+      "wapo_vax_schools.parquet": {
+        "sources": ["schoolvax_washpost"],
+        "source_files": ["schoolvax_washpost/standard/data_schools.csv.gz"]
+      }
+    }
   }
 }

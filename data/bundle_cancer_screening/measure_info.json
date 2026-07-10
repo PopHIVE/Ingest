@@ -1,4 +1,47 @@
 {
+  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|geography": {
+    "short_name": "State",
+    "short_description": "State or national name (e.g., 'California', 'District of Columbia'); the FIPS code is not stored in this file."
+  },
+  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of the reported screening rate."
+  },
+  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Beneficiary age group for the measure (e.g., 'Total')."
+  },
+  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "Sex of beneficiaries (Male, Female, Total)."
+  },
+  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|race_ethnicity": {
+    "short_name": "Race/ethnicity",
+    "short_description": "Race/ethnicity category of beneficiaries."
+  },
+  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|payer": {
+    "short_name": "Payer",
+    "short_description": "Medicaid program payer for the reported measure.",
+    "levels": {
+      "Medicaid": {},
+      "CHIP": {},
+      "Total": {}
+    }
+  },
+  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|outcome_name": {
+    "short_name": "Cancer screening measure",
+    "levels": {
+      "Breast Cancer Screening": { "source_id": "medicaid_bcs_ad_rate" },
+      "Cervical Cancer Screening": { "source_id": "medicaid_ccs_ad_rate" },
+      "Colorectal Cancer Screening": { "source_id": "medicaid_col_ad_rate" }
+    }
+  },
+  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "Medicaid": {}
+    }
+  },
   "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|value": {
     "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|value",
     "short_name": "Medicaid cancer screening rate",
@@ -11,17 +54,36 @@
     "time_resolution": "Year",
     "sources": [{ "id": "medicaid_quality" }]
   },
-  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|median": {
-    "source_id": "median"
+  "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|geography": {
+    "short_name": "State",
+    "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code."
   },
-  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|pct25": {
-    "source_id": "pct25"
+  "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geographic FIPS code ('00' = national, 2-digit = state)."
   },
-  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|pct75": {
-    "source_id": "pct75"
+  "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of the reported screening rate."
   },
-  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|n_states": {
-    "source_id": "n_states"
+  "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Beneficiary age group (e.g., '65+ Years', 'Total')."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|outcome_name": {
+    "short_name": "Cancer screening measure",
+    "levels": {
+      "Breast Cancer Screening": {},
+      "Cervical Cancer Screening": {},
+      "Colorectal Cancer Screening": {},
+      "Prostate Cancer Screening": {}
+    }
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "Medicare FFS": {}
+    }
   },
   "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|value": {
     "id": "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|value",
@@ -35,6 +97,41 @@
     "time_resolution": "Year",
     "sources": [{ "id": "cms_mmd" }]
   },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|geography": {
+    "short_name": "State",
+    "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geographic FIPS code ('00' = national, 2-digit = state)."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of the reported screening rate."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Beneficiary age group (e.g., '65+ Years', 'Total')."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "Sex of Medicare FFS beneficiaries (Male, Female, Total)."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|outcome_name": {
+    "short_name": "Cancer screening measure",
+    "levels": {
+      "Breast Cancer Screening": {},
+      "Cervical Cancer Screening": {},
+      "Colorectal Cancer Screening": {},
+      "Prostate Cancer Screening": {}
+    }
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "Medicare FFS": {}
+    }
+  },
   "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|value": {
     "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|value",
     "short_name": "Medicare FFS cancer screening rate by sex",
@@ -47,6 +144,41 @@
     "time_resolution": "Year",
     "sources": [{ "id": "cms_mmd" }]
   },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|geography": {
+    "short_name": "State",
+    "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geographic FIPS code ('00' = national, 2-digit = state)."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of the reported screening rate."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Beneficiary age group (e.g., '65+ Years', 'Total')."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|race_ethnicity": {
+    "short_name": "Race/ethnicity",
+    "short_description": "Race/ethnicity category of Medicare FFS beneficiaries."
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|outcome_name": {
+    "short_name": "Cancer screening measure",
+    "levels": {
+      "Breast Cancer Screening": {},
+      "Cervical Cancer Screening": {},
+      "Colorectal Cancer Screening": {},
+      "Prostate Cancer Screening": {}
+    }
+  },
+  "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "Medicare FFS": {}
+    }
+  },
   "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|value": {
     "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|value",
     "short_name": "Medicare FFS cancer screening rate by race/ethnicity",
@@ -58,6 +190,26 @@
     "unit": "%",
     "time_resolution": "Year",
     "sources": [{ "id": "cms_mmd" }]
+  },
+  "bundle_cancer_screening/dist/combined_cancer_screening.parquet|geography": {
+    "short_name": "State",
+    "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code."
+  },
+  "bundle_cancer_screening/dist/combined_cancer_screening.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geographic FIPS code ('00' = national, 2-digit = state)."
+  },
+  "bundle_cancer_screening/dist/combined_cancer_screening.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of the reported screening rate."
+  },
+  "bundle_cancer_screening/dist/combined_cancer_screening.parquet|outcome_name": {
+    "short_name": "Cancer screening measure",
+    "levels": {
+      "Breast Cancer Screening": {},
+      "Cervical Cancer Screening": {},
+      "Colorectal Cancer Screening": {}
+    }
   },
   "bundle_cancer_screening/dist/combined_cancer_screening.parquet|value_medicare": {
     "id": "bundle_cancer_screening/dist/combined_cancer_screening.parquet|value_medicare",
@@ -82,5 +234,34 @@
     "unit": "%",
     "time_resolution": "Year",
     "sources": [{ "id": "medicaid_quality" }]
+  },
+  "_bundle": {
+    "name": "bundle_cancer_screening",
+    "sources": ["cms_mmd", "medicaid_quality"],
+    "dist_files": {
+      "medicaid_cancer_screening.parquet": {
+        "sources": ["medicaid_quality"],
+        "source_files": ["medicaid_quality/standard/data.csv.gz"]
+      },
+      "cms_cancer_screening_state.parquet": {
+        "sources": ["cms_mmd"],
+        "source_files": ["cms_mmd/standard/data_state_county_age.csv.gz"]
+      },
+      "cms_cancer_screening_by_sex.parquet": {
+        "sources": ["cms_mmd"],
+        "source_files": ["cms_mmd/standard/data_state_county_age_by_sex.csv.gz"]
+      },
+      "cms_cancer_screening_by_race.parquet": {
+        "sources": ["cms_mmd"],
+        "source_files": ["cms_mmd/standard/data_state_county_age_by_race.csv.gz"]
+      },
+      "combined_cancer_screening.parquet": {
+        "sources": ["cms_mmd", "medicaid_quality"],
+        "source_files": [
+          "cms_mmd/standard/data_state_county_age.csv.gz",
+          "medicaid_quality/standard/data.csv.gz"
+        ]
+      }
+    }
   }
 }
