@@ -21,7 +21,7 @@ raw_state <- dcf::dcf_download_cdc(
 )
 
 if (!identical(process$raw_state, raw_state)) {
-  data <- vroom::vroom("./raw/x9gk-5huc.csv.xz", show_col_types = FALSE) %>%
+  data <- vroom::vroom("./raw/x9gk-5huc.csv.xz", delim = ",", show_col_types = FALSE) %>%
     mutate(time = MMWRweek2Date(`Current MMWR Year`, `MMWR WEEK`, MMWRday = NULL)+6 #week ending date
       ) %>%
       rename(mmwr_year = `Current MMWR Year`,
