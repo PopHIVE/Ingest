@@ -4,15 +4,17 @@
   "resources": [
     {
       "bytes": 200541,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "0de833debd196df0b29231508643d9cd",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "2e537bec8f261191d34b05d12749381844c3d42a",
           "ebd39c1c35b81350a985854ad655968593242320",
           "ff18d7ec5114a688cec1427a2b522ed4777f0d1f",
+          "a3a88cb5e9d5afda114dcb35b151a014d3042df0",
           "b17348ffc63e58e4fc7e67d94c0d24c3bf0515e4",
           "aab4096ddf25756db7f285e8994078108c4b4904",
           "334f2f74f167b77cf07fcfa98da6f18c47a88492",
@@ -59,6 +61,8 @@
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -101,8 +105,10 @@
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Fri Jun 26 19:42:13 2026 +0000",
           "Fri Jun 19 20:16:40 2026 +0000",
           "Fri Jun 12 20:13:12 2026 +0000",
+          "Tue Jun 9 12:07:10 2026 -0400",
           "Fri May 29 20:20:58 2026 +0000",
           "Fri May 22 19:31:35 2026 +0000",
           "Fri May 15 19:31:25 2026 +0000",
@@ -149,6 +155,8 @@
           "scheduled data build",
           "scheduled data build",
           "scheduled data build",
+          "Add CDC CFA RT (respiratory tract) data source",
+          "scheduled data build",
           "scheduled data build",
           "scheduled data build",
           "scheduled data build",
@@ -159,7 +167,7 @@
           "rebuild respiratory bundle",
           "fix respnet age stratified data",
           "update respnet fixes",
-          "Claude Sonnet 4.6 <noreply@anthropic.com>",
+          "numerous fixes, address new api schema for respnet, remove unnedded call to missing epic heat file; rerun bundle",
           "updates feb 6",
           "update respiratory files",
           "scheduled data build",
@@ -217,8 +225,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-06-26 19:35:58.69348",
-      "last_modified": "2026-06-26 19:35:58.69348",
+      "created": "2026-07-13 12:52:13.159074",
+      "last_modified": "2026-07-13 12:52:13.159074",
       "vintage": {},
       "row_count": 39990,
       "entity_count": 17,
@@ -712,6 +720,9 @@
             "info": {
               "id": "age",
               "short_name": "Age group",
+              "long_name": "Age group",
+              "short_description": "Age group category",
+              "long_description": "Age group for the reported hospitalization rate",
               "measure_type": "age",
               "unit": "age group (years)"
             },
@@ -734,6 +745,10 @@
             "info": {
               "id": "rate_covid",
               "short_name": "Number of laboratory confirmed cases of COVID-19 per 100,000 people",
+              "long_name": "Weekly rate of laboratory-confirmed COVID-19 hospitalizations per 100,000 people",
+              "category": "respiratory",
+              "short_description": "Weekly rate of laboratory-confirmed COVID-19 hospitalizations per 100,000 people.",
+              "long_description": "Number of laboratory-confirmed COVID-19 hospitalizations per 100,000 people from the RESP-NET / COVID-NET surveillance systems. Available at national and state level, overall and by age group. Values before 2020-03-01 are set to 0.",
               "measure_type": "Incidence",
               "unit": "Cases per 100,000 people",
               "time_resolution": "Week",
@@ -759,6 +774,10 @@
             "info": {
               "id": "rate_rsv",
               "short_name": "Number of laboratory confirmed cases of RSV per 100,000 people",
+              "long_name": "Weekly rate of laboratory-confirmed RSV hospitalizations per 100,000 people",
+              "category": "respiratory",
+              "short_description": "Weekly rate of laboratory-confirmed RSV hospitalizations per 100,000 people.",
+              "long_description": "Number of laboratory-confirmed RSV hospitalizations per 100,000 people from the RESP-NET / RSV-NET surveillance systems. Available at national and state level, overall and by age group.",
               "measure_type": "Incidence",
               "unit": "Cases per 100,000 people",
               "time_resolution": "Week",
@@ -784,6 +803,10 @@
             "info": {
               "id": "rate_flu",
               "short_name": "Number of laboratory confirmed cases of influenza per 100,000 people",
+              "long_name": "Weekly rate of laboratory-confirmed influenza hospitalizations per 100,000 people",
+              "category": "respiratory",
+              "short_description": "Weekly rate of laboratory-confirmed influenza hospitalizations per 100,000 people.",
+              "long_description": "Number of laboratory-confirmed influenza hospitalizations per 100,000 people from the RESP-NET / FluSurv-NET surveillance systems. Available at national and state level, overall and by age group.",
               "measure_type": "Incidence",
               "unit": "Cases per 100,000 people",
               "time_resolution": "Week",
@@ -811,8 +834,11 @@
   "measure_info": {
     "rate_any": {
       "id": "rate_any",
-      "short_name": "Number of laboratory confirmed cases of RSV, influenza or COVID-19 per 100,000 people",
-      "long_description": "Number of laboratory confirmed cases of RSV, influenza or COVID-19 per 100,000 people in emergency departments included in the National Syndromic Surveillance Program",
+      "short_name": "Combined RSV, influenza, or COVID-19 hospitalization rate per 100,000",
+      "long_name": "Weekly rate of laboratory-confirmed RSV, influenza, or COVID-19 hospitalizations per 100,000 people",
+      "category": "respiratory",
+      "short_description": "Weekly rate of laboratory-confirmed RSV, influenza, or COVID-19 hospitalizations per 100,000 people. Not currently written to the standard output file.",
+      "long_description": "Number of laboratory-confirmed cases of RSV, influenza, or COVID-19 hospitalizations per 100,000 people from the RESP-NET surveillance systems. Note: this combined measure is computed during processing but is not included in the current standard output file (standard/data.csv.gz), which reports rate_rsv, rate_flu, and rate_covid separately.",
       "measure_type": "Incidence",
       "unit": "Cases per 100,000 people",
       "time_resolution": "Week",
@@ -828,6 +854,10 @@
     "rate_rsv": {
       "id": "rate_rsv",
       "short_name": "Number of laboratory confirmed cases of RSV per 100,000 people",
+      "long_name": "Weekly rate of laboratory-confirmed RSV hospitalizations per 100,000 people",
+      "category": "respiratory",
+      "short_description": "Weekly rate of laboratory-confirmed RSV hospitalizations per 100,000 people.",
+      "long_description": "Number of laboratory-confirmed RSV hospitalizations per 100,000 people from the RESP-NET / RSV-NET surveillance systems. Available at national and state level, overall and by age group.",
       "measure_type": "Incidence",
       "unit": "Cases per 100,000 people",
       "time_resolution": "Week",
@@ -843,6 +873,10 @@
     "rate_flu": {
       "id": "rate_flu",
       "short_name": "Number of laboratory confirmed cases of influenza per 100,000 people",
+      "long_name": "Weekly rate of laboratory-confirmed influenza hospitalizations per 100,000 people",
+      "category": "respiratory",
+      "short_description": "Weekly rate of laboratory-confirmed influenza hospitalizations per 100,000 people.",
+      "long_description": "Number of laboratory-confirmed influenza hospitalizations per 100,000 people from the RESP-NET / FluSurv-NET surveillance systems. Available at national and state level, overall and by age group.",
       "measure_type": "Incidence",
       "unit": "Cases per 100,000 people",
       "time_resolution": "Week",
@@ -858,6 +892,10 @@
     "rate_covid": {
       "id": "rate_covid",
       "short_name": "Number of laboratory confirmed cases of COVID-19 per 100,000 people",
+      "long_name": "Weekly rate of laboratory-confirmed COVID-19 hospitalizations per 100,000 people",
+      "category": "respiratory",
+      "short_description": "Weekly rate of laboratory-confirmed COVID-19 hospitalizations per 100,000 people.",
+      "long_description": "Number of laboratory-confirmed COVID-19 hospitalizations per 100,000 people from the RESP-NET / COVID-NET surveillance systems. Available at national and state level, overall and by age group. Values before 2020-03-01 are set to 0.",
       "measure_type": "Incidence",
       "unit": "Cases per 100,000 people",
       "time_resolution": "Week",
@@ -873,6 +911,9 @@
     "age": {
       "id": "age",
       "short_name": "Age group",
+      "long_name": "Age group",
+      "short_description": "Age group category",
+      "long_description": "Age group for the reported hospitalization rate",
       "measure_type": "age",
       "unit": "age group (years)",
       "sources": [],
@@ -892,39 +933,7 @@
   },
   "change_report": {
     "data.csv.gz": {
-      "state": "changed",
-      "variables": {
-        "time": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": "2026-06-20T00:00:00Z",
-          "dropped_levels": []
-        },
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "age": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "rate_covid": {
-          "status": "present",
-          "same_type": true
-        },
-        "rate_rsv": {
-          "status": "present",
-          "same_type": true
-        },
-        "rate_flu": {
-          "status": "present",
-          "same_type": true
-        }
-      }
+      "state": "unchanged"
     }
   }
 }
