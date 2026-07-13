@@ -8,6 +8,21 @@ all_fips = vroom::vroom('../../resources/all_fips.csv.gz') %>%
   filter(geography_name  %in% c(state.name, 'United States','District of Columbia') & geography != '11001'
                               ) %>%
   mutate(geography_name = toupper(geography_name))
+
+# Territories are state-level rows in all_fips.csv.gz but have no geography_name
+# (only a postal abbreviation), so they can't join on name like states can --
+# map them in by hand using their postal code
+territory_fips <- vroom::vroom('../../resources/all_fips.csv.gz') %>%
+  filter(nchar(geography) == 2 & state %in% c('AS', 'GU', 'MP', 'PR', 'VI')) %>%
+  mutate(geography_name = recode(state,
+    AS = 'AMERICAN SAMOA',
+    GU = 'GUAM',
+    MP = 'NORTHERN MARIANA ISLANDS',
+    PR = 'PUERTO RICO',
+    VI = 'U.S. VIRGIN ISLANDS'
+  ))
+
+all_fips <- bind_rows(all_fips, territory_fips)
 #
 # Download and add files to the raw directory
 #
@@ -45,7 +60,11 @@ if (!identical(process$raw_state, raw_state)) {
     pivot_wider(id_cols = c(time,mmwr_year,mmwr_week, `Reporting Area` ), values_from= `Cumulative YTD Current MMWR Year`, names_from=Label) %>%
     clean_names() %>%
     mutate(
-          reporting_area = if_else(reporting_area == 'TOTAL', 'UNITED STATES',reporting_area )) %>%
+          reporting_area = case_when(
+            reporting_area == 'TOTAL' ~ 'UNITED STATES',
+            reporting_area == 'COMMONWEALTH OF NORTHERN MARIANA ISLANDS' ~ 'NORTHERN MARIANA ISLANDS',
+            TRUE ~ reporting_area
+          )) %>%
     left_join(all_fips, by=c('reporting_area'='geography_name')) %>%
     dplyr::relocate(time,mmwr_year,mmwr_week, geography) %>%
     dplyr::select( -reporting_area, -state)
