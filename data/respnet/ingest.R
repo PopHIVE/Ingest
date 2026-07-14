@@ -39,20 +39,33 @@ if (!identical(process$raw_state, raw_state)) {
   state_fips_lookup <- all_fips %>%
     filter(nchar(geography) == 2) %>%
     select(geography, geography_name)
+  state_abbrev_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, state)
+
+  # CDC restructured all three RESP-NET datasets (Oct 2025-ish) from separate
+  # wide-format rate columns into a shared tall/long format: `Data Type`
+  # ("Weekly Rate", "Cumulative Rate", ...), `Estimate Type` ("Rate per
+  # 100,000", "Percent"), `Rate Type` ("Observed", "Age-Adjusted",
+  # "Estimated"), and a single `Estimate` value column. `Data Type == "Weekly
+  # Rate"` uniquely corresponds to `Date Type == "Week Ending Date"` and
+  # `Estimate Type == "Rate per 100,000"`, so filtering on it alone isolates
+  # the clean weekly series.
 
   #Data 1 has national*age or state*(overall age) for all viruses.
   ##
-  data1 <- vroom::vroom('raw/kvib-3txy.csv.xz') %>%
+  data1 <- vroom::vroom('raw/kvib-3txy.csv.xz', show_col_types = FALSE) %>%
     filter(
-      rate_type == "Observed" &
-        Sex == 'Overall' &
-        `Race/Ethnicity` == 'Overall'
+      `Data Type` == "Weekly Rate" &
+        `Rate Type` == "Observed" &
+        Sex == 'All' &
+        Race == 'All'
     ) %>%
     rename(
       virus = 'Surveillance Network',
-      age = 'Age group',
-      state = Site,
-      time = 'Week Ending Date'
+      age = 'Age Category',
+      state = State,
+      time = Date
     ) %>%
     mutate(
       virus = if_else(
@@ -65,7 +78,7 @@ if (!identical(process$raw_state, raw_state)) {
         )
       )
     ) %>%
-    reshape2::dcast(., time + age + state ~ virus, value.var = 'Weekly Rate') %>%
+    reshape2::dcast(., time + age + state ~ virus, value.var = 'Estimate') %>%
     left_join(state_fips_lookup, by = c("state" = "geography_name")) %>%
     mutate(
       rate_flu = if_else(is.na(rate_flu), 0, rate_flu), #do not fill in below
@@ -73,9 +86,10 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     filter(age == 'Overall') %>%
     dplyr::select(-state)
-  
-  #data 2 has state*age for rsv
-  data2 <- vroom::vroom('raw/29hc-w46k.csv.xz') %>%
+
+  #data 2 has state*age for rsv (State is now a 2-letter abbreviation, or
+  #"RSV-NET" for the national row)
+  data2 <- vroom::vroom('raw/29hc-w46k.csv.xz', show_col_types = FALSE) %>%
     filter(
       `Age Category` %in%
         c(
@@ -88,17 +102,18 @@ if (!identical(process$raw_state, raw_state)) {
         ) &
         Sex == 'All' &
         Race == 'All' &
-        Type == 'Crude Rate'
+        `Data Type` == 'Weekly Rate' &
+        `Rate Type` == 'Observed'
     ) %>%
-    rename(rate_rsv = Rate, time = "Week ending date", age = "Age Category") %>%
-    left_join(state_fips_lookup, by = c("State" = "geography_name")) %>%
+    rename(rate_rsv = Estimate, time = Date, age = "Age Category") %>%
+    left_join(state_abbrev_lookup, by = c("State" = "state")) %>%
     mutate(
       geography = if_else(State == "RSV-NET", "00", geography)
     ) %>%
     dplyr::select(geography, age, time, rate_rsv)
-  
+
   #data 3 has state*age for covid
-  data3 <- vroom::vroom('raw/6jg4-xsqq.csv.xz') %>%
+  data3 <- vroom::vroom('raw/6jg4-xsqq.csv.xz', show_col_types = FALSE) %>%
     filter(
       `Age Category` %in%
         c(
@@ -111,16 +126,17 @@ if (!identical(process$raw_state, raw_state)) {
         ) &
         Sex == 'All' &
         Race == 'All' &
+        `Data Type` == 'Weekly Rate' &
         `Rate Type` == 'Observed'
     ) %>%
     rename(
       age = 'Age Category',
       state = State,
-      time = 'Week ending date',
-      rate_covid = 'Weekly Rate'
+      time = Date,
+      rate_covid = Estimate
     ) %>%
     left_join(
-      all_fips %>% filter(nchar(geography) == 2) %>% select(geography, state),
+      state_abbrev_lookup,
       by = c("state" = "state")
     ) %>%
     mutate(
@@ -170,7 +186,7 @@ if (!identical(process$raw_state, raw_state)) {
         )
       ),
       geography = sprintf("%02d", fips),
-      time = lubridate::floor_date(time)
+      time = as.Date(time)
     ) %>%
     dplyr::select(time, geography, age, rate_covid, rate_rsv, rate_flu)
   
