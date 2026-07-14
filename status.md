@@ -199,9 +199,9 @@ flowchart LR
     end
     subgraph nchs_mortality["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nchs_mortality" target="_blank" rel="noreferrer">nchs_mortality</a></strong>`"]
         direction LR
-        n57["`data_county.csv.gz`"]:::pass
-        n58["`data_state_21_causes.csv.gz`"]:::pass
-        n59["`data.csv.gz`"]:::pass
+        n57["`data_county.csv.gz<br /><br />Script Failed:<br />In argument: 'N_deaths = sum('Data Value')'.`"]:::fail
+        n58["`data_state_21_causes.csv.gz<br /><br />Script Failed:<br />In argument: 'N_deaths = sum('Data Value')'.`"]:::fail
+        n59["`data.csv.gz<br /><br />Script Failed:<br />In argument: 'N_deaths = sum('Data Value')'.`"]:::fail
     end
     subgraph nhtsa_crash["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nhtsa_crash" target="_blank" rel="noreferrer">nhtsa_crash</a></strong>`"]
         direction LR
