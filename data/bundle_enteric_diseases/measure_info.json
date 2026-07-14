@@ -105,6 +105,35 @@
     "time_resolution": "Year"
   },
 
+  "_bundle": {
+    "name": "bundle_enteric_diseases",
+    "sources": ["nnds", "beam", "narms"],
+    "dist_files": {
+      "enteric_diseases.parquet": {
+        "sources": ["nnds", "beam"],
+        "source_files": [
+          "nnds/standard/data.csv.gz",
+          "beam/standard/data.csv.gz"
+        ]
+      },
+      "resistance_by_agent.parquet": {
+        "sources": ["narms"],
+        "source_files": [
+          "narms/standard/data_resistance_agent.csv.gz",
+          "narms/standard/data_retail_meats.csv.gz",
+          "narms/standard/data_animal_pathogen.csv.gz",
+          "narms/standard/data_food_animals.csv.gz"
+        ]
+      },
+      "resistance_by_pattern.parquet": {
+        "sources": ["narms"],
+        "source_files": [
+          "narms/standard/data_resistance_pattern.csv.gz"
+        ]
+      }
+    }
+  },
+
   "_sources": {
     "beam": {
       "name": "BEAM Dashboard - Report Data",
