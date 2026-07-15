@@ -63,8 +63,13 @@ if (!identical(process$raw_state, raw_state)) {
           reporting_area = case_when(
             reporting_area == 'TOTAL' ~ 'UNITED STATES',
             reporting_area == 'COMMONWEALTH OF NORTHERN MARIANA ISLANDS' ~ 'NORTHERN MARIANA ISLANDS',
+            # NNDSS reports New York City separately from the rest of New York
+            # State; fold it back into the state total so NY isn't undercounted
+            reporting_area == 'NEW YORK CITY' ~ 'NEW YORK',
             TRUE ~ reporting_area
           )) %>%
+    group_by(time, mmwr_year, mmwr_week, reporting_area) %>%
+    summarize(across(where(is.numeric), ~sum(.x, na.rm = TRUE)), .groups = 'drop') %>%
     left_join(all_fips, by=c('reporting_area'='geography_name')) %>%
     dplyr::relocate(time,mmwr_year,mmwr_week, geography) %>%
     dplyr::select( -reporting_area, -state)
