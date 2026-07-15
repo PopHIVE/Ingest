@@ -97,7 +97,7 @@ if (!identical(process$wapo_state, current_wapo_state) || !identical(process$tn_
     mutate(
       school_year = gsub("_", "-", school_year),
       year_start = as.integer(substr(school_year, 1, 4)),
-      time = format(as.Date(paste0(year_start, "-09-01")), "%m-%d-%Y"),
+      time = format(as.Date(paste0(year_start, "-09-01")), "%Y-%m-%d"),
       # Ensure FIPS is 5 digits with leading zeros
       geography = stringr::str_pad(fips, width = 5, side = "left", pad = "0")
     ) %>%
@@ -136,7 +136,7 @@ if (!identical(process$wapo_state, current_wapo_state) || !identical(process$tn_
     mutate(county_lower = tolower(trimws(county))) %>%
     left_join(county_fips_tn, by = c("county_lower" = "county_name_clean")) %>%
     mutate(
-      time = "09-01-2024",
+      time = "2024-09-01",
       wapo_county_vax_rate = as.numeric(percent_mmr),
       wapo_prepand_herd = NA_character_,
       wapo_postpand_herd = NA_character_
@@ -157,7 +157,7 @@ if (!identical(process$wapo_state, current_wapo_state) || !identical(process$tn_
     # Parse school year to extract start year
     mutate(
       year_start = as.integer(substr(year, 1, 4)),
-      time = format(as.Date(paste0(year_start, "-09-01")), "%m-%d-%Y")
+      time = format(as.Date(paste0(year_start, "-09-01")), "%Y-%m-%d")
     ) %>%
     # Rename and standardize columns with wapo_ prefix
     rename(

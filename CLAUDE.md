@@ -985,6 +985,20 @@ membership only when the field is entirely absent (a brand-new dataset). To
 `dataset_stratification`, blank the value to re-derive. Every other field is
 always recomputed — never hand-edit those.
 
+**Warning — never blank a `summary` and run `build_docs.R` on its own.** A
+blanked `summary` falls back to a mechanical extractive stub (first sentence
+of `measure_info.json`'s `_sources[].description`) that reads as an abrupt,
+often mid-sentence fragment — this has already happened once and silently
+flattened nearly every dataset's hand-written summary in a single commit. The
+sequence must always be: write the real replacement text into
+`docs/data_sources_index.json` (or use the `update-data-sources-index` skill,
+which does this for you) **before** running `Rscript scripts/build_docs.R` —
+never blank-then-rebuild-then-fill. `build_docs.R` now prints `WARNING: <dataset>
+has no hand-written summary` to the console whenever it falls back for a
+dataset, precisely so this regression is visible in build/CI logs instead of
+slipping through silently — treat that warning line as a signal to stop and
+write a real summary before committing.
+
 ### After ingesting a new dataset
 
 1. **Rebuild** to add the entry (from the repo root):

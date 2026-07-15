@@ -362,14 +362,43 @@ format_bundle_name <- function(name) {
   paste0("Bundle: ", display)
 }
 
-# Short one-sentence summary of a (possibly long) description.
+# Short one-sentence summary of a (possibly long) description. Used only as a
+# fallback for brand-new datasets with no hand-written summary yet -- see the
+# update-data-sources-index skill, which is how a real summary should get in.
 short_summary <- function(x, max_chars = 300) {
   x <- x %||% ""
   x <- trimws(gsub("\\s+", " ", x))
   if (!nzchar(x)) return("")
-  first <- strsplit(x, "(?<=[.!?])\\s+", perl = TRUE)[[1]][1]
-  if (is.na(first)) first <- x
-  if (nchar(first) > max_chars) first <- paste0(substr(first, 1, max_chars - 1), "…")
+
+  # A period/!/? followed by whitespace isn't always a sentence end -- it's
+  # also how abbreviations like "U.S." or initials like "J." look. Split
+  # naively, then merge fragments back while the accumulated text ends on one
+  # of those, so the "first sentence" doesn't get cut off after "U.S.".
+  abbreviations <- c("U.S.", "U.K.", "e.g.", "i.e.", "Mr.", "Mrs.", "Ms.", "Dr.",
+                      "Jr.", "Sr.", "St.", "vs.", "etc.", "No.", "Fig.", "Vol.",
+                      "Inc.", "Ph.D.", "M.D.")
+  ends_with_abbrev <- function(s) {
+    s <- trimws(s)
+    grepl("\\b[A-Z]\\.$", s) || any(endsWith(s, abbreviations))
+  }
+
+  parts <- strsplit(x, "(?<=[.!?])\\s+", perl = TRUE)[[1]]
+  first <- parts[1]
+  i <- 1
+  while (i < length(parts) && ends_with_abbrev(first)) {
+    i <- i + 1
+    first <- paste(first, parts[i])
+  }
+  if (is.na(first) || !nzchar(first)) first <- x
+
+  if (nchar(first) > max_chars) {
+    # Trim to the last full word so a long, punctuation-sparse sentence (e.g.
+    # one using semicolons instead of periods) doesn't get cut mid-word.
+    truncated <- substr(first, 1, max_chars - 1)
+    last_space <- max(gregexpr("\\s", truncated)[[1]])
+    if (last_space > 0) truncated <- substr(truncated, 1, last_space - 1)
+    first <- paste0(trimws(truncated), "…")
+  }
   first
 }
 
@@ -1177,12 +1206,26 @@ get_latest_date <- function(source_dir) {
   }
 
   # Parse dates defensively: as.Date() errors on non-standard strings, so try
-  # a few explicit formats and keep the first that yields any valid date.
+  # a few explicit formats. strptime parsing is lenient (e.g. format "%Y-%m-%d"
+  # will happily misparse "09-01-2009" as year 9), so a format is only trusted
+  # once every non-missing value matches its exact shape via regex - not merely
+  # once as.Date() manages to produce a non-NA value for at least one row.
   parse_dates <- function(x) {
     x <- as.character(x)
-    for (fmt in c("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%m-%d-%Y")) {
-      d <- suppressWarnings(as.Date(x, format = fmt))
-      if (any(!is.na(d))) return(d)
+    non_na <- x[!is.na(x) & nzchar(x)]
+    if (length(non_na) == 0) return(as.Date(rep(NA_character_, length(x))))
+
+    formats <- list(
+      "%Y-%m-%d" = "^\\d{4}-\\d{2}-\\d{2}$",
+      "%Y/%m/%d" = "^\\d{4}/\\d{2}/\\d{2}$",
+      "%m/%d/%Y" = "^\\d{2}/\\d{2}/\\d{4}$",
+      "%m-%d-%Y" = "^\\d{2}-\\d{2}-\\d{4}$"
+    )
+
+    for (fmt in names(formats)) {
+      if (all(grepl(formats[[fmt]], non_na))) {
+        return(suppressWarnings(as.Date(x, format = fmt)))
+      }
     }
     as.Date(rep(NA_character_, length(x)))
   }
@@ -1277,6 +1320,12 @@ index_datasets <- lapply(index_source_idx, function(i) {
     first_source$name %||% format_source_name(source_name)
   # A hand-edited summary already in the index wins and is preserved; a
   # brand-new dataset falls back to a concise extractive summary.
+  if (is.null(existing_summary[[source_name]])) {
+    cat(sprintf(
+      "  WARNING: %s has no hand-written summary -- using an auto-derived fallback. Write a real one via the update-data-sources-index skill.\n",
+      source_name
+    ))
+  }
   dataset_summary <- existing_summary[[source_name]] %||% fallback_summary
 
   section_id <- gsub("[^a-zA-Z0-9]", "-", source_name)
