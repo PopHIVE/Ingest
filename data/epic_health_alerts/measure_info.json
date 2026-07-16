@@ -1,0 +1,103 @@
+{
+  "value": {
+    "id": "value",
+    "short_name": "Health Alert Rate (Cases per 100k)",
+    "long_name": "Epic Research Health Alert Rate, Cases per 100,000 (Latest Week)",
+    "category": "respiratory",
+    "short_description": "Latest-week case rate per 100,000 for a geography flagged with an active Epic Research health alert; the alerted condition is given in the `condition` column.",
+    "long_description": "Case rate per 100,000 people for the most recent week, for a state or county currently flagged with an active Epic Research Health Alert. Epic Research publishes health alerts for geographies experiencing an unusual rise in a given condition, derived from Epic Cosmos electronic health record data (300M+ patients across 1,600+ hospitals). The specific alerted condition (e.g. Acute Pharyngitis, Cyclosporiasis, Hand, Foot, and Mouth Disease, Heat Illness, Toxic Effect of Smoke, Viral Gastroenteritis) is identified by the `condition` column. The source page is a live snapshot of currently active alerts, so this dataset accumulates one weekly snapshot per run to build a time series. Rates flagged with a trailing asterisk on the source page reflect a partial (incomplete) reporting week and are marked in `partial_week_flag`.",
+    "statement": "In {location}, the latest-week rate was {value} cases per 100,000.",
+    "measure_type": "Rate",
+    "unit": "cases per 100,000",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_health_alerts" }],
+    "citations": []
+  },
+
+  "condition": {
+    "id": "condition",
+    "short_name": "Alerted Condition",
+    "long_name": "Health Alert Condition",
+    "category": "respiratory",
+    "short_description": "The condition for which the geography is flagged with an active health alert.",
+    "long_description": "The clinical condition for which Epic Research has issued an active health alert in the given geography and week. Values are taken verbatim from the source page section headings and currently include Acute Pharyngitis, Cyclosporiasis, Hand, Foot, and Mouth Disease, Heat Illness, Toxic Effect of Smoke, and Viral Gastroenteritis. The list is discovered from the page at ingest time, so new conditions are captured automatically.",
+    "statement": "",
+    "measure_type": "Categorical",
+    "unit": "",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_health_alerts" }],
+    "citations": []
+  },
+
+  "estimated_onset": {
+    "id": "estimated_onset",
+    "short_name": "Estimated Onset Date",
+    "long_name": "Estimated Onset Date of the Alert",
+    "category": "respiratory",
+    "short_description": "Epic Research's estimated onset date for the alert in this geography (MM-DD-YYYY).",
+    "long_description": "The estimated onset date reported by Epic Research for the health alert in this geography and condition, formatted as MM-DD-YYYY. This reflects when the elevated case activity is estimated to have begun, not the week the rate is measured over.",
+    "statement": "",
+    "measure_type": "Date",
+    "unit": "",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_health_alerts" }],
+    "citations": []
+  },
+
+  "partial_week_flag": {
+    "id": "partial_week_flag",
+    "short_name": "Partial Week?",
+    "long_name": "Partial (incomplete) reporting week flag",
+    "category": "respiratory",
+    "short_description": "Binary indicator: 1 if the rate reflects a partial (incomplete) reporting week, 0 otherwise.",
+    "long_description": "Binary indicator derived from the source page: 1 if the latest-week rate was marked with a trailing asterisk, meaning it is computed from a partial (incomplete) reporting week and may rise as more data arrives; 0 otherwise.",
+    "statement": "",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_health_alerts" }],
+    "citations": []
+  },
+
+  "date_scraped": {
+    "id": "date_scraped",
+    "short_name": "Date Scraped",
+    "long_name": "Date this snapshot was scraped",
+    "category": "respiratory",
+    "short_description": "Date (MM-DD-YYYY) on which this script downloaded the Epic Research health-alerts page.",
+    "long_description": "The date on which the ingestion script downloaded the Epic Research health-alerts page and recorded this row. Because the source shows only currently active alerts, this provenance date documents exactly when each accumulated weekly snapshot was captured.",
+    "statement": "",
+    "measure_type": "Date",
+    "unit": "",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_health_alerts" }],
+    "citations": []
+  },
+
+  "date_epic_updated": {
+    "id": "date_epic_updated",
+    "short_name": "Date Epic Updated",
+    "long_name": "Date Epic Research last updated the page",
+    "category": "respiratory",
+    "short_description": "The 'Last updated' date (MM-DD-YYYY) shown on the Epic Research health-alerts page at scrape time.",
+    "long_description": "The page-wide 'Last updated: <Month DD, YYYY>' date shown on the Epic Research health-alerts page when it was scraped, formatted as MM-DD-YYYY. This is a single value that applies to every condition on the page and indicates how current the underlying alert data is.",
+    "statement": "",
+    "measure_type": "Date",
+    "unit": "",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_health_alerts" }],
+    "citations": []
+  },
+
+  "_sources": {
+    "epic_health_alerts": {
+      "name": "Epic Research Health Alerts",
+      "url": "https://www.epicresearch.org/health-alerts/",
+      "date_accessed": 2026,
+      "organization": "Epic Research",
+      "organization_url": "https://www.epicresearch.org/",
+      "description": "Epic Research Health Alerts (https://www.epicresearch.org/health-alerts/) flag U.S. states and counties experiencing an unusual rise in specific conditions, derived from Epic Cosmos de-identified electronic health record data covering over 300 million patients across more than 1,600 hospitals and health systems. Each alert reports the latest-week case rate per 100,000 and an estimated onset date. The page is a live snapshot showing only currently active alerts rather than a historical archive, so this dataset accumulates one weekly snapshot per ingestion run to construct a time series.",
+      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+    }
+  }
+}
