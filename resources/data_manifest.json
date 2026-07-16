@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-16T09:14:38Z",
+  "generated": "2026-07-16T19:48:18Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -14491,6 +14491,74 @@
         }
       ]
     },
+    "epic_health_alerts": {
+      "name": "epic_health_alerts",
+      "display_name": "Epic Health Alerts",
+      "description": "Epic Research Health Alerts (https://www.epicresearch.org/health-alerts/) flag U.S. states and counties experiencing an unusual rise in specific conditions, derived from Epic Cosmos de-identified electronic health record data covering over 300 million patients across more than 1,600 hospitals and health systems. Each alert reports the latest-week case rate per 100,000 and an estimated onset date. The page is a live snapshot showing only currently active alerts rather than a historical archive, so this dataset accumulates one weekly snapshot per ingestion run to construct a time series.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "condition",
+              "short_name": "Alerted Condition",
+              "description": "The condition for which the geography is flagged with an active health alert.",
+              "measure_type": "Categorical",
+              "unit": ""
+            },
+            {
+              "name": "estimated_onset",
+              "short_name": "Estimated Onset Date",
+              "description": "Epic Research's estimated onset date for the alert in this geography (MM-DD-YYYY).",
+              "measure_type": "Date",
+              "unit": ""
+            },
+            {
+              "name": "value",
+              "short_name": "Health Alert Rate (Cases per 100k)",
+              "description": "Latest-week case rate per 100,000 for a geography flagged with an active Epic Research health alert; the alerted condition is given in the `condition` column.",
+              "measure_type": "Rate",
+              "unit": "cases per 100,000"
+            },
+            {
+              "name": "partial_week_flag",
+              "short_name": "Partial Week?",
+              "description": "Binary indicator: 1 if the rate reflects a partial (incomplete) reporting week, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "date_scraped",
+              "short_name": "Date Scraped",
+              "description": "Date (MM-DD-YYYY) on which this script downloaded the Epic Research health-alerts page.",
+              "measure_type": "Date",
+              "unit": ""
+            },
+            {
+              "name": "date_epic_updated",
+              "short_name": "Date Epic Updated",
+              "description": "The 'Last updated' date (MM-DD-YYYY) shown on the Epic Research health-alerts page at scrape time.",
+              "measure_type": "Date",
+              "unit": ""
+            }
+          ]
+        }
+      ]
+    },
     "epic_hepb_vax": {
       "name": "epic_hepb_vax",
       "display_name": "Epic Hepb Vax",
@@ -21954,16 +22022,16 @@
               "unit": "Cumulative cases"
             },
             {
-              "name": "hepatitis_c_acute_probable",
-              "short_name": "Hep C acute probable",
-              "description": "Cumulative year-to-date count of probable acute hepatitis C cases.",
+              "name": "hepatitis_c_acute_confirmed",
+              "short_name": "Hep C acute confirmed",
+              "description": "Cumulative year-to-date count of confirmed acute hepatitis C cases.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
             {
-              "name": "hepatitis_c_acute_confirmed",
-              "short_name": "Hep C acute confirmed",
-              "description": "Cumulative year-to-date count of confirmed acute hepatitis C cases.",
+              "name": "hepatitis_c_acute_probable",
+              "short_name": "Hep C acute probable",
+              "description": "Cumulative year-to-date count of probable acute hepatitis C cases.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22108,23 +22176,16 @@
               "unit": "Cumulative cases"
             },
             {
-              "name": "novel_influenza_a_virus_infections",
-              "short_name": "Novel flu A cases",
-              "description": "Cumulative year-to-date case count of novel influenza A virus infections.",
+              "name": "mumps",
+              "short_name": "Mumps cases",
+              "description": "Cumulative year-to-date case count of mumps.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
             {
-              "name": "plague",
-              "short_name": "plague",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "mumps",
-              "short_name": "Mumps cases",
-              "description": "Cumulative year-to-date case count of mumps.",
+              "name": "novel_influenza_a_virus_infections",
+              "short_name": "Novel flu A cases",
+              "description": "Cumulative year-to-date case count of novel influenza A virus infections.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22134,6 +22195,13 @@
               "description": "Cumulative year-to-date case count of pertussis (whooping cough).",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
+            },
+            {
+              "name": "plague",
+              "short_name": "plague",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
             },
             {
               "name": "psittacosis",
@@ -22178,13 +22246,6 @@
               "unit": ""
             },
             {
-              "name": "salmonella_typhi_infection",
-              "short_name": "Typhoid fever cases",
-              "description": "Cumulative year-to-date case count of Salmonella Typhi infection (typhoid fever).",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
               "name": "rubella",
               "short_name": "Rubella cases",
               "description": "Cumulative year-to-date case count of rubella (German measles).",
@@ -22206,6 +22267,13 @@
               "unit": "Cumulative cases"
             },
             {
+              "name": "salmonella_typhi_infection",
+              "short_name": "Typhoid fever cases",
+              "description": "Cumulative year-to-date case count of Salmonella Typhi infection (typhoid fever).",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
               "name": "salmonellosis_excluding_salmonella_typhi_infection_and_salmonella_paratyphi_infection",
               "short_name": "Salmonellosis cases",
               "description": "Cumulative year-to-date case count of non-typhoidal salmonellosis.",
@@ -22216,13 +22284,6 @@
               "name": "shiga_toxin_producing_escherichia_coli_stec",
               "short_name": "STEC cases",
               "description": "Cumulative year-to-date case count of STEC infection.",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "syphilis_congenital",
-              "short_name": "Congenital syphilis cases",
-              "description": "Cumulative year-to-date case count of congenital syphilis.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22241,9 +22302,9 @@
               "unit": "Cumulative cases"
             },
             {
-              "name": "tetanus",
-              "short_name": "Tetanus cases",
-              "description": "Cumulative year-to-date case count of tetanus.",
+              "name": "syphilis_congenital",
+              "short_name": "Congenital syphilis cases",
+              "description": "Cumulative year-to-date case count of congenital syphilis.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22255,16 +22316,9 @@
               "unit": "Cumulative cases"
             },
             {
-              "name": "trichinellosis",
-              "short_name": "Trichinellosis cases",
-              "description": "Cumulative year-to-date case count of trichinellosis.",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "tularemia",
-              "short_name": "Tularemia cases",
-              "description": "Cumulative year-to-date case count of tularemia.",
+              "name": "tetanus",
+              "short_name": "Tetanus cases",
+              "description": "Cumulative year-to-date case count of tetanus.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22276,9 +22330,9 @@
               "unit": "Cumulative cases"
             },
             {
-              "name": "varicella_morbidity",
-              "short_name": "Varicella morbidity",
-              "description": "Cumulative year-to-date case count of varicella (chickenpox) morbidity.",
+              "name": "trichinellosis",
+              "short_name": "Trichinellosis cases",
+              "description": "Cumulative year-to-date case count of trichinellosis.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22286,6 +22340,13 @@
               "name": "tuberculosis",
               "short_name": "TB cases",
               "description": "Cumulative year-to-date case count of tuberculosis.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "tularemia",
+              "short_name": "Tularemia cases",
+              "description": "Cumulative year-to-date case count of tularemia.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22300,6 +22361,13 @@
               "name": "vancomycin_resistant_staphylococcus_aureus",
               "short_name": "VRSA cases",
               "description": "Cumulative year-to-date case count of VRSA infections.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "varicella_morbidity",
+              "short_name": "Varicella morbidity",
+              "description": "Cumulative year-to-date case count of varicella (chickenpox) morbidity.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22325,16 +22393,16 @@
               "unit": "Cumulative cases"
             },
             {
-              "name": "melioidosis",
-              "short_name": "Melioidosis cases",
-              "description": "Cumulative year-to-date case count of melioidosis.",
+              "name": "candida_auris_screening",
+              "short_name": "C. auris screening cases",
+              "description": "Cumulative year-to-date count of Candida auris detections from screening.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
             {
-              "name": "candida_auris_screening",
-              "short_name": "C. auris screening cases",
-              "description": "Cumulative year-to-date count of Candida auris detections from screening.",
+              "name": "carbapenemase_producing_organisms_cpo_total",
+              "short_name": "CPO total cases",
+              "description": "Cumulative year-to-date total case count of carbapenemase-producing organisms.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22360,6 +22428,55 @@
               "unit": "Cumulative cases"
             },
             {
+              "name": "melioidosis",
+              "short_name": "Melioidosis cases",
+              "description": "Cumulative year-to-date case count of melioidosis.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "hepatitis_a_confirmed",
+              "short_name": "Hep A confirmed cases",
+              "description": "Cumulative year-to-date count of confirmed hepatitis A cases.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "hepatitis_b_acute_2",
+              "short_name": "Hep B acute (alt)",
+              "description": "Cumulative year-to-date case count of acute hepatitis B (alternate column).",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "hepatitis_b_perinatal_confirmed",
+              "short_name": "Hep B perinatal confirmed",
+              "description": "Cumulative year-to-date count of confirmed perinatal hepatitis B cases.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "hepatitis_c_perinatal_confirmed",
+              "short_name": "Hep C perinatal confirmed",
+              "description": "Cumulative year-to-date count of confirmed perinatal hepatitis C cases.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "varicella_disease",
+              "short_name": "Varicella disease",
+              "description": "Cumulative year-to-date case count of varicella (chickenpox) disease.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "hepatitis_b_acute_confirmed",
+              "short_name": "Hep B acute confirmed",
+              "description": "Cumulative year-to-date count of confirmed acute hepatitis B cases.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
               "name": "hepatitis_b_acute_probable",
               "short_name": "Hep B acute probable",
               "description": "Cumulative year-to-date count of probable acute hepatitis B cases.",
@@ -22374,65 +22491,9 @@
               "unit": "Cumulative cases"
             },
             {
-              "name": "mpox",
-              "short_name": "Mpox cases",
-              "description": "Cumulative year-to-date case count of mpox (formerly monkeypox).",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "hepatitis_c_perinatal_confirmed",
-              "short_name": "Hep C perinatal confirmed",
-              "description": "Cumulative year-to-date count of confirmed perinatal hepatitis C cases.",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "hepatitis_a_confirmed",
-              "short_name": "Hep A confirmed cases",
-              "description": "Cumulative year-to-date count of confirmed hepatitis A cases.",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "hepatitis_c_chronic_probable",
-              "short_name": "Hep C chronic probable",
-              "description": "Cumulative year-to-date count of probable chronic hepatitis C cases.",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "varicella_disease",
-              "short_name": "Varicella disease",
-              "description": "Cumulative year-to-date case count of varicella (chickenpox) disease.",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "carbapenemase_producing_organisms_cpo_total",
-              "short_name": "CPO total cases",
-              "description": "Cumulative year-to-date total case count of carbapenemase-producing organisms.",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
               "name": "hepatitis_b_chronic_probable",
               "short_name": "Hep B chronic probable",
               "description": "Cumulative year-to-date count of probable chronic hepatitis B cases.",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "hepatitis_b_perinatal_confirmed",
-              "short_name": "Hep B perinatal confirmed",
-              "description": "Cumulative year-to-date count of confirmed perinatal hepatitis B cases.",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "hepatitis_b_acute_confirmed",
-              "short_name": "Hep B acute confirmed",
-              "description": "Cumulative year-to-date count of confirmed acute hepatitis B cases.",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22444,9 +22505,16 @@
               "unit": "Cumulative cases"
             },
             {
-              "name": "salmonella_paratyphi_infection_2",
-              "short_name": "Paratyphoid cases (alt)",
-              "description": "Cumulative year-to-date case count of Salmonella Paratyphi infection (alternate column).",
+              "name": "hepatitis_c_chronic_probable",
+              "short_name": "Hep C chronic probable",
+              "description": "Cumulative year-to-date count of probable chronic hepatitis C cases.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "mpox",
+              "short_name": "Mpox cases",
+              "description": "Cumulative year-to-date case count of mpox (formerly monkeypox).",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22454,20 +22522,6 @@
               "name": "coccidioidomycosis_total_2",
               "short_name": "Coccidioidomycosis total (alt)",
               "description": "Cumulative year-to-date total case count of coccidioidomycosis (alternate column).",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "novel_influenza_a_virus_infections_total",
-              "short_name": "Novel flu A total",
-              "description": "Cumulative year-to-date total count of novel influenza A virus infections (confirmed and probable).",
-              "measure_type": "Cumulative Count",
-              "unit": "Cumulative cases"
-            },
-            {
-              "name": "hepatitis_b_acute_2",
-              "short_name": "Hep B acute (alt)",
-              "description": "Cumulative year-to-date case count of acute hepatitis B (alternate column).",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             },
@@ -22482,6 +22536,20 @@
               "name": "novel_influenza_a_virus_infections_confirmed",
               "short_name": "Novel flu A confirmed",
               "description": "Cumulative year-to-date count of confirmed novel influenza A virus infections.",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "novel_influenza_a_virus_infections_total",
+              "short_name": "Novel flu A total",
+              "description": "Cumulative year-to-date total count of novel influenza A virus infections (confirmed and probable).",
+              "measure_type": "Cumulative Count",
+              "unit": "Cumulative cases"
+            },
+            {
+              "name": "salmonella_paratyphi_infection_2",
+              "short_name": "Paratyphoid cases (alt)",
+              "description": "Cumulative year-to-date case count of Salmonella Paratyphi infection (alternate column).",
               "measure_type": "Cumulative Count",
               "unit": "Cumulative cases"
             }
