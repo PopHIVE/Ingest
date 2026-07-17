@@ -966,24 +966,28 @@ Action). Each dataset entry contains:
 | `files[]` — one entry per `standard/*.csv.gz`, each with `dataset_link` (direct raw csv.gz link) + `dataset_stratification` | always present (single- and multi-file sources alike) | `dataset_stratification` only |
 | `name` | `_sources[].name` in `measure_info.json` | **Yes** |
 | `summary` | 1–2 sentence description | **Yes** |
-| `category` | array of human-readable labels derived from the bundles that consume the source (`bundle_chronic_diseases` → `"Chronic diseases"`) | **Yes** |
+| `search_terms` | array of keywords used by the website's search box; starts out as the human-readable labels of the bundles that consume the source (`bundle_chronic_diseases` → `"Chronic diseases"`), then can be hand-edited to add more search keywords over time | **Yes** |
+| `bucket` | array of the human-readable bundle label(s) this dataset is grouped under for site navigation; starts identical to `search_terms` but is a separate field, edited independently | **Yes** |
 | `dataset_stratification` | short phrase describing how each file is stratified beyond time and geography | **Yes** |
 
-### Key behavior: four fields are preserved
+### Key behavior: five fields are preserved
 
 `build_docs.R` reads the existing `docs/data_sources_index.json` and **keeps
-whatever is already in `name`, `summary`, `category`, and each
+whatever is already in `name`, `summary`, `search_terms`, `bucket`, and each
 `dataset_stratification`**. So you edit those directly in the JSON and rebuilds
 will not overwrite them. A brand-new dataset (no prior text) gets derived
-defaults: `name` from `measure_info.json`, a first-sentence `summary`, `category`
-from bundle membership, and a filename-derived (or cached) `dataset_stratification`.
-`category` is preserved whenever the field is present — **including an empty
-`[]`**, so removing a source's categories sticks. It is derived from bundle
-membership only when the field is entirely absent (a brand-new dataset). To
-**re-derive** `category` (e.g. after a bundle's `build.R` changed), delete the
-`category` field in the JSON and rebuild. For `name`/`summary`/
-`dataset_stratification`, blank the value to re-derive. Every other field is
-always recomputed — never hand-edit those.
+defaults: `name` from `measure_info.json`, a first-sentence `summary`,
+`search_terms` and `bucket` both from bundle membership (identical starting
+values — they are two independent fields, not one field read twice), and a
+filename-derived (or cached) `dataset_stratification`.
+`search_terms` and `bucket` are each preserved whenever their field is present
+— **including an empty `[]`**, so clearing one sticks. Each is derived from
+bundle membership only when its field is entirely absent (a brand-new
+dataset). To **re-derive** either one (e.g. after a bundle's `build.R`
+changed), delete that field in the JSON and rebuild — deleting one does not
+affect the other. For `name`/`summary`/`dataset_stratification`, blank the
+value to re-derive. Every other field is always recomputed — never hand-edit
+those.
 
 **Warning — never blank a `summary` and run `build_docs.R` on its own.** A
 blanked `summary` falls back to a mechanical extractive stub (first sentence
@@ -1007,7 +1011,7 @@ write a real summary before committing.
    ```
 2. **Edit `docs/data_sources_index.json`**: replace the placeholder `summary`
    with a 1–2 sentence blurb, any placeholder `dataset_stratification` with a
-   real description, and adjust `name`/`category` if needed.
+   real description, and adjust `name`/`search_terms`/`bucket` if needed.
 3. **Rebuild again** and **commit** the result. Your text is preserved on all
    future builds *only* because it is committed — the daily job regenerates the
    file from the committed version.

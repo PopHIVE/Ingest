@@ -24,7 +24,7 @@
     <nav class="navbar navbar-dark fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
-        <span class="navbar-text text-light">Last updated: July 15, 2026</span>
+        <span class="navbar-text text-light">Last updated: July 17, 2026</span>
       </div>
     </nav>
     <div class="container-fluid">
@@ -76,6 +76,12 @@
                 <a class="nav-link" href="#epic-chronic">Epic Chronic</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="#epic-diarrhea">Epic Diarrhea</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#epic-health-alerts">Epic Health Alerts</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="#epic-hepb-vax">Epic Hepb Vax</a>
               </li>
               <li class="nav-item">
@@ -116,6 +122,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#nchs-mortality">NCHS Mortality</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#neiss">Neiss</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#nhtsa-crash">Nhtsa Crash</a>
@@ -9965,6 +9974,598 @@
                 </table>
               </div>
             </section>
+            <section id="epic-diarrhea" class="mb-5">
+              <h2 class="border-bottom pb-2">Epic Diarrhea</h2>
+              <p class="lead">Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://cosmos.epic.com/" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.epic.com/" target="_blank">Epic Systems</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data_weekly.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Age group.</td>
+                      <td>integer</td>
+                      <td>years</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_ed_diarrhea</code>
+                      </td>
+                      <td>Diarrhea ED Encounters (Weekly)</td>
+                      <td>Number of ED encounters with all-cause diarrhea diagnoses, weekly.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_ed_encounters_weekly</code>
+                      </td>
+                      <td>All-Cause ED Encounters (Weekly)</td>
+                      <td>Total number of weekly emergency department encounters for any cause.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_pct_ed_diarrhea</code>
+                      </td>
+                      <td>Diarrhea ED Encounters (%, Weekly)</td>
+                      <td>Percentage of ED encounters attributable to all-cause diarrhea, weekly.</td>
+                      <td>Percent</td>
+                      <td>%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_ed_diarrhea</code>
+                      </td>
+                      <td>Diarrhea Count Suppressed? (Weekly)</td>
+                      <td>Binary indicator: 1 if the weekly diarrhea ED encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_ed_encounters_weekly</code>
+                      </td>
+                      <td>All Encounters Count Suppressed? (ED, Weekly)</td>
+                      <td>Binary indicator: 1 if the all-cause weekly ED encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_all_diarrhea</code>
+                      </td>
+                      <td>Diarrhea Encounters (All Encounters)</td>
+                      <td>Number of encounters (any type, not just ED) with all-cause diarrhea diagnoses.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_encounters_total_weekly</code>
+                      </td>
+                      <td>All Encounters (Any Reason, Weekly)</td>
+                      <td>Total number of weekly encounters for any reason.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_pct_all_diarrhea</code>
+                      </td>
+                      <td>Diarrhea Encounters (All Encounters, %)</td>
+                      <td>Percentage of all encounters (any type) attributable to all-cause diarrhea.</td>
+                      <td>Percent</td>
+                      <td>%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_all_diarrhea</code>
+                      </td>
+                      <td>All-Encounters Diarrhea Count Suppressed?</td>
+                      <td>Binary indicator: 1 if the all-encounters diarrhea count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_encounters_total_weekly</code>
+                      </td>
+                      <td>Total Weekly Encounters Count Suppressed?</td>
+                      <td>Binary indicator: 1 if the total weekly encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>monthly.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Age group.</td>
+                      <td>integer</td>
+                      <td>years</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_diarrhea</code>
+                      </td>
+                      <td>Diarrhea ED Encounters (Monthly)</td>
+                      <td>Number of ED encounters with all-cause diarrhea diagnoses.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_all_encounters_monthly</code>
+                      </td>
+                      <td>All-Cause ED Encounters (Monthly)</td>
+                      <td>Total number of monthly emergency department encounters for any cause.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_pct_diarrhea</code>
+                      </td>
+                      <td>Diarrhea ED Encounters (%, Monthly)</td>
+                      <td>Percentage of ED encounters attributable to all-cause diarrhea.</td>
+                      <td>Percent</td>
+                      <td>%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_diarrhea</code>
+                      </td>
+                      <td>Diarrhea Count Suppressed? (Monthly)</td>
+                      <td>Binary indicator: 1 if the diarrhea ED encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_all_encounters_monthly</code>
+                      </td>
+                      <td>All Encounters Count Suppressed? (Monthly)</td>
+                      <td>Binary indicator: 1 if the all-cause monthly ED encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>monthly_cyclospora.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_cyclospora_positive</code>
+                      </td>
+                      <td>Cyclospora Positive Encounters</td>
+                      <td>Number of encounters with an abnormal (positive) cyclospora lab result.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_cyclospora_tested</code>
+                      </td>
+                      <td>Cyclospora Tests Performed</td>
+                      <td>Number of encounters with a cyclospora lab test performed, regardless of result.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_encounters_total</code>
+                      </td>
+                      <td>All Encounters (Any Reason)</td>
+                      <td>Total number of encounters for any reason, by state and month.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_pct_cyclospora_positive</code>
+                      </td>
+                      <td>Cyclospora Percent Positive</td>
+                      <td>Percent of cyclospora lab tests with an abnormal (positive) result.</td>
+                      <td>Percent</td>
+                      <td>%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_pct_cyclospora_tested</code>
+                      </td>
+                      <td>Percent Tested for Cyclospora</td>
+                      <td>Percent of all encounters that included a cyclospora lab test.</td>
+                      <td>Percent</td>
+                      <td>%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_cyclospora_positive</code>
+                      </td>
+                      <td>Cyclospora Positive Count Suppressed?</td>
+                      <td>Binary indicator: 1 if the cyclospora-positive encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_cyclospora_tested</code>
+                      </td>
+                      <td>Cyclospora Tested Count Suppressed?</td>
+                      <td>Binary indicator: 1 if the cyclospora-tested encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_encounters_total</code>
+                      </td>
+                      <td>Total Encounters Count Suppressed? (Monthly)</td>
+                      <td>Binary indicator: 1 if the total monthly encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>weekly_tests.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_all_diarrhea</code>
+                      </td>
+                      <td>Diarrhea Encounters (All Encounters)</td>
+                      <td>Number of encounters (any type, not just ED) with all-cause diarrhea diagnoses.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_encounters_total_weekly</code>
+                      </td>
+                      <td>All Encounters (Any Reason, Weekly)</td>
+                      <td>Total number of weekly encounters for any reason.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_cyclospora_positive</code>
+                      </td>
+                      <td>Cyclospora Positive Encounters</td>
+                      <td>Number of encounters with an abnormal (positive) cyclospora lab result.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_n_cyclospora_tested</code>
+                      </td>
+                      <td>Cyclospora Tests Performed</td>
+                      <td>Number of encounters with a cyclospora lab test performed, regardless of result.</td>
+                      <td>Count</td>
+                      <td>encounters</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_pct_cyclospora_positive</code>
+                      </td>
+                      <td>Cyclospora Percent Positive</td>
+                      <td>Percent of cyclospora lab tests with an abnormal (positive) result.</td>
+                      <td>Percent</td>
+                      <td>%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_pct_cyclospora_tested</code>
+                      </td>
+                      <td>Percent Tested for Cyclospora</td>
+                      <td>Percent of all encounters that included a cyclospora lab test.</td>
+                      <td>Percent</td>
+                      <td>%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_pct_all_diarrhea</code>
+                      </td>
+                      <td>Diarrhea Encounters (All Encounters, %)</td>
+                      <td>Percentage of all encounters (any type) attributable to all-cause diarrhea.</td>
+                      <td>Percent</td>
+                      <td>%</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_all_diarrhea</code>
+                      </td>
+                      <td>All-Encounters Diarrhea Count Suppressed?</td>
+                      <td>Binary indicator: 1 if the all-encounters diarrhea count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_encounters_total_weekly</code>
+                      </td>
+                      <td>Total Weekly Encounters Count Suppressed?</td>
+                      <td>Binary indicator: 1 if the total weekly encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_cyclospora_positive</code>
+                      </td>
+                      <td>Cyclospora Positive Count Suppressed?</td>
+                      <td>Binary indicator: 1 if the cyclospora-positive encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>epic_suppressed_flag_cyclospora_tested</code>
+                      </td>
+                      <td>Cyclospora Tested Count Suppressed?</td>
+                      <td>Binary indicator: 1 if the cyclospora-tested encounter count was suppressed, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="epic-health-alerts" class="mb-5">
+              <h2 class="border-bottom pb-2">Epic Health Alerts</h2>
+              <p class="lead">Epic Research Health Alerts (https://www.epicresearch.org/health-alerts/) flag U.S. states and counties experiencing an unusual rise in specific conditions, derived from Epic Cosmos de-identified electronic health record data covering over 300 million patients across more than 1,600 hospitals and health systems. Each alert reports the latest-week case rate per 100,000 and an estimated onset date. The page is a live snapshot showing only currently active alerts rather than a historical archive, so this dataset accumulates one weekly snapshot per ingestion run to construct a time series.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.epicresearch.org/health-alerts/" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.epicresearch.org/" target="_blank">Epic Research</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>condition</code>
+                      </td>
+                      <td>Alerted Condition</td>
+                      <td>The condition for which the geography is flagged with an active health alert.</td>
+                      <td>Categorical</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>estimated_onset</code>
+                      </td>
+                      <td>Estimated Onset Date</td>
+                      <td>Epic Research's estimated onset date for the alert in this geography (MM-DD-YYYY).</td>
+                      <td>Date</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Health Alert Rate (Cases per 100k)</td>
+                      <td>Latest-week case rate per 100,000 for a geography flagged with an active Epic Research health alert; the alerted condition is given in the `condition` column.</td>
+                      <td>Rate</td>
+                      <td>cases per 100,000</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>partial_week_flag</code>
+                      </td>
+                      <td>Partial Week?</td>
+                      <td>Binary indicator: 1 if the rate reflects a partial (incomplete) reporting week, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date_scraped</code>
+                      </td>
+                      <td>Date Scraped</td>
+                      <td>Date (MM-DD-YYYY) on which this script downloaded the Epic Research health-alerts page.</td>
+                      <td>Date</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date_epic_updated</code>
+                      </td>
+                      <td>Date Epic Updated</td>
+                      <td>The 'Last updated' date (MM-DD-YYYY) shown on the Epic Research health-alerts page at scrape time.</td>
+                      <td>Date</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
             <section id="epic-hepb-vax" class="mb-5">
               <h2 class="border-bottom pb-2">Epic Hepb Vax</h2>
               <p class="lead">Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.</p>
@@ -16263,6 +16864,3013 @@
                       <td>Quarterly age-adjusted death rate from unintentional injuries per 100,000 population.</td>
                       <td>Rate</td>
                       <td>Deaths per 100,000</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="neiss" class="mb-5">
+              <h2 class="border-bottom pb-2">Neiss</h2>
+              <p class="lead">NEISS is a national probability sample of hospital emergency departments (~100 of the ~5,000+ U.S. hospitals with 24-hour EDs) operated by the U.S. Consumer Product Safety Commission. Each sampled record describes an injury treated in the ED, including patient age, sex, race, Hispanic ethnicity (added 2019), diagnosis, body part, disposition, up to three associated consumer products, and a statistical weight (plus sampling stratum and PSU). Sample weights scale records to national estimates; raw record counts are not nationally representative. This dataset covers treatment years from 2019 through the latest year CPSC has posted (auto-detected at ingest time), aggregated to national (geography='00') annual counts, in wide format: one neiss_n_ (raw sampled count) and one neiss_wt_ (weighted national estimate) column per primary-diagnosis or primary-product-group category. Product groups are reconstructed from NEISS product-code bands and are approximate, not an official CPSC taxonomy. Companion _rate files (data_*_rate.csv.gz) give injury rates per 100,000 population stratified by age and sex only, using the weighted estimate as numerator and a constant national age x sex population (mean of U.S. Census Vintage 2023 estimates, 2020-2023) as denominator.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.cpsc.gov/Research--Statistics/NEISS-Injury-Data" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cpsc.gov/" target="_blank">U.S. Consumer Product Safety Commission (CPSC)</a>
+                   | 
+                  <a href="https://www.cpsc.gov/cgibin/NEISSQuery/" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Public domain. NEISS data are produced by the U.S. Consumer Product Safety Commission and are generally not subject to copyright restrictions.
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data_agegroup_diagnosis.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Patient sex (Male, Female, Unknown).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race</code>
+                      </td>
+                      <td>Race</td>
+                      <td>Patient race; 'Not stated' means race was not recorded (treat as missing).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>hispanic</code>
+                      </td>
+                      <td>Hispanic ethnicity</td>
+                      <td>Hispanic ethnicity (Hispanic, Non-Hispanic, Unknown); added to NEISS in 2019.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_contusion_or_abrasion</code>
+                      </td>
+                      <td>Contusion or abrasion injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of contusion or abrasion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_foreign_body</code>
+                      </td>
+                      <td>Foreign body injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of foreign body in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_inter_organ_injury</code>
+                      </td>
+                      <td>Internal organ injury injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of internal organ injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_laceration</code>
+                      </td>
+                      <td>Laceration injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of laceration in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_poisoning</code>
+                      </td>
+                      <td>Poisoning injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of poisoning in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_submersion</code>
+                      </td>
+                      <td>Submersion injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of submersion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_amputation</code>
+                      </td>
+                      <td>Amputation injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of amputation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_anoxia</code>
+                      </td>
+                      <td>Anoxia injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of anoxia in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_aspirated_object</code>
+                      </td>
+                      <td>Aspirated object injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of aspirated object in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_avulsion</code>
+                      </td>
+                      <td>Avulsion injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of avulsion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_chemical</code>
+                      </td>
+                      <td>Chemical burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of chemical burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_scald</code>
+                      </td>
+                      <td>Scald burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of scald burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_thermal</code>
+                      </td>
+                      <td>Thermal burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of thermal burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_concussion</code>
+                      </td>
+                      <td>Concussion injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of concussion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_dental_injury</code>
+                      </td>
+                      <td>Dental injury injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dental injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_dislocation</code>
+                      </td>
+                      <td>Dislocation injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dislocation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_electric_shock</code>
+                      </td>
+                      <td>Electric shock injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of electric shock in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_fracture</code>
+                      </td>
+                      <td>Fracture injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of fracture in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_hematoma</code>
+                      </td>
+                      <td>Hematoma injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of hematoma in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_hemorrhage</code>
+                      </td>
+                      <td>Hemorrhage injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of hemorrhage in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_ingested_object</code>
+                      </td>
+                      <td>Ingested object injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of ingested object in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_other_or_not_stated</code>
+                      </td>
+                      <td>Other or not stated injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of other or not stated in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_puncture</code>
+                      </td>
+                      <td>Puncture injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of puncture in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_strain_sprain</code>
+                      </td>
+                      <td>Strain or sprain injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of strain or sprain in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_dermat_or_conj</code>
+                      </td>
+                      <td>Dermatitis or conjunctivitis injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dermatitis or conjunctivitis in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_elec</code>
+                      </td>
+                      <td>Electrical burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of electrical burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_not_spec</code>
+                      </td>
+                      <td>Burns (unspecified) injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of burns (unspecified) in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_crushing</code>
+                      </td>
+                      <td>Crushing injury injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of crushing injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_nerve_damage</code>
+                      </td>
+                      <td>Nerve damage injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of nerve damage in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_radiation</code>
+                      </td>
+                      <td>Radiation burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of radiation burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_contusion_or_abrasion</code>
+                      </td>
+                      <td>Contusion or abrasion injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of contusion or abrasion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_foreign_body</code>
+                      </td>
+                      <td>Foreign body injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of foreign body in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_inter_organ_injury</code>
+                      </td>
+                      <td>Internal organ injury injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of internal organ injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_laceration</code>
+                      </td>
+                      <td>Laceration injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of laceration in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_poisoning</code>
+                      </td>
+                      <td>Poisoning injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of poisoning in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_submersion</code>
+                      </td>
+                      <td>Submersion injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of submersion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_amputation</code>
+                      </td>
+                      <td>Amputation injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of amputation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_anoxia</code>
+                      </td>
+                      <td>Anoxia injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of anoxia in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_aspirated_object</code>
+                      </td>
+                      <td>Aspirated object injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of aspirated object in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_avulsion</code>
+                      </td>
+                      <td>Avulsion injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of avulsion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_chemical</code>
+                      </td>
+                      <td>Chemical burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of chemical burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_scald</code>
+                      </td>
+                      <td>Scald burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of scald burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_thermal</code>
+                      </td>
+                      <td>Thermal burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of thermal burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_concussion</code>
+                      </td>
+                      <td>Concussion injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of concussion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_dental_injury</code>
+                      </td>
+                      <td>Dental injury injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of dental injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_dislocation</code>
+                      </td>
+                      <td>Dislocation injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of dislocation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_electric_shock</code>
+                      </td>
+                      <td>Electric shock injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of electric shock in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_fracture</code>
+                      </td>
+                      <td>Fracture injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of fracture in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_hematoma</code>
+                      </td>
+                      <td>Hematoma injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of hematoma in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_hemorrhage</code>
+                      </td>
+                      <td>Hemorrhage injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of hemorrhage in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_ingested_object</code>
+                      </td>
+                      <td>Ingested object injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of ingested object in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_other_or_not_stated</code>
+                      </td>
+                      <td>Other or not stated injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of other or not stated in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_puncture</code>
+                      </td>
+                      <td>Puncture injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of puncture in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_strain_sprain</code>
+                      </td>
+                      <td>Strain or sprain injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of strain or sprain in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_dermat_or_conj</code>
+                      </td>
+                      <td>Dermatitis or conjunctivitis injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of dermatitis or conjunctivitis in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_elec</code>
+                      </td>
+                      <td>Electrical burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of electrical burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_not_spec</code>
+                      </td>
+                      <td>Burns (unspecified) injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of burns (unspecified) in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_crushing</code>
+                      </td>
+                      <td>Crushing injury injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of crushing injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_nerve_damage</code>
+                      </td>
+                      <td>Nerve damage injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of nerve damage in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_radiation</code>
+                      </td>
+                      <td>Radiation burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of radiation burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_agegroup_diagnosis_rate.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Patient sex (Male, Female, Unknown).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_amputation</code>
+                      </td>
+                      <td>Amputation injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of amputation per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_anoxia</code>
+                      </td>
+                      <td>Anoxia injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of anoxia per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_aspirated_object</code>
+                      </td>
+                      <td>Aspirated object injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of aspirated object per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_avulsion</code>
+                      </td>
+                      <td>Avulsion injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of avulsion per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_chemical</code>
+                      </td>
+                      <td>Chemical burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of chemical burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_elec</code>
+                      </td>
+                      <td>Electrical burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of electrical burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_not_spec</code>
+                      </td>
+                      <td>Burns (unspecified) injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of burns (unspecified) per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_radiation</code>
+                      </td>
+                      <td>Radiation burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of radiation burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_scald</code>
+                      </td>
+                      <td>Scald burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of scald burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_thermal</code>
+                      </td>
+                      <td>Thermal burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of thermal burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_concussion</code>
+                      </td>
+                      <td>Concussion injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of concussion per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_contusion_or_abrasion</code>
+                      </td>
+                      <td>Contusion or abrasion injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of contusion or abrasion per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_crushing</code>
+                      </td>
+                      <td>Crushing injury injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of crushing injury per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_dental_injury</code>
+                      </td>
+                      <td>Dental injury injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of dental injury per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_dermat_or_conj</code>
+                      </td>
+                      <td>Dermatitis or conjunctivitis injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of dermatitis or conjunctivitis per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_dislocation</code>
+                      </td>
+                      <td>Dislocation injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of dislocation per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_electric_shock</code>
+                      </td>
+                      <td>Electric shock injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of electric shock per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_foreign_body</code>
+                      </td>
+                      <td>Foreign body injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of foreign body per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_fracture</code>
+                      </td>
+                      <td>Fracture injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of fracture per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_hematoma</code>
+                      </td>
+                      <td>Hematoma injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of hematoma per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_hemorrhage</code>
+                      </td>
+                      <td>Hemorrhage injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of hemorrhage per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_ingested_object</code>
+                      </td>
+                      <td>Ingested object injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of ingested object per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_inter_organ_injury</code>
+                      </td>
+                      <td>Internal organ injury injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of internal organ injury per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_laceration</code>
+                      </td>
+                      <td>Laceration injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of laceration per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_nerve_damage</code>
+                      </td>
+                      <td>Nerve damage injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of nerve damage per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_other_or_not_stated</code>
+                      </td>
+                      <td>Other or not stated injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of other or not stated per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_poisoning</code>
+                      </td>
+                      <td>Poisoning injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of poisoning per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_puncture</code>
+                      </td>
+                      <td>Puncture injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of puncture per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_strain_sprain</code>
+                      </td>
+                      <td>Strain or sprain injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of strain or sprain per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_submersion</code>
+                      </td>
+                      <td>Submersion injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of submersion per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_agegroup_product.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Patient sex (Male, Female, Unknown).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race</code>
+                      </td>
+                      <td>Race</td>
+                      <td>Patient race; 'Not stated' means race was not recorded (treat as missing).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>hispanic</code>
+                      </td>
+                      <td>Hispanic ethnicity</td>
+                      <td>Hispanic ethnicity (Hispanic, Non-Hispanic, Unknown); added to NEISS in 2019.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_personal_use_drugs_misc</code>
+                      </td>
+                      <td>Personal use, drugs &amp; misc. injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was personal use, drugs &amp; misc. in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_sports_recreation_activities</code>
+                      </td>
+                      <td>Sports &amp; recreation activities injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was sports &amp; recreation activities in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_sports_recreation_equipment_toys</code>
+                      </td>
+                      <td>Sports/recreation equipment &amp; toys injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was sports/recreation equipment &amp; toys in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_chemicals</code>
+                      </td>
+                      <td>Chemicals injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was chemicals in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_child_nursery_equipment</code>
+                      </td>
+                      <td>Child nursery equipment injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was child nursery equipment in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_heating_cooling_ventilation</code>
+                      </td>
+                      <td>Heating, cooling &amp; ventilation injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was heating, cooling &amp; ventilation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_home_communication_entertainment_hobby</code>
+                      </td>
+                      <td>Home communication, entertainment &amp; hobby injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was home communication, entertainment &amp; hobby in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_home_furnishings_fixtures</code>
+                      </td>
+                      <td>Home furnishings &amp; fixtures injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was home furnishings &amp; fixtures in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_housewares</code>
+                      </td>
+                      <td>Housewares injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was housewares in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_kitchen_appliances</code>
+                      </td>
+                      <td>Kitchen appliances injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was kitchen appliances in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_packaging_containers</code>
+                      </td>
+                      <td>Packaging &amp; containers injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was packaging &amp; containers in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_yard_garden_equipment</code>
+                      </td>
+                      <td>Yard &amp; garden equipment injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was yard &amp; garden equipment in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_general_household_appliances</code>
+                      </td>
+                      <td>General household appliances injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was general household appliances in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_home_workshop_equipment_tools</code>
+                      </td>
+                      <td>Home workshop equipment &amp; tools injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was home workshop equipment &amp; tools in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_other_unspecified</code>
+                      </td>
+                      <td>Other/unspecified product injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was other/unspecified product in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_home_structures_construction_materials</code>
+                      </td>
+                      <td>Home structures &amp; construction materials injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was home structures &amp; construction materials in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_personal_use_drugs_misc</code>
+                      </td>
+                      <td>Personal use, drugs &amp; misc. injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was personal use, drugs &amp; misc. in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_sports_recreation_activities</code>
+                      </td>
+                      <td>Sports &amp; recreation activities injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was sports &amp; recreation activities in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_sports_recreation_equipment_toys</code>
+                      </td>
+                      <td>Sports/recreation equipment &amp; toys injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was sports/recreation equipment &amp; toys in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_chemicals</code>
+                      </td>
+                      <td>Chemicals injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was chemicals in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_child_nursery_equipment</code>
+                      </td>
+                      <td>Child nursery equipment injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was child nursery equipment in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_heating_cooling_ventilation</code>
+                      </td>
+                      <td>Heating, cooling &amp; ventilation injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was heating, cooling &amp; ventilation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_home_communication_entertainment_hobby</code>
+                      </td>
+                      <td>Home communication, entertainment &amp; hobby injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was home communication, entertainment &amp; hobby in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_home_furnishings_fixtures</code>
+                      </td>
+                      <td>Home furnishings &amp; fixtures injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was home furnishings &amp; fixtures in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_housewares</code>
+                      </td>
+                      <td>Housewares injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was housewares in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_kitchen_appliances</code>
+                      </td>
+                      <td>Kitchen appliances injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was kitchen appliances in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_packaging_containers</code>
+                      </td>
+                      <td>Packaging &amp; containers injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was packaging &amp; containers in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_yard_garden_equipment</code>
+                      </td>
+                      <td>Yard &amp; garden equipment injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was yard &amp; garden equipment in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_general_household_appliances</code>
+                      </td>
+                      <td>General household appliances injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was general household appliances in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_home_workshop_equipment_tools</code>
+                      </td>
+                      <td>Home workshop equipment &amp; tools injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was home workshop equipment &amp; tools in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_other_unspecified</code>
+                      </td>
+                      <td>Other/unspecified product injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was other/unspecified product in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_home_structures_construction_materials</code>
+                      </td>
+                      <td>Home structures &amp; construction materials injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was home structures &amp; construction materials in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_agegroup_product_rate.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Patient sex (Male, Female, Unknown).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_chemicals</code>
+                      </td>
+                      <td>Chemicals injury rate</td>
+                      <td>Annual ED injury visits whose primary product was chemicals per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_child_nursery_equipment</code>
+                      </td>
+                      <td>Child nursery equipment injury rate</td>
+                      <td>Annual ED injury visits whose primary product was child nursery equipment per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_general_household_appliances</code>
+                      </td>
+                      <td>General household appliances injury rate</td>
+                      <td>Annual ED injury visits whose primary product was general household appliances per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_heating_cooling_ventilation</code>
+                      </td>
+                      <td>Heating, cooling &amp; ventilation injury rate</td>
+                      <td>Annual ED injury visits whose primary product was heating, cooling &amp; ventilation per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_home_communication_entertainment_hobby</code>
+                      </td>
+                      <td>Home communication, entertainment &amp; hobby injury rate</td>
+                      <td>Annual ED injury visits whose primary product was home communication, entertainment &amp; hobby per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_home_furnishings_fixtures</code>
+                      </td>
+                      <td>Home furnishings &amp; fixtures injury rate</td>
+                      <td>Annual ED injury visits whose primary product was home furnishings &amp; fixtures per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_home_structures_construction_materials</code>
+                      </td>
+                      <td>Home structures &amp; construction materials injury rate</td>
+                      <td>Annual ED injury visits whose primary product was home structures &amp; construction materials per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_home_workshop_equipment_tools</code>
+                      </td>
+                      <td>Home workshop equipment &amp; tools injury rate</td>
+                      <td>Annual ED injury visits whose primary product was home workshop equipment &amp; tools per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_housewares</code>
+                      </td>
+                      <td>Housewares injury rate</td>
+                      <td>Annual ED injury visits whose primary product was housewares per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_kitchen_appliances</code>
+                      </td>
+                      <td>Kitchen appliances injury rate</td>
+                      <td>Annual ED injury visits whose primary product was kitchen appliances per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_other_unspecified</code>
+                      </td>
+                      <td>Other/unspecified product injury rate</td>
+                      <td>Annual ED injury visits whose primary product was other/unspecified product per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_packaging_containers</code>
+                      </td>
+                      <td>Packaging &amp; containers injury rate</td>
+                      <td>Annual ED injury visits whose primary product was packaging &amp; containers per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_personal_use_drugs_misc</code>
+                      </td>
+                      <td>Personal use, drugs &amp; misc. injury rate</td>
+                      <td>Annual ED injury visits whose primary product was personal use, drugs &amp; misc. per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_sports_recreation_activities</code>
+                      </td>
+                      <td>Sports &amp; recreation activities injury rate</td>
+                      <td>Annual ED injury visits whose primary product was sports &amp; recreation activities per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_sports_recreation_equipment_toys</code>
+                      </td>
+                      <td>Sports/recreation equipment &amp; toys injury rate</td>
+                      <td>Annual ED injury visits whose primary product was sports/recreation equipment &amp; toys per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_yard_garden_equipment</code>
+                      </td>
+                      <td>Yard &amp; garden equipment injury rate</td>
+                      <td>Annual ED injury visits whose primary product was yard &amp; garden equipment per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_infant_diagnosis.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Patient sex (Male, Female, Unknown).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race</code>
+                      </td>
+                      <td>Race</td>
+                      <td>Patient race; 'Not stated' means race was not recorded (treat as missing).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>hispanic</code>
+                      </td>
+                      <td>Hispanic ethnicity</td>
+                      <td>Hispanic ethnicity (Hispanic, Non-Hispanic, Unknown); added to NEISS in 2019.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_fracture</code>
+                      </td>
+                      <td>Fracture injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of fracture in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_other_or_not_stated</code>
+                      </td>
+                      <td>Other or not stated injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of other or not stated in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_strain_sprain</code>
+                      </td>
+                      <td>Strain or sprain injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of strain or sprain in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_laceration</code>
+                      </td>
+                      <td>Laceration injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of laceration in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_inter_organ_injury</code>
+                      </td>
+                      <td>Internal organ injury injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of internal organ injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_thermal</code>
+                      </td>
+                      <td>Thermal burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of thermal burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_contusion_or_abrasion</code>
+                      </td>
+                      <td>Contusion or abrasion injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of contusion or abrasion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_poisoning</code>
+                      </td>
+                      <td>Poisoning injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of poisoning in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_anoxia</code>
+                      </td>
+                      <td>Anoxia injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of anoxia in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_aspirated_object</code>
+                      </td>
+                      <td>Aspirated object injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of aspirated object in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_scald</code>
+                      </td>
+                      <td>Scald burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of scald burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_dermat_or_conj</code>
+                      </td>
+                      <td>Dermatitis or conjunctivitis injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dermatitis or conjunctivitis in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_foreign_body</code>
+                      </td>
+                      <td>Foreign body injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of foreign body in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_hematoma</code>
+                      </td>
+                      <td>Hematoma injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of hematoma in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_hemorrhage</code>
+                      </td>
+                      <td>Hemorrhage injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of hemorrhage in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_ingested_object</code>
+                      </td>
+                      <td>Ingested object injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of ingested object in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_chemical</code>
+                      </td>
+                      <td>Chemical burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of chemical burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_concussion</code>
+                      </td>
+                      <td>Concussion injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of concussion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_crushing</code>
+                      </td>
+                      <td>Crushing injury injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of crushing injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_submersion</code>
+                      </td>
+                      <td>Submersion injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of submersion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_nerve_damage</code>
+                      </td>
+                      <td>Nerve damage injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of nerve damage in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_dislocation</code>
+                      </td>
+                      <td>Dislocation injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dislocation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_avulsion</code>
+                      </td>
+                      <td>Avulsion injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of avulsion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_dental_injury</code>
+                      </td>
+                      <td>Dental injury injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dental injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_puncture</code>
+                      </td>
+                      <td>Puncture injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of puncture in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_amputation</code>
+                      </td>
+                      <td>Amputation injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of amputation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_not_spec</code>
+                      </td>
+                      <td>Burns (unspecified) injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of burns (unspecified) in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_electric_shock</code>
+                      </td>
+                      <td>Electric shock injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of electric shock in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_elec</code>
+                      </td>
+                      <td>Electrical burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of electrical burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_burns_radiation</code>
+                      </td>
+                      <td>Radiation burns injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits with a primary diagnosis of radiation burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_fracture</code>
+                      </td>
+                      <td>Fracture injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of fracture in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_other_or_not_stated</code>
+                      </td>
+                      <td>Other or not stated injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of other or not stated in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_strain_sprain</code>
+                      </td>
+                      <td>Strain or sprain injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of strain or sprain in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_laceration</code>
+                      </td>
+                      <td>Laceration injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of laceration in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_inter_organ_injury</code>
+                      </td>
+                      <td>Internal organ injury injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of internal organ injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_thermal</code>
+                      </td>
+                      <td>Thermal burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of thermal burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_contusion_or_abrasion</code>
+                      </td>
+                      <td>Contusion or abrasion injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of contusion or abrasion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_poisoning</code>
+                      </td>
+                      <td>Poisoning injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of poisoning in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_anoxia</code>
+                      </td>
+                      <td>Anoxia injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of anoxia in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_aspirated_object</code>
+                      </td>
+                      <td>Aspirated object injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of aspirated object in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_scald</code>
+                      </td>
+                      <td>Scald burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of scald burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_dermat_or_conj</code>
+                      </td>
+                      <td>Dermatitis or conjunctivitis injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of dermatitis or conjunctivitis in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_foreign_body</code>
+                      </td>
+                      <td>Foreign body injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of foreign body in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_hematoma</code>
+                      </td>
+                      <td>Hematoma injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of hematoma in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_hemorrhage</code>
+                      </td>
+                      <td>Hemorrhage injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of hemorrhage in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_ingested_object</code>
+                      </td>
+                      <td>Ingested object injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of ingested object in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_chemical</code>
+                      </td>
+                      <td>Chemical burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of chemical burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_concussion</code>
+                      </td>
+                      <td>Concussion injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of concussion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_crushing</code>
+                      </td>
+                      <td>Crushing injury injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of crushing injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_submersion</code>
+                      </td>
+                      <td>Submersion injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of submersion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_nerve_damage</code>
+                      </td>
+                      <td>Nerve damage injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of nerve damage in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_dislocation</code>
+                      </td>
+                      <td>Dislocation injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of dislocation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_avulsion</code>
+                      </td>
+                      <td>Avulsion injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of avulsion in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_dental_injury</code>
+                      </td>
+                      <td>Dental injury injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of dental injury in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_puncture</code>
+                      </td>
+                      <td>Puncture injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of puncture in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_amputation</code>
+                      </td>
+                      <td>Amputation injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of amputation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_not_spec</code>
+                      </td>
+                      <td>Burns (unspecified) injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of burns (unspecified) in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_electric_shock</code>
+                      </td>
+                      <td>Electric shock injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of electric shock in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_elec</code>
+                      </td>
+                      <td>Electrical burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of electrical burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_burns_radiation</code>
+                      </td>
+                      <td>Radiation burns injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits with a primary diagnosis of radiation burns in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_infant_diagnosis_rate.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Patient sex (Male, Female, Unknown).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_fracture</code>
+                      </td>
+                      <td>Fracture injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of fracture per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_inter_organ_injury</code>
+                      </td>
+                      <td>Internal organ injury injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of internal organ injury per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_laceration</code>
+                      </td>
+                      <td>Laceration injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of laceration per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_other_or_not_stated</code>
+                      </td>
+                      <td>Other or not stated injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of other or not stated per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_strain_sprain</code>
+                      </td>
+                      <td>Strain or sprain injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of strain or sprain per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_anoxia</code>
+                      </td>
+                      <td>Anoxia injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of anoxia per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_thermal</code>
+                      </td>
+                      <td>Thermal burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of thermal burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_contusion_or_abrasion</code>
+                      </td>
+                      <td>Contusion or abrasion injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of contusion or abrasion per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_poisoning</code>
+                      </td>
+                      <td>Poisoning injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of poisoning per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_aspirated_object</code>
+                      </td>
+                      <td>Aspirated object injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of aspirated object per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_chemical</code>
+                      </td>
+                      <td>Chemical burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of chemical burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_scald</code>
+                      </td>
+                      <td>Scald burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of scald burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_concussion</code>
+                      </td>
+                      <td>Concussion injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of concussion per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_dermat_or_conj</code>
+                      </td>
+                      <td>Dermatitis or conjunctivitis injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of dermatitis or conjunctivitis per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_foreign_body</code>
+                      </td>
+                      <td>Foreign body injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of foreign body per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_hematoma</code>
+                      </td>
+                      <td>Hematoma injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of hematoma per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_hemorrhage</code>
+                      </td>
+                      <td>Hemorrhage injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of hemorrhage per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_ingested_object</code>
+                      </td>
+                      <td>Ingested object injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of ingested object per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_crushing</code>
+                      </td>
+                      <td>Crushing injury injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of crushing injury per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_nerve_damage</code>
+                      </td>
+                      <td>Nerve damage injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of nerve damage per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_submersion</code>
+                      </td>
+                      <td>Submersion injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of submersion per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_dislocation</code>
+                      </td>
+                      <td>Dislocation injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of dislocation per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_avulsion</code>
+                      </td>
+                      <td>Avulsion injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of avulsion per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_dental_injury</code>
+                      </td>
+                      <td>Dental injury injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of dental injury per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_puncture</code>
+                      </td>
+                      <td>Puncture injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of puncture per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_amputation</code>
+                      </td>
+                      <td>Amputation injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of amputation per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_not_spec</code>
+                      </td>
+                      <td>Burns (unspecified) injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of burns (unspecified) per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_electric_shock</code>
+                      </td>
+                      <td>Electric shock injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of electric shock per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_elec</code>
+                      </td>
+                      <td>Electrical burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of electrical burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_burns_radiation</code>
+                      </td>
+                      <td>Radiation burns injury rate</td>
+                      <td>Annual ED injury visits with a primary diagnosis of radiation burns per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_infant_product.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Patient sex (Male, Female, Unknown).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race</code>
+                      </td>
+                      <td>Race</td>
+                      <td>Patient race; 'Not stated' means race was not recorded (treat as missing).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>hispanic</code>
+                      </td>
+                      <td>Hispanic ethnicity</td>
+                      <td>Hispanic ethnicity (Hispanic, Non-Hispanic, Unknown); added to NEISS in 2019.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_personal_use_drugs_misc</code>
+                      </td>
+                      <td>Personal use, drugs &amp; misc. injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was personal use, drugs &amp; misc. in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_home_furnishings_fixtures</code>
+                      </td>
+                      <td>Home furnishings &amp; fixtures injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was home furnishings &amp; fixtures in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_sports_recreation_activities</code>
+                      </td>
+                      <td>Sports &amp; recreation activities injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was sports &amp; recreation activities in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_child_nursery_equipment</code>
+                      </td>
+                      <td>Child nursery equipment injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was child nursery equipment in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_housewares</code>
+                      </td>
+                      <td>Housewares injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was housewares in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_sports_recreation_equipment_toys</code>
+                      </td>
+                      <td>Sports/recreation equipment &amp; toys injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was sports/recreation equipment &amp; toys in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_packaging_containers</code>
+                      </td>
+                      <td>Packaging &amp; containers injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was packaging &amp; containers in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_home_structures_construction_materials</code>
+                      </td>
+                      <td>Home structures &amp; construction materials injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was home structures &amp; construction materials in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_chemicals</code>
+                      </td>
+                      <td>Chemicals injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was chemicals in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_home_communication_entertainment_hobby</code>
+                      </td>
+                      <td>Home communication, entertainment &amp; hobby injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was home communication, entertainment &amp; hobby in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_kitchen_appliances</code>
+                      </td>
+                      <td>Kitchen appliances injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was kitchen appliances in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_home_workshop_equipment_tools</code>
+                      </td>
+                      <td>Home workshop equipment &amp; tools injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was home workshop equipment &amp; tools in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_heating_cooling_ventilation</code>
+                      </td>
+                      <td>Heating, cooling &amp; ventilation injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was heating, cooling &amp; ventilation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_other_unspecified</code>
+                      </td>
+                      <td>Other/unspecified product injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was other/unspecified product in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_yard_garden_equipment</code>
+                      </td>
+                      <td>Yard &amp; garden equipment injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was yard &amp; garden equipment in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_n_general_household_appliances</code>
+                      </td>
+                      <td>General household appliances injuries (sampled)</td>
+                      <td>Raw count of NEISS-sampled ED injury visits whose primary product was general household appliances in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_personal_use_drugs_misc</code>
+                      </td>
+                      <td>Personal use, drugs &amp; misc. injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was personal use, drugs &amp; misc. in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_home_furnishings_fixtures</code>
+                      </td>
+                      <td>Home furnishings &amp; fixtures injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was home furnishings &amp; fixtures in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_sports_recreation_activities</code>
+                      </td>
+                      <td>Sports &amp; recreation activities injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was sports &amp; recreation activities in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_child_nursery_equipment</code>
+                      </td>
+                      <td>Child nursery equipment injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was child nursery equipment in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_housewares</code>
+                      </td>
+                      <td>Housewares injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was housewares in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_sports_recreation_equipment_toys</code>
+                      </td>
+                      <td>Sports/recreation equipment &amp; toys injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was sports/recreation equipment &amp; toys in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_packaging_containers</code>
+                      </td>
+                      <td>Packaging &amp; containers injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was packaging &amp; containers in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_home_structures_construction_materials</code>
+                      </td>
+                      <td>Home structures &amp; construction materials injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was home structures &amp; construction materials in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_chemicals</code>
+                      </td>
+                      <td>Chemicals injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was chemicals in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_home_communication_entertainment_hobby</code>
+                      </td>
+                      <td>Home communication, entertainment &amp; hobby injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was home communication, entertainment &amp; hobby in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_kitchen_appliances</code>
+                      </td>
+                      <td>Kitchen appliances injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was kitchen appliances in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_home_workshop_equipment_tools</code>
+                      </td>
+                      <td>Home workshop equipment &amp; tools injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was home workshop equipment &amp; tools in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_heating_cooling_ventilation</code>
+                      </td>
+                      <td>Heating, cooling &amp; ventilation injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was heating, cooling &amp; ventilation in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_other_unspecified</code>
+                      </td>
+                      <td>Other/unspecified product injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was other/unspecified product in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_yard_garden_equipment</code>
+                      </td>
+                      <td>Yard &amp; garden equipment injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was yard &amp; garden equipment in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_wt_general_household_appliances</code>
+                      </td>
+                      <td>General household appliances injuries (national est.)</td>
+                      <td>Survey-weighted national estimate of ED injury visits whose primary product was general household appliances in the stratum.</td>
+                      <td>Count</td>
+                      <td>visits</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_infant_product_rate.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Patient sex (Male, Female, Unknown).</td>
+                      <td>categorical</td>
+                      <td>category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_home_furnishings_fixtures</code>
+                      </td>
+                      <td>Home furnishings &amp; fixtures injury rate</td>
+                      <td>Annual ED injury visits whose primary product was home furnishings &amp; fixtures per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_personal_use_drugs_misc</code>
+                      </td>
+                      <td>Personal use, drugs &amp; misc. injury rate</td>
+                      <td>Annual ED injury visits whose primary product was personal use, drugs &amp; misc. per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_sports_recreation_activities</code>
+                      </td>
+                      <td>Sports &amp; recreation activities injury rate</td>
+                      <td>Annual ED injury visits whose primary product was sports &amp; recreation activities per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_child_nursery_equipment</code>
+                      </td>
+                      <td>Child nursery equipment injury rate</td>
+                      <td>Annual ED injury visits whose primary product was child nursery equipment per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_housewares</code>
+                      </td>
+                      <td>Housewares injury rate</td>
+                      <td>Annual ED injury visits whose primary product was housewares per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_sports_recreation_equipment_toys</code>
+                      </td>
+                      <td>Sports/recreation equipment &amp; toys injury rate</td>
+                      <td>Annual ED injury visits whose primary product was sports/recreation equipment &amp; toys per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_chemicals</code>
+                      </td>
+                      <td>Chemicals injury rate</td>
+                      <td>Annual ED injury visits whose primary product was chemicals per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_home_communication_entertainment_hobby</code>
+                      </td>
+                      <td>Home communication, entertainment &amp; hobby injury rate</td>
+                      <td>Annual ED injury visits whose primary product was home communication, entertainment &amp; hobby per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_home_structures_construction_materials</code>
+                      </td>
+                      <td>Home structures &amp; construction materials injury rate</td>
+                      <td>Annual ED injury visits whose primary product was home structures &amp; construction materials per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_home_workshop_equipment_tools</code>
+                      </td>
+                      <td>Home workshop equipment &amp; tools injury rate</td>
+                      <td>Annual ED injury visits whose primary product was home workshop equipment &amp; tools per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_kitchen_appliances</code>
+                      </td>
+                      <td>Kitchen appliances injury rate</td>
+                      <td>Annual ED injury visits whose primary product was kitchen appliances per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_packaging_containers</code>
+                      </td>
+                      <td>Packaging &amp; containers injury rate</td>
+                      <td>Annual ED injury visits whose primary product was packaging &amp; containers per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_heating_cooling_ventilation</code>
+                      </td>
+                      <td>Heating, cooling &amp; ventilation injury rate</td>
+                      <td>Annual ED injury visits whose primary product was heating, cooling &amp; ventilation per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_other_unspecified</code>
+                      </td>
+                      <td>Other/unspecified product injury rate</td>
+                      <td>Annual ED injury visits whose primary product was other/unspecified product per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_yard_garden_equipment</code>
+                      </td>
+                      <td>Yard &amp; garden equipment injury rate</td>
+                      <td>Annual ED injury visits whose primary product was yard &amp; garden equipment per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>neiss_rate_general_household_appliances</code>
+                      </td>
+                      <td>General household appliances injury rate</td>
+                      <td>Annual ED injury visits whose primary product was general household appliances per 100,000 U.S. population, by age and sex.</td>
+                      <td>Rate</td>
+                      <td>Injuries per 100,000 population</td>
                     </tr>
                   </tbody>
                 </table>

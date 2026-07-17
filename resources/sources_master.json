@@ -154,7 +154,17 @@
     "organization_url": "https://www.epic.com/",
     "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
     "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
-    "data_source": ["epic_chronic", "epic_hepb_vax", "epic_injury", "epic_resp_infections"]
+    "data_source": ["epic_chronic", "epic_diarrhea", "epic_hepb_vax", "epic_injury", "epic_resp_infections"]
+  },
+  "epic_health_alerts": {
+    "name": "Epic Research Health Alerts",
+    "url": "https://www.epicresearch.org/health-alerts/",
+    "date_accessed": 2026,
+    "organization": "Epic Research",
+    "organization_url": "https://www.epicresearch.org/",
+    "description": "Epic Research Health Alerts (https://www.epicresearch.org/health-alerts/) flag U.S. states and counties experiencing an unusual rise in specific conditions, derived from Epic Cosmos de-identified electronic health record data covering over 300 million patients across more than 1,600 hospitals and health systems. Each alert reports the latest-week case rate per 100,000 and an estimated onset date. The page is a live snapshot showing only currently active alerts rather than a historical archive, so this dataset accumulates one weekly snapshot per ingestion run to construct a time series.",
+    "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
+    "data_source": "epic_health_alerts"
   },
   "gtrends": {
     "name": "Google Health Trends API",
@@ -310,6 +320,18 @@
     "description": "Provisional quarterly age-adjusted mortality rates for 21 selected causes of death, from the Vital Statistics Rapid Release (VSRR) program. Rates are based on 3-month period estimates and are expressed per 100,000 population. Covers national and state levels. Data are provisional and subject to revision.",
     "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions.",
     "data_source": "nchs_mortality"
+  },
+  "neiss": {
+    "name": "National Electronic Injury Surveillance System (NEISS)",
+    "url": "https://www.cpsc.gov/Research--Statistics/NEISS-Injury-Data",
+    "organization": "U.S. Consumer Product Safety Commission (CPSC)",
+    "organization_url": "https://www.cpsc.gov/",
+    "location": "NEISS public query / archived data files",
+    "location_url": "https://www.cpsc.gov/cgibin/NEISSQuery/",
+    "description": "NEISS is a national probability sample of hospital emergency departments (~100 of the ~5,000+ U.S. hospitals with 24-hour EDs) operated by the U.S. Consumer Product Safety Commission. Each sampled record describes an injury treated in the ED, including patient age, sex, race, Hispanic ethnicity (added 2019), diagnosis, body part, disposition, up to three associated consumer products, and a statistical weight (plus sampling stratum and PSU). Sample weights scale records to national estimates; raw record counts are not nationally representative. This dataset covers treatment years from 2019 through the latest year CPSC has posted (auto-detected at ingest time), aggregated to national (geography='00') annual counts, in wide format: one neiss_n_ (raw sampled count) and one neiss_wt_ (weighted national estimate) column per primary-diagnosis or primary-product-group category. Product groups are reconstructed from NEISS product-code bands and are approximate, not an official CPSC taxonomy. Companion _rate files (data_*_rate.csv.gz) give injury rates per 100,000 population stratified by age and sex only, using the weighted estimate as numerator and a constant national age x sex population (mean of U.S. Census Vintage 2023 estimates, 2020-2023) as denominator.",
+    "restrictions": "Public domain. NEISS data are produced by the U.S. Consumer Product Safety Commission and are generally not subject to copyright restrictions.",
+    "date_accessed": 2026,
+    "data_source": "neiss"
   },
   "nhtsa_fars": {
     "name": "Fatality Analysis Reporting System (FARS)",

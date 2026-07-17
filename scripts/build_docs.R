@@ -1076,19 +1076,20 @@ cat(sprintf("  - %d data sources\n", length(manifest$data_sources)))
 # =====================================================================
 # Build data sources index (docs/data_sources_index.json)
 # Lightweight per-source catalog: name, github_folder, data_url,
-# data_dictionary, latest_date, category, summary, and a `files` array (one
-# entry per standardized csv.gz, each with a direct `dataset_link` and a short
-# `dataset_stratification` blurb).
+# data_dictionary, latest_date, search_terms, bucket, summary, and a `files`
+# array (one entry per standardized csv.gz, each with a direct `dataset_link`
+# and a short `dataset_stratification` blurb).
 #
-# Four hand-editable fields are PRESERVED from the existing
+# Five hand-editable fields are PRESERVED from the existing
 # docs/data_sources_index.json on rebuild -- edit them directly in that file and
-# they are maintained: `name`, `summary`, `category`, and each file's
-# `dataset_stratification`. When absent they are derived: name from measure_info,
-# summary as a concise extractive first sentence, category from bundle
-# membership (bundle_* -> human-readable label), and dataset_stratification from
-# resources/stratification_cache.json or a filename-derived blurb. To re-derive
-# a preserved field, clear it in the JSON and rebuild. All other fields (links,
-# latest_date) are always recomputed.
+# they are maintained: `name`, `summary`, `search_terms`, `bucket`, and each
+# file's `dataset_stratification`. When absent they are derived: name from
+# measure_info, summary as a concise extractive first sentence, search_terms
+# and bucket both from bundle membership (bundle_* -> human-readable label,
+# identical starting values that can then be hand-edited independently), and
+# dataset_stratification from resources/stratification_cache.json or a
+# filename-derived blurb. To re-derive a preserved field, clear it in the JSON
+# and rebuild. All other fields (links, latest_date) are always recomputed.
 # =====================================================================
 
 cat("Building data sources index JSON...\n")
@@ -1114,10 +1115,11 @@ github_raw_file <- function(source_name, filename) {
   paste0(GITHUB_RAW_BASE, "/data/", source_name, "/standard/", filename)
 }
 
-# Format a bundle directory name as a human-readable category: strip the
+# Format a bundle directory name as a human-readable label: strip the
 # "bundle_" prefix, turn remaining underscores into spaces, and capitalize the
-# first letter (e.g. bundle_chronic_diseases -> "Chronic diseases").
-format_category <- function(bundle_name) {
+# first letter (e.g. bundle_chronic_diseases -> "Chronic diseases"). Used as
+# the default value for both the `search_terms` and `bucket` index fields.
+format_bundle_label <- function(bundle_name) {
   x <- sub("^bundle_", "", bundle_name)
   x <- gsub("_", " ", x)
   if (nchar(x) > 0) x <- paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
@@ -1143,18 +1145,21 @@ derive_stratification <- function(filename) {
 stratification_cache <- load_stratification_cache()
 
 # Preserve hand-edited text from the existing index so manual edits to
-# docs/data_sources_index.json survive a rebuild. `name`, `summary`, `category`
-# (per dataset) and `dataset_stratification` (per file) are treated as
-# authoritative if already present; otherwise they are derived (name from
-# measure_info, summary extractively, category from bundle membership,
-# stratification from the cache or file name). Links and latest_date are always
-# recomputed. To re-derive name/summary/stratification, blank them and rebuild;
-# to re-derive category, DELETE the category field entirely (an empty [] is
-# respected as an intentional "no categories", so it is not re-derived).
+# docs/data_sources_index.json survive a rebuild. `name`, `summary`,
+# `search_terms`, `bucket` (per dataset) and `dataset_stratification` (per
+# file) are treated as authoritative if already present; otherwise they are
+# derived (name from measure_info, summary extractively, search_terms/bucket
+# from bundle membership, stratification from the cache or file name). Links
+# and latest_date are always recomputed. To re-derive name/summary/
+# stratification, blank them and rebuild; to re-derive search_terms or bucket,
+# DELETE that field entirely (an empty [] is respected as an intentional
+# "none", so it is not re-derived).
 existing_name <- list()
 existing_summary <- list()
-existing_category <- list()
-existing_category_present <- character(0)  # datasets whose entry has a category field
+existing_search_terms <- list()
+existing_search_terms_present <- character(0)  # datasets whose entry has a search_terms field
+existing_bucket <- list()
+existing_bucket_present <- character(0)  # datasets whose entry has a bucket field
 existing_strat <- list()
 existing_index_path <- "docs/data_sources_index.json"
 if (file.exists(existing_index_path)) {
@@ -1169,10 +1174,15 @@ if (file.exists(existing_index_path)) {
       if (!is.null(d$summary) && nzchar(d$summary)) {
         existing_summary[[d$dataset]] <- d$summary
       }
-      if (!is.null(d$category)) {  # field present (even []): preserve verbatim
-        vals <- unlist(d$category)
-        existing_category[[d$dataset]] <- if (is.null(vals)) character(0) else vals
-        existing_category_present <- c(existing_category_present, d$dataset)
+      if (!is.null(d$search_terms)) {  # field present (even []): preserve verbatim
+        vals <- unlist(d$search_terms)
+        existing_search_terms[[d$dataset]] <- if (is.null(vals)) character(0) else vals
+        existing_search_terms_present <- c(existing_search_terms_present, d$dataset)
+      }
+      if (!is.null(d$bucket)) {  # field present (even []): preserve verbatim
+        vals <- unlist(d$bucket)
+        existing_bucket[[d$dataset]] <- if (is.null(vals)) character(0) else vals
+        existing_bucket_present <- c(existing_bucket_present, d$dataset)
       }
       if (!is.null(d$files)) {
         for (f in d$files) {
@@ -1330,16 +1340,25 @@ index_datasets <- lapply(index_source_idx, function(i) {
 
   section_id <- gsub("[^a-zA-Z0-9]", "-", source_name)
 
-  # category: preserved whenever the existing entry HAS a category field (even an
-  # empty [] -- so removing categories sticks). Derived from bundle membership
-  # only when the field is entirely absent, i.e. a brand-new dataset. To re-derive
-  # later, delete the category field in the JSON and rebuild.
-  if (source_name %in% existing_category_present) {
-    category <- existing_category[[source_name]]
+  # search_terms and bucket: both preserved whenever the existing entry HAS the
+  # field (even an empty [] -- so clearing one sticks). Both derive from bundle
+  # membership only when the field is entirely absent, i.e. a brand-new
+  # dataset -- they start out identical, then diverge as each is hand-edited
+  # independently. To re-derive later, delete the field in the JSON and rebuild.
+  bundles <- source_to_bundles[[source_name]]
+  if (is.null(bundles)) bundles <- character(0)
+  bundle_labels <- sort(unique(vapply(bundles, format_bundle_label, character(1))))
+
+  if (source_name %in% existing_search_terms_present) {
+    search_terms <- existing_search_terms[[source_name]]
   } else {
-    bundles <- source_to_bundles[[source_name]]
-    if (is.null(bundles)) bundles <- character(0)
-    category <- sort(unique(vapply(bundles, format_category, character(1))))
+    search_terms <- bundle_labels
+  }
+
+  if (source_name %in% existing_bucket_present) {
+    bucket <- existing_bucket[[source_name]]
+  } else {
+    bucket <- bundle_labels
   }
 
   cat(sprintf("  Indexing %s (%d/%d)\n", source_name, i, length(source_dirs)))
@@ -1366,7 +1385,8 @@ index_datasets <- lapply(index_source_idx, function(i) {
     data_url = first_source$url %||% "",
     data_dictionary = sprintf("https://pophive.github.io/Ingest/#%s", section_id),
     latest_date = get_latest_date(source_dir),
-    category = I(category),
+    search_terms = I(search_terms),
+    bucket = I(bucket),
     summary = if (nchar(dataset_summary) > 0) dataset_summary else NA
   )
   entry$files <- I(files_entry)

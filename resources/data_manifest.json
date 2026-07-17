@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-15T09:30:29Z",
+  "generated": "2026-07-17T09:31:34Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -13590,6 +13590,409 @@
         }
       ]
     },
+    "epic_diarrhea": {
+      "name": "epic_diarrhea",
+      "display_name": "Epic Diarrhea",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
+      "standard_files": [
+        {
+          "filename": "data_weekly.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Age group.",
+              "measure_type": "integer",
+              "unit": "years"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_n_ed_diarrhea",
+              "short_name": "Diarrhea ED Encounters (Weekly)",
+              "description": "Number of ED encounters with all-cause diarrhea diagnoses, weekly.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_ed_encounters_weekly",
+              "short_name": "All-Cause ED Encounters (Weekly)",
+              "description": "Total number of weekly emergency department encounters for any cause.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_pct_ed_diarrhea",
+              "short_name": "Diarrhea ED Encounters (%, Weekly)",
+              "description": "Percentage of ED encounters attributable to all-cause diarrhea, weekly.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_suppressed_flag_ed_diarrhea",
+              "short_name": "Diarrhea Count Suppressed? (Weekly)",
+              "description": "Binary indicator: 1 if the weekly diarrhea ED encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_ed_encounters_weekly",
+              "short_name": "All Encounters Count Suppressed? (ED, Weekly)",
+              "description": "Binary indicator: 1 if the all-cause weekly ED encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_n_all_diarrhea",
+              "short_name": "Diarrhea Encounters (All Encounters)",
+              "description": "Number of encounters (any type, not just ED) with all-cause diarrhea diagnoses.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_encounters_total_weekly",
+              "short_name": "All Encounters (Any Reason, Weekly)",
+              "description": "Total number of weekly encounters for any reason.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_pct_all_diarrhea",
+              "short_name": "Diarrhea Encounters (All Encounters, %)",
+              "description": "Percentage of all encounters (any type) attributable to all-cause diarrhea.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_suppressed_flag_all_diarrhea",
+              "short_name": "All-Encounters Diarrhea Count Suppressed?",
+              "description": "Binary indicator: 1 if the all-encounters diarrhea count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_encounters_total_weekly",
+              "short_name": "Total Weekly Encounters Count Suppressed?",
+              "description": "Binary indicator: 1 if the total weekly encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "monthly.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Age group.",
+              "measure_type": "integer",
+              "unit": "years"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_n_diarrhea",
+              "short_name": "Diarrhea ED Encounters (Monthly)",
+              "description": "Number of ED encounters with all-cause diarrhea diagnoses.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_all_encounters_monthly",
+              "short_name": "All-Cause ED Encounters (Monthly)",
+              "description": "Total number of monthly emergency department encounters for any cause.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_pct_diarrhea",
+              "short_name": "Diarrhea ED Encounters (%, Monthly)",
+              "description": "Percentage of ED encounters attributable to all-cause diarrhea.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_suppressed_flag_diarrhea",
+              "short_name": "Diarrhea Count Suppressed? (Monthly)",
+              "description": "Binary indicator: 1 if the diarrhea ED encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_all_encounters_monthly",
+              "short_name": "All Encounters Count Suppressed? (Monthly)",
+              "description": "Binary indicator: 1 if the all-cause monthly ED encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "monthly_cyclospora.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_n_cyclospora_positive",
+              "short_name": "Cyclospora Positive Encounters",
+              "description": "Number of encounters with an abnormal (positive) cyclospora lab result.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_cyclospora_tested",
+              "short_name": "Cyclospora Tests Performed",
+              "description": "Number of encounters with a cyclospora lab test performed, regardless of result.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_encounters_total",
+              "short_name": "All Encounters (Any Reason)",
+              "description": "Total number of encounters for any reason, by state and month.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_pct_cyclospora_positive",
+              "short_name": "Cyclospora Percent Positive",
+              "description": "Percent of cyclospora lab tests with an abnormal (positive) result.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_pct_cyclospora_tested",
+              "short_name": "Percent Tested for Cyclospora",
+              "description": "Percent of all encounters that included a cyclospora lab test.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_suppressed_flag_cyclospora_positive",
+              "short_name": "Cyclospora Positive Count Suppressed?",
+              "description": "Binary indicator: 1 if the cyclospora-positive encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_cyclospora_tested",
+              "short_name": "Cyclospora Tested Count Suppressed?",
+              "description": "Binary indicator: 1 if the cyclospora-tested encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_encounters_total",
+              "short_name": "Total Encounters Count Suppressed? (Monthly)",
+              "description": "Binary indicator: 1 if the total monthly encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "weekly_tests.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_n_all_diarrhea",
+              "short_name": "Diarrhea Encounters (All Encounters)",
+              "description": "Number of encounters (any type, not just ED) with all-cause diarrhea diagnoses.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_encounters_total_weekly",
+              "short_name": "All Encounters (Any Reason, Weekly)",
+              "description": "Total number of weekly encounters for any reason.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_cyclospora_positive",
+              "short_name": "Cyclospora Positive Encounters",
+              "description": "Number of encounters with an abnormal (positive) cyclospora lab result.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_cyclospora_tested",
+              "short_name": "Cyclospora Tests Performed",
+              "description": "Number of encounters with a cyclospora lab test performed, regardless of result.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_pct_cyclospora_positive",
+              "short_name": "Cyclospora Percent Positive",
+              "description": "Percent of cyclospora lab tests with an abnormal (positive) result.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_pct_cyclospora_tested",
+              "short_name": "Percent Tested for Cyclospora",
+              "description": "Percent of all encounters that included a cyclospora lab test.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_pct_all_diarrhea",
+              "short_name": "Diarrhea Encounters (All Encounters, %)",
+              "description": "Percentage of all encounters (any type) attributable to all-cause diarrhea.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_suppressed_flag_all_diarrhea",
+              "short_name": "All-Encounters Diarrhea Count Suppressed?",
+              "description": "Binary indicator: 1 if the all-encounters diarrhea count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_encounters_total_weekly",
+              "short_name": "Total Weekly Encounters Count Suppressed?",
+              "description": "Binary indicator: 1 if the total weekly encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_cyclospora_positive",
+              "short_name": "Cyclospora Positive Count Suppressed?",
+              "description": "Binary indicator: 1 if the cyclospora-positive encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_cyclospora_tested",
+              "short_name": "Cyclospora Tested Count Suppressed?",
+              "description": "Binary indicator: 1 if the cyclospora-tested encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            }
+          ]
+        }
+      ]
+    },
+    "epic_health_alerts": {
+      "name": "epic_health_alerts",
+      "display_name": "Epic Health Alerts",
+      "description": "Epic Research Health Alerts (https://www.epicresearch.org/health-alerts/) flag U.S. states and counties experiencing an unusual rise in specific conditions, derived from Epic Cosmos de-identified electronic health record data covering over 300 million patients across more than 1,600 hospitals and health systems. Each alert reports the latest-week case rate per 100,000 and an estimated onset date. The page is a live snapshot showing only currently active alerts rather than a historical archive, so this dataset accumulates one weekly snapshot per ingestion run to construct a time series.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "condition",
+              "short_name": "Alerted Condition",
+              "description": "The condition for which the geography is flagged with an active health alert.",
+              "measure_type": "Categorical",
+              "unit": ""
+            },
+            {
+              "name": "estimated_onset",
+              "short_name": "Estimated Onset Date",
+              "description": "Epic Research's estimated onset date for the alert in this geography (MM-DD-YYYY).",
+              "measure_type": "Date",
+              "unit": ""
+            },
+            {
+              "name": "value",
+              "short_name": "Health Alert Rate (Cases per 100k)",
+              "description": "Latest-week case rate per 100,000 for a geography flagged with an active Epic Research health alert; the alerted condition is given in the `condition` column.",
+              "measure_type": "Rate",
+              "unit": "cases per 100,000"
+            },
+            {
+              "name": "partial_week_flag",
+              "short_name": "Partial Week?",
+              "description": "Binary indicator: 1 if the rate reflects a partial (incomplete) reporting week, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "date_scraped",
+              "short_name": "Date Scraped",
+              "description": "Date (MM-DD-YYYY) on which this script downloaded the Epic Research health-alerts page.",
+              "measure_type": "Date",
+              "unit": ""
+            },
+            {
+              "name": "date_epic_updated",
+              "short_name": "Date Epic Updated",
+              "description": "The 'Last updated' date (MM-DD-YYYY) shown on the Epic Research health-alerts page at scrape time.",
+              "measure_type": "Date",
+              "unit": ""
+            }
+          ]
+        }
+      ]
+    },
     "epic_hepb_vax": {
       "name": "epic_hepb_vax",
       "display_name": "Epic Hepb Vax",
@@ -18059,6 +18462,2265 @@
               "description": "Quarterly age-adjusted death rate from unintentional injuries per 100,000 population.",
               "measure_type": "Rate",
               "unit": "Deaths per 100,000"
+            }
+          ]
+        }
+      ]
+    },
+    "neiss": {
+      "name": "neiss",
+      "display_name": "Neiss",
+      "description": "NEISS is a national probability sample of hospital emergency departments (~100 of the ~5,000+ U.S. hospitals with 24-hour EDs) operated by the U.S. Consumer Product Safety Commission. Each sampled record describes an injury treated in the ED, including patient age, sex, race, Hispanic ethnicity (added 2019), diagnosis, body part, disposition, up to three associated consumer products, and a statistical weight (plus sampling stratum and PSU). Sample weights scale records to national estimates; raw record counts are not nationally representative. This dataset covers treatment years from 2019 through the latest year CPSC has posted (auto-detected at ingest time), aggregated to national (geography='00') annual counts, in wide format: one neiss_n_ (raw sampled count) and one neiss_wt_ (weighted national estimate) column per primary-diagnosis or primary-product-group category. Product groups are reconstructed from NEISS product-code bands and are approximate, not an official CPSC taxonomy. Companion _rate files (data_*_rate.csv.gz) give injury rates per 100,000 population stratified by age and sex only, using the weighted estimate as numerator and a constant national age x sex population (mean of U.S. Census Vintage 2023 estimates, 2020-2023) as denominator.",
+      "standard_files": [
+        {
+          "filename": "data_agegroup_diagnosis.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Patient sex (Male, Female, Unknown).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "race",
+              "short_name": "Race",
+              "description": "Patient race; 'Not stated' means race was not recorded (treat as missing).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "hispanic",
+              "short_name": "Hispanic ethnicity",
+              "description": "Hispanic ethnicity (Hispanic, Non-Hispanic, Unknown); added to NEISS in 2019.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "neiss_n_contusion_or_abrasion",
+              "short_name": "Contusion or abrasion injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of contusion or abrasion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_foreign_body",
+              "short_name": "Foreign body injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of foreign body in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_inter_organ_injury",
+              "short_name": "Internal organ injury injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of internal organ injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_laceration",
+              "short_name": "Laceration injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of laceration in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_poisoning",
+              "short_name": "Poisoning injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of poisoning in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_submersion",
+              "short_name": "Submersion injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of submersion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_amputation",
+              "short_name": "Amputation injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of amputation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_anoxia",
+              "short_name": "Anoxia injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of anoxia in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_aspirated_object",
+              "short_name": "Aspirated object injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of aspirated object in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_avulsion",
+              "short_name": "Avulsion injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of avulsion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_chemical",
+              "short_name": "Chemical burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of chemical burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_scald",
+              "short_name": "Scald burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of scald burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_thermal",
+              "short_name": "Thermal burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of thermal burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_concussion",
+              "short_name": "Concussion injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of concussion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_dental_injury",
+              "short_name": "Dental injury injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dental injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_dislocation",
+              "short_name": "Dislocation injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dislocation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_electric_shock",
+              "short_name": "Electric shock injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of electric shock in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_fracture",
+              "short_name": "Fracture injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of fracture in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_hematoma",
+              "short_name": "Hematoma injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of hematoma in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_hemorrhage",
+              "short_name": "Hemorrhage injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of hemorrhage in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_ingested_object",
+              "short_name": "Ingested object injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of ingested object in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_other_or_not_stated",
+              "short_name": "Other or not stated injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of other or not stated in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_puncture",
+              "short_name": "Puncture injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of puncture in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_strain_sprain",
+              "short_name": "Strain or sprain injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of strain or sprain in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_dermat_or_conj",
+              "short_name": "Dermatitis or conjunctivitis injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dermatitis or conjunctivitis in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_elec",
+              "short_name": "Electrical burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of electrical burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_not_spec",
+              "short_name": "Burns (unspecified) injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of burns (unspecified) in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_crushing",
+              "short_name": "Crushing injury injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of crushing injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_nerve_damage",
+              "short_name": "Nerve damage injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of nerve damage in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_radiation",
+              "short_name": "Radiation burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of radiation burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_contusion_or_abrasion",
+              "short_name": "Contusion or abrasion injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of contusion or abrasion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_foreign_body",
+              "short_name": "Foreign body injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of foreign body in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_inter_organ_injury",
+              "short_name": "Internal organ injury injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of internal organ injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_laceration",
+              "short_name": "Laceration injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of laceration in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_poisoning",
+              "short_name": "Poisoning injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of poisoning in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_submersion",
+              "short_name": "Submersion injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of submersion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_amputation",
+              "short_name": "Amputation injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of amputation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_anoxia",
+              "short_name": "Anoxia injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of anoxia in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_aspirated_object",
+              "short_name": "Aspirated object injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of aspirated object in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_avulsion",
+              "short_name": "Avulsion injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of avulsion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_chemical",
+              "short_name": "Chemical burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of chemical burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_scald",
+              "short_name": "Scald burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of scald burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_thermal",
+              "short_name": "Thermal burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of thermal burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_concussion",
+              "short_name": "Concussion injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of concussion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_dental_injury",
+              "short_name": "Dental injury injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of dental injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_dislocation",
+              "short_name": "Dislocation injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of dislocation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_electric_shock",
+              "short_name": "Electric shock injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of electric shock in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_fracture",
+              "short_name": "Fracture injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of fracture in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_hematoma",
+              "short_name": "Hematoma injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of hematoma in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_hemorrhage",
+              "short_name": "Hemorrhage injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of hemorrhage in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_ingested_object",
+              "short_name": "Ingested object injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of ingested object in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_other_or_not_stated",
+              "short_name": "Other or not stated injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of other or not stated in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_puncture",
+              "short_name": "Puncture injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of puncture in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_strain_sprain",
+              "short_name": "Strain or sprain injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of strain or sprain in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_dermat_or_conj",
+              "short_name": "Dermatitis or conjunctivitis injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of dermatitis or conjunctivitis in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_elec",
+              "short_name": "Electrical burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of electrical burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_not_spec",
+              "short_name": "Burns (unspecified) injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of burns (unspecified) in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_crushing",
+              "short_name": "Crushing injury injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of crushing injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_nerve_damage",
+              "short_name": "Nerve damage injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of nerve damage in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_radiation",
+              "short_name": "Radiation burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of radiation burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            }
+          ]
+        },
+        {
+          "filename": "data_agegroup_diagnosis_rate.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Patient sex (Male, Female, Unknown).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "neiss_rate_amputation",
+              "short_name": "Amputation injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of amputation per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_anoxia",
+              "short_name": "Anoxia injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of anoxia per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_aspirated_object",
+              "short_name": "Aspirated object injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of aspirated object per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_avulsion",
+              "short_name": "Avulsion injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of avulsion per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_chemical",
+              "short_name": "Chemical burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of chemical burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_elec",
+              "short_name": "Electrical burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of electrical burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_not_spec",
+              "short_name": "Burns (unspecified) injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of burns (unspecified) per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_radiation",
+              "short_name": "Radiation burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of radiation burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_scald",
+              "short_name": "Scald burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of scald burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_thermal",
+              "short_name": "Thermal burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of thermal burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_concussion",
+              "short_name": "Concussion injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of concussion per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_contusion_or_abrasion",
+              "short_name": "Contusion or abrasion injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of contusion or abrasion per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_crushing",
+              "short_name": "Crushing injury injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of crushing injury per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_dental_injury",
+              "short_name": "Dental injury injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of dental injury per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_dermat_or_conj",
+              "short_name": "Dermatitis or conjunctivitis injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of dermatitis or conjunctivitis per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_dislocation",
+              "short_name": "Dislocation injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of dislocation per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_electric_shock",
+              "short_name": "Electric shock injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of electric shock per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_foreign_body",
+              "short_name": "Foreign body injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of foreign body per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_fracture",
+              "short_name": "Fracture injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of fracture per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_hematoma",
+              "short_name": "Hematoma injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of hematoma per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_hemorrhage",
+              "short_name": "Hemorrhage injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of hemorrhage per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_ingested_object",
+              "short_name": "Ingested object injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of ingested object per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_inter_organ_injury",
+              "short_name": "Internal organ injury injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of internal organ injury per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_laceration",
+              "short_name": "Laceration injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of laceration per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_nerve_damage",
+              "short_name": "Nerve damage injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of nerve damage per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_other_or_not_stated",
+              "short_name": "Other or not stated injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of other or not stated per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_poisoning",
+              "short_name": "Poisoning injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of poisoning per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_puncture",
+              "short_name": "Puncture injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of puncture per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_strain_sprain",
+              "short_name": "Strain or sprain injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of strain or sprain per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_submersion",
+              "short_name": "Submersion injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of submersion per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            }
+          ]
+        },
+        {
+          "filename": "data_agegroup_product.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Patient sex (Male, Female, Unknown).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "race",
+              "short_name": "Race",
+              "description": "Patient race; 'Not stated' means race was not recorded (treat as missing).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "hispanic",
+              "short_name": "Hispanic ethnicity",
+              "description": "Hispanic ethnicity (Hispanic, Non-Hispanic, Unknown); added to NEISS in 2019.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "neiss_n_personal_use_drugs_misc",
+              "short_name": "Personal use, drugs & misc. injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was personal use, drugs & misc. in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_sports_recreation_activities",
+              "short_name": "Sports & recreation activities injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was sports & recreation activities in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_sports_recreation_equipment_toys",
+              "short_name": "Sports/recreation equipment & toys injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was sports/recreation equipment & toys in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_chemicals",
+              "short_name": "Chemicals injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was chemicals in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_child_nursery_equipment",
+              "short_name": "Child nursery equipment injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was child nursery equipment in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_heating_cooling_ventilation",
+              "short_name": "Heating, cooling & ventilation injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was heating, cooling & ventilation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_home_communication_entertainment_hobby",
+              "short_name": "Home communication, entertainment & hobby injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was home communication, entertainment & hobby in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_home_furnishings_fixtures",
+              "short_name": "Home furnishings & fixtures injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was home furnishings & fixtures in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_housewares",
+              "short_name": "Housewares injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was housewares in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_kitchen_appliances",
+              "short_name": "Kitchen appliances injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was kitchen appliances in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_packaging_containers",
+              "short_name": "Packaging & containers injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was packaging & containers in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_yard_garden_equipment",
+              "short_name": "Yard & garden equipment injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was yard & garden equipment in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_general_household_appliances",
+              "short_name": "General household appliances injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was general household appliances in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_home_workshop_equipment_tools",
+              "short_name": "Home workshop equipment & tools injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was home workshop equipment & tools in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_other_unspecified",
+              "short_name": "Other/unspecified product injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was other/unspecified product in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_home_structures_construction_materials",
+              "short_name": "Home structures & construction materials injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was home structures & construction materials in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_personal_use_drugs_misc",
+              "short_name": "Personal use, drugs & misc. injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was personal use, drugs & misc. in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_sports_recreation_activities",
+              "short_name": "Sports & recreation activities injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was sports & recreation activities in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_sports_recreation_equipment_toys",
+              "short_name": "Sports/recreation equipment & toys injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was sports/recreation equipment & toys in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_chemicals",
+              "short_name": "Chemicals injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was chemicals in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_child_nursery_equipment",
+              "short_name": "Child nursery equipment injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was child nursery equipment in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_heating_cooling_ventilation",
+              "short_name": "Heating, cooling & ventilation injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was heating, cooling & ventilation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_home_communication_entertainment_hobby",
+              "short_name": "Home communication, entertainment & hobby injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was home communication, entertainment & hobby in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_home_furnishings_fixtures",
+              "short_name": "Home furnishings & fixtures injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was home furnishings & fixtures in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_housewares",
+              "short_name": "Housewares injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was housewares in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_kitchen_appliances",
+              "short_name": "Kitchen appliances injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was kitchen appliances in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_packaging_containers",
+              "short_name": "Packaging & containers injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was packaging & containers in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_yard_garden_equipment",
+              "short_name": "Yard & garden equipment injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was yard & garden equipment in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_general_household_appliances",
+              "short_name": "General household appliances injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was general household appliances in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_home_workshop_equipment_tools",
+              "short_name": "Home workshop equipment & tools injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was home workshop equipment & tools in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_other_unspecified",
+              "short_name": "Other/unspecified product injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was other/unspecified product in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_home_structures_construction_materials",
+              "short_name": "Home structures & construction materials injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was home structures & construction materials in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            }
+          ]
+        },
+        {
+          "filename": "data_agegroup_product_rate.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Patient sex (Male, Female, Unknown).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "neiss_rate_chemicals",
+              "short_name": "Chemicals injury rate",
+              "description": "Annual ED injury visits whose primary product was chemicals per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_child_nursery_equipment",
+              "short_name": "Child nursery equipment injury rate",
+              "description": "Annual ED injury visits whose primary product was child nursery equipment per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_general_household_appliances",
+              "short_name": "General household appliances injury rate",
+              "description": "Annual ED injury visits whose primary product was general household appliances per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_heating_cooling_ventilation",
+              "short_name": "Heating, cooling & ventilation injury rate",
+              "description": "Annual ED injury visits whose primary product was heating, cooling & ventilation per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_home_communication_entertainment_hobby",
+              "short_name": "Home communication, entertainment & hobby injury rate",
+              "description": "Annual ED injury visits whose primary product was home communication, entertainment & hobby per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_home_furnishings_fixtures",
+              "short_name": "Home furnishings & fixtures injury rate",
+              "description": "Annual ED injury visits whose primary product was home furnishings & fixtures per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_home_structures_construction_materials",
+              "short_name": "Home structures & construction materials injury rate",
+              "description": "Annual ED injury visits whose primary product was home structures & construction materials per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_home_workshop_equipment_tools",
+              "short_name": "Home workshop equipment & tools injury rate",
+              "description": "Annual ED injury visits whose primary product was home workshop equipment & tools per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_housewares",
+              "short_name": "Housewares injury rate",
+              "description": "Annual ED injury visits whose primary product was housewares per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_kitchen_appliances",
+              "short_name": "Kitchen appliances injury rate",
+              "description": "Annual ED injury visits whose primary product was kitchen appliances per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_other_unspecified",
+              "short_name": "Other/unspecified product injury rate",
+              "description": "Annual ED injury visits whose primary product was other/unspecified product per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_packaging_containers",
+              "short_name": "Packaging & containers injury rate",
+              "description": "Annual ED injury visits whose primary product was packaging & containers per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_personal_use_drugs_misc",
+              "short_name": "Personal use, drugs & misc. injury rate",
+              "description": "Annual ED injury visits whose primary product was personal use, drugs & misc. per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_sports_recreation_activities",
+              "short_name": "Sports & recreation activities injury rate",
+              "description": "Annual ED injury visits whose primary product was sports & recreation activities per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_sports_recreation_equipment_toys",
+              "short_name": "Sports/recreation equipment & toys injury rate",
+              "description": "Annual ED injury visits whose primary product was sports/recreation equipment & toys per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_yard_garden_equipment",
+              "short_name": "Yard & garden equipment injury rate",
+              "description": "Annual ED injury visits whose primary product was yard & garden equipment per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            }
+          ]
+        },
+        {
+          "filename": "data_infant_diagnosis.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Patient sex (Male, Female, Unknown).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "race",
+              "short_name": "Race",
+              "description": "Patient race; 'Not stated' means race was not recorded (treat as missing).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "hispanic",
+              "short_name": "Hispanic ethnicity",
+              "description": "Hispanic ethnicity (Hispanic, Non-Hispanic, Unknown); added to NEISS in 2019.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "neiss_n_fracture",
+              "short_name": "Fracture injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of fracture in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_other_or_not_stated",
+              "short_name": "Other or not stated injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of other or not stated in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_strain_sprain",
+              "short_name": "Strain or sprain injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of strain or sprain in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_laceration",
+              "short_name": "Laceration injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of laceration in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_inter_organ_injury",
+              "short_name": "Internal organ injury injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of internal organ injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_thermal",
+              "short_name": "Thermal burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of thermal burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_contusion_or_abrasion",
+              "short_name": "Contusion or abrasion injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of contusion or abrasion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_poisoning",
+              "short_name": "Poisoning injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of poisoning in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_anoxia",
+              "short_name": "Anoxia injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of anoxia in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_aspirated_object",
+              "short_name": "Aspirated object injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of aspirated object in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_scald",
+              "short_name": "Scald burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of scald burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_dermat_or_conj",
+              "short_name": "Dermatitis or conjunctivitis injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dermatitis or conjunctivitis in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_foreign_body",
+              "short_name": "Foreign body injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of foreign body in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_hematoma",
+              "short_name": "Hematoma injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of hematoma in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_hemorrhage",
+              "short_name": "Hemorrhage injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of hemorrhage in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_ingested_object",
+              "short_name": "Ingested object injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of ingested object in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_chemical",
+              "short_name": "Chemical burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of chemical burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_concussion",
+              "short_name": "Concussion injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of concussion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_crushing",
+              "short_name": "Crushing injury injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of crushing injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_submersion",
+              "short_name": "Submersion injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of submersion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_nerve_damage",
+              "short_name": "Nerve damage injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of nerve damage in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_dislocation",
+              "short_name": "Dislocation injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dislocation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_avulsion",
+              "short_name": "Avulsion injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of avulsion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_dental_injury",
+              "short_name": "Dental injury injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of dental injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_puncture",
+              "short_name": "Puncture injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of puncture in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_amputation",
+              "short_name": "Amputation injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of amputation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_not_spec",
+              "short_name": "Burns (unspecified) injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of burns (unspecified) in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_electric_shock",
+              "short_name": "Electric shock injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of electric shock in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_elec",
+              "short_name": "Electrical burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of electrical burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_burns_radiation",
+              "short_name": "Radiation burns injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits with a primary diagnosis of radiation burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_fracture",
+              "short_name": "Fracture injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of fracture in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_other_or_not_stated",
+              "short_name": "Other or not stated injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of other or not stated in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_strain_sprain",
+              "short_name": "Strain or sprain injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of strain or sprain in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_laceration",
+              "short_name": "Laceration injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of laceration in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_inter_organ_injury",
+              "short_name": "Internal organ injury injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of internal organ injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_thermal",
+              "short_name": "Thermal burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of thermal burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_contusion_or_abrasion",
+              "short_name": "Contusion or abrasion injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of contusion or abrasion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_poisoning",
+              "short_name": "Poisoning injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of poisoning in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_anoxia",
+              "short_name": "Anoxia injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of anoxia in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_aspirated_object",
+              "short_name": "Aspirated object injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of aspirated object in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_scald",
+              "short_name": "Scald burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of scald burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_dermat_or_conj",
+              "short_name": "Dermatitis or conjunctivitis injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of dermatitis or conjunctivitis in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_foreign_body",
+              "short_name": "Foreign body injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of foreign body in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_hematoma",
+              "short_name": "Hematoma injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of hematoma in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_hemorrhage",
+              "short_name": "Hemorrhage injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of hemorrhage in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_ingested_object",
+              "short_name": "Ingested object injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of ingested object in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_chemical",
+              "short_name": "Chemical burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of chemical burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_concussion",
+              "short_name": "Concussion injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of concussion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_crushing",
+              "short_name": "Crushing injury injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of crushing injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_submersion",
+              "short_name": "Submersion injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of submersion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_nerve_damage",
+              "short_name": "Nerve damage injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of nerve damage in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_dislocation",
+              "short_name": "Dislocation injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of dislocation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_avulsion",
+              "short_name": "Avulsion injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of avulsion in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_dental_injury",
+              "short_name": "Dental injury injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of dental injury in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_puncture",
+              "short_name": "Puncture injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of puncture in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_amputation",
+              "short_name": "Amputation injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of amputation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_not_spec",
+              "short_name": "Burns (unspecified) injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of burns (unspecified) in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_electric_shock",
+              "short_name": "Electric shock injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of electric shock in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_elec",
+              "short_name": "Electrical burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of electrical burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_burns_radiation",
+              "short_name": "Radiation burns injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits with a primary diagnosis of radiation burns in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            }
+          ]
+        },
+        {
+          "filename": "data_infant_diagnosis_rate.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Patient sex (Male, Female, Unknown).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "neiss_rate_fracture",
+              "short_name": "Fracture injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of fracture per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_inter_organ_injury",
+              "short_name": "Internal organ injury injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of internal organ injury per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_laceration",
+              "short_name": "Laceration injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of laceration per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_other_or_not_stated",
+              "short_name": "Other or not stated injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of other or not stated per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_strain_sprain",
+              "short_name": "Strain or sprain injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of strain or sprain per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_anoxia",
+              "short_name": "Anoxia injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of anoxia per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_thermal",
+              "short_name": "Thermal burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of thermal burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_contusion_or_abrasion",
+              "short_name": "Contusion or abrasion injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of contusion or abrasion per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_poisoning",
+              "short_name": "Poisoning injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of poisoning per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_aspirated_object",
+              "short_name": "Aspirated object injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of aspirated object per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_chemical",
+              "short_name": "Chemical burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of chemical burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_scald",
+              "short_name": "Scald burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of scald burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_concussion",
+              "short_name": "Concussion injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of concussion per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_dermat_or_conj",
+              "short_name": "Dermatitis or conjunctivitis injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of dermatitis or conjunctivitis per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_foreign_body",
+              "short_name": "Foreign body injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of foreign body per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_hematoma",
+              "short_name": "Hematoma injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of hematoma per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_hemorrhage",
+              "short_name": "Hemorrhage injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of hemorrhage per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_ingested_object",
+              "short_name": "Ingested object injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of ingested object per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_crushing",
+              "short_name": "Crushing injury injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of crushing injury per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_nerve_damage",
+              "short_name": "Nerve damage injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of nerve damage per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_submersion",
+              "short_name": "Submersion injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of submersion per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_dislocation",
+              "short_name": "Dislocation injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of dislocation per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_avulsion",
+              "short_name": "Avulsion injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of avulsion per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_dental_injury",
+              "short_name": "Dental injury injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of dental injury per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_puncture",
+              "short_name": "Puncture injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of puncture per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_amputation",
+              "short_name": "Amputation injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of amputation per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_not_spec",
+              "short_name": "Burns (unspecified) injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of burns (unspecified) per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_electric_shock",
+              "short_name": "Electric shock injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of electric shock per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_elec",
+              "short_name": "Electrical burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of electrical burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_burns_radiation",
+              "short_name": "Radiation burns injury rate",
+              "description": "Annual ED injury visits with a primary diagnosis of radiation burns per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            }
+          ]
+        },
+        {
+          "filename": "data_infant_product.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Patient sex (Male, Female, Unknown).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "race",
+              "short_name": "Race",
+              "description": "Patient race; 'Not stated' means race was not recorded (treat as missing).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "hispanic",
+              "short_name": "Hispanic ethnicity",
+              "description": "Hispanic ethnicity (Hispanic, Non-Hispanic, Unknown); added to NEISS in 2019.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "neiss_n_personal_use_drugs_misc",
+              "short_name": "Personal use, drugs & misc. injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was personal use, drugs & misc. in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_home_furnishings_fixtures",
+              "short_name": "Home furnishings & fixtures injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was home furnishings & fixtures in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_sports_recreation_activities",
+              "short_name": "Sports & recreation activities injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was sports & recreation activities in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_child_nursery_equipment",
+              "short_name": "Child nursery equipment injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was child nursery equipment in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_housewares",
+              "short_name": "Housewares injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was housewares in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_sports_recreation_equipment_toys",
+              "short_name": "Sports/recreation equipment & toys injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was sports/recreation equipment & toys in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_packaging_containers",
+              "short_name": "Packaging & containers injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was packaging & containers in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_home_structures_construction_materials",
+              "short_name": "Home structures & construction materials injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was home structures & construction materials in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_chemicals",
+              "short_name": "Chemicals injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was chemicals in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_home_communication_entertainment_hobby",
+              "short_name": "Home communication, entertainment & hobby injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was home communication, entertainment & hobby in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_kitchen_appliances",
+              "short_name": "Kitchen appliances injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was kitchen appliances in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_home_workshop_equipment_tools",
+              "short_name": "Home workshop equipment & tools injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was home workshop equipment & tools in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_heating_cooling_ventilation",
+              "short_name": "Heating, cooling & ventilation injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was heating, cooling & ventilation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_other_unspecified",
+              "short_name": "Other/unspecified product injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was other/unspecified product in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_yard_garden_equipment",
+              "short_name": "Yard & garden equipment injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was yard & garden equipment in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_n_general_household_appliances",
+              "short_name": "General household appliances injuries (sampled)",
+              "description": "Raw count of NEISS-sampled ED injury visits whose primary product was general household appliances in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_personal_use_drugs_misc",
+              "short_name": "Personal use, drugs & misc. injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was personal use, drugs & misc. in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_home_furnishings_fixtures",
+              "short_name": "Home furnishings & fixtures injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was home furnishings & fixtures in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_sports_recreation_activities",
+              "short_name": "Sports & recreation activities injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was sports & recreation activities in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_child_nursery_equipment",
+              "short_name": "Child nursery equipment injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was child nursery equipment in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_housewares",
+              "short_name": "Housewares injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was housewares in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_sports_recreation_equipment_toys",
+              "short_name": "Sports/recreation equipment & toys injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was sports/recreation equipment & toys in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_packaging_containers",
+              "short_name": "Packaging & containers injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was packaging & containers in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_home_structures_construction_materials",
+              "short_name": "Home structures & construction materials injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was home structures & construction materials in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_chemicals",
+              "short_name": "Chemicals injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was chemicals in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_home_communication_entertainment_hobby",
+              "short_name": "Home communication, entertainment & hobby injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was home communication, entertainment & hobby in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_kitchen_appliances",
+              "short_name": "Kitchen appliances injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was kitchen appliances in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_home_workshop_equipment_tools",
+              "short_name": "Home workshop equipment & tools injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was home workshop equipment & tools in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_heating_cooling_ventilation",
+              "short_name": "Heating, cooling & ventilation injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was heating, cooling & ventilation in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_other_unspecified",
+              "short_name": "Other/unspecified product injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was other/unspecified product in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_yard_garden_equipment",
+              "short_name": "Yard & garden equipment injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was yard & garden equipment in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            },
+            {
+              "name": "neiss_wt_general_household_appliances",
+              "short_name": "General household appliances injuries (national est.)",
+              "description": "Survey-weighted national estimate of ED injury visits whose primary product was general household appliances in the stratum.",
+              "measure_type": "Count",
+              "unit": "visits"
+            }
+          ]
+        },
+        {
+          "filename": "data_infant_product_rate.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Patient age: age in completed months (00-23 months) in the infant files; a standard age band in the age-group files.",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Patient sex (Male, Female, Unknown).",
+              "measure_type": "categorical",
+              "unit": "category"
+            },
+            {
+              "name": "neiss_rate_home_furnishings_fixtures",
+              "short_name": "Home furnishings & fixtures injury rate",
+              "description": "Annual ED injury visits whose primary product was home furnishings & fixtures per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_personal_use_drugs_misc",
+              "short_name": "Personal use, drugs & misc. injury rate",
+              "description": "Annual ED injury visits whose primary product was personal use, drugs & misc. per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_sports_recreation_activities",
+              "short_name": "Sports & recreation activities injury rate",
+              "description": "Annual ED injury visits whose primary product was sports & recreation activities per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_child_nursery_equipment",
+              "short_name": "Child nursery equipment injury rate",
+              "description": "Annual ED injury visits whose primary product was child nursery equipment per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_housewares",
+              "short_name": "Housewares injury rate",
+              "description": "Annual ED injury visits whose primary product was housewares per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_sports_recreation_equipment_toys",
+              "short_name": "Sports/recreation equipment & toys injury rate",
+              "description": "Annual ED injury visits whose primary product was sports/recreation equipment & toys per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_chemicals",
+              "short_name": "Chemicals injury rate",
+              "description": "Annual ED injury visits whose primary product was chemicals per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_home_communication_entertainment_hobby",
+              "short_name": "Home communication, entertainment & hobby injury rate",
+              "description": "Annual ED injury visits whose primary product was home communication, entertainment & hobby per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_home_structures_construction_materials",
+              "short_name": "Home structures & construction materials injury rate",
+              "description": "Annual ED injury visits whose primary product was home structures & construction materials per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_home_workshop_equipment_tools",
+              "short_name": "Home workshop equipment & tools injury rate",
+              "description": "Annual ED injury visits whose primary product was home workshop equipment & tools per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_kitchen_appliances",
+              "short_name": "Kitchen appliances injury rate",
+              "description": "Annual ED injury visits whose primary product was kitchen appliances per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_packaging_containers",
+              "short_name": "Packaging & containers injury rate",
+              "description": "Annual ED injury visits whose primary product was packaging & containers per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_heating_cooling_ventilation",
+              "short_name": "Heating, cooling & ventilation injury rate",
+              "description": "Annual ED injury visits whose primary product was heating, cooling & ventilation per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_other_unspecified",
+              "short_name": "Other/unspecified product injury rate",
+              "description": "Annual ED injury visits whose primary product was other/unspecified product per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_yard_garden_equipment",
+              "short_name": "Yard & garden equipment injury rate",
+              "description": "Annual ED injury visits whose primary product was yard & garden equipment per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
+            },
+            {
+              "name": "neiss_rate_general_household_appliances",
+              "short_name": "General household appliances injury rate",
+              "description": "Annual ED injury visits whose primary product was general household appliances per 100,000 U.S. population, by age and sex.",
+              "measure_type": "Rate",
+              "unit": "Injuries per 100,000 population"
             }
           ]
         }
