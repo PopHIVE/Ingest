@@ -3,7 +3,7 @@
 # Source: https://github.com/PopHIVE/epic_preprocessing
 #         tree/main/data/cosmos_diarrhea
 # Pulls pre-processed standard files from the epic_preprocessing repository.
-# Includes: all-cause diarrhea ED visits (weekly and monthly, by state and
+# Includes: all-cause diarrhea ED visits (weekly, by state and
 # age), all-encounter (non-ED) diarrhea, and cyclospora lab test results.
 # =============================================================================
 
@@ -16,9 +16,7 @@ base_url <- "https://raw.githubusercontent.com/PopHIVE/epic_preprocessing/main/d
 
 # Standard files to download
 standard_files <- c(
-  "monthly.csv.gz",
   "data_weekly.csv.gz",
-  "monthly_cyclospora.csv.gz",
   "weekly_tests.csv.gz"
 )
 
