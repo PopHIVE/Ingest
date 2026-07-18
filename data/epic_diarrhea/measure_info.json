@@ -11,66 +11,6 @@
     "sources": [{ "id": "epic_cosmos" }]
   },
 
-  "epic_n_diarrhea": {
-    "id": "epic_n_diarrhea",
-    "short_name": "Diarrhea ED Encounters (Monthly)",
-    "long_name": "All-Cause Diarrhea Emergency Room (ER) Encounters (Monthly)",
-    "short_description": "Number of ED encounters with all-cause diarrhea diagnoses.",
-    "long_description": "Number of emergency department encounters with all-cause diarrhea ICD-10-CM codes (A00-A09, R19.7), monthly. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5. The weekly equivalent is epic_n_ed_diarrhea.",
-    "measure_type": "Count",
-    "unit": "encounters",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
-  "epic_pct_diarrhea": {
-    "id": "epic_pct_diarrhea",
-    "short_name": "Diarrhea ED Encounters (%, Monthly)",
-    "long_name": "All-Cause Diarrhea Emergency Room (ER) Encounters (%, Monthly)",
-    "short_description": "Percentage of ED encounters attributable to all-cause diarrhea.",
-    "long_description": "Percentage of emergency department encounters attributable to all-cause diarrhea ICD-10-CM codes (A00-A09, R19.7), calculated as the count divided by total all-cause ED encounters for the same geography, age, and month. The weekly equivalent is epic_pct_ed_diarrhea.",
-    "measure_type": "Percent",
-    "unit": "%",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
-  "epic_n_all_encounters_monthly": {
-    "id": "epic_n_all_encounters_monthly",
-    "short_name": "All-Cause ED Encounters (Monthly)",
-    "long_name": "Total Monthly Emergency Department Encounters (All Causes)",
-    "short_description": "Total number of monthly emergency department encounters for any cause.",
-    "long_description": "Total count of monthly emergency department encounters for any cause, used as the denominator for the all-cause diarrhea percentage. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5. The weekly equivalent is epic_n_ed_encounters_weekly.",
-    "measure_type": "Count",
-    "unit": "encounters",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
-  "epic_suppressed_flag_diarrhea": {
-    "id": "epic_suppressed_flag_diarrhea",
-    "short_name": "Diarrhea Count Suppressed? (Monthly)",
-    "long_name": "Suppression flag: fewer than 10 all-cause diarrhea ED encounters in the strata (monthly)",
-    "short_description": "Binary indicator: 1 if the diarrhea ED encounter count was suppressed, 0 otherwise.",
-    "long_description": "Binary indicator: 1 if fewer than 10 all-cause diarrhea emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_diarrhea) is imputed as 5.",
-    "measure_type": "binary",
-    "unit": "",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
-  "epic_suppressed_flag_all_encounters_monthly": {
-    "id": "epic_suppressed_flag_all_encounters_monthly",
-    "short_name": "All Encounters Count Suppressed? (Monthly)",
-    "long_name": "Suppression flag: fewer than 10 all-cause monthly ED encounters in the strata",
-    "short_description": "Binary indicator: 1 if the all-cause monthly ED encounter count was suppressed, 0 otherwise.",
-    "long_description": "Binary indicator: 1 if fewer than 10 all-cause monthly emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_all_encounters_monthly) is imputed as 5.",
-    "measure_type": "binary",
-    "unit": "",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
   "epic_n_ed_diarrhea": {
     "id": "epic_n_ed_diarrhea",
     "short_name": "Diarrhea ED Encounters (Weekly)",
@@ -136,9 +76,10 @@
     "short_name": "Cyclospora Positive Encounters",
     "long_name": "Encounters with an Abnormal (Positive) Cyclospora Lab Result",
     "short_description": "Number of encounters with an abnormal (positive) cyclospora lab result.",
-    "long_description": "Number of encounters with an abnormal (positive) cyclospora lab test result, by state, weekly or monthly. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5. Note: this measure has no age breakdown and is not restricted to emergency department encounters.",
+    "long_description": "Number of encounters with an abnormal (positive) cyclospora lab test result, by state, weekly. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5. Note: this measure has no age breakdown and is not restricted to emergency department encounters.",
     "measure_type": "Count",
     "unit": "encounters",
+    "time_resolution": "Week",
     "sources": [{ "id": "epic_cosmos" }]
   },
 
@@ -147,21 +88,10 @@
     "short_name": "Cyclospora Tests Performed",
     "long_name": "Encounters with a Cyclospora Lab Test Performed",
     "short_description": "Number of encounters with a cyclospora lab test performed, regardless of result.",
-    "long_description": "Number of encounters with a cyclospora lab test performed (any result), by state, weekly or monthly. Used as the denominator for the percent-positive measure. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5. Note: this measure has no age breakdown and is not restricted to emergency department encounters.",
+    "long_description": "Number of encounters with a cyclospora lab test performed (any result), by state, weekly. Used as the denominator for the percent-positive measure. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5. Note: this measure has no age breakdown and is not restricted to emergency department encounters.",
     "measure_type": "Count",
     "unit": "encounters",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
-  "epic_n_encounters_total": {
-    "id": "epic_n_encounters_total",
-    "short_name": "All Encounters (Any Reason)",
-    "long_name": "Total Encounters for Any Reason",
-    "short_description": "Total number of encounters for any reason, by state and month.",
-    "long_description": "Total count of encounters for any reason (not restricted to the emergency department), used as the population denominator for the cyclospora testing rate. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
-    "measure_type": "Count",
-    "unit": "encounters",
-    "time_resolution": "Month",
+    "time_resolution": "Week",
     "sources": [{ "id": "epic_cosmos" }]
   },
 
@@ -173,6 +103,7 @@
     "long_description": "Percentage of cyclospora lab tests returning an abnormal (positive) result, calculated as epic_n_cyclospora_positive divided by epic_n_cyclospora_tested for the same geography and time period.",
     "measure_type": "Percent",
     "unit": "%",
+    "time_resolution": "Week",
     "sources": [{ "id": "epic_cosmos" }]
   },
 
@@ -181,9 +112,10 @@
     "short_name": "Percent Tested for Cyclospora",
     "long_name": "Percent of All Encounters with a Cyclospora Lab Test Performed",
     "short_description": "Percent of all encounters that included a cyclospora lab test.",
-    "long_description": "Percentage of all encounters (any reason) that included a cyclospora lab test, calculated as epic_n_cyclospora_tested divided by the total-encounters denominator for the same geography and time period (epic_n_encounters_total for the monthly file, epic_n_encounters_total_weekly for the weekly file).",
+    "long_description": "Percentage of all encounters (any reason) that included a cyclospora lab test, calculated as epic_n_cyclospora_tested divided by epic_n_encounters_total_weekly for the same geography and time period.",
     "measure_type": "Percent",
     "unit": "%",
+    "time_resolution": "Week",
     "sources": [{ "id": "epic_cosmos" }]
   },
 
@@ -195,6 +127,7 @@
     "long_description": "Binary indicator: 1 if fewer than 10 cyclospora-positive encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_cyclospora_positive) is imputed as 5.",
     "measure_type": "binary",
     "unit": "",
+    "time_resolution": "Week",
     "sources": [{ "id": "epic_cosmos" }]
   },
 
@@ -206,18 +139,7 @@
     "long_description": "Binary indicator: 1 if fewer than 10 encounters with a cyclospora lab test in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_cyclospora_tested) is imputed as 5.",
     "measure_type": "binary",
     "unit": "",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-
-  "epic_suppressed_flag_encounters_total": {
-    "id": "epic_suppressed_flag_encounters_total",
-    "short_name": "Total Encounters Count Suppressed? (Monthly)",
-    "long_name": "Suppression flag: fewer than 10 total monthly encounters in the strata",
-    "short_description": "Binary indicator: 1 if the total monthly encounter count was suppressed, 0 otherwise.",
-    "long_description": "Binary indicator: 1 if fewer than 10 total encounters (any reason) in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_encounters_total) is imputed as 5.",
-    "measure_type": "binary",
-    "unit": "",
-    "time_resolution": "Month",
+    "time_resolution": "Week",
     "sources": [{ "id": "epic_cosmos" }]
   },
 
