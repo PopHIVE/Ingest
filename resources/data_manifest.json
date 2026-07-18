@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-17T09:10:16Z",
+  "generated": "2026-07-18T08:51:43Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -14486,6 +14486,205 @@
               "description": "Indicates whether the n_patients_ob value was suppressed.",
               "measure_type": "Binary",
               "unit": "0/1"
+            }
+          ]
+        }
+      ]
+    },
+    "epic_diarrhea": {
+      "name": "epic_diarrhea",
+      "display_name": "Epic Diarrhea",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
+      "standard_files": [
+        {
+          "filename": "data_weekly.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Age group.",
+              "measure_type": "integer",
+              "unit": "years"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_n_ed_diarrhea",
+              "short_name": "Diarrhea ED Encounters (Weekly)",
+              "description": "Number of ED encounters with all-cause diarrhea diagnoses, weekly.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_ed_encounters_weekly",
+              "short_name": "All-Cause ED Encounters (Weekly)",
+              "description": "Total number of weekly emergency department encounters for any cause.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_pct_ed_diarrhea",
+              "short_name": "Diarrhea ED Encounters (%, Weekly)",
+              "description": "Percentage of ED encounters attributable to all-cause diarrhea, weekly.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_suppressed_flag_ed_diarrhea",
+              "short_name": "Diarrhea Count Suppressed? (Weekly)",
+              "description": "Binary indicator: 1 if the weekly diarrhea ED encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_ed_encounters_weekly",
+              "short_name": "All Encounters Count Suppressed? (ED, Weekly)",
+              "description": "Binary indicator: 1 if the all-cause weekly ED encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_n_all_diarrhea",
+              "short_name": "Diarrhea Encounters (All Encounters)",
+              "description": "Number of encounters (any type, not just ED) with all-cause diarrhea diagnoses.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_encounters_total_weekly",
+              "short_name": "All Encounters (Any Reason, Weekly)",
+              "description": "Total number of weekly encounters for any reason.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_pct_all_diarrhea",
+              "short_name": "Diarrhea Encounters (All Encounters, %)",
+              "description": "Percentage of all encounters (any type) attributable to all-cause diarrhea.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_suppressed_flag_all_diarrhea",
+              "short_name": "All-Encounters Diarrhea Count Suppressed?",
+              "description": "Binary indicator: 1 if the all-encounters diarrhea count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_encounters_total_weekly",
+              "short_name": "Total Weekly Encounters Count Suppressed?",
+              "description": "Binary indicator: 1 if the total weekly encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "weekly_tests.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_n_all_diarrhea",
+              "short_name": "Diarrhea Encounters (All Encounters)",
+              "description": "Number of encounters (any type, not just ED) with all-cause diarrhea diagnoses.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_encounters_total_weekly",
+              "short_name": "All Encounters (Any Reason, Weekly)",
+              "description": "Total number of weekly encounters for any reason.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_cyclospora_positive",
+              "short_name": "Cyclospora Positive Encounters",
+              "description": "Number of encounters with an abnormal (positive) cyclospora lab result.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_cyclospora_tested",
+              "short_name": "Cyclospora Tests Performed",
+              "description": "Number of encounters with a cyclospora lab test performed, regardless of result.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_pct_cyclospora_positive",
+              "short_name": "Cyclospora Percent Positive",
+              "description": "Percent of cyclospora lab tests with an abnormal (positive) result.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_pct_cyclospora_tested",
+              "short_name": "Percent Tested for Cyclospora",
+              "description": "Percent of all encounters that included a cyclospora lab test.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_pct_all_diarrhea",
+              "short_name": "Diarrhea Encounters (All Encounters, %)",
+              "description": "Percentage of all encounters (any type) attributable to all-cause diarrhea.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
+              "name": "epic_suppressed_flag_all_diarrhea",
+              "short_name": "All-Encounters Diarrhea Count Suppressed?",
+              "description": "Binary indicator: 1 if the all-encounters diarrhea count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_encounters_total_weekly",
+              "short_name": "Total Weekly Encounters Count Suppressed?",
+              "description": "Binary indicator: 1 if the total weekly encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_cyclospora_positive",
+              "short_name": "Cyclospora Positive Count Suppressed?",
+              "description": "Binary indicator: 1 if the cyclospora-positive encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_cyclospora_tested",
+              "short_name": "Cyclospora Tested Count Suppressed?",
+              "description": "Binary indicator: 1 if the cyclospora-tested encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
             }
           ]
         }
