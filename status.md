@@ -79,7 +79,7 @@ flowchart LR
     subgraph brfss["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/brfss" target="_blank" rel="noreferrer">brfss</a></strong>`"]
         direction LR
         n6["`data_survey.csv.gz`"]:::pass
-        n7["`data.csv.gz`"]:::pass
+        n7["`data.csv.gz<br/><br/><ul><li><code>type_changed: pct_depression_sample_size, pct_diabetes_sample_size, pct_heavy_drink_sample_size, pct_obesity_sample_size</code></li></ul>`"]:::warn
     end
     subgraph cdc_cfa_rt["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cdc_cfa_rt" target="_blank" rel="noreferrer">cdc_cfa_rt</a></strong>`"]
         direction LR
