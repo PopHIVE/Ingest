@@ -164,3 +164,73 @@ vroom::vroom('../cms_mmd/standard/data_state_county_age_by_race.csv.gz') %>%
          geography %in% c('United States', 'District of Columbia', state.name),
          fips != '52') %>%
   arrow::write_parquet('dist/cms_youth_wellbeing_by_race.parquet')
+
+
+## County Health Rankings -- social determinants of health (state + county)
+# Read all columns as character so sparse measure columns aren't mistyped;
+# numeric coercion happens in pivot_chr().
+chr_state  <- vroom::vroom('../county_health_rankings/standard/data_state.csv.gz',
+                            col_types = vroom::cols(.default = "c"), show_col_types = FALSE)
+chr_county <- vroom::vroom('../county_health_rankings/standard/data_county.csv.gz',
+                            col_types = vroom::cols(.default = "c"), show_col_types = FALSE)
+
+CHR_MEASURES <- c(
+  # environmental_health
+  chr_drinking_water_violations        = "drinking_water_violations",
+  chr_air_pollution_particulate_matter = "air_pollution_particulate_matter",
+  chr_adverse_climate_events           = "adverse_climate_events",
+  # nutrition_and_exercise
+  chr_food_insecurity                  = "food_insecurity",
+  chr_limited_access_to_healthy_foods  = "limited_access_to_healthy_foods",
+  chr_food_environment_index           = "food_environment_index",
+  chr_access_to_exercise_opportunities = "access_to_exercise_opportunities",
+  chr_access_to_parks                  = "access_to_parks",
+  # preventative_health
+  chr_uninsured_children = "uninsured_children",
+  # demographic
+  chr_children_in_poverty                               = "children_in_poverty",
+  chr_children_eligible_for_free_or_reduced_price_lunch  = "free_reduced_lunch_eligible",
+  chr_children_in_single_parent_households               = "single_parent_households",
+  chr_disconnected_youth                                  = "disconnected_youth",
+  chr_child_care_cost_burden                              = "child_care_cost_burden",
+  chr_child_care_centers                                  = "child_care_centers",
+  chr_high_school_graduation                              = "high_school_graduation",
+  chr_high_school_completion                              = "high_school_completion",
+  chr_reading_scores                                      = "reading_scores",
+  chr_math_scores                                         = "math_scores",
+  chr_school_funding_adequacy                             = "school_funding_adequacy",
+  chr_school_segregation                                  = "school_segregation",
+  chr_severe_housing_problems                             = "severe_housing_problems",
+  chr_severe_housing_cost_burden                          = "severe_housing_cost_burden"
+)
+
+# Pivot the wide CHR measure columns to tall (geography, time, measure, value).
+pivot_chr <- function(df, mapping) {
+  present <- intersect(names(mapping), colnames(df))
+  df %>%
+    dplyr::select(geography, time, all_of(present)) %>%
+    rename(!!!setNames(present, unname(mapping[present]))) %>%
+    pivot_longer(
+      cols      = all_of(unname(mapping[present])),
+      names_to  = "measure",
+      values_to = "value"
+    ) %>%
+    mutate(value = suppressWarnings(as.numeric(value))) %>%
+    filter(!is.na(value))
+}
+
+pivot_chr(chr_state, CHR_MEASURES) %>%
+  mutate(time = as.Date(time), source = 'County Health Rankings') %>%
+  dplyr::select(geography, time, measure, source, value) %>%
+  arrange(measure, geography, time) %>%
+  arrow::write_parquet('dist/chr_youth_wellbeing_state.parquet')
+
+pivot_chr(chr_county, CHR_MEASURES) %>%
+  mutate(
+    geography = formatC(as.integer(geography), width = 5, flag = "0"),
+    time      = as.Date(time),
+    source    = 'County Health Rankings'
+  ) %>%
+  dplyr::select(geography, time, measure, source, value) %>%
+  arrange(measure, geography, time) %>%
+  arrow::write_parquet('dist/chr_youth_wellbeing_county.parquet')
