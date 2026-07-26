@@ -54,6 +54,12 @@ ACS5_SUBJECT <- "acs/acs5/subject"
 
 FIRST_YEAR <- 2019L  # schema was different before 2019
 
+# Census ACS tables (medians, aggregates) return these as literal values when
+# an estimate could not be computed (e.g. sample too small), not as a true
+# missing value. Left uncleaned, -666666666 would be read as a real acs_VAL,
+# acs_AGE, acs_INC, etc. observation downstream.
+ACS_NA_CODES <- c(-666666666, -999999999, -222222222, -333333333, -555555555, -888888888)
+
 # Discover the latest available ACS 5-year vintage from the Census API
 # discovery endpoint (api.census.gov/data.json) — no probing loop needed.
 # Falls back to process$last_vintage_year, then FIRST_YEAR, if the call fails.
@@ -116,6 +122,13 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
                          "zip.code.tabulation.area")
       hit <- zcta_variants[zcta_variants %in% names(df)]
       if (length(hit) > 0) names(df)[names(df) == hit[1]] <- "zcta"
+    }
+    if (!is.null(df)) {
+      value_cols <- intersect(vars, names(df))
+      df[value_cols] <- lapply(df[value_cols], function(x) {
+        x <- suppressWarnings(as.numeric(x))
+        replace(x, x %in% ACS_NA_CODES, NA_real_)
+      })
     }
     df
   }
