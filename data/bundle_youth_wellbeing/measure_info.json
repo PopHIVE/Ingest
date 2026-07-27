@@ -1,326 +1,1521 @@
 {
-  "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|geography": {
-    "short_name": "State",
-    "short_description": "State name (e.g. 'California', 'District of Columbia'). This bundle stores full state names in the geography column rather than FIPS codes."
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
   },
-  "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|year": {
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|year": {
     "short_name": "Year",
-    "short_description": "Calendar year of the reporting period."
+    "short_description": "Calendar year of `time`, for convenience."
   },
-  "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|age": {
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|age": {
     "short_name": "Age group",
-    "short_description": "Age group for the reported measure (child/adolescent groups per the Medicaid & CHIP Child Core Set definitions)."
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
   },
-  "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|sex": {
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|sex": {
     "short_name": "Sex",
-    "short_description": "Sex category for the reported measure."
+    "short_description": "Sex stratum. 'All' when the row is not stratified by sex."
   },
-  "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|race_ethnicity": {
-    "short_name": "Race/ethnicity",
-    "short_description": "Race and ethnicity category for the reported measure."
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|race": {
+    "short_name": "Race",
+    "short_description": "Race stratum on the WISQARS scheme. 'All' when not stratified by race. YRBSS race/ethnicity levels are mapped onto this column with Hispanic moved to `ethnicity`. The schemes are not exactly equivalent: YRBSS race levels are single-race non-Hispanic, while WISQARS reports race regardless of ethnicity."
   },
-  "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|payer": {
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|ethnicity": {
+    "short_name": "Ethnicity",
+    "short_description": "Hispanic ethnicity stratum ('Hispanic', 'Non-Hispanic', 'Unknown'). 'All' when not stratified by ethnicity."
+  },
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "wisqars_deaths_drug_poisoning": {
+        "short_name": "Drug poisoning deaths",
+        "long_name": "Deaths: Drug poisoning",
+        "category": "injury",
+        "short_description": "Number of deaths from drug poisoning.",
+        "measure_type": "Count",
+        "unit": "Deaths",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_deaths_firearm_accident": {
+        "short_name": "Firearm (unintentional) deaths",
+        "long_name": "Deaths: Firearm (unintentional)",
+        "category": "injury",
+        "short_description": "Number of deaths from firearm (unintentional).",
+        "measure_type": "Count",
+        "unit": "Deaths",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_deaths_firearm_homicide": {
+        "short_name": "Firearm (homicide) deaths",
+        "long_name": "Deaths: Firearm (homicide)",
+        "category": "injury",
+        "short_description": "Number of deaths from firearm (homicide).",
+        "measure_type": "Count",
+        "unit": "Deaths",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_deaths_firearm_intentional": {
+        "short_name": "Firearm (intentional) deaths",
+        "long_name": "Deaths: Firearm (intentional)",
+        "category": "injury",
+        "short_description": "Number of deaths from firearm (intentional).",
+        "measure_type": "Count",
+        "unit": "Deaths",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_deaths_firearm_suicide": {
+        "short_name": "Firearm (suicide) deaths",
+        "long_name": "Deaths: Firearm (suicide)",
+        "category": "injury",
+        "short_description": "Number of deaths from firearm (suicide).",
+        "measure_type": "Count",
+        "unit": "Deaths",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_deaths_motor_vehicle_traffic": {
+        "short_name": "Motor vehicle, traffic deaths",
+        "long_name": "Deaths: Motor vehicle, traffic",
+        "category": "injury",
+        "short_description": "Number of deaths from motor vehicle, traffic.",
+        "measure_type": "Count",
+        "unit": "Deaths",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_deaths_pedal_cyclist_mv_traffic": {
+        "short_name": "Pedal cyclist (motor vehicle traffic) deaths",
+        "long_name": "Deaths: Pedal cyclist (motor vehicle traffic)",
+        "category": "injury",
+        "short_description": "Number of deaths from pedal cyclist (motor vehicle traffic).",
+        "measure_type": "Count",
+        "unit": "Deaths",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_deaths_pedestrian_mv_traffic": {
+        "short_name": "Pedestrian (motor vehicle traffic) deaths",
+        "long_name": "Deaths: Pedestrian (motor vehicle traffic)",
+        "category": "injury",
+        "short_description": "Number of deaths from pedestrian (motor vehicle traffic).",
+        "measure_type": "Count",
+        "unit": "Deaths",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_rate_drug_poisoning": {
+        "short_name": "Drug poisoning death rate",
+        "long_name": "Death rate: Drug poisoning",
+        "category": "injury",
+        "short_description": "Deaths per 100,000 population from drug poisoning.",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_rate_firearm_accident": {
+        "short_name": "Firearm (unintentional) death rate",
+        "long_name": "Death rate: Firearm (unintentional)",
+        "category": "injury",
+        "short_description": "Deaths per 100,000 population from firearm (unintentional).",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_rate_firearm_homicide": {
+        "short_name": "Firearm (homicide) death rate",
+        "long_name": "Death rate: Firearm (homicide)",
+        "category": "injury",
+        "short_description": "Deaths per 100,000 population from firearm (homicide).",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_rate_firearm_intentional": {
+        "short_name": "Firearm (intentional) death rate",
+        "long_name": "Death rate: Firearm (intentional)",
+        "category": "injury",
+        "short_description": "Deaths per 100,000 population from firearm (intentional).",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_rate_firearm_suicide": {
+        "short_name": "Firearm (suicide) death rate",
+        "long_name": "Death rate: Firearm (suicide)",
+        "category": "injury",
+        "short_description": "Deaths per 100,000 population from firearm (suicide).",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_rate_motor_vehicle_traffic": {
+        "short_name": "Motor vehicle, traffic death rate",
+        "long_name": "Death rate: Motor vehicle, traffic",
+        "category": "injury",
+        "short_description": "Deaths per 100,000 population from motor vehicle, traffic.",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_rate_pedal_cyclist_mv_traffic": {
+        "short_name": "Pedal cyclist (motor vehicle traffic) death rate",
+        "long_name": "Death rate: Pedal cyclist (motor vehicle traffic)",
+        "category": "injury",
+        "short_description": "Deaths per 100,000 population from pedal cyclist (motor vehicle traffic).",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      },
+      "wisqars_rate_pedestrian_mv_traffic": {
+        "short_name": "Pedestrian (motor vehicle traffic) death rate",
+        "long_name": "Death rate: Pedestrian (motor vehicle traffic)",
+        "category": "injury",
+        "short_description": "Deaths per 100,000 population from pedestrian (motor vehicle traffic).",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "wisqars"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/wisqars_state_age_demographics.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "Sex stratum. 'All' when the row is not stratified by sex."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "nhtsa_fatalities": {
+        "sources": [
+          {
+            "id": "nhtsa_fars"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_state_age_sex.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|state": {
+    "short_name": "State abbreviation",
+    "short_description": "Two-letter postal abbreviation of the county's state."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "Sex stratum. 'All' when the row is not stratified by sex."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "nhtsa_fatalities": {
+        "sources": [
+          {
+            "id": "nhtsa_fars"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/nhtsa_county_age_sex.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "Sex stratum. 'All' when the row is not stratified by sex."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|race": {
+    "short_name": "Race",
+    "short_description": "Race stratum on the WISQARS scheme. 'All' when not stratified by race. YRBSS race/ethnicity levels are mapped onto this column with Hispanic moved to `ethnicity`. The schemes are not exactly equivalent: YRBSS race levels are single-race non-Hispanic, while WISQARS reports race regardless of ethnicity."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|ethnicity": {
+    "short_name": "Ethnicity",
+    "short_description": "Hispanic ethnicity stratum ('Hispanic', 'Non-Hispanic', 'Unknown'). 'All' when not stratified by ethnicity."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "pct_attempted_suicide": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_binge_drinking": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_bullied_at_school": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_bullied_electronic": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_carried_gun": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_carried_weapon_school": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_considered_suicide": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_current_alcohol": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_current_marijuana": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_current_rx_opioid_misuse": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_current_smokeless_tobacco": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_drove_drinking": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_early_marijuana": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_cigarette": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_cocaine": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_ecstasy": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_hallucinogens": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_heroin": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_illicit_drug": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_inhalants": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_inject_drug": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_marijuana": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_methamphetamines": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_rx_opioid_misuse": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_ever_vape": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_inactive_60min_5days": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_inactive_all_days": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_injurious_suicide_attempt": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_insufficient_sleep": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_no_breakfast": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_no_breakfast_7days": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_no_daily_pe": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_no_fruit": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_no_pe_classes": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_no_seatbelt": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_no_sports_team": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_no_vegetables": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_not_close_at_school": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_planned_suicide": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_poor_mental_health": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_rode_drinking_driver": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_social_media_daily": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_sports_concussion": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_text_while_driving": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
+      "pct_threatened_weapon_school": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|lcl": {
+    "short_name": "Lower confidence limit",
+    "short_description": "Lower bound of the 95% confidence interval on value, where the source supplies one."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|ucl": {
+    "short_name": "Upper confidence limit",
+    "short_description": "Upper bound of the 95% confidence interval on value, where the source supplies one."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|suppressed": {
+    "short_name": "Suppressed flag",
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+  },
+  "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|not_asked": {
+    "short_name": "Not asked flag",
+    "short_description": "YRBSS only. 1 if the question was not asked in that jurisdiction and year. These rows carry value = 0, which is not an estimate -- filter on not_asked == 0 before using value."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "epic_n_ed_firearm": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_n_ed_heat": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_n_ed_opioid": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_rate_ed_firearm": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_rate_ed_heat": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_rate_ed_opioid": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|suppressed": {
+    "short_name": "Suppressed flag",
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "epic_n_ed_firearm": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_n_ed_heat": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_n_ed_opioid": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_rate_ed_firearm": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_rate_ed_heat": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_rate_ed_opioid": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|suppressed": {
+    "short_name": "Suppressed flag",
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "diabetes_a1c_6_5": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "diabetes_dx_ccw": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "n_patients_chronic": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "obesity_bmi": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "obesity_dx_ccw": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|suppressed": {
+    "short_name": "Suppressed flag",
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|state": {
+    "short_name": "State abbreviation",
+    "short_description": "Two-letter postal abbreviation of the county's state."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "diabetes_a1c_6_5": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "diabetes_dx_ccw": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "n_patients_chronic": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "obesity_bmi": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "obesity_dx_ccw": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|suppressed": {
+    "short_name": "Suppressed flag",
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|payer": {
     "short_name": "Payer",
-    "short_description": "Insurance payer/program for the beneficiaries (Medicaid and CHIP)."
+    "short_description": "Medicaid, CHIP, or Total."
   },
-  "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|outcome_name": {
-    "short_name": "Wellbeing measure",
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|domain": {
+    "short_name": "Measure domain",
+    "short_description": "CMS Core Set domain the measure belongs to."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
     "levels": {
-      "ADHD Medication Management": {},
-      "Follow-Up After ED Visit for Mental Illness": {},
-      "Follow-Up After Hospitalization for Mental Illness": {},
-      "Developmental Screening": {},
-      "Weight Assessment for Children": {},
-      "Adolescent Well-Care Visits": {},
-      "Well-Child Visits (First 15 Months)": {},
-      "Well-Child Visits (First 30 Months)": {},
-      "Children's Access to Primary Care": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|source": {
-    "short_name": "Data source",
-    "levels": {
-      "Medicaid": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|value": {
-    "id": "bundle_youth_wellbeing/dist/medicaid_youth_wellbeing.parquet|value",
-    "short_name": "Medicaid youth wellbeing rate",
-    "long_name": "Medicaid and CHIP Youth Wellbeing Rate",
-    "category": "youth_wellbeing",
-    "short_description": "Percentage of Medicaid and CHIP child beneficiaries who received youth wellbeing services.",
-    "long_description": "State-level youth wellbeing rates for Medicaid and CHIP child beneficiaries, from the Medicaid and CHIP Child Core Set Quality Measures voluntarily reported by states to CMS (2014–2023). Includes adolescent well-care visits (AWC: percent of adolescents who had at least one comprehensive well-care visit), developmental screening (DEV: percent of children screened for developmental delays by age 3), weight assessment and counseling for children (WCC: percent of children with BMI percentile, physical activity counseling, and nutrition counseling documented), well-child visits in the first 15 months (W15), well-child visits ages 3-4 (W34), children's access to primary care (CAP: percent of children who had a visit with a PCP during the measurement year), ADHD medication follow-up (ADD: percent of children prescribed ADHD medication with a follow-up visit within 30 days), follow-up after ED visit for mental illness (FUM: percent of children with a follow-up visit within 30 days after an ED visit for mental illness), and follow-up after hospitalization for mental illness (FUH: percent of children with a follow-up visit within 30 days after hospitalization for mental illness). Reporting is voluntary; not all states report all measures each year.",
-    "measure_type": "Percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "medicaid_quality"
+      "medicaid_amr_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_awc_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_cap_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_ccp_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_dev_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_fpc_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_fua_ch_30d_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_fua_ch_7d_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_fuh_ch_30d_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_fuh_ch_7d_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_ima_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_lsc_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_mma_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_oev_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_ppc_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_w15_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_w30_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_w34_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
+      },
+      "medicaid_wcc_ch_rate": {
+        "sources": [
+          {
+            "id": "medicaid_quality_cms"
+          }
+        ]
       }
-    ]
+    }
   },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_state.parquet|geography": {
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|pct_25": {
+    "short_name": "25th percentile",
+    "short_description": "25th percentile of the measure across reporting states, from CMS."
+  },
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|pct_75": {
+    "short_name": "75th percentile",
+    "short_description": "75th percentile of the measure across reporting states, from CMS."
+  },
+  "bundle_youth_wellbeing/dist/chr_state.parquet|geography": {
     "short_name": "Geography",
-    "short_description": "State name, or 'United States' for the national total. This bundle stores names in the geography column rather than FIPS codes."
+    "short_description": "State or county name; 'United States' for the national total."
   },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_state.parquet|fips": {
+  "bundle_youth_wellbeing/dist/chr_state.parquet|fips": {
     "short_name": "FIPS code",
-    "short_description": "FIPS code identifier ('00' = national, 2-digit = state)."
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
   },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_state.parquet|year": {
+  "bundle_youth_wellbeing/dist/chr_state.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/chr_state.parquet|year": {
     "short_name": "Year",
-    "short_description": "Calendar year of the reporting period."
+    "short_description": "Calendar year of `time`, for convenience."
   },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_state.parquet|age": {
+  "bundle_youth_wellbeing/dist/chr_state.parquet|age": {
     "short_name": "Age group",
-    "short_description": "Age group for the reported measure ('Total' = all ages, '65+ Years', etc.)."
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
   },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_state.parquet|outcome_name": {
-    "short_name": "Condition",
+  "bundle_youth_wellbeing/dist/chr_state.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/chr_state.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/chr_state.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/chr_state.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
     "levels": {
-      "ADHD": {},
-      "Anxiety": {},
-      "Depression": {},
-      "Depressive Disorder": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_state.parquet|source": {
-    "short_name": "Data source",
-    "levels": {
-      "Medicare FFS": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_state.parquet|value": {
-    "id": "bundle_youth_wellbeing/dist/cms_youth_wellbeing_state.parquet|value",
-    "short_name": "Medicare FFS youth wellbeing rate",
-    "long_name": "Medicare Fee-for-Service Youth Wellbeing Condition Prevalence by State and Age",
-    "category": "youth_wellbeing",
-    "short_description": "Prevalence of youth wellbeing conditions among Medicare FFS beneficiaries, by state and age group.",
-    "long_description": "State-level prevalence of youth wellbeing conditions among Medicare Fee-for-Service beneficiaries from the CMS Mapping Medicare Disparities (MMD) by Population Tool. Includes ADHD (attention-deficit/hyperactivity disorder), anxiety, depression, and depressive disorder. Prevalence rates are calculated using ICD-10 diagnosis codes in Medicare claims data following Chronic Conditions Warehouse (CCW) definitions. Stratified by age group.",
-    "measure_type": "Percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "cms_mmd"
-      }
-    ]
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_sex.parquet|geography": {
-    "short_name": "Geography",
-    "short_description": "State name, or 'United States' for the national total. This bundle stores names in the geography column rather than FIPS codes."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_sex.parquet|fips": {
-    "short_name": "FIPS code",
-    "short_description": "FIPS code identifier ('00' = national, 2-digit = state)."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_sex.parquet|year": {
-    "short_name": "Year",
-    "short_description": "Calendar year of the reporting period."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_sex.parquet|age": {
-    "short_name": "Age group",
-    "short_description": "Age group for the reported measure ('Total' = all ages, '65+ Years', etc.)."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_sex.parquet|sex": {
-    "short_name": "Sex",
-    "short_description": "Sex category for the reported measure."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_sex.parquet|outcome_name": {
-    "short_name": "Condition",
-    "levels": {
-      "ADHD": {},
-      "Anxiety": {},
-      "Depression": {},
-      "Depressive Disorder": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_sex.parquet|source": {
-    "short_name": "Data source",
-    "levels": {
-      "Medicare FFS": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_sex.parquet|value": {
-    "id": "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_sex.parquet|value",
-    "short_name": "Medicare FFS youth wellbeing rate by sex",
-    "long_name": "Medicare Fee-for-Service Youth Wellbeing Condition Prevalence by Sex",
-    "category": "youth_wellbeing",
-    "short_description": "Prevalence of youth wellbeing conditions among Medicare FFS beneficiaries, stratified by sex.",
-    "long_description": "State-level prevalence of youth wellbeing conditions among Medicare Fee-for-Service beneficiaries from the CMS Mapping Medicare Disparities (MMD) by Population Tool, stratified by sex. Includes ADHD, anxiety, depression, and depressive disorder. Prevalence rates are calculated using ICD-10 diagnosis codes in Medicare claims data following CCW definitions.",
-    "measure_type": "Percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "cms_mmd"
-      }
-    ]
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_race.parquet|geography": {
-    "short_name": "Geography",
-    "short_description": "State name, or 'United States' for the national total. This bundle stores names in the geography column rather than FIPS codes."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_race.parquet|fips": {
-    "short_name": "FIPS code",
-    "short_description": "FIPS code identifier ('00' = national, 2-digit = state)."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_race.parquet|year": {
-    "short_name": "Year",
-    "short_description": "Calendar year of the reporting period."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_race.parquet|age": {
-    "short_name": "Age group",
-    "short_description": "Age group for the reported measure ('Total' = all ages, '65+ Years', etc.)."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_race.parquet|race_ethnicity": {
-    "short_name": "Race/ethnicity",
-    "short_description": "Race and ethnicity category for the reported measure."
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_race.parquet|outcome_name": {
-    "short_name": "Condition",
-    "levels": {
-      "ADHD": {},
-      "Anxiety": {},
-      "Depression": {},
-      "Depressive Disorder": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_race.parquet|source": {
-    "short_name": "Data source",
-    "levels": {
-      "Medicare FFS": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_race.parquet|value": {
-    "id": "bundle_youth_wellbeing/dist/cms_youth_wellbeing_by_race.parquet|value",
-    "short_name": "Medicare FFS youth wellbeing rate by race/ethnicity",
-    "long_name": "Medicare Fee-for-Service Youth Wellbeing Condition Prevalence by Race and Ethnicity",
-    "category": "youth_wellbeing",
-    "short_description": "Prevalence of youth wellbeing conditions among Medicare FFS beneficiaries, stratified by race and ethnicity.",
-    "long_description": "State-level prevalence of youth wellbeing conditions among Medicare Fee-for-Service beneficiaries from the CMS Mapping Medicare Disparities (MMD) by Population Tool, stratified by race and ethnicity. Includes ADHD, anxiety, depression, and depressive disorder. Prevalence rates are calculated using ICD-10 diagnosis codes in Medicare claims data following CCW definitions.",
-    "measure_type": "Percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "cms_mmd"
-      }
-    ]
-  },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_state.parquet|geography": {
-    "short_name": "Geography (state)",
-    "short_description": "2-digit state FIPS code identifier (\"00\" = national). Unlike the Medicaid/CMS files above, this file stores standard FIPS codes rather than state names."
-  },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_state.parquet|time": {
-    "short_name": "Year",
-    "short_description": "End-of-period date for the annual observation (YYYY-mm-dd)."
-  },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_state.parquet|source": {
-    "short_name": "Data source",
-    "levels": {
-      "County Health Rankings": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_county.parquet|geography": {
-    "short_name": "Geography (county)",
-    "short_description": "5-digit county FIPS code identifier."
-  },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_county.parquet|time": {
-    "short_name": "Year",
-    "short_description": "End-of-period date for the annual observation (YYYY-mm-dd)."
-  },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_county.parquet|source": {
-    "short_name": "Data source",
-    "levels": {
-      "County Health Rankings": {}
-    }
-  },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_state.parquet|measure": {
-    "levels": {
-      "children_in_poverty": {
-        "short_name": "Children in Poverty",
-        "long_name": "Children in Poverty",
-        "category": "demographic",
-        "short_description": "Percentage of people under age 18 in poverty.",
-        "statement": "In {location}, {value}% of children lived in poverty.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
+      "chr_access_to_exercise_opportunities": {
         "sources": [
           {
             "id": "chr"
           }
         ]
       },
-      "free_reduced_lunch_eligible": {
-        "short_name": "Free/Reduced Lunch Eligible",
-        "long_name": "Children Eligible for Free or Reduced Price Lunch",
-        "category": "demographic",
-        "short_description": "Percentage of children enrolled in public schools eligible for free or reduced price lunch.",
-        "statement": "In {location}, {value}% of public school children were eligible for free or reduced price lunch.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
+      "chr_access_to_parks": {
         "sources": [
           {
             "id": "chr"
           }
         ]
       },
-      "single_parent_households": {
-        "short_name": "Single-Parent Households",
-        "long_name": "Children in Single-Parent Households",
-        "category": "demographic",
-        "short_description": "Percentage of children living in a household headed by a single parent.",
-        "statement": "In {location}, {value}% of children lived in a single-parent household.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
+      "chr_air_pollution_particulate_matter": {
         "sources": [
           {
             "id": "chr"
           }
         ]
       },
-      "disconnected_youth": {
-        "short_name": "Disconnected Youth",
-        "long_name": "Disconnected Youth",
-        "category": "demographic",
-        "short_description": "Percentage of teens and young adults ages 16-19 neither working nor in school.",
-        "statement": "In {location}, {value}% of teens and young adults were neither working nor in school.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
+      "chr_child_care_centers": {
         "sources": [
           {
             "id": "chr"
           }
         ]
       },
-      "child_care_cost_burden": {
-        "short_name": "Child Care Cost Burden",
-        "long_name": "Child Care Cost Burden",
-        "category": "demographic",
-        "short_description": "Child care costs for a household with two children as a percent of median household income.",
-        "statement": "In {location}, child care for two children cost {value}% of median household income.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
+      "chr_children_in_poverty": {
         "sources": [
           {
             "id": "chr"
           }
         ]
       },
-      "child_care_centers": {
-        "short_name": "Child Care Centers",
-        "long_name": "Child Care Centers",
-        "category": "demographic",
-        "short_description": "Number of child care centers per 1,000 population under 5 years old.",
-        "statement": "In {location}, there were {value} child care centers per 1,000 children under 5.",
+      "chr_disconnected_youth": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_firearm_fatalities": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_food_environment_index": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_food_insecurity": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_high_school_completion": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_high_school_graduation": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_income_inequality": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_limited_access_to_healthy_foods": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_math_scores": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_other_primary_care_providers": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_primary_care_physicians": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_reading_scores": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_residential_segregation_black_white": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_school_funding_adequacy": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_school_segregation": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_severe_housing_cost_burden": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_severe_housing_problems": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_teen_births": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_uninsured_children": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_access_to_recreational_facilities": {
+        "short_name": "Recreational facilities",
+        "long_name": "Access to recreational facilities",
+        "category": "environment",
+        "short_description": "Recreational facilities per 100,000 population.",
         "measure_type": "Rate",
-        "unit": "Per 1,000 children under 5",
+        "unit": "Per 100,000",
         "time_resolution": "Year",
         "sources": [
           {
@@ -328,59 +1523,13 @@
           }
         ]
       },
-      "uninsured_children": {
-        "short_name": "Uninsured Children",
-        "long_name": "Uninsured Children",
-        "category": "preventative_health",
-        "short_description": "Percentage of children under age 19 without health insurance.",
-        "statement": "In {location}, {value}% of children were uninsured.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "high_school_graduation": {
-        "short_name": "High School Graduation",
-        "long_name": "High School Graduation Rate",
-        "category": "demographic",
-        "short_description": "Percentage of ninth-grade cohort that graduates in four years.",
-        "statement": "In {location}, {value}% of the ninth-grade cohort graduated in four years.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "high_school_completion": {
-        "short_name": "High School Completion",
-        "long_name": "High School Completion (Adults 25+)",
-        "category": "demographic",
-        "short_description": "Percentage of adults ages 25+ with a high school diploma or equivalent.",
-        "statement": "In {location}, {value}% of adults had a high school diploma or equivalent.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "reading_scores": {
-        "short_name": "Reading Scores",
-        "long_name": "Third-Grade Reading Scores",
-        "category": "demographic",
-        "short_description": "Average grade level performance for 3rd graders on English Language Arts standardized tests.",
-        "statement": "In {location}, average 3rd-grade reading performance was {value} grade levels.",
+      "chr_air_pollution_ozone_days": {
+        "short_name": "Ozone days",
+        "long_name": "Days exceeding the ozone standard",
+        "category": "environment",
+        "short_description": "Number of days per year on which ozone exceeded the national standard.",
         "measure_type": "Count",
-        "unit": "Grade level",
+        "unit": "Days",
         "time_resolution": "Year",
         "sources": [
           {
@@ -388,14 +1537,13 @@
           }
         ]
       },
-      "math_scores": {
-        "short_name": "Math Scores",
-        "long_name": "Third-Grade Math Scores",
-        "category": "demographic",
-        "short_description": "Average grade level performance for 3rd graders on math standardized tests.",
-        "statement": "In {location}, average 3rd-grade math performance was {value} grade levels.",
+      "chr_air_pollution_particulate_matter_days": {
+        "short_name": "Particulate matter days",
+        "long_name": "Days exceeding the particulate matter standard",
+        "category": "environment",
+        "short_description": "Number of days per year on which fine particulate matter exceeded the national standard.",
         "measure_type": "Count",
-        "unit": "Grade level",
+        "unit": "Days",
         "time_resolution": "Year",
         "sources": [
           {
@@ -403,14 +1551,13 @@
           }
         ]
       },
-      "school_funding_adequacy": {
-        "short_name": "School Funding Adequacy",
-        "long_name": "School Funding Adequacy",
+      "chr_high_housing_costs": {
+        "short_name": "High housing costs",
+        "long_name": "Households with high housing costs",
         "category": "demographic",
-        "short_description": "Average gap in dollars between actual and required spending per pupil in public school districts.",
-        "statement": "In {location}, the school funding gap was ${value} per pupil.",
-        "measure_type": "Count",
-        "unit": "Dollars per pupil",
+        "short_description": "Proportion of households spending a high share of income on housing, on a 0-1 scale.",
+        "measure_type": "Percent",
+        "unit": "Proportion (0-1)",
         "time_resolution": "Year",
         "sources": [
           {
@@ -418,29 +1565,13 @@
           }
         ]
       },
-      "school_segregation": {
-        "short_name": "School Segregation",
-        "long_name": "School Segregation Index",
+      "chr_inadequate_social_support": {
+        "short_name": "Inadequate social support",
+        "long_name": "Inadequate social support",
         "category": "demographic",
-        "short_description": "Extent to which students of different race/ethnicity groups are unevenly distributed across schools.",
-        "statement": "In {location}, the school segregation index was {value}.",
-        "measure_type": "Count",
-        "unit": "Index (0-1)",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "food_insecurity": {
-        "short_name": "Food Insecurity",
-        "long_name": "Food Insecurity",
-        "category": "nutrition_and_exercise",
-        "short_description": "Percentage of population who lack adequate access to food.",
-        "statement": "In {location}, {value}% of the population was food insecure.",
+        "short_description": "Proportion of adults reporting inadequate social or emotional support, on a 0-1 scale.",
         "measure_type": "Percent",
-        "unit": "Percent",
+        "unit": "Proportion (0-1)",
         "time_resolution": "Year",
         "sources": [
           {
@@ -448,228 +1579,13 @@
           }
         ]
       },
-      "limited_access_to_healthy_foods": {
-        "short_name": "Limited Access to Healthy Foods",
-        "long_name": "Limited Access to Healthy Foods",
-        "category": "nutrition_and_exercise",
-        "short_description": "Percentage of population who are low-income and do not live close to a grocery store.",
-        "statement": "In {location}, {value}% of the population had limited access to healthy foods.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "food_environment_index": {
-        "short_name": "Food Environment Index",
-        "long_name": "Food Environment Index",
-        "category": "nutrition_and_exercise",
-        "short_description": "Index of factors that contribute to a healthy food environment, from 0 (worst) to 10 (best).",
-        "statement": "In {location}, the food environment index was {value} (0-10).",
-        "measure_type": "Count",
-        "unit": "Index (0-10)",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "access_to_exercise_opportunities": {
-        "short_name": "Access to Exercise Opportunities",
-        "long_name": "Access to Exercise Opportunities",
-        "category": "nutrition_and_exercise",
-        "short_description": "Percentage of population with adequate access to locations for physical activity.",
-        "statement": "In {location}, {value}% of the population had adequate access to exercise opportunities.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "access_to_parks": {
-        "short_name": "Access to Parks",
-        "long_name": "Access to Parks",
-        "category": "nutrition_and_exercise",
-        "short_description": "Percentage of the population living within a half mile of a park.",
-        "statement": "In {location}, {value}% of the population lived within a half mile of a park.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "drinking_water_violations": {
-        "short_name": "Drinking Water Violations",
-        "long_name": "Drinking Water Violations",
-        "category": "environmental_health",
-        "short_description": "Indicator of the presence of health-related drinking water violations.",
-        "statement": "In {location}, the drinking water violation indicator was {value}.",
-        "measure_type": "Count",
-        "unit": "Indicator (Yes/No)",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "air_pollution_particulate_matter": {
-        "short_name": "Air Pollution: Particulate Matter",
-        "long_name": "Air Pollution - Particulate Matter (PM2.5)",
-        "category": "environmental_health",
-        "short_description": "Average daily density of fine particulate matter in micrograms per cubic meter (PM2.5).",
-        "statement": "In {location}, average daily PM2.5 density was {value} micrograms per cubic meter.",
-        "measure_type": "Count",
-        "unit": "Micrograms per cubic meter",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "adverse_climate_events": {
-        "short_name": "Adverse Climate Events",
-        "long_name": "Adverse Climate Events",
-        "category": "environmental_health",
-        "short_description": "Indicator of thresholds met for extreme heat, drought, and disaster events over five years.",
-        "statement": "In {location}, {value} adverse climate event thresholds were met over five years.",
-        "measure_type": "Count",
-        "unit": "Count of thresholds met",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "severe_housing_problems": {
-        "short_name": "Severe Housing Problems",
-        "long_name": "Severe Housing Problems",
-        "category": "demographic",
-        "short_description": "Percentage of households with at least 1 of 4 severe housing problems.",
-        "statement": "In {location}, {value}% of households had a severe housing problem.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "severe_housing_cost_burden": {
-        "short_name": "Severe Housing Cost Burden",
-        "long_name": "Severe Housing Cost Burden",
-        "category": "demographic",
-        "short_description": "Percentage of households spending 50%+ of household income on housing.",
-        "statement": "In {location}, {value}% of households spent 50% or more of income on housing.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      }
-    }
-  },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_county.parquet|measure": {
-    "levels": {
-      "children_in_poverty": {
-        "short_name": "Children in Poverty",
-        "long_name": "Children in Poverty",
-        "category": "demographic",
-        "short_description": "Percentage of people under age 18 in poverty.",
-        "statement": "In {location}, {value}% of children lived in poverty.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "free_reduced_lunch_eligible": {
-        "short_name": "Free/Reduced Lunch Eligible",
-        "long_name": "Children Eligible for Free or Reduced Price Lunch",
-        "category": "demographic",
-        "short_description": "Percentage of children enrolled in public schools eligible for free or reduced price lunch.",
-        "statement": "In {location}, {value}% of public school children were eligible for free or reduced price lunch.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "single_parent_households": {
-        "short_name": "Single-Parent Households",
-        "long_name": "Children in Single-Parent Households",
-        "category": "demographic",
-        "short_description": "Percentage of children living in a household headed by a single parent.",
-        "statement": "In {location}, {value}% of children lived in a single-parent household.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "disconnected_youth": {
-        "short_name": "Disconnected Youth",
-        "long_name": "Disconnected Youth",
-        "category": "demographic",
-        "short_description": "Percentage of teens and young adults ages 16-19 neither working nor in school.",
-        "statement": "In {location}, {value}% of teens and young adults were neither working nor in school.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "child_care_cost_burden": {
-        "short_name": "Child Care Cost Burden",
-        "long_name": "Child Care Cost Burden",
-        "category": "demographic",
-        "short_description": "Child care costs for a household with two children as a percent of median household income.",
-        "statement": "In {location}, child care for two children cost {value}% of median household income.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "child_care_centers": {
-        "short_name": "Child Care Centers",
-        "long_name": "Child Care Centers",
-        "category": "demographic",
-        "short_description": "Number of child care centers per 1,000 population under 5 years old.",
-        "statement": "In {location}, there were {value} child care centers per 1,000 children under 5.",
+      "chr_juvenile_arrests": {
+        "short_name": "Juvenile arrests",
+        "long_name": "Juvenile arrest rate",
+        "category": "injury",
+        "short_description": "Juvenile delinquency arrests per 1,000 juveniles.",
         "measure_type": "Rate",
-        "unit": "Per 1,000 children under 5",
+        "unit": "Per 1,000 juveniles",
         "time_resolution": "Year",
         "sources": [
           {
@@ -677,29 +1593,13 @@
           }
         ]
       },
-      "uninsured_children": {
-        "short_name": "Uninsured Children",
-        "long_name": "Uninsured Children",
-        "category": "preventative_health",
-        "short_description": "Percentage of children under age 19 without health insurance.",
-        "statement": "In {location}, {value}% of children were uninsured.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "high_school_graduation": {
-        "short_name": "High School Graduation",
-        "long_name": "High School Graduation Rate",
+      "chr_single_parent_households": {
+        "short_name": "Single-parent households",
+        "long_name": "Single-parent households",
         "category": "demographic",
-        "short_description": "Percentage of ninth-grade cohort that graduates in four years.",
-        "statement": "In {location}, {value}% of the ninth-grade cohort graduated in four years.",
+        "short_description": "Proportion of households headed by a single parent, on a 0-1 scale. Distinct from chr_children_in_single_parent_households, which is measured over children.",
         "measure_type": "Percent",
-        "unit": "Percent",
+        "unit": "Proportion (0-1)",
         "time_resolution": "Year",
         "sources": [
           {
@@ -707,224 +1607,13 @@
           }
         ]
       },
-      "high_school_completion": {
-        "short_name": "High School Completion",
-        "long_name": "High School Completion (Adults 25+)",
-        "category": "demographic",
-        "short_description": "Percentage of adults ages 25+ with a high school diploma or equivalent.",
-        "statement": "In {location}, {value}% of adults had a high school diploma or equivalent.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "reading_scores": {
-        "short_name": "Reading Scores",
-        "long_name": "Third-Grade Reading Scores",
-        "category": "demographic",
-        "short_description": "Average grade level performance for 3rd graders on English Language Arts standardized tests.",
-        "statement": "In {location}, average 3rd-grade reading performance was {value} grade levels.",
-        "measure_type": "Count",
-        "unit": "Grade level",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "math_scores": {
-        "short_name": "Math Scores",
-        "long_name": "Third-Grade Math Scores",
-        "category": "demographic",
-        "short_description": "Average grade level performance for 3rd graders on math standardized tests.",
-        "statement": "In {location}, average 3rd-grade math performance was {value} grade levels.",
-        "measure_type": "Count",
-        "unit": "Grade level",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "school_funding_adequacy": {
-        "short_name": "School Funding Adequacy",
-        "long_name": "School Funding Adequacy",
-        "category": "demographic",
-        "short_description": "Average gap in dollars between actual and required spending per pupil in public school districts.",
-        "statement": "In {location}, the school funding gap was ${value} per pupil.",
-        "measure_type": "Count",
-        "unit": "Dollars per pupil",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "school_segregation": {
-        "short_name": "School Segregation",
-        "long_name": "School Segregation Index",
-        "category": "demographic",
-        "short_description": "Extent to which students of different race/ethnicity groups are unevenly distributed across schools.",
-        "statement": "In {location}, the school segregation index was {value}.",
-        "measure_type": "Count",
-        "unit": "Index (0-1)",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "food_insecurity": {
-        "short_name": "Food Insecurity",
-        "long_name": "Food Insecurity",
-        "category": "nutrition_and_exercise",
-        "short_description": "Percentage of population who lack adequate access to food.",
-        "statement": "In {location}, {value}% of the population was food insecure.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "limited_access_to_healthy_foods": {
-        "short_name": "Limited Access to Healthy Foods",
-        "long_name": "Limited Access to Healthy Foods",
-        "category": "nutrition_and_exercise",
-        "short_description": "Percentage of population who are low-income and do not live close to a grocery store.",
-        "statement": "In {location}, {value}% of the population had limited access to healthy foods.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "food_environment_index": {
-        "short_name": "Food Environment Index",
-        "long_name": "Food Environment Index",
-        "category": "nutrition_and_exercise",
-        "short_description": "Index of factors that contribute to a healthy food environment, from 0 (worst) to 10 (best).",
-        "statement": "In {location}, the food environment index was {value} (0-10).",
-        "measure_type": "Count",
-        "unit": "Index (0-10)",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "access_to_exercise_opportunities": {
-        "short_name": "Access to Exercise Opportunities",
-        "long_name": "Access to Exercise Opportunities",
-        "category": "nutrition_and_exercise",
-        "short_description": "Percentage of population with adequate access to locations for physical activity.",
-        "statement": "In {location}, {value}% of the population had adequate access to exercise opportunities.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "access_to_parks": {
-        "short_name": "Access to Parks",
-        "long_name": "Access to Parks",
-        "category": "nutrition_and_exercise",
-        "short_description": "Percentage of the population living within a half mile of a park.",
-        "statement": "In {location}, {value}% of the population lived within a half mile of a park.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "drinking_water_violations": {
-        "short_name": "Drinking Water Violations",
-        "long_name": "Drinking Water Violations",
-        "category": "environmental_health",
-        "short_description": "Indicator of the presence of health-related drinking water violations.",
-        "statement": "In {location}, the drinking water violation indicator was {value}.",
-        "measure_type": "Count",
-        "unit": "Indicator (Yes/No)",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "air_pollution_particulate_matter": {
-        "short_name": "Air Pollution: Particulate Matter",
-        "long_name": "Air Pollution - Particulate Matter (PM2.5)",
-        "category": "environmental_health",
-        "short_description": "Average daily density of fine particulate matter in micrograms per cubic meter (PM2.5).",
-        "statement": "In {location}, average daily PM2.5 density was {value} micrograms per cubic meter.",
-        "measure_type": "Count",
-        "unit": "Micrograms per cubic meter",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "adverse_climate_events": {
-        "short_name": "Adverse Climate Events",
-        "long_name": "Adverse Climate Events",
-        "category": "environmental_health",
-        "short_description": "Indicator of thresholds met for extreme heat, drought, and disaster events over five years.",
-        "statement": "In {location}, {value} adverse climate event thresholds were met over five years.",
-        "measure_type": "Count",
-        "unit": "Count of thresholds met",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "severe_housing_problems": {
-        "short_name": "Severe Housing Problems",
-        "long_name": "Severe Housing Problems",
-        "category": "demographic",
-        "short_description": "Percentage of households with at least 1 of 4 severe housing problems.",
-        "statement": "In {location}, {value}% of households had a severe housing problem.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "chr"
-          }
-        ]
-      },
-      "severe_housing_cost_burden": {
-        "short_name": "Severe Housing Cost Burden",
-        "long_name": "Severe Housing Cost Burden",
-        "category": "demographic",
-        "short_description": "Percentage of households spending 50%+ of household income on housing.",
-        "statement": "In {location}, {value}% of households spent 50% or more of income on housing.",
-        "measure_type": "Percent",
-        "unit": "Percent",
+      "chr_violent_crime": {
+        "short_name": "Violent crime",
+        "long_name": "Violent crime rate",
+        "category": "injury",
+        "short_description": "Reported violent crime offenses per 100,000 population.",
+        "measure_type": "Rate",
+        "unit": "Per 100,000",
         "time_resolution": "Year",
         "sources": [
           {
@@ -934,39 +1623,606 @@
       }
     }
   },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_state.parquet|value": {
-    "short_name": "Value (state)",
-    "long_name": "Social Determinants of Health Indicator Value",
-    "category": "youth_wellbeing",
-    "short_description": "Numeric value of the indicator named in the measure column; units vary by measure.",
-    "long_description": "Numeric value for the row's measure, from County Health Rankings & Roadmaps. Units depend on the measure (see the measure column's levels).",
-    "measure_type": "Number",
-    "unit": "Varies by measure",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "chr"
-      }
-    ],
-    "id": "bundle_youth_wellbeing/dist/chr_youth_wellbeing_state.parquet|value"
+  "bundle_youth_wellbeing/dist/chr_state.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
   },
-  "bundle_youth_wellbeing/dist/chr_youth_wellbeing_county.parquet|value": {
-    "short_name": "Value (county)",
-    "long_name": "Social Determinants of Health Indicator Value",
-    "category": "youth_wellbeing",
-    "short_description": "Numeric value of the indicator named in the measure column; units vary by measure.",
-    "long_description": "Numeric value for the row's measure, from County Health Rankings & Roadmaps. Units depend on the measure (see the measure column's levels).",
-    "measure_type": "Number",
-    "unit": "Varies by measure",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "chr"
+  "bundle_youth_wellbeing/dist/chr_county.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|state": {
+    "short_name": "State abbreviation",
+    "short_description": "Two-letter postal abbreviation of the county's state."
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "chr_access_to_exercise_opportunities": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_access_to_parks": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_adverse_climate_events": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_air_pollution_particulate_matter": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_child_care_centers": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_children_in_poverty": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_disconnected_youth": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_firearm_fatalities": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_food_environment_index": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_food_insecurity": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_high_school_completion": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_high_school_graduation": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_income_inequality": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_limited_access_to_healthy_foods": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_math_scores": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_other_primary_care_providers": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_primary_care_physicians": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_reading_scores": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_residential_segregation_black_white": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_school_funding_adequacy": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_school_segregation": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_severe_housing_cost_burden": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_severe_housing_problems": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_teen_births": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_uninsured_children": {
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_access_to_recreational_facilities": {
+        "short_name": "Recreational facilities",
+        "long_name": "Access to recreational facilities",
+        "category": "environment",
+        "short_description": "Recreational facilities per 100,000 population.",
+        "measure_type": "Rate",
+        "unit": "Per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_air_pollution_ozone_days": {
+        "short_name": "Ozone days",
+        "long_name": "Days exceeding the ozone standard",
+        "category": "environment",
+        "short_description": "Number of days per year on which ozone exceeded the national standard.",
+        "measure_type": "Count",
+        "unit": "Days",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_air_pollution_particulate_matter_days": {
+        "short_name": "Particulate matter days",
+        "long_name": "Days exceeding the particulate matter standard",
+        "category": "environment",
+        "short_description": "Number of days per year on which fine particulate matter exceeded the national standard.",
+        "measure_type": "Count",
+        "unit": "Days",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_high_housing_costs": {
+        "short_name": "High housing costs",
+        "long_name": "Households with high housing costs",
+        "category": "demographic",
+        "short_description": "Proportion of households spending a high share of income on housing, on a 0-1 scale.",
+        "measure_type": "Percent",
+        "unit": "Proportion (0-1)",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_inadequate_social_support": {
+        "short_name": "Inadequate social support",
+        "long_name": "Inadequate social support",
+        "category": "demographic",
+        "short_description": "Proportion of adults reporting inadequate social or emotional support, on a 0-1 scale.",
+        "measure_type": "Percent",
+        "unit": "Proportion (0-1)",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_juvenile_arrests": {
+        "short_name": "Juvenile arrests",
+        "long_name": "Juvenile arrest rate",
+        "category": "injury",
+        "short_description": "Juvenile delinquency arrests per 1,000 juveniles.",
+        "measure_type": "Rate",
+        "unit": "Per 1,000 juveniles",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_single_parent_households": {
+        "short_name": "Single-parent households",
+        "long_name": "Single-parent households",
+        "category": "demographic",
+        "short_description": "Proportion of households headed by a single parent, on a 0-1 scale. Distinct from chr_children_in_single_parent_households, which is measured over children.",
+        "measure_type": "Percent",
+        "unit": "Proportion (0-1)",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
+      },
+      "chr_violent_crime": {
+        "short_name": "Violent crime",
+        "long_name": "Violent crime rate",
+        "category": "injury",
+        "short_description": "Reported violent crime offenses per 100,000 population.",
+        "measure_type": "Rate",
+        "unit": "Per 100,000",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "chr"
+          }
+        ]
       }
-    ],
-    "id": "bundle_youth_wellbeing/dist/chr_youth_wellbeing_county.parquet|value"
+    }
+  },
+  "bundle_youth_wellbeing/dist/chr_county.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|forecast_day": {
+    "short_name": "Forecast day",
+    "short_description": "0 = observed/current day; 1-5 = days ahead in the forecast."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "heat_risk": {
+        "source_id": "value",
+        "short_name": "HeatRisk index",
+        "long_name": "NOAA/NWS HeatRisk index",
+        "category": "environment",
+        "short_description": "NOAA/NWS HeatRisk index, 0 (little to no risk) to 4 (extreme risk).",
+        "measure_type": "Index",
+        "unit": "Index (0-4)",
+        "time_resolution": "Day",
+        "sources": [
+          {
+            "id": "noaa_wpc_heatrisk"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_state.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|state": {
+    "short_name": "State abbreviation",
+    "short_description": "Two-letter postal abbreviation of the county's state."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|forecast_day": {
+    "short_name": "Forecast day",
+    "short_description": "0 = observed/current day; 1-5 = days ahead in the forecast."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "heat_risk": {
+        "source_id": "value",
+        "short_name": "HeatRisk index",
+        "long_name": "NOAA/NWS HeatRisk index",
+        "category": "environment",
+        "short_description": "NOAA/NWS HeatRisk index, 0 (little to no risk) to 4 (extreme risk).",
+        "measure_type": "Index",
+        "unit": "Index (0-4)",
+        "time_resolution": "Day",
+        "sources": [
+          {
+            "id": "noaa_wpc_heatrisk"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/noaa_heat_risk_county.parquet|low_coverage_flag": {
+    "short_name": "Low coverage flag",
+    "short_description": "NOAA county only. 1 if the county had low grid coverage for the day. NA for most rows."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|vaccine": {
+    "short_name": "Vaccine",
+    "short_description": "Vaccine and dose series, e.g. '>=1 Dose MMR', 'DTaP >=4 Doses', 'Combined 7 Series'."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "pct_vaccinated": {
+        "short_name": "Vaccination coverage",
+        "long_name": "Childhood vaccination coverage",
+        "category": "immunization",
+        "short_description": "Percent of children who had received the vaccine series in `vaccine` by the age in `age`.",
+        "long_description": "Vaccination coverage from the childhood immunization bundle's harmonized file, combining CDC National Immunization Survey (NIS) and CDC SchoolVaxView. The vaccine and dose series is in the `vaccine` column and the assessment age in `age`. Note 11 geography/year/vaccine/age/ source groups are duplicated with differing values upstream, all Varicella at age '5 years' from SchoolVaxView.",
+        "measure_type": "Percent",
+        "unit": "Percent",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "nis"
+          },
+          {
+            "id": "SchoolVaxView"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|lcl": {
+    "short_name": "Lower confidence limit",
+    "short_description": "Lower bound of the 95% confidence interval on value, where the source supplies one."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|ucl": {
+    "short_name": "Upper confidence limit",
+    "short_description": "Upper bound of the 95% confidence interval on value, where the source supplies one."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|sample_size": {
+    "short_name": "Sample size",
+    "short_description": "Number of respondents or children underlying the estimate."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|percent_surveyed": {
+    "short_name": "Percent surveyed",
+    "short_description": "Share of the target population covered by the survey, where reported."
+  },
+  "bundle_youth_wellbeing/dist/immunizations_state_age_vaccine.parquet|survey_type": {
+    "short_name": "Survey type",
+    "short_description": "Survey design used by the reporting jurisdiction (SchoolVaxView)."
   },
   "_sources": {
+    "wisqars": {
+      "name": "Web-based Injury Statistics Query and Reporting System (WISQARS)",
+      "url": "https://wisqars.cdc.gov/",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/injury/",
+      "description": "WISQARS (Web-based Injury Statistics Query and Reporting System) is an interactive, online database that provides fatal and nonfatal injury, violent death, and cost of injury data from a variety of trusted sources. Maintained by CDC's National Center for Injury Prevention and Control, WISQARS enables public health professionals and researchers to access injury-related mortality data from the National Vital Statistics System, nonfatal injury data from the National Electronic Injury Surveillance System (NEISS), and violent death data from the National Violent Death Reporting System (NVDRS). Data are available at national and state levels for various injury mechanisms including motor vehicle crashes, falls, poisonings (including drug overdoses), firearms, and self-harm. WISQARS supports injury surveillance, research, and prevention program planning.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+    },
+    "nhtsa_fars": {
+      "name": "Fatality Analysis Reporting System (FARS)",
+      "url": "https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/",
+      "organization": "National Highway Traffic Safety Administration (NHTSA)",
+      "organization_url": "https://www.nhtsa.gov/",
+      "location": "NHTSA File Downloads — FARS National CSV archives",
+      "location_url": "https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/",
+      "description": "FARS is a nationwide census providing NHTSA, Congress, and the American public with yearly data on fatal injuries suffered in motor vehicle traffic crashes. FARS contains data on all crashes in the United States involving a fatality in a motor vehicle traffic crash on a public road. A fatal crash is one in which a motor vehicle is involved and at least one person dies within 30 days of the crash. Data are collected from police crash reports, state vehicle registration files, state driver licensing files, state highway department data, vital statistics, and other sources. FARS has been operational since 1975 and covers all 50 states, the District of Columbia, and Puerto Rico (national files cover the 50 states and DC).",
+      "restrictions": "Public domain. NHTSA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2025
+    },
+    "yrbss": {
+      "name": "CDC Youth Risk Behavior Surveillance System (YRBSS)",
+      "url": "https://yrbs-explorer.services.cdc.gov/",
+      "date_accessed": 2025,
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/yrbs/",
+      "description": "The Youth Risk Behavior Surveillance System (YRBSS) is a set of school-based surveys conducted by the CDC that monitor health-related behaviors among U.S. high school students. The biennial national, state, and local surveys provide weighted prevalence estimates of behaviors contributing to the leading causes of death and disability. Data were accessed via the YRBS Explorer API. Estimates are provided overall and stratified (separately, not crossed) by sex, race/ethnicity, and grade. Estimates that CDC suppressed (e.g., small sample sizes) are omitted rather than imputed. State estimates are available only for jurisdictions that share data with CDC; Minnesota, Oregon, and Washington are not included, and New York state excludes New York City.",
+      "restrictions": "Public domain. Suggested attribution: Centers for Disease Control and Prevention (CDC). Youth Risk Behavior Surveillance System (YRBSS)."
+    },
+    "epic_cosmos": {
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/",
+      "date_accessed": 2025,
+      "organization": "Epic Systems",
+      "organization_url": "https://www.epic.com/",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
+      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+    },
+    "medicaid_quality_cms": {
+      "name": "Medicaid and CHIP Adult and Child Core Set Quality Measures",
+      "url": "https://data.medicaid.gov/datasets?theme%5B0%5D=Quality",
+      "organization": "Centers for Medicare & Medicaid Services (CMS)",
+      "organization_url": "https://www.medicaid.gov",
+      "location": "Medicaid.gov Open Data – Quality Measures datasets (2014–2023)",
+      "location_url": "https://data.medicaid.gov/datasets?theme%5B0%5D=Quality",
+      "description": "Annual state-level performance data on the Medicaid and CHIP Adult Core Set and Child Core Set quality measures, as voluntarily reported by states to CMS and analyzed by Mathematica via the Quality Measure Reporting (QMR) system. Measures span behavioral health (e.g., follow-up after ED visits for mental illness, substance use disorder treatment), primary and preventive care (e.g., well-child visits, immunizations), maternal and perinatal health (e.g., prenatal and postpartum care, low birthweight), dental health, care of chronic conditions (e.g., diabetes, asthma, hypertension), and long-term services and supports. Each annual dataset includes state rates and national 25th and 75th percentile benchmarks. Data cover federal fiscal years 2014–2023. Reporting is voluntary; not all states report all measures each year. The wide-format standard file contains one row per state-year-payer-domain combination, with each measure-statistic combination as a separate column following the naming convention medicaid_{measure_abbr}_{population}_{sub_metric}_{stat} where population is 'ch' (child) or 'ad' (adult), sub_metric captures time windows or sub-components, and stat is 'rate', 'pct_25', or 'pct_75'.",
+      "restrictions": "Public domain. CMS/Medicaid.gov data is generally not subject to copyright restrictions.",
+      "date_accessed": 2025
+    },
     "chr": {
       "name": "County Health Rankings & Roadmaps",
       "url": "https://www.countyhealthrankings.org",
@@ -974,20 +2230,121 @@
       "organization_url": "https://uwphi.pophealth.wisc.edu",
       "location": "County Health Rankings & Roadmaps Annual Data",
       "location_url": "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation",
-      "description": "The County Health Rankings & Roadmaps (CHR&R) program, a collaboration between the Robert Wood Johnson Foundation and the University of Wisconsin Population Health Institute, compiles county- and state-level measures of health outcomes and social determinants of health. This bundle draws social-determinant-of-health indicators relevant to youth and family wellbeing (economic security, education, mental health/social support, nutrition and exercise access, environmental health, and housing) from CHR&R. Released annually, 2010-present.",
+      "description": "The County Health Rankings & Roadmaps (CHR&R) program, a collaboration between the Robert Wood Johnson Foundation and the University of Wisconsin Population Health Institute, ranks the health of nearly all counties in the nation. The annual rankings measure vital health factors including high school graduation rates, obesity, smoking, unemployment, access to healthy foods, the quality of air and water, income inequality, and teen births that influence how long and how well we live. Data are released annually and cover all U.S. counties. Raw data are publicly available through the Zenodo repository (https://doi.org/10.5281/zenodo.18157681) and span release years 2010 through the present.",
       "restrictions": "CC BY 4.0. Attribution required. Cite as: University of Wisconsin Population Health Institute. County Health Rankings & Roadmaps. https://www.countyhealthrankings.org.",
+      "date_accessed": 2025
+    },
+    "noaa_wpc_heatrisk": {
+      "name": "NOAA WPC HeatRisk",
+      "url": "https://www.wpc.ncep.noaa.gov/heatrisk/data/archive/",
+      "organization": "NOAA Weather Prediction Center (WPC)",
+      "organization_url": "https://www.wpc.ncep.noaa.gov/",
+      "location": "HeatRisk GeoTIFF Archive and 7-Day Forecast",
+      "location_url": "https://www.wpc.ncep.noaa.gov/heatrisk/data.html",
+      "description": "The NOAA Weather Prediction Center HeatRisk product provides a daily, gridded (2.5 km) assessment of heat risk across the contiguous United States for the current day and 7-day forecast period. Risk is classified on a 0–4 scale based on the combination of heat intensity and duration relative to local historical thresholds, with consideration for overnight low temperatures and heat index. The archive provides daily GeoTIFF rasters back to August 1, 2024. County- and state-level summaries in this dataset are computed as the mean pixel value within each geographic boundary using area-weighted zonal statistics.",
+      "restrictions": "Public domain. NOAA data is generally not subject to copyright restrictions.",
       "date_accessed": 2026
+    },
+    "nis": {
+      "name": "National Immunization Survey (NIS)",
+      "url": "https://www.cdc.gov/nis/about/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/ncird/",
+      "description": "The National Immunization Surveys (NIS) are a group of telephone surveys used to monitor vaccination coverage among children 19-35 months, teens 13-17 years, flu vaccinations for children 6 months-17 years, and COVID-19 vaccination for children, teens, and adults. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the CDC and authorized by the Public Health Service Act. NIS provides population-based, state and local area estimates of vaccination coverage using a standard survey methodology. Surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll age-eligible children. With parental permission, vaccination providers are contacted to verify immunization records. Children and teens are classified as up to date based on ACIP-recommended vaccine doses.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+    },
+    "SchoolVaxView": {
+      "name": "SchoolVaxView",
+      "url": "https://www.cdc.gov/schoolvaxview/index.html",
+      "location": "Vaccination Coverage and Exemptions among Kindergartners",
+      "location_url": "https://data.cdc.gov/Vaccinations/Vaccination-Coverage-and-Exemptions-among-Kinderga/ijqb-a7ye/about_data",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov",
+      "description": "SchoolVaxView monitors vaccination coverage among U.S. school-aged children. Data are collected annually by states, territories, and select local jurisdictions through school vaccination assessments, which review student vaccination records at kindergarten entry. These data are made available by the CDC.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
     }
   },
   "_bundle": {
     "name": "bundle_youth_wellbeing",
     "sources": [
-      "cms_mmd",
+      "bundle_childhood_immunizations",
+      "county_health_rankings",
+      "epic_chronic",
+      "epic_injury",
       "medicaid_quality",
-      "county_health_rankings"
+      "nhtsa_crash",
+      "noaa_heat_risk",
+      "wisqars",
+      "yrbss"
     ],
     "dist_files": {
-      "medicaid_youth_wellbeing.parquet": {
+      "wisqars_state_age_demographics.parquet": {
+        "sources": [
+          "wisqars"
+        ],
+        "source_files": [
+          "wisqars/standard/data.csv.gz"
+        ]
+      },
+      "nhtsa_state_age_sex.parquet": {
+        "sources": [
+          "nhtsa_crash"
+        ],
+        "source_files": [
+          "nhtsa_crash/standard/data_age_sex.csv.gz"
+        ]
+      },
+      "nhtsa_county_age_sex.parquet": {
+        "sources": [
+          "nhtsa_crash"
+        ],
+        "source_files": [
+          "nhtsa_crash/standard/data_age_sex.csv.gz"
+        ]
+      },
+      "yrbss_state_age_demographics.parquet": {
+        "sources": [
+          "yrbss"
+        ],
+        "source_files": [
+          "yrbss/standard/data_age.csv.gz",
+          "yrbss/standard/data_age_sex.csv.gz",
+          "yrbss/standard/data_age_ethnicity.csv.gz"
+        ]
+      },
+      "epic_injury_state_age_year.parquet": {
+        "sources": [
+          "epic_injury"
+        ],
+        "source_files": [
+          "epic_injury/standard/yearly_injury.csv.gz"
+        ]
+      },
+      "epic_injury_state_age_month.parquet": {
+        "sources": [
+          "epic_injury"
+        ],
+        "source_files": [
+          "epic_injury/standard/monthly_injury.csv.gz"
+        ]
+      },
+      "epic_chronic_state_age.parquet": {
+        "sources": [
+          "epic_chronic"
+        ],
+        "source_files": [
+          "epic_chronic/standard/state_year.csv.gz"
+        ]
+      },
+      "epic_chronic_county_age.parquet": {
+        "sources": [
+          "epic_chronic"
+        ],
+        "source_files": [
+          "epic_chronic/standard/county_year.csv.gz"
+        ]
+      },
+      "medicaid_state_payer.parquet": {
         "sources": [
           "medicaid_quality"
         ],
@@ -995,31 +2352,7 @@
           "medicaid_quality/standard/data.csv.gz"
         ]
       },
-      "cms_youth_wellbeing_state.parquet": {
-        "sources": [
-          "cms_mmd"
-        ],
-        "source_files": [
-          "cms_mmd/standard/data_state_county_age.csv.gz"
-        ]
-      },
-      "cms_youth_wellbeing_by_sex.parquet": {
-        "sources": [
-          "cms_mmd"
-        ],
-        "source_files": [
-          "cms_mmd/standard/data_state_county_age_by_sex.csv.gz"
-        ]
-      },
-      "cms_youth_wellbeing_by_race.parquet": {
-        "sources": [
-          "cms_mmd"
-        ],
-        "source_files": [
-          "cms_mmd/standard/data_state_county_age_by_race.csv.gz"
-        ]
-      },
-      "chr_youth_wellbeing_state.parquet": {
+      "chr_state.parquet": {
         "sources": [
           "county_health_rankings"
         ],
@@ -1027,12 +2360,36 @@
           "county_health_rankings/standard/data_state.csv.gz"
         ]
       },
-      "chr_youth_wellbeing_county.parquet": {
+      "chr_county.parquet": {
         "sources": [
           "county_health_rankings"
         ],
         "source_files": [
           "county_health_rankings/standard/data_county.csv.gz"
+        ]
+      },
+      "noaa_heat_risk_state.parquet": {
+        "sources": [
+          "noaa_heat_risk"
+        ],
+        "source_files": [
+          "noaa_heat_risk/standard/data_state.csv.gz"
+        ]
+      },
+      "noaa_heat_risk_county.parquet": {
+        "sources": [
+          "noaa_heat_risk"
+        ],
+        "source_files": [
+          "noaa_heat_risk/standard/data_county.csv.gz"
+        ]
+      },
+      "immunizations_state_age_vaccine.parquet": {
+        "sources": [
+          "bundle_childhood_immunizations"
+        ],
+        "source_files": [
+          "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet"
         ]
       }
     }
