@@ -34,6 +34,40 @@
     "short_description": "Value for the enteric disease measure identified by the measure column: cumulative year-to-date case counts as reported through the NNDSS, or monthly isolate counts/rates as reported through the CDC BEAM Dashboard."
   },
 
+  "bundle_enteric_diseases/dist/epic_diarrhea.parquet|measure": {
+    "levels": {
+      "epic_n_ed_diarrhea": {},
+      "epic_pct_ed_diarrhea": {},
+      "epic_n_ed_encounters_weekly": {},
+      "epic_n_all_diarrhea": {},
+      "epic_pct_all_diarrhea": {},
+      "epic_n_encounters_total_weekly": {}
+    }
+  },
+  "bundle_enteric_diseases/dist/epic_diarrhea.parquet|value": {
+    "measure_column": "bundle_enteric_diseases/dist/epic_diarrhea.parquet|measure",
+    "short_name": "Value",
+    "short_description": "Value for the Epic Cosmos measure identified by the measure column: weekly encounter counts, or the percentage of encounters attributable to all-cause diarrhea."
+  },
+  "bundle_enteric_diseases/dist/epic_diarrhea.parquet|suppressed_flag": {
+    "short_name": "Suppressed?",
+    "long_name": "Suppression flag for the value in this row",
+    "short_description": "Binary indicator: 1 if the value in this row was suppressed and imputed, 0 otherwise.",
+    "long_description": "Binary indicator: 1 if the count underlying the value in this row had fewer than 10 encounters in the strata and was therefore suppressed and imputed as 5, 0 otherwise. For percentage measures the flag is 1 if either the numerator or the denominator count was suppressed.",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_enteric_diseases/dist/epic_diarrhea.parquet|age": {
+    "short_name": "Age",
+    "long_name": "Age group",
+    "short_description": "Age group.",
+    "long_description": "Age group, based on age in current years. \"Total\" rows cover all ages combined.",
+    "measure_type": "category",
+    "unit": "years",
+    "time_resolution": "Week"
+  },
+
   "bundle_enteric_diseases/dist/resistance_by_agent.parquet|source": {
     "levels": {
       "NARMS Now (Human Clinical)": {},
@@ -107,7 +141,7 @@
 
   "_bundle": {
     "name": "bundle_enteric_diseases",
-    "sources": ["nnds", "beam", "narms"],
+    "sources": ["nnds", "beam", "narms", "epic_diarrhea"],
     "dist_files": {
       "enteric_diseases.parquet": {
         "sources": ["nnds", "beam"],
@@ -129,6 +163,12 @@
         "sources": ["narms"],
         "source_files": [
           "narms/standard/data_resistance_pattern.csv.gz"
+        ]
+      },
+      "epic_diarrhea.parquet": {
+        "sources": ["epic_diarrhea"],
+        "source_files": [
+          "epic_diarrhea/standard/data_weekly.csv.gz"
         ]
       }
     }
@@ -180,6 +220,15 @@
       "organization_url": "https://www.fda.gov",
       "description": "Isolate-level data from HACCP slaughter surveillance, cecal sampling, and minor species programs. National-level only.",
       "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
+    "epic_cosmos": {
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/",
+      "organization": "Epic Systems",
+      "organization_url": "https://www.epic.com/",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. Weekly counts of encounters with all-cause diarrhea ICD-10-CM codes (A00-A09, R19.7) are reported by state and age, both for emergency department encounters and for encounters of any type, alongside all-cause encounter denominators. Due to privacy protections, counts fewer than 10 are suppressed and imputed as 5.",
+      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
       "date_accessed": 2026
     }
   }
