@@ -102,37 +102,37 @@ editions <- list(
   # Note: 2010 (404) and 2013 (404) do not exist on HRSA servers
   list(yr = 2009L, type = "direct_asc",
        data_url   = paste0(base_url, "/ahrf2009.asc"),
-       data_local = "raw/ahrf2009.asc",
+       data_local = "raw/ahrf2009.asc.gz",
        tech_url   = paste0(base_url, "/AHRF_USER_TECH_2009-2010.zip"),
        tech_local = "raw/AHRF_USER_TECH_2009-2010.zip"),
   list(yr = 2011L, type = "direct_asc",
        data_url   = paste0(base_url, "/ahrf2011.asc"),
-       data_local = "raw/ahrf2011.asc",
+       data_local = "raw/ahrf2011.asc.gz",
        tech_url   = paste0(base_url, "/AHRF_USER_TECH_2011-2012.zip"),
        tech_local = "raw/AHRF_USER_TECH_2011-2012.zip"),
   list(yr = 2012L, type = "direct_asc",
        data_url   = paste0(base_url, "/ahrf2012.asc"),
-       data_local = "raw/ahrf2012.asc",
+       data_local = "raw/ahrf2012.asc.gz",
        tech_url   = paste0(base_url, "/AHRF_USER_TECH_2012-2013.zip"),
        tech_local = "raw/AHRF_USER_TECH_2012-2013.zip"),
   list(yr = 2014L, type = "direct_asc",
        data_url   = paste0(base_url, "/ahrf2014.asc"),
-       data_local = "raw/ahrf2014.asc",
+       data_local = "raw/ahrf2014.asc.gz",
        tech_url   = paste0(base_url, "/AHRF_USER_TECH_2013-2014.zip"),
        tech_local = "raw/AHRF_USER_TECH_2013-2014.zip"),
   list(yr = 2015L, type = "direct_asc",
        data_url   = paste0(base_url, "/ahrf2015.asc"),
-       data_local = "raw/ahrf2015.asc",
+       data_local = "raw/ahrf2015.asc.gz",
        tech_url   = paste0(base_url, "/AHRF_USER_TECH_2014-2015.zip"),
        tech_local = "raw/AHRF_USER_TECH_2014-2015.zip"),
   list(yr = 2016L, type = "direct_asc",
        data_url   = paste0(base_url, "/ahrf2016.asc"),
-       data_local = "raw/ahrf2016.asc",
+       data_local = "raw/ahrf2016.asc.gz",
        tech_url   = paste0(base_url, "/AHRF_USER_TECH_2015-2016.zip"),
        tech_local = "raw/AHRF_USER_TECH_2015-2016.zip"),
   list(yr = 2017L, type = "direct_asc",
        data_url   = paste0(base_url, "/ahrf2017.asc"),
-       data_local = "raw/ahrf2017.asc",
+       data_local = "raw/ahrf2017.asc.gz",
        tech_url   = paste0(base_url, "/AHRF_USER_TECH_2016-2017.zip"),
        tech_local = "raw/AHRF_USER_TECH_2016-2017.zip"),
 
@@ -172,10 +172,23 @@ editions <- list(
 safe_download <- function(url, dest) {
   if (file.exists(dest)) return(invisible(NULL))
   dir.create(dirname(dest), showWarnings = FALSE, recursive = TRUE)
-  tryCatch(
-    suppressWarnings(download.file(url, dest, mode = "wb", quiet = TRUE)),
+  # HRSA serves these uncompressed; when dest is a .gz path, fetch to a temp
+  # file first and gzip it into place so the raw store stays compressed.
+  is_gz  <- grepl("\\.gz$", dest)
+  fetch_to <- if (is_gz) tempfile() else dest
+  tryCatch({
+    suppressWarnings(download.file(url, fetch_to, mode = "wb", quiet = TRUE))
+    if (is_gz) {
+      in_con  <- file(fetch_to, "rb")
+      out_con <- gzfile(dest, "wb")
+      writeBin(readBin(in_con, "raw", n = file.size(fetch_to)), out_con)
+      close(in_con); close(out_con)
+      file.remove(fetch_to)
+    }
+  },
     error = function(e) {
       message("Could not download ", basename(dest))
+      if (file.exists(fetch_to)) file.remove(fetch_to)
       if (file.exists(dest)) file.remove(dest)
     }
   )
