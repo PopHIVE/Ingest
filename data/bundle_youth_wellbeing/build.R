@@ -79,10 +79,10 @@ YRBSS_RACE <- c('AI/AN'    = 'American Indian/Alaska Native',
 # Canonical column order; each file carries the subset that applies to it.
 COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
                'age', 'sex', 'race', 'ethnicity', 'payer', 'domain',
-               'vaccine', 'forecast_day',
-               'section', 'focus_area', 'source', 'measure', 'value',
-               'lcl', 'ucl', 'pct_25', 'pct_75', 'sample_size',
-               'suppressed', 'not_asked', 'low_coverage_flag',
+               'vaccine', 'product', 'diagnosis', 'forecast_day',
+               'section', 'focus_area', 'source', 'measure', 'rank', 'value',
+               'pct_of_all', 'lcl', 'ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
+               'suppressed', 'not_asked', 'low_coverage_flag', 'unstable_flag',
                'percent_surveyed', 'survey_type')
 
 # -----------------------------------------------------------------------------
@@ -163,6 +163,14 @@ SPEC <- bind_rows(
 
   # ---- NHTSA ----
   sp('nhtsa', 'Injury and violence', 'Motor vehicle accidents', 'nhtsa_fatalities'),
+
+  # ---- NEISS (not in the workbook; added for the injury page) ----
+  # `product` / `diagnosis` are dimensions, so both datasets carry the same
+  # single measure and are separated by focus_area.
+  sp('neiss_product', 'Injury and violence', 'Consumer product injuries',
+     'neiss_injuries_weighted'),
+  sp('neiss_diagnosis', 'Injury and violence', 'Injury diagnoses',
+     'neiss_injuries_weighted'),
 
   # ---- YRBSS ----
   sp('yrbss', 'Injury and violence', 'Dangerous driving',
@@ -618,7 +626,202 @@ read_parquet('../bundle_childhood_immunizations/dist/overall_rates_by_source.par
 
 
 # =============================================================================
-# 10. MAIN PAGE -- PLACEHOLDER
+# 10. NEISS -- ED injuries under 20, national, age x sex x year
+#
+#   dist/neiss_product_age_sex_year.parquet
+#   dist/neiss_diagnosis_age_sex_year.parquet
+#
+# NEISS is a national probability sample of ~100 EDs, so there is one geography
+# ('United States') and no state breakdown. The source files are stratified by
+# age x sex x race x hispanic; race and ethnicity are summed away here, leaving
+# age x sex x year.
+#
+# AGE LEVELS ARE MUTUALLY EXCLUSIVE, so `age` can be summed freely:
+#   '00 months' through '23 months' -- completed months of age, under 2
+#   '2-4 years' / '5-9 years' / '10-14 years' / '15-19 years'
+# NEISS reports two age schemes and the under-2s appear in both; the coarse
+# 'Under 2 years' band is dropped in favour of the 24 month rows that partition
+# it, so nothing is double counted.
+#
+# ONE MEASURE, so there is no `measure` column: `value` is always the weighted
+# national estimate (the sum of NEISS survey weights).
+#
+# `n_sampled` is the raw count of sampled ED records behind that estimate -- a
+# sample size, not a national figure -- and `unstable_flag` is 1 where it is
+# below 20, the threshold under which CPSC considers a NEISS estimate unstable.
+# Flagged values are real estimates, not suppressed cells, so they are kept
+# as-is; treat them as indicative only. The flag fires on most of the
+# single-month-of-age rows (some rest on one record) and hardly ever on the wider
+# year bands, so anything plotting the month rows should either filter on
+# unstable_flag == 0 or mark them.
+#
+# TOP 10, PER CELL: the 10 categories are chosen independently within each
+# age x sex x year cell, ranked on that cell's weighted estimate,
+# so THE SET OF CATEGORIES VARIES FROM CELL TO CELL. Comparing one category
+# across cells requires care: its absence from a cell means it was outside that
+# cell's top 10, NOT that it was zero. `rank` (1 = most injuries) is the
+# within-cell ordering; ties are broken by category name so the build is
+# reproducible. Categories with no sampled records in a cell are dropped rather
+# than ranked, so a sparse cell can carry fewer than 10.
+#
+# RANK FOLLOWS `value`, NOT `n_sampled`, and the two orderings can disagree,
+# because NEISS weights vary by ED size stratum: large
+# and children's hospitals are sampled at higher rates and so carry smaller
+# weights. A category concentrated in small community EDs can therefore outrank
+# one with more sampled records (10-14 years, all sexes, 2019: strain/sprain is
+# 7,678 records -> 243,444 estimated, fracture 8,772 -> 228,631, so
+# strain/sprain ranks first). The weighted estimate is the national figure, so it
+# is the right thing to rank on; the top-ranked category would differ in 44 of
+# 650 cells if ranked on the sample count instead.
+#
+# The catch-all buckets ('other/unspecified' products, 'other or not stated'
+# diagnoses) are excluded from the ranking -- they are large but say nothing
+# about what caused the injury -- so the 10 categories are all substantive.
+#
+# `pct_of_all` is `value` as a percent of ALL injuries in the same cell, on the
+# weighted scale throughout. The denominator is the summed weighted estimate over
+# every category, catch-all included, which is the cell's total ED-treated
+# injuries -- so it answers "what share of this group's ED injuries came from X".
+# The 10 retained percentages therefore sum to well under 100: that gap is the
+# catch-all plus whatever fell outside the top 10.
+#
+# Sex is Male / Female / Unknown as reported, plus an 'All' total that includes
+# Unknown.
+# =============================================================================
+
+# Under-20 age groups only; 'Unknown' and every adult band are dropped, as is
+# 'Under 2' -- the infant file partitions it into single months. The infant file
+# needs no age filter -- it is entirely under 2.
+NEISS_AGE_GROUP <- c('2-4'   = '2-4 years',   '5-9'   = '5-9 years',
+                     '10-14' = '10-14 years', '15-19' = '15-19 years')
+
+# Catch-all buckets, excluded from the top-10 ranking (see header).
+NEISS_CATCHALL <- c('other_unspecified', 'other_or_not_stated')
+
+# Slugged category -> display label. The product groups are the NEISS code-band
+# names from neiss/ingest.R; the diagnoses are the hadley/neiss code table.
+# Anything not listed (e.g. a category CPSC adds later) falls back to a
+# de-slugged label rather than failing the build.
+NEISS_PRODUCT_LABEL <- c(
+  general_household_appliances           = 'General household appliances',
+  kitchen_appliances                     = 'Kitchen appliances',
+  heating_cooling_ventilation            = 'Heating, cooling & ventilation',
+  housewares                             = 'Housewares',
+  home_communication_entertainment_hobby = 'Home communication, entertainment & hobby',
+  home_furnishings_fixtures              = 'Home furnishings & fixtures',
+  home_structures_construction_materials = 'Home structures & construction materials',
+  home_workshop_equipment_tools          = 'Home workshop equipment & tools',
+  chemicals                              = 'Chemicals',
+  packaging_containers                   = 'Packaging & containers',
+  sports_recreation_equipment_toys       = 'Sports/recreation equipment & toys',
+  yard_garden_equipment                  = 'Yard & garden equipment',
+  child_nursery_equipment                = 'Child nursery equipment',
+  personal_use_drugs_misc                = 'Personal use, drugs & misc.',
+  sports_recreation_activities           = 'Sports & recreation activities',
+  other_unspecified                      = 'Other/unspecified'
+)
+
+NEISS_DIAGNOSIS_LABEL <- c(
+  amputation         = 'Amputation',            anoxia          = 'Anoxia',
+  aspirated_object   = 'Aspirated object',      avulsion        = 'Avulsion',
+  burns_chemical     = 'Burns, chemical',       burns_elec      = 'Burns, electrical',
+  burns_not_spec     = 'Burns, not specified',  burns_radiation = 'Burns, radiation',
+  burns_scald        = 'Burns, scald',          burns_thermal   = 'Burns, thermal',
+  concussion         = 'Concussion',            crushing        = 'Crushing',
+  dental_injury      = 'Dental injury',         dislocation     = 'Dislocation',
+  electric_shock     = 'Electric shock',        foreign_body    = 'Foreign body',
+  fracture           = 'Fracture',              hematoma        = 'Hematoma',
+  hemorrhage         = 'Hemorrhage',            laceration      = 'Laceration',
+  ingested_object    = 'Ingested object',       nerve_damage    = 'Nerve damage',
+  poisoning          = 'Poisoning',             puncture        = 'Puncture',
+  submersion         = 'Submersion',            strain_sprain   = 'Strain or sprain',
+  contusion_or_abrasion = 'Contusion or abrasion',
+  dermat_or_conj        = 'Dermatitis or conjunctivitis',
+  inter_organ_injury    = 'Internal organ injury',
+  other_or_not_stated   = 'Other or not stated'
+)
+
+deslug <- function(x) sub('^(.)', '\\U\\1', gsub('_', ' ', x), perl = TRUE)
+
+# Read one wide NEISS count file, sum race x hispanic away, and go tall on the
+# breakdown category. neiss_n_<cat> / neiss_wt_<cat> become columns n / wt.
+neiss_read <- function(file, scheme) {
+  d <- vroom::vroom(file.path('../neiss/standard', file), show_col_types = FALSE)
+  if (scheme == 'Age group') {
+    d <- d %>%
+      filter(age %in% names(NEISS_AGE_GROUP)) %>%
+      mutate(age = unname(NEISS_AGE_GROUP[age]))
+  }
+  d <- d %>%
+    group_by(time, age, sex) %>%
+    summarize(across(starts_with('neiss_'), ~ sum(.x, na.rm = TRUE)), .groups = 'drop') %>%
+    pivot_longer(starts_with('neiss_'), names_to = c('.value', 'category'),
+                 names_pattern = '^neiss_(n|wt)_(.+)$')
+  bind_rows(
+    d,
+    d %>%
+      group_by(time, age, category) %>%
+      summarize(n = sum(n), wt = sum(wt), .groups = 'drop') %>%
+      mutate(sex = 'All')
+  )
+}
+
+NEISS_CELL <- c('age', 'sex', 'time')
+
+# Youngest to oldest. `age` is left as character, so ordering is applied at
+# arrange() time rather than by making it a factor (which arrow would write as a
+# dictionary-encoded column).
+NEISS_AGE_LEVELS <- c(sprintf('%02d months', 0:23),
+                      '2-4 years', '5-9 years', '10-14 years', '15-19 years')
+
+# Share of the cell total, as a percent. The denominator is every category in
+# the cell -- catch-all included -- and is guarded against an all-zero cell.
+pct_of <- function(x) if (sum(x) > 0) round(100 * x / sum(x), 2) else NA_real_
+
+neiss_build <- function(agegroup_file, infant_file, dataset, cat_col, labels) {
+  d <- bind_rows(neiss_read(agegroup_file, 'Age group'),
+                 neiss_read(infant_file,   'Age in months'))
+  stopifnot(all(d$age %in% NEISS_AGE_LEVELS))
+  d %>%
+    # Percents first, while the catch-all bucket is still present.
+    group_by(across(all_of(NEISS_CELL))) %>%
+    mutate(pct_of_all = pct_of(wt)) %>%
+    ungroup() %>%
+    # Then rank the substantive categories within each cell and keep the top 10.
+    filter(!category %in% NEISS_CATCHALL, n > 0) %>%
+    group_by(across(all_of(NEISS_CELL))) %>%
+    arrange(desc(wt), category, .by_group = TRUE) %>%
+    mutate(rank = row_number()) %>%
+    ungroup() %>%
+    filter(rank <= 10) %>%
+    mutate(!!cat_col := coalesce(unname(labels[category]), deslug(category))) %>%
+    select(-category) %>%
+    # One measure, so no `measure` column in the output; it is carried only long
+    # enough for label() to join section / focus_area on, then dropped.
+    mutate(value         = as.numeric(wt),
+           n_sampled     = n,
+           unstable_flag = as.integer(n < 20),
+           time          = as.Date(time),
+           fips          = '00',
+           measure       = 'neiss_injuries_weighted') %>%
+    select(-n, -wt) %>%
+    as_state() %>%
+    label(dataset, 'CPSC NEISS') %>%
+    select(-measure) %>%
+    arrange(match(age, NEISS_AGE_LEVELS), sex, time, rank)
+}
+
+neiss_build('data_agegroup_product.csv.gz', 'data_infant_product.csv.gz',
+            'neiss_product', 'product', NEISS_PRODUCT_LABEL) %>%
+  write_parquet('dist/neiss_product_age_sex_year.parquet')
+
+neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
+            'neiss_diagnosis', 'diagnosis', NEISS_DIAGNOSIS_LABEL) %>%
+  write_parquet('dist/neiss_diagnosis_age_sex_year.parquet')
+
+
+# =============================================================================
+# 11. MAIN PAGE -- PLACEHOLDER
 # =============================================================================
 # TODO: to be defined; see the 'Main page' tab of the workbook.
 # Expected output: dist/main_*.parquet

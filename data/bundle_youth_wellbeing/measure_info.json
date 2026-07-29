@@ -2174,6 +2174,160 @@
     "short_name": "Survey type",
     "short_description": "Survey design used by the reporting jurisdiction (SchoolVaxView)."
   },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "Always 'United States'. NEISS is a national probability sample of ~100 emergency departments and has no state breakdown."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Always '00' (national)."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|time": {
+    "short_name": "Time",
+    "short_description": "End of the treatment year the count covers (YYYY-12-31)."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|age": {
+    "short_name": "Age",
+    "short_description": "Completed months of age ('00 months' through '23 months') for the under-2s, then '2-4 years', '5-9 years', '10-14 years' and '15-19 years'. The levels are mutually exclusive and can be summed freely: NEISS also reports a coarse 'Under 2 years' band, but it is dropped here in favour of the 24 month rows that partition it. Under 20 only; NEISS 'Unknown' age and all adult bands are dropped."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "'Male', 'Female' or 'Unknown' as reported by NEISS, plus 'All' -- a total that includes Unknown."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|product": {
+    "short_name": "Product group",
+    "short_description": "Consumer product group associated with the injury, from the primary product code. Product groups are reconstructed from NEISS product-code bands and are approximate, not an official CPSC taxonomy. Only each cell's top 10 groups are present, so the set varies from cell to cell; see `rank`."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to. Always 'Injury and violence' in this file."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. Always 'Consumer product injuries' in this file."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from. Always 'CPSC NEISS' in this file."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|rank": {
+    "short_name": "Rank",
+    "short_description": "Rank of the product group within its age x sex x year cell, 1 (most injuries) to 10. Ranked PER CELL, so the set of groups varies from cell to cell -- a group missing from a cell fell outside that cell's top 10, which does not mean it was zero. Ranked on `value`, the weighted national estimate, which is not the same ordering as `n_sampled`: because NEISS weights vary by ED size stratum, a group with fewer sampled records can outrank one with more. Ties are broken by group name. Groups with no sampled records are dropped rather than ranked, so a sparse cell can carry fewer than 10. The catch-all 'other/unspecified' bucket is excluded from the ranking."
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|value": {
+    "short_name": "Injuries (national estimate)",
+    "long_name": "ED-treated injuries, weighted national estimate",
+    "category": "injury",
+    "short_description": "Estimated number of ED-treated injuries nationally, from NEISS survey weights.",
+    "long_description": "Sum of NEISS survey weights for the stratum, which scales the sampled records up to a national estimate of ED-treated injuries. This file carries only the weighted estimate, so there is no `measure` column. Read `n_sampled` alongside it as the sample size, or `unstable_flag` for the CPSC threshold below which an estimate is considered unstable.",
+    "measure_type": "Count",
+    "unit": "Estimated ED visits",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "neiss"
+      }
+    ]
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|n_sampled": {
+    "short_name": "Sampled ED records",
+    "short_description": "Raw count of NEISS sample records behind `value`. A sample size, NOT a national figure. CPSC guidance is that estimates built on fewer than 20 sampled records are unstable; see `unstable_flag`.",
+    "measure_type": "Count",
+    "unit": "Sampled ED records"
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|unstable_flag": {
+    "short_name": "Unstable estimate flag",
+    "short_description": "1 where `n_sampled` is below 20 -- the threshold under which CPSC considers a NEISS estimate unstable -- and 0 otherwise. Flagged rows are real estimates, not suppressed cells, and are kept as reported; treat them as indicative only. The flag fires on most single-month-of-age rows and rarely on the wider year bands, so filter on unstable_flag == 0 or mark the flagged points when plotting the month rows.",
+    "measure_type": "Flag",
+    "unit": "0 or 1"
+  },
+  "bundle_youth_wellbeing/dist/neiss_product_age_sex_year.parquet|pct_of_all": {
+    "short_name": "Percent of all injuries",
+    "short_description": "`value` as a percent of ALL injuries in the same age x sex x year cell, on the weighted scale throughout -- i.e. what share of this group's ED injuries came from this product group. The denominator is the summed weighted estimate over every product group, including the excluded 'other/unspecified' catch-all, so the 10 retained percentages sum to less than 100 (typically ~99 in this file); the gap is the catch-all plus anything outside the top 10.",
+    "measure_type": "Percent",
+    "unit": "Percent"
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "Always 'United States'. NEISS is a national probability sample of ~100 emergency departments and has no state breakdown."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Always '00' (national)."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|time": {
+    "short_name": "Time",
+    "short_description": "End of the treatment year the count covers (YYYY-12-31)."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|age": {
+    "short_name": "Age",
+    "short_description": "Completed months of age ('00 months' through '23 months') for the under-2s, then '2-4 years', '5-9 years', '10-14 years' and '15-19 years'. The levels are mutually exclusive and can be summed freely: NEISS also reports a coarse 'Under 2 years' band, but it is dropped here in favour of the 24 month rows that partition it. Under 20 only; NEISS 'Unknown' age and all adult bands are dropped."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "'Male', 'Female' or 'Unknown' as reported by NEISS, plus 'All' -- a total that includes Unknown."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|diagnosis": {
+    "short_name": "Diagnosis",
+    "short_description": "Primary NEISS diagnosis for the ED visit (e.g. 'Laceration', 'Fracture'). Only each cell's top 10 diagnoses are present, so the set varies from cell to cell; see `rank`."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to. Always 'Injury and violence' in this file."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. Always 'Injury diagnoses' in this file."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from. Always 'CPSC NEISS' in this file."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|rank": {
+    "short_name": "Rank",
+    "short_description": "Rank of the diagnosis within its age x sex x year cell, 1 (most injuries) to 10. Ranked PER CELL, so the set of diagnoses varies from cell to cell -- a diagnosis missing from a cell fell outside that cell's top 10, which does not mean it was zero. Ranked on `value`, the weighted national estimate, which is not the same ordering as `n_sampled`: because NEISS weights vary by ED size stratum, a diagnosis with fewer sampled records can outrank one with more (10-14 years, all sexes, 2019: strain/sprain ranks above fracture on the national estimate despite fewer sampled records). Ties are broken by diagnosis name. Diagnoses with no sampled records are dropped rather than ranked, so a sparse cell can carry fewer than 10. The catch-all 'other or not stated' bucket is excluded from the ranking."
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|value": {
+    "short_name": "Injuries (national estimate)",
+    "long_name": "ED-treated injuries, weighted national estimate",
+    "category": "injury",
+    "short_description": "Estimated number of ED-treated injuries nationally, from NEISS survey weights.",
+    "long_description": "Sum of NEISS survey weights for the stratum, which scales the sampled records up to a national estimate of ED-treated injuries. This file carries only the weighted estimate, so there is no `measure` column. Read `n_sampled` alongside it as the sample size, or `unstable_flag` for the CPSC threshold below which an estimate is considered unstable.",
+    "measure_type": "Count",
+    "unit": "Estimated ED visits",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "neiss"
+      }
+    ]
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|n_sampled": {
+    "short_name": "Sampled ED records",
+    "short_description": "Raw count of NEISS sample records behind `value`. A sample size, NOT a national figure. CPSC guidance is that estimates built on fewer than 20 sampled records are unstable; see `unstable_flag`.",
+    "measure_type": "Count",
+    "unit": "Sampled ED records"
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|unstable_flag": {
+    "short_name": "Unstable estimate flag",
+    "short_description": "1 where `n_sampled` is below 20 -- the threshold under which CPSC considers a NEISS estimate unstable -- and 0 otherwise. Flagged rows are real estimates, not suppressed cells, and are kept as reported; treat them as indicative only. The flag fires on most single-month-of-age rows and rarely on the wider year bands, so filter on unstable_flag == 0 or mark the flagged points when plotting the month rows.",
+    "measure_type": "Flag",
+    "unit": "0 or 1"
+  },
+  "bundle_youth_wellbeing/dist/neiss_diagnosis_age_sex_year.parquet|pct_of_all": {
+    "short_name": "Percent of all injuries",
+    "short_description": "`value` as a percent of ALL injuries in the same age x sex x year cell, on the weighted scale throughout -- i.e. what share of this group's ED injuries carried this diagnosis. The denominator is the summed weighted estimate over every diagnosis, including the excluded 'other or not stated' catch-all, which is large here, so the 10 retained percentages sum to well under 100 (median ~83, and as low as ~33 in the sparsest cells); the gap is the catch-all plus anything outside the top 10.",
+    "measure_type": "Percent",
+    "unit": "Percent"
+  },
   "_sources": {
     "wisqars": {
       "name": "Web-based Injury Statistics Query and Reporting System (WISQARS)",
@@ -2262,6 +2416,17 @@
       "organization_url": "https://www.cdc.gov",
       "description": "SchoolVaxView monitors vaccination coverage among U.S. school-aged children. Data are collected annually by states, territories, and select local jurisdictions through school vaccination assessments, which review student vaccination records at kindergarten entry. These data are made available by the CDC.",
       "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+    },
+    "neiss": {
+      "name": "National Electronic Injury Surveillance System (NEISS)",
+      "url": "https://www.cpsc.gov/Research--Statistics/NEISS-Injury-Data",
+      "organization": "U.S. Consumer Product Safety Commission (CPSC)",
+      "organization_url": "https://www.cpsc.gov/",
+      "location": "NEISS public query / archived data files",
+      "location_url": "https://www.cpsc.gov/cgibin/NEISSQuery/",
+      "description": "NEISS is a national probability sample of hospital emergency departments (~100 of the ~5,000+ U.S. hospitals with 24-hour EDs) operated by the U.S. Consumer Product Safety Commission. Each sampled record describes an injury treated in the ED, including patient age, sex, race, Hispanic ethnicity (added 2019), diagnosis, body part, disposition, up to three associated consumer products, and a statistical weight (plus sampling stratum and PSU). Sample weights scale records to national estimates; raw record counts are not nationally representative. This bundle uses the annual national counts for 2019 onward, restricted to patients under 20 and aggregated over race and Hispanic ethnicity to age x sex x year. Product groups are reconstructed from NEISS product-code bands and are approximate, not an official CPSC taxonomy.",
+      "restrictions": "Public domain. NEISS data are produced by the U.S. Consumer Product Safety Commission and are generally not subject to copyright restrictions.",
+      "date_accessed": 2026
     }
   },
   "_bundle": {
@@ -2272,6 +2437,7 @@
       "epic_chronic",
       "epic_injury",
       "medicaid_quality",
+      "neiss",
       "nhtsa_crash",
       "noaa_heat_risk",
       "wisqars",
@@ -2390,6 +2556,24 @@
         ],
         "source_files": [
           "bundle_childhood_immunizations/dist/overall_rates_by_source.parquet"
+        ]
+      },
+      "neiss_product_age_sex_year.parquet": {
+        "sources": [
+          "neiss"
+        ],
+        "source_files": [
+          "neiss/standard/data_agegroup_product.csv.gz",
+          "neiss/standard/data_infant_product.csv.gz"
+        ]
+      },
+      "neiss_diagnosis_age_sex_year.parquet": {
+        "sources": [
+          "neiss"
+        ],
+        "source_files": [
+          "neiss/standard/data_agegroup_diagnosis.csv.gz",
+          "neiss/standard/data_infant_diagnosis.csv.gz"
         ]
       }
     }
