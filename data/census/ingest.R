@@ -40,11 +40,8 @@ api_key <- Sys.getenv("CENSUS_API_KEY")
 # -----------------------------------------------------------------------------
 # Initialize process record
 # -----------------------------------------------------------------------------
-if (!file.exists("process.json")) {
-  process <- list(last_vintage_year = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+# process.json is created by dcf::dcf_add_source()
+process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
 # Configuration

@@ -20,11 +20,8 @@ library(readr)
 
 `%||%` <- function(a, b) if (!is.null(a)) a else b
 
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+# Initialize process record (process.json is created by dcf::dcf_add_source())
+process <- dcf::dcf_process_record()
 
 # ---------------------------------------------------------------------------
 # Helper: find a file by pattern within a directory (recursive, case-insensitive)

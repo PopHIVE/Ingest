@@ -305,50 +305,14 @@
       { "id": "epic_cosmos" }
     ]
   },
-  "bundle_injury_overdose/dist/heat_related_geography_source.parquet|source": {
-    "short_name": "Data source",
-    "levels": {
-      "Google Health Trends: Heat Stroke": { "source_id": "gtrends_heat+stroke" },
-      "Google Health Trends: Heat Exhaustion": { "source_id": "gtrends_heat+exhaustion" },
-      "Epic Cosmos": { "source_id": "epic_rate_ed_heat" }
-    }
-  },
-  "bundle_injury_overdose/dist/heat_related_geography_source.parquet|value": {
-    "source_id": "bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet|value"
-  },
   "{category}suppressed_heat": {
     "short_name": "Heat value suppressed flag",
     "short_description": "1 if the Epic Cosmos heat-related ED value was suppressed (small count) and imputed, 0 otherwise.",
     "measure_type": "Binary",
     "unit": "Binary indicator",
     "categories": {
-      "bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet|": {},
-      "bundle_injury_overdose/dist/heat_related_geography_source.parquet|": {}
+      "bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet|": {}
     }
-  },
-  "bundle_injury_overdose/dist/heat_risk.parquet|value": {
-    "id": "bundle_injury_overdose/dist/heat_risk.parquet|value",
-    "short_name": "Heat risk score",
-    "long_name": "NOAA HeatRisk Mean Score",
-    "category": "heat",
-    "short_description": "Mean daily heat risk score (0-4) aggregated to state (or county) level.",
-    "long_description": "The NOAA Weather Prediction Center HeatRisk product provides a daily heat risk forecast across the contiguous United States on a 0-4 scale: 0 = No Risk, 1 = Minor, 2 = Moderate, 3 = Major, 4 = Extreme. Values represent the risk of heat-related illness to the general population, computed as the area-weighted mean raster pixel value within each geographic boundary.",
-    "measure_type": "Index",
-    "unit": "Score (0-4)",
-    "time_resolution": "Day",
-    "sources": [{ "id": "noaa_wpc_heatrisk" }]
-  },
-  "bundle_injury_overdose/dist/heat_risk.parquet|forecast_day": {
-    "id": "bundle_injury_overdose/dist/heat_risk.parquet|forecast_day",
-    "short_name": "Forecast day",
-    "long_name": "Forecast day offset",
-    "category": "heat",
-    "short_description": "0 = historical archive (observed Day 1); 1-7 = number of days ahead in the current forecast.",
-    "long_description": "Indicates whether a row is historical archive data or part of the current 7-day forecast. A value of 0 marks archive data (the observed Day 1 value for a past date). Values of 1-7 mark rows from the current forecast, where the number is the days ahead of the run date that the value is valid for.",
-    "measure_type": "Integer",
-    "unit": "Days",
-    "time_resolution": "Day",
-    "sources": [{ "id": "noaa_wpc_heatrisk" }]
   },
   "bundle_injury_overdose/dist/google_dma.parquet|gtrends_narcan": {
     "source_id": "gtrends_narcan"
@@ -392,54 +356,6 @@
     "unit": "%",
     "time_resolution": "Year",
     "sources": [{ "id": "medicaid_quality" }]
-  },
-  "bundle_injury_overdose/dist/brfss_prevalence_by_geography.parquet|value": {
-    "id": "bundle_injury_overdose/dist/brfss_prevalence_by_geography.parquet|value",
-    "short_name": "BRFSS prevalence",
-    "long_name": "BRFSS Self-Reported Prevalence",
-    "category": "injury",
-    "short_description": "Self-reported prevalence (%) of the outcome from the CDC BRFSS survey.",
-    "long_description": "Age-stratified, self-reported prevalence of the health outcome named in the outcome_name column, from the CDC Behavioral Risk Factor Surveillance System (BRFSS). The source column identifies the survey source.",
-    "measure_type": "Percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [{ "id": "brfss" }]
-  },
-  "bundle_injury_overdose/dist/brfss_prevalence_by_geography.parquet|value_lcl": {
-    "short_name": "Prevalence lower CI",
-    "short_description": "Lower bound of the 95% confidence interval for the BRFSS prevalence estimate.",
-    "measure_type": "Percent",
-    "unit": "%"
-  },
-  "bundle_injury_overdose/dist/brfss_prevalence_by_geography.parquet|value_ucl": {
-    "short_name": "Prevalence upper CI",
-    "short_description": "Upper bound of the 95% confidence interval for the BRFSS prevalence estimate.",
-    "measure_type": "Percent",
-    "unit": "%"
-  },
-  "bundle_injury_overdose/dist/epic_prevalence_by_geography_year.parquet|value": {
-    "id": "bundle_injury_overdose/dist/epic_prevalence_by_geography_year.parquet|value",
-    "short_name": "Epic prevalence",
-    "long_name": "Epic Cosmos Condition Prevalence",
-    "category": "injury",
-    "short_description": "Prevalence of the outcome among Epic Cosmos patients, by geography, age, and year.",
-    "long_description": "Prevalence of the health outcome named in the outcome_name column among patients in the Epic Cosmos database, stratified by geography, age group, and year. The source column identifies the data source.",
-    "measure_type": "Percent",
-    "unit": "%",
-    "time_resolution": "Year",
-    "sources": [{ "id": "epic_cosmos" }]
-  },
-  "bundle_injury_overdose/dist/epic_prevalence_by_geography_year.parquet|pct_captured": {
-    "short_name": "Percent captured",
-    "short_description": "Percentage of the population represented in the Epic Cosmos denominator for this geography.",
-    "measure_type": "Percent",
-    "unit": "%"
-  },
-  "bundle_injury_overdose/dist/epic_prevalence_by_geography_year.parquet|sample_size": {
-    "short_name": "Sample size",
-    "short_description": "Number of patients in the Epic Cosmos denominator for this geography, age, and year.",
-    "measure_type": "Count",
-    "unit": "Patients"
   },
   "{category}race": {
     "short_name": "Race",
@@ -573,25 +489,6 @@
       "medicaid_injury_overdose.parquet": {
         "sources": ["medicaid_quality"],
         "source_files": ["medicaid_quality/standard/data.csv.gz"]
-      },
-      "brfss_prevalence_by_geography.parquet": {
-        "sources": ["brfss"],
-        "source_files": ["brfss/standard/data.csv.gz"]
-      },
-      "epic_prevalence_by_geography_year.parquet": {
-        "sources": ["epic_chronic"],
-        "source_files": ["epic_chronic/standard/state_year.csv.gz"]
-      },
-      "heat_related_geography_source.parquet": {
-        "sources": ["epic_injury", "gtrends"],
-        "source_files": [
-          "gtrends/standard/data_year.csv.gz",
-          "epic_injury/standard/yearly_injury.csv.gz"
-        ]
-      },
-      "heat_risk.parquet": {
-        "sources": ["noaa_heat_risk"],
-        "source_files": ["noaa_heat_risk/standard/data_state.csv.gz"]
       }
     }
   }
