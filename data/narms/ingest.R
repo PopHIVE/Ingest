@@ -9,11 +9,8 @@ library(vroom)
 library(httr2)
 library(jsonlite)
 
-if (!file.exists("process.json")) {
-  process <- list(narms_now_state = NULL, retail_meats_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+# Initialize process record (process.json is created by dcf::dcf_add_source())
+process <- dcf::dcf_process_record()
 
 # =============================================================================
 # NARMS Now - Resistance by Agent & Pattern (Power BI API)
