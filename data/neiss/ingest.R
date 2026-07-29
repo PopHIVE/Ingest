@@ -267,13 +267,16 @@ if (!identical(process$raw_state, raw_state)) {
   infant_product   <- count_wide(infants, "age_month", "product_group")
 
   # Dataset 2: standard age groups
-  age_labels <- c("Under 1", "1-4", "5-9", "10-14", "15-19", "20-29",
+  # The first band is "Under 2" so that it lines up exactly with the month-coded
+  # records (NEISS codes every child under 2 in months, giving fractional
+  # age_years of 0-1.92), keeping the infant files a clean subset of this band.
+  age_labels <- c("Under 2", "2-4", "5-9", "10-14", "15-19", "20-29",
                   "30-39", "40-49", "50-59", "60-69", "70-79", "80+")
   agegroups <- injuries %>%
     mutate(
       age_group = cut(
         age_years,
-        breaks = c(0, 1, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, Inf),
+        breaks = c(0, 2, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, Inf),
         labels = age_labels, right = FALSE, include.lowest = TRUE
       ),
       age_group = as.character(age_group),
@@ -321,7 +324,7 @@ if (!identical(process$raw_state, raw_state)) {
   # Age-group denominators (80+ = ages 80 and over; single years summed).
   pop_group <- pop %>%
     mutate(age = as.character(cut(
-      AGE, breaks = c(0, 1, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, Inf),
+      AGE, breaks = c(0, 2, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, Inf),
       labels = age_labels, right = FALSE, include.lowest = TRUE))) %>%
     group_by(age, sex) %>%
     summarise(pop = sum(pop), .groups = "drop")
