@@ -2,7 +2,8 @@
 # Bundle: Enteric Diseases
 # Combines: nnds (NNDSS enteric/gastrointestinal disease case counts),
 #           beam (CDC BEAM Dashboard enteric pathogen isolate counts/rates),
-#           narms (antimicrobial resistance surveillance for enteric pathogens)
+#           narms (antimicrobial resistance surveillance for enteric pathogens),
+#           epic_diarrhea (Epic Cosmos all-cause diarrhea encounters)
 # Output:
 #   1. enteric_diseases.parquet      - NNDSS case counts + BEAM isolate counts,
 #                                       long format, distinguished by `source`
@@ -10,6 +11,8 @@
 #                                       across all NARMS programs
 #   3. resistance_by_pattern.parquet - NARMS multi-drug resistance patterns,
 #                                       human clinical isolates only
+#   4. epic_diarrhea.parquet         - Epic Cosmos weekly all-cause diarrhea
+#                                       encounters, long format, by age
 # =============================================================================
 
 library(dplyr)
@@ -183,4 +186,73 @@ arrow::write_parquet(
   compression = "snappy"
 )
 message(sprintf("Wrote %d rows to dist/resistance_by_pattern.parquet", nrow(resistance_by_pattern)))
+
+# -----------------------------------------------------------------------------
+# 3. Epic Cosmos: weekly all-cause diarrhea encounters, by state and age
+#    Kept in a separate dist file from enteric_diseases.parquet because it is
+#    age-stratified. Only data_weekly.csv.gz is bundled; the cyclospora lab
+#    testing file (weekly_tests.csv.gz) is not included.
+# -----------------------------------------------------------------------------
+# Each value measure is paired with the suppression flag that applies to it.
+# Percentages are flagged as suppressed if either the numerator or the
+# denominator count was suppressed.
+epic_flag_map <- c(
+  epic_n_ed_diarrhea             = "epic_suppressed_flag_ed_diarrhea",
+  epic_n_ed_encounters_weekly    = "epic_suppressed_flag_ed_encounters_weekly",
+  epic_pct_ed_diarrhea           = "epic_suppressed_flag_pct_ed_diarrhea",
+  epic_n_all_diarrhea            = "epic_suppressed_flag_all_diarrhea",
+  epic_n_encounters_total_weekly = "epic_suppressed_flag_encounters_total_weekly",
+  epic_pct_all_diarrhea          = "epic_suppressed_flag_pct_all_diarrhea"
+)
+
+epic_wide <- vroom::vroom(
+  '../epic_diarrhea/standard/data_weekly.csv.gz',
+  show_col_types = FALSE
+) %>%
+  filter(!is.na(geography)) %>%
+  rename(fips = geography) %>%
+  left_join(state_name_lookup, by = c("fips" = "geography")) %>%
+  mutate(geography = if_else(fips == '00', 'United States', geography_name)) %>%
+  filter(geography %in% c(state.name, 'District of Columbia', 'United States')) %>%
+  mutate(
+    epic_suppressed_flag_pct_ed_diarrhea = pmax(
+      epic_suppressed_flag_ed_diarrhea,
+      epic_suppressed_flag_ed_encounters_weekly
+    ),
+    epic_suppressed_flag_pct_all_diarrhea = pmax(
+      epic_suppressed_flag_all_diarrhea,
+      epic_suppressed_flag_encounters_total_weekly
+    )
+  ) %>%
+  dplyr::select(geography, date = time, age, all_of(names(epic_flag_map)),
+                all_of(unique(unname(epic_flag_map))))
+
+epic_values <- epic_wide %>%
+  dplyr::select(geography, date, age, all_of(names(epic_flag_map))) %>%
+  reshape2::melt(id.vars = c('geography', 'date', 'age'),
+                 variable.name = 'measure', value.name = 'value') %>%
+  mutate(measure = as.character(measure),
+         value = suppressWarnings(as.numeric(value)))
+
+epic_flags <- epic_wide %>%
+  dplyr::select(geography, date, age, all_of(unique(unname(epic_flag_map)))) %>%
+  reshape2::melt(id.vars = c('geography', 'date', 'age'),
+                 variable.name = 'flag_column', value.name = 'suppressed_flag') %>%
+  mutate(flag_column = as.character(flag_column),
+         suppressed_flag = suppressWarnings(as.numeric(suppressed_flag)))
+
+epic_diarrhea <- epic_values %>%
+  mutate(flag_column = unname(epic_flag_map[measure])) %>%
+  left_join(epic_flags, by = c('geography', 'date', 'age', 'flag_column')) %>%
+  dplyr::select(geography, date, age, measure, value, suppressed_flag) %>%
+  mutate(source = 'Epic Cosmos') %>%
+  filter(!is.na(value)) %>%
+  arrange(measure, geography, age, date)
+
+arrow::write_parquet(
+  epic_diarrhea,
+  "dist/epic_diarrhea.parquet",
+  compression = "snappy"
+)
+message(sprintf("Wrote %d rows to dist/epic_diarrhea.parquet", nrow(epic_diarrhea)))
 
