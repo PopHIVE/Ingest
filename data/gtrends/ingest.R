@@ -193,7 +193,7 @@ for (term in terms) {
   #https://stackoverflow.com/questions/61213647/what-do-gtrendsr-statistical-areas-correlate-with
   #Nielsen DMA map: http://bl.ocks.org/simzou/6459889
   #read in 'countries' file from gtrendsR
-  countries <- read.csv('../../resources/countries_gtrendsR.csv')
+  countries <- read.csv('../../resources/countries_gtrendsR.csv.gz')
   metros <- countries[countries$country_code == 'US', ]
   
   metros <-
