@@ -126,13 +126,9 @@ measure_dict <- tibble::tribble(
 )
 
 # -----------------------------------------------------------------------------
-# Initialize process record (creates process.json if it doesn't exist)
+# Initialize process record (process.json is created by dcf::dcf_add_source())
 # -----------------------------------------------------------------------------
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+process <- dcf::dcf_process_record()
 
 # Small wrapper: fetch a URL as parsed JSON, retrying once on failure.
 fetch_json <- function(url) {
