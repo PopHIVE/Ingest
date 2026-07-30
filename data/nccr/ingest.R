@@ -31,12 +31,8 @@ DATA_URL  <- file.path(API_BASE, "render_region_5.php")
 DATA_TYPE <- 1L   # 1 = Incidence
 GRAPH_TYPE <- 2L  # 2 = Trends Over Time (annual series)
 
-# Initialize process record (creates process.json if it doesn't exist)
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+# Initialize process record (process.json is created by dcf::dcf_add_source())
+process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
 # 1. Download raw data into memory, write single combined file
