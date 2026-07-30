@@ -2,8 +2,7 @@
 # Census ACS 5-Year SDOH Data Ingestion
 # Source: U.S. Census Bureau American Community Survey 5-Year Estimates
 # Indicators adapted from the Metopio SDOH framework, with code courtesy of Heather Blonsky
-#Due to the large size of the ZCTA-level files, the standard file is saved in a parquet directory.
-#It can be read into memory using arrow::open_dataset("standard/data_zcta") %>% collect(). You can insert a filter as needed prior to collect()
+#Due to the large size of the ZCTA-level data, it is split across several files by vintage year (see Outputs below).
 #
 # Outputs:
 #   standard/data_state.csv.gz        -- 2-digit FIPS, vintage years 2019 to latest available
@@ -40,11 +39,8 @@ api_key <- Sys.getenv("CENSUS_API_KEY")
 # -----------------------------------------------------------------------------
 # Initialize process record
 # -----------------------------------------------------------------------------
-if (!file.exists("process.json")) {
-  process <- list(last_vintage_year = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+# process.json is created by dcf::dcf_add_source()
+process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
 # Configuration

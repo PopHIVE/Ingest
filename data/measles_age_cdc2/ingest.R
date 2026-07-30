@@ -11,16 +11,9 @@
 library(tidyverse)
 
 
-# Initialize process record
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
-
-
 library(dplyr)
 
+# Initialize process record (process.json is created by dcf::dcf_add_source())
 process <- dcf::dcf_process_record()
 
 # GitHub raw base URL for standard files
