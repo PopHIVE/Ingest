@@ -314,6 +314,30 @@
       "bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet|": {}
     }
   },
+  "bundle_injury_overdose/dist/heat_risk.parquet|value": {
+    "id": "bundle_injury_overdose/dist/heat_risk.parquet|value",
+    "short_name": "Heat risk score",
+    "long_name": "NOAA HeatRisk Mean Score",
+    "category": "heat",
+    "short_description": "Mean daily heat risk score (0-4) aggregated to state (or county) level.",
+    "long_description": "The NOAA Weather Prediction Center HeatRisk product provides a daily heat risk forecast across the contiguous United States on a 0-4 scale: 0 = No Risk, 1 = Minor, 2 = Moderate, 3 = Major, 4 = Extreme. Values represent the risk of heat-related illness to the general population, computed as the area-weighted mean raster pixel value within each geographic boundary.",
+    "measure_type": "Index",
+    "unit": "Score (0-4)",
+    "time_resolution": "Day",
+    "sources": [{ "id": "noaa_wpc_heatrisk" }]
+  },
+  "bundle_injury_overdose/dist/heat_risk.parquet|forecast_day": {
+    "id": "bundle_injury_overdose/dist/heat_risk.parquet|forecast_day",
+    "short_name": "Forecast day",
+    "long_name": "Forecast day offset",
+    "category": "heat",
+    "short_description": "0 = historical archive (observed Day 1); 1-7 = number of days ahead in the current forecast.",
+    "long_description": "Indicates whether a row is historical archive data or part of the current 7-day forecast. A value of 0 marks archive data (the observed Day 1 value for a past date). Values of 1-7 mark rows from the current forecast, where the number is the days ahead of the run date that the value is valid for.",
+    "measure_type": "Integer",
+    "unit": "Days",
+    "time_resolution": "Day",
+    "sources": [{ "id": "noaa_wpc_heatrisk" }]
+  },
   "bundle_injury_overdose/dist/google_dma.parquet|gtrends_narcan": {
     "source_id": "gtrends_narcan"
   },
@@ -489,6 +513,10 @@
       "medicaid_injury_overdose.parquet": {
         "sources": ["medicaid_quality"],
         "source_files": ["medicaid_quality/standard/data.csv.gz"]
+      },
+      "heat_risk.parquet": {
+        "sources": ["noaa_heat_risk"],
+        "source_files": ["noaa_heat_risk/standard/data_state.csv.gz"]
       }
     }
   }
