@@ -26,6 +26,18 @@ if (!identical(process$raw_state, raw_state)) {
     filter(nchar(geography) == 2, !is.na(geography_name)) |>
     select(geography, geography_name)
 
+  # The CDC export has flipped date formats before (it emitted "%m/%d/%Y"
+  # through July 2026, then "2026 Jun 02 12:00:00 AM"), so try both rather
+  # than pinning to whichever is current.
+  parse_cdc_date <- function(x) {
+    parsed <- as.Date(x, "%Y %b %d")
+    unparsed <- is.na(parsed) & !is.na(x)
+    if (any(unparsed)) {
+      parsed[unparsed] <- as.Date(x[unparsed], "%m/%d/%Y")
+    }
+    parsed
+  }
+
   data_raw <- vroom::vroom(
     "raw/5dqz-y4ea.csv.xz",
     show_col_types = FALSE,
@@ -36,9 +48,17 @@ if (!identical(process$raw_state, raw_state)) {
       p_growing = vroom::col_double()
     )
   ) %>%
-  mutate( date = as.Date(date,"%m/%d/%Y"),
-          as_of=as.Date(as_of,"%m/%d/%Y")
+  mutate( date = parse_cdc_date(date),
+          as_of = parse_cdc_date(as_of)
     )
+
+  if (all(is.na(data_raw$date)) || all(is.na(data_raw$as_of))) {
+    stop(
+      "cdc_cfa_rt: could not parse `date`/`as_of` from raw/5dqz-y4ea.csv.xz - ",
+      "the source date format likely changed again. Example value: ",
+      utils::head(stats::na.omit(as.character(data_raw$date)), 1)
+    )
+  }
 
   # --- 3. Transform data ---
   # Keep only the most recent model run per state. The national ("United
@@ -91,6 +111,17 @@ if (!identical(process$raw_state, raw_state)) {
   )
   missing_cols <- setdiff(expected_cols, names(data_wide))
   data_wide[missing_cols] <- NA_real_
+
+  # Fail loudly rather than writing a header-only file: an empty standard file
+  # reads back with all-character columns and breaks bundle_respiratory's
+  # bind_rows() with a confusing type error days later.
+  if (nrow(data_wide) == 0) {
+    stop(
+      "cdc_cfa_rt: transformation produced 0 rows - refusing to overwrite ",
+      "standard/data.csv.gz. Check date parsing, the `as_of` filter, and the ",
+      "state name join against resources/all_fips.csv.gz."
+    )
+  }
 
   # --- 4. Write standardized output ---
   vroom::vroom_write(data_wide, "standard/data.csv.gz", delim = ",")
