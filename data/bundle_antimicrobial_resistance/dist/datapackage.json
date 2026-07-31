@@ -5,16 +5,32 @@
   "resources": [
     {
       "bytes": 1772662,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "1a3262b03285c8a62fcbf9a6a99fcfe0",
       "format": "parquet",
       "name": "resistance_by_agent",
       "filename": "resistance_by_agent.parquet",
       "versions": {
-        "hash": ["5756a7b9f2ecdf915627077e85acca19930d037d"],
-        "author": ["GitHub Actions <actions@github.com>"],
-        "date": ["Tue Jun 9 20:07:17 2026 +0000"],
-        "message": ["scheduled data build"]
+        "hash": [
+          "702144634da1a7c064e5a0ea117aa85c983aec37",
+          "5756a7b9f2ecdf915627077e85acca19930d037d",
+          "a3a88cb5e9d5afda114dcb35b151a014d3042df0"
+        ],
+        "author": [
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>"
+        ],
+        "date": [
+          "Fri Jul 3 23:33:32 2026 +0000",
+          "Tue Jun 9 20:07:17 2026 +0000",
+          "Tue Jun 9 12:07:10 2026 -0400"
+        ],
+        "message": [
+          "scheduled data build",
+          "scheduled data build",
+          "Add CDC CFA RT (respiratory tract) data source"
+        ]
       },
       "source": [],
       "data_format": "tall",
@@ -26,8 +42,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-03 23:30:37.63035",
-      "last_modified": "2026-07-03 23:30:37.63035",
+      "created": "2026-07-31 20:43:30.346814",
+      "last_modified": "2026-07-31 20:43:30.346814",
       "vintage": {},
       "row_count": 1142032,
       "entity_count": 52,
@@ -36,7 +52,11 @@
           {
             "name": "geography",
             "duplicates": 1141980,
-            "info": [],
+            "info": {
+              "short_name": "Geography",
+              "short_description": "Geographic area as a display name: 'United States' for national, or the full state name (e.g. 'California'). Note: unlike most standard files, this column holds names rather than FIPS codes.",
+              "id": "geography"
+            },
             "time_range": [11, 28],
             "type": "string",
             "missing": 0,
@@ -98,7 +118,11 @@
           {
             "name": "time",
             "duplicates": 1142003,
-            "info": [],
+            "info": {
+              "short_name": "Year",
+              "short_description": "Surveillance year, as an end-of-year date (YYYY-12-31).",
+              "id": "time"
+            },
             "time_range": [11, 28],
             "type": "string",
             "missing": 0,
@@ -138,6 +162,8 @@
             "name": "source",
             "duplicates": 1142026,
             "info": {
+              "short_name": "Data source / surveillance program",
+              "short_description": "NARMS surveillance program the isolates come from.",
               "levels": {
                 "NARMS Now (Human Clinical)": {
                   "id": "NARMS Now (Human Clinical)"
@@ -175,7 +201,11 @@
           {
             "name": "genus",
             "duplicates": 1142022,
-            "info": [],
+            "info": {
+              "short_name": "Bacterial genus",
+              "short_description": "Genus of the bacterial isolate tested (e.g. Campylobacter, Escherichia, Enterococcus, Salmonella, Shigella, Vibrio).",
+              "id": "genus"
+            },
             "time_range": [11, 28],
             "type": "string",
             "missing": 0,
@@ -195,7 +225,11 @@
           {
             "name": "species_serotype",
             "duplicates": 1141271,
-            "info": [],
+            "info": {
+              "short_name": "Species / serotype",
+              "short_description": "Bacterial species and, where available, serotype of the isolate (e.g. 'Salmonella Typhimurium', 'E. coli O157').",
+              "id": "species_serotype"
+            },
             "time_range": [11, 28],
             "type": "string",
             "missing": 12907,
@@ -965,7 +999,11 @@
           {
             "name": "antimicrobial_class",
             "duplicates": 1142019,
-            "info": [],
+            "info": {
+              "short_name": "Antimicrobial class",
+              "short_description": "CLSI drug class of the antimicrobial agent (e.g. Aminoglycosides, Beta-lactams, Macrolides, Quinolones). Populated for human clinical isolates.",
+              "id": "antimicrobial_class"
+            },
             "time_range": [13, 28],
             "type": "string",
             "missing": 204770,
@@ -987,7 +1025,11 @@
           {
             "name": "antimicrobial",
             "duplicates": 1141939,
-            "info": [],
+            "info": {
+              "short_name": "Antimicrobial agent",
+              "short_description": "Specific antimicrobial drug the isolate was tested against (e.g. Ciprofloxacin, Azithromycin, Tetracycline).",
+              "id": "antimicrobial"
+            },
             "time_range": [11, 28],
             "type": "string",
             "missing": 0,
@@ -1090,7 +1132,23 @@
           {
             "name": "test_method",
             "duplicates": 1142029,
-            "info": [],
+            "info": {
+              "short_name": "Test method",
+              "short_description": "Method used to determine resistance.",
+              "levels": {
+                "AST": {
+                  "short_name": "AST",
+                  "short_description": "Antimicrobial susceptibility testing (phenotypic).",
+                  "id": "AST"
+                },
+                "WGS": {
+                  "short_name": "WGS",
+                  "short_description": "Whole-genome sequencing (genotypic resistance prediction).",
+                  "id": "WGS"
+                }
+              },
+              "id": "test_method"
+            },
             "time_range": [13, 28],
             "type": "string",
             "missing": 204770,
@@ -1165,7 +1223,11 @@
           {
             "name": "meat_source",
             "duplicates": 1142026,
-            "info": [],
+            "info": {
+              "short_name": "Retail meat source",
+              "short_description": "Retail meat product the isolate was recovered from (e.g. chicken, ground beef, ground turkey, pork chops). Populated for FDA Retail Meats isolates.",
+              "id": "meat_source"
+            },
             "time_range": [3, 16],
             "type": "string",
             "missing": 1057672,
@@ -1220,7 +1282,11 @@
           {
             "name": "host_species",
             "duplicates": 1142020,
-            "info": [],
+            "info": {
+              "short_name": "Host species",
+              "short_description": "Animal host the isolate was recovered from (e.g. cattle, swine, chicken, turkey). Populated for animal pathogen and food-producing animal isolates.",
+              "id": "host_species"
+            },
             "time_range": [10, 11],
             "type": "string",
             "missing": 1021622,
@@ -1241,7 +1307,11 @@
           {
             "name": "collection_source",
             "duplicates": 1142029,
-            "info": [],
+            "info": {
+              "short_name": "Collection source",
+              "short_description": "Specimen or collection context for the isolate (e.g. diagnostic submission type). Populated for FDA Animal Pathogen isolates.",
+              "id": "collection_source"
+            },
             "time_range": [3, 4],
             "type": "string",
             "missing": 1129537,
@@ -1253,7 +1323,11 @@
           {
             "name": "source_type",
             "duplicates": 1142024,
-            "info": [],
+            "info": {
+              "short_name": "Sampling source type",
+              "short_description": "Type of sample within the food-producing animal program (e.g. carcass, cecal). Populated for FDA Food Animals isolates.",
+              "id": "source_type"
+            },
             "time_range": [10, 11],
             "type": "string",
             "missing": 1034117,
@@ -1273,16 +1347,32 @@
     },
     {
       "bytes": 1002769,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "28d2188956f8ec4198cd3b57f69311b7",
       "format": "parquet",
       "name": "resistance_by_pattern",
       "filename": "resistance_by_pattern.parquet",
       "versions": {
-        "hash": ["5756a7b9f2ecdf915627077e85acca19930d037d"],
-        "author": ["GitHub Actions <actions@github.com>"],
-        "date": ["Tue Jun 9 20:07:17 2026 +0000"],
-        "message": ["scheduled data build"]
+        "hash": [
+          "702144634da1a7c064e5a0ea117aa85c983aec37",
+          "5756a7b9f2ecdf915627077e85acca19930d037d",
+          "a3a88cb5e9d5afda114dcb35b151a014d3042df0"
+        ],
+        "author": [
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>"
+        ],
+        "date": [
+          "Fri Jul 3 23:33:32 2026 +0000",
+          "Tue Jun 9 20:07:17 2026 +0000",
+          "Tue Jun 9 12:07:10 2026 -0400"
+        ],
+        "message": [
+          "scheduled data build",
+          "scheduled data build",
+          "Add CDC CFA RT (respiratory tract) data source"
+        ]
       },
       "source": [],
       "data_format": "tall",
@@ -1294,8 +1384,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-03 23:30:40.053352",
-      "last_modified": "2026-07-03 23:30:40.053352",
+      "created": "2026-07-31 20:43:32.869818",
+      "last_modified": "2026-07-31 20:43:32.869818",
       "vintage": {},
       "row_count": 1144329,
       "entity_count": 52,
@@ -1304,7 +1394,11 @@
           {
             "name": "geography",
             "duplicates": 1144277,
-            "info": [],
+            "info": {
+              "short_name": "Geography",
+              "short_description": "Geographic area as a display name: 'United States' for national, or the full state name (e.g. 'California'). Note: unlike most standard files, this column holds names rather than FIPS codes.",
+              "id": "geography"
+            },
             "time_range": [0, 26],
             "type": "string",
             "missing": 0,
@@ -1366,7 +1460,11 @@
           {
             "name": "time",
             "duplicates": 1144302,
-            "info": [],
+            "info": {
+              "short_name": "Year",
+              "short_description": "Surveillance year, as an end-of-year date (YYYY-12-31).",
+              "id": "time"
+            },
             "time_range": [0, 26],
             "type": "string",
             "missing": 0,
@@ -1404,6 +1502,8 @@
             "name": "source",
             "duplicates": 1144328,
             "info": {
+              "short_name": "Data source / surveillance program",
+              "short_description": "NARMS surveillance program the isolates come from (human clinical only for resistance patterns).",
               "levels": {
                 "NARMS Now (Human Clinical)": {
                   "id": "NARMS Now (Human Clinical)"
@@ -1421,7 +1521,11 @@
           {
             "name": "genus",
             "duplicates": 1144324,
-            "info": [],
+            "info": {
+              "short_name": "Bacterial genus",
+              "short_description": "Genus of the bacterial isolate tested (e.g. Campylobacter, Escherichia, Salmonella, Shigella, Vibrio).",
+              "id": "genus"
+            },
             "time_range": [0, 26],
             "type": "string",
             "missing": 0,
@@ -1436,7 +1540,11 @@
           {
             "name": "species_serotype",
             "duplicates": 1144300,
-            "info": [],
+            "info": {
+              "short_name": "Species / serotype",
+              "short_description": "Bacterial species and, where available, serotype of the isolate (e.g. 'Salmonella Typhimurium', 'E. coli O157').",
+              "id": "species_serotype"
+            },
             "time_range": [0, 26],
             "type": "string",
             "missing": 0,
@@ -1475,7 +1583,11 @@
           {
             "name": "pattern",
             "duplicates": 1144300,
-            "info": [],
+            "info": {
+              "short_name": "Resistance pattern",
+              "short_description": "Multidrug resistance profile describing the combination of antimicrobial classes/agents an isolate is resistant to.",
+              "id": "pattern"
+            },
             "time_range": [0, 26],
             "type": "string",
             "missing": 0,
@@ -1514,7 +1626,23 @@
           {
             "name": "test_method",
             "duplicates": 1144327,
-            "info": [],
+            "info": {
+              "short_name": "Test method",
+              "short_description": "Method used to determine resistance.",
+              "levels": {
+                "AST": {
+                  "short_name": "AST",
+                  "short_description": "Antimicrobial susceptibility testing (phenotypic).",
+                  "id": "AST"
+                },
+                "WGS": {
+                  "short_name": "WGS",
+                  "short_description": "Whole-genome sequencing (genotypic resistance prediction).",
+                  "id": "WGS"
+                }
+              },
+              "id": "test_method"
+            },
             "time_range": [0, 26],
             "type": "string",
             "missing": 0,
@@ -1592,7 +1720,19 @@
     }
   ],
   "measure_info": {
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|geography": {
+      "short_name": "Geography",
+      "short_description": "Geographic area as a display name: 'United States' for national, or the full state name (e.g. 'California'). Note: unlike most standard files, this column holds names rather than FIPS codes.",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|geography"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|time": {
+      "short_name": "Year",
+      "short_description": "Surveillance year, as an end-of-year date (YYYY-12-31).",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|time"
+    },
     "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|source": {
+      "short_name": "Data source / surveillance program",
+      "short_description": "NARMS surveillance program the isolates come from.",
       "levels": {
         "NARMS Now (Human Clinical)": {
           "id": "NARMS Now (Human Clinical)"
@@ -1615,13 +1755,114 @@
       },
       "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|source"
     },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|genus": {
+      "short_name": "Bacterial genus",
+      "short_description": "Genus of the bacterial isolate tested (e.g. Campylobacter, Escherichia, Enterococcus, Salmonella, Shigella, Vibrio).",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|genus"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|species_serotype": {
+      "short_name": "Species / serotype",
+      "short_description": "Bacterial species and, where available, serotype of the isolate (e.g. 'Salmonella Typhimurium', 'E. coli O157').",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|species_serotype"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|antimicrobial_class": {
+      "short_name": "Antimicrobial class",
+      "short_description": "CLSI drug class of the antimicrobial agent (e.g. Aminoglycosides, Beta-lactams, Macrolides, Quinolones). Populated for human clinical isolates.",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|antimicrobial_class"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|antimicrobial": {
+      "short_name": "Antimicrobial agent",
+      "short_description": "Specific antimicrobial drug the isolate was tested against (e.g. Ciprofloxacin, Azithromycin, Tetracycline).",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|antimicrobial"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|test_method": {
+      "short_name": "Test method",
+      "short_description": "Method used to determine resistance.",
+      "levels": {
+        "AST": {
+          "short_name": "AST",
+          "short_description": "Antimicrobial susceptibility testing (phenotypic).",
+          "id": "AST"
+        },
+        "WGS": {
+          "short_name": "WGS",
+          "short_description": "Whole-genome sequencing (genotypic resistance prediction).",
+          "id": "WGS"
+        }
+      },
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|test_method"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|meat_source": {
+      "short_name": "Retail meat source",
+      "short_description": "Retail meat product the isolate was recovered from (e.g. chicken, ground beef, ground turkey, pork chops). Populated for FDA Retail Meats isolates.",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|meat_source"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|host_species": {
+      "short_name": "Host species",
+      "short_description": "Animal host the isolate was recovered from (e.g. cattle, swine, chicken, turkey). Populated for animal pathogen and food-producing animal isolates.",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|host_species"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|collection_source": {
+      "short_name": "Collection source",
+      "short_description": "Specimen or collection context for the isolate (e.g. diagnostic submission type). Populated for FDA Animal Pathogen isolates.",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|collection_source"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|source_type": {
+      "short_name": "Sampling source type",
+      "short_description": "Type of sample within the food-producing animal program (e.g. carcass, cecal). Populated for FDA Food Animals isolates.",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|source_type"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|geography": {
+      "short_name": "Geography",
+      "short_description": "Geographic area as a display name: 'United States' for national, or the full state name (e.g. 'California'). Note: unlike most standard files, this column holds names rather than FIPS codes.",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|geography"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|time": {
+      "short_name": "Year",
+      "short_description": "Surveillance year, as an end-of-year date (YYYY-12-31).",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|time"
+    },
     "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|source": {
+      "short_name": "Data source / surveillance program",
+      "short_description": "NARMS surveillance program the isolates come from (human clinical only for resistance patterns).",
       "levels": {
         "NARMS Now (Human Clinical)": {
           "id": "NARMS Now (Human Clinical)"
         }
       },
       "id": "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|source"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|genus": {
+      "short_name": "Bacterial genus",
+      "short_description": "Genus of the bacterial isolate tested (e.g. Campylobacter, Escherichia, Salmonella, Shigella, Vibrio).",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|genus"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|species_serotype": {
+      "short_name": "Species / serotype",
+      "short_description": "Bacterial species and, where available, serotype of the isolate (e.g. 'Salmonella Typhimurium', 'E. coli O157').",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|species_serotype"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|pattern": {
+      "short_name": "Resistance pattern",
+      "short_description": "Multidrug resistance profile describing the combination of antimicrobial classes/agents an isolate is resistant to.",
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|pattern"
+    },
+    "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|test_method": {
+      "short_name": "Test method",
+      "short_description": "Method used to determine resistance.",
+      "levels": {
+        "AST": {
+          "short_name": "AST",
+          "short_description": "Antimicrobial susceptibility testing (phenotypic).",
+          "id": "AST"
+        },
+        "WGS": {
+          "short_name": "WGS",
+          "short_description": "Whole-genome sequencing (genotypic resistance prediction).",
+          "id": "WGS"
+        }
+      },
+      "id": "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|test_method"
     },
     "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|pct_resistant": {
       "measure_column": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|source",
@@ -1701,6 +1942,34 @@
       "time_resolution": "Year",
       "id": "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|mic90"
     },
+    "_bundle": {
+      "name": "bundle_antimicrobial_resistance",
+      "sources": [
+        "narms"
+      ],
+      "dist_files": {
+        "resistance_by_agent.parquet": {
+          "sources": [
+            "narms"
+          ],
+          "source_files": [
+            "narms/standard/data_resistance_agent.csv.gz",
+            "narms/standard/data_retail_meats.csv.gz",
+            "narms/standard/data_animal_pathogen.csv.gz",
+            "narms/standard/data_food_animals.csv.gz"
+          ]
+        },
+        "resistance_by_pattern.parquet": {
+          "sources": [
+            "narms"
+          ],
+          "source_files": [
+            "narms/standard/data_resistance_pattern.csv.gz"
+          ]
+        }
+      },
+      "id": "_bundle"
+    },
     "_sources": {
       "narms_now": {
         "name": "NARMS Now: Human Data - Antimicrobial Resistance",
@@ -1743,160 +2012,10 @@
   },
   "change_report": {
     "resistance_by_agent.parquet": {
-      "state": "changed",
-      "variables": {
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "time": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "source": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "genus": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "species_serotype": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "antimicrobial_class": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "antimicrobial": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "test_method": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "pct_resistant": {
-          "status": "present",
-          "same_type": true
-        },
-        "n_resistant": {
-          "status": "present",
-          "same_type": true
-        },
-        "n_tested": {
-          "status": "present",
-          "same_type": true
-        },
-        "meat_source": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "mic50": {
-          "status": "present",
-          "same_type": true
-        },
-        "mic90": {
-          "status": "present",
-          "same_type": true
-        },
-        "host_species": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "collection_source": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "source_type": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        }
-      }
+      "state": "unchanged"
     },
     "resistance_by_pattern.parquet": {
-      "state": "changed",
-      "variables": {
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "time": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "source": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "genus": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "species_serotype": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "pattern": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "test_method": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "pct_resistant": {
-          "status": "present",
-          "same_type": true
-        },
-        "n_resistant": {
-          "status": "present",
-          "same_type": true
-        },
-        "n_tested": {
-          "status": "present",
-          "same_type": true
-        }
-      }
+      "state": "unchanged"
     }
   }
 }

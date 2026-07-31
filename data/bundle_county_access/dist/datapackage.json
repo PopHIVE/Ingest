@@ -5,14 +5,19 @@
   "resources": [
     {
       "bytes": 2699508,
-      "encoding": "ISO-8859-1",
+      "encoding": "UTF-16BE",
       "md5": "3231af368dd04b035049e4c6f6e4409c",
       "format": "parquet",
       "name": "county_access",
       "filename": "county_access.parquet",
-      "versions": {},
+      "versions": {
+        "hash": ["ebd39c1c35b81350a985854ad655968593242320", "9cdc8a5c02d6926f57b36332f706ef55cc493817", "8bb284f8393c5518a2d5a0b440c9f99256391602"],
+        "author": ["GitHub Actions <actions@github.com>", "Callie Annas <callie.annas@yale.edu>", "Callie Annas <callie.annas@yale.edu>"],
+        "date": ["Fri Jun 19 20:16:40 2026 +0000", "Thu Jun 18 12:12:21 2026 -0400", "Wed Jun 17 11:58:10 2026 -0400"],
+        "message": ["scheduled data build", "Updates to CHR exploration (bundles and corrects data workflow)", "Access to care bundle (county level)"]
+      },
       "source": [],
-      "data_format": "wide",
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -21,8 +26,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-06-19 20:14:44.599713",
-      "last_modified": "2026-06-19 20:14:44.599713",
+      "created": "2026-07-31 20:44:15.679868",
+      "last_modified": "2026-07-31 20:44:15.679868",
       "vintage": {},
       "row_count": 356788,
       "entity_count": 3159,
@@ -31,7 +36,11 @@
           {
             "name": "geography",
             "duplicates": 353629,
-            "info": [],
+            "info": {
+              "short_name": "County FIPS",
+              "short_description": "5-digit county FIPS code identifying the county.",
+              "id": "geography"
+            },
             "time_range": [13, 14],
             "type": "string",
             "missing": 0,
@@ -3200,7 +3209,11 @@
           {
             "name": "time",
             "duplicates": 356772,
-            "info": [],
+            "info": {
+              "short_name": "Year",
+              "short_description": "Annual data release year (ISO date, YYYY-12-31).",
+              "id": "time"
+            },
             "time_range": [13, 14],
             "type": "string",
             "missing": 0,
@@ -3226,7 +3239,53 @@
           {
             "name": "outcome_name",
             "duplicates": 356778,
-            "info": [],
+            "info": {
+              "short_name": "Access measure",
+              "short_description": "Healthcare access measure identifier for the row's value.",
+              "levels": {
+                "chr_primary_care_physicians": {
+                  "source_id": "chr_primary_care_physicians",
+                  "id": "chr_primary_care_physicians"
+                },
+                "chr_other_primary_care_providers": {
+                  "source_id": "chr_other_primary_care_providers",
+                  "id": "chr_other_primary_care_providers"
+                },
+                "chr_mental_health_providers": {
+                  "source_id": "chr_mental_health_providers",
+                  "id": "chr_mental_health_providers"
+                },
+                "chr_dentists": {
+                  "source_id": "chr_dentists",
+                  "id": "chr_dentists"
+                },
+                "chr_uninsured": {
+                  "source_id": "chr_uninsured",
+                  "id": "chr_uninsured"
+                },
+                "chr_uninsured_adults": {
+                  "source_id": "chr_uninsured_adults",
+                  "id": "chr_uninsured_adults"
+                },
+                "chr_uninsured_children": {
+                  "source_id": "chr_uninsured_children",
+                  "id": "chr_uninsured_children"
+                },
+                "chr_could_not_see_doctor_due_to_cost": {
+                  "source_id": "chr_could_not_see_doctor_due_to_cost",
+                  "id": "chr_could_not_see_doctor_due_to_cost"
+                },
+                "chr_did_not_get_needed_health_care": {
+                  "source_id": "chr_did_not_get_needed_health_care",
+                  "id": "chr_did_not_get_needed_health_care"
+                },
+                "chr_mammography_screening": {
+                  "source_id": "chr_mammography_screening",
+                  "id": "chr_mammography_screening"
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [13, 14],
             "type": "string",
             "missing": 0,
@@ -3246,7 +3305,21 @@
           {
             "name": "value",
             "duplicates": 114881,
-            "info": [],
+            "info": {
+              "short_name": "Value",
+              "long_name": "County Access Measure Value",
+              "short_description": "Value of the healthcare access measure named in outcome_name.",
+              "long_description": "Value of the healthcare access measure named in the outcome_name column, for the given county and year. Units and measure type vary by measure (e.g., population-to-provider ratios for provider availability, percentages for insurance coverage and access barriers); see the corresponding outcome_name level for the specific units.",
+              "measure_type": "Rate",
+              "unit": "Varies by measure (population per provider or percent)",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "county_health_rankings"
+                }
+              ],
+              "id": "value"
+            },
             "time_range": [13, 14],
             "type": "float",
             "missing": 0,
@@ -3261,175 +3334,94 @@
     }
   ],
   "measure_info": {
-    "chr_primary_care_physicians": {
-      "id": "chr_primary_care_physicians",
-      "short_name": "Primary Care Physicians",
-      "long_name": "Primary Care Physician Availability",
-      "category": "chronic",
-      "short_description": "Ratio of population to primary care physicians.",
-      "long_description": "Ratio of the county population to the number of primary care physicians practicing in the county, based on data from the American Medical Association Physician Masterfile.",
-      "statement": "In {location}, the primary care physician ratio was {value} residents per physician.",
+    "bundle_county_access/dist/county_access.parquet|geography": {
+      "short_name": "County FIPS",
+      "short_description": "5-digit county FIPS code identifying the county.",
+      "id": "bundle_county_access/dist/county_access.parquet|geography"
+    },
+    "bundle_county_access/dist/county_access.parquet|time": {
+      "short_name": "Year",
+      "short_description": "Annual data release year (ISO date, YYYY-12-31).",
+      "id": "bundle_county_access/dist/county_access.parquet|time"
+    },
+    "bundle_county_access/dist/county_access.parquet|outcome_name": {
+      "short_name": "Access measure",
+      "short_description": "Healthcare access measure identifier for the row's value.",
+      "levels": {
+        "chr_primary_care_physicians": {
+          "source_id": "chr_primary_care_physicians",
+          "id": "chr_primary_care_physicians"
+        },
+        "chr_other_primary_care_providers": {
+          "source_id": "chr_other_primary_care_providers",
+          "id": "chr_other_primary_care_providers"
+        },
+        "chr_mental_health_providers": {
+          "source_id": "chr_mental_health_providers",
+          "id": "chr_mental_health_providers"
+        },
+        "chr_dentists": {
+          "source_id": "chr_dentists",
+          "id": "chr_dentists"
+        },
+        "chr_uninsured": {
+          "source_id": "chr_uninsured",
+          "id": "chr_uninsured"
+        },
+        "chr_uninsured_adults": {
+          "source_id": "chr_uninsured_adults",
+          "id": "chr_uninsured_adults"
+        },
+        "chr_uninsured_children": {
+          "source_id": "chr_uninsured_children",
+          "id": "chr_uninsured_children"
+        },
+        "chr_could_not_see_doctor_due_to_cost": {
+          "source_id": "chr_could_not_see_doctor_due_to_cost",
+          "id": "chr_could_not_see_doctor_due_to_cost"
+        },
+        "chr_did_not_get_needed_health_care": {
+          "source_id": "chr_did_not_get_needed_health_care",
+          "id": "chr_did_not_get_needed_health_care"
+        },
+        "chr_mammography_screening": {
+          "source_id": "chr_mammography_screening",
+          "id": "chr_mammography_screening"
+        }
+      },
+      "id": "bundle_county_access/dist/county_access.parquet|outcome_name"
+    },
+    "bundle_county_access/dist/county_access.parquet|value": {
+      "short_name": "Value",
+      "long_name": "County Access Measure Value",
+      "short_description": "Value of the healthcare access measure named in outcome_name.",
+      "long_description": "Value of the healthcare access measure named in the outcome_name column, for the given county and year. Units and measure type vary by measure (e.g., population-to-provider ratios for provider availability, percentages for insurance coverage and access barriers); see the corresponding outcome_name level for the specific units.",
       "measure_type": "Rate",
-      "unit": "Population per physician",
+      "unit": "Varies by measure (population per provider or percent)",
       "time_resolution": "Year",
       "sources": [
         {
-          "id": "chr"
+          "id": "county_health_rankings"
         }
-      ]
+      ],
+      "id": "bundle_county_access/dist/county_access.parquet|value"
     },
-    "chr_other_primary_care_providers": {
-      "id": "chr_other_primary_care_providers",
-      "short_name": "Other Primary Care Providers",
-      "long_name": "Other Primary Care Provider Availability",
-      "category": "chronic",
-      "short_description": "Ratio of population to primary care providers other than physicians.",
-      "long_description": "Ratio of the county population to the number of primary care providers other than physicians (e.g., nurse practitioners, physician assistants), from the National Provider Identifier (NPI) registry.",
-      "statement": "In {location}, the other primary care provider ratio was {value} residents per provider.",
-      "measure_type": "Rate",
-      "unit": "Population per provider",
-      "time_resolution": "Year",
+    "_bundle": {
+      "name": "bundle_county_access",
       "sources": [
-        {
-          "id": "chr"
+        "county_health_rankings"
+      ],
+      "dist_files": {
+        "county_access.parquet": {
+          "sources": [
+            "county_health_rankings"
+          ],
+          "source_files": [
+            "county_health_rankings/standard/data_county.csv.gz"
+          ]
         }
-      ]
-    },
-    "chr_mental_health_providers": {
-      "id": "chr_mental_health_providers",
-      "short_name": "Mental Health Providers",
-      "long_name": "Mental Health Provider Availability",
-      "category": "chronic",
-      "short_description": "Ratio of population to mental health providers.",
-      "long_description": "Ratio of the county population to the number of mental health providers practicing in the county, from the National Provider Identifier (NPI) registry.",
-      "statement": "In {location}, the mental health provider ratio was {value} residents per provider.",
-      "measure_type": "Rate",
-      "unit": "Population per provider",
-      "time_resolution": "Year",
-      "sources": [
-        {
-          "id": "chr"
-        }
-      ]
-    },
-    "chr_dentists": {
-      "id": "chr_dentists",
-      "short_name": "Dentists",
-      "long_name": "Dentist Availability",
-      "category": "chronic",
-      "short_description": "Ratio of population to dentists.",
-      "long_description": "Ratio of the county population to the number of dentists practicing in the county, from the American Dental Association.",
-      "statement": "In {location}, the dentist ratio was {value} residents per dentist.",
-      "measure_type": "Rate",
-      "unit": "Population per dentist",
-      "time_resolution": "Year",
-      "sources": [
-        {
-          "id": "chr"
-        }
-      ]
-    },
-    "chr_uninsured": {
-      "id": "chr_uninsured",
-      "short_name": "Uninsured",
-      "long_name": "Population Without Health Insurance",
-      "category": "chronic",
-      "short_description": "Percentage of population under age 65 without health insurance.",
-      "long_description": "Percentage of population under age 65 without health insurance, from the Small Area Health Insurance Estimates (SAHIE) program.",
-      "statement": "In {location}, {value}% of the population under 65 lacked health insurance.",
-      "measure_type": "Percent",
-      "unit": "Percent",
-      "time_resolution": "Year",
-      "sources": [
-        {
-          "id": "chr"
-        }
-      ]
-    },
-    "chr_uninsured_adults": {
-      "id": "chr_uninsured_adults",
-      "short_name": "Uninsured Adults",
-      "long_name": "Adults Without Health Insurance",
-      "category": "chronic",
-      "short_description": "Percentage of adults under age 65 without health insurance.",
-      "long_description": "Percentage of adults under age 65 without health insurance, from the Small Area Health Insurance Estimates (SAHIE) program.",
-      "statement": "In {location}, {value}% of adults under 65 lacked health insurance.",
-      "measure_type": "Percent",
-      "unit": "Percent",
-      "time_resolution": "Year",
-      "sources": [
-        {
-          "id": "chr"
-        }
-      ]
-    },
-    "chr_uninsured_children": {
-      "id": "chr_uninsured_children",
-      "short_name": "Uninsured Children",
-      "long_name": "Children Without Health Insurance",
-      "category": "chronic",
-      "short_description": "Percentage of children under age 19 without health insurance.",
-      "long_description": "Percentage of children under age 19 without health insurance, from the Small Area Health Insurance Estimates (SAHIE) program.",
-      "statement": "In {location}, {value}% of children under 19 lacked health insurance.",
-      "measure_type": "Percent",
-      "unit": "Percent",
-      "time_resolution": "Year",
-      "sources": [
-        {
-          "id": "chr"
-        }
-      ]
-    },
-    "chr_could_not_see_doctor_due_to_cost": {
-      "id": "chr_could_not_see_doctor_due_to_cost",
-      "short_name": "Could Not See Doctor Due to Cost",
-      "long_name": "Adults Who Could Not See a Doctor Due to Cost",
-      "category": "chronic",
-      "short_description": "Percentage of adults who could not see a doctor in the past year due to cost.",
-      "long_description": "Percentage of adults who reported they could not see a doctor at least once in the past 12 months because of cost, from the Behavioral Risk Factor Surveillance System (BRFSS).",
-      "statement": "In {location}, {value}% of adults could not see a doctor due to cost.",
-      "measure_type": "Percent",
-      "unit": "Percent",
-      "time_resolution": "Year",
-      "sources": [
-        {
-          "id": "chr"
-        }
-      ]
-    },
-    "chr_did_not_get_needed_health_care": {
-      "id": "chr_did_not_get_needed_health_care",
-      "short_name": "Unmet Health Care Need",
-      "long_name": "Adults Who Did Not Get Needed Health Care",
-      "category": "chronic",
-      "short_description": "Percentage of adults who needed health care but did not get it.",
-      "long_description": "Percentage of adults who reported needing health care in the past 12 months but did not receive it, from the Behavioral Risk Factor Surveillance System (BRFSS).",
-      "statement": "In {location}, {value}% of adults did not get needed health care.",
-      "measure_type": "Percent",
-      "unit": "Percent",
-      "time_resolution": "Year",
-      "sources": [
-        {
-          "id": "chr"
-        }
-      ]
-    },
-    "chr_mammography_screening": {
-      "id": "chr_mammography_screening",
-      "short_name": "Mammography Screening",
-      "long_name": "Mammography Screening Rate",
-      "category": "chronic",
-      "short_description": "Percentage of female Medicare enrollees ages 65-74 receiving annual mammography screening.",
-      "long_description": "Percentage of female Medicare enrollees ages 65-74 who received an annual mammography screening, from the Dartmouth Atlas of Health Care.",
-      "statement": "In {location}, {value}% of eligible female Medicare enrollees received mammography screening.",
-      "measure_type": "Percent",
-      "unit": "Percent",
-      "time_resolution": "Year",
-      "sources": [
-        {
-          "id": "chr"
-        }
-      ]
+      },
+      "id": "_bundle"
     },
     "_sources": {
       "chr": {
@@ -3442,36 +3434,13 @@
         "description": "The County Health Rankings & Roadmaps (CHR&R) program, a collaboration between the Robert Wood Johnson Foundation and the University of Wisconsin Population Health Institute, ranks the health of nearly all counties in the nation. The annual rankings measure vital health factors including high school graduation rates, obesity, smoking, unemployment, access to healthy foods, the quality of air and water, income inequality, and teen births that influence how long and how well we live. Data are released annually and cover all U.S. counties. Raw data are publicly available through the Zenodo repository (https://doi.org/10.5281/zenodo.18157681) and span release years 2010 through the present.",
         "restrictions": "CC BY 4.0. Attribution required. Cite as: University of Wisconsin Population Health Institute. County Health Rankings & Roadmaps. https://www.countyhealthrankings.org.",
         "date_accessed": 2025
-      }
+      },
+      "id": "_sources"
     }
   },
   "change_report": {
     "county_access.parquet": {
-      "state": "changed",
-      "variables": {
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "time": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "outcome_name": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "value": {
-          "status": "present",
-          "same_type": true
-        }
-      }
+      "state": "unchanged"
     }
   }
 }
