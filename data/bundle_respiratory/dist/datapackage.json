@@ -441,8 +441,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:37.248504",
-      "last_modified": "2026-07-30 09:33:37.248504",
+      "created": "2026-07-31 10:01:08.68082",
+      "last_modified": "2026-07-31 10:01:08.68082",
       "vintage": {},
       "row_count": 625059,
       "entity_count": 0,
@@ -1511,8 +1511,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:35.968491",
-      "last_modified": "2026-07-30 09:33:35.968491",
+      "created": "2026-07-31 10:01:07.678789",
+      "last_modified": "2026-07-31 10:01:07.678789",
       "vintage": {},
       "row_count": 31996,
       "entity_count": 52,
@@ -1769,7 +1769,39 @@
               "levels": {
                 "Epic Cosmos, ED": {
                   "source_id": "epic_pct_covid",
-                  "id": "Epic Cosmos, ED"
+                  "id": "Epic Cosmos, ED",
+                  "name": "epic_pct_covid",
+                  "duplicates": 87757,
+                  "info": {
+                    "id": "epic_pct_covid",
+                    "short_name": "COVID Patients (%)",
+                    "long_name": "COVID Emergency Room (ER) Encounters (%)",
+                    "short_description": "Percentage of COVID patients among all ER encounters.",
+                    "long_description": "Percentage of emergency room encounters attributable to COVID ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+                    "measure_type": "percent",
+                    "unit": "%",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "category": "respiratory",
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "weekly.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    441
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 3.476005,
+                  "sd": 9.714553,
+                  "min": 0.000574,
+                  "max": 100
                 },
                 "CDC NSSP": {
                   "source_id": "percent_visits_covid",
@@ -1893,15 +1925,118 @@
                 },
                 "CDC NHSN": {
                   "source_id": "delphi_nhsn_covid",
-                  "id": "CDC NHSN"
+                  "id": "CDC NHSN",
+                  "name": "delphi_nhsn_covid",
+                  "duplicates": 14983,
+                  "info": {
+                    "id": "delphi_nhsn_covid",
+                    "short_name": "COVID Hospitalizations (NHSN)",
+                    "long_name": "Number of COVID hospitalizations in the National Healthcare Safety Network",
+                    "category": "respiratory",
+                    "short_description": "Weekly count of COVID-19 associated hospital admissions reported to CDC's NHSN.",
+                    "long_description": "The National Healthcare Safety Network (NHSN) is the nation's most widely used healthcare-associated infection tracking system. This dataset reports preliminary and finalized weekly hospital respiratory data and metrics aggregated to national and state/territory levels. Values are available for reference dates beginning August 2020. HHS collects data from state and territorial health departments about many, but not all, hospitals in the U.S. Notably excluded from this dataset are psychiatric and rehabilitation facilities, and religious non-medical facilities.",
+                    "measure_type": "count",
+                    "unit": "hospitalizations",
+                    "time_resolution": "week",
+                    "sources": [
+                      {
+                        "id": "delphi_nhsn"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "delphi_nhsn",
+                      "data_dir": "/data/delphi_nhsn/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    310
+                  ],
+                  "type": "integer",
+                  "missing": 322,
+                  "mean": 939.619879,
+                  "sd": 5245.14555,
+                  "min": 0,
+                  "max": 156132
                 },
                 "Delphi Hospital Claims": {
                   "source_id": "delphi_hospital_covid_smooth",
-                  "id": "Delphi Hospital Claims"
+                  "id": "Delphi Hospital Claims",
+                  "name": "delphi_hospital_covid_smooth",
+                  "duplicates": 13878,
+                  "info": {
+                    "id": "delphi_hospital_covid_smooth",
+                    "category": "respiratory",
+                    "short_description": "Estimated percentage of new hospital admissions with COVID-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother",
+                    "long_description": "This data source is based on electronic medical records and claims data about hospital admissions, provided to Delphi by health system partners. We use this inpatient data to estimate the percentage of new hospital admissions with a COVID-associated diagnosis code in a given location, on a given day",
+                    "unit": "Percent of new hospital admissions, smoothed",
+                    "time_resolution": "day",
+                    "restrictions": "CC-BY Attribution license",
+                    "sources": [
+                      {
+                        "name": "CMU Delphi",
+                        "url": "https://cmu-delphi.github.io/delphi-epidata/",
+                        "location": "COVIDcast > Hospital Admissions",
+                        "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "delphi_hospital_claims",
+                      "data_dir": "/data/delphi_hospital_claims/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    330
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 2.348791,
+                  "sd": 4.029773,
+                  "min": 0.016705,
+                  "max": 86.957498
                 },
                 "Delphi Doctor Claims": {
                   "source_id": "delphi_doc_covid_smooth",
-                  "id": "Delphi Doctor Claims"
+                  "id": "Delphi Doctor Claims",
+                  "name": "delphi_doc_covid_smooth",
+                  "duplicates": 167193,
+                  "info": {
+                    "id": "delphi_doc_covid_smooth",
+                    "short_name": "COVID Doctor Visits",
+                    "long_name": "Percentage of Outpatient Visits for COVID-Related Symptoms",
+                    "category": "respiratory",
+                    "short_description": "Estimated percentage of outpatient doctor visits primarily about COVID-related symptoms, based on data from health system partners, smoothed in time using a Gaussian linear smoother",
+                    "long_description": "This data source is based on information about outpatient visits, provided to CMU/Delphi by health system partners. Using this outpatient data, CMU/Delphi estimates the percentage of COVID-related doctor's visits in a given location, on a given day. Percent of all unique outpatient visits with primary ICD-10 code of any of: U071, U072, B9729, J1281, Z03818, B342, J1289",
+                    "measure_type": "percent",
+                    "unit": "Percent of doctor's visits, smoothed",
+                    "time_resolution": "week",
+                    "restrictions": "CC-BY Attribution license",
+                    "sources": [
+                      {
+                        "id": "delphi_doctor_visits"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "delphi_doctors_claims",
+                      "data_dir": "/data/delphi_doctors_claims/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    330
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 1.486334,
+                  "sd": 2.608018,
+                  "min": 0,
+                  "max": 74.834432
                 }
               },
               "id": "source"
@@ -2416,8 +2551,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:40.31553",
-      "last_modified": "2026-07-30 09:33:40.31553",
+      "created": "2026-07-31 10:01:11.133895",
+      "last_modified": "2026-07-31 10:01:11.133895",
       "vintage": {},
       "row_count": 134295,
       "entity_count": 53,
@@ -2862,7 +2997,39 @@
               "levels": {
                 "Epic Cosmos (ED)": {
                   "source_id": "epic_pct_covid",
-                  "id": "Epic Cosmos (ED)"
+                  "id": "Epic Cosmos (ED)",
+                  "name": "epic_pct_covid",
+                  "duplicates": 87757,
+                  "info": {
+                    "id": "epic_pct_covid",
+                    "short_name": "COVID Patients (%)",
+                    "long_name": "COVID Emergency Room (ER) Encounters (%)",
+                    "short_description": "Percentage of COVID patients among all ER encounters.",
+                    "long_description": "Percentage of emergency room encounters attributable to COVID ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+                    "measure_type": "percent",
+                    "unit": "%",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "category": "respiratory",
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "weekly.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    441
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 3.476005,
+                  "sd": 9.714553,
+                  "min": 0.000574,
+                  "max": 100
                 },
                 "CDC RSV-NET (Hospitalization)": {
                   "source_id": "rate_covid",
@@ -3444,8 +3611,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:36.969501",
-      "last_modified": "2026-07-30 09:33:36.969501",
+      "created": "2026-07-31 10:01:08.466813",
+      "last_modified": "2026-07-31 10:01:08.466813",
       "vintage": {},
       "row_count": 625059,
       "entity_count": 0,
@@ -3800,14 +3967,15 @@
       "sha512": "d4aae1db4e1c3349b679cc071c6d2d0f0d66469a2170caf724dfcf926fd80e82863ec15f2d9a70d1ac2822427b823be387c4f9b61ae85f8e2b15ac70f57be8bd"
     },
     {
-      "bytes": 1001159,
+      "bytes": 1001209,
       "encoding": "windows-1252",
-      "md5": "37d1ad24d21870d9ef928ae38416527a",
+      "md5": "3ff328e7ff17ca7c3a139fbbec619b44",
       "format": "parquet",
       "name": "flu_overall_trends",
       "filename": "flu_overall_trends.parquet",
       "versions": {
         "hash": [
+          "141ae9e12991da6bf753fa32602d4c08860bc499",
           "1352a7ecf010c29e8cafd87678560d50bb83434e",
           "f00b9f736d9a0314467650a8a9addf17135a33d9",
           "04c5885cd6b3d51783414cd9d47caf1a6d624d02",
@@ -4024,6 +4192,7 @@
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -4174,6 +4343,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Thu Jul 30 09:34:03 2026 +0000",
           "Wed Jul 29 09:39:29 2026 +0000",
           "Tue Jul 28 09:40:36 2026 +0000",
           "Mon Jul 27 10:41:17 2026 +0000",
@@ -4357,6 +4527,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "scheduled daily data update",
           "scheduled daily data update",
           "scheduled daily data update",
           "scheduled daily data update",
@@ -4550,8 +4721,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:35.880491",
-      "last_modified": "2026-07-30 09:33:35.880491",
+      "created": "2026-07-31 10:01:07.607787",
+      "last_modified": "2026-07-31 10:01:07.607787",
       "vintage": {},
       "row_count": 32087,
       "entity_count": 52,
@@ -4627,7 +4798,6 @@
             "type": "string",
             "missing": 0,
             "table": {
-              "2024-07-29": 1,
               "2024-07-30": 1,
               "2024-07-31": 1,
               "2024-08-01": 1,
@@ -5357,12 +5527,13 @@
               "2026-07-26": 1,
               "2026-07-27": 1,
               "2026-07-28": 1,
-              "2026-07-29": 1
+              "2026-07-29": 1,
+              "2026-07-30": 1
             }
           },
           {
             "name": "value",
-            "duplicates": 12171,
+            "duplicates": 12170,
             "info": {
               "measure_column": "source",
               "short_name": "Value",
@@ -5372,8 +5543,8 @@
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
-            "mean": 56.659844,
-            "sd": 912.801784,
+            "mean": 56.659833,
+            "sd": 912.801785,
             "min": 0,
             "max": 55718
           },
@@ -5389,14 +5560,14 @@
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
-            "mean": 53.196347,
+            "mean": 53.196335,
             "sd": 892.306806,
             "min": 0,
             "max": 55081
           },
           {
             "name": "value_scale",
-            "duplicates": 6979,
+            "duplicates": 6978,
             "info": {
               "measure_column": "source",
               "short_name": "Scaled value (0–100)",
@@ -5406,8 +5577,8 @@
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
-            "mean": 16.400695,
-            "sd": 24.15971,
+            "mean": 16.400321,
+            "sd": 24.15982,
             "min": 0,
             "max": 100
           },
@@ -5423,8 +5594,8 @@
             "time_range": [-1, -1],
             "type": "float",
             "missing": 0,
-            "mean": 17.815859,
-            "sd": 25.284907,
+            "mean": 17.81546,
+            "sd": 25.285048,
             "min": 0,
             "max": 100
           },
@@ -5436,7 +5607,39 @@
               "levels": {
                 "Epic Cosmos, ED": {
                   "source_id": "epic_pct_flu",
-                  "id": "Epic Cosmos, ED"
+                  "id": "Epic Cosmos, ED",
+                  "name": "epic_pct_flu",
+                  "duplicates": 96564,
+                  "info": {
+                    "id": "epic_pct_flu",
+                    "short_name": "Influenza Patients (%)",
+                    "long_name": "Influenza Emergency Room (ER) Encounters (%)",
+                    "short_description": "Percentage of Influenza patients among all ER encounters.",
+                    "long_description": "Percentage of emergency room encounters attributable to Influenza ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+                    "measure_type": "percent",
+                    "unit": "%",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "category": "respiratory",
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "weekly.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    441
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 3.472633,
+                  "sd": 9.886456,
+                  "min": 0.003311,
+                  "max": 100
                 },
                 "CDC NSSP": {
                   "source_id": "percent_visits_flu",
@@ -5560,19 +5763,165 @@
                 },
                 "CDC NHSN": {
                   "source_id": "delphi_nhsn_flu",
-                  "id": "CDC NHSN"
+                  "id": "CDC NHSN",
+                  "name": "delphi_nhsn_flu",
+                  "duplicates": 16830,
+                  "info": {
+                    "id": "delphi_nhsn_flu",
+                    "short_name": "Influenza Hospitalizations (NHSN)",
+                    "long_name": "Number of influenza hospitalizations in the National Healthcare Safety Network",
+                    "category": "respiratory",
+                    "short_description": "Weekly count of influenza-associated hospital admissions reported to CDC's NHSN.",
+                    "long_description": "The National Healthcare Safety Network (NHSN) is the nation's most widely used healthcare-associated infection tracking system. This dataset reports preliminary and finalized weekly hospital respiratory data and metrics aggregated to national and state/territory levels. Values are available for reference dates beginning August 2020. HHS collects data from state and territorial health departments about many, but not all, hospitals in the U.S. Notably excluded from this dataset are psychiatric and rehabilitation facilities, and religious non-medical facilities.",
+                    "measure_type": "count",
+                    "unit": "hospitalizations",
+                    "time_resolution": "week",
+                    "sources": [
+                      {
+                        "id": "delphi_nhsn"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "delphi_nhsn",
+                      "data_dir": "/data/delphi_nhsn/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    222,
+                    310
+                  ],
+                  "type": "integer",
+                  "missing": 12723,
+                  "mean": 355.740208,
+                  "sd": 2288.887496,
+                  "min": 0,
+                  "max": 55718
                 },
                 "Delphi Hospital Claims": {
                   "source_id": "delphi_hospital_flu_smooth",
-                  "id": "Delphi Hospital Claims"
+                  "id": "Delphi Hospital Claims",
+                  "name": "delphi_hospital_flu_smooth",
+                  "duplicates": 54161,
+                  "info": {
+                    "id": "delphi_hospital_flu_smooth",
+                    "short_name": "Influenza Hospital Admissions",
+                    "long_name": "Percentage of Hospital Admissions with Influenza Diagnosis",
+                    "category": "respiratory",
+                    "short_description": "Estimated percentage of new hospital admissions with influenza-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother",
+                    "long_description": "This data source is based on electronic medical records and claims data about hospital admissions, provided to Delphi by health system partners. We use this inpatient data to estimate the percentage of new hospital admissions with an influenza-associated diagnosis code in a given location, on a given day",
+                    "measure_type": "percent",
+                    "unit": "Percent of new hospital admissions, smoothed",
+                    "time_resolution": "day",
+                    "restrictions": "CC-BY Attribution license",
+                    "sources": [
+                      {
+                        "id": "delphi_hospital_admissions"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "delphi_hospital_claims",
+                      "data_dir": "/data/delphi_hospital_claims/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    330
+                  ],
+                  "type": "float",
+                  "missing": 656,
+                  "mean": 0.303035,
+                  "sd": 0.465913,
+                  "min": 0.00159,
+                  "max": 14.676387
                 },
                 "CDC ILINet": {
                   "source_id": "delphi_fluview_wili",
-                  "id": "CDC ILINet"
+                  "id": "CDC ILINet",
+                  "name": "delphi_fluview_wili",
+                  "duplicates": 3102,
+                  "info": {
+                    "id": "delphi_fluview_wili",
+                    "short_name": "Weighted percent influenza-like illness (ILI)",
+                    "long_name": "Weighted Percent of Visits for Influenza-Like Illness from ILINet",
+                    "category": "respiratory",
+                    "short_description": "Population-weighted percentage of outpatient visits for influenza-like illness.",
+                    "long_description": "Weighted percent of visits for influenza-like illness (ILI) reported by outpatient healthcare providers through the CDC ILINet surveillance network. ILI is defined as fever (temperature of 100F or greater) and a cough and/or sore throat without a known cause other than influenza. The weighted percentage adjusts for differences in state population sizes to provide a more representative national and regional estimate. Data are available from 1997 week 40 onward and are typically published weekly on Fridays. This data is mirrored from the CDC FluView surveillance system via the CMU Delphi Epidata API.",
+                    "statement": "In {location}, {value}% of outpatient visits were for influenza-like illness.",
+                    "measure_type": "Percent",
+                    "unit": "Percent of visits",
+                    "time_resolution": "Week",
+                    "restrictions": "None - Public domain data",
+                    "sources": [
+                      {
+                        "name": "CMU Delphi Epidata",
+                        "url": "https://cmu-delphi.github.io/delphi-epidata/",
+                        "location": "FluView API",
+                        "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/fluview.html"
+                      },
+                      {
+                        "name": "CDC ILINet",
+                        "url": "https://www.cdc.gov/flu/weekly/overview.htm"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "delphi_ili_fluview",
+                      "data_dir": "/data/delphi_ili_fluview/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    1406
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 1.924941,
+                  "sd": 1.883862,
+                  "min": 0,
+                  "max": 19.4177
                 },
                 "Kinsa": {
                   "source_id": "kinsa_cough_cold_flu",
-                  "id": "Kinsa"
+                  "id": "Kinsa",
+                  "name": "kinsa_cough_cold_flu",
+                  "duplicates": 1439,
+                  "info": {
+                    "id": "kinsa_cough_cold_flu",
+                    "short_name": "Kinsa Cough/Cold/Flu Signal",
+                    "long_name": "Kinsa Illness Signal: Cough, Cold & Flu (National Daily)",
+                    "category": "respiratory",
+                    "short_description": "Share of Kinsa smart thermometer users reporting cough, cold, or flu symptoms.",
+                    "long_description": "The Kinsa Cough, Cold & Flu signal is derived from anonymized illness data collected via Kinsa smart thermometers and the associated mobile app. The signal represents the share of active users who reported symptoms consistent with cough, cold, or flu on a given day at the national level. Data are available daily starting in 2018.",
+                    "statement": "In {location}, {value}% of Kinsa users reported cough, cold, or flu symptoms.",
+                    "measure_type": "Prevalence",
+                    "unit": "Percent",
+                    "time_resolution": "Day",
+                    "sources": [
+                      {
+                        "id": "kinsa"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "kinsa_ili",
+                      "data_dir": "/data/kinsa_ili/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    2767
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 1.444605,
+                  "sd": 0.618121,
+                  "min": 0.644,
+                  "max": 4.821
                 }
               },
               "id": "source"
@@ -5611,7 +5960,7 @@
           }
         ]
       },
-      "sha512": "385ae7ca3cbd798ca85247237e226e5a9ef9db8228159a64707b1aa6908cb33ab2f88a8a92580e7f43d3f33578736503e40cc53a7e97c6ec92caf1c641099283"
+      "sha512": "7f0938b2d7f2827b111e8f8c23eb2861ac2ac66f06e4440dc37416b5a86c9b29c9a49f9ae30b175237d1c6cc6af191642c6c8ee0be5b76da3403fe26c749f8bc"
     },
     {
       "bytes": 1346029,
@@ -6088,8 +6437,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:40.23353",
-      "last_modified": "2026-07-30 09:33:40.23353",
+      "created": "2026-07-31 10:01:11.065893",
+      "last_modified": "2026-07-31 10:01:11.065893",
       "vintage": {},
       "row_count": 38682,
       "entity_count": 52,
@@ -6297,7 +6646,39 @@
               "levels": {
                 "Epic Cosmos (ED)": {
                   "source_id": "epic_pct_flu",
-                  "id": "Epic Cosmos (ED)"
+                  "id": "Epic Cosmos (ED)",
+                  "name": "epic_pct_flu",
+                  "duplicates": 96564,
+                  "info": {
+                    "id": "epic_pct_flu",
+                    "short_name": "Influenza Patients (%)",
+                    "long_name": "Influenza Emergency Room (ER) Encounters (%)",
+                    "short_description": "Percentage of Influenza patients among all ER encounters.",
+                    "long_description": "Percentage of emergency room encounters attributable to Influenza ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+                    "measure_type": "percent",
+                    "unit": "%",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "category": "respiratory",
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "weekly.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    441
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 3.472633,
+                  "sd": 9.886456,
+                  "min": 0.003311,
+                  "max": 100
                 },
                 "CDC RSV-NET (Hospitalization)": {
                   "source_id": "rate_flu",
@@ -6503,8 +6884,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:28:22.780068",
-      "last_modified": "2026-07-30 09:28:22.780068",
+      "created": "2026-07-31 09:58:03.780838",
+      "last_modified": "2026-07-31 09:58:03.780838",
       "vintage": {},
       "row_count": 116985,
       "entity_count": 52,
@@ -7219,8 +7600,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:41.540541",
-      "last_modified": "2026-07-30 09:33:41.540541",
+      "created": "2026-07-31 10:01:12.149926",
+      "last_modified": "2026-07-31 10:01:12.149926",
       "vintage": {},
       "row_count": 23760,
       "entity_count": 10,
@@ -7761,8 +8142,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:41.224538",
-      "last_modified": "2026-07-30 09:33:41.224538",
+      "created": "2026-07-31 10:01:11.904919",
+      "last_modified": "2026-07-31 10:01:11.904919",
       "vintage": {},
       "row_count": 880,
       "entity_count": 10,
@@ -8124,8 +8505,8 @@
       "id_length": 11,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:41.589541",
-      "last_modified": "2026-07-30 09:33:41.589541",
+      "created": "2026-07-31 10:01:12.186927",
+      "last_modified": "2026-07-31 10:01:12.186927",
       "vintage": {},
       "row_count": 15,
       "entity_count": 1,
@@ -8562,8 +8943,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:41.132538",
-      "last_modified": "2026-07-30 09:33:41.132538",
+      "created": "2026-07-31 10:01:11.797915",
+      "last_modified": "2026-07-31 10:01:11.797915",
       "vintage": {},
       "row_count": 9504,
       "entity_count": 0,
@@ -9196,8 +9577,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:36.694499",
-      "last_modified": "2026-07-30 09:33:36.694499",
+      "created": "2026-07-31 10:01:08.248806",
+      "last_modified": "2026-07-31 10:01:08.248806",
       "vintage": {},
       "row_count": 625059,
       "entity_count": 0,
@@ -9950,8 +10331,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:41.060537",
-      "last_modified": "2026-07-30 09:33:41.060537",
+      "created": "2026-07-31 10:01:11.739913",
+      "last_modified": "2026-07-31 10:01:11.739913",
       "vintage": {},
       "row_count": 322350,
       "entity_count": 0,
@@ -10773,8 +11154,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:35.78449",
-      "last_modified": "2026-07-30 09:33:35.78449",
+      "created": "2026-07-31 10:01:07.533784",
+      "last_modified": "2026-07-31 10:01:07.533784",
       "vintage": {},
       "row_count": 27002,
       "entity_count": 52,
@@ -11031,7 +11412,39 @@
               "levels": {
                 "Epic Cosmos, ED": {
                   "source_id": "epic_pct_rsv",
-                  "id": "Epic Cosmos, ED"
+                  "id": "Epic Cosmos, ED",
+                  "name": "epic_pct_rsv",
+                  "duplicates": 116651,
+                  "info": {
+                    "id": "epic_pct_rsv",
+                    "short_name": "RSV Patients (%)",
+                    "long_name": "RSV Emergency Room (ER) Encounters (%)",
+                    "short_description": "Percentage of RSV patients among all ER encounters.",
+                    "long_description": "Percentage of emergency room encounters attributable to RSV ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+                    "measure_type": "percent",
+                    "unit": "%",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "category": "respiratory",
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "weekly.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    441
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 2.727739,
+                  "sd": 9.758989,
+                  "min": 0.000727,
+                  "max": 100
                 },
                 "Google Health Trends": {
                   "source_id": "gtrends_rsv_adjusted",
@@ -11198,7 +11611,40 @@
                 },
                 "CDC NHSN": {
                   "source_id": "delphi_nhsn_rsv",
-                  "id": "CDC NHSN"
+                  "id": "CDC NHSN",
+                  "name": "delphi_nhsn_rsv",
+                  "duplicates": 17177,
+                  "info": {
+                    "id": "delphi_nhsn_rsv",
+                    "short_name": "RSV Hospitalizations (NHSN)",
+                    "long_name": "Number of RSV hospitalizations in the National Healthcare Safety Network",
+                    "category": "respiratory",
+                    "short_description": "Weekly count of RSV-associated hospital admissions reported to CDC's NHSN.",
+                    "long_description": "The National Healthcare Safety Network (NHSN) is the nation's most widely used healthcare-associated infection tracking system. This dataset reports preliminary and finalized weekly hospital respiratory data and metrics aggregated to national and state/territory levels. Note: RSV data from the pre-October 31, 2024 voluntary reporting period has limited quality due to low hospital participation rates.",
+                    "measure_type": "count",
+                    "unit": "hospitalizations",
+                    "time_resolution": "week",
+                    "sources": [
+                      {
+                        "id": "delphi_nhsn"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "delphi_nhsn",
+                      "data_dir": "/data/delphi_nhsn/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    222,
+                    310
+                  ],
+                  "type": "integer",
+                  "missing": 12723,
+                  "mean": 128.439249,
+                  "sd": 683.181019,
+                  "min": 0,
+                  "max": 15979
                 }
               },
               "id": "source"
@@ -11720,8 +12166,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:36.020492",
-      "last_modified": "2026-07-30 09:33:36.020492",
+      "created": "2026-07-31 10:01:07.71979",
+      "last_modified": "2026-07-31 10:01:07.71979",
       "vintage": {},
       "row_count": 3586,
       "entity_count": 11,
@@ -12635,8 +13081,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:36.102493",
-      "last_modified": "2026-07-30 09:33:36.102493",
+      "created": "2026-07-31 10:01:07.783792",
+      "last_modified": "2026-07-31 10:01:07.783792",
       "vintage": {},
       "row_count": 16442,
       "entity_count": 53,
@@ -12650,7 +13096,39 @@
               "levels": {
                 "Epic Cosmos, ED": {
                   "source_id": "epic_pct_rsv_pos_tests",
-                  "id": "Epic Cosmos, ED"
+                  "id": "Epic Cosmos, ED",
+                  "name": "epic_pct_rsv_pos_tests",
+                  "duplicates": 17602,
+                  "info": {
+                    "id": "epic_pct_rsv_pos_tests",
+                    "short_name": "RSV Positive Tests Patients (%)",
+                    "long_name": "RSV Positive Tests Emergency Room (ER) Encounters (%)",
+                    "short_description": "Percentage of RSV Positive Tests patients among all ER encounters.",
+                    "long_description": "Percentage of emergency room encounters attributable to RSV Positive Tests ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+                    "measure_type": "percent",
+                    "unit": "%",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "category": "respiratory",
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "monthly_tests.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    35
+                  ],
+                  "type": "float",
+                  "missing": 13353,
+                  "mean": 5.865761,
+                  "sd": 8.027905,
+                  "min": 0.01,
+                  "max": 55.56
                 }
               },
               "id": "source"
@@ -12793,8 +13271,24 @@
             "name": "epic_pct_rsv_pos_tests",
             "duplicates": 14748,
             "info": {
-              "source_id": "epic_pct_rsv_pos_tests",
-              "id": "epic_pct_rsv_pos_tests"
+              "id": "epic_pct_rsv_pos_tests",
+              "short_name": "RSV Positive Tests Patients (%)",
+              "long_name": "RSV Positive Tests Emergency Room (ER) Encounters (%)",
+              "short_description": "Percentage of RSV Positive Tests patients among all ER encounters.",
+              "long_description": "Percentage of emergency room encounters attributable to RSV Positive Tests ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+              "measure_type": "percent",
+              "unit": "%",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory",
+              "source_file": {
+                "project": "epic_resp_infections",
+                "data_dir": "/data/epic_resp_infections/standard",
+                "file": "monthly_tests.csv.gz"
+              }
             },
             "time_range": [-1, -1],
             "type": "float",
@@ -12808,8 +13302,24 @@
             "name": "epic_pct_j12_j18_tested_rsv",
             "duplicates": 10450,
             "info": {
-              "source_id": "epic_pct_j12_j18_tested_rsv",
-              "id": "epic_pct_j12_j18_tested_rsv"
+              "id": "epic_pct_j12_j18_tested_rsv",
+              "short_name": "J12-J18 Tested RSV Patients (%)",
+              "long_name": "J12-J18 Tested RSV Emergency Room (ER) Encounters (%)",
+              "short_description": "Percentage of J12-J18 Tested RSV patients among all ER encounters.",
+              "long_description": "Percentage of emergency room encounters attributable to J12-J18 Tested RSV ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+              "measure_type": "percent",
+              "unit": "%",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory",
+              "source_file": {
+                "project": "epic_resp_infections",
+                "data_dir": "/data/epic_resp_infections/standard",
+                "file": "monthly_tests.csv.gz"
+              }
             },
             "time_range": [-1, -1],
             "type": "float",
@@ -12823,8 +13333,24 @@
             "name": "epic_n_ed_j12_j18",
             "duplicates": 11090,
             "info": {
-              "source_id": "epic_n_ed_j12_j18",
-              "id": "epic_n_ed_j12_j18"
+              "id": "epic_n_ed_j12_j18",
+              "short_name": "Pneumonia (J12-J18) Patients",
+              "long_name": "Pneumonia (J12-J18) Emergency Room (ER) Encounters",
+              "short_description": "Number of Pneumonia (J12-J18) patients.",
+              "long_description": "Number of emergency room (ER) encounters with Pneumonia (J12-J18) ICD-10-CM codes. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+              "measure_type": "integer",
+              "unit": "encounters",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory",
+              "source_file": {
+                "project": "epic_resp_infections",
+                "data_dir": "/data/epic_resp_infections/standard",
+                "file": "monthly_tests.csv.gz"
+              }
             },
             "time_range": [-1, -1],
             "type": "integer",
@@ -13331,8 +13857,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-30 09:33:40.183529",
-      "last_modified": "2026-07-30 09:33:40.183529",
+      "created": "2026-07-31 10:01:11.021892",
+      "last_modified": "2026-07-31 10:01:11.021892",
       "vintage": {},
       "row_count": 47754,
       "entity_count": 52,
@@ -13540,7 +14066,39 @@
               "levels": {
                 "Epic Cosmos (ED)": {
                   "source_id": "epic_pct_rsv",
-                  "id": "Epic Cosmos (ED)"
+                  "id": "Epic Cosmos (ED)",
+                  "name": "epic_pct_rsv",
+                  "duplicates": 116651,
+                  "info": {
+                    "id": "epic_pct_rsv",
+                    "short_name": "RSV Patients (%)",
+                    "long_name": "RSV Emergency Room (ER) Encounters (%)",
+                    "short_description": "Percentage of RSV patients among all ER encounters.",
+                    "long_description": "Percentage of emergency room encounters attributable to RSV ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+                    "measure_type": "percent",
+                    "unit": "%",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "category": "respiratory",
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "weekly.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    441
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 2.727739,
+                  "sd": 9.758989,
+                  "min": 0.000727,
+                  "max": 100
                 },
                 "CDC RSV-NET (Hospitalization)": {
                   "source_id": "rate_rsv",
@@ -13690,7 +14248,39 @@
       "levels": {
         "Epic Cosmos, ED": {
           "source_id": "epic_pct_rsv",
-          "id": "Epic Cosmos, ED"
+          "id": "Epic Cosmos, ED",
+          "name": "epic_pct_rsv",
+          "duplicates": 116651,
+          "info": {
+            "id": "epic_pct_rsv",
+            "short_name": "RSV Patients (%)",
+            "long_name": "RSV Emergency Room (ER) Encounters (%)",
+            "short_description": "Percentage of RSV patients among all ER encounters.",
+            "long_description": "Percentage of emergency room encounters attributable to RSV ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+            "measure_type": "percent",
+            "unit": "%",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "category": "respiratory",
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "weekly.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            441
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 2.727739,
+          "sd": 9.758989,
+          "min": 0.000727,
+          "max": 100
         },
         "Google Health Trends": {
           "source_id": "gtrends_rsv_adjusted",
@@ -13857,7 +14447,40 @@
         },
         "CDC NHSN": {
           "source_id": "delphi_nhsn_rsv",
-          "id": "CDC NHSN"
+          "id": "CDC NHSN",
+          "name": "delphi_nhsn_rsv",
+          "duplicates": 17177,
+          "info": {
+            "id": "delphi_nhsn_rsv",
+            "short_name": "RSV Hospitalizations (NHSN)",
+            "long_name": "Number of RSV hospitalizations in the National Healthcare Safety Network",
+            "category": "respiratory",
+            "short_description": "Weekly count of RSV-associated hospital admissions reported to CDC's NHSN.",
+            "long_description": "The National Healthcare Safety Network (NHSN) is the nation's most widely used healthcare-associated infection tracking system. This dataset reports preliminary and finalized weekly hospital respiratory data and metrics aggregated to national and state/territory levels. Note: RSV data from the pre-October 31, 2024 voluntary reporting period has limited quality due to low hospital participation rates.",
+            "measure_type": "count",
+            "unit": "hospitalizations",
+            "time_resolution": "week",
+            "sources": [
+              {
+                "id": "delphi_nhsn"
+              }
+            ],
+            "source_file": {
+              "project": "delphi_nhsn",
+              "data_dir": "/data/delphi_nhsn/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            222,
+            310
+          ],
+          "type": "integer",
+          "missing": 12723,
+          "mean": 128.439249,
+          "sd": 683.181019,
+          "min": 0,
+          "max": 15979
         }
       },
       "id": "bundle_respiratory/dist/rsv_overall_trends.parquet|source"
@@ -13867,7 +14490,39 @@
       "levels": {
         "Epic Cosmos, ED": {
           "source_id": "epic_pct_flu",
-          "id": "Epic Cosmos, ED"
+          "id": "Epic Cosmos, ED",
+          "name": "epic_pct_flu",
+          "duplicates": 96564,
+          "info": {
+            "id": "epic_pct_flu",
+            "short_name": "Influenza Patients (%)",
+            "long_name": "Influenza Emergency Room (ER) Encounters (%)",
+            "short_description": "Percentage of Influenza patients among all ER encounters.",
+            "long_description": "Percentage of emergency room encounters attributable to Influenza ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+            "measure_type": "percent",
+            "unit": "%",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "category": "respiratory",
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "weekly.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            441
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 3.472633,
+          "sd": 9.886456,
+          "min": 0.003311,
+          "max": 100
         },
         "CDC NSSP": {
           "source_id": "percent_visits_flu",
@@ -13991,19 +14646,165 @@
         },
         "CDC NHSN": {
           "source_id": "delphi_nhsn_flu",
-          "id": "CDC NHSN"
+          "id": "CDC NHSN",
+          "name": "delphi_nhsn_flu",
+          "duplicates": 16830,
+          "info": {
+            "id": "delphi_nhsn_flu",
+            "short_name": "Influenza Hospitalizations (NHSN)",
+            "long_name": "Number of influenza hospitalizations in the National Healthcare Safety Network",
+            "category": "respiratory",
+            "short_description": "Weekly count of influenza-associated hospital admissions reported to CDC's NHSN.",
+            "long_description": "The National Healthcare Safety Network (NHSN) is the nation's most widely used healthcare-associated infection tracking system. This dataset reports preliminary and finalized weekly hospital respiratory data and metrics aggregated to national and state/territory levels. Values are available for reference dates beginning August 2020. HHS collects data from state and territorial health departments about many, but not all, hospitals in the U.S. Notably excluded from this dataset are psychiatric and rehabilitation facilities, and religious non-medical facilities.",
+            "measure_type": "count",
+            "unit": "hospitalizations",
+            "time_resolution": "week",
+            "sources": [
+              {
+                "id": "delphi_nhsn"
+              }
+            ],
+            "source_file": {
+              "project": "delphi_nhsn",
+              "data_dir": "/data/delphi_nhsn/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            222,
+            310
+          ],
+          "type": "integer",
+          "missing": 12723,
+          "mean": 355.740208,
+          "sd": 2288.887496,
+          "min": 0,
+          "max": 55718
         },
         "Delphi Hospital Claims": {
           "source_id": "delphi_hospital_flu_smooth",
-          "id": "Delphi Hospital Claims"
+          "id": "Delphi Hospital Claims",
+          "name": "delphi_hospital_flu_smooth",
+          "duplicates": 54161,
+          "info": {
+            "id": "delphi_hospital_flu_smooth",
+            "short_name": "Influenza Hospital Admissions",
+            "long_name": "Percentage of Hospital Admissions with Influenza Diagnosis",
+            "category": "respiratory",
+            "short_description": "Estimated percentage of new hospital admissions with influenza-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother",
+            "long_description": "This data source is based on electronic medical records and claims data about hospital admissions, provided to Delphi by health system partners. We use this inpatient data to estimate the percentage of new hospital admissions with an influenza-associated diagnosis code in a given location, on a given day",
+            "measure_type": "percent",
+            "unit": "Percent of new hospital admissions, smoothed",
+            "time_resolution": "day",
+            "restrictions": "CC-BY Attribution license",
+            "sources": [
+              {
+                "id": "delphi_hospital_admissions"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "delphi_hospital_claims",
+              "data_dir": "/data/delphi_hospital_claims/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            330
+          ],
+          "type": "float",
+          "missing": 656,
+          "mean": 0.303035,
+          "sd": 0.465913,
+          "min": 0.00159,
+          "max": 14.676387
         },
         "CDC ILINet": {
           "source_id": "delphi_fluview_wili",
-          "id": "CDC ILINet"
+          "id": "CDC ILINet",
+          "name": "delphi_fluview_wili",
+          "duplicates": 3102,
+          "info": {
+            "id": "delphi_fluview_wili",
+            "short_name": "Weighted percent influenza-like illness (ILI)",
+            "long_name": "Weighted Percent of Visits for Influenza-Like Illness from ILINet",
+            "category": "respiratory",
+            "short_description": "Population-weighted percentage of outpatient visits for influenza-like illness.",
+            "long_description": "Weighted percent of visits for influenza-like illness (ILI) reported by outpatient healthcare providers through the CDC ILINet surveillance network. ILI is defined as fever (temperature of 100F or greater) and a cough and/or sore throat without a known cause other than influenza. The weighted percentage adjusts for differences in state population sizes to provide a more representative national and regional estimate. Data are available from 1997 week 40 onward and are typically published weekly on Fridays. This data is mirrored from the CDC FluView surveillance system via the CMU Delphi Epidata API.",
+            "statement": "In {location}, {value}% of outpatient visits were for influenza-like illness.",
+            "measure_type": "Percent",
+            "unit": "Percent of visits",
+            "time_resolution": "Week",
+            "restrictions": "None - Public domain data",
+            "sources": [
+              {
+                "name": "CMU Delphi Epidata",
+                "url": "https://cmu-delphi.github.io/delphi-epidata/",
+                "location": "FluView API",
+                "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/fluview.html"
+              },
+              {
+                "name": "CDC ILINet",
+                "url": "https://www.cdc.gov/flu/weekly/overview.htm"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "delphi_ili_fluview",
+              "data_dir": "/data/delphi_ili_fluview/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            1406
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 1.924941,
+          "sd": 1.883862,
+          "min": 0,
+          "max": 19.4177
         },
         "Kinsa": {
           "source_id": "kinsa_cough_cold_flu",
-          "id": "Kinsa"
+          "id": "Kinsa",
+          "name": "kinsa_cough_cold_flu",
+          "duplicates": 1439,
+          "info": {
+            "id": "kinsa_cough_cold_flu",
+            "short_name": "Kinsa Cough/Cold/Flu Signal",
+            "long_name": "Kinsa Illness Signal: Cough, Cold & Flu (National Daily)",
+            "category": "respiratory",
+            "short_description": "Share of Kinsa smart thermometer users reporting cough, cold, or flu symptoms.",
+            "long_description": "The Kinsa Cough, Cold & Flu signal is derived from anonymized illness data collected via Kinsa smart thermometers and the associated mobile app. The signal represents the share of active users who reported symptoms consistent with cough, cold, or flu on a given day at the national level. Data are available daily starting in 2018.",
+            "statement": "In {location}, {value}% of Kinsa users reported cough, cold, or flu symptoms.",
+            "measure_type": "Prevalence",
+            "unit": "Percent",
+            "time_resolution": "Day",
+            "sources": [
+              {
+                "id": "kinsa"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "kinsa_ili",
+              "data_dir": "/data/kinsa_ili/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            2767
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 1.444605,
+          "sd": 0.618121,
+          "min": 0.644,
+          "max": 4.821
         }
       },
       "id": "bundle_respiratory/dist/flu_overall_trends.parquet|source"
@@ -14013,7 +14814,39 @@
       "levels": {
         "Epic Cosmos, ED": {
           "source_id": "epic_pct_covid",
-          "id": "Epic Cosmos, ED"
+          "id": "Epic Cosmos, ED",
+          "name": "epic_pct_covid",
+          "duplicates": 87757,
+          "info": {
+            "id": "epic_pct_covid",
+            "short_name": "COVID Patients (%)",
+            "long_name": "COVID Emergency Room (ER) Encounters (%)",
+            "short_description": "Percentage of COVID patients among all ER encounters.",
+            "long_description": "Percentage of emergency room encounters attributable to COVID ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+            "measure_type": "percent",
+            "unit": "%",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "category": "respiratory",
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "weekly.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            441
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 3.476005,
+          "sd": 9.714553,
+          "min": 0.000574,
+          "max": 100
         },
         "CDC NSSP": {
           "source_id": "percent_visits_covid",
@@ -14137,15 +14970,118 @@
         },
         "CDC NHSN": {
           "source_id": "delphi_nhsn_covid",
-          "id": "CDC NHSN"
+          "id": "CDC NHSN",
+          "name": "delphi_nhsn_covid",
+          "duplicates": 14983,
+          "info": {
+            "id": "delphi_nhsn_covid",
+            "short_name": "COVID Hospitalizations (NHSN)",
+            "long_name": "Number of COVID hospitalizations in the National Healthcare Safety Network",
+            "category": "respiratory",
+            "short_description": "Weekly count of COVID-19 associated hospital admissions reported to CDC's NHSN.",
+            "long_description": "The National Healthcare Safety Network (NHSN) is the nation's most widely used healthcare-associated infection tracking system. This dataset reports preliminary and finalized weekly hospital respiratory data and metrics aggregated to national and state/territory levels. Values are available for reference dates beginning August 2020. HHS collects data from state and territorial health departments about many, but not all, hospitals in the U.S. Notably excluded from this dataset are psychiatric and rehabilitation facilities, and religious non-medical facilities.",
+            "measure_type": "count",
+            "unit": "hospitalizations",
+            "time_resolution": "week",
+            "sources": [
+              {
+                "id": "delphi_nhsn"
+              }
+            ],
+            "source_file": {
+              "project": "delphi_nhsn",
+              "data_dir": "/data/delphi_nhsn/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            310
+          ],
+          "type": "integer",
+          "missing": 322,
+          "mean": 939.619879,
+          "sd": 5245.14555,
+          "min": 0,
+          "max": 156132
         },
         "Delphi Hospital Claims": {
           "source_id": "delphi_hospital_covid_smooth",
-          "id": "Delphi Hospital Claims"
+          "id": "Delphi Hospital Claims",
+          "name": "delphi_hospital_covid_smooth",
+          "duplicates": 13878,
+          "info": {
+            "id": "delphi_hospital_covid_smooth",
+            "category": "respiratory",
+            "short_description": "Estimated percentage of new hospital admissions with COVID-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother",
+            "long_description": "This data source is based on electronic medical records and claims data about hospital admissions, provided to Delphi by health system partners. We use this inpatient data to estimate the percentage of new hospital admissions with a COVID-associated diagnosis code in a given location, on a given day",
+            "unit": "Percent of new hospital admissions, smoothed",
+            "time_resolution": "day",
+            "restrictions": "CC-BY Attribution license",
+            "sources": [
+              {
+                "name": "CMU Delphi",
+                "url": "https://cmu-delphi.github.io/delphi-epidata/",
+                "location": "COVIDcast > Hospital Admissions",
+                "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "delphi_hospital_claims",
+              "data_dir": "/data/delphi_hospital_claims/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            330
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 2.348791,
+          "sd": 4.029773,
+          "min": 0.016705,
+          "max": 86.957498
         },
         "Delphi Doctor Claims": {
           "source_id": "delphi_doc_covid_smooth",
-          "id": "Delphi Doctor Claims"
+          "id": "Delphi Doctor Claims",
+          "name": "delphi_doc_covid_smooth",
+          "duplicates": 167193,
+          "info": {
+            "id": "delphi_doc_covid_smooth",
+            "short_name": "COVID Doctor Visits",
+            "long_name": "Percentage of Outpatient Visits for COVID-Related Symptoms",
+            "category": "respiratory",
+            "short_description": "Estimated percentage of outpatient doctor visits primarily about COVID-related symptoms, based on data from health system partners, smoothed in time using a Gaussian linear smoother",
+            "long_description": "This data source is based on information about outpatient visits, provided to CMU/Delphi by health system partners. Using this outpatient data, CMU/Delphi estimates the percentage of COVID-related doctor's visits in a given location, on a given day. Percent of all unique outpatient visits with primary ICD-10 code of any of: U071, U072, B9729, J1281, Z03818, B342, J1289",
+            "measure_type": "percent",
+            "unit": "Percent of doctor's visits, smoothed",
+            "time_resolution": "week",
+            "restrictions": "CC-BY Attribution license",
+            "sources": [
+              {
+                "id": "delphi_doctor_visits"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "delphi_doctors_claims",
+              "data_dir": "/data/delphi_doctors_claims/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            330
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 1.486334,
+          "sd": 2.608018,
+          "min": 0,
+          "max": 74.834432
         }
       },
       "id": "bundle_respiratory/dist/covid_overall_trends.parquet|source"
@@ -14155,7 +15091,39 @@
       "levels": {
         "Epic Cosmos (ED)": {
           "source_id": "epic_pct_rsv",
-          "id": "Epic Cosmos (ED)"
+          "id": "Epic Cosmos (ED)",
+          "name": "epic_pct_rsv",
+          "duplicates": 116651,
+          "info": {
+            "id": "epic_pct_rsv",
+            "short_name": "RSV Patients (%)",
+            "long_name": "RSV Emergency Room (ER) Encounters (%)",
+            "short_description": "Percentage of RSV patients among all ER encounters.",
+            "long_description": "Percentage of emergency room encounters attributable to RSV ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+            "measure_type": "percent",
+            "unit": "%",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "category": "respiratory",
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "weekly.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            441
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 2.727739,
+          "sd": 9.758989,
+          "min": 0.000727,
+          "max": 100
         },
         "CDC RSV-NET (Hospitalization)": {
           "source_id": "rate_rsv",
@@ -14205,7 +15173,39 @@
       "levels": {
         "Epic Cosmos (ED)": {
           "source_id": "epic_pct_flu",
-          "id": "Epic Cosmos (ED)"
+          "id": "Epic Cosmos (ED)",
+          "name": "epic_pct_flu",
+          "duplicates": 96564,
+          "info": {
+            "id": "epic_pct_flu",
+            "short_name": "Influenza Patients (%)",
+            "long_name": "Influenza Emergency Room (ER) Encounters (%)",
+            "short_description": "Percentage of Influenza patients among all ER encounters.",
+            "long_description": "Percentage of emergency room encounters attributable to Influenza ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+            "measure_type": "percent",
+            "unit": "%",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "category": "respiratory",
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "weekly.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            441
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 3.472633,
+          "sd": 9.886456,
+          "min": 0.003311,
+          "max": 100
         },
         "CDC RSV-NET (Hospitalization)": {
           "source_id": "rate_flu",
@@ -14255,7 +15255,39 @@
       "levels": {
         "Epic Cosmos (ED)": {
           "source_id": "epic_pct_covid",
-          "id": "Epic Cosmos (ED)"
+          "id": "Epic Cosmos (ED)",
+          "name": "epic_pct_covid",
+          "duplicates": 87757,
+          "info": {
+            "id": "epic_pct_covid",
+            "short_name": "COVID Patients (%)",
+            "long_name": "COVID Emergency Room (ER) Encounters (%)",
+            "short_description": "Percentage of COVID patients among all ER encounters.",
+            "long_description": "Percentage of emergency room encounters attributable to COVID ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+            "measure_type": "percent",
+            "unit": "%",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "category": "respiratory",
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "weekly.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            441
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 3.476005,
+          "sd": 9.714553,
+          "min": 0.000574,
+          "max": 100
         },
         "CDC RSV-NET (Hospitalization)": {
           "source_id": "rate_covid",
@@ -14442,7 +15474,39 @@
       "levels": {
         "Epic Cosmos, ED": {
           "source_id": "epic_pct_rsv_pos_tests",
-          "id": "Epic Cosmos, ED"
+          "id": "Epic Cosmos, ED",
+          "name": "epic_pct_rsv_pos_tests",
+          "duplicates": 17602,
+          "info": {
+            "id": "epic_pct_rsv_pos_tests",
+            "short_name": "RSV Positive Tests Patients (%)",
+            "long_name": "RSV Positive Tests Emergency Room (ER) Encounters (%)",
+            "short_description": "Percentage of RSV Positive Tests patients among all ER encounters.",
+            "long_description": "Percentage of emergency room encounters attributable to RSV Positive Tests ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+            "measure_type": "percent",
+            "unit": "%",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "category": "respiratory",
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "monthly_tests.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            35
+          ],
+          "type": "float",
+          "missing": 13353,
+          "mean": 5.865761,
+          "sd": 8.027905,
+          "min": 0.01,
+          "max": 55.56
         }
       },
       "id": "bundle_respiratory/dist/rsv_testing_pct.parquet|source"
@@ -15110,15 +16174,111 @@
     },
     "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_pct_rsv_pos_tests": {
       "source_id": "epic_pct_rsv_pos_tests",
-      "id": "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_pct_rsv_pos_tests"
+      "id": "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_pct_rsv_pos_tests",
+      "name": "epic_pct_rsv_pos_tests",
+      "duplicates": 17602,
+      "info": {
+        "id": "epic_pct_rsv_pos_tests",
+        "short_name": "RSV Positive Tests Patients (%)",
+        "long_name": "RSV Positive Tests Emergency Room (ER) Encounters (%)",
+        "short_description": "Percentage of RSV Positive Tests patients among all ER encounters.",
+        "long_description": "Percentage of emergency room encounters attributable to RSV Positive Tests ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+        "measure_type": "percent",
+        "unit": "%",
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ],
+        "category": "respiratory",
+        "source_file": {
+          "project": "epic_resp_infections",
+          "data_dir": "/data/epic_resp_infections/standard",
+          "file": "monthly_tests.csv.gz"
+        }
+      },
+      "time_range": [
+        0,
+        35
+      ],
+      "type": "float",
+      "missing": 13353,
+      "mean": 5.865761,
+      "sd": 8.027905,
+      "min": 0.01,
+      "max": 55.56
     },
     "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_pct_j12_j18_tested_rsv": {
       "source_id": "epic_pct_j12_j18_tested_rsv",
-      "id": "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_pct_j12_j18_tested_rsv"
+      "id": "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_pct_j12_j18_tested_rsv",
+      "name": "epic_pct_j12_j18_tested_rsv",
+      "duplicates": 13303,
+      "info": {
+        "id": "epic_pct_j12_j18_tested_rsv",
+        "short_name": "J12-J18 Tested RSV Patients (%)",
+        "long_name": "J12-J18 Tested RSV Emergency Room (ER) Encounters (%)",
+        "short_description": "Percentage of J12-J18 Tested RSV patients among all ER encounters.",
+        "long_description": "Percentage of emergency room encounters attributable to J12-J18 Tested RSV ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+        "measure_type": "percent",
+        "unit": "%",
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ],
+        "category": "respiratory",
+        "source_file": {
+          "project": "epic_resp_infections",
+          "data_dir": "/data/epic_resp_infections/standard",
+          "file": "monthly_tests.csv.gz"
+        }
+      },
+      "time_range": [
+        0,
+        35
+      ],
+      "type": "float",
+      "missing": 2854,
+      "mean": 46.6887,
+      "sd": 17.340776,
+      "min": 0.84,
+      "max": 100
     },
     "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_n_ed_j12_j18": {
       "source_id": "epic_n_ed_j12_j18",
-      "id": "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_n_ed_j12_j18"
+      "id": "bundle_respiratory/dist/rsv_testing_pct.parquet|epic_n_ed_j12_j18",
+      "name": "epic_n_ed_j12_j18",
+      "duplicates": 13942,
+      "info": {
+        "id": "epic_n_ed_j12_j18",
+        "short_name": "Pneumonia (J12-J18) Patients",
+        "long_name": "Pneumonia (J12-J18) Emergency Room (ER) Encounters",
+        "short_description": "Number of Pneumonia (J12-J18) patients.",
+        "long_description": "Number of emergency room (ER) encounters with Pneumonia (J12-J18) ICD-10-CM codes. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+        "measure_type": "integer",
+        "unit": "encounters",
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ],
+        "category": "respiratory",
+        "source_file": {
+          "project": "epic_resp_infections",
+          "data_dir": "/data/epic_resp_infections/standard",
+          "file": "monthly_tests.csv.gz"
+        }
+      },
+      "time_range": [
+        0,
+        35
+      ],
+      "type": "integer",
+      "missing": 0,
+      "mean": 3938.792703,
+      "sd": 24273.114607,
+      "min": 5,
+      "max": 917730
     },
     "bundle_respiratory/dist/pneumococcus_serotype_trends.parquet|value": {
       "source_id": "N_IPD",
@@ -15646,8 +16806,8 @@
         "date": {
           "status": "present",
           "same_type": true,
-          "added_levels": "2026-07-29",
-          "dropped_levels": "2024-07-28"
+          "added_levels": "2026-07-30",
+          "dropped_levels": "2024-07-29"
         },
         "value": {
           "status": "present",
