@@ -1,5 +1,6 @@
 {
   "bundle_injury_overdose/dist/deaths_cause_age.parquet|cause_of_death": {
+    "short_name": "Cause of death",
     "levels": {
       "Drug poisoning": { "source_id": "wisqars_rate_drug_poisoning" },
       "Non-drug poisoning": { "source_id": "wisqars_rate_non_drug_poisoning" },
@@ -43,6 +44,7 @@
     "sources": [{ "id": "wisqars" }]
   },
   "bundle_injury_overdose/dist/deaths_cause_age_demographics.parquet|cause_of_death": {
+    "short_name": "Cause of death",
     "levels": {
       "Drug poisoning": { "source_id": "wisqars_rate_drug_poisoning" },
       "Non-drug poisoning": { "source_id": "wisqars_rate_non_drug_poisoning" },
@@ -71,6 +73,7 @@
     "source_id": "wisqars_rate_drug_poisoning"
   },
   "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "CDC/NCHS": { "source_id": "n_deaths_overdose" },
       "Google Health Trends": { "source_id": "gtrends_narcan" },
@@ -99,13 +102,13 @@
   },
   "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|value_scale": {
     "id": "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|value_scale",
-    "short_name": "Overdose measure (scaled 0–1)",
-    "long_name": "Overdose Surveillance Measure Scaled to 0–1",
+    "short_name": "Overdose measure (scaled 0-1)",
+    "long_name": "Overdose Surveillance Measure Scaled to 0-1",
     "category": "injury",
-    "short_description": "Value rescaled to 0–1 relative to the geography and source maximum.",
-    "long_description": "The overdose surveillance value scaled to a 0–1 range by dividing by the maximum value within each geography-source combination. Enables visual comparison across sources with different units.",
+    "short_description": "Value rescaled to 0-1 relative to the geography and source maximum.",
+    "long_description": "The overdose surveillance value scaled to a 0-1 range by dividing by the maximum value within each geography-source combination. Enables visual comparison across sources with different units.",
     "measure_type": "Scaled",
-    "unit": "0–1",
+    "unit": "0-1",
     "time_resolution": "Year",
     "sources": [
       { "id": "nchs_vsrr_provisional" },
@@ -115,7 +118,14 @@
       { "id": "gtrends" }
     ]
   },
+  "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|suppressed": {
+    "short_name": "Value suppressed flag",
+    "short_description": "1 if the underlying source value was suppressed (small count) and imputed, 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "Binary indicator"
+  },
   "bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "CDC/NCHS": { "source_id": "n_deaths_overdose" },
       "Google Health Trends": { "source_id": "gtrends_narcan" },
@@ -127,7 +137,14 @@
   "bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet|value": {
     "source_id": "bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet|value"
   },
+  "bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet|geography_fips": {
+    "short_name": "County FIPS code",
+    "short_description": "5-digit county FIPS code accompanying the county name in the geography column.",
+    "measure_type": "identifier",
+    "unit": "FIPS code"
+  },
   "bundle_injury_overdose/dist/overdose_by_geography_and_source_state_year.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "CDC/NCHS": { "source_id": "n_deaths_overdose" },
       "Google Health Trends": { "source_id": "gtrends_narcan" },
@@ -163,10 +180,15 @@
   "bundle_injury_overdose/dist/county_opioid_by_source.parquet|opioid_rate": {
     "source_id": "cms_opioid_use_disorder_overarching"
   },
+  "bundle_injury_overdose/dist/county_opioid_by_source.parquet|source": {
+    "short_name": "Data source",
+    "levels": { "Medicare FFS": { "source_id": "cms_opioid_use_disorder_overarching" } }
+  },
   "bundle_injury_overdose/dist/state_opioid_by_source.parquet|opioid_rate": {
     "source_id": "cms_opioid_use_disorder_overarching"
   },
   "bundle_injury_overdose/dist/firearms_by_demographics.parquet|source": {
+    "short_name": "Firearm death intent",
     "levels": {
       "wisqars_rate_firearm_intentional": { "source_id": "wisqars_rate_firearm_intentional" },
       "wisqars_rate_firearm_accident": { "source_id": "wisqars_rate_firearm_accident" },
@@ -188,6 +210,7 @@
     "sources": [{ "id": "wisqars" }]
   },
   "bundle_injury_overdose/dist/firearms_geography_source.parquet|source": {
+    "short_name": "Firearm measure / source",
     "levels": {
       "gtrends_9mm": { "source_id": "gtrends_9mm" },
       "gtrends_shotgun": { "source_id": "gtrends_shotgun" },
@@ -215,7 +238,14 @@
       { "id": "wisqars" }
     ]
   },
+  "bundle_injury_overdose/dist/firearms_geography_source.parquet|state": {
+    "short_name": "State abbreviation",
+    "short_description": "Two-letter USPS state abbreviation (e.g., CA, TX; US for national).",
+    "measure_type": "identifier",
+    "unit": "state abbreviation"
+  },
   "bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet|source": {
+    "short_name": "Firearm measure / source",
     "levels": {
       "CDC/WISQARS: Firearm (intentional)": { "source_id": "wisqars_rate_firearm_intentional" },
       "CDC/WISQARS: Firearm (unintentional)": { "source_id": "wisqars_rate_firearm_accident" },
@@ -228,7 +258,32 @@
   "bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet|value": {
     "source_id": "bundle_injury_overdose/dist/firearms_geography_source.parquet|value"
   },
+  "{category}epic_n_ed_firearm": {
+    "short_name": "Firearm ED encounter count",
+    "long_name": "Number of Firearm-Related ED Encounters (Epic Cosmos)",
+    "category": "injury",
+    "short_description": "Count of firearm-related emergency department encounters from Epic Cosmos.",
+    "measure_type": "Count",
+    "unit": "Encounters",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }],
+    "categories": {
+      "bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet|": {},
+      "bundle_injury_overdose/dist/firearms_geography_source.parquet|": {}
+    }
+  },
+  "{category}suppressed_firearm": {
+    "short_name": "Firearm value suppressed flag",
+    "short_description": "1 if the Epic Cosmos firearm ED value was suppressed (small count) and imputed, 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "Binary indicator",
+    "categories": {
+      "bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet|": {},
+      "bundle_injury_overdose/dist/firearms_geography_source.parquet|": {}
+    }
+  },
   "bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "Google Health Trends: Heat Stroke": { "source_id": "gtrends_heat+stroke" },
       "Google Health Trends: Heat Exhaustion": { "source_id": "gtrends_heat+exhaustion" },
@@ -250,6 +305,39 @@
       { "id": "epic_cosmos" }
     ]
   },
+  "{category}suppressed_heat": {
+    "short_name": "Heat value suppressed flag",
+    "short_description": "1 if the Epic Cosmos heat-related ED value was suppressed (small count) and imputed, 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "Binary indicator",
+    "categories": {
+      "bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet|": {}
+    }
+  },
+  "bundle_injury_overdose/dist/heat_risk.parquet|value": {
+    "id": "bundle_injury_overdose/dist/heat_risk.parquet|value",
+    "short_name": "Heat risk score",
+    "long_name": "NOAA HeatRisk Mean Score",
+    "category": "heat",
+    "short_description": "Mean daily heat risk score (0-4) aggregated to state (or county) level.",
+    "long_description": "The NOAA Weather Prediction Center HeatRisk product provides a daily heat risk forecast across the contiguous United States on a 0-4 scale: 0 = No Risk, 1 = Minor, 2 = Moderate, 3 = Major, 4 = Extreme. Values represent the risk of heat-related illness to the general population, computed as the area-weighted mean raster pixel value within each geographic boundary.",
+    "measure_type": "Index",
+    "unit": "Score (0-4)",
+    "time_resolution": "Day",
+    "sources": [{ "id": "noaa_wpc_heatrisk" }]
+  },
+  "bundle_injury_overdose/dist/heat_risk.parquet|forecast_day": {
+    "id": "bundle_injury_overdose/dist/heat_risk.parquet|forecast_day",
+    "short_name": "Forecast day",
+    "long_name": "Forecast day offset",
+    "category": "heat",
+    "short_description": "0 = historical archive (observed Day 1); 1-7 = number of days ahead in the current forecast.",
+    "long_description": "Indicates whether a row is historical archive data or part of the current 7-day forecast. A value of 0 marks archive data (the observed Day 1 value for a past date). Values of 1-7 mark rows from the current forecast, where the number is the days ahead of the run date that the value is valid for.",
+    "measure_type": "Integer",
+    "unit": "Days",
+    "time_resolution": "Day",
+    "sources": [{ "id": "noaa_wpc_heatrisk" }]
+  },
   "bundle_injury_overdose/dist/google_dma.parquet|gtrends_narcan": {
     "source_id": "gtrends_narcan"
   },
@@ -259,10 +347,11 @@
   "bundle_injury_overdose/dist/google_dma.parquet|gtrends_shotgun": {
     "source_id": "gtrends_shotgun"
   },
- "bundle_injury_overdose/dist/google_dma.parquet|gtrends_heat_exhaustion": {
+  "bundle_injury_overdose/dist/google_dma.parquet|gtrends_heat_exhaustion": {
     "source_id": "gtrends_heat+exhaustion"
   },
   "bundle_injury_overdose/dist/medicaid_injury_overdose.parquet|outcome_name": {
+    "short_name": "Medicaid measure",
     "levels": {
       "Opioid Use Disorder": {},
       "Initiation and Engagement of Substance Use Treatment": {},
@@ -271,7 +360,14 @@
     }
   },
   "bundle_injury_overdose/dist/medicaid_injury_overdose.parquet|source": {
+    "short_name": "Data source",
     "levels": { "Medicaid": {} }
+  },
+  "bundle_injury_overdose/dist/medicaid_injury_overdose.parquet|payer": {
+    "short_name": "Payer",
+    "short_description": "Coverage/payer program the beneficiaries are enrolled in (e.g., Medicaid, CHIP).",
+    "measure_type": "category",
+    "unit": ""
   },
   "bundle_injury_overdose/dist/medicaid_injury_overdose.parquet|value": {
     "id": "bundle_injury_overdose/dist/medicaid_injury_overdose.parquet|value",
@@ -279,10 +375,149 @@
     "long_name": "Medicaid and CHIP Injury and Overdose Rate",
     "category": "injury",
     "short_description": "Percentage of Medicaid beneficiaries with injury and overdose related measures.",
-    "long_description": "State-level injury and overdose rates for Medicaid beneficiaries, from the Medicaid and CHIP Adult Core Set Quality Measures voluntarily reported by states to CMS (2014–2023). Includes opioid use disorder (OUD: percent of adults without cancer receiving high-dosage opioid prescriptions), initiation and engagement of substance use disorder treatment (IET: percent of adults with a new substance use disorder diagnosis who initiated and engaged in treatment), follow-up after ED visit for alcohol and drug abuse (FUA: percent of adults with a follow-up visit within 30 days after an ED visit for alcohol or drug abuse), and concurrent use of opioids and benzodiazepines (COB: percent of adults who received concurrent prescriptions for opioids and benzodiazepines). Reporting is voluntary; not all states report all measures each year.",
+    "long_description": "State-level injury and overdose rates for Medicaid beneficiaries, from the Medicaid and CHIP Adult Core Set Quality Measures voluntarily reported by states to CMS (2014-2023). Includes opioid use disorder (OUD: percent of adults without cancer receiving high-dosage opioid prescriptions), initiation and engagement of substance use disorder treatment (IET: percent of adults with a new substance use disorder diagnosis who initiated and engaged in treatment), follow-up after ED visit for alcohol and drug abuse (FUA: percent of adults with a follow-up visit within 30 days after an ED visit for alcohol or drug abuse), and concurrent use of opioids and benzodiazepines (COB: percent of adults who received concurrent prescriptions for opioids and benzodiazepines). Reporting is voluntary; not all states report all measures each year.",
     "measure_type": "Percent",
     "unit": "%",
     "time_resolution": "Year",
     "sources": [{ "id": "medicaid_quality" }]
+  },
+  "{category}race": {
+    "short_name": "Race",
+    "short_description": "Race category as reported by CDC WISQARS.",
+    "measure_type": "category",
+    "unit": "",
+    "categories": {
+      "bundle_injury_overdose/dist/deaths_cause_age_demographics.parquet|": {},
+      "bundle_injury_overdose/dist/firearms_by_demographics.parquet|": {},
+      "bundle_injury_overdose/dist/overdose_by_demographics.parquet|": {}
+    }
+  },
+  "{category}ethnicity": {
+    "short_name": "Ethnicity",
+    "short_description": "Ethnicity category (e.g., Hispanic, Non-Hispanic) as reported by CDC WISQARS.",
+    "measure_type": "category",
+    "unit": "",
+    "categories": {
+      "bundle_injury_overdose/dist/deaths_cause_age_demographics.parquet|": {},
+      "bundle_injury_overdose/dist/firearms_by_demographics.parquet|": {},
+      "bundle_injury_overdose/dist/overdose_by_demographics.parquet|": {}
+    }
+  },
+  "_bundle": {
+    "name": "bundle_injury_overdose",
+    "sources": [
+      "brfss",
+      "cms_mmd",
+      "epic_chronic",
+      "epic_injury",
+      "gtrends",
+      "medicaid_quality",
+      "nchs_mortality",
+      "noaa_heat_risk",
+      "wisqars"
+    ],
+    "dist_files": {
+      "deaths_cause_age.parquet": {
+        "sources": ["wisqars"],
+        "source_files": ["wisqars/standard/data.csv.gz"]
+      },
+      "deaths_cause_age_demographics.parquet": {
+        "sources": ["wisqars"],
+        "source_files": ["wisqars/standard/data.csv.gz"]
+      },
+      "overdose_by_demographics.parquet": {
+        "sources": ["wisqars"],
+        "source_files": ["wisqars/standard/data.csv.gz"]
+      },
+      "county_opioid_by_source.parquet": {
+        "sources": ["cms_mmd"],
+        "source_files": ["cms_mmd/standard/data_state_county_age.csv.gz"]
+      },
+      "state_opioid_by_source.parquet": {
+        "sources": ["cms_mmd"],
+        "source_files": ["cms_mmd/standard/data_state_county_age.csv.gz"]
+      },
+      "overdose_deaths_state.parquet": {
+        "sources": ["nchs_mortality"],
+        "source_files": ["nchs_mortality/standard/data.csv.gz"]
+      },
+      "overdose_deaths_county.parquet": {
+        "sources": ["nchs_mortality"],
+        "source_files": ["nchs_mortality/standard/data_county.csv.gz"]
+      },
+      "overdose_by_geography_and_source.parquet": {
+        "sources": ["cms_mmd", "epic_injury", "gtrends", "nchs_mortality", "wisqars"],
+        "source_files": [
+          "nchs_mortality/standard/data.csv.gz",
+          "nchs_mortality/standard/data_county.csv.gz",
+          "gtrends/standard/data_year.csv.gz",
+          "wisqars/standard/data.csv.gz",
+          "epic_injury/standard/yearly_injury.csv.gz",
+          "cms_mmd/standard/data_state_county_age.csv.gz"
+        ]
+      },
+      "overdose_by_geography_and_source_county.parquet": {
+        "sources": ["cms_mmd", "epic_injury", "gtrends", "nchs_mortality", "wisqars"],
+        "source_files": [
+          "nchs_mortality/standard/data.csv.gz",
+          "nchs_mortality/standard/data_county.csv.gz",
+          "gtrends/standard/data_year.csv.gz",
+          "wisqars/standard/data.csv.gz",
+          "epic_injury/standard/yearly_injury.csv.gz",
+          "cms_mmd/standard/data_state_county_age.csv.gz"
+        ]
+      },
+      "overdose_by_geography_and_source_state_year.parquet": {
+        "sources": ["cms_mmd", "epic_injury", "gtrends", "nchs_mortality", "wisqars"],
+        "source_files": [
+          "nchs_mortality/standard/data.csv.gz",
+          "nchs_mortality/standard/data_county.csv.gz",
+          "gtrends/standard/data_year.csv.gz",
+          "wisqars/standard/data.csv.gz",
+          "epic_injury/standard/yearly_injury.csv.gz",
+          "cms_mmd/standard/data_state_county_age.csv.gz"
+        ]
+      },
+      "firearms_by_demographics.parquet": {
+        "sources": ["wisqars"],
+        "source_files": ["wisqars/standard/data.csv.gz"]
+      },
+      "firearms_geography_source.parquet": {
+        "sources": ["epic_injury", "gtrends", "wisqars"],
+        "source_files": [
+          "gtrends/standard/data_year.csv.gz",
+          "epic_injury/standard/monthly_injury.csv.gz",
+          "wisqars/standard/data.csv.gz"
+        ]
+      },
+      "firearms_by_geography_and_source_state_year.parquet": {
+        "sources": ["epic_injury", "gtrends", "wisqars"],
+        "source_files": [
+          "gtrends/standard/data_year.csv.gz",
+          "epic_injury/standard/monthly_injury.csv.gz",
+          "epic_injury/standard/yearly_injury.csv.gz",
+          "wisqars/standard/data.csv.gz"
+        ]
+      },
+      "heat_by_geography_and_source_state_year.parquet": {
+        "sources": ["epic_injury", "gtrends"],
+        "source_files": [
+          "gtrends/standard/data_year.csv.gz",
+          "epic_injury/standard/yearly_injury.csv.gz"
+        ]
+      },
+      "google_dma.parquet": {
+        "sources": ["gtrends"],
+        "source_files": ["gtrends/standard/data_dma_year.csv.gz"]
+      },
+      "medicaid_injury_overdose.parquet": {
+        "sources": ["medicaid_quality"],
+        "source_files": ["medicaid_quality/standard/data.csv.gz"]
+      },
+      "heat_risk.parquet": {
+        "sources": ["noaa_heat_risk"],
+        "source_files": ["noaa_heat_risk/standard/data_state.csv.gz"]
+      }
+    }
   }
 }

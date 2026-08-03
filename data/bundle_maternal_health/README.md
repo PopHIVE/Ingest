@@ -1,15 +1,23 @@
 # bundle_maternal_health
 
 Maternal- and infant-health indicators assembled from standardized PopHIVE
-sources. Each output is tall-format (`geography`, `time`, `measure`, `value`),
-one row per geography × year × measure.
+sources. `maternal_state.parquet`/`maternal_county.parquet` are tall-format
+(`geography`, `time`, `measure`, `value`), one row per geography × year ×
+measure. `maternal_mortality.parquet` is kept separate — see below.
 
 ## Outputs (`dist/`)
 
-| File | Geography | Measures |
-|------|-----------|----------|
-| `maternal_state.parquet`  | 2-digit FIPS (+ `00` national) | all 14 |
-| `maternal_county.parquet` | 5-digit FIPS | 7 (census + CHR only) |
+| File | Geography | Time | Measures |
+|------|-----------|------|----------|
+| `maternal_state.parquet`  | 2-digit FIPS (+ `00` national) | Year | all 14 |
+| `maternal_county.parquet` | 5-digit FIPS | Year | 7 (census + CHR only) |
+| `maternal_mortality.parquet` | `00` national only | Month | `maternal_mortality_rate`, stratified by `age` + `race_ethnicity` |
+
+`maternal_mortality.parquet` is its own file rather than folded into
+`maternal_state.parquet` because it differs structurally from every other
+measure here: national-only (no real state variation), monthly instead of
+annual, and stratified by `age`/`race_ethnicity` columns that the other
+measures don't have.
 
 ## Sources
 
@@ -18,6 +26,7 @@ one row per geography × year × measure.
 | `census` (ACS) | `birth_rate` | state + county |
 | `county_health_rankings` | `teen_birth_rate`, `low_birth_weight`, `infant_mortality`, `child_mortality`, `smoking_during_pregnancy`, `breastfeeding` | state + county |
 | `medicaid_quality` (CMS Core Set, Medicaid payer) | `medicaid_prenatal_postpartum_care_adult`/`_child`, `medicaid_first_prenatal_visit`, `medicaid_contraceptive_postpartum_adult`/`_child`, `medicaid_low_birthweight`, `medicaid_low_birthweight_risk_adjusted` | state only |
+| `cdc_vssr` (NCHS VSRR, provisional) | `maternal_mortality_rate` (→ `maternal_mortality.parquet`) | national only |
 
 ## Known data-quality handling
 
@@ -28,12 +37,14 @@ one row per geography × year × measure.
 - `medicaid_quality` is filtered to `payer == "Medicaid"` to avoid duplicate
   geography–year–measure rows across the Medicaid/CHIP/Total payer splits; its
   state names are mapped to FIPS via `resources/all_fips.csv.gz`.
+- `cdc_vssr` retains its full `age`/`race_ethnicity` breakdown in
+  `maternal_mortality.parquet` (including the `"Overall"` level for each
+  dimension) rather than being collapsed to a single national rate.
 
 ## Roadmap
 
 Additional indicators depend on sources not yet ingested:
 
-- **Maternal mortality** — CDC VSRR
 - **Causes of pregnancy-related death** — CDC PMSS
 - **Gestational diabetes / hypertension, delivery method & location** — CDC WONDER / Epic Cosmos
 - **Prenatal care adequacy** — PeriStats / March of Dimes
