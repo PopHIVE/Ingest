@@ -8,6 +8,7 @@ library(dplyr)
 library(vroom)
 library(httr2)
 library(jsonlite)
+library(tidyr)
 
 # Initialize process record (process.json is created by dcf::dcf_add_source())
 process <- dcf::dcf_process_record()
@@ -1127,25 +1128,30 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
     select(geography, site_name)
 
   agent_raw <- vroom::vroom("raw/narms_now_agent.csv.gz", show_col_types = FALSE)
-  agent_standard <- agent_raw %>%
+  agent_long <- agent_raw %>%
     left_join(site_to_fips, by = "site_name") %>%
     mutate(
       geography = if_else(is.na(site_name), "00", geography),
       time = paste0(year, "-12-31"),
-      flag_not_tested = if_else(is.na(pct_resistant) & is.na(n_resistant) & is.na(n_tested), 1L, 0L),
-      flag_no_isolates_tested = if_else(flag_not_tested == 0L & !is.na(n_tested) & n_tested == 0, 1L, 0L),
+      narms_flag = case_when(
+        is.na(pct_resistant) & is.na(n_resistant) & is.na(n_tested) ~ "not_tested",
+        !is.na(n_tested) & n_tested == 0 ~ "no_isolates_tested",
+        TRUE ~ "tested"
+      ),
       pct_resistant = replace(pct_resistant, is.na(pct_resistant), 0),
       n_resistant = replace(n_resistant, is.na(n_resistant), 0),
-      n_tested = replace(n_tested, is.na(n_tested), 0)
+      n_tested = replace(n_tested, is.na(n_tested), 0),
+      narms_genus_species_serotype = paste(genus, species_serotype),
+      antimicrobial_agent = tolower(gsub("[^A-Za-z0-9]+", "_", antimicrobial_agent)),
+      antimicrobial_agent = gsub("_$", "", antimicrobial_agent)
     ) %>%
-    select(geography, time, genus, species_serotype,
-           antimicrobial_class, antimicrobial_agent, test_method,
-           pct_resistant, n_resistant, n_tested,
-           flag_not_tested, flag_no_isolates_tested) %>%
+    select(geography, time, narms_genus_species_serotype,
+           test_method, antimicrobial_agent,
+           pct_resistant, n_resistant, n_tested, narms_flag) %>%
     distinct()
 
   # Validate: warn if any pct_resistant > 100
-  bad_rows <- agent_standard %>% filter(pct_resistant > 100)
+  bad_rows <- agent_long %>% filter(pct_resistant > 100)
   if (nrow(bad_rows) > 0) {
     warning(sprintf(
       "%d agent rows have pct_resistant > 100%%. Top offenders: %s",
@@ -1154,6 +1160,15 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
             collapse = ", ")
     ))
   }
+
+  agent_standard <- agent_long %>%
+    pivot_wider(
+      id_cols = c(geography, time, narms_genus_species_serotype, test_method),
+      names_from = antimicrobial_agent,
+      values_from = c(pct_resistant, n_resistant, n_tested, narms_flag),
+      names_glue = "narms_{.value}_{antimicrobial_agent}"
+    ) %>%
+    rename_with(~ gsub("narms_narms_flag", "narms_flag", .x))
 
   vroom::vroom_write(agent_standard, "standard/data_resistance_agent.csv.gz", delim = ",")
   message(sprintf("Wrote %d rows to standard/data_resistance_agent.csv.gz", nrow(agent_standard)))
@@ -1174,24 +1189,29 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
   }
 
   pattern_raw <- vroom::vroom("raw/narms_now_pattern.csv.gz", show_col_types = FALSE)
-  pattern_standard <- pattern_raw %>%
+  pattern_long <- pattern_raw %>%
     left_join(site_to_fips, by = "site_name") %>%
     mutate(
       geography = if_else(is.na(site_name), "00", geography),
       time = paste0(year, "-12-31"),
-      flag_not_tested = if_else(is.na(pct_resistant) & is.na(n_resistant) & is.na(n_tested), 1L, 0L),
-      flag_no_isolates_tested = if_else(flag_not_tested == 0L & !is.na(n_tested) & n_tested == 0, 1L, 0L),
+      narms_flag = case_when(
+        is.na(pct_resistant) & is.na(n_resistant) & is.na(n_tested) ~ "not_tested",
+        !is.na(n_tested) & n_tested == 0 ~ "no_isolates_tested",
+        TRUE ~ "tested"
+      ),
       pct_resistant = replace(pct_resistant, is.na(pct_resistant), 0),
       n_resistant = replace(n_resistant, is.na(n_resistant), 0),
-      n_tested = replace(n_tested, is.na(n_tested), 0)
+      n_tested = replace(n_tested, is.na(n_tested), 0),
+      narms_genus_species_serotype = paste(genus, species_serotype),
+      pattern = tolower(gsub("[^A-Za-z0-9]+", "_", pattern)),
+      pattern = gsub("_$", "", pattern)
     ) %>%
-    select(geography, time, genus, species_serotype,
-           pattern, test_method,
-           pct_resistant, n_resistant, n_tested,
-           flag_not_tested, flag_no_isolates_tested) %>%
+    select(geography, time, narms_genus_species_serotype,
+           test_method, pattern,
+           pct_resistant, n_resistant, n_tested, narms_flag) %>%
     distinct()
 
-  bad_rows <- pattern_standard %>% filter(pct_resistant > 100)
+  bad_rows <- pattern_long %>% filter(pct_resistant > 100)
   if (nrow(bad_rows) > 0) {
     warning(sprintf(
       "%d pattern rows have pct_resistant > 100%%. Top offenders: %s",
@@ -1201,18 +1221,44 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
     ))
   }
 
+  pattern_standard <- pattern_long %>%
+    pivot_wider(
+      id_cols = c(geography, time, narms_genus_species_serotype, test_method),
+      names_from = pattern,
+      values_from = c(pct_resistant, n_resistant, n_tested, narms_flag),
+      names_glue = "narms_{.value}_{pattern}"
+    ) %>%
+    rename_with(~ gsub("narms_narms_flag", "narms_flag", .x))
+
   vroom::vroom_write(pattern_standard, "standard/data_resistance_pattern.csv.gz", delim = ",")
   message(sprintf("Wrote %d rows to standard/data_resistance_pattern.csv.gz", nrow(pattern_standard)))
+}
+
+#' Resolve a worksheet name by regex
+#' FDA renames sheets as they extend the year range (e.g. "2017-2021_data"
+#' became "2017-2024_data"), so match on a stable pattern instead of the
+#' literal name. Falls back to the first sheet, with a warning, if nothing matches.
+resolve_sheet <- function(path, pattern) {
+  sheets <- readxl::excel_sheets(path)
+  matched <- grep(pattern, sheets, value = TRUE)
+  if (length(matched) == 0) {
+    warning(sprintf(
+      "No sheet matching '%s' in %s (found: %s); falling back to '%s'",
+      pattern, basename(path), paste(sheets, collapse = ", "), sheets[1]
+    ))
+    return(sheets[1])
+  }
+  matched[1]
 }
 
 # =============================================================================
 # Source 3: NARMS Retail Meats Data (FDA/CVM)
 # Source: FDA NARMS Integrated Reports/Summaries
 # URL: https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries
-# File: raw/cvm-narms-retail-meats.xlsx
+# File: raw/narms-retail-meats.xlsx
 # =============================================================================
 
-retail_raw_path <- "raw/cvm-narms-retail-meats.xlsx"
+retail_raw_path <- "raw/narms-retail-meats.xlsx"
 retail_url <- "https://www.fda.gov/files/animal%20%26%20veterinary/published/cvm-narms-retail-meats_0.xlsx"
 
 tryCatch(
@@ -1227,167 +1273,177 @@ tryCatch(
 )
 current_retail_state <- list(hash = as.character(tools::md5sum(retail_raw_path)))
 
-if (!identical(process$retail_meats_state, current_retail_state)) {
-    message("Processing NARMS retail meats data...")
+# Always standardise from the local raw file. The hash is recorded for change
+# reporting only -- gating on it would freeze the output at whatever format the
+# code had when the raw data last changed.
+message("Processing NARMS retail meats data...")
 
-    library(readxl)
-    library(tidyr)
+library(readxl)
+library(tidyr)
 
-    # SIR (Susceptible / Intermediate / Resistant) column codes
-    sir_codes <- c(
-      "AMC", "AMI", "AMP", "ATM", "AVL", "AXO", "AZI", "BAC",
-      "CAZ", "CCV", "CEP", "CEQ", "CHL", "CIP", "CIP2", "CLI",
-      "COL", "COT", "CTC", "CTX", "DAP", "DOX", "ERY", "FEP",
-      "FFN", "FIS", "FLA", "FOX", "GEN", "IMI", "KAN", "LIN",
-      "LZD", "MER", "NAL", "NIT", "PEN", "PTZ", "QDA", "SAL",
-      "SMX", "STR", "SUF", "TEL", "TET", "TGC", "TIO", "TYL", "VAN"
-    )
-    sir_col_names <- paste0(sir_codes, " SIR")
+# SIR (Susceptible / Intermediate / Resistant) column codes
+sir_codes <- c(
+  "AMC", "AMI", "AMP", "ATM", "AVL", "AXO", "AZI", "BAC",
+  "CAZ", "CCV", "CEP", "CEQ", "CHL", "CIP", "CIP2", "CLI",
+  "COL", "COT", "CTC", "CTX", "DAP", "DOX", "ERY", "FEP",
+  "FFN", "FIS", "FLA", "FOX", "GEN", "IMI", "KAN", "LIN",
+  "LZD", "MER", "NAL", "NIT", "PEN", "PTZ", "QDA", "SAL",
+  "SMX", "STR", "SUF", "TEL", "TET", "TGC", "TIO", "TYL", "VAN"
+)
+sir_col_names <- paste0(sir_codes, " SIR")
 
-    # Full antimicrobial names from the FDA NARMS data dictionary
-    # (https://www.fda.gov/media/110404/download)
-    # FLA, SAL, SUF, CIP2 are veterinary-specific and not in the standard
-    # data dictionary; identified from genus-specificity in the data:
-    # FLA/SAL = Enterococcus only; SUF/CIP2 = Salmonella/E. coli only
-    antimicrobial_names <- c(
-      AMC  = "Amoxicillin-clavulanic acid",
-      AMI  = "Amikacin",
-      AMP  = "Ampicillin",
-      ATM  = "Aztreonam",
-      AVL  = "Avilamycin",
-      AXO  = "Ceftriaxone",
-      AZI  = "Azithromycin",
-      BAC  = "Bacitracin",
-      CAZ  = "Ceftazidime",
-      CCV  = "Ceftiofur",
-      CEP  = "Cephalothin",
-      CEQ  = "Cefquinome",
-      CHL  = "Chloramphenicol",
-      CIP  = "Ciprofloxacin",
-      CIP2 = "Ciprofloxacin (2nd breakpoint)",
-      CLI  = "Clindamycin",
-      COL  = "Colistin",
-      COT  = "Trimethoprim-sulfamethoxazole",
-      CTC  = "Chlortetracycline",
-      CTX  = "Cefotaxime",
-      DAP  = "Daptomycin",
-      DOX  = "Doxycycline",
-      ERY  = "Erythromycin",
-      FEP  = "Cefepime",
-      FFN  = "Florfenicol",
-      FIS  = "Sulfisoxazole",
-      FLA  = "Flaveomycin",
-      FOX  = "Cefoxitin",
-      GEN  = "Gentamicin",
-      IMI  = "Imipenem",
-      KAN  = "Kanamycin",
-      LIN  = "Lincomycin",
-      LZD  = "Linezolid",
-      MER  = "Meropenem",
-      NAL  = "Nalidixic acid",
-      NIT  = "Nitrofurantoin",
-      PEN  = "Penicillin",
-      PTZ  = "Piperacillin-tazobactam",
-      QDA  = "Quinupristin-dalfopristin",
-      SAL  = "Salinomycin",
-      SMX  = "Sulfamethoxazole",
-      STR  = "Streptomycin",
-      SUF  = "Sulfonamides",
-      TEL  = "Telithromycin",
-      TET  = "Tetracycline",
-      TGC  = "Tigecycline",
-      TIO  = "Ceftiofur",
-      TYL  = "Tylosin",
-      VAN  = "Vancomycin"
-    )
+# Full antimicrobial names from the FDA NARMS data dictionary
+# (https://www.fda.gov/media/110404/download)
+# FLA, SAL, SUF, CIP2 are veterinary-specific and not in the standard
+# data dictionary; identified from genus-specificity in the data:
+# FLA/SAL = Enterococcus only; SUF/CIP2 = Salmonella/E. coli only
+antimicrobial_names <- c(
+  AMC  = "Amoxicillin-clavulanic acid",
+  AMI  = "Amikacin",
+  AMP  = "Ampicillin",
+  ATM  = "Aztreonam",
+  AVL  = "Avilamycin",
+  AXO  = "Ceftriaxone",
+  AZI  = "Azithromycin",
+  BAC  = "Bacitracin",
+  CAZ  = "Ceftazidime",
+  CCV  = "Ceftiofur",
+  CEP  = "Cephalothin",
+  CEQ  = "Cefquinome",
+  CHL  = "Chloramphenicol",
+  CIP  = "Ciprofloxacin",
+  CIP2 = "Ciprofloxacin (2nd breakpoint)",
+  CLI  = "Clindamycin",
+  COL  = "Colistin",
+  COT  = "Trimethoprim-sulfamethoxazole",
+  CTC  = "Chlortetracycline",
+  CTX  = "Cefotaxime",
+  DAP  = "Daptomycin",
+  DOX  = "Doxycycline",
+  ERY  = "Erythromycin",
+  FEP  = "Cefepime",
+  FFN  = "Florfenicol",
+  FIS  = "Sulfisoxazole",
+  FLA  = "Flaveomycin",
+  FOX  = "Cefoxitin",
+  GEN  = "Gentamicin",
+  IMI  = "Imipenem",
+  KAN  = "Kanamycin",
+  LIN  = "Lincomycin",
+  LZD  = "Linezolid",
+  MER  = "Meropenem",
+  NAL  = "Nalidixic acid",
+  NIT  = "Nitrofurantoin",
+  PEN  = "Penicillin",
+  PTZ  = "Piperacillin-tazobactam",
+  QDA  = "Quinupristin-dalfopristin",
+  SAL  = "Salinomycin",
+  SMX  = "Sulfamethoxazole",
+  STR  = "Streptomycin",
+  SUF  = "Sulfonamides",
+  TEL  = "Telithromycin",
+  TET  = "Tetracycline",
+  TGC  = "Tigecycline",
+  TIO  = "Ceftiofur",
+  TYL  = "Tylosin",
+  VAN  = "Vancomycin"
+)
 
-    # FIPS lookup: state abbreviation -> 2-digit FIPS
-    all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
-    state_fips_lookup <- all_fips %>%
-      filter(nchar(geography) == 2) %>%
-      select(geography, state)
+# FIPS lookup: state abbreviation -> 2-digit FIPS
+all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+state_fips_lookup <- all_fips %>%
+  filter(nchar(geography) == 2) %>%
+  select(geography, state)
 
-    retail_raw <- readxl::read_excel(retail_raw_path, sheet = "Retail_Meats")
+retail_raw <- readxl::read_excel(
+  retail_raw_path,
+  sheet = resolve_sheet(retail_raw_path, "^Retail")
+)
 
-    # MIC concentration columns (bare antibiotic codes, no suffix)
-    mic_col_names <- sir_codes
+# MIC concentration columns (bare antibiotic codes, no suffix)
+mic_col_names <- sir_codes
 
-    # Filter to positive cultures and add a row ID for joining
-    retail_filtered <- retail_raw %>%
-      filter(GROWTH == "YES") %>%
-      mutate(.row_id = row_number())
+# Filter to positive cultures and add a row ID for joining
+retail_filtered <- retail_raw %>%
+  filter(GROWTH == "YES") %>%
+  mutate(.row_id = row_number())
 
-    # Pivot SIR values to long format
-    sir_long <- retail_filtered %>%
-      select(.row_id, any_of(sir_col_names)) %>%
-      pivot_longer(
-        cols = any_of(sir_col_names),
-        names_to = "antimicrobial",
-        values_to = "sir"
-      ) %>%
-      mutate(antimicrobial = sub(" SIR$", "", antimicrobial))
+# Pivot SIR values to long format
+sir_long <- retail_filtered %>%
+  select(.row_id, any_of(sir_col_names)) %>%
+  pivot_longer(
+    cols = any_of(sir_col_names),
+    names_to = "antimicrobial",
+    values_to = "sir"
+  ) %>%
+  mutate(antimicrobial = sub(" SIR$", "", antimicrobial))
 
-    # Pivot MIC values to long format
-    mic_long <- retail_filtered %>%
-      select(.row_id, any_of(mic_col_names)) %>%
-      pivot_longer(
-        cols = any_of(mic_col_names),
-        names_to = "antimicrobial",
-        values_to = "mic"
-      ) %>%
-      mutate(mic = as.numeric(mic))
+# Pivot MIC values to long format
+mic_long <- retail_filtered %>%
+  select(.row_id, any_of(mic_col_names)) %>%
+  pivot_longer(
+    cols = any_of(mic_col_names),
+    names_to = "antimicrobial",
+    values_to = "mic"
+  ) %>%
+  mutate(mic = as.numeric(mic))
 
-    # Join SIR + MIC by row and antibiotic, map codes to full names
-    retail_long <- sir_long %>%
-      left_join(mic_long, by = c(".row_id", "antimicrobial")) %>%
-      left_join(
-        retail_filtered %>% select(.row_id, YEAR, GENUS_NAME, SPECIES, SEROTYPE, SOURCE, STATE),
-        by = ".row_id"
-      ) %>%
-      mutate(antimicrobial = antimicrobial_names[antimicrobial]) %>%
-      filter(!is.na(sir)) %>%
-      select(-.row_id)
+# Join SIR + MIC by row and antibiotic, map codes to full names
+retail_long <- sir_long %>%
+  left_join(mic_long, by = c(".row_id", "antimicrobial")) %>%
+  left_join(
+    retail_filtered %>% select(.row_id, YEAR, GENUS_NAME, SPECIES, SEROTYPE, SOURCE, STATE),
+    by = ".row_id"
+  ) %>%
+  mutate(antimicrobial = antimicrobial_names[antimicrobial]) %>%
+  filter(!is.na(sir)) %>%
+  select(-.row_id)
 
-    # Aggregate by state, converting abbreviation to FIPS
-    retail_standard <- retail_long %>%
-      left_join(state_fips_lookup, by = c("STATE" = "state")) %>%
-      filter(!is.na(geography)) %>%
-      group_by(YEAR, GENUS_NAME, SPECIES, SEROTYPE, SOURCE, antimicrobial, geography) %>%
-      summarize(
-        n_tested      = n(),
-        n_resistant   = sum(sir == "R"),
-        mic50         = median(mic, na.rm = TRUE),
-        mic90         = quantile(mic, 0.90, na.rm = TRUE),
-        .groups       = "drop"
-      ) %>%
-      mutate(
-        pct_resistant = n_resistant / n_tested * 100,
-        time  = paste0(YEAR, "-12-31")
-      ) %>%
-      rename(
-        genus       = GENUS_NAME,
-        species     = SPECIES,
-        serotype    = SEROTYPE,
-        meat_source = SOURCE
-      ) %>%
-      select(
-        geography, time, genus, species, serotype, meat_source,
-        antimicrobial, pct_resistant, n_resistant, n_tested, mic50, mic90
-      )
+# Aggregate by state, converting abbreviation to FIPS
+retail_agg <- retail_long %>%
+  left_join(state_fips_lookup, by = c("STATE" = "state")) %>%
+  filter(!is.na(geography)) %>%
+  group_by(YEAR, GENUS_NAME, SPECIES, SEROTYPE, SOURCE, antimicrobial, geography) %>%
+  summarize(
+    n_tested      = n(),
+    n_resistant   = sum(sir == "R"),
+    mic50         = median(mic, na.rm = TRUE),
+    mic90         = quantile(mic, 0.90, na.rm = TRUE),
+    .groups       = "drop"
+  ) %>%
+  mutate(
+    pct_resistant = n_resistant / n_tested * 100,
+    time  = paste0(YEAR, "-12-31"),
+    narms_genus_species_serotype = paste(GENUS_NAME, SPECIES, SEROTYPE),
+    antimicrobial = tolower(gsub("[^A-Za-z0-9]+", "_", antimicrobial)),
+    antimicrobial = gsub("_$", "", antimicrobial)
+  ) %>%
+  rename(meat_source = SOURCE) %>%
+  select(
+    geography, time, narms_genus_species_serotype, meat_source,
+    antimicrobial, pct_resistant, n_resistant, n_tested, mic50, mic90
+  )
 
-    vroom::vroom_write(
-      retail_standard,
-      "standard/data_retail_meats.csv.gz",
-      delim = ","
-    )
-    message(sprintf(
-      "Wrote %d rows to standard/data_retail_meats.csv.gz",
-      nrow(retail_standard)
-    ))
+retail_standard <- retail_agg %>%
+  pivot_wider(
+    id_cols = c(geography, time, narms_genus_species_serotype, meat_source),
+    names_from = antimicrobial,
+    values_from = c(pct_resistant, n_resistant, n_tested, mic50, mic90),
+    names_glue = "narms_{.value}_{antimicrobial}"
+  )
 
-    process$retail_meats_state <- current_retail_state
-    dcf::dcf_process_record(updated = process)
-}
+vroom::vroom_write(
+  retail_standard,
+  "standard/data_retail_meats.csv.gz",
+  delim = ","
+)
+message(sprintf(
+  "Wrote %d rows to standard/data_retail_meats.csv.gz",
+  nrow(retail_standard)
+))
+
+process$retail_meats_state <- current_retail_state
+dcf::dcf_process_record(updated = process)
 
 # =============================================================================
 # Source 4: NARMS Animal Pathogen Data (FDA/CVM - Vet-LIRN/NAHLN)
@@ -1410,64 +1466,75 @@ tryCatch(
 )
 current_animal_path_state <- list(hash = as.character(tools::md5sum(animal_path_raw_path)))
 
-if (!identical(process$animal_pathogen_state, current_animal_path_state)) {
-    message("Processing NARMS animal pathogen data...")
+# Always standardise (see note in the retail meats section above).
+message("Processing NARMS animal pathogen data...")
 
-    if (!requireNamespace("readxl", quietly = TRUE)) library(readxl)
+if (!requireNamespace("readxl", quietly = TRUE)) library(readxl)
 
-    # FIPS lookup: full state names -> 2-digit FIPS
-    all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
-    state_fips_lookup <- all_fips %>%
-      filter(nchar(geography) == 2) %>%
-      select(geography, geography_name)
+# FIPS lookup: full state names -> 2-digit FIPS
+all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+state_fips_lookup <- all_fips %>%
+  filter(nchar(geography) == 2) %>%
+  select(geography, geography_name)
 
-    animal_raw <- readxl::read_excel(animal_path_raw_path, sheet = "2017-2021_data")
+animal_raw <- readxl::read_excel(
+  animal_path_raw_path,
+  sheet = resolve_sheet(animal_path_raw_path, "_data$")
+)
 
-    # Data is already in long format with one row per isolate/drug
-    # Filter to interpretable results, exclude non-US (Canada)
-    animal_standard <- animal_raw %>%
-      filter(Interpretation != "Non-Interpretable") %>%
-      left_join(state_fips_lookup, by = c("State" = "geography_name")) %>%
-      filter(!is.na(geography)) %>%
-      mutate(MIC = as.numeric(MIC)) %>%
-      group_by(
-        geography, Year, Genus, `Host Species`, `Collection Source`, `Drug Name`
-      ) %>%
-      summarize(
-        n_tested      = n(),
-        n_resistant   = sum(Interpretation == "Resistant"),
-        mic50         = median(MIC, na.rm = TRUE),
-        mic90         = quantile(MIC, 0.90, na.rm = TRUE),
-        .groups       = "drop"
-      ) %>%
-      mutate(
-        pct_resistant = n_resistant / n_tested * 100,
-        time          = paste0(Year, "-12-31")
-      ) %>%
-      rename(
-        genus             = Genus,
-        host_species      = `Host Species`,
-        collection_source = `Collection Source`,
-        antimicrobial     = `Drug Name`
-      ) %>%
-      select(
-        geography, time, genus, host_species, collection_source,
-        antimicrobial, pct_resistant, n_resistant, n_tested, mic50, mic90
-      )
+# Data is already in long format with one row per isolate/drug
+# Filter to interpretable results, exclude non-US (Canada)
+animal_agg <- animal_raw %>%
+  filter(Interpretation != "Non-Interpretable") %>%
+  left_join(state_fips_lookup, by = c("State" = "geography_name")) %>%
+  filter(!is.na(geography)) %>%
+  mutate(MIC = as.numeric(MIC)) %>%
+  group_by(
+    geography, Year, Genus, `Host Species`, `Collection Source`, `Drug Name`
+  ) %>%
+  summarize(
+    n_tested      = n(),
+    n_resistant   = sum(Interpretation == "Resistant"),
+    mic50         = median(MIC, na.rm = TRUE),
+    mic90         = quantile(MIC, 0.90, na.rm = TRUE),
+    .groups       = "drop"
+  ) %>%
+  mutate(
+    pct_resistant = n_resistant / n_tested * 100,
+    time          = paste0(Year, "-12-31"),
+    antimicrobial = tolower(gsub("[^A-Za-z0-9]+", "_", `Drug Name`)),
+    antimicrobial = gsub("_$", "", antimicrobial)
+  ) %>%
+  rename(
+    genus             = Genus,
+    host_species      = `Host Species`,
+    collection_source = `Collection Source`
+  ) %>%
+  select(
+    geography, time, genus, host_species, collection_source,
+    antimicrobial, pct_resistant, n_resistant, n_tested, mic50, mic90
+  )
 
-    vroom::vroom_write(
-      animal_standard,
-      "standard/data_animal_pathogen.csv.gz",
-      delim = ","
-    )
-    message(sprintf(
-      "Wrote %d rows to standard/data_animal_pathogen.csv.gz",
-      nrow(animal_standard)
-    ))
+animal_standard <- animal_agg %>%
+  pivot_wider(
+    id_cols = c(geography, time, genus, host_species, collection_source),
+    names_from = antimicrobial,
+    values_from = c(pct_resistant, n_resistant, n_tested, mic50, mic90),
+    names_glue = "narms_{.value}_{antimicrobial}"
+  )
 
-    process$animal_pathogen_state <- current_animal_path_state
-    dcf::dcf_process_record(updated = process)
-}
+vroom::vroom_write(
+  animal_standard,
+  "standard/data_animal_pathogen.csv.gz",
+  delim = ","
+)
+message(sprintf(
+  "Wrote %d rows to standard/data_animal_pathogen.csv.gz",
+  nrow(animal_standard)
+))
+
+process$animal_pathogen_state <- current_animal_path_state
+dcf::dcf_process_record(updated = process)
 
 # =============================================================================
 # Source 5: NARMS Food-Producing Animals (HACCP, Cecal, Minor Species)
@@ -1479,28 +1546,28 @@ food_animal_files <- list(
   list(
     url   = "https://www.fda.gov/media/93333/download?attachment",
     raw   = "raw/narms-haccp-1997-2005.xlsx",
-    sheet = "HACCP_1997_2005",
+    sheet_pattern = "^HACCP_1997",
     source_label = "HACCP",
     year_col = "Year"
   ),
   list(
     url   = "https://www.fda.gov/media/93344/download?attachment",
     raw   = "raw/narms-haccp-2006-present.xlsx",
-    sheet = "HACCP_2006_present",
+    sheet_pattern = "^HACCP_2006",
     source_label = "HACCP",
     year_col = "Year"
   ),
   list(
     url   = "https://www.fda.gov/media/93351/download?attachment",
     raw   = "raw/narms-cecal-2013-present.xlsx",
-    sheet = "Cecal",
+    sheet_pattern = "^Cecal",
     source_label = "Cecal",
     year_col = "Year"
   ),
   list(
     url   = "https://www.fda.gov/media/183419/download?attachment",
     raw   = "raw/narms-minor-species.xlsx",
-    sheet = "Minor Species_2020-2022",
+    sheet_pattern = "^Minor Species",
     source_label = "Minor Species",
     year_col = "YEAR"
   )
@@ -1523,164 +1590,177 @@ for (f in food_animal_files) {
 }
 current_food_animal_state <- list(hash = paste(food_animal_hashes, collapse = "_"))
 
-if (!identical(process$food_animal_state, current_food_animal_state)) {
-    message("Processing NARMS food-producing animal data...")
+# Always standardise from the local raw files. The hash below records what was
+# processed, but must NOT gate this block: gating it means a code change to the
+# standardisation never reaches the output files on the automated monthly run.
+message("Processing NARMS food-producing animal data...")
 
-    library(readxl)
-    library(tidyr)
+library(readxl)
+library(tidyr)
 
-    # SIR column codes and antimicrobial name lookup (same as retail meats section)
-    sir_codes <- c(
-      "AMC", "AMI", "AMP", "ATM", "AVL", "AXO", "AZI", "BAC",
-      "CAZ", "CCV", "CEP", "CEQ", "CHL", "CIP", "CIP2", "CLI",
-      "COL", "COT", "CTC", "CTX", "DAP", "DOX", "ERY", "FEP",
-      "FFN", "FIS", "FLA", "FOX", "GEN", "IMI", "KAN", "LIN",
-      "LZD", "MER", "NAL", "NIT", "PEN", "PTZ", "QDA", "SAL",
-      "SMX", "STR", "SUF", "TEL", "TET", "TGC", "TIO", "TYL", "VAN"
-    )
-    sir_col_names <- paste0(sir_codes, " SIR")
-    antimicrobial_names <- c(
-      AMC  = "Amoxicillin-clavulanic acid",
-      AMI  = "Amikacin",
-      AMP  = "Ampicillin",
-      ATM  = "Aztreonam",
-      AVL  = "Avilamycin",
-      AXO  = "Ceftriaxone",
-      AZI  = "Azithromycin",
-      BAC  = "Bacitracin",
-      CAZ  = "Ceftazidime",
-      CCV  = "Ceftiofur",
-      CEP  = "Cephalothin",
-      CEQ  = "Cefquinome",
-      CHL  = "Chloramphenicol",
-      CIP  = "Ciprofloxacin",
-      CIP2 = "Ciprofloxacin (2nd breakpoint)",
-      CLI  = "Clindamycin",
-      COL  = "Colistin",
-      COT  = "Trimethoprim-sulfamethoxazole",
-      CTC  = "Chlortetracycline",
-      CTX  = "Cefotaxime",
-      DAP  = "Daptomycin",
-      DOX  = "Doxycycline",
-      ERY  = "Erythromycin",
-      FEP  = "Cefepime",
-      FFN  = "Florfenicol",
-      FIS  = "Sulfisoxazole",
-      FLA  = "Flaveomycin",
-      FOX  = "Cefoxitin",
-      GEN  = "Gentamicin",
-      IMI  = "Imipenem",
-      KAN  = "Kanamycin",
-      LIN  = "Lincomycin",
-      LZD  = "Linezolid",
-      MER  = "Meropenem",
-      NAL  = "Nalidixic acid",
-      NIT  = "Nitrofurantoin",
-      PEN  = "Penicillin",
-      PTZ  = "Piperacillin-tazobactam",
-      QDA  = "Quinupristin-dalfopristin",
-      SAL  = "Salinomycin",
-      SMX  = "Sulfamethoxazole",
-      STR  = "Streptomycin",
-      SUF  = "Sulfonamides",
-      TEL  = "Telithromycin",
-      TET  = "Tetracycline",
-      TGC  = "Tigecycline",
-      TIO  = "Ceftiofur",
-      TYL  = "Tylosin",
-      VAN  = "Vancomycin"
-    )
+# SIR column codes and antimicrobial name lookup (same as retail meats section)
+sir_codes <- c(
+  "AMC", "AMI", "AMP", "ATM", "AVL", "AXO", "AZI", "BAC",
+  "CAZ", "CCV", "CEP", "CEQ", "CHL", "CIP", "CIP2", "CLI",
+  "COL", "COT", "CTC", "CTX", "DAP", "DOX", "ERY", "FEP",
+  "FFN", "FIS", "FLA", "FOX", "GEN", "IMI", "KAN", "LIN",
+  "LZD", "MER", "NAL", "NIT", "PEN", "PTZ", "QDA", "SAL",
+  "SMX", "STR", "SUF", "TEL", "TET", "TGC", "TIO", "TYL", "VAN"
+)
+sir_col_names <- paste0(sir_codes, " SIR")
+antimicrobial_names <- c(
+  AMC  = "Amoxicillin-clavulanic acid",
+  AMI  = "Amikacin",
+  AMP  = "Ampicillin",
+  ATM  = "Aztreonam",
+  AVL  = "Avilamycin",
+  AXO  = "Ceftriaxone",
+  AZI  = "Azithromycin",
+  BAC  = "Bacitracin",
+  CAZ  = "Ceftazidime",
+  CCV  = "Ceftiofur",
+  CEP  = "Cephalothin",
+  CEQ  = "Cefquinome",
+  CHL  = "Chloramphenicol",
+  CIP  = "Ciprofloxacin",
+  CIP2 = "Ciprofloxacin (2nd breakpoint)",
+  CLI  = "Clindamycin",
+  COL  = "Colistin",
+  COT  = "Trimethoprim-sulfamethoxazole",
+  CTC  = "Chlortetracycline",
+  CTX  = "Cefotaxime",
+  DAP  = "Daptomycin",
+  DOX  = "Doxycycline",
+  ERY  = "Erythromycin",
+  FEP  = "Cefepime",
+  FFN  = "Florfenicol",
+  FIS  = "Sulfisoxazole",
+  FLA  = "Flaveomycin",
+  FOX  = "Cefoxitin",
+  GEN  = "Gentamicin",
+  IMI  = "Imipenem",
+  KAN  = "Kanamycin",
+  LIN  = "Lincomycin",
+  LZD  = "Linezolid",
+  MER  = "Meropenem",
+  NAL  = "Nalidixic acid",
+  NIT  = "Nitrofurantoin",
+  PEN  = "Penicillin",
+  PTZ  = "Piperacillin-tazobactam",
+  QDA  = "Quinupristin-dalfopristin",
+  SAL  = "Salinomycin",
+  SMX  = "Sulfamethoxazole",
+  STR  = "Streptomycin",
+  SUF  = "Sulfonamides",
+  TEL  = "Telithromycin",
+  TET  = "Tetracycline",
+  TGC  = "Tigecycline",
+  TIO  = "Ceftiofur",
+  TYL  = "Tylosin",
+  VAN  = "Vancomycin"
+)
 
-    #' Process a single food-animal Excel file into long format
-    #' @param file_info list with raw, sheet, source_label, year_col
-    process_food_animal_file <- function(file_info) {
-      raw <- readxl::read_excel(file_info$raw, sheet = file_info$sheet)
+#' Process a single food-animal Excel file into long format
+#' @param file_info list with raw, sheet, source_label, year_col
+process_food_animal_file <- function(file_info) {
+  raw <- readxl::read_excel(
+    file_info$raw,
+    sheet = resolve_sheet(file_info$raw, file_info$sheet_pattern)
+  )
 
-      # Standardise year column name
-      if (file_info$year_col != "YEAR") {
-        raw <- raw %>% rename(YEAR = !!file_info$year_col)
-      }
+  # Standardise year column name
+  if (file_info$year_col != "YEAR") {
+    raw <- raw %>% rename(YEAR = !!file_info$year_col)
+  }
 
-      # Filter to positive cultures
-      filtered <- raw %>%
-        filter(GROWTH == "YES") %>%
-        mutate(.row_id = row_number())
+  # Filter to positive cultures
+  filtered <- raw %>%
+    filter(GROWTH == "YES") %>%
+    mutate(.row_id = row_number())
 
-      # Pivot SIR columns
-      sir_long <- filtered %>%
-        select(.row_id, any_of(sir_col_names)) %>%
-        pivot_longer(cols = any_of(sir_col_names),
-                     names_to = "antimicrobial", values_to = "sir") %>%
-        mutate(antimicrobial = sub(" SIR$", "", antimicrobial))
+  # Pivot SIR columns
+  sir_long <- filtered %>%
+    select(.row_id, any_of(sir_col_names)) %>%
+    pivot_longer(cols = any_of(sir_col_names),
+                 names_to = "antimicrobial", values_to = "sir") %>%
+    mutate(antimicrobial = sub(" SIR$", "", antimicrobial))
 
-      # Pivot MIC columns (coerce all to character first to avoid type conflicts)
-      mic_cols_present <- intersect(sir_codes, names(filtered))
-      mic_data <- filtered %>%
-        select(.row_id, any_of(sir_codes)) %>%
-        mutate(across(any_of(mic_cols_present), as.character))
-      mic_long <- mic_data %>%
-        pivot_longer(cols = any_of(sir_codes),
-                     names_to = "antimicrobial", values_to = "mic") %>%
-        mutate(mic = as.numeric(mic))
+  # Pivot MIC columns (coerce all to character first to avoid type conflicts)
+  mic_cols_present <- intersect(sir_codes, names(filtered))
+  mic_data <- filtered %>%
+    select(.row_id, any_of(sir_codes)) %>%
+    mutate(across(any_of(mic_cols_present), as.character))
+  mic_long <- mic_data %>%
+    pivot_longer(cols = any_of(sir_codes),
+                 names_to = "antimicrobial", values_to = "mic") %>%
+    mutate(mic = as.numeric(mic))
 
-      # Join and attach metadata
-      sir_long %>%
-        left_join(mic_long, by = c(".row_id", "antimicrobial")) %>%
-        left_join(
-          filtered %>% select(.row_id, YEAR, GENUS_NAME, SPECIES, SEROTYPE,
-                              HOST_SPECIES, SOURCE),
-          by = ".row_id"
-        ) %>%
-        mutate(
-          antimicrobial = antimicrobial_names[antimicrobial],
-          source_program = file_info$source_label
-        ) %>%
-        filter(!is.na(sir)) %>%
-        select(-.row_id)
-    }
-
-    # Process all four files and combine
-    all_food_long <- bind_rows(lapply(food_animal_files, process_food_animal_file))
-
-    # Aggregate nationally (no state data in these files)
-    food_animal_standard <- all_food_long %>%
-      group_by(YEAR, GENUS_NAME, SPECIES, SEROTYPE, HOST_SPECIES, SOURCE,
-               source_program, antimicrobial) %>%
-      summarize(
-        n_tested      = n(),
-        n_resistant   = sum(sir == "R"),
-        mic50         = median(mic, na.rm = TRUE),
-        mic90         = quantile(mic, 0.90, na.rm = TRUE),
-        .groups       = "drop"
-      ) %>%
-      mutate(
-        pct_resistant = n_resistant / n_tested * 100,
-        geography     = "00",
-        time          = paste0(YEAR, "-12-31")
-      ) %>%
-      rename(
-        genus        = GENUS_NAME,
-        species      = SPECIES,
-        serotype     = SEROTYPE,
-        host_species = HOST_SPECIES,
-        source_type  = SOURCE
-      ) %>%
-      select(
-        geography, time, source_program, source_type, genus, species, serotype,
-        host_species, antimicrobial,
-        pct_resistant, n_resistant, n_tested, mic50, mic90
-      )
-
-    vroom::vroom_write(
-      food_animal_standard,
-      "standard/data_food_animals.csv.gz",
-      delim = ","
-    )
-    message(sprintf(
-      "Wrote %d rows to standard/data_food_animals.csv.gz",
-      nrow(food_animal_standard)
-    ))
-
-    process$food_animal_state <- current_food_animal_state
-    dcf::dcf_process_record(updated = process)
+  # Join and attach metadata
+  sir_long %>%
+    left_join(mic_long, by = c(".row_id", "antimicrobial")) %>%
+    left_join(
+      filtered %>% select(.row_id, YEAR, GENUS_NAME, SPECIES, SEROTYPE,
+                          HOST_SPECIES, SOURCE),
+      by = ".row_id"
+    ) %>%
+    mutate(
+      antimicrobial = antimicrobial_names[antimicrobial],
+      source_program = file_info$source_label
+    ) %>%
+    filter(!is.na(sir)) %>%
+    select(-.row_id)
 }
+
+# Process all four files and combine
+all_food_long <- bind_rows(lapply(food_animal_files, process_food_animal_file))
+
+# Aggregate nationally (no state data in these files)
+food_animal_agg <- all_food_long %>%
+  group_by(YEAR, GENUS_NAME, SPECIES, SEROTYPE, HOST_SPECIES, SOURCE,
+           antimicrobial) %>%
+  summarize(
+    n_tested      = n(),
+    n_resistant   = sum(sir == "R"),
+    mic50         = median(mic, na.rm = TRUE),
+    mic90         = quantile(mic, 0.90, na.rm = TRUE),
+    .groups       = "drop"
+  ) %>%
+  mutate(
+    pct_resistant = n_resistant / n_tested * 100,
+    geography     = "00",
+    time          = paste0(YEAR, "-12-31"),
+    narms_genus_species_serotype = paste(GENUS_NAME, SPECIES, SEROTYPE),
+    antimicrobial = tolower(gsub("[^A-Za-z0-9]+", "_", antimicrobial)),
+    antimicrobial = gsub("_$", "", antimicrobial)
+  ) %>%
+  rename(
+    host_species = HOST_SPECIES,
+    source_type  = SOURCE
+  ) %>%
+  select(
+    geography, time, narms_genus_species_serotype,
+    source_type, host_species, antimicrobial,
+    pct_resistant, n_resistant, n_tested, mic50, mic90
+  )
+
+food_animal_standard <- food_animal_agg %>%
+  pivot_wider(
+    id_cols = c(geography, time, narms_genus_species_serotype,
+                source_type, host_species),
+    names_from = antimicrobial,
+    values_from = c(pct_resistant, n_resistant, n_tested, mic50, mic90),
+    names_glue = "narms_{.value}_{antimicrobial}"
+  )
+
+vroom::vroom_write(
+  food_animal_standard,
+  "standard/data_food_animals.csv.gz",
+  delim = ","
+)
+message(sprintf(
+  "Wrote %d rows to standard/data_food_animals.csv.gz",
+  nrow(food_animal_standard)
+))
+
+process$food_animal_state <- current_food_animal_state
+dcf::dcf_process_record(updated = process)
