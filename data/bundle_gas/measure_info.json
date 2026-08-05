@@ -1,0 +1,235 @@
+{
+  "{category}geography": {
+    "short_name": "Geography",
+    "long_name": "Geography (state name or national total)",
+    "short_description": "State name, or \"United States\" for the national total.",
+    "long_description": "Geographic identifier. Unlike the standard source files, bundle dist files use state *names* rather than FIPS codes; the national total is the literal string \"United States\". Only the 50 states, the District of Columbia, and the national total are retained - territories and non-state NNDSS reporting jurisdictions (e.g. New York City) are dropped by build.R.",
+    "measure_type": "identifier",
+    "unit": "state name",
+    "categories": {
+      "bundle_gas/dist/epic_gas.parquet|": {},
+      "bundle_gas/dist/nnds_stss.parquet|": {},
+      "bundle_gas/dist/abcs_gas.parquet|": {},
+      "bundle_gas/dist/abcs_gas_syndromes.parquet|": {},
+      "bundle_gas/dist/abcs_gas_resistance.parquet|": {},
+      "bundle_gas/dist/abcs_gas_emm.parquet|": {}
+    }
+  },
+
+  "{category}time": {
+    "short_name": "Time",
+    "long_name": "Time period end date",
+    "short_description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
+    "long_description": "End date of the reporting period, in YYYY-mm-dd format. The resolution differs by file: Epic Cosmos is quarterly (last day of the calendar quarter), NNDSS is weekly (MMWR week ending Saturday), and the ABCs files are annual (YYYY-12-31).",
+    "measure_type": "date",
+    "unit": "date",
+    "categories": {
+      "bundle_gas/dist/epic_gas.parquet|": {},
+      "bundle_gas/dist/nnds_stss.parquet|": {},
+      "bundle_gas/dist/abcs_gas.parquet|": {},
+      "bundle_gas/dist/abcs_gas_syndromes.parquet|": {},
+      "bundle_gas/dist/abcs_gas_resistance.parquet|": {},
+      "bundle_gas/dist/abcs_gas_emm.parquet|": {}
+    }
+  },
+
+  "bundle_gas/dist/epic_gas.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group at encounter",
+    "short_description": "Epic Cosmos age band; \"Total\" is the all-ages aggregate.",
+    "long_description": "Age at encounter, as banded by Epic Cosmos SlicerDicer. Levels are \"<1 Years\", \"1-4 Years\", \"5-17 Years\", \"18-49 Years\", \"50-64 Years\", \"65+ Years\", and \"Total\". \"Total\" is an all-ages aggregate that overlaps the individual bands, so it must be excluded when summing across ages.",
+    "measure_type": "category",
+    "unit": ""
+  },
+
+  "bundle_gas/dist/epic_gas.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "n_strep_throat": { "source_id": "epic_n_strep_throat" },
+      "pct_strep_throat": { "source_id": "epic_pct_strep_throat" },
+      "n_patients": { "source_id": "epic_n_patients" }
+    }
+  },
+
+  "bundle_gas/dist/epic_gas.parquet|value": {
+    "short_name": "Value",
+    "long_name": "Epic Cosmos strep throat measure value",
+    "short_description": "Value of the measure named in the `measure` column; unit depends on that measure.",
+    "long_description": "Value of the measure named in the `measure` column. The unit depends on the measure: `n_strep_throat` and `n_patients` are patient counts, while `pct_strep_throat` is a percentage (0-100) computed as n_strep_throat / n_patients * 100. Because units are mixed within this column, always facet or filter by `measure` before plotting.",
+    "measure_type": "Mixed",
+    "unit": "patients or percent",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "bundle_gas/dist/epic_gas.parquet|suppressed": {
+    "short_name": "Suppressed",
+    "long_name": "Suppression flag for this measure value",
+    "short_description": "1 if Epic suppressed the underlying cell and the value was imputed as 5; 0 otherwise.",
+    "long_description": "1 when Epic Cosmos withheld the underlying cell (a count of 10 or fewer) and the value was imputed as 5; 0 otherwise. The flag is measure-specific: for `n_strep_throat` and `pct_strep_throat` it reflects suppression of the strep throat numerator, and for `n_patients` it reflects suppression of the patient-total denominator. The flag is computed upstream before imputation, so it records what Epic withheld rather than what the ingest wrote.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "bundle_gas/dist/nnds_stss.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "stss_cases_weekly": {
+        "short_name": "Strep TSS cases (weekly)",
+        "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
+        "short_description": "Newly reported STSS cases in the MMWR week.",
+        "long_description": "Incident cases of streptococcal toxic shock syndrome (STSS) newly reported in the MMWR week, derived by build.R as the week-over-week difference in the cumulative year-to-date count within each geography and MMWR year. This is the series to use for plotting trends. NNDSS occasionally revises earlier weeks downward, which produces a small number of negative increments (27 of 12,376 as of the current build); these are left as reported rather than clamped, and build.R logs the count.",
+        "measure_type": "Count",
+        "unit": "Cases",
+        "time_resolution": "Week",
+        "sources": [{ "id": "nnds" }]
+      },
+      "stss_cases_cumulative": { "source_id": "streptococcal_toxic_shock_syndrome" }
+    }
+  },
+
+  "bundle_gas/dist/nnds_stss.parquet|value": {
+    "short_name": "Value",
+    "long_name": "Streptococcal toxic shock syndrome case count",
+    "short_description": "STSS case count; weekly-incident or cumulative year-to-date per the `measure` column.",
+    "long_description": "Reported case count of streptococcal toxic shock syndrome (STSS), a life-threatening condition caused by group A Streptococcus. The `measure` column distinguishes the weekly-incident series (`stss_cases_weekly`) from the cumulative year-to-date series as published by NNDSS (`stss_cases_cumulative`). The two are not additive - do not sum across measures.",
+    "measure_type": "Count",
+    "unit": "Cases",
+    "time_resolution": "Week",
+    "sources": [{ "id": "nnds" }]
+  },
+
+  "bundle_gas/dist/abcs_gas.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "rate_cases": { "source_id": "case_rate" },
+      "rate_deaths": { "source_id": "death_rate" },
+      "N_cases": { "source_id": "n_cases" },
+      "N_deaths": { "source_id": "n_deaths" }
+    }
+  },
+
+  "bundle_gas/dist/abcs_gas.parquet|value": {
+    "short_name": "Value",
+    "long_name": "ABCs invasive Group A Streptococcus measure value",
+    "short_description": "Value of the measure named in the `measure` column; rate per 100,000 or case/death count.",
+    "long_description": "Value of the measure named in the `measure` column, from CDC's Active Bacterial Core surveillance (ABCs) for invasive Group A Streptococcus. `rate_cases` and `rate_deaths` are incidence rates per 100,000 population; `N_cases` and `N_deaths` are national estimated counts. Units are mixed within this column, so filter by `measure` before plotting. Values are national only and are stratified by age, sex, and race/ethnicity, each of which carries an \"Overall\" level that must not be summed with the specific levels.",
+    "measure_type": "Mixed",
+    "unit": "cases per 100,000 or count",
+    "time_resolution": "Year",
+    "sources": [{ "id": "abcs_gas" }]
+  },
+
+  "bundle_gas/dist/abcs_gas_syndromes.parquet|measure": {
+    "short_name": "Clinical syndrome",
+    "levels": {
+      "pct_syndrome_cellulitis": { "source_id": "syndrome" },
+      "pct_syndrome_bacteremia_without_focus": { "source_id": "syndrome" },
+      "pct_syndrome_pneumonia": { "source_id": "syndrome" },
+      "pct_syndrome_necrotizing_fasciitis": { "source_id": "syndrome" },
+      "pct_syndrome_strep_toxic_shock": { "source_id": "syndrome" }
+    }
+  },
+
+  "bundle_gas/dist/abcs_gas_syndromes.parquet|value": {
+    "short_name": "Percent of cases",
+    "long_name": "Percent of invasive GAS cases presenting with the clinical syndrome",
+    "short_description": "Percent of invasive GAS cases presenting with the syndrome named in `measure`.",
+    "long_description": "Annual percent of invasive Group A Streptococcus cases in the CDC ABCs catchment area presenting with the clinical syndrome named in the `measure` column (cellulitis, bacteremia without focus, pneumonia, necrotizing fasciitis, or streptococcal toxic shock syndrome). Syndromes are not mutually exclusive and do not sum to 100 percent. Note that `pct_syndrome_strep_toxic_shock` measures the same condition as the NNDSS series in nnds_stss.parquet, but as a percentage of ABCs surveillance-area cases rather than a national case count.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [{ "id": "abcs_gas" }]
+  },
+
+  "bundle_gas/dist/abcs_gas_resistance.parquet|measure": {
+    "short_name": "Resistance measure",
+    "levels": {
+      "pct_resistant_penicillin": { "source_id": "pct_resistant" },
+      "pct_resistant_erythromycin": { "source_id": "pct_resistant" },
+      "pct_resistant_clindamycin": { "source_id": "pct_resistant" },
+      "pct_resistant_cefotaxime": { "source_id": "pct_resistant" },
+      "pct_resistant_tetracycline": { "source_id": "pct_resistant" },
+      "pct_resistant_vancomycin": { "source_id": "pct_resistant" },
+      "n_isolates": { "source_id": "n_isolates" }
+    }
+  },
+
+  "bundle_gas/dist/abcs_gas_resistance.parquet|value": {
+    "short_name": "Value",
+    "long_name": "Antibiotic resistance percent, or isolate count",
+    "short_description": "Percent of invasive GAS isolates non-susceptible to the antibiotic named in `measure`; or the isolate count.",
+    "long_description": "For the `pct_resistant_*` measures, the annual percent of invasive Group A Streptococcus isolates demonstrating non-susceptibility to the named antibiotic. For `n_isolates`, the number of isolates tested (the denominator), which is a count rather than a percent. Filter by `measure` before plotting, since units are mixed.",
+    "measure_type": "Mixed",
+    "unit": "percent or count",
+    "time_resolution": "Year",
+    "sources": [{ "id": "abcs_gas" }]
+  },
+
+  "bundle_gas/dist/abcs_gas_emm.parquet|measure": {
+    "short_name": "emm type measure",
+    "levels": {
+      "emm_pct_emm_1": { "source_id": "emm_type" },
+      "emm_pct_emm_11": { "source_id": "emm_type" },
+      "emm_pct_emm_12": { "source_id": "emm_type" },
+      "emm_pct_emm_28": { "source_id": "emm_type" },
+      "emm_pct_emm_43": { "source_id": "emm_type" },
+      "emm_pct_emm_49": { "source_id": "emm_type" },
+      "emm_pct_emm_59": { "source_id": "emm_type" },
+      "emm_pct_emm_60": { "source_id": "emm_type" },
+      "emm_pct_emm_77": { "source_id": "emm_type" },
+      "emm_pct_emm_81": { "source_id": "emm_type" },
+      "emm_pct_emm_82": { "source_id": "emm_type" },
+      "emm_pct_emm_83": { "source_id": "emm_type" },
+      "emm_pct_emm_89": { "source_id": "emm_type" },
+      "emm_pct_emm_91": { "source_id": "emm_type" },
+      "emm_pct_emm_92": { "source_id": "emm_type" },
+      "emm_pct_other": { "source_id": "emm_type" },
+      "emm_count_number_of_isolates": { "source_id": "n_isolates" }
+    }
+  },
+
+  "bundle_gas/dist/abcs_gas_emm.parquet|value": {
+    "short_name": "Value",
+    "long_name": "emm type percent, or isolate count",
+    "short_description": "Percent of invasive GAS isolates of the emm type named in `measure`; or the isolate count.",
+    "long_description": "For the `emm_pct_*` measures, the annual percent of invasive Group A Streptococcus isolates belonging to the named emm type (surface protein gene sequence type), with `emm_pct_other` collecting all types not individually reported. emm typing tracks GAS strain diversity and prospective vaccine coverage. For `emm_count_number_of_isolates`, the number of isolates typed (the denominator), which is a count rather than a percent. Not every emm type is reported in every year, so this file is sparse; missing combinations are dropped rather than zero-filled.",
+    "measure_type": "Mixed",
+    "unit": "percent or count",
+    "time_resolution": "Year",
+    "sources": [{ "id": "abcs_gas" }]
+  },
+
+  "_bundle": {
+    "name": "bundle_gas",
+    "sources": ["abcs_gas", "epic_gas", "nnds"],
+    "dist_files": {
+      "epic_gas.parquet": {
+        "sources": ["epic_gas"],
+        "source_files": ["epic_gas/standard/data.csv.gz"]
+      },
+      "nnds_stss.parquet": {
+        "sources": ["nnds"],
+        "source_files": ["nnds/standard/data.csv.gz"]
+      },
+      "abcs_gas.parquet": {
+        "sources": ["abcs_gas"],
+        "source_files": ["abcs_gas/standard/data.csv.gz"]
+      },
+      "abcs_gas_syndromes.parquet": {
+        "sources": ["abcs_gas"],
+        "source_files": ["abcs_gas/standard/data_syndromes.csv.gz"]
+      },
+      "abcs_gas_resistance.parquet": {
+        "sources": ["abcs_gas"],
+        "source_files": ["abcs_gas/standard/data_resistance.csv.gz"]
+      },
+      "abcs_gas_emm.parquet": {
+        "sources": ["abcs_gas"],
+        "source_files": ["abcs_gas/standard/data_emm.csv.gz"]
+      }
+    }
+  }
+}
