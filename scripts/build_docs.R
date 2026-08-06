@@ -1384,7 +1384,7 @@ index_datasets <- lapply(index_source_idx, function(i) {
   entry <- list(
     dataset = source_name,
     name = display_name,
-    github_folder = sprintf("https://github.com/%s/tree/main/data/%s",
+    github_folder = sprintf("https://github.com/%s/tree/main/data/%s/standard",
                             GITHUB_REPO, source_name),
     data_url = first_source$url %||% "",
     data_dictionary = sprintf("https://pophive.github.io/Ingest/#%s", section_id),
