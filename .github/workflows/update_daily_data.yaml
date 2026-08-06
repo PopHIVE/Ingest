@@ -53,6 +53,10 @@ jobs:
         run: Rscript scripts/build_docs.R
 
       - if: ${{ steps.diff.outputs.changed == 'true' }}
+        name: Rebuild data table
+        run: Rscript scripts/build_data_table.R
+
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
         name: Commit and push
         run: |
           git config user.email "actions@github.com"
