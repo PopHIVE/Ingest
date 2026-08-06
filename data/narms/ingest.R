@@ -85,6 +85,12 @@ sites <- c(
 # Helper Functions
 # =============================================================================
 
+#' Convert a label into a column-name-safe slug
+#' e.g. "Salmonella I 4,[5],12:i:-" -> "salmonella_i_4_5_12_i"
+clean_name <- function(x) {
+  gsub("_$", "", tolower(gsub("[^A-Za-z0-9]+", "_", x)))
+}
+
 #' Build a site filter Where clause for Power BI queries
 #' Returns NULL if site_name is NULL (no filter = national "All")
 build_site_filter <- function(site_name) {
@@ -1141,12 +1147,11 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
       pct_resistant = replace(pct_resistant, is.na(pct_resistant), 0),
       n_resistant = replace(n_resistant, is.na(n_resistant), 0),
       n_tested = replace(n_tested, is.na(n_tested), 0),
-      narms_genus_species_serotype = paste(genus, species_serotype),
-      antimicrobial_agent = tolower(gsub("[^A-Za-z0-9]+", "_", antimicrobial_agent)),
-      antimicrobial_agent = gsub("_$", "", antimicrobial_agent)
+      narms_antimicrobial_agent = antimicrobial_agent,
+      organism = clean_name(paste(genus, species_serotype))
     ) %>%
-    select(geography, time, narms_genus_species_serotype,
-           test_method, antimicrobial_agent,
+    select(geography, time, narms_antimicrobial_agent,
+           test_method, organism,
            pct_resistant, n_resistant, n_tested, narms_flag) %>%
     distinct()
 
@@ -1156,17 +1161,18 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
     warning(sprintf(
       "%d agent rows have pct_resistant > 100%%. Top offenders: %s",
       nrow(bad_rows),
-      paste(unique(bad_rows$antimicrobial_agent)[1:min(5, length(unique(bad_rows$antimicrobial_agent)))],
+      paste(unique(bad_rows$narms_antimicrobial_agent)[1:min(5, length(unique(bad_rows$narms_antimicrobial_agent)))],
             collapse = ", ")
     ))
   }
 
+  # Organisms become the columns; each row is one antimicrobial agent
   agent_standard <- agent_long %>%
     pivot_wider(
-      id_cols = c(geography, time, narms_genus_species_serotype, test_method),
-      names_from = antimicrobial_agent,
+      id_cols = c(geography, time, narms_antimicrobial_agent, test_method),
+      names_from = organism,
       values_from = c(pct_resistant, n_resistant, n_tested, narms_flag),
-      names_glue = "narms_{.value}_{antimicrobial_agent}"
+      names_glue = "narms_{.value}_{organism}"
     ) %>%
     rename_with(~ gsub("narms_narms_flag", "narms_flag", .x))
 
@@ -1202,12 +1208,11 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
       pct_resistant = replace(pct_resistant, is.na(pct_resistant), 0),
       n_resistant = replace(n_resistant, is.na(n_resistant), 0),
       n_tested = replace(n_tested, is.na(n_tested), 0),
-      narms_genus_species_serotype = paste(genus, species_serotype),
-      pattern = tolower(gsub("[^A-Za-z0-9]+", "_", pattern)),
-      pattern = gsub("_$", "", pattern)
+      narms_pattern = pattern,
+      organism = clean_name(paste(genus, species_serotype))
     ) %>%
-    select(geography, time, narms_genus_species_serotype,
-           test_method, pattern,
+    select(geography, time, narms_pattern,
+           test_method, organism,
            pct_resistant, n_resistant, n_tested, narms_flag) %>%
     distinct()
 
@@ -1216,17 +1221,18 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
     warning(sprintf(
       "%d pattern rows have pct_resistant > 100%%. Top offenders: %s",
       nrow(bad_rows),
-      paste(unique(bad_rows$pattern)[1:min(5, length(unique(bad_rows$pattern)))],
+      paste(unique(bad_rows$narms_pattern)[1:min(5, length(unique(bad_rows$narms_pattern)))],
             collapse = ", ")
     ))
   }
 
+  # Organisms become the columns; each row is one resistance pattern
   pattern_standard <- pattern_long %>%
     pivot_wider(
-      id_cols = c(geography, time, narms_genus_species_serotype, test_method),
-      names_from = pattern,
+      id_cols = c(geography, time, narms_pattern, test_method),
+      names_from = organism,
       values_from = c(pct_resistant, n_resistant, n_tested, narms_flag),
-      names_glue = "narms_{.value}_{pattern}"
+      names_glue = "narms_{.value}_{organism}"
     ) %>%
     rename_with(~ gsub("narms_narms_flag", "narms_flag", .x))
 
