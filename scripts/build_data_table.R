@@ -4,8 +4,10 @@
 # per data source (Datasets tab) and one row per bundle (Bundles tab).
 #
 # Columns are derived automatically from the repository:
-#   - measure_info.json "_sources" (title, description, organization, url,
-#     restrictions, time_resolution)
+#   - docs/data_sources_index.json (the curated per-dataset "summary", reused
+#     verbatim as the Brief Description column)
+#   - measure_info.json "_sources" (title, organization, url, restrictions,
+#     time_resolution, and a fallback description)
 #   - standard/*.csv.gz data files (spatial / age / sex / other resolutions,
 #     earliest & latest observation dates)
 #   - git commit history (last-updated date of the standard data files)
@@ -105,6 +107,38 @@ short_summary <- function(x, max_chars = 300) {
   if (nchar(first) > max_chars) first <- paste0(substr(first, 1, max_chars - 1), "…")
   first
 }
+
+# -----------------------------------------------------------------------------
+# Curated metadata (docs/data_sources_index.json)
+# -----------------------------------------------------------------------------
+# The Brief Description and Search Terms columns reuse the hand-written
+# `summary` and `search_terms` each dataset carries in
+# docs/data_sources_index.json, so this table and the website data page never
+# drift apart. build_docs.R writes that file and runs before this script in
+# both CI workflows, so the values read here are always current.
+load_index_entries <- function(path = "docs/data_sources_index.json") {
+  if (!file.exists(path)) {
+    cat(sprintf("NOTE: %s not found -- deriving brief descriptions, no search terms\n", path))
+    return(list())
+  }
+  idx <- tryCatch(fromJSON(path, simplifyVector = FALSE), error = function(e) NULL)
+  if (is.null(idx) || is.null(idx$datasets)) {
+    cat(sprintf("NOTE: %s has no `datasets` array -- deriving brief descriptions instead\n", path))
+    return(list())
+  }
+  out <- list()
+  for (d in idx$datasets) {
+    if (is.null(d$dataset)) next
+    terms <- unlist(d$search_terms)
+    out[[d$dataset]] <- list(
+      summary      = trimws(d$summary %||% ""),
+      search_terms = if (is.null(terms)) character(0) else trimws(as.character(terms))
+    )
+  }
+  out
+}
+
+INDEX_ENTRIES <- load_index_entries()
 
 # -----------------------------------------------------------------------------
 # Data-file inspection helpers
@@ -280,17 +314,26 @@ summarize_source <- function(source_name, source_dir) {
   title        <- first_source$name %||% format_source_name(source_name)
   organization <- first_source$organization %||% ""
 
-  # Brief description spans ALL sources so multi-source datasets aren't
-  # misrepresented by only the first (e.g. NCHS covers overdose AND 21 causes
-  # of mortality). One sentence per distinct source, joined.
-  descs <- character(0)
-  if (!is.null(sources_meta)) {
-    for (s in sources_meta) {
-      ss <- short_summary(s$description %||% "")
-      if (nzchar(ss)) descs <- c(descs, ss)
+  index_entry  <- INDEX_ENTRIES[[source_name]]
+  search_terms <- index_entry$search_terms %||% character(0)
+
+  # Brief description: the curated summary from the data sources index, so this
+  # column matches the website data page verbatim. Datasets absent from the
+  # index (or with a blank summary) fall back to a derivation spanning ALL
+  # _sources entries, so multi-source datasets aren't misrepresented by only the
+  # first (e.g. NCHS covers overdose AND 21 causes of mortality) -- one sentence
+  # per distinct source, joined.
+  description <- index_entry$summary %||% ""
+  if (!nzchar(description)) {
+    descs <- character(0)
+    if (!is.null(sources_meta)) {
+      for (s in sources_meta) {
+        ss <- short_summary(s$description %||% "")
+        if (nzchar(ss)) descs <- c(descs, ss)
+      }
     }
+    description <- paste(unique(descs), collapse = " ")
   }
-  description  <- paste(unique(descs), collapse = " ")
 
   data_url     <- first_source$url %||% ""
   restrictions <- first_source$restrictions %||% ""
@@ -346,6 +389,7 @@ summarize_source <- function(source_name, source_dir) {
     folder       = source_name,
     title        = title,
     description  = description,
+    search_terms = search_terms,
     spatial      = if (nzchar(spatial)) spatial else "—",
     age          = if (length(age_groups)) paste(sort_age_groups(age_groups), collapse = ", ")
                    else "Not Stratified",
@@ -403,7 +447,7 @@ summarize_bundle <- function(bundle_name, bundle_dir, valid_sources) {
 # -----------------------------------------------------------------------------
 # HTML building
 # -----------------------------------------------------------------------------
-DATASET_HEADERS <- c("Dataset", "Content Title", "Brief Description",
+DATASET_HEADERS <- c("Dataset", "Content Title", "Brief Description", "Search Terms",
                      "Spatial Resolution", "Age Resolution", "Sex Resolution",
                      "Other Resolutions", "Earliest Data", "Latest Data",
                      "Time Scale", "Last Refreshed", "Data Restrictions",
@@ -419,10 +463,15 @@ dataset_row <- function(s) {
                       target = "_blank", rel = "noopener", "GitHub")
   dataset_cell <- tags$a(href = paste0("index.html#", doc_section_id(s$folder)),
                          tags$code(s$folder))
+  # Rendered as badges, but DataTables still searches/sorts on the plain text.
+  terms_cell <- if (length(s$search_terms)) {
+    lapply(s$search_terms, function(t) tags$span(class = "term-badge", t))
+  } else "—"
   tags$tr(
     tags$td(dataset_cell),
     tags$td(class = "title-cell", s$title),
-    tags$td(s$description),
+    tags$td(class = "desc-cell", s$description),
+    tags$td(class = "terms-cell", terms_cell),
     tags$td(s$spatial),
     tags$td(class = strat_class(s$age), s$age),
     tags$td(class = strat_class(s$sex), s$sex),
@@ -487,6 +536,17 @@ source_summaries <- lapply(seq_along(source_dirs), function(i) {
   summarize_source(basename(source_dirs[i]), source_dirs[i])
 })
 
+# Mirrors the tripwire in build_docs.R: make an auto-derived Brief Description
+# visible in build/CI logs rather than letting it pass as curated text.
+no_summary <- vapply(source_summaries, function(s) {
+  is.null(INDEX_ENTRIES[[s$folder]]) || !nzchar(INDEX_ENTRIES[[s$folder]]$summary %||% "")
+}, logical(1))
+if (any(no_summary)) {
+  cat(sprintf(
+    "WARNING: %d source(s) have no curated summary in docs/data_sources_index.json -- using an auto-derived fallback: %s\n",
+    sum(no_summary), paste(vapply(source_summaries[no_summary], `[[`, character(1), "folder"), collapse = ", ")))
+}
+
 bundle_summaries <- lapply(seq_along(bundle_dirs), function(i) {
   cat(sprintf("  bundle %s (%d/%d)\n", basename(bundle_dirs[i]), i, length(bundle_dirs)))
   summarize_bundle(basename(bundle_dirs[i]), bundle_dirs[i], valid_sources)
@@ -525,6 +585,15 @@ page <- tags$html(lang = "en",
       table.dataTable td { font-size: .85rem; vertical-align: top; }
       table.dataTable th { font-size: .8rem; }
       .title-cell { font-weight: 600; }
+      /* Curated summaries run long (some >1000 chars); give them room so the
+         surrounding one-word columns aren't squeezed into vertical slivers. */
+      .desc-cell { min-width: 26rem; }
+      .terms-cell { min-width: 9rem; }
+      .term-badge {
+        display: inline-block; background: #eef2f7; border: 1px solid #d6dee8;
+        border-radius: .75rem; padding: .05rem .5rem; margin: 0 .2rem .2rem 0;
+        font-size: .75rem; color: #33415c; white-space: nowrap;
+      }
       .strat-stratified { color: #146c43; font-weight: 600; }
       .strat-notstratified { color: #6c757d; }
       .nav-tabs { margin-bottom: 1rem; }
