@@ -1,11 +1,50 @@
 {
+  "_column_naming": {
+    "id": "_column_naming",
+    "short_name": "Column naming convention",
+    "long_name": "How measure columns are named in the standardized NARMS files",
+    "category": "antimicrobial_resistance",
+    "short_description": "Value columns are named narms_{measure}_{antimicrobial}",
+    "long_description": "All five standardized NARMS files are stored in wide format. Each row is one organism (plus geography, time, and any sampling context such as test method, meat source, host species, or collection source), and each antimicrobial agent or resistance pattern contributes its own set of columns. Column names follow the pattern narms_{measure}_{antimicrobial}, for example narms_pct_resistant_ciprofloxacin, narms_n_tested_ciprofloxacin, and narms_flag_ciprofloxacin. Antimicrobial and pattern names are lowercased with non-alphanumeric characters replaced by underscores. The entries below describe each {measure} prefix; they apply identically to every antimicrobial suffix.",
+    "measure_type": "Metadata",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "narms_now" },
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
+    "citations": []
+  },
+
+  "narms_flag": {
+    "id": "narms_flag",
+    "short_name": "Measurement status flag",
+    "long_name": "Why a measurement is present or absent for this organism and antimicrobial",
+    "category": "antimicrobial_resistance",
+    "short_description": "Categorical flag explaining whether the accompanying values are real measurements",
+    "long_description": "Every antimicrobial has a matching narms_flag_{antimicrobial} column recording whether the values beside it are real. The value columns are never NA; missing measurements are stored as 0, and this flag carries the reason. A 0 is only a genuine finding when the flag reads 'tested'. VALUES: (1) 'tested' - isolates were collected, the antimicrobial was on the panel, and susceptibility results came back. The denominator, numerator, and percentage are all real, and a 0 percent means the lab tested isolates and found none resistant. (2) 'no_isolates_tested' - the antimicrobial was on the panel and tracked for that organism, geography, and year, but no isolates were available to test. CDC reports this as an explicit zero, meaning 'we looked and there was nothing' as distinct from 'we did not look'. All value columns are placeholder zeros. Occurs only in the human clinical files; the FDA files aggregate isolate records, so a group with no isolates produces no row rather than a zero. (3) 'not_tested' - the antimicrobial was not part of the panel run for that specific combination of organism, geography, year, and test method, although it is used against that organism elsewhere in the file. Causes include antimicrobials added to or dropped from panels partway through the surveillance period, states running narrower panels, and recent years where collection and testing are still in progress. In the human files this is overwhelmingly a state-level phenomenon and is concentrated in the most recent years, which are preliminary and will partly resolve to 'tested' in future releases. All value columns are placeholder zeros. (4) 'not_on_panel' - the antimicrobial is never used against that organism, in any geography, year, or test method. This is not a gap but a combination that does not exist as a clinical question, and it will never fill in. It arises because each file holds the union of every organism's panel in one set of columns, so each row carries columns for antimicrobials that do not apply to it. This is a property of the organism and antimicrobial pairing rather than of any particular row. All value columns are placeholder zeros. (5) 'tested_no_mic' - isolates were tested and the resistance counts and percentage are real, but no minimum inhibitory concentration was published. Occurs only in the food-producing animals file, almost entirely for streptomycin, because three of the four FDA source files publish a susceptibility interpretation for that agent without publishing the underlying concentration. IMPORTANT: rows flagged 'tested_no_mic' contain valid resistance measurements. Filtering on narms_flag == 'tested' will silently exclude them. To select all real resistance measurements, match both 'tested' and 'tested_no_mic'. The five values are mutually exclusive; each cell carries exactly one. A single row will normally contain several different flag values across its antimicrobial columns.",
+    "statement": "Measurement status for {antimicrobial} was {value}",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      { "id": "narms_now" },
+      { "id": "narms_retail_meats" },
+      { "id": "narms_animal_pathogen" },
+      { "id": "narms_food_animals" }
+    ],
+    "citations": []
+  },
+
   "pct_resistant": {
     "id": "pct_resistant",
     "short_name": "Percent resistant to antimicrobial",
     "long_name": "Percentage of isolates resistant to a specific antimicrobial agent",
     "category": "antimicrobial_resistance",
     "short_description": "Percentage of isolates showing resistance to a specific antimicrobial agent",
-    "long_description": "Percentage of isolates tested by NARMS showing resistance to a specific antimicrobial agent, based on CLSI breakpoints. Calculated as n_resistant / n_tested * 100. Applies across all NARMS surveillance programs: human clinical isolates (CDC NARMS Now, AST and WGS methods), retail meat isolates (FDA, state-level), animal diagnostic pathogen isolates (FDA, state-level), and food-producing animal isolates (FDA HACCP/Cecal/Minor Species, national only). NA indicates the agent was on the testing panel but marked 'Not Tested' for that organism/year combination.",
+    "long_description": "Percentage of isolates tested by NARMS showing resistance to a specific antimicrobial agent, based on CLSI breakpoints. Calculated as n_resistant / n_tested * 100. Applies across all NARMS surveillance programs: human clinical isolates (CDC NARMS Now, AST and WGS methods), retail meat isolates (FDA, state-level), animal diagnostic pathogen isolates (FDA, state-level), and food-producing animal isolates (FDA HACCP/Cecal/Minor Species, national only). This column is never NA. Where no measurement exists the value is 0, and the matching narms_flag_{antimicrobial} column records why. A 0 is only a real finding when that flag reads 'tested' or 'tested_no_mic'; otherwise it is a placeholder and should be excluded from any calculation. Treating placeholder zeros as real will understate resistance.",
     "statement": "In {location}, {value}% of isolates were resistant to {antimicrobial}",
     "measure_type": "Percent",
     "unit": "Percent",
@@ -27,13 +66,14 @@
       }
     ]
   },
+
   "n_resistant": {
     "id": "n_resistant",
     "short_name": "Number of resistant isolates",
     "long_name": "Number of isolates resistant to a specific antimicrobial agent",
     "category": "antimicrobial_resistance",
     "short_description": "Count of isolates showing resistance to a specific antimicrobial agent",
-    "long_description": "Number of isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. NA when the dashboard or source reports 'Not Tested' for that organism/year/agent combination. Zero when the agent was on the panel but no isolates were available.",
+    "long_description": "Number of isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. This column is never NA. Where no measurement exists the value is 0, and the matching narms_flag_{antimicrobial} column records why. A 0 is only a real count when that flag reads 'tested' or 'tested_no_mic'; otherwise it is a placeholder.",
     "statement": "In {location}, {value} isolates were resistant to {antimicrobial}",
     "measure_type": "Count",
     "unit": "Isolates",
@@ -46,13 +86,14 @@
     ],
     "citations": []
   },
+
   "n_tested": {
     "id": "n_tested",
     "short_name": "Number of isolates tested",
     "long_name": "Number of isolates tested for antimicrobial susceptibility",
     "category": "antimicrobial_resistance",
     "short_description": "Total number of isolates tested for resistance to a specific antimicrobial agent",
-    "long_description": "Total number of isolates tested for susceptibility to a specific antimicrobial agent. Denominator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. NA when the source reports 'Not Tested' for that organism/year/agent combination. Zero when the agent was on the panel but no isolates were available.",
+    "long_description": "Total number of isolates tested for susceptibility to a specific antimicrobial agent. Denominator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. This column is never NA. Where no measurement exists the value is 0, and the matching narms_flag_{antimicrobial} column records why. Note that a 0 here is ambiguous on its own: it covers both 'no_isolates_tested' (the antimicrobial was on the panel but no isolates were available) and 'not_tested' (the antimicrobial was not on the panel for that row), which are roughly equal in size in the human files. Only the flag distinguishes them. Selecting rows where n_tested > 0 is equivalent to selecting flag values of 'tested' or 'tested_no_mic'.",
     "statement": "In {location}, {value} isolates were tested for {antimicrobial}",
     "measure_type": "Count",
     "unit": "Isolates",
@@ -65,13 +106,14 @@
     ],
     "citations": []
   },
+
   "mic50": {
     "id": "mic50",
     "short_name": "MIC50",
     "long_name": "Median minimum inhibitory concentration (MIC50)",
     "category": "antimicrobial_resistance",
     "short_description": "Median MIC value across isolates tested for a specific antimicrobial",
-    "long_description": "The MIC50 is the minimum inhibitory concentration (in micrograms per milliliter) at which 50% of isolates are inhibited — i.e., the median MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages.",
+    "long_description": "The MIC50 is the minimum inhibitory concentration (in micrograms per milliliter) at which 50% of isolates are inhibited, i.e. the median MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages. This column is never NA; where no concentration was measured the value is 0. A concentration of 0 micrograms per milliliter does not occur on the MIC scale, so a 0 here always means the measurement is absent rather than very low, and the matching narms_flag_{antimicrobial} column records why. In the food-producing animals file, streptomycin carries a susceptibility interpretation but no concentration in roughly 99 percent of its rows, because three of the four FDA source spreadsheets publish an 'STR SIR' column without a corresponding 'STR' concentration column. Those rows are flagged 'tested_no_mic'. Anyone computing MIC distributions or MIC trends for streptomycin from that file should be aware that only a small number of records carry a real value.",
     "statement": "The MIC50 for {antimicrobial} was {value} µg/mL",
     "measure_type": "Concentration",
     "unit": "µg/mL",
@@ -83,13 +125,14 @@
     ],
     "citations": []
   },
+
   "mic90": {
     "id": "mic90",
     "short_name": "MIC90",
     "long_name": "90th percentile minimum inhibitory concentration (MIC90)",
     "category": "antimicrobial_resistance",
     "short_description": "90th percentile MIC value across isolates tested for a specific antimicrobial",
-    "long_description": "The MIC90 is the minimum inhibitory concentration (in micrograms per milliliter) at which 90% of isolates are inhibited — i.e., the 90th percentile MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages.",
+    "long_description": "The MIC90 is the minimum inhibitory concentration (in micrograms per milliliter) at which 90% of isolates are inhibited, i.e. the 90th percentile MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages. This column is never NA; where no concentration was measured the value is 0. As with mic50, a 0 always means absent rather than very low, and the matching narms_flag_{antimicrobial} column records why. The same streptomycin limitation described under mic50 applies here.",
     "statement": "The MIC90 for {antimicrobial} was {value} µg/mL",
     "measure_type": "Concentration",
     "unit": "µg/mL",
@@ -110,7 +153,7 @@
       "location_url": "https://app.powerbigov.us/view?r=eyJrIjoiZmU5ZjA2ZDItNTU0MS00M2EzLWEyZmQtZmY3Y2RlZjdjYTdjIiwidCI6IjljZTcwODY5LTYwZGItNDRmZC1hYmU4LWQyNzY3MDc3ZmM4ZiJ9",
       "organization": "Centers for Disease Control and Prevention",
       "organization_url": "https://www.cdc.gov",
-      "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella). Both AST (phenotypic) and WGS (genotypic) test method results are available. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
+      "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella), tested against 22 antimicrobial agents and summarised into 29 resistance patterns. Both AST (phenotypic) and WGS (genotypic) test method results are available; WGS coverage begins in 2016. Data span 1999-2025. Records from years after 2021 are preliminary, since isolate collection and testing are still in progress, and a substantially higher share of those cells is flagged 'not_tested' as a result. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
       "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
       "date_accessed": 2026
     },
@@ -119,7 +162,7 @@
       "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
       "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
       "organization_url": "https://www.fda.gov/animal-veterinary",
-      "description": "Isolate-level antimicrobial susceptibility data from the FDA NARMS retail meats program. Samples collected from retail stores in participating states. Organisms tested include Campylobacter (coli, jejuni), Enterococcus (faecalis, faecium), Escherichia coli, and Salmonella (multiple serotypes). Meat sources include retail chicken, ground beef, ground turkey, pork chops, and veal. SIR (Susceptible/Intermediate/Resistant) calls based on CLSI breakpoints. Data span 2002-2021.",
+      "description": "Isolate-level antimicrobial susceptibility data from the FDA NARMS retail meats program. Samples collected from retail stores in participating states. Organisms tested include Campylobacter (coli, jejuni), Enterococcus (faecalis, faecium), Escherichia coli, and Salmonella (multiple serotypes), giving 221 distinct genus/species/serotype combinations tested against 31 antimicrobials. Meat sources include retail chicken, ground beef, ground turkey, pork chops, and veal. SIR (Susceptible/Intermediate/Resistant) calls based on CLSI breakpoints. Data span 2002-2021. Because this file is built by aggregating isolate-level records, a group with no isolates produces no row rather than a zero, so the 'no_isolates_tested' flag value does not occur here.",
       "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
       "date_accessed": 2025
     },
@@ -128,7 +171,7 @@
       "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
       "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
       "organization_url": "https://www.fda.gov/animal-veterinary",
-      "description": "Antimicrobial susceptibility data from the FDA NARMS animal diagnostic pathogen surveillance program. Isolates submitted by veterinary diagnostic laboratories across the United States. Organisms tested include Campylobacter, E. coli, Enterococcus, and Salmonella from various host species (cattle, swine, poultry, etc.). SIR calls based on CLSI breakpoints. Data available at state level.",
+      "description": "Antimicrobial susceptibility data from the FDA NARMS animal diagnostic pathogen surveillance program. Isolates submitted by veterinary diagnostic laboratories across the United States, covering 4 genera (E. coli, Klebsiella spp, S. pseudintermedius, Salmonella) tested against 74 antimicrobials. SIR calls based on CLSI breakpoints. Data available at state level and span 2017-2024. Because testing is driven by what a veterinarian ordered for a specific clinical case rather than by a fixed sampling panel, roughly half of the 'not_tested' cells in this file fall in years where the same organism and antimicrobial pairing was tested in a different host species or collection source. The 'no_isolates_tested' flag value does not occur here, since the file is built by aggregating isolate-level records.",
       "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
       "date_accessed": 2026
     },
@@ -137,7 +180,7 @@
       "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
       "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
       "organization_url": "https://www.fda.gov/animal-veterinary",
-      "description": "Isolate-level antimicrobial susceptibility data from four FDA NARMS food-producing animal surveillance programs: (1) HACCP slaughter surveillance (1997-present), covering federally inspected slaughter and processing plants; (2) Cecal sampling at slaughter (2013-present), testing cecal contents from food animals; (3) Minor Species (2020-2022), covering less common food animal species. Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella. SIR calls based on CLSI breakpoints. National-level data only (no state breakdown). Data span 1997-2023.",
+      "description": "Isolate-level antimicrobial susceptibility data from four FDA NARMS food-producing animal surveillance programs: (1) HACCP slaughter surveillance (1997-present), covering federally inspected slaughter and processing plants; (2) Cecal sampling at slaughter (2013-present), testing cecal contents from food animals; (3) Minor Species (2020-2022), covering less common food animal species. Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella, giving 638 distinct genus/species/serotype combinations, of which 628 are Salmonella serotypes, tested against 35 antimicrobials. SIR calls based on CLSI breakpoints. National-level data only (no state breakdown). Data span 1997-2023. This is the only file in which the 'tested_no_mic' flag value occurs, almost entirely for streptomycin: three of the four source spreadsheets publish an 'STR SIR' interpretation column without a corresponding 'STR' concentration column, so resistance counts are available while MIC values are not. Because the file is built by aggregating isolate-level records, the 'no_isolates_tested' flag value does not occur here.",
       "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
       "date_accessed": 2026
     }
