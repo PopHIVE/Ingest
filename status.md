@@ -148,7 +148,7 @@ flowchart LR
         direction LR
         n32["`monthly_tests.csv.gz`"]:::pass
         n33["`no_geo.csv.gz`"]:::pass
-        n34["`quarterly_gas.csv.gz<br/><br/><ul><li><code>missing_info: state_name</code></li></ul>`"]:::warn
+        n34["`quarterly_gas.csv.gz`"]:::pass
         n35["`weekly.csv.gz`"]:::pass
     end
     subgraph gtrends["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/gtrends" target="_blank" rel="noreferrer">gtrends</a></strong>`"]
@@ -283,9 +283,9 @@ flowchart LR
     end
     subgraph yrbss["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss" target="_blank" rel="noreferrer">yrbss</a></strong>`"]
         direction LR
-        n91["`data_age_ethnicity.csv.gz<br/><br/><ul><li><code>missing_info: age, race_ethnicity</code></li></ul><br />Script Failed:<br />invalid connection`"]:::fail
-        n92["`data_age_sex.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul><br />Script Failed:<br />invalid connection`"]:::fail
-        n93["`data_age.csv.gz<br/><br/><ul><li><code>missing_info: age</code></li></ul><br />Script Failed:<br />invalid connection`"]:::fail
+        n91["`data_age_ethnicity.csv.gz<br/><br/><ul><li><code>missing_info: age, race_ethnicity</code></li></ul><br />Script Failed:<br />cannot open the connection to 'https://yrbs-explorer.services.cdc.gov/api/Questions?SurveyId=2&ListOfYears=1991,1993,1995,1997,1999,2001,2003,2005,2007,2009,2011,2013,2015,2017,2019,2021,2023&ListOfLocations=XX'`"]:::fail
+        n92["`data_age_sex.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul><br />Script Failed:<br />cannot open the connection to 'https://yrbs-explorer.services.cdc.gov/api/Questions?SurveyId=2&ListOfYears=1991,1993,1995,1997,1999,2001,2003,2005,2007,2009,2011,2013,2015,2017,2019,2021,2023&ListOfLocations=XX'`"]:::fail
+        n93["`data_age.csv.gz<br/><br/><ul><li><code>missing_info: age</code></li></ul><br />Script Failed:<br />cannot open the connection to 'https://yrbs-explorer.services.cdc.gov/api/Questions?SurveyId=2&ListOfYears=1991,1993,1995,1997,1999,2001,2003,2005,2007,2009,2011,2013,2015,2017,2019,2021,2023&ListOfLocations=XX'`"]:::fail
     end
     subgraph bundle_antimicrobial_resistance["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_antimicrobial_resistance" target="_blank" rel="noreferrer">bundle_antimicrobial_resistance</a></strong>`"]
         direction LR
