@@ -41,27 +41,37 @@ Syndromes and typing are **not** merged, because they are not the same
 measures: Group A syndromes are a rate per 100,000 while Group B's are a percent
 of cases, and emm types and capsular serotypes are different concepts.
 
-## Not-reported flags
+## No NAs — zero-filled with one flag per measure
 
-`abcs_not_reported_flag_*` columns mark values CDC never published, as distinct
-from values suppressed for confidentiality. **Nothing is imputed — a flagged row
-must not be read as a zero.** One flag covers each group of columns that go
-missing together:
+**The strep files contain no missing values.** Every measure is zero-filled, and
+every measure has its own `abcs_not_reported_flag_<measure>` saying whether that
+zero is a published figure or a gap. The flag name is derivable from the measure
+name — `abcs_gbs_pct_serotype_ia` pairs with
+`abcs_not_reported_flag_gbs_pct_serotype_ia`.
 
-| Flag | Why the data is absent |
-|---|---|
-| `rate_deaths` | death rates are published only overall and by age, never by sex, race, or onset |
-| `deaths_survivals` | death and survival counts exist only for the all-ages series |
-| `n_isolates` | isolates-tested counts are not published for every year and group |
-| `drug_panel` | tetracycline and linezolid are on the Group A panel only, and linezolid was added partway through |
-| `strep_toxic_shock` | the Group A STSS rate is not published every year |
-| `emm_43`, `emm_49`, `emm_59`, `emm_60`, `emm_81`, `emm_91` | CDC itemises different emm types each year and pools the rest into "other" |
-| `serotype_vi_grouping` | CDC's grouping of rarer Group B serotypes changed over the series |
-| `alph_alp23`, `alph_neg` | not published in every year |
+> **A flagged 0 is not a measured zero.** CDC published nothing for that cell.
+> Reading flagged rows as zeros understates resistance, syndrome rates and type
+> shares, so filter on the flag before aggregating.
 
-The ingest **errors** if any column contains NAs without a covering flag, so a
-future change in what CDC publishes fails loudly instead of shipping
-undocumented gaps.
+Every measure gets a flag, including ones CDC always reports (whose flag is all
+zeros), so a consumer never has to work out whether a flag exists for the column
+it cares about. A shared flag cannot do this job: in `gbs_serotypes` for 2000
+late-onset, serotypes II, IV and VI are genuine zeros while the two VI-grouping
+columns were never reported —
+
+| serotype | value | flag | |
+|---|---|---|---|
+| `ii`, `iv`, `non_typeable`, `vi` | 0 | 0 | true zero |
+| `vi_vii_viii_or_ix`, `vi_viii` | 0 | 1 | not reported |
+
+Common reasons a cell goes unreported: an antibiotic off that pathogen's
+susceptibility panel (tetracycline and linezolid are Group A only), an emm type
+or serotype CDC pooled into "other" that year, a rate not broken out for that
+stratification (death rates are published only overall and by age), or a
+denominator CDC omits for most of the resistance series.
+
+The helper `stop()`s if any NA survives the fill or if a measure lacks the
+`abcs_` prefix its flag name is derived from.
 
 ## Notes and gotchas
 
@@ -88,15 +98,17 @@ undocumented gaps.
   Group B, and its `18-64` / `65+` split does not line up with the `18-49` /
   `50-64` bands CLAUDE.md documents. `Total` is the all-ages aggregate throughout
   and overlaps the bands.
-- **Two case-rate measures, because CDC uses two denominators under one label.**
-  `abcs_rate_cases` is per 100,000 of the age band on the row;
-  `abcs_rate_cases_by_onset` is per 100,000 of the *general population*. CDC
-  labels both `"Per 100,000 population"`, but for 1997 Group B the `<1` band
-  reads **115.7** (≈ 3,900 infant cases / 3.9M births × 100,000) while
+- **One case-rate measure, two denominators — see `rate_denominator`.** CDC
+  labels every rate `"Per 100,000 population"` while using two different bases,
+  so `strep_rates.csv.gz` carries a `rate_denominator` column:
+  `"Stratum population"` means per 100,000 of the group the row describes, and
+  `"Population"` means per 100,000 of the whole population regardless of the
+  row's stratum (how CDC reports the infant onset rates). For 1997 Group B the
+  `<1` band reads **115.7** (≈ 3,900 infant cases / 3.9M births × 100,000) while
   early-onset + late-onset read 0.70 + 0.40 = **1.10** (≈ 3,900 / 272M ×
-  100,000). They differ in all 28 years, mean absolute difference 66.3. They are
-  kept as separate measures, mutually exclusive by row, and **must never be added
-  or plotted on one axis**. The ingest asserts the exclusivity.
+  100,000). They differ in all 28 years, mean absolute difference 66.3, so **rows
+  with different denominators must never be summed or plotted on one axis** —
+  filter on the column first.
 - **`onset` is not additive.** CDC's Group B labels conflate age with infant
   onset timing (`Infants, early-onset disease`), which the ingest decomposes into
   `age` + `onset`. Onset rows are a *subset* of infants, and the `Total` rows

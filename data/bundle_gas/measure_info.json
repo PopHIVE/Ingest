@@ -59,6 +59,14 @@
     "measure_type": "category",
     "unit": ""
   },
+  "bundle_gas/dist/abcs_strep.parquet|rate_denominator": {
+    "short_name": "Rate denominator",
+    "long_name": "What the per-100,000 rate is relative to",
+    "short_description": "Whether a rate is per 100,000 of the row's stratum or of the whole population.",
+    "long_description": "CDC labels every ABCs rate \"Per 100,000 population\" while using two different bases, so this column records which applies. \"Stratum population\" is per 100,000 of the group the row describes - the \"<1\" age band rate is per 100,000 infants, 115.7 for 1997 Group B, consistent with 3,900 infant cases over ~3.9M births. \"Population\" is per 100,000 of the whole population regardless of the row's stratum, which is how CDC reports the infant early- and late-onset rates - 0.70 + 0.40 = 1.10 for the same cases over ~272M people. They differ in all 28 years, mean absolute difference 66.3, so rows with different denominators must never be summed or plotted on one axis. \"Total\" where the row is not a rate.",
+    "measure_type": "category",
+    "unit": ""
+  },
   "bundle_gas/dist/abcs_strep.parquet|age": {
     "short_name": "Age Group",
     "long_name": "Age group",
@@ -137,9 +145,6 @@
       "rate_cases": {
         "source_id": "abcs_rate_cases"
       },
-      "rate_cases_by_onset": {
-        "source_id": "abcs_rate_cases_by_onset"
-      },
       "rate_deaths": {
         "source_id": "abcs_rate_deaths"
       },
@@ -176,7 +181,7 @@
     "short_name": "Value",
     "long_name": "ABCs Group A / Group B Streptococcus value",
     "short_description": "Value of the measure named in the measure column (see that column for units).",
-    "long_description": "Value of the measure named in the measure column. Units are mixed across measures - rates per 100,000, estimated counts, and percentages - so always filter or facet by `measure` before plotting. Note in particular that rate_cases and rate_cases_by_onset use DIFFERENT denominators (the age band on the row versus the general population) and must never be added or shown on one axis; see the measure column for detail. Where a percentage has a published denominator it is in n_isolates on the same row.",
+    "long_description": "Value of the measure named in the measure column. Units are mixed across measures - rates per 100,000, estimated counts, and percentages - so always filter or facet by `measure` before plotting. Rate rows additionally carry a `rate_denominator` saying whether the per-100,000 figure is relative to the row's own stratum or to the whole population - the two are not comparable, so filter on it too. Where a percentage has a published denominator it is in n_isolates on the same row. A value of 0 with not_reported = 1 means CDC published nothing, not a measured zero.",
     "measure_type": "Mixed",
     "unit": "varies by measure",
     "time_resolution": "Year",
@@ -190,7 +195,7 @@
     "short_name": "Isolates tested",
     "long_name": "Number of isolates (denominator)",
     "short_description": "Denominator behind the percentage on this row; missing where CDC did not publish it.",
-    "long_description": "Number of invasive isolates behind the percentage on this row - the denominator for pct_resistant, pct_emm_type, pct_serotype and pct_alph_type. Kept on the same row rather than as its own measure so a tooltip can read \"26.4% of 3,908 isolates\" from one line. Missing on rows where CDC does not publish an isolate count for that group and year (most of the resistance series), which is a gap in the source, not a join failure. Empty for the rate and count measures, which have no isolate denominator.",
+    "long_description": "Number of invasive isolates behind the percentage on this row - the denominator for pct_resistant, pct_emm_type, pct_serotype and pct_alph_type. Kept on the same row rather than as its own measure so a tooltip can read \"26.4% of 3,908 isolates\" from one line. Missing on rows where CDC does not publish an isolate count for that group and year (most of the resistance series), which is a gap in the source, not a join failure - it is left blank here rather than zero-filled, because a denominator of 0 would read as broken in a tooltip. Empty for the rate and count measures, which have no isolate denominator.",
     "measure_type": "Count",
     "unit": "Isolates",
     "time_resolution": "Year",
@@ -218,7 +223,7 @@
     "short_name": "Not reported",
     "long_name": "Flag for measures the source did not report",
     "short_description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
-    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen and stratification, in which case value is missing; 0 otherwise. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero. Measures that simply do not apply to a row are omitted rather than flagged: the two case-rate measures are mutually exclusive by onset, so only the applicable one appears.",
+    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen and stratification, in which case value reads 0; 0 otherwise. Read straight off the matching per-measure flag in the source rather than inferred, and a flagged 0 must never be treated as a measured zero. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero - doing so understates resistance, syndrome rates and type shares.",
     "measure_type": "Binary",
     "unit": "0/1",
     "time_resolution": "Year",

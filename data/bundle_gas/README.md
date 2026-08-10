@@ -23,15 +23,14 @@ handling NA.
 
 ```
 geography, geography_fips, date, year, pathogen,
-age, sex, race_ethnicity, onset,                        <- stratifications
+age, sex, race_ethnicity, onset, rate_denominator,      <- stratifications
 syndrome, antibiotic, emm_type, serotype, alph_type,    <- which entity
 measure, value, n_type, n_isolates, not_reported
 ```
 
-`measure` names the quantity: `rate_cases`, `rate_cases_by_onset`,
-`rate_deaths`, `n_cases`, `n_deaths`, `n_survivals`, `pct_resistant`,
-`rate_syndrome`, `pct_syndrome`, `pct_emm_type`, `pct_serotype`,
-`pct_alph_type`.
+`measure` names the quantity: `rate_cases`, `rate_deaths`, `n_cases`,
+`n_deaths`, `n_survivals`, `pct_resistant`, `rate_syndrome`, `pct_syndrome`,
+`pct_emm_type`, `pct_serotype`, `pct_alph_type`.
 
 **Companion columns, not extra rows.** `n_isolates` is the denominator behind
 every percentage and `n_type` the numerator for emm types, both on the same row,
@@ -43,13 +42,14 @@ series, not metadata for a single value.
 
 - **`value` mixes units — always filter or facet by `measure` first.** Within one
   file `measure` can name a rate, a count or a percentage.
-- **`rate_cases` and `rate_cases_by_onset` use different denominators and must
-  never be added or put on one axis.** CDC labels both
-  `"Per 100,000 population"`, but `rate_cases` is per 100,000 of the age band on
-  the row while `rate_cases_by_onset` is per 100,000 general population. For 1997
-  Group B the `<1` band reads **115.7** and early-onset + late-onset read
-  0.70 + 0.40 = **1.10**. They differ in all 28 years, mean absolute difference
-  66.3. The two are mutually exclusive by row, so only the applicable one appears.
+- **Check `rate_denominator` before comparing rates.** CDC labels every rate
+  `"Per 100,000 population"` while using two bases. `"Stratum population"` is per
+  100,000 of the group the row describes; `"Population"` is per 100,000 of the
+  whole population regardless of stratum (how CDC reports the infant onset
+  rates). For 1997 Group B the `<1` band reads **115.7** against early + late =
+  **1.10** — differing in all 28 years, mean absolute difference 66.3. Rows with
+  different denominators **must never be summed or plotted on one axis**.
+  `"Total"` appears where the row is not a rate.
 - **`onset` is not additive.** Onset rows are a subset of infants, not additional
   population. For case counts an explicit `age = "<1"` / `onset = "Total"` row is
   provided (the sum of early + late, which CDC does not publish); for rates no
@@ -57,11 +57,16 @@ series, not metadata for a single value.
 - **`Total` is the aggregate level** throughout, matching the rest of the
   database. It overlaps the specific levels, so exclude it before summing across
   a stratification.
-- **`not_reported` vs `suppressed`.** `not_reported = 1` means CDC never
-  published that figure — a measure absent for a stratification, a drug off a
-  pathogen's panel, a type not itemised that year. `suppressed = 1` (Epic only)
-  means a small cell was withheld and imputed as 5. Neither is a zero. Measures
-  that simply don't apply to a row are omitted rather than flagged.
+- **`not_reported = 1` means the 0 is not real.** The ABCs file has no missing
+  values: unreported cells are filled with 0 and flagged. Reading a flagged row
+  as a measured zero understates resistance, syndrome rates and type shares, so
+  filter on the flag before aggregating. Reasons are structural — a drug off a
+  pathogen's panel, a type CDC pooled into "other" that year, a rate not broken
+  out for that stratification.
+- **`suppressed = 1`** (Epic only) is a different thing: a small cell Epic
+  withheld, imputed as 5.
+- **`n_isolates` and `n_type` stay blank rather than zero** where CDC published
+  no denominator, since "22.5% of 0 isolates" would read as broken.
 - **NNDSS is published cumulatively.** The raw
   `streptococcal_toxic_shock_syndrome` column is a year-to-date running total
   that resets each MMWR year (national 2024 runs 5 → 647 across weeks 1–52).

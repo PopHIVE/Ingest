@@ -244,46 +244,36 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   # (0.131 * 100 = 13.100000000000001)
   as_pct <- function(x) round(x * 100, 6)
 
-  # Emit one 0/1 flag per named group of columns that the source may not report.
-  # NAs here mean "not reported by CDC", not "suppressed", so the value stays NA
-  # rather than being imputed. Errors if any NA-bearing column is unflagged, so
-  # a future change in what CDC reports fails loudly instead of shipping
-  # undocumented NAs.
-  # `exclusive` names sets of measures that are mutually exclusive by design -
-  # exactly one applies to any given row, so the others are NA because the
-  # index says they do not apply, not because CDC withheld them. Those get no
-  # not-reported flag (it would misdescribe the gap) but their exclusivity is
-  # asserted instead.
-  add_not_reported_flags <- function(df, id_cols, groups, exclusive = list()) {
+  # Emit ONE 0/1 flag per measure column, then fill that measure's gaps with 0.
+  #
+  # Every measure gets its own flag, including measures CDC always reports (whose
+  # flag is all zeros), so a consumer never has to work out whether a flag exists
+  # for the column it cares about. A shared flag cannot express this: in
+  # gbs_serotypes for 2000 late-onset, serotypes II, IV and VI are genuine zeros
+  # while the two VI-grouping columns were never reported, and one flag over all
+  # of them cannot say which is which.
+  #
+  # A flagged 0 is NOT a measured zero. CDC published nothing for that cell -
+  # the drug is off that pathogen's panel, the emm type was pooled into "other"
+  # that year, the rate was not broken out for that stratification. Reading a
+  # flagged row as zero understates resistance, syndrome rates and type shares,
+  # so always check the flag before aggregating.
+  #
+  # Flag name is the measure name with the `abcs_` prefix replaced, so it is
+  # derivable: abcs_gbs_pct_serotype_ia -> abcs_not_reported_flag_gbs_pct_serotype_ia.
+  add_not_reported_flags <- function(df, id_cols, ...) {
     meas <- setdiff(names(df), id_cols)
-    for (nm in names(groups)) {
-      cols <- intersect(groups[[nm]], meas)
-      if (!length(cols)) next
-      df[[paste0("abcs_not_reported_flag_", nm)]] <-
-        as.integer(Reduce(`|`, lapply(cols, function(cc) is.na(df[[cc]]))))
+    out <- df[id_cols]
+    for (m in meas) {
+      flag <- sub("^abcs_", "abcs_not_reported_flag_", m)
+      if (flag == m) stop("ABCs: measure name lacks the abcs_ prefix: ", m)
+      out[[m]] <- tidyr::replace_na(df[[m]], 0)
+      out[[flag]] <- as.integer(is.na(df[[m]]))
     }
-    for (set in exclusive) {
-      cols <- intersect(set, meas)
-      if (length(cols) < 2) next
-      present <- rowSums(!is.na(df[cols]))
-      if (any(present > 1)) {
-        stop(
-          "ABCs: measures declared mutually exclusive are both present on ",
-          sum(present > 1), " row(s): ", paste(cols, collapse = ", "), "."
-        )
-      }
+    if (anyNA(out)) {
+      stop("ABCs: NAs survived the zero fill - check the flag helper.")
     }
-    covered <- c(unlist(groups, use.names = FALSE),
-                 unlist(exclusive, use.names = FALSE))
-    has_na <- meas[vapply(df[meas], function(x) any(is.na(x)), logical(1))]
-    missed <- setdiff(has_na, covered)
-    if (length(missed)) {
-      stop(
-        "ABCs: these columns contain NAs but have no not-reported flag: ",
-        paste(missed, collapse = ", "), ". Add them to the flag groups."
-      )
-    }
-    df
+    out
   }
 
   pivot_check <- function(df, id_cols, label) {
@@ -351,13 +341,29 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   # ---------------------------------------------------------------------------
   rate_topics <- c("case rates", "death rates")
 
+  # `rate_denominator` records what the per-100,000 figure is relative to,
+  # because CDC labels every rate "Per 100,000 population" while using two
+  # different bases:
+  #
+  #   "Stratum population"  per 100,000 of the group the row describes. The "<1"
+  #                         age band rate is per 100,000 infants - 1997 Group B
+  #                         reads 115.7, and 3,900 infant cases / ~3.9M births
+  #                         * 100,000 ~= 100.
+  #   "Population"          per 100,000 of the whole population regardless of the
+  #                         row's stratum. Used for the infant early/late-onset
+  #                         rates - 0.70 + 0.40 = 1.10, and 3,900 / ~272M
+  #                         * 100,000 ~= 1.4.
+  #
+  # The two differ in all 28 years, mean absolute difference 66.3, so rows with
+  # different denominators must never be summed or plotted on one axis - filter
+  # on this column first.
   rate_base <- both %>%
     filter(topic_l %in% rate_topics) %>%
     mutate(
       measure = if_else(topic_l == "case rates",
                         "abcs_rate_cases", "abcs_rate_deaths"),
       age = "Total", sex = "Total", race_ethnicity = "Total",
-      onset = "Total"
+      onset = "Total", rate_denominator = "Stratum population"
     )
 
   rates_overall <- rate_base %>% filter(viewby_a == "Overall")
@@ -378,29 +384,15 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     filter(viewby_a == "Race", viewby2_a %in% names(RACE_MAP)) %>%
     mutate(race_ethnicity = RACE_MAP[viewby2_a])
 
-  # Group B only: infant early- vs late-onset rates, and the same by race.
-  #
-  # These get their OWN measure name, because CDC labels them
-  # "Per 100,000 population" like the age-band rates but uses a different
-  # denominator. 1997 Group B: the "<1 year old" age band reads 115.7 (per
-  # 100,000 infants - 3,900 cases / ~3.9M births * 100,000 ~= 100), while
-  # early-onset + late-onset reads 0.70 + 0.40 = 1.10 (per 100,000 general
-  # population - 3,900 / ~272M * 100,000 ~= 1.4). They differ in all 28 years,
-  # mean absolute difference 66.3. Sharing one column would put two
-  # incomparable scales under the same measure and invite summing the onset
-  # rates into a false infant total.
-  onset_rate_measure <- function(df) {
-    df %>% mutate(
-      measure = if_else(measure == "abcs_rate_cases",
-                        "abcs_rate_cases_by_onset", measure)
-    )
-  }
-
+  # Group B only: infant early- vs late-onset rates, and the same by race. These
+  # keep the same measure name as the other case rates but carry a different
+  # `rate_denominator`, so the distinction rides on the index rather than
+  # splitting the measure in two.
   rates_onset <- rate_base %>%
     filter(viewby_a == "Infants, early and late-onset",
            viewby2_a %in% c("Early-onset", "Late-onset")) %>%
-    mutate(age = "<1", onset = viewby2_a) %>%
-    onset_rate_measure()
+    mutate(age = "<1", onset = viewby2_a,
+           rate_denominator = "Population")
 
   ONSET_BY_RACE <- c("Early-onset, by race" = "Early-onset",
                      "Late-onset, by race"  = "Late-onset")
@@ -408,10 +400,11 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     filter(viewby_a %in% names(ONSET_BY_RACE),
            viewby2_a %in% names(RACE_MAP)) %>%
     mutate(age = "<1", onset = ONSET_BY_RACE[viewby_a],
-           race_ethnicity = RACE_MAP[viewby2_a]) %>%
-    onset_rate_measure()
+           race_ethnicity = RACE_MAP[viewby2_a],
+           rate_denominator = "Population")
 
-  rate_ids <- c(strep_ids, "age", "sex", "race_ethnicity", "onset")
+  rate_ids <- c(strep_ids, "age", "sex", "race_ethnicity", "onset",
+                "rate_denominator")
 
   strep_rates <- bind_rows(
     rates_overall, rates_age, rates_sex, rates_race,
@@ -419,18 +412,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   ) %>%
     select(all_of(c(rate_ids, "measure", "value"))) %>%
     pivot_check(rate_ids, "rates") %>%
-    add_not_reported_flags(
-      rate_ids,
-      # Death rates are reported only overall and by age, never by sex, race,
-      # or infant onset timing
-      list(rate_deaths = "abcs_rate_deaths"),
-      # The two case-rate measures are mutually exclusive by row: an
-      # onset-specific row carries the general-population rate, any other row
-      # carries the in-band rate. Whichever is absent is determined by the
-      # `onset` column, so it needs no not-reported flag - the exclusivity is
-      # asserted instead.
-      exclusive = list(c("abcs_rate_cases", "abcs_rate_cases_by_onset"))
-    )
+    add_not_reported_flags(rate_ids)
 
   vroom::vroom_write(strep_rates, "standard/strep_rates.csv.gz", delim = ",")
 
@@ -487,12 +469,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   strep_counts <- bind_rows(counts_all, counts_onset, counts_onset_total) %>%
     select(all_of(c(count_ids, "measure", "value"))) %>%
     pivot_check(count_ids, "counts") %>%
-    add_not_reported_flags(
-      count_ids,
-      # Deaths and survivals are reported only for the all-ages series, never
-      # split by infant onset timing, and are NA on exactly the same rows
-      list(deaths_survivals = c("abcs_N_deaths", "abcs_N_survivals"))
-    )
+    add_not_reported_flags(count_ids)
 
   vroom::vroom_write(strep_counts, "standard/strep_counts.csv.gz", delim = ",")
 
@@ -530,16 +507,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     ) %>%
     select(all_of(c(res_ids, "measure", "value"))) %>%
     pivot_check(res_ids, "resistance") %>%
-    add_not_reported_flags(
-      res_ids,
-      list(
-        n_isolates  = "abcs_n_isolates",
-        # Group A reports these two; Group B does not test either, and
-        # linezolid was only added to the Group A panel partway through
-        drug_panel  = c("abcs_pct_resistant_tetracycline",
-                        "abcs_pct_resistant_linezolid")
-      )
-    )
+    add_not_reported_flags(res_ids)
 
   vroom::vroom_write(strep_resistance, "standard/strep_resistance.csv.gz",
                      delim = ",")
@@ -577,10 +545,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     ) %>%
     select(all_of(c(strep_ids, "age", "onset", "measure", "value"))) %>%
     pivot_check(c(strep_ids, "age", "onset"), "gas syndromes") %>%
-    add_not_reported_flags(
-      c(strep_ids, "age", "onset"),
-      list(strep_toxic_shock = "abcs_gas_rate_syndrome_strep_toxic_shock")
-    )
+    add_not_reported_flags(c(strep_ids, "age", "onset"))
 
   vroom::vroom_write(gas_syndromes, "standard/gas_syndromes.csv.gz", delim = ",")
 
@@ -609,7 +574,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
 
   gbs_syndromes <- build_gbs_group_table("syndromes", "syndrome",
                                          "gbs syndromes") %>%
-    add_not_reported_flags(c(strep_ids, "age", "onset"), list())
+    add_not_reported_flags(c(strep_ids, "age", "onset"))
 
   vroom::vroom_write(gbs_syndromes, "standard/gbs_syndromes.csv.gz", delim = ",")
 
@@ -619,27 +584,12 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   # ---------------------------------------------------------------------------
   gbs_serotypes <- build_gbs_group_table("serotypes", "serotype",
                                          "gbs serotypes") %>%
-    add_not_reported_flags(
-      c(strep_ids, "age", "onset"),
-      # CDC's grouping of the rarer serotypes changed over the series, so each
-      # label variant covers only part of it
-      list(
-        serotype_vi_grouping = c("abcs_gbs_pct_serotype_vi_vii_viii_or_ix",
-                                 "abcs_gbs_pct_serotype_vi_viii",
-                                 "abcs_gbs_pct_serotype_vi")
-      )
-    )
+    add_not_reported_flags(c(strep_ids, "age", "onset"))
 
   vroom::vroom_write(gbs_serotypes, "standard/gbs_serotypes.csv.gz", delim = ",")
 
   gbs_alph <- build_gbs_group_table("alph", "alph", "gbs alph") %>%
-    add_not_reported_flags(
-      c(strep_ids, "age", "onset"),
-      list(
-        alph_alp23 = "abcs_gbs_pct_alph_alp23",
-        alph_neg   = "abcs_gbs_pct_alph_neg"
-      )
-    )
+    add_not_reported_flags(c(strep_ids, "age", "onset"))
 
   vroom::vroom_write(gbs_alph, "standard/gbs_alph.csv.gz", delim = ",")
 
@@ -684,14 +634,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   gas_emm <- emm_long %>%
     select(all_of(c(emm_ids, "measure", "value"))) %>%
     pivot_check(emm_ids, "gas emm") %>%
-    add_not_reported_flags(
-      emm_ids,
-      setNames(
-        lapply(emm_flag_types, function(t)
-          paste0(c("abcs_gas_emm_pct_", "abcs_gas_emm_n_"), t)),
-        emm_flag_types
-      )
-    )
+    add_not_reported_flags(emm_ids)
 
   vroom::vroom_write(gas_emm, "standard/gas_emm.csv.gz", delim = ",")
 

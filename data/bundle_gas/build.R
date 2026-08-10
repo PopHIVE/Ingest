@@ -80,28 +80,23 @@ read_standard <- function(path) {
     add_geography_names()
 }
 
-# Whether a measure's NAs are kept (as rows flagged not_reported = 1) or dropped
-# is declared per measure via `drop_na`, not inferred. Inferring it from the
-# flag columns looks tempting but misfires: the rate_deaths flag happens to be 1
-# on every row where rate_cases is absent, so a "does any flag cover these NAs"
-# test wrongly concludes the in-band case rate was withheld.
-#
-# drop_na = TRUE means the measure is mutually exclusive with another on the same
-# row - the two case-rate measures split by onset - so its absence means "does
-# not apply here", and emitting a missing observation would misrepresent it.
-# drop_na = FALSE means an NA is CDC withholding a figure that does apply, which
-# is worth carrying as an explicit flagged row.
+# The standard files carry no NAs: every measure is zero-filled and paired with
+# its own `abcs_not_reported_flag_<measure>` saying whether that zero is a
+# measured value or a gap CDC never published. So `not_reported` here is read
+# straight off the source flag rather than inferred from a missing value - and a
+# flagged 0 must not be read as a measured zero.
+flag_of <- function(m) sub("^abcs_", "abcs_not_reported_flag_", m)
 
 # -----------------------------------------------------------------------------
 # 1. ABCs: stack all eight topics into one file
 # -----------------------------------------------------------------------------
-DIMS <- c("pathogen", "age", "sex", "race_ethnicity", "onset")
+DIMS <- c("pathogen", "age", "sex", "race_ethnicity", "onset", "rate_denominator")
 ENTITIES <- c("syndrome", "antibiotic", "emm_type", "serotype", "alph_type")
 
 # Melt one standard file into the shared long schema.
-#   measure_map  regex -> measure name, and which entity column the matched
-#                suffix belongs in
-#   companions   columns to carry alongside `value` instead of melting
+#   spec        regex -> measure name, and which entity column the matched
+#               suffix belongs in
+#   companions  columns to carry alongside `value` instead of melting
 stack_abcs <- function(path, spec, companions = character()) {
   d <- read_standard(path)
   flag_cols <- grep("^abcs_not_reported_flag_", names(d), value = TRUE)
@@ -110,6 +105,14 @@ stack_abcs <- function(path, spec, companions = character()) {
                 intersect(DIMS, names(d)))
   meas_cols <- setdiff(names(d), c(base_ids, flag_cols, comp_cols))
 
+  # A companion denominator that CDC never published is zero in the source. Zero
+  # is a worse answer than blank for a denominator - "22.5% of 0 isolates" reads
+  # as broken - so blank it back out here.
+  for (cc in comp_cols) {
+    fl <- flag_of(cc)
+    if (fl %in% names(d)) d[[cc]][d[[fl]] == 1L] <- NA_real_
+  }
+
   out <- list()
   for (m in meas_cols) {
     hit <- NULL
@@ -117,25 +120,15 @@ stack_abcs <- function(path, spec, companions = character()) {
       if (grepl(s$pattern, m)) { hit <- s; break }
     }
     if (is.null(hit)) stop("bundle_gas: no measure spec matches ", m, " in ", path)
-
-    entity_val <- if (is.na(hit$entity)) NA_character_ else sub(hit$pattern, "", m)
+    if (!(flag_of(m) %in% names(d))) {
+      stop("bundle_gas: ", m, " in ", path, " has no matching not-reported flag.")
+    }
 
     piece <- d %>%
-      select(all_of(c(base_ids, comp_cols)), value = all_of(m)) %>%
+      select(all_of(c(base_ids, comp_cols)), value = all_of(m),
+             not_reported = all_of(flag_of(m))) %>%
       mutate(measure = hit$measure)
-    if (isTRUE(hit$drop_na)) {
-      piece <- piece %>% filter(!is.na(value))
-    } else if (any(is.na(d[[m]]))) {
-      # An NA kept as a row must be a gap the source itself flagged, otherwise
-      # we would be inventing a missing observation
-      covered <- any(vapply(flag_cols, function(f)
-        all(d[[f]][is.na(d[[m]])] == 1L), logical(1)))
-      if (!covered) {
-        stop("bundle_gas: ", m, " in ", path, " has NAs that no not-reported ",
-             "flag covers, and is not declared drop_na.")
-      }
-    }
-    if (!is.na(hit$entity)) piece[[hit$entity]] <- entity_val
+    if (!is.na(hit$entity)) piece[[hit$entity]] <- sub(hit$pattern, "", m)
     out[[length(out) + 1]] <- piece
   }
 
@@ -150,15 +143,26 @@ stack_emm <- function(path) {
   types <- sub("^abcs_gas_emm_pct_", "",
                grep("^abcs_gas_emm_pct_", names(d), value = TRUE))
 
+  # A per-type count or typed total CDC never published is zero in the source;
+  # blank those back out, as with the other denominators
   bind_rows(lapply(types, function(t) {
     pct <- paste0("abcs_gas_emm_pct_", t)
     n   <- paste0("abcs_gas_emm_n_", t)
-    d %>%
+    tot <- "abcs_gas_emm_n_isolates_total"
+    piece <- d %>%
       select(all_of(base_ids),
              value = all_of(pct),
+             not_reported = all_of(flag_of(pct)),
              n_type = any_of(n),
-             n_isolates = abcs_gas_emm_n_isolates_total) %>%
+             n_isolates = all_of(tot),
+             .n_type_flag = any_of(flag_of(n)),
+             .n_isolates_flag = all_of(flag_of(tot))) %>%
       mutate(measure = "pct_emm_type", emm_type = t)
+    if (".n_type_flag" %in% names(piece)) {
+      piece$n_type[piece$.n_type_flag == 1L] <- NA_real_
+    }
+    piece$n_isolates[piece$.n_isolates_flag == 1L] <- NA_real_
+    piece %>% select(-any_of(c(".n_type_flag", ".n_isolates_flag")))
   }))
 }
 
@@ -166,14 +170,8 @@ abcs_strep <- bind_rows(
   stack_abcs(
     "abcs/standard/strep_rates.csv.gz",
     list(
-      # The two case-rate measures are mutually exclusive by onset, so each is
-      # absent on the other's rows - drop rather than flag (see note above)
-      list(pattern = "^abcs_rate_cases_by_onset$", measure = "rate_cases_by_onset",
-           entity = NA, drop_na = TRUE),
-      list(pattern = "^abcs_rate_cases$",          measure = "rate_cases",
-           entity = NA, drop_na = TRUE),
-      list(pattern = "^abcs_rate_deaths$",         measure = "rate_deaths",
-           entity = NA)
+      list(pattern = "^abcs_rate_cases$",  measure = "rate_cases",  entity = NA),
+      list(pattern = "^abcs_rate_deaths$", measure = "rate_deaths", entity = NA)
     )
   ),
   stack_abcs(
@@ -223,7 +221,7 @@ abcs_strep <- bind_rows(
   rename(date = time) %>%
   mutate(
     year = as.integer(format(date, "%Y")),
-    not_reported = as.integer(is.na(value)),
+    not_reported = as.integer(not_reported),
     # "Total" fills any dimension a row is not stratified on, so every column is
     # populated and a consumer can filter on it without handling NA
     across(all_of(c(DIMS, ENTITIES)), ~ tidyr::replace_na(as.character(.x), "Total"))
