@@ -3,14 +3,17 @@
     "id": "age",
     "short_name": "Age group",
     "long_name": "Age group",
-    "category": "Respiratory diseases",
-    "short_description": "",
-    "statement": "",
-    "measure_type": "Age group (years)",
-    "unit": "years",
-    "time_resolution": "",
-    "restrictions": "",
-    "sources": ["abcs"],
+    "category": "demographic",
+    "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+    "long_description": "Age group as reported by ABCs. \"Total\" is the all-ages aggregate and overlaps the specific bands, so exclude it when summing across ages. The bands differ by file because CDC reports different stratifications per pathogen and topic: the pneumococcal serotype data uses <5 years / 5-49 years / 50+ years; strep case and death rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+; and the strep resistance and typing files use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B, and its 18-64 / 65+ split does not line up with the 18-49 / 50-64 bands used elsewhere in this repo - both are source-determined.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
     "citations": []
   },
   "serotype": {
@@ -24,7 +27,9 @@
     "unit": "",
     "time_resolution": "",
     "restrictions": "",
-    "sources": ["abcs"],
+    "sources": [
+      "abcs"
+    ],
     "citations": []
   },
   "N_SSUAD": {
@@ -38,7 +43,9 @@
     "unit": "Number",
     "time_resolution": "",
     "restrictions": "",
-    "sources": ["ssuad"],
+    "sources": [
+      "ssuad"
+    ],
     "citations": []
   },
   "N_IPD": {
@@ -52,7 +59,9 @@
     "unit": "Number",
     "time_resolution": "year",
     "restrictions": "",
-    "sources": ["abcs"],
+    "sources": [
+      "abcs"
+    ],
     "citations": []
   },
   "pct_IPD": {
@@ -66,7 +75,9 @@
     "unit": "%",
     "time_resolution": "year",
     "restrictions": "",
-    "sources": ["abcs"],
+    "sources": [
+      "abcs"
+    ],
     "citations": []
   },
   "spn_surveillance_population": {
@@ -81,7 +92,9 @@
     "unit": "Persons",
     "time_resolution": "year",
     "restrictions": "",
-    "sources": ["abcs"],
+    "sources": [
+      "abcs"
+    ],
     "citations": []
   },
   "rate_IPD": {
@@ -96,7 +109,1787 @@
     "unit": "Cases per 100,000",
     "time_resolution": "year",
     "restrictions": "",
-    "sources": ["abcs"],
+    "sources": [
+      "abcs"
+    ],
+    "citations": []
+  },
+  "sex": {
+    "id": "sex",
+    "short_name": "Sex",
+    "long_name": "Sex",
+    "category": "demographic",
+    "short_description": "Sex (Male, Female, or Overall).",
+    "long_description": "Sex as reported by ABCs. \"Overall\" combines both sexes and must not be summed with the Male and Female rows. Reported for Group A only; Group B rows carry \"Overall\".",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "race_ethnicity": {
+    "id": "race_ethnicity",
+    "short_name": "Race/Ethnicity",
+    "long_name": "Race and ethnicity",
+    "category": "demographic",
+    "short_description": "Race/ethnicity (White, Black, Other, or Overall).",
+    "long_description": "Race and ethnicity as reported by ABCs, collapsed to White, Black, and Other. \"Overall\" combines all groups and must not be summed with the specific levels.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "onset": {
+    "id": "onset",
+    "short_name": "Infant onset timing",
+    "long_name": "Infant disease onset timing",
+    "category": "demographic",
+    "short_description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, and CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific, so do not sum across this column - the onset rows are a subset of infants, not additional population. CDC's source labels conflate this with age (for example \"Infants, early-onset disease\"), which the ingest decomposes into age plus onset.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "pathogen": {
+    "id": "pathogen",
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "category": "infectious_disease",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them. The pneumococcal data in this source (Streptococcus pneumoniae) is a third organism and lives in separate files without this column.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "pop": {
+    "id": "pop",
+    "short_name": "Surveillance population",
+    "long_name": "Population denominator for the ABCs catchment",
+    "category": "infectious_disease",
+    "short_description": "Census population for the geography, year, and age group.",
+    "long_description": "Census-derived population used as the denominator for rate_IPD. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "People",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_1": {
+    "id": "abcs_gas_emm_n_emm_1",
+    "short_name": "emm 1 isolates",
+    "long_name": "Number of isolates of emm 1",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 1.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 1, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_11": {
+    "id": "abcs_gas_emm_n_emm_11",
+    "short_name": "emm 11 isolates",
+    "long_name": "Number of isolates of emm 11",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 11.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 11, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_12": {
+    "id": "abcs_gas_emm_n_emm_12",
+    "short_name": "emm 12 isolates",
+    "long_name": "Number of isolates of emm 12",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 12.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 12, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_2": {
+    "id": "abcs_gas_emm_n_emm_2",
+    "short_name": "emm 2 isolates",
+    "long_name": "Number of isolates of emm 2",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 2.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 2, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_28": {
+    "id": "abcs_gas_emm_n_emm_28",
+    "short_name": "emm 28 isolates",
+    "long_name": "Number of isolates of emm 28",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 28.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 28, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_3": {
+    "id": "abcs_gas_emm_n_emm_3",
+    "short_name": "emm 3 isolates",
+    "long_name": "Number of isolates of emm 3",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 3.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 3, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_4": {
+    "id": "abcs_gas_emm_n_emm_4",
+    "short_name": "emm 4 isolates",
+    "long_name": "Number of isolates of emm 4",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 4.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 4, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_43": {
+    "id": "abcs_gas_emm_n_emm_43",
+    "short_name": "emm 43 isolates",
+    "long_name": "Number of isolates of emm 43",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 43.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 43, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_59": {
+    "id": "abcs_gas_emm_n_emm_59",
+    "short_name": "emm 59 isolates",
+    "long_name": "Number of isolates of emm 59",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 59.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 59, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_6": {
+    "id": "abcs_gas_emm_n_emm_6",
+    "short_name": "emm 6 isolates",
+    "long_name": "Number of isolates of emm 6",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 6.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 6, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_75": {
+    "id": "abcs_gas_emm_n_emm_75",
+    "short_name": "emm 75 isolates",
+    "long_name": "Number of isolates of emm 75",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 75.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 75, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_77": {
+    "id": "abcs_gas_emm_n_emm_77",
+    "short_name": "emm 77 isolates",
+    "long_name": "Number of isolates of emm 77",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 77.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 77, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_82": {
+    "id": "abcs_gas_emm_n_emm_82",
+    "short_name": "emm 82 isolates",
+    "long_name": "Number of isolates of emm 82",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 82.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 82, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_83": {
+    "id": "abcs_gas_emm_n_emm_83",
+    "short_name": "emm 83 isolates",
+    "long_name": "Number of isolates of emm 83",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 83.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 83, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_89": {
+    "id": "abcs_gas_emm_n_emm_89",
+    "short_name": "emm 89 isolates",
+    "long_name": "Number of isolates of emm 89",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 89.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 89, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_92": {
+    "id": "abcs_gas_emm_n_emm_92",
+    "short_name": "emm 92 isolates",
+    "long_name": "Number of isolates of emm 92",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 92.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 92, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_isolates_total": {
+    "id": "abcs_gas_emm_n_isolates_total",
+    "short_name": "emm-typed isolates",
+    "long_name": "Total number of emm-typed isolates",
+    "category": "infectious_disease",
+    "short_description": "Total isolates assigned an emm type - the percentage denominator.",
+    "long_description": "Total number of invasive Group A Streptococcus isolates assigned an emm type in the year, computed as the sum of the per-type isolate counts. This is the denominator behind every abcs_gas_emm_pct_* measure. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_other": {
+    "id": "abcs_gas_emm_n_other",
+    "short_name": "other emm types isolates",
+    "long_name": "Number of isolates of other emm types",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were other emm types.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to other emm types, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_1": {
+    "id": "abcs_gas_emm_pct_emm_1",
+    "short_name": "emm 1 (%)",
+    "long_name": "Percent of isolates of emm 1",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 1.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 1. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_11": {
+    "id": "abcs_gas_emm_pct_emm_11",
+    "short_name": "emm 11 (%)",
+    "long_name": "Percent of isolates of emm 11",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 11.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 11. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_12": {
+    "id": "abcs_gas_emm_pct_emm_12",
+    "short_name": "emm 12 (%)",
+    "long_name": "Percent of isolates of emm 12",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 12.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 12. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_2": {
+    "id": "abcs_gas_emm_pct_emm_2",
+    "short_name": "emm 2 (%)",
+    "long_name": "Percent of isolates of emm 2",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 2.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 2. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_28": {
+    "id": "abcs_gas_emm_pct_emm_28",
+    "short_name": "emm 28 (%)",
+    "long_name": "Percent of isolates of emm 28",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 28.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 28. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_3": {
+    "id": "abcs_gas_emm_pct_emm_3",
+    "short_name": "emm 3 (%)",
+    "long_name": "Percent of isolates of emm 3",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 3.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 3. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_4": {
+    "id": "abcs_gas_emm_pct_emm_4",
+    "short_name": "emm 4 (%)",
+    "long_name": "Percent of isolates of emm 4",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 4.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 4. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_43": {
+    "id": "abcs_gas_emm_pct_emm_43",
+    "short_name": "emm 43 (%)",
+    "long_name": "Percent of isolates of emm 43",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 43.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 43. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_59": {
+    "id": "abcs_gas_emm_pct_emm_59",
+    "short_name": "emm 59 (%)",
+    "long_name": "Percent of isolates of emm 59",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 59.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 59. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_6": {
+    "id": "abcs_gas_emm_pct_emm_6",
+    "short_name": "emm 6 (%)",
+    "long_name": "Percent of isolates of emm 6",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 6.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 6. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_75": {
+    "id": "abcs_gas_emm_pct_emm_75",
+    "short_name": "emm 75 (%)",
+    "long_name": "Percent of isolates of emm 75",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 75.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 75. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_77": {
+    "id": "abcs_gas_emm_pct_emm_77",
+    "short_name": "emm 77 (%)",
+    "long_name": "Percent of isolates of emm 77",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 77.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 77. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_82": {
+    "id": "abcs_gas_emm_pct_emm_82",
+    "short_name": "emm 82 (%)",
+    "long_name": "Percent of isolates of emm 82",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 82.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 82. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_83": {
+    "id": "abcs_gas_emm_pct_emm_83",
+    "short_name": "emm 83 (%)",
+    "long_name": "Percent of isolates of emm 83",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 83.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 83. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_89": {
+    "id": "abcs_gas_emm_pct_emm_89",
+    "short_name": "emm 89 (%)",
+    "long_name": "Percent of isolates of emm 89",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 89.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 89. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_92": {
+    "id": "abcs_gas_emm_pct_emm_92",
+    "short_name": "emm 92 (%)",
+    "long_name": "Percent of isolates of emm 92",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 92.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 92. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_other": {
+    "id": "abcs_gas_emm_pct_other",
+    "short_name": "other emm types (%)",
+    "long_name": "Percent of isolates of other emm types",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were other emm types.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to other emm types. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_49": {
+    "id": "abcs_gas_emm_n_emm_49",
+    "short_name": "emm 49 isolates",
+    "long_name": "Number of isolates of emm 49",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 49.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 49, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_49": {
+    "id": "abcs_gas_emm_pct_emm_49",
+    "short_name": "emm 49 (%)",
+    "long_name": "Percent of isolates of emm 49",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 49.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 49. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_81": {
+    "id": "abcs_gas_emm_n_emm_81",
+    "short_name": "emm 81 isolates",
+    "long_name": "Number of isolates of emm 81",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 81.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 81, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_81": {
+    "id": "abcs_gas_emm_pct_emm_81",
+    "short_name": "emm 81 (%)",
+    "long_name": "Percent of isolates of emm 81",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 81.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 81. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_60": {
+    "id": "abcs_gas_emm_n_emm_60",
+    "short_name": "emm 60 isolates",
+    "long_name": "Number of isolates of emm 60",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 60.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 60, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_60": {
+    "id": "abcs_gas_emm_pct_emm_60",
+    "short_name": "emm 60 (%)",
+    "long_name": "Percent of isolates of emm 60",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 60.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 60. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_emm_91": {
+    "id": "abcs_gas_emm_n_emm_91",
+    "short_name": "emm 91 isolates",
+    "long_name": "Number of isolates of emm 91",
+    "category": "infectious_disease",
+    "short_description": "Number of emm-typed isolates that were emm 91.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates belonging to emm 91, as published by CDC alongside the proportion. The per-type counts sum to abcs_gas_emm_n_isolates_total. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_pct_emm_91": {
+    "id": "abcs_gas_emm_pct_emm_91",
+    "short_name": "emm 91 (%)",
+    "long_name": "Percent of isolates of emm 91",
+    "category": "infectious_disease",
+    "short_description": "Percent of emm-typed isolates that were emm 91.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates belonging to emm 91. emm typing sequences the M protein gene and tracks strain diversity and prospective vaccine coverage. Types not itemised in a given year are pooled into abcs_gas_emm_pct_other, so which types are broken out changes over time and \"other\" is not comparable across years. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_emm_43": {
+    "id": "abcs_not_reported_flag_emm_43",
+    "short_name": "Not reported: emm 43",
+    "long_name": "Flag for values not reported by the source (emm_43)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. emm type 43 is not broken out separately in every year - CDC pools the rarer types into \"other\", and which types are itemised changes over time. The percent and the isolate count for this type are absent on exactly the same rows, so one flag covers both. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_emm_49": {
+    "id": "abcs_not_reported_flag_emm_49",
+    "short_name": "Not reported: emm 49",
+    "long_name": "Flag for values not reported by the source (emm_49)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. emm type 49 is not broken out separately in every year - CDC pools the rarer types into \"other\", and which types are itemised changes over time. The percent and the isolate count for this type are absent on exactly the same rows, so one flag covers both. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_emm_59": {
+    "id": "abcs_not_reported_flag_emm_59",
+    "short_name": "Not reported: emm 59",
+    "long_name": "Flag for values not reported by the source (emm_59)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. emm type 59 is not broken out separately in every year - CDC pools the rarer types into \"other\", and which types are itemised changes over time. The percent and the isolate count for this type are absent on exactly the same rows, so one flag covers both. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_emm_60": {
+    "id": "abcs_not_reported_flag_emm_60",
+    "short_name": "Not reported: emm 60",
+    "long_name": "Flag for values not reported by the source (emm_60)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. emm type 60 is not broken out separately in every year - CDC pools the rarer types into \"other\", and which types are itemised changes over time. The percent and the isolate count for this type are absent on exactly the same rows, so one flag covers both. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_emm_81": {
+    "id": "abcs_not_reported_flag_emm_81",
+    "short_name": "Not reported: emm 81",
+    "long_name": "Flag for values not reported by the source (emm_81)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. emm type 81 is not broken out separately in every year - CDC pools the rarer types into \"other\", and which types are itemised changes over time. The percent and the isolate count for this type are absent on exactly the same rows, so one flag covers both. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_emm_91": {
+    "id": "abcs_not_reported_flag_emm_91",
+    "short_name": "Not reported: emm 91",
+    "long_name": "Flag for values not reported by the source (emm_91)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. emm type 91 is not broken out separately in every year - CDC pools the rarer types into \"other\", and which types are itemised changes over time. The percent and the isolate count for this type are absent on exactly the same rows, so one flag covers both. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_rate_syndrome_bacteremia_without_focus": {
+    "id": "abcs_gas_rate_syndrome_bacteremia_without_focus",
+    "short_name": "Bacteremia without focus rate",
+    "long_name": "Rate of invasive Group A Streptococcus presenting as bacteremia without focus",
+    "category": "infectious_disease",
+    "short_description": "Annual rate of invasive disease presenting as bacteremia without focus, per 100,000 population.",
+    "long_description": "Annual rate of invasive Group A Streptococcus disease presenting clinically as bacteremia without focus, per 100,000 population. CDC's current release reports Group A syndromes as rates per 100,000 beginning in 2001; earlier releases reported a percent of cases from 1997, so this is not comparable with older extracts. Syndromes are not mutually exclusive and do not sum to the overall case rate. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_rate_syndrome_cellulitis": {
+    "id": "abcs_gas_rate_syndrome_cellulitis",
+    "short_name": "Cellulitis rate",
+    "long_name": "Rate of invasive Group A Streptococcus presenting as cellulitis",
+    "category": "infectious_disease",
+    "short_description": "Annual rate of invasive disease presenting as cellulitis, per 100,000 population.",
+    "long_description": "Annual rate of invasive Group A Streptococcus disease presenting clinically as cellulitis, per 100,000 population. CDC's current release reports Group A syndromes as rates per 100,000 beginning in 2001; earlier releases reported a percent of cases from 1997, so this is not comparable with older extracts. Syndromes are not mutually exclusive and do not sum to the overall case rate. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_rate_syndrome_necrotizing_fasciitis": {
+    "id": "abcs_gas_rate_syndrome_necrotizing_fasciitis",
+    "short_name": "Necrotizing fasciitis rate",
+    "long_name": "Rate of invasive Group A Streptococcus presenting as necrotizing fasciitis",
+    "category": "infectious_disease",
+    "short_description": "Annual rate of invasive disease presenting as necrotizing fasciitis, per 100,000 population.",
+    "long_description": "Annual rate of invasive Group A Streptococcus disease presenting clinically as necrotizing fasciitis, per 100,000 population. CDC's current release reports Group A syndromes as rates per 100,000 beginning in 2001; earlier releases reported a percent of cases from 1997, so this is not comparable with older extracts. Syndromes are not mutually exclusive and do not sum to the overall case rate. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_rate_syndrome_pneumonia": {
+    "id": "abcs_gas_rate_syndrome_pneumonia",
+    "short_name": "Pneumonia rate",
+    "long_name": "Rate of invasive Group A Streptococcus presenting as pneumonia",
+    "category": "infectious_disease",
+    "short_description": "Annual rate of invasive disease presenting as pneumonia, per 100,000 population.",
+    "long_description": "Annual rate of invasive Group A Streptococcus disease presenting clinically as pneumonia, per 100,000 population. CDC's current release reports Group A syndromes as rates per 100,000 beginning in 2001; earlier releases reported a percent of cases from 1997, so this is not comparable with older extracts. Syndromes are not mutually exclusive and do not sum to the overall case rate. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_rate_syndrome_strep_toxic_shock": {
+    "id": "abcs_gas_rate_syndrome_strep_toxic_shock",
+    "short_name": "Strep toxic shock rate",
+    "long_name": "Rate of invasive Group A Streptococcus presenting as strep toxic shock",
+    "category": "infectious_disease",
+    "short_description": "Annual rate of invasive disease presenting as strep toxic shock, per 100,000 population.",
+    "long_description": "Annual rate of invasive Group A Streptococcus disease presenting clinically as strep toxic shock, per 100,000 population. CDC's current release reports Group A syndromes as rates per 100,000 beginning in 2001; earlier releases reported a percent of cases from 1997, so this is not comparable with older extracts. Syndromes are not mutually exclusive and do not sum to the overall case rate. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_strep_toxic_shock": {
+    "id": "abcs_not_reported_flag_strep_toxic_shock",
+    "short_name": "Not reported: strep toxic shock",
+    "long_name": "Flag for values not reported by the source (strep_toxic_shock)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. The streptococcal toxic shock syndrome rate is not published in every year. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_n_isolates": {
+    "id": "abcs_gbs_n_isolates",
+    "short_name": "Isolates tested",
+    "long_name": "Number of isolates tested",
+    "category": "infectious_disease",
+    "short_description": "Number of isolates tested - the denominator for the percentages.",
+    "long_description": "Number of invasive isolates tested, the denominator for the percentage measures in the same file. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_alph_alp1": {
+    "id": "abcs_gbs_pct_alph_alp1",
+    "short_name": "ALP1 (%)",
+    "long_name": "Percent of Group B isolates with ALPH type ALP1",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates with ALPH type ALP1.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates with ALPH type ALP1, calculated within the age and onset group on the row. The alpha-like protein (ALPH) family are surface proteins used for strain characterisation; CDC reports these from 2015 on. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_alph_alp23": {
+    "id": "abcs_gbs_pct_alph_alp23",
+    "short_name": "ALP23 (%)",
+    "long_name": "Percent of Group B isolates with ALPH type ALP23",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates with ALPH type ALP23.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates with ALPH type ALP23, calculated within the age and onset group on the row. The alpha-like protein (ALPH) family are surface proteins used for strain characterisation; CDC reports these from 2015 on. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_alph_alpha": {
+    "id": "abcs_gbs_pct_alph_alpha",
+    "short_name": "ALPHA (%)",
+    "long_name": "Percent of Group B isolates with ALPH type ALPHA",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates with ALPH type ALPHA.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates with ALPH type ALPHA, calculated within the age and onset group on the row. The alpha-like protein (ALPH) family are surface proteins used for strain characterisation; CDC reports these from 2015 on. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_alph_neg": {
+    "id": "abcs_gbs_pct_alph_neg",
+    "short_name": "NEG (%)",
+    "long_name": "Percent of Group B isolates with no ALPH gene detected",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates with no ALPH gene detected.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates with no ALPH gene detected, calculated within the age and onset group on the row. The alpha-like protein (ALPH) family are surface proteins used for strain characterisation; CDC reports these from 2015 on. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_alph_rib": {
+    "id": "abcs_gbs_pct_alph_rib",
+    "short_name": "RIB (%)",
+    "long_name": "Percent of Group B isolates with ALPH type RIB",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates with ALPH type RIB.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates with ALPH type RIB, calculated within the age and onset group on the row. The alpha-like protein (ALPH) family are surface proteins used for strain characterisation; CDC reports these from 2015 on. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_alph_alp23": {
+    "id": "abcs_not_reported_flag_alph_alp23",
+    "short_name": "Not reported: alph alp23",
+    "long_name": "Flag for values not reported by the source (alph_alp23)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. The ALP23 ALPH result is not published in every year. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_alph_neg": {
+    "id": "abcs_not_reported_flag_alph_neg",
+    "short_name": "Not reported: alph neg",
+    "long_name": "Flag for values not reported by the source (alph_neg)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. The NEG ALPH result is not published in every year. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_ia": {
+    "id": "abcs_gbs_pct_serotype_ia",
+    "short_name": "Serotype IA (%)",
+    "long_name": "Percent of Group B isolates of serotype IA",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype IA.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype IA, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_ib": {
+    "id": "abcs_gbs_pct_serotype_ib",
+    "short_name": "Serotype IB (%)",
+    "long_name": "Percent of Group B isolates of serotype IB",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype IB.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype IB, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_ii": {
+    "id": "abcs_gbs_pct_serotype_ii",
+    "short_name": "Serotype II (%)",
+    "long_name": "Percent of Group B isolates of serotype II",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype II.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype II, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_iii": {
+    "id": "abcs_gbs_pct_serotype_iii",
+    "short_name": "Serotype III (%)",
+    "long_name": "Percent of Group B isolates of serotype III",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype III.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype III, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_iv": {
+    "id": "abcs_gbs_pct_serotype_iv",
+    "short_name": "Serotype IV (%)",
+    "long_name": "Percent of Group B isolates of serotype IV",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype IV.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype IV, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_non_typeable": {
+    "id": "abcs_gbs_pct_serotype_non_typeable",
+    "short_name": "Serotype NON TYPEABLE (%)",
+    "long_name": "Percent of Group B isolates of serotype NON TYPEABLE",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype NON TYPEABLE.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype NON TYPEABLE, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_v": {
+    "id": "abcs_gbs_pct_serotype_v",
+    "short_name": "Serotype V (%)",
+    "long_name": "Percent of Group B isolates of serotype V",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype V.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype V, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_vi_vii_viii_or_ix": {
+    "id": "abcs_gbs_pct_serotype_vi_vii_viii_or_ix",
+    "short_name": "Serotype VI VII VIII OR IX (%)",
+    "long_name": "Percent of Group B isolates of serotype VI VII VIII OR IX",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype VI VII VIII OR IX.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype VI VII VIII OR IX, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_vi_viii": {
+    "id": "abcs_gbs_pct_serotype_vi_viii",
+    "short_name": "Serotype VI VIII (%)",
+    "long_name": "Percent of Group B isolates of serotype VI VIII",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype VI VIII.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype VI VIII, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_serotype_vi": {
+    "id": "abcs_gbs_pct_serotype_vi",
+    "short_name": "Serotype VI (%)",
+    "long_name": "Percent of Group B isolates of serotype VI",
+    "category": "infectious_disease",
+    "short_description": "Percent of typed isolates of serotype VI.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype VI, calculated within the age and onset group on the row. Serotype distribution informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years; see the not-reported flag. Serotype rows for 1997-1998 are placeholder zeros with a zero isolate count - treat the series as starting in 1999. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_serotype_vi_grouping": {
+    "id": "abcs_not_reported_flag_serotype_vi_grouping",
+    "short_name": "Not reported: serotype vi grouping",
+    "long_name": "Flag for values not reported by the source (serotype_vi_grouping)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. CDC changed how it grouped the rarer Group B serotypes over the series (for example VI/VIII versus VI, VII, VIII or IX), so each label variant covers only part of the years. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_syndrome_bacteremia_with_pneumonia": {
+    "id": "abcs_gbs_pct_syndrome_bacteremia_with_pneumonia",
+    "short_name": "Bacteremia with pneumonia (%)",
+    "long_name": "Percent of invasive Group B Streptococcus cases presenting as bacteremia with pneumonia",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive cases presenting as bacteremia with pneumonia.",
+    "long_description": "Percent of invasive Group B Streptococcus cases presenting clinically as bacteremia with pneumonia, calculated within the age and onset group on the row. Syndromes are not exhaustive and do not sum to 100 percent. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_syndrome_bacteremia_without_focus": {
+    "id": "abcs_gbs_pct_syndrome_bacteremia_without_focus",
+    "short_name": "Bacteremia without focus (%)",
+    "long_name": "Percent of invasive Group B Streptococcus cases presenting as bacteremia without focus",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive cases presenting as bacteremia without focus.",
+    "long_description": "Percent of invasive Group B Streptococcus cases presenting clinically as bacteremia without focus, calculated within the age and onset group on the row. Syndromes are not exhaustive and do not sum to 100 percent. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_pct_syndrome_meningitis": {
+    "id": "abcs_gbs_pct_syndrome_meningitis",
+    "short_name": "Meningitis (%)",
+    "long_name": "Percent of invasive Group B Streptococcus cases presenting as meningitis",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive cases presenting as meningitis.",
+    "long_description": "Percent of invasive Group B Streptococcus cases presenting clinically as meningitis, calculated within the age and onset group on the row. Syndromes are not exhaustive and do not sum to 100 percent. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_N_cases": {
+    "id": "abcs_N_cases",
+    "short_name": "Cases",
+    "long_name": "Estimated number of invasive cases",
+    "category": "infectious_disease",
+    "short_description": "Estimated annual number of invasive cases.",
+    "long_description": "Estimated annual number of invasive disease cases for the pathogen named in the pathogen column . Where the onset column is not \"Overall\" this counts infant early- or late-onset cases only, which are a subset of the all-ages total - do not sum across onset. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Cases",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_N_deaths": {
+    "id": "abcs_N_deaths",
+    "short_name": "Deaths",
+    "long_name": "Estimated number of deaths from invasive disease",
+    "category": "infectious_disease",
+    "short_description": "Estimated annual number of deaths.",
+    "long_description": "Estimated annual number of deaths from invasive disease for the pathogen named in the pathogen column . Published only for the all-ages series. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_N_survivals": {
+    "id": "abcs_N_survivals",
+    "short_name": "Survivals",
+    "long_name": "Estimated number surviving invasive disease",
+    "category": "infectious_disease",
+    "short_description": "Estimated annual number of people surviving invasive disease.",
+    "long_description": "Estimated annual number of people surviving invasive disease for the pathogen named in the pathogen column ; cases minus deaths. Published only for the all-ages series. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "People",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_deaths_survivals": {
+    "id": "abcs_not_reported_flag_deaths_survivals",
+    "short_name": "Not reported: deaths survivals",
+    "long_name": "Flag for values not reported by the source (deaths_survivals)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. Death and survival counts are published only for the all-ages series, never split by infant onset timing. Both are absent on exactly the same rows, so one flag covers both. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_rate_cases": {
+    "id": "abcs_rate_cases",
+    "short_name": "Case rate",
+    "long_name": "Incidence rate of invasive the pathogen named in the pathogen column disease",
+    "category": "infectious_disease",
+    "short_description": "Annual incidence per 100,000 population.",
+    "long_description": "Annual incidence rate of invasive disease per 100,000 population for the pathogen named in the pathogen column . Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "In {location}, the invasive case rate was {value} per 100,000.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_rate_deaths": {
+    "id": "abcs_rate_deaths",
+    "short_name": "Death rate",
+    "long_name": "Mortality rate from invasive the pathogen named in the pathogen column disease",
+    "category": "infectious_disease",
+    "short_description": "Annual deaths per 100,000 population.",
+    "long_description": "Annual mortality rate from invasive disease per 100,000 population for the pathogen named in the pathogen column . Published only overall and by age; see the not-reported flag. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_rate_deaths": {
+    "id": "abcs_not_reported_flag_rate_deaths",
+    "short_name": "Not reported: rate deaths",
+    "long_name": "Flag for values not reported by the source (rate_deaths)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. Death rates are published only overall and by age - never by sex, race, or infant onset timing. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_pct_resistant_cefotaxime": {
+    "id": "abcs_pct_resistant_cefotaxime",
+    "short_name": "Cefotaxime resistance (%)",
+    "long_name": "Percent of isolates non-susceptible to cefotaxime",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive isolates non-susceptible to cefotaxime.",
+    "long_description": "Percent of invasive isolates of the pathogen named in the pathogen column demonstrating non-susceptibility to cefotaxime. Denominator is the isolates tested (abcs_n_isolates). In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_pct_resistant_clindamycin": {
+    "id": "abcs_pct_resistant_clindamycin",
+    "short_name": "Clindamycin resistance (%)",
+    "long_name": "Percent of isolates non-susceptible to clindamycin",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive isolates non-susceptible to clindamycin.",
+    "long_description": "Percent of invasive isolates of the pathogen named in the pathogen column demonstrating non-susceptibility to clindamycin. Denominator is the isolates tested (abcs_n_isolates). In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_pct_resistant_erythromycin": {
+    "id": "abcs_pct_resistant_erythromycin",
+    "short_name": "Erythromycin resistance (%)",
+    "long_name": "Percent of isolates non-susceptible to erythromycin",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive isolates non-susceptible to erythromycin.",
+    "long_description": "Percent of invasive isolates of the pathogen named in the pathogen column demonstrating non-susceptibility to erythromycin. Denominator is the isolates tested (abcs_n_isolates). In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_pct_resistant_penicillin": {
+    "id": "abcs_pct_resistant_penicillin",
+    "short_name": "Penicillin resistance (%)",
+    "long_name": "Percent of isolates non-susceptible to penicillin",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive isolates non-susceptible to penicillin.",
+    "long_description": "Percent of invasive isolates of the pathogen named in the pathogen column demonstrating non-susceptibility to penicillin. Denominator is the isolates tested (abcs_n_isolates). In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_pct_resistant_tetracycline": {
+    "id": "abcs_pct_resistant_tetracycline",
+    "short_name": "Tetracycline resistance (%)",
+    "long_name": "Percent of isolates non-susceptible to tetracycline",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive isolates non-susceptible to tetracycline.",
+    "long_description": "Percent of invasive isolates of the pathogen named in the pathogen column demonstrating non-susceptibility to tetracycline. Denominator is the isolates tested (abcs_n_isolates). In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_pct_resistant_vancomycin": {
+    "id": "abcs_pct_resistant_vancomycin",
+    "short_name": "Vancomycin resistance (%)",
+    "long_name": "Percent of isolates non-susceptible to vancomycin",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive isolates non-susceptible to vancomycin.",
+    "long_description": "Percent of invasive isolates of the pathogen named in the pathogen column demonstrating non-susceptibility to vancomycin. Denominator is the isolates tested (abcs_n_isolates). In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_n_isolates": {
+    "id": "abcs_n_isolates",
+    "short_name": "Isolates tested",
+    "long_name": "Number of isolates tested",
+    "category": "infectious_disease",
+    "short_description": "Number of isolates tested - the denominator for the percentages.",
+    "long_description": "Number of invasive isolates tested, the denominator for the percentage measures in the same file. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_pct_resistant_linezolid": {
+    "id": "abcs_pct_resistant_linezolid",
+    "short_name": "Linezolid resistance (%)",
+    "long_name": "Percent of isolates non-susceptible to linezolid",
+    "category": "infectious_disease",
+    "short_description": "Percent of invasive isolates non-susceptible to linezolid.",
+    "long_description": "Percent of invasive isolates of the pathogen named in the pathogen column demonstrating non-susceptibility to linezolid. Denominator is the isolates tested (abcs_n_isolates). In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_n_isolates": {
+    "id": "abcs_not_reported_flag_n_isolates",
+    "short_name": "Not reported: n isolates",
+    "long_name": "Flag for values not reported by the source (n_isolates)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. The count of isolates tested is not published for every year and group. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_not_reported_flag_drug_panel": {
+    "id": "abcs_not_reported_flag_drug_panel",
+    "short_name": "Not reported: drug panel",
+    "long_name": "Flag for values not reported by the source (drug_panel)",
+    "category": "infectious_disease",
+    "short_description": "1 where the source did not report the covered measure(s), 0 otherwise.",
+    "long_description": "1 where CDC did not report the measure(s) this flag covers, 0 otherwise. Tetracycline and linezolid are on the Group A susceptibility panel but not the Group B panel, and linezolid was only added to the Group A panel partway through the series. These are genuinely absent rather than suppressed, so the value is left missing rather than imputed - do not read a flagged row as a zero.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
     "citations": []
   },
   "_sources": {
@@ -121,6 +1914,28 @@
       "date_accessed": 2025,
       "description": "The CAAP (Community-Acquired Acute Pneumonia) study by Ramirez et al. (2025) used serotype-specific urinary antigen detection (SSUAD) to identify pneumococcal serotypes causing non-invasive pneumonia in Louisville, Kentucky. This methodology allows identification of pneumococcal serotypes in patients with pneumonia who do not have positive blood cultures, providing insight into the full spectrum of pneumococcal disease burden. The study demonstrates that serotypes causing invasive disease also commonly cause non-invasive pneumonia, validating the use of IPD surveillance data for understanding overall pneumococcal disease patterns.",
       "restrictions": "Attribution required. Cite Ramirez et al. Open Forum for Infectious Diseases. 2025."
+    },
+    "abcs_gas": {
+      "name": "Active Bacterial Core surveillance (ABCs) Group A Streptococcus",
+      "url": "https://data.cdc.gov/d/9y49-tura",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/abcs/",
+      "location": "CDC ABCs reports",
+      "location_url": "https://www.cdc.gov/abcs/reports/index.html",
+      "date_accessed": 2026,
+      "description": "Active Bacterial Core surveillance (ABCs) is a collaboration between CDC, state health departments, and universities conducting active, population-based, laboratory-confirmed surveillance for invasive bacterial disease since 1997. CDC publishes a separate dataset per pathogen; this is the Group A Streptococcus one. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Note that CDC restructured this release in 2026: Group A emm types moved from a single topic to one topic per type with the isolate count in the viewby field, and Group A syndromes changed from a percent of cases (1997 on) to a rate per 100,000 (2001 on).",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+    },
+    "abcs_gbs": {
+      "name": "Active Bacterial Core surveillance (ABCs) Group B Streptococcus",
+      "url": "https://data.cdc.gov/d/95m5-agj4",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/abcs/",
+      "location": "CDC ABCs reports",
+      "location_url": "https://www.cdc.gov/abcs/reports/index.html",
+      "date_accessed": 2026,
+      "description": "Active Bacterial Core surveillance (ABCs) is a collaboration between CDC, state health departments, and universities conducting active, population-based, laboratory-confirmed surveillance for invasive bacterial disease since 1997. CDC publishes a separate dataset per pathogen; this is the Group B Streptococcus one. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown. In CDC's current release every value carrying units of \"Percent\" is stored as a proportion between 0 and 1; the ingest scales these to percentages. Note that CDC restructured this release in 2026: Group A emm types moved from a single topic to one topic per type with the isolate count in the viewby field, and Group A syndromes changed from a percent of cases (1997 on) to a rate per 100,000 (2001 on).",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
     }
   }
 }

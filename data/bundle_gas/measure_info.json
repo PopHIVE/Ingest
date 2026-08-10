@@ -1,0 +1,909 @@
+{
+  "{category}geography": {
+    "short_name": "Geography",
+    "long_name": "Geography (state name or national)",
+    "short_description": "State name, or \"United States\" for the national total.",
+    "long_description": "Geographic identifier as a human-readable name: a state name, or the literal \"United States\" for the national total. The matching FIPS code is in geography_fips. Only the 50 states, DC, and the national total are kept; territories and non-state NNDSS jurisdictions (for example New York City) are dropped. The ABCs files are national only, and even then cover a catchment of roughly 35 million people rather than the whole country.",
+    "measure_type": "identifier",
+    "unit": "state name",
+    "categories": {
+      "bundle_gas/dist/abcs_gas_emm.parquet|": {},
+      "bundle_gas/dist/abcs_gas_syndromes.parquet|": {},
+      "bundle_gas/dist/abcs_gbs_alph.parquet|": {},
+      "bundle_gas/dist/abcs_gbs_serotypes.parquet|": {},
+      "bundle_gas/dist/abcs_gbs_syndromes.parquet|": {},
+      "bundle_gas/dist/abcs_strep_counts.parquet|": {},
+      "bundle_gas/dist/abcs_strep_rates.parquet|": {},
+      "bundle_gas/dist/abcs_strep_resistance.parquet|": {},
+      "bundle_gas/dist/epic_gas.parquet|": {},
+      "bundle_gas/dist/nnds_stss.parquet|": {}
+    }
+  },
+  "{category}geography_fips": {
+    "short_name": "Geography FIPS",
+    "long_name": "Geography FIPS code",
+    "short_description": "FIPS code for the geography; \"00\" is the national total.",
+    "long_description": "FIPS code for the row's geography, kept alongside the human-readable name so these files can be joined to other FIPS-keyed data. \"00\" is the national total and 2-digit codes are states. Stored as a string to preserve the leading zero.",
+    "measure_type": "identifier",
+    "unit": "FIPS code",
+    "categories": {
+      "bundle_gas/dist/abcs_gas_emm.parquet|": {},
+      "bundle_gas/dist/abcs_gas_syndromes.parquet|": {},
+      "bundle_gas/dist/abcs_gbs_alph.parquet|": {},
+      "bundle_gas/dist/abcs_gbs_serotypes.parquet|": {},
+      "bundle_gas/dist/abcs_gbs_syndromes.parquet|": {},
+      "bundle_gas/dist/abcs_strep_counts.parquet|": {},
+      "bundle_gas/dist/abcs_strep_rates.parquet|": {},
+      "bundle_gas/dist/abcs_strep_resistance.parquet|": {},
+      "bundle_gas/dist/epic_gas.parquet|": {},
+      "bundle_gas/dist/nnds_stss.parquet|": {}
+    }
+  },
+  "{category}time": {
+    "short_name": "Time",
+    "long_name": "Time period end date",
+    "short_description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
+    "long_description": "End date of the reporting period. Resolution differs by file: Epic Cosmos is quarterly (last day of the calendar quarter), NNDSS is weekly (MMWR week ending Saturday), and the ABCs files are annual (YYYY-12-31).",
+    "measure_type": "date",
+    "unit": "date",
+    "categories": {
+      "bundle_gas/dist/abcs_gas_emm.parquet|": {},
+      "bundle_gas/dist/abcs_gas_syndromes.parquet|": {},
+      "bundle_gas/dist/abcs_gbs_alph.parquet|": {},
+      "bundle_gas/dist/abcs_gbs_serotypes.parquet|": {},
+      "bundle_gas/dist/abcs_gbs_syndromes.parquet|": {},
+      "bundle_gas/dist/abcs_strep_counts.parquet|": {},
+      "bundle_gas/dist/abcs_strep_rates.parquet|": {},
+      "bundle_gas/dist/abcs_strep_resistance.parquet|": {},
+      "bundle_gas/dist/epic_gas.parquet|": {},
+      "bundle_gas/dist/nnds_stss.parquet|": {}
+    }
+  },
+  "bundle_gas/dist/abcs_gas_emm.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group",
+    "short_description": "Age group; the all-ages level overlaps the specific bands.",
+    "long_description": "Age group for the row. Epic Cosmos uses \"Total\" and so do the ABCs files; either overlaps the specific bands, so exclude it before summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gas_emm.parquet|onset": {
+    "short_name": "Infant onset timing",
+    "long_name": "Infant disease onset timing",
+    "short_description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, so CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific - the onset rows are a subset of infants, not additional population, so do not sum across this column.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gas_emm.parquet|pathogen": {
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gas_emm.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "emm_n_emm_1": {
+        "source_id": "abcs_gas_emm_n_emm_1"
+      },
+      "emm_n_emm_11": {
+        "source_id": "abcs_gas_emm_n_emm_11"
+      },
+      "emm_n_emm_12": {
+        "source_id": "abcs_gas_emm_n_emm_12"
+      },
+      "emm_n_emm_2": {
+        "source_id": "abcs_gas_emm_n_emm_2"
+      },
+      "emm_n_emm_28": {
+        "source_id": "abcs_gas_emm_n_emm_28"
+      },
+      "emm_n_emm_3": {
+        "source_id": "abcs_gas_emm_n_emm_3"
+      },
+      "emm_n_emm_4": {
+        "source_id": "abcs_gas_emm_n_emm_4"
+      },
+      "emm_n_emm_43": {
+        "source_id": "abcs_gas_emm_n_emm_43"
+      },
+      "emm_n_emm_49": {
+        "source_id": "abcs_gas_emm_n_emm_49"
+      },
+      "emm_n_emm_59": {
+        "source_id": "abcs_gas_emm_n_emm_59"
+      },
+      "emm_n_emm_6": {
+        "source_id": "abcs_gas_emm_n_emm_6"
+      },
+      "emm_n_emm_60": {
+        "source_id": "abcs_gas_emm_n_emm_60"
+      },
+      "emm_n_emm_75": {
+        "source_id": "abcs_gas_emm_n_emm_75"
+      },
+      "emm_n_emm_77": {
+        "source_id": "abcs_gas_emm_n_emm_77"
+      },
+      "emm_n_emm_81": {
+        "source_id": "abcs_gas_emm_n_emm_81"
+      },
+      "emm_n_emm_82": {
+        "source_id": "abcs_gas_emm_n_emm_82"
+      },
+      "emm_n_emm_83": {
+        "source_id": "abcs_gas_emm_n_emm_83"
+      },
+      "emm_n_emm_89": {
+        "source_id": "abcs_gas_emm_n_emm_89"
+      },
+      "emm_n_emm_91": {
+        "source_id": "abcs_gas_emm_n_emm_91"
+      },
+      "emm_n_emm_92": {
+        "source_id": "abcs_gas_emm_n_emm_92"
+      },
+      "emm_n_isolates_total": {
+        "source_id": "abcs_gas_emm_n_isolates_total"
+      },
+      "emm_n_other": {
+        "source_id": "abcs_gas_emm_n_other"
+      },
+      "emm_pct_emm_1": {
+        "source_id": "abcs_gas_emm_pct_emm_1"
+      },
+      "emm_pct_emm_11": {
+        "source_id": "abcs_gas_emm_pct_emm_11"
+      },
+      "emm_pct_emm_12": {
+        "source_id": "abcs_gas_emm_pct_emm_12"
+      },
+      "emm_pct_emm_2": {
+        "source_id": "abcs_gas_emm_pct_emm_2"
+      },
+      "emm_pct_emm_28": {
+        "source_id": "abcs_gas_emm_pct_emm_28"
+      },
+      "emm_pct_emm_3": {
+        "source_id": "abcs_gas_emm_pct_emm_3"
+      },
+      "emm_pct_emm_4": {
+        "source_id": "abcs_gas_emm_pct_emm_4"
+      },
+      "emm_pct_emm_43": {
+        "source_id": "abcs_gas_emm_pct_emm_43"
+      },
+      "emm_pct_emm_49": {
+        "source_id": "abcs_gas_emm_pct_emm_49"
+      },
+      "emm_pct_emm_59": {
+        "source_id": "abcs_gas_emm_pct_emm_59"
+      },
+      "emm_pct_emm_6": {
+        "source_id": "abcs_gas_emm_pct_emm_6"
+      },
+      "emm_pct_emm_60": {
+        "source_id": "abcs_gas_emm_pct_emm_60"
+      },
+      "emm_pct_emm_75": {
+        "source_id": "abcs_gas_emm_pct_emm_75"
+      },
+      "emm_pct_emm_77": {
+        "source_id": "abcs_gas_emm_pct_emm_77"
+      },
+      "emm_pct_emm_81": {
+        "source_id": "abcs_gas_emm_pct_emm_81"
+      },
+      "emm_pct_emm_82": {
+        "source_id": "abcs_gas_emm_pct_emm_82"
+      },
+      "emm_pct_emm_83": {
+        "source_id": "abcs_gas_emm_pct_emm_83"
+      },
+      "emm_pct_emm_89": {
+        "source_id": "abcs_gas_emm_pct_emm_89"
+      },
+      "emm_pct_emm_91": {
+        "source_id": "abcs_gas_emm_pct_emm_91"
+      },
+      "emm_pct_emm_92": {
+        "source_id": "abcs_gas_emm_pct_emm_92"
+      },
+      "emm_pct_other": {
+        "source_id": "abcs_gas_emm_pct_other"
+      }
+    }
+  },
+  "bundle_gas/dist/abcs_gas_emm.parquet|value": {
+    "short_name": "Value",
+    "long_name": "ABCs Group A emm type",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "emm type distribution among invasive Group A Streptococcus isolates. emm_pct_* measures are percents, emm_n_* are per-type isolate counts, and emm_n_isolates_total is the annual typed-isolate denominator. Which types are itemised changes over time; the rest are pooled into the \"other\" measures, so \"other\" is not comparable across years. Units are mixed, so filter by measure before plotting.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_gas_emm.parquet|not_reported": {
+    "short_name": "Not reported",
+    "long_name": "Flag for measures the source did not report",
+    "short_description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
+    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen, age, and onset, in which case value is missing; 0 otherwise. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_gas_syndromes.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group",
+    "short_description": "Age group; the all-ages level overlaps the specific bands.",
+    "long_description": "Age group for the row. Epic Cosmos uses \"Total\" and so do the ABCs files; either overlaps the specific bands, so exclude it before summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gas_syndromes.parquet|onset": {
+    "short_name": "Infant onset timing",
+    "long_name": "Infant disease onset timing",
+    "short_description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, so CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific - the onset rows are a subset of infants, not additional population, so do not sum across this column.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gas_syndromes.parquet|pathogen": {
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gas_syndromes.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "rate_syndrome_bacteremia_without_focus": {
+        "source_id": "abcs_gas_rate_syndrome_bacteremia_without_focus"
+      },
+      "rate_syndrome_cellulitis": {
+        "source_id": "abcs_gas_rate_syndrome_cellulitis"
+      },
+      "rate_syndrome_necrotizing_fasciitis": {
+        "source_id": "abcs_gas_rate_syndrome_necrotizing_fasciitis"
+      },
+      "rate_syndrome_pneumonia": {
+        "source_id": "abcs_gas_rate_syndrome_pneumonia"
+      },
+      "rate_syndrome_strep_toxic_shock": {
+        "source_id": "abcs_gas_rate_syndrome_strep_toxic_shock"
+      }
+    }
+  },
+  "bundle_gas/dist/abcs_gas_syndromes.parquet|value": {
+    "short_name": "Value",
+    "long_name": "ABCs Group A syndrome rate",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "Rate per 100,000 population of invasive Group A Streptococcus disease presenting as the clinical syndrome named in the measure column. CDC's current release reports these as rates beginning in 2001; earlier releases reported a percent of cases from 1997, so this is not comparable with older extracts. Syndromes are not mutually exclusive.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_gas_syndromes.parquet|not_reported": {
+    "short_name": "Not reported",
+    "long_name": "Flag for measures the source did not report",
+    "short_description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
+    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen, age, and onset, in which case value is missing; 0 otherwise. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_gbs_alph.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group",
+    "short_description": "Age group; the all-ages level overlaps the specific bands.",
+    "long_description": "Age group for the row. Epic Cosmos uses \"Total\" and so do the ABCs files; either overlaps the specific bands, so exclude it before summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gbs_alph.parquet|onset": {
+    "short_name": "Infant onset timing",
+    "long_name": "Infant disease onset timing",
+    "short_description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, so CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific - the onset rows are a subset of infants, not additional population, so do not sum across this column.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gbs_alph.parquet|pathogen": {
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gbs_alph.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "n_isolates": {
+        "source_id": "abcs_gbs_n_isolates"
+      },
+      "pct_alph_alp1": {
+        "source_id": "abcs_gbs_pct_alph_alp1"
+      },
+      "pct_alph_alp23": {
+        "source_id": "abcs_gbs_pct_alph_alp23"
+      },
+      "pct_alph_alpha": {
+        "source_id": "abcs_gbs_pct_alph_alpha"
+      },
+      "pct_alph_neg": {
+        "source_id": "abcs_gbs_pct_alph_neg"
+      },
+      "pct_alph_rib": {
+        "source_id": "abcs_gbs_pct_alph_rib"
+      }
+    }
+  },
+  "bundle_gas/dist/abcs_gbs_alph.parquet|value": {
+    "short_name": "Value",
+    "long_name": "ABCs Group B ALPH type",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates carrying the alpha-like protein (ALPH) gene named in the measure column, except n_isolates which is the count typed. Reported from 2015 on.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_gbs_alph.parquet|not_reported": {
+    "short_name": "Not reported",
+    "long_name": "Flag for measures the source did not report",
+    "short_description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
+    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen, age, and onset, in which case value is missing; 0 otherwise. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_gbs_serotypes.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group",
+    "short_description": "Age group; the all-ages level overlaps the specific bands.",
+    "long_description": "Age group for the row. Epic Cosmos uses \"Total\" and so do the ABCs files; either overlaps the specific bands, so exclude it before summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gbs_serotypes.parquet|onset": {
+    "short_name": "Infant onset timing",
+    "long_name": "Infant disease onset timing",
+    "short_description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, so CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific - the onset rows are a subset of infants, not additional population, so do not sum across this column.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gbs_serotypes.parquet|pathogen": {
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gbs_serotypes.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "n_isolates": {
+        "source_id": "abcs_gbs_n_isolates"
+      },
+      "pct_serotype_ia": {
+        "source_id": "abcs_gbs_pct_serotype_ia"
+      },
+      "pct_serotype_ib": {
+        "source_id": "abcs_gbs_pct_serotype_ib"
+      },
+      "pct_serotype_ii": {
+        "source_id": "abcs_gbs_pct_serotype_ii"
+      },
+      "pct_serotype_iii": {
+        "source_id": "abcs_gbs_pct_serotype_iii"
+      },
+      "pct_serotype_iv": {
+        "source_id": "abcs_gbs_pct_serotype_iv"
+      },
+      "pct_serotype_non_typeable": {
+        "source_id": "abcs_gbs_pct_serotype_non_typeable"
+      },
+      "pct_serotype_v": {
+        "source_id": "abcs_gbs_pct_serotype_v"
+      },
+      "pct_serotype_vi": {
+        "source_id": "abcs_gbs_pct_serotype_vi"
+      },
+      "pct_serotype_vi_vii_viii_or_ix": {
+        "source_id": "abcs_gbs_pct_serotype_vi_vii_viii_or_ix"
+      },
+      "pct_serotype_vi_viii": {
+        "source_id": "abcs_gbs_pct_serotype_vi_viii"
+      }
+    }
+  },
+  "bundle_gas/dist/abcs_gbs_serotypes.parquet|value": {
+    "short_name": "Value",
+    "long_name": "ABCs Group B serotype",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of the capsular serotype named in the measure column, except n_isolates which is the count typed. CDC's grouping of the rarer serotypes changed over the series, so some serotype measures cover only part of the years. Rows for 1997-1998 are placeholder zeros - treat the series as starting in 1999.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_gbs_serotypes.parquet|not_reported": {
+    "short_name": "Not reported",
+    "long_name": "Flag for measures the source did not report",
+    "short_description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
+    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen, age, and onset, in which case value is missing; 0 otherwise. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_gbs_syndromes.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group",
+    "short_description": "Age group; the all-ages level overlaps the specific bands.",
+    "long_description": "Age group for the row. Epic Cosmos uses \"Total\" and so do the ABCs files; either overlaps the specific bands, so exclude it before summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gbs_syndromes.parquet|onset": {
+    "short_name": "Infant onset timing",
+    "long_name": "Infant disease onset timing",
+    "short_description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, so CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific - the onset rows are a subset of infants, not additional population, so do not sum across this column.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gbs_syndromes.parquet|pathogen": {
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_gbs_syndromes.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "pct_syndrome_bacteremia_with_pneumonia": {
+        "source_id": "abcs_gbs_pct_syndrome_bacteremia_with_pneumonia"
+      },
+      "pct_syndrome_bacteremia_without_focus": {
+        "source_id": "abcs_gbs_pct_syndrome_bacteremia_without_focus"
+      },
+      "pct_syndrome_meningitis": {
+        "source_id": "abcs_gbs_pct_syndrome_meningitis"
+      }
+    }
+  },
+  "bundle_gas/dist/abcs_gbs_syndromes.parquet|value": {
+    "short_name": "Value",
+    "long_name": "ABCs Group B syndrome percent",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "Percent of invasive Group B Streptococcus cases presenting as the clinical syndrome named in the measure column, calculated within the age and onset group on the row. Syndromes are not exhaustive and do not sum to 100 percent.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_gbs_syndromes.parquet|not_reported": {
+    "short_name": "Not reported",
+    "long_name": "Flag for measures the source did not report",
+    "short_description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
+    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen, age, and onset, in which case value is missing; 0 otherwise. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_strep_counts.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group",
+    "short_description": "Age group; the all-ages level overlaps the specific bands.",
+    "long_description": "Age group for the row. Epic Cosmos uses \"Total\" and so do the ABCs files; either overlaps the specific bands, so exclude it before summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_counts.parquet|onset": {
+    "short_name": "Infant onset timing",
+    "long_name": "Infant disease onset timing",
+    "short_description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, so CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific - the onset rows are a subset of infants, not additional population, so do not sum across this column.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_counts.parquet|pathogen": {
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_counts.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "N_cases": {
+        "source_id": "abcs_N_cases"
+      },
+      "N_deaths": {
+        "source_id": "abcs_N_deaths"
+      },
+      "N_survivals": {
+        "source_id": "abcs_N_survivals"
+      }
+    }
+  },
+  "bundle_gas/dist/abcs_strep_counts.parquet|value": {
+    "short_name": "Value",
+    "long_name": "ABCs invasive disease counts",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "Estimated national count of invasive cases, deaths, or survivals. These are CDC's population-weighted extrapolations from the ABCs catchment, not counts observed nationwide. Where onset is not \"Overall\" the row counts infant early- or late-onset cases only, a subset of the all-ages total - do not sum across onset. Deaths and survivals are published only for the all-ages series.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_strep_counts.parquet|not_reported": {
+    "short_name": "Not reported",
+    "long_name": "Flag for measures the source did not report",
+    "short_description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
+    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen, age, and onset, in which case value is missing; 0 otherwise. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_strep_rates.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group",
+    "short_description": "Age group; the all-ages level overlaps the specific bands.",
+    "long_description": "Age group for the row. Epic Cosmos uses \"Total\" and so do the ABCs files; either overlaps the specific bands, so exclude it before summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_rates.parquet|sex": {
+    "short_name": "Sex",
+    "long_name": "Sex",
+    "short_description": "Sex (Male, Female, or Overall).",
+    "long_description": "Sex as reported by ABCs. \"Overall\" combines both sexes and must not be summed with the Male and Female rows. Reported for Group A only; Group B rows carry \"Overall\".",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_rates.parquet|race_ethnicity": {
+    "short_name": "Race/Ethnicity",
+    "long_name": "Race and ethnicity",
+    "short_description": "Race/ethnicity (White, Black, Other, or Overall).",
+    "long_description": "Race and ethnicity as reported by ABCs, collapsed to White, Black, and Other. \"Overall\" combines all groups and must not be summed with the specific levels.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_rates.parquet|onset": {
+    "short_name": "Infant onset timing",
+    "long_name": "Infant disease onset timing",
+    "short_description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, so CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific - the onset rows are a subset of infants, not additional population, so do not sum across this column.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_rates.parquet|pathogen": {
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_rates.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "rate_cases": {
+        "source_id": "abcs_rate_cases"
+      },
+      "rate_deaths": {
+        "source_id": "abcs_rate_deaths"
+      }
+    }
+  },
+  "bundle_gas/dist/abcs_strep_rates.parquet|value": {
+    "short_name": "Value",
+    "long_name": "ABCs invasive disease rate",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "Incidence or mortality rate of invasive disease per 100,000 population for the pathogen named in the pathogen column. National only. Death rates are published only overall and by age, so rows split by sex, race, or infant onset carry not_reported = 1.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_strep_rates.parquet|not_reported": {
+    "short_name": "Not reported",
+    "long_name": "Flag for measures the source did not report",
+    "short_description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
+    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen, age, and onset, in which case value is missing; 0 otherwise. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_strep_resistance.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group",
+    "short_description": "Age group; the all-ages level overlaps the specific bands.",
+    "long_description": "Age group for the row. Epic Cosmos uses \"Total\" and so do the ABCs files; either overlaps the specific bands, so exclude it before summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_resistance.parquet|onset": {
+    "short_name": "Infant onset timing",
+    "long_name": "Infant disease onset timing",
+    "short_description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, so CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific - the onset rows are a subset of infants, not additional population, so do not sum across this column.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_resistance.parquet|pathogen": {
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/abcs_strep_resistance.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "n_isolates": {
+        "source_id": "abcs_n_isolates"
+      },
+      "pct_resistant_cefotaxime": {
+        "source_id": "abcs_pct_resistant_cefotaxime"
+      },
+      "pct_resistant_clindamycin": {
+        "source_id": "abcs_pct_resistant_clindamycin"
+      },
+      "pct_resistant_erythromycin": {
+        "source_id": "abcs_pct_resistant_erythromycin"
+      },
+      "pct_resistant_linezolid": {
+        "source_id": "abcs_pct_resistant_linezolid"
+      },
+      "pct_resistant_penicillin": {
+        "source_id": "abcs_pct_resistant_penicillin"
+      },
+      "pct_resistant_tetracycline": {
+        "source_id": "abcs_pct_resistant_tetracycline"
+      },
+      "pct_resistant_vancomycin": {
+        "source_id": "abcs_pct_resistant_vancomycin"
+      }
+    }
+  },
+  "bundle_gas/dist/abcs_strep_resistance.parquet|value": {
+    "short_name": "Value",
+    "long_name": "ABCs antibiotic resistance",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "Percent of invasive isolates non-susceptible to the antibiotic named in the measure column, except n_isolates which is the count of isolates tested. Units are mixed, so filter by measure before plotting. Tetracycline and linezolid are on the Group A panel only, so Group B rows carry not_reported = 1 for those.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/abcs_strep_resistance.parquet|not_reported": {
+    "short_name": "Not reported",
+    "long_name": "Flag for measures the source did not report",
+    "short_description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
+    "long_description": "1 where CDC did not report the row's measure for that combination of year, pathogen, age, and onset, in which case value is missing; 0 otherwise. These gaps are structural - a measure not published for a given stratification, an antibiotic absent from a pathogen's susceptibility panel, or an emm type or serotype not itemised that year - rather than values suppressed for confidentiality. Nothing is imputed, so a flagged row must not be read as a zero.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ]
+  },
+  "bundle_gas/dist/epic_gas.parquet|age": {
+    "short_name": "Age Group",
+    "long_name": "Age group",
+    "short_description": "Age group; the all-ages level overlaps the specific bands.",
+    "long_description": "Age group for the row. Epic Cosmos uses \"Total\" and so do the ABCs files; either overlaps the specific bands, so exclude it before summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_gas/dist/epic_gas.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "n_patients": {
+        "source_id": "epic_n_patients"
+      },
+      "n_strep_throat": {
+        "source_id": "epic_n_strep_throat"
+      },
+      "pct_strep_throat": {
+        "source_id": "epic_pct_strep_throat"
+      }
+    }
+  },
+  "bundle_gas/dist/epic_gas.parquet|value": {
+    "short_name": "Value",
+    "long_name": "Epic Cosmos strep throat value",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "Value of the measure named in the measure column. Units are mixed: n_strep_throat and n_patients are patient counts, pct_strep_throat is a percent (0-100). Always filter or facet by measure before plotting. The denominator counts patients with ANY encounter, not emergency department visits only, so pct_strep_throat is not an ED visit share.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Quarter",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ]
+  },
+  "bundle_gas/dist/epic_gas.parquet|suppressed": {
+    "short_name": "Suppressed",
+    "long_name": "Suppression flag for this measure value",
+    "short_description": "1 if Epic suppressed the underlying cell and the value was imputed as 5; 0 otherwise.",
+    "long_description": "1 when Epic Cosmos withheld the underlying cell (a count of 10 or fewer) and the value was imputed as 5; 0 otherwise. Measure-specific: for n_strep_throat and pct_strep_throat it reflects suppression of the strep throat numerator, and for n_patients the patient-total denominator. Computed upstream before imputation, so it records what Epic withheld rather than what the ingest wrote. Distinct from not_reported in the ABCs files, which marks data the source never published.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Quarter",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ]
+  },
+  "bundle_gas/dist/nnds_stss.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "stss_cases_cumulative": {
+        "source_id": "streptococcal_toxic_shock_syndrome"
+      },
+      "stss_cases_weekly": {
+        "short_name": "Strep TSS cases (weekly)",
+        "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
+        "short_description": "Newly reported STSS cases in the MMWR week.",
+        "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week, derived by build.R as the week-over-week difference in the cumulative year-to-date count within each geography and MMWR year. This is the series to plot. NNDSS occasionally revises earlier weeks downward, producing a small number of negative increments; these are left as reported rather than clamped, and build.R logs the count. Note STSS is the only Group A measure NNDSS carries - invasive Group A disease generally, and Group B disease, are not nationally notifiable.",
+        "measure_type": "Count",
+        "unit": "Cases",
+        "time_resolution": "Week",
+        "sources": [
+          {
+            "id": "nnds"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_gas/dist/nnds_stss.parquet|value": {
+    "short_name": "Value",
+    "long_name": "Streptococcal toxic shock syndrome cases",
+    "short_description": "Value of the measure named in the measure column (see that column for units).",
+    "long_description": "Reported case count of streptococcal toxic shock syndrome. The measure column distinguishes the weekly-incident series from the cumulative year-to-date series as published by NNDSS. The two are not additive - do not sum across measures.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "nnds"
+      }
+    ]
+  },
+  "_bundle": {
+    "name": "bundle_gas",
+    "sources": ["abcs", "epic_resp_infections", "nnds"],
+    "dist_files": {
+      "abcs_gas_emm.parquet": {
+        "sources": "abcs",
+        "source_files": "abcs/standard/gas_emm.csv.gz"
+      },
+      "abcs_gas_syndromes.parquet": {
+        "sources": "abcs",
+        "source_files": "abcs/standard/gas_syndromes.csv.gz"
+      },
+      "abcs_gbs_alph.parquet": {
+        "sources": "abcs",
+        "source_files": "abcs/standard/gbs_alph.csv.gz"
+      },
+      "abcs_gbs_serotypes.parquet": {
+        "sources": "abcs",
+        "source_files": "abcs/standard/gbs_serotypes.csv.gz"
+      },
+      "abcs_gbs_syndromes.parquet": {
+        "sources": "abcs",
+        "source_files": "abcs/standard/gbs_syndromes.csv.gz"
+      },
+      "abcs_strep_counts.parquet": {
+        "sources": "abcs",
+        "source_files": "abcs/standard/strep_counts.csv.gz"
+      },
+      "abcs_strep_rates.parquet": {
+        "sources": "abcs",
+        "source_files": "abcs/standard/strep_rates.csv.gz"
+      },
+      "abcs_strep_resistance.parquet": {
+        "sources": "abcs",
+        "source_files": "abcs/standard/strep_resistance.csv.gz"
+      },
+      "epic_gas.parquet": {
+        "sources": "epic_resp_infections",
+        "source_files": "epic_resp_infections/standard/quarterly_gas.csv.gz"
+      },
+      "nnds_stss.parquet": {
+        "sources": "nnds",
+        "source_files": "nnds/standard/data.csv.gz"
+      }
+    }
+  }
+}
