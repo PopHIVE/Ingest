@@ -2,21 +2,28 @@
 # Bundle: Group A and Group B Streptococcus
 #
 # Combines:
-#   epic_resp_infections  quarterly_gas.csv.gz - Epic Cosmos strep throat
-#                         patients, by state and age
-#   nnds                  streptococcal toxic shock syndrome, weekly by state
 #   abcs                  CDC ABCs Group A and Group B Streptococcus, annual
 #                         national (the strep_* / gas_* / gbs_* files; the
 #                         pneumococcal data in that source is not used here)
+#   epic_resp_infections  quarterly_gas.csv.gz - Epic Cosmos strep throat
+#                         patients, by state and age
+#   nnds                  streptococcal toxic shock syndrome, weekly by state
 #
-# One dist parquet per contributing source standard file, each long format:
-#   geography       state name, or "United States" for the national total
-#   geography_fips  the FIPS code for that geography ("00" = national)
-#   time            ISO period end date
-#   measure         which measure the row reports
-#   value           the plotting column
-#   not_reported    1 where the source did not report that measure (value is NA)
-#   (plus whatever dimension columns that source file carries)
+# Three long parquets. All eight ABCs topics are stacked into one file with a
+# named column per stratification and "Total" wherever a row is not stratified
+# on that dimension. Epic and NNDSS stay separate because they differ in
+# geography grain (state vs national), time resolution (quarterly and weekly vs
+# annual), and measure.
+#
+# Shared columns: geography (state name or "United States"), geography_fips,
+# date (bundles use `date`; the standard files use `time`), year, measure,
+# value.
+#
+# Companion columns rather than extra measure rows, so a tooltip can be built
+# from one line: `n_isolates` is the denominator behind every percent, and
+# `n_type` the numerator for emm types - "emm1: 22.5% (99 of 440 isolates)".
+# Cases, deaths and survivals stay separate `measure` levels: they are three
+# plottable series, not metadata for a single value.
 # =============================================================================
 
 library(dplyr)
@@ -51,35 +58,19 @@ add_geography_names <- function(df) {
     relocate(geography, geography_fips)
 }
 
-DIMS <- c("pathogen", "age", "sex", "race_ethnicity", "onset")
-
-# In the wide standard files a not-reported flag can cover several measures at
-# once, so it is 1 wherever ANY of them is absent. Carrying that flag straight
-# through to long format would over-mark: the serotype grouping flag is 1 on
-# every row, but only one of its three columns is missing per row. Once melted,
-# the per-row question is simply "was THIS measure reported for THIS row", which
-# is exactly whether the value is absent.
-#
-# That is only safe because the ingest guarantees every NA in these files is a
-# not-reported case - it errors if a column contains NAs without a covering
-# flag. Assert the source really did carry a flag for each sparse column, so
-# this stays true if the upstream layout changes.
-assert_flags_cover_nas <- function(d, meas_cols, flag_cols, path) {
-  sparse <- meas_cols[vapply(d[meas_cols], function(x) any(is.na(x)), logical(1))]
-  for (m in sparse) {
-    na <- is.na(d[[m]])
-    covered <- any(vapply(flag_cols, function(f) all(d[[f]][na] == 1L), logical(1)))
-    if (!covered) {
-      stop("bundle_gas: ", path, " column ", m,
-           " has NAs that no not-reported flag covers.")
-    }
-  }
+# vroom attaches `spec` and `problems` attributes to what it reads; those ride
+# through dplyr and get serialized into the parquet as R metadata, so two builds
+# of identical data can differ byte for byte. These files are committed, so strip
+# them and keep the output reproducible.
+write_dist <- function(df, file) {
+  df <- as.data.frame(df)
+  attr(df, "spec") <- NULL
+  attr(df, "problems") <- NULL
+  arrow::write_parquet(df, file.path("dist", file))
 }
 
-# Read a source standard file, melt its measures to long, and attach the
-# not-reported flag that applies to each row's measure.
-melt_to_parquet <- function(path, out, strip = "^abcs_(gas_|gbs_)?") {
-  d <- vroom::vroom(
+read_standard <- function(path) {
+  vroom::vroom(
     file.path("..", path),
     show_col_types = FALSE,
     # Explicit id types; several of these files have sparse numeric columns
@@ -87,25 +78,168 @@ melt_to_parquet <- function(path, out, strip = "^abcs_(gas_|gbs_)?") {
     col_types = vroom::cols(geography = "c", time = "D", .default = "?")
   ) %>%
     add_geography_names()
-
-  flag_cols <- grep("^abcs_not_reported_flag_", names(d), value = TRUE)
-  id_cols <- c("geography", "geography_fips", "time", intersect(DIMS, names(d)))
-  meas_cols <- setdiff(names(d), c(id_cols, flag_cols))
-
-  assert_flags_cover_nas(d, meas_cols, flag_cols, path)
-
-  d %>%
-    mutate(across(all_of(meas_cols), as.numeric)) %>%
-    pivot_longer(all_of(meas_cols), names_to = "measure", values_to = "value") %>%
-    mutate(not_reported = as.integer(is.na(value))) %>%
-    mutate(measure = sub(strip, "", measure)) %>%
-    select(all_of(c(id_cols, "measure", "value", "not_reported"))) %>%
-    arrange(across(all_of(c(id_cols, "measure")))) %>%
-    arrow::write_parquet(file.path("dist", out))
 }
 
+# Whether a measure's NAs are kept (as rows flagged not_reported = 1) or dropped
+# is declared per measure via `drop_na`, not inferred. Inferring it from the
+# flag columns looks tempting but misfires: the rate_deaths flag happens to be 1
+# on every row where rate_cases is absent, so a "does any flag cover these NAs"
+# test wrongly concludes the in-band case rate was withheld.
+#
+# drop_na = TRUE means the measure is mutually exclusive with another on the same
+# row - the two case-rate measures split by onset - so its absence means "does
+# not apply here", and emitting a missing observation would misrepresent it.
+# drop_na = FALSE means an NA is CDC withholding a figure that does apply, which
+# is worth carrying as an explicit flagged row.
+
 # -----------------------------------------------------------------------------
-# 1. Epic Cosmos strep throat (from epic_resp_infections)
+# 1. ABCs: stack all eight topics into one file
+# -----------------------------------------------------------------------------
+DIMS <- c("pathogen", "age", "sex", "race_ethnicity", "onset")
+ENTITIES <- c("syndrome", "antibiotic", "emm_type", "serotype", "alph_type")
+
+# Melt one standard file into the shared long schema.
+#   measure_map  regex -> measure name, and which entity column the matched
+#                suffix belongs in
+#   companions   columns to carry alongside `value` instead of melting
+stack_abcs <- function(path, spec, companions = character()) {
+  d <- read_standard(path)
+  flag_cols <- grep("^abcs_not_reported_flag_", names(d), value = TRUE)
+  comp_cols <- intersect(companions, names(d))
+  base_ids <- c("geography", "geography_fips", "time",
+                intersect(DIMS, names(d)))
+  meas_cols <- setdiff(names(d), c(base_ids, flag_cols, comp_cols))
+
+  out <- list()
+  for (m in meas_cols) {
+    hit <- NULL
+    for (s in spec) {
+      if (grepl(s$pattern, m)) { hit <- s; break }
+    }
+    if (is.null(hit)) stop("bundle_gas: no measure spec matches ", m, " in ", path)
+
+    entity_val <- if (is.na(hit$entity)) NA_character_ else sub(hit$pattern, "", m)
+
+    piece <- d %>%
+      select(all_of(c(base_ids, comp_cols)), value = all_of(m)) %>%
+      mutate(measure = hit$measure)
+    if (isTRUE(hit$drop_na)) {
+      piece <- piece %>% filter(!is.na(value))
+    } else if (any(is.na(d[[m]]))) {
+      # An NA kept as a row must be a gap the source itself flagged, otherwise
+      # we would be inventing a missing observation
+      covered <- any(vapply(flag_cols, function(f)
+        all(d[[f]][is.na(d[[m]])] == 1L), logical(1)))
+      if (!covered) {
+        stop("bundle_gas: ", m, " in ", path, " has NAs that no not-reported ",
+             "flag covers, and is not declared drop_na.")
+      }
+    }
+    if (!is.na(hit$entity)) piece[[hit$entity]] <- entity_val
+    out[[length(out) + 1]] <- piece
+  }
+
+  bind_rows(out)
+}
+
+# emm needs the per-type isolate count paired with the per-type percent on the
+# same row, which a plain melt cannot do (the count lives in a sibling column).
+stack_emm <- function(path) {
+  d <- read_standard(path)
+  base_ids <- c("geography", "geography_fips", "time", intersect(DIMS, names(d)))
+  types <- sub("^abcs_gas_emm_pct_", "",
+               grep("^abcs_gas_emm_pct_", names(d), value = TRUE))
+
+  bind_rows(lapply(types, function(t) {
+    pct <- paste0("abcs_gas_emm_pct_", t)
+    n   <- paste0("abcs_gas_emm_n_", t)
+    d %>%
+      select(all_of(base_ids),
+             value = all_of(pct),
+             n_type = any_of(n),
+             n_isolates = abcs_gas_emm_n_isolates_total) %>%
+      mutate(measure = "pct_emm_type", emm_type = t)
+  }))
+}
+
+abcs_strep <- bind_rows(
+  stack_abcs(
+    "abcs/standard/strep_rates.csv.gz",
+    list(
+      # The two case-rate measures are mutually exclusive by onset, so each is
+      # absent on the other's rows - drop rather than flag (see note above)
+      list(pattern = "^abcs_rate_cases_by_onset$", measure = "rate_cases_by_onset",
+           entity = NA, drop_na = TRUE),
+      list(pattern = "^abcs_rate_cases$",          measure = "rate_cases",
+           entity = NA, drop_na = TRUE),
+      list(pattern = "^abcs_rate_deaths$",         measure = "rate_deaths",
+           entity = NA)
+    )
+  ),
+  stack_abcs(
+    "abcs/standard/strep_counts.csv.gz",
+    list(
+      list(pattern = "^abcs_N_cases$",      measure = "n_cases",      entity = NA),
+      list(pattern = "^abcs_N_deaths$",     measure = "n_deaths",     entity = NA),
+      list(pattern = "^abcs_N_survivals$",  measure = "n_survivals",  entity = NA)
+    )
+  ),
+  stack_abcs(
+    "abcs/standard/strep_resistance.csv.gz",
+    list(list(pattern = "^abcs_pct_resistant_", measure = "pct_resistant",
+              entity = "antibiotic")),
+    companions = "abcs_n_isolates"
+  ),
+  stack_abcs(
+    "abcs/standard/gas_syndromes.csv.gz",
+    list(list(pattern = "^abcs_gas_rate_syndrome_", measure = "rate_syndrome",
+              entity = "syndrome"))
+  ),
+  stack_abcs(
+    "abcs/standard/gbs_syndromes.csv.gz",
+    list(list(pattern = "^abcs_gbs_pct_syndrome_", measure = "pct_syndrome",
+              entity = "syndrome"))
+  ),
+  stack_abcs(
+    "abcs/standard/gbs_serotypes.csv.gz",
+    list(list(pattern = "^abcs_gbs_pct_serotype_", measure = "pct_serotype",
+              entity = "serotype")),
+    companions = "abcs_gbs_n_isolates"
+  ),
+  stack_abcs(
+    "abcs/standard/gbs_alph.csv.gz",
+    list(list(pattern = "^abcs_gbs_pct_alph_", measure = "pct_alph_type",
+              entity = "alph_type")),
+    companions = "abcs_gbs_n_isolates"
+  ),
+  stack_emm("abcs/standard/gas_emm.csv.gz")
+) %>%
+  # The three isolate-count companions are the same concept under per-file
+  # names; fold them into one column
+  mutate(
+    n_isolates = coalesce(n_isolates, abcs_n_isolates, abcs_gbs_n_isolates)
+  ) %>%
+  select(-abcs_n_isolates, -abcs_gbs_n_isolates) %>%
+  rename(date = time) %>%
+  mutate(
+    year = as.integer(format(date, "%Y")),
+    not_reported = as.integer(is.na(value)),
+    # "Total" fills any dimension a row is not stratified on, so every column is
+    # populated and a consumer can filter on it without handling NA
+    across(all_of(c(DIMS, ENTITIES)), ~ tidyr::replace_na(as.character(.x), "Total"))
+  ) %>%
+  select(all_of(c("geography", "geography_fips", "date", "year", DIMS, ENTITIES,
+                  "measure", "value", "n_type", "n_isolates", "not_reported"))) %>%
+  arrange(across(all_of(c("geography", "date", DIMS, ENTITIES, "measure"))))
+
+if (anyDuplicated(abcs_strep[c("geography", "date", DIMS, ENTITIES, "measure")])) {
+  stop("bundle_gas: duplicate index rows in abcs_strep.")
+}
+
+write_dist(abcs_strep, "abcs_strep.parquet")
+
+# -----------------------------------------------------------------------------
+# 2. Epic Cosmos strep throat (from epic_resp_infections)
 #    Two upstream suppression flags: the numerator flag covers both the count
 #    and the percent (the percent derives from that same cell), the denominator
 #    flag covers the patient total. Each measure gets its own.
@@ -131,15 +265,17 @@ epic_gas <- vroom::vroom(
   ) %>%
   mutate(
     suppressed = if_else(measure == "n_patients",
-                         .denominator_flag, .numerator_flag)
+                         .denominator_flag, .numerator_flag),
+    date = time,
+    year = as.integer(format(time, "%Y"))
   ) %>%
-  select(geography, geography_fips, time, age, measure, value, suppressed) %>%
-  arrange(geography, time, age, measure)
+  select(geography, geography_fips, date, year, age, measure, value, suppressed) %>%
+  arrange(geography, date, age, measure)
 
-arrow::write_parquet(epic_gas, "dist/epic_gas.parquet")
+write_dist(epic_gas, "epic_gas.parquet")
 
 # -----------------------------------------------------------------------------
-# 2. NNDSS streptococcal toxic shock syndrome
+# 3. NNDSS streptococcal toxic shock syndrome
 #    NNDSS publishes a cumulative year-to-date count that resets each MMWR year
 #    (national 2024 runs 5 -> 647 across weeks 1-52), so it is de-accumulated
 #    into a weekly-incident series. Both forms are emitted; they are not
@@ -170,40 +306,26 @@ nnds_stss <- vroom::vroom(
   ) %>%
   ungroup()
 
-# NNDSS revises earlier weeks downward on occasion, which surfaces as a
-# negative increment. Report rather than silently clamp.
+# NNDSS revises earlier weeks downward on occasion, which surfaces as a negative
+# increment. Following the bundle_measles convention, these are kept as reported
+# rather than clamped - the transparency is deliberate, and plots should cut the
+# y axis at 0 instead.
 n_negative <- sum(nnds_stss$stss_cases_weekly < 0, na.rm = TRUE)
 if (n_negative > 0) {
   message(
     "NNDSS: ", n_negative, " of ", nrow(nnds_stss),
     " weekly increments are negative (downward revisions to the cumulative ",
-    "count); left as reported."
+    "count); kept as reported, per the bundle_measles convention."
   )
 }
 
 nnds_stss <- nnds_stss %>%
-  select(geography, geography_fips, time,
+  rename(date = time, year = mmwr_year, week = mmwr_week) %>%
+  select(geography, geography_fips, date, year, week,
          stss_cases_weekly, stss_cases_cumulative) %>%
   pivot_longer(c(stss_cases_weekly, stss_cases_cumulative),
                names_to = "measure", values_to = "value") %>%
   filter(!is.na(value)) %>%
-  arrange(geography, time, measure)
+  arrange(geography, date, measure)
 
-arrow::write_parquet(nnds_stss, "dist/nnds_stss.parquet")
-
-# -----------------------------------------------------------------------------
-# 3. CDC ABCs, Group A and Group B (national only, annual).
-#    Rates, counts and resistance carry both pathogens in one file keyed by the
-#    `pathogen` column. Syndromes and typing are per-pathogen upstream because
-#    they are not comparable measures - Group A syndromes are a rate per
-#    100,000 while Group B's are a percent, and emm types and capsular
-#    serotypes are different things entirely.
-# -----------------------------------------------------------------------------
-melt_to_parquet("abcs/standard/strep_rates.csv.gz",      "abcs_strep_rates.parquet")
-melt_to_parquet("abcs/standard/strep_counts.csv.gz",     "abcs_strep_counts.parquet")
-melt_to_parquet("abcs/standard/strep_resistance.csv.gz", "abcs_strep_resistance.parquet")
-melt_to_parquet("abcs/standard/gas_syndromes.csv.gz",    "abcs_gas_syndromes.parquet")
-melt_to_parquet("abcs/standard/gas_emm.csv.gz",          "abcs_gas_emm.parquet")
-melt_to_parquet("abcs/standard/gbs_syndromes.csv.gz",    "abcs_gbs_syndromes.parquet")
-melt_to_parquet("abcs/standard/gbs_serotypes.csv.gz",    "abcs_gbs_serotypes.parquet")
-melt_to_parquet("abcs/standard/gbs_alph.csv.gz",         "abcs_gbs_alph.parquet")
+write_dist(nnds_stss, "nnds_stss.parquet")

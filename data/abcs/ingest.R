@@ -249,7 +249,12 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   # rather than being imputed. Errors if any NA-bearing column is unflagged, so
   # a future change in what CDC reports fails loudly instead of shipping
   # undocumented NAs.
-  add_not_reported_flags <- function(df, id_cols, groups) {
+  # `exclusive` names sets of measures that are mutually exclusive by design -
+  # exactly one applies to any given row, so the others are NA because the
+  # index says they do not apply, not because CDC withheld them. Those get no
+  # not-reported flag (it would misdescribe the gap) but their exclusivity is
+  # asserted instead.
+  add_not_reported_flags <- function(df, id_cols, groups, exclusive = list()) {
     meas <- setdiff(names(df), id_cols)
     for (nm in names(groups)) {
       cols <- intersect(groups[[nm]], meas)
@@ -257,7 +262,19 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
       df[[paste0("abcs_not_reported_flag_", nm)]] <-
         as.integer(Reduce(`|`, lapply(cols, function(cc) is.na(df[[cc]]))))
     }
-    covered <- unlist(groups, use.names = FALSE)
+    for (set in exclusive) {
+      cols <- intersect(set, meas)
+      if (length(cols) < 2) next
+      present <- rowSums(!is.na(df[cols]))
+      if (any(present > 1)) {
+        stop(
+          "ABCs: measures declared mutually exclusive are both present on ",
+          sum(present > 1), " row(s): ", paste(cols, collapse = ", "), "."
+        )
+      }
+    }
+    covered <- c(unlist(groups, use.names = FALSE),
+                 unlist(exclusive, use.names = FALSE))
     has_na <- meas[vapply(df[meas], function(x) any(is.na(x)), logical(1))]
     missed <- setdiff(has_na, covered)
     if (length(missed)) {
@@ -313,12 +330,14 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     "Adults, 18-64 years old"      = "18-64",
     "Adults, 65 years old"         = "65+"
   )
+  # Values are the OUTPUT labels; "Total" is the repo-wide aggregate level for
+  # dimension columns (it outnumbers "Overall" 40 to 3 across bundle outputs).
   GROUP_ONSET <- c(
-    "Overall"                      = "Overall",
+    "Overall"                      = "Total",
     "Infants, early-onset disease" = "Early-onset",
     "Infants, late-onset disease"  = "Late-onset",
-    "Adults, 18-64 years old"      = "Overall",
-    "Adults, 65 years old"         = "Overall"
+    "Adults, 18-64 years old"      = "Total",
+    "Adults, 65 years old"         = "Total"
   )
 
   gas <- read_abcs("raw/9y49-tura.csv.xz", "Group A Streptococcus")
@@ -337,8 +356,8 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     mutate(
       measure = if_else(topic_l == "case rates",
                         "abcs_rate_cases", "abcs_rate_deaths"),
-      age = "Total", sex = "Overall", race_ethnicity = "Overall",
-      onset = "Overall"
+      age = "Total", sex = "Total", race_ethnicity = "Total",
+      onset = "Total"
     )
 
   rates_overall <- rate_base %>% filter(viewby_a == "Overall")
@@ -359,11 +378,29 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     filter(viewby_a == "Race", viewby2_a %in% names(RACE_MAP)) %>%
     mutate(race_ethnicity = RACE_MAP[viewby2_a])
 
-  # Group B only: infant early- vs late-onset rates, and the same by race
+  # Group B only: infant early- vs late-onset rates, and the same by race.
+  #
+  # These get their OWN measure name, because CDC labels them
+  # "Per 100,000 population" like the age-band rates but uses a different
+  # denominator. 1997 Group B: the "<1 year old" age band reads 115.7 (per
+  # 100,000 infants - 3,900 cases / ~3.9M births * 100,000 ~= 100), while
+  # early-onset + late-onset reads 0.70 + 0.40 = 1.10 (per 100,000 general
+  # population - 3,900 / ~272M * 100,000 ~= 1.4). They differ in all 28 years,
+  # mean absolute difference 66.3. Sharing one column would put two
+  # incomparable scales under the same measure and invite summing the onset
+  # rates into a false infant total.
+  onset_rate_measure <- function(df) {
+    df %>% mutate(
+      measure = if_else(measure == "abcs_rate_cases",
+                        "abcs_rate_cases_by_onset", measure)
+    )
+  }
+
   rates_onset <- rate_base %>%
     filter(viewby_a == "Infants, early and late-onset",
            viewby2_a %in% c("Early-onset", "Late-onset")) %>%
-    mutate(age = "<1", onset = viewby2_a)
+    mutate(age = "<1", onset = viewby2_a) %>%
+    onset_rate_measure()
 
   ONSET_BY_RACE <- c("Early-onset, by race" = "Early-onset",
                      "Late-onset, by race"  = "Late-onset")
@@ -371,7 +408,8 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     filter(viewby_a %in% names(ONSET_BY_RACE),
            viewby2_a %in% names(RACE_MAP)) %>%
     mutate(age = "<1", onset = ONSET_BY_RACE[viewby_a],
-           race_ethnicity = RACE_MAP[viewby2_a])
+           race_ethnicity = RACE_MAP[viewby2_a]) %>%
+    onset_rate_measure()
 
   rate_ids <- c(strep_ids, "age", "sex", "race_ethnicity", "onset")
 
@@ -385,7 +423,13 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
       rate_ids,
       # Death rates are reported only overall and by age, never by sex, race,
       # or infant onset timing
-      list(rate_deaths = "abcs_rate_deaths")
+      list(rate_deaths = "abcs_rate_deaths"),
+      # The two case-rate measures are mutually exclusive by row: an
+      # onset-specific row carries the general-population rate, any other row
+      # carries the in-band rate. Whichever is absent is determined by the
+      # `onset` column, so it needs no not-reported flag - the exclusivity is
+      # asserted instead.
+      exclusive = list(c("abcs_rate_cases", "abcs_rate_cases_by_onset"))
     )
 
   vroom::vroom_write(strep_rates, "standard/strep_rates.csv.gz", delim = ",")
@@ -411,7 +455,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
         v2 == "number of survivals" ~ "abcs_N_survivals",
         TRUE ~ NA_character_
       ),
-      age = "Total", onset = "Overall"
+      age = "Total", onset = "Total"
     ) %>%
     filter(!is.na(measure))
 
@@ -424,7 +468,23 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
       onset   = sub(" cases$", "", viewby2_a)
     )
 
-  strep_counts <- bind_rows(counts_all, counts_onset) %>%
+  # Derived all-infant total: CDC publishes early- and late-onset infant case
+  # counts but no combined infant figure, so sum them. Counts share a
+  # denominator-free scale, which is why this is safe here and NOT done for the
+  # rates above. The all-ages "Total"/"Total" row is a different population and
+  # is left untouched.
+  counts_onset_total <- counts_onset %>%
+    group_by(geography, time, pathogen) %>%
+    summarise(value = sum(value), n_parts = n(), .groups = "drop") %>%
+    filter(n_parts == 2) %>%
+    mutate(measure = "abcs_N_cases", age = "<1", onset = "Total") %>%
+    select(-n_parts)
+
+  if (nrow(counts_onset_total) == 0) {
+    stop("ABCs: no infant onset pairs found to total - check the counts parsing.")
+  }
+
+  strep_counts <- bind_rows(counts_all, counts_onset, counts_onset_total) %>%
     select(all_of(c(count_ids, "measure", "value"))) %>%
     pivot_check(count_ids, "counts") %>%
     add_not_reported_flags(
@@ -446,7 +506,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
 
   res_gas <- gas %>%
     filter(topic_l == "antibiotic resistance") %>%
-    mutate(drug_raw = viewby_a, age = "Total", onset = "Overall")
+    mutate(drug_raw = viewby_a, age = "Total", onset = "Total")
 
   res_gbs <- gbs %>%
     filter(topic_l == "antibiotic resistance") %>%
@@ -513,7 +573,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   gas_syndromes <- gas_syn_rows %>%
     mutate(
       measure = paste0("abcs_gas_rate_syndrome_", GAS_SYNDROME[viewby_a]),
-      age = "Total", onset = "Overall"
+      age = "Total", onset = "Total"
     ) %>%
     select(all_of(c(strep_ids, "age", "onset", "measure", "value"))) %>%
     pivot_check(c(strep_ids, "age", "onset"), "gas syndromes") %>%
@@ -613,7 +673,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
       summarise(value = sum(n_type, na.rm = TRUE), .groups = "drop") %>%
       mutate(measure = "abcs_gas_emm_n_isolates_total")
   ) %>%
-    mutate(age = "Total", onset = "Overall")
+    mutate(age = "Total", onset = "Total")
 
   emm_ids <- c(strep_ids, "age", "onset")
 

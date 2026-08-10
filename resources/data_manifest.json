@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-10T09:51:26Z",
+  "generated": "2026-08-10T12:13:50Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -2336,9 +2336,9 @@
       "display_name": "Bundle: Gas",
       "dist_files": [
         {
-          "filename": "abcs_gas_emm.parquet",
-          "path": "data/bundle_gas/dist/abcs_gas_emm.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_gas/dist/abcs_gas_emm.parquet",
+          "filename": "abcs_strep.parquet",
+          "path": "data/bundle_gas/dist/abcs_strep.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_gas/dist/abcs_strep.parquet",
           "columns": [
             {
               "name": "geography",
@@ -2357,11 +2357,19 @@
               "levels": {}
             },
             {
-              "name": "time",
-              "short_name": "Time",
+              "name": "date",
+              "short_name": "Date",
               "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
               "measure_type": "date",
               "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year, or MMWR year for the weekly NNDSS series.",
+              "measure_type": "identifier",
+              "unit": "year",
               "levels": {}
             },
             {
@@ -2375,700 +2383,7 @@
             {
               "name": "age",
               "short_name": "Age Group",
-              "description": "Age group; the all-ages level overlaps the specific bands.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "onset",
-              "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "emm_n_emm_1": {
-                  "source_id": "abcs_gas_emm_n_emm_1"
-                },
-                "emm_n_emm_11": {
-                  "source_id": "abcs_gas_emm_n_emm_11"
-                },
-                "emm_n_emm_12": {
-                  "source_id": "abcs_gas_emm_n_emm_12"
-                },
-                "emm_n_emm_2": {
-                  "source_id": "abcs_gas_emm_n_emm_2"
-                },
-                "emm_n_emm_28": {
-                  "source_id": "abcs_gas_emm_n_emm_28"
-                },
-                "emm_n_emm_3": {
-                  "source_id": "abcs_gas_emm_n_emm_3"
-                },
-                "emm_n_emm_4": {
-                  "source_id": "abcs_gas_emm_n_emm_4"
-                },
-                "emm_n_emm_43": {
-                  "source_id": "abcs_gas_emm_n_emm_43"
-                },
-                "emm_n_emm_49": {
-                  "source_id": "abcs_gas_emm_n_emm_49"
-                },
-                "emm_n_emm_59": {
-                  "source_id": "abcs_gas_emm_n_emm_59"
-                },
-                "emm_n_emm_6": {
-                  "source_id": "abcs_gas_emm_n_emm_6"
-                },
-                "emm_n_emm_60": {
-                  "source_id": "abcs_gas_emm_n_emm_60"
-                },
-                "emm_n_emm_75": {
-                  "source_id": "abcs_gas_emm_n_emm_75"
-                },
-                "emm_n_emm_77": {
-                  "source_id": "abcs_gas_emm_n_emm_77"
-                },
-                "emm_n_emm_81": {
-                  "source_id": "abcs_gas_emm_n_emm_81"
-                },
-                "emm_n_emm_82": {
-                  "source_id": "abcs_gas_emm_n_emm_82"
-                },
-                "emm_n_emm_83": {
-                  "source_id": "abcs_gas_emm_n_emm_83"
-                },
-                "emm_n_emm_89": {
-                  "source_id": "abcs_gas_emm_n_emm_89"
-                },
-                "emm_n_emm_91": {
-                  "source_id": "abcs_gas_emm_n_emm_91"
-                },
-                "emm_n_emm_92": {
-                  "source_id": "abcs_gas_emm_n_emm_92"
-                },
-                "emm_n_isolates_total": {
-                  "source_id": "abcs_gas_emm_n_isolates_total"
-                },
-                "emm_n_other": {
-                  "source_id": "abcs_gas_emm_n_other"
-                },
-                "emm_pct_emm_1": {
-                  "source_id": "abcs_gas_emm_pct_emm_1"
-                },
-                "emm_pct_emm_11": {
-                  "source_id": "abcs_gas_emm_pct_emm_11"
-                },
-                "emm_pct_emm_12": {
-                  "source_id": "abcs_gas_emm_pct_emm_12"
-                },
-                "emm_pct_emm_2": {
-                  "source_id": "abcs_gas_emm_pct_emm_2"
-                },
-                "emm_pct_emm_28": {
-                  "source_id": "abcs_gas_emm_pct_emm_28"
-                },
-                "emm_pct_emm_3": {
-                  "source_id": "abcs_gas_emm_pct_emm_3"
-                },
-                "emm_pct_emm_4": {
-                  "source_id": "abcs_gas_emm_pct_emm_4"
-                },
-                "emm_pct_emm_43": {
-                  "source_id": "abcs_gas_emm_pct_emm_43"
-                },
-                "emm_pct_emm_49": {
-                  "source_id": "abcs_gas_emm_pct_emm_49"
-                },
-                "emm_pct_emm_59": {
-                  "source_id": "abcs_gas_emm_pct_emm_59"
-                },
-                "emm_pct_emm_6": {
-                  "source_id": "abcs_gas_emm_pct_emm_6"
-                },
-                "emm_pct_emm_60": {
-                  "source_id": "abcs_gas_emm_pct_emm_60"
-                },
-                "emm_pct_emm_75": {
-                  "source_id": "abcs_gas_emm_pct_emm_75"
-                },
-                "emm_pct_emm_77": {
-                  "source_id": "abcs_gas_emm_pct_emm_77"
-                },
-                "emm_pct_emm_81": {
-                  "source_id": "abcs_gas_emm_pct_emm_81"
-                },
-                "emm_pct_emm_82": {
-                  "source_id": "abcs_gas_emm_pct_emm_82"
-                },
-                "emm_pct_emm_83": {
-                  "source_id": "abcs_gas_emm_pct_emm_83"
-                },
-                "emm_pct_emm_89": {
-                  "source_id": "abcs_gas_emm_pct_emm_89"
-                },
-                "emm_pct_emm_91": {
-                  "source_id": "abcs_gas_emm_pct_emm_91"
-                },
-                "emm_pct_emm_92": {
-                  "source_id": "abcs_gas_emm_pct_emm_92"
-                },
-                "emm_pct_other": {
-                  "source_id": "abcs_gas_emm_pct_other"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column (see that column for units).",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "not_reported",
-              "short_name": "Not reported",
-              "description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "levels": {}
-            }
-          ]
-        },
-        {
-          "filename": "abcs_gas_syndromes.parquet",
-          "path": "data/bundle_gas/dist/abcs_gas_syndromes.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_gas/dist/abcs_gas_syndromes.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is the national total.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "pathogen",
-              "short_name": "Pathogen",
-              "description": "Group A or Group B Streptococcus.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age Group",
-              "description": "Age group; the all-ages level overlaps the specific bands.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "onset",
-              "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "rate_syndrome_bacteremia_without_focus": {
-                  "source_id": "abcs_gas_rate_syndrome_bacteremia_without_focus"
-                },
-                "rate_syndrome_cellulitis": {
-                  "source_id": "abcs_gas_rate_syndrome_cellulitis"
-                },
-                "rate_syndrome_necrotizing_fasciitis": {
-                  "source_id": "abcs_gas_rate_syndrome_necrotizing_fasciitis"
-                },
-                "rate_syndrome_pneumonia": {
-                  "source_id": "abcs_gas_rate_syndrome_pneumonia"
-                },
-                "rate_syndrome_strep_toxic_shock": {
-                  "source_id": "abcs_gas_rate_syndrome_strep_toxic_shock"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column (see that column for units).",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "not_reported",
-              "short_name": "Not reported",
-              "description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "levels": {}
-            }
-          ]
-        },
-        {
-          "filename": "abcs_gbs_alph.parquet",
-          "path": "data/bundle_gas/dist/abcs_gbs_alph.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_gas/dist/abcs_gbs_alph.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is the national total.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "pathogen",
-              "short_name": "Pathogen",
-              "description": "Group A or Group B Streptococcus.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age Group",
-              "description": "Age group; the all-ages level overlaps the specific bands.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "onset",
-              "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "n_isolates": {
-                  "source_id": "abcs_gbs_n_isolates"
-                },
-                "pct_alph_alp1": {
-                  "source_id": "abcs_gbs_pct_alph_alp1"
-                },
-                "pct_alph_alp23": {
-                  "source_id": "abcs_gbs_pct_alph_alp23"
-                },
-                "pct_alph_alpha": {
-                  "source_id": "abcs_gbs_pct_alph_alpha"
-                },
-                "pct_alph_neg": {
-                  "source_id": "abcs_gbs_pct_alph_neg"
-                },
-                "pct_alph_rib": {
-                  "source_id": "abcs_gbs_pct_alph_rib"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column (see that column for units).",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "not_reported",
-              "short_name": "Not reported",
-              "description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "levels": {}
-            }
-          ]
-        },
-        {
-          "filename": "abcs_gbs_serotypes.parquet",
-          "path": "data/bundle_gas/dist/abcs_gbs_serotypes.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_gas/dist/abcs_gbs_serotypes.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is the national total.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "pathogen",
-              "short_name": "Pathogen",
-              "description": "Group A or Group B Streptococcus.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age Group",
-              "description": "Age group; the all-ages level overlaps the specific bands.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "onset",
-              "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "n_isolates": {
-                  "source_id": "abcs_gbs_n_isolates"
-                },
-                "pct_serotype_ia": {
-                  "source_id": "abcs_gbs_pct_serotype_ia"
-                },
-                "pct_serotype_ib": {
-                  "source_id": "abcs_gbs_pct_serotype_ib"
-                },
-                "pct_serotype_ii": {
-                  "source_id": "abcs_gbs_pct_serotype_ii"
-                },
-                "pct_serotype_iii": {
-                  "source_id": "abcs_gbs_pct_serotype_iii"
-                },
-                "pct_serotype_iv": {
-                  "source_id": "abcs_gbs_pct_serotype_iv"
-                },
-                "pct_serotype_non_typeable": {
-                  "source_id": "abcs_gbs_pct_serotype_non_typeable"
-                },
-                "pct_serotype_v": {
-                  "source_id": "abcs_gbs_pct_serotype_v"
-                },
-                "pct_serotype_vi": {
-                  "source_id": "abcs_gbs_pct_serotype_vi"
-                },
-                "pct_serotype_vi_vii_viii_or_ix": {
-                  "source_id": "abcs_gbs_pct_serotype_vi_vii_viii_or_ix"
-                },
-                "pct_serotype_vi_viii": {
-                  "source_id": "abcs_gbs_pct_serotype_vi_viii"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column (see that column for units).",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "not_reported",
-              "short_name": "Not reported",
-              "description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "levels": {}
-            }
-          ]
-        },
-        {
-          "filename": "abcs_gbs_syndromes.parquet",
-          "path": "data/bundle_gas/dist/abcs_gbs_syndromes.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_gas/dist/abcs_gbs_syndromes.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is the national total.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "pathogen",
-              "short_name": "Pathogen",
-              "description": "Group A or Group B Streptococcus.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age Group",
-              "description": "Age group; the all-ages level overlaps the specific bands.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "onset",
-              "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "pct_syndrome_bacteremia_with_pneumonia": {
-                  "source_id": "abcs_gbs_pct_syndrome_bacteremia_with_pneumonia"
-                },
-                "pct_syndrome_bacteremia_without_focus": {
-                  "source_id": "abcs_gbs_pct_syndrome_bacteremia_without_focus"
-                },
-                "pct_syndrome_meningitis": {
-                  "source_id": "abcs_gbs_pct_syndrome_meningitis"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column (see that column for units).",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "not_reported",
-              "short_name": "Not reported",
-              "description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "levels": {}
-            }
-          ]
-        },
-        {
-          "filename": "abcs_strep_counts.parquet",
-          "path": "data/bundle_gas/dist/abcs_strep_counts.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_gas/dist/abcs_strep_counts.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is the national total.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "pathogen",
-              "short_name": "Pathogen",
-              "description": "Group A or Group B Streptococcus.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age Group",
-              "description": "Age group; the all-ages level overlaps the specific bands.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "onset",
-              "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "N_cases": {
-                  "source_id": "abcs_N_cases"
-                },
-                "N_deaths": {
-                  "source_id": "abcs_N_deaths"
-                },
-                "N_survivals": {
-                  "source_id": "abcs_N_survivals"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column (see that column for units).",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "not_reported",
-              "short_name": "Not reported",
-              "description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "levels": {}
-            }
-          ]
-        },
-        {
-          "filename": "abcs_strep_rates.parquet",
-          "path": "data/bundle_gas/dist/abcs_strep_rates.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_gas/dist/abcs_strep_rates.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is the national total.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "pathogen",
-              "short_name": "Pathogen",
-              "description": "Group A or Group B Streptococcus.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age Group",
-              "description": "Age group; the all-ages level overlaps the specific bands.",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
               "measure_type": "category",
               "unit": "",
               "levels": {}
@@ -3076,7 +2391,7 @@
             {
               "name": "sex",
               "short_name": "Sex",
-              "description": "Sex (Male, Female, or Overall).",
+              "description": "Sex; \"Total\" combines both.",
               "measure_type": "category",
               "unit": "",
               "levels": {}
@@ -3084,7 +2399,7 @@
             {
               "name": "race_ethnicity",
               "short_name": "Race/Ethnicity",
-              "description": "Race/ethnicity (White, Black, Other, or Overall).",
+              "description": "Race/ethnicity; \"Total\" combines all groups.",
               "measure_type": "category",
               "unit": "",
               "levels": {}
@@ -3093,6 +2408,46 @@
               "name": "onset",
               "short_name": "Infant onset timing",
               "description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Which clinical presentation the row describes; \"Total\" where not syndrome-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "antibiotic",
+              "short_name": "Antibiotic",
+              "description": "Which drug the resistance percentage refers to; \"Total\" where not drug-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "emm_type",
+              "short_name": "emm type",
+              "description": "Which emm type the row describes; \"Total\" where not type-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "serotype",
+              "short_name": "Serotype",
+              "description": "Which capsular serotype the row describes; \"Total\" where not serotype-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "alph_type",
+              "short_name": "ALPH type",
+              "description": "Which alpha-like protein gene the row describes; \"Total\" where not type-specific.",
               "measure_type": "category",
               "unit": "",
               "levels": {}
@@ -3107,112 +2462,38 @@
                 "rate_cases": {
                   "source_id": "abcs_rate_cases"
                 },
+                "rate_cases_by_onset": {
+                  "source_id": "abcs_rate_cases_by_onset"
+                },
                 "rate_deaths": {
                   "source_id": "abcs_rate_deaths"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column (see that column for units).",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "not_reported",
-              "short_name": "Not reported",
-              "description": "1 where CDC did not report this measure for this row (value is missing); 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "levels": {}
-            }
-          ]
-        },
-        {
-          "filename": "abcs_strep_resistance.parquet",
-          "path": "data/bundle_gas/dist/abcs_strep_resistance.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_gas/dist/abcs_strep_resistance.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is the national total.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "pathogen",
-              "short_name": "Pathogen",
-              "description": "Group A or Group B Streptococcus.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age Group",
-              "description": "Age group; the all-ages level overlaps the specific bands.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "onset",
-              "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "n_isolates": {
-                  "source_id": "abcs_n_isolates"
                 },
-                "pct_resistant_cefotaxime": {
-                  "source_id": "abcs_pct_resistant_cefotaxime"
+                "n_cases": {
+                  "source_id": "abcs_N_cases"
                 },
-                "pct_resistant_clindamycin": {
-                  "source_id": "abcs_pct_resistant_clindamycin"
+                "n_deaths": {
+                  "source_id": "abcs_N_deaths"
                 },
-                "pct_resistant_erythromycin": {
-                  "source_id": "abcs_pct_resistant_erythromycin"
+                "n_survivals": {
+                  "source_id": "abcs_N_survivals"
                 },
-                "pct_resistant_linezolid": {
-                  "source_id": "abcs_pct_resistant_linezolid"
-                },
-                "pct_resistant_penicillin": {
+                "pct_resistant": {
                   "source_id": "abcs_pct_resistant_penicillin"
                 },
-                "pct_resistant_tetracycline": {
-                  "source_id": "abcs_pct_resistant_tetracycline"
+                "rate_syndrome": {
+                  "source_id": "abcs_gas_rate_syndrome_cellulitis"
                 },
-                "pct_resistant_vancomycin": {
-                  "source_id": "abcs_pct_resistant_vancomycin"
+                "pct_syndrome": {
+                  "source_id": "abcs_gbs_pct_syndrome_meningitis"
+                },
+                "pct_emm_type": {
+                  "source_id": "abcs_gas_emm_pct_emm_1"
+                },
+                "pct_serotype": {
+                  "source_id": "abcs_gbs_pct_serotype_ia"
+                },
+                "pct_alph_type": {
+                  "source_id": "abcs_gbs_pct_alph_alp1"
                 }
               }
             },
@@ -3222,6 +2503,22 @@
               "description": "Value of the measure named in the measure column (see that column for units).",
               "measure_type": "Mixed",
               "unit": "varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "n_type",
+              "short_name": "Isolates of this type",
+              "description": "Numerator behind the percentage, for emm types only.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "n_isolates",
+              "short_name": "Isolates tested",
+              "description": "Denominator behind the percentage on this row; missing where CDC did not publish it.",
+              "measure_type": "Count",
+              "unit": "Isolates",
               "levels": {}
             },
             {
@@ -3256,17 +2553,25 @@
               "levels": {}
             },
             {
-              "name": "time",
-              "short_name": "Time",
+              "name": "date",
+              "short_name": "Date",
               "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
               "measure_type": "date",
               "unit": "date",
               "levels": {}
             },
             {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year, or MMWR year for the weekly NNDSS series.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "levels": {}
+            },
+            {
               "name": "age",
               "short_name": "Age Group",
-              "description": "Age group; the all-ages level overlaps the specific bands.",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
               "measure_type": "category",
               "unit": "",
               "levels": {}
@@ -3278,14 +2583,14 @@
               "measure_type": "",
               "unit": "",
               "levels": {
-                "n_patients": {
-                  "source_id": "epic_n_patients"
-                },
                 "n_strep_throat": {
                   "source_id": "epic_n_strep_throat"
                 },
                 "pct_strep_throat": {
                   "source_id": "epic_pct_strep_throat"
+                },
+                "n_patients": {
+                  "source_id": "epic_n_patients"
                 }
               }
             },
@@ -3329,11 +2634,27 @@
               "levels": {}
             },
             {
-              "name": "time",
-              "short_name": "Time",
+              "name": "date",
+              "short_name": "Date",
               "description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
               "measure_type": "date",
               "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year, or MMWR year for the weekly NNDSS series.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "week",
+              "short_name": "MMWR week",
+              "description": "MMWR week number (1-53) within the MMWR year.",
+              "measure_type": "identifier",
+              "unit": "week",
               "levels": {}
             },
             {
@@ -3343,14 +2664,11 @@
               "measure_type": "",
               "unit": "",
               "levels": {
-                "stss_cases_cumulative": {
-                  "source_id": "streptococcal_toxic_shock_syndrome"
-                },
                 "stss_cases_weekly": {
                   "short_name": "Strep TSS cases (weekly)",
                   "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
                   "short_description": "Newly reported STSS cases in the MMWR week.",
-                  "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week, derived by build.R as the week-over-week difference in the cumulative year-to-date count within each geography and MMWR year. This is the series to plot. NNDSS occasionally revises earlier weeks downward, producing a small number of negative increments; these are left as reported rather than clamped, and build.R logs the count. Note STSS is the only Group A measure NNDSS carries - invasive Group A disease generally, and Group B disease, are not nationally notifiable.",
+                  "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week, derived by build.R as the week-over-week difference in the cumulative year-to-date count within each geography and MMWR year. This is the series to plot. NNDSS sometimes revises earlier weeks downward, which produces a small number of negative increments; following the bundle_measles convention these are kept as reported for transparency rather than clamped, and plots should cut the y axis at 0 instead. Note STSS is the only Group A measure NNDSS carries - invasive Group A disease generally, and Group B disease, are not nationally notifiable.",
                   "measure_type": "Count",
                   "unit": "Cases",
                   "time_resolution": "Week",
@@ -3359,6 +2677,9 @@
                       "id": "nnds"
                     }
                   ]
+                },
+                "stss_cases_cumulative": {
+                  "source_id": "streptococcal_toxic_shock_syndrome"
                 }
               }
             },
@@ -10277,7 +9598,7 @@
             {
               "name": "onset",
               "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
+              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Total\" is not onset-specific.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -10660,7 +9981,7 @@
             {
               "name": "onset",
               "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
+              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Total\" is not onset-specific.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -10742,7 +10063,7 @@
             {
               "name": "onset",
               "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
+              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Total\" is not onset-specific.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -10838,7 +10159,7 @@
             {
               "name": "onset",
               "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
+              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Total\" is not onset-specific.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -10962,7 +10283,7 @@
             {
               "name": "onset",
               "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
+              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Total\" is not onset-specific.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -11023,7 +10344,7 @@
             {
               "name": "onset",
               "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
+              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Total\" is not onset-specific.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -11091,21 +10412,21 @@
             {
               "name": "sex",
               "short_name": "Sex",
-              "description": "Sex (Male, Female, or Overall).",
+              "description": "Sex (Male, Female, or Total).",
               "measure_type": "Category",
               "unit": ""
             },
             {
               "name": "race_ethnicity",
               "short_name": "Race/Ethnicity",
-              "description": "Race/ethnicity (White, Black, Other, or Overall).",
+              "description": "Race/ethnicity (White, Black, Other, or Total).",
               "measure_type": "Category",
               "unit": ""
             },
             {
               "name": "onset",
               "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
+              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Total\" is not onset-specific.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -11122,6 +10443,13 @@
               "description": "Annual deaths per 100,000 population.",
               "measure_type": "Rate",
               "unit": "Deaths per 100,000"
+            },
+            {
+              "name": "abcs_rate_cases_by_onset",
+              "short_name": "Case rate by infant onset",
+              "description": "Annual incidence of invasive Group B disease per 100,000 general population, split by infant onset timing. NOT comparable with abcs_rate_cases.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000"
             },
             {
               "name": "abcs_not_reported_flag_rate_deaths",
@@ -11166,7 +10494,7 @@
             {
               "name": "onset",
               "short_name": "Infant onset timing",
-              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
+              "description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Total\" is not onset-specific.",
               "measure_type": "Category",
               "unit": ""
             },

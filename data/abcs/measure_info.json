@@ -5,7 +5,7 @@
     "long_name": "Age group",
     "category": "demographic",
     "short_description": "Age group; \"Total\" is the all-ages aggregate.",
-    "long_description": "Age group as reported by ABCs. \"Total\" is the all-ages aggregate and overlaps the specific bands, so exclude it when summing across ages. The bands differ by file because CDC reports different stratifications per pathogen and topic: the pneumococcal serotype data uses <5 years / 5-49 years / 50+ years; strep case and death rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+; and the strep resistance and typing files use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B, and its 18-64 / 65+ split does not line up with the 18-49 / 50-64 bands used elsewhere in this repo - both are source-determined.",
+    "long_description": "Age group as reported by ABCs. \"Total\" is the all-ages aggregate and overlaps the specific bands, so exclude it when summing across ages. The bands differ by file because CDC reports different stratifications per pathogen and topic: the pneumococcal serotype data uses <5 years / 5-49 years / 50+ years; strep case and death rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+; and the strep resistance and typing files use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B, and its 18-64 / 65+ split does not line up with the 18-49 / 50-64 bands used elsewhere in this repo - both are source-determined. The aggregate level is \"Total\", matching the label used across the rest of the database (it outnumbers \"Overall\" 40 to 3 in bundle outputs).",
     "measure_type": "Category",
     "unit": "",
     "time_resolution": "Year",
@@ -119,8 +119,8 @@
     "short_name": "Sex",
     "long_name": "Sex",
     "category": "demographic",
-    "short_description": "Sex (Male, Female, or Overall).",
-    "long_description": "Sex as reported by ABCs. \"Overall\" combines both sexes and must not be summed with the Male and Female rows. Reported for Group A only; Group B rows carry \"Overall\".",
+    "short_description": "Sex (Male, Female, or Total).",
+    "long_description": "Sex as reported by ABCs. \"Total\" combines both sexes and must not be summed with the Male and Female rows. Reported for Group A only; Group B rows carry \"Overall\". The aggregate level is \"Total\", matching the label used across the rest of the database (it outnumbers \"Overall\" 40 to 3 in bundle outputs).",
     "measure_type": "Category",
     "unit": "",
     "time_resolution": "Year",
@@ -136,8 +136,8 @@
     "short_name": "Race/Ethnicity",
     "long_name": "Race and ethnicity",
     "category": "demographic",
-    "short_description": "Race/ethnicity (White, Black, Other, or Overall).",
-    "long_description": "Race and ethnicity as reported by ABCs, collapsed to White, Black, and Other. \"Overall\" combines all groups and must not be summed with the specific levels.",
+    "short_description": "Race/ethnicity (White, Black, Other, or Total).",
+    "long_description": "Race and ethnicity as reported by ABCs, collapsed to White, Black, and Other. \"Total\" combines all groups and must not be summed with the specific levels. The aggregate level is \"Total\", matching the label used across the rest of the database (it outnumbers \"Overall\" 40 to 3 in bundle outputs).",
     "measure_type": "Category",
     "unit": "",
     "time_resolution": "Year",
@@ -153,8 +153,8 @@
     "short_name": "Infant onset timing",
     "long_name": "Infant disease onset timing",
     "category": "demographic",
-    "short_description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Overall\" is not onset-specific.",
-    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, and CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Overall\" are not onset-specific, so do not sum across this column - the onset rows are a subset of infants, not additional population. CDC's source labels conflate this with age (for example \"Infants, early-onset disease\"), which the ingest decomposes into age plus onset.",
+    "short_description": "Early-onset (0-6 days of life) vs late-onset (7-89 days) infant Group B disease; \"Total\" is not onset-specific.",
+    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, and CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). Rows with \"Total\" are not onset-specific, so do not sum across this column - the onset rows are a subset of infants, not additional population. CDC's source labels conflate this with age (for example \"Infants, early-onset disease\"), which the ingest decomposes into age plus onset. The aggregate level is \"Total\", matching the label used across the rest of the database (it outnumbers \"Overall\" 40 to 3 in bundle outputs). For case counts a derived \"Total\" row per age group sums early- and late-onset; for rates no such total is derived, because the onset rates use a different denominator than the age-band rates.",
     "measure_type": "Category",
     "unit": "",
     "time_resolution": "Year",
@@ -1592,7 +1592,7 @@
     "long_name": "Estimated number of invasive cases",
     "category": "infectious_disease",
     "short_description": "Estimated annual number of invasive cases.",
-    "long_description": "Estimated annual number of invasive disease cases for the pathogen named in the pathogen column . Where the onset column is not \"Overall\" this counts infant early- or late-onset cases only, which are a subset of the all-ages total - do not sum across onset. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "long_description": "Estimated annual number of invasive disease cases for the pathogen named in the pathogen column . Where the onset column is not \"Overall\" this counts infant early- or late-onset cases only, which are a subset of the all-ages total - do not sum across onset. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown. For Group B, rows with onset \"Early-onset\" or \"Late-onset\" count infant cases only. The age \"<1\" / onset \"Total\" row is derived by this ingest as the sum of those two, since CDC publishes the parts but no combined infant figure; summing is valid here because counts carry no denominator. It is a subset of the all-ages age \"Total\" / onset \"Total\" row, not additional population.",
     "statement": "",
     "measure_type": "Count",
     "unit": "Cases",
@@ -1664,7 +1664,7 @@
     "long_name": "Incidence rate of invasive the pathogen named in the pathogen column disease",
     "category": "infectious_disease",
     "short_description": "Annual incidence per 100,000 population.",
-    "long_description": "Annual incidence rate of invasive disease per 100,000 population for the pathogen named in the pathogen column . Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "long_description": "Annual incidence rate of invasive disease per 100,000 population for the pathogen named in the pathogen column . Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown. Rows are per 100,000 of the age band named in the `age` column. Infant early- and late-onset rates are reported by CDC against a different denominator and live in abcs_rate_cases_by_onset instead; the two must not be added or plotted on one axis.",
     "statement": "In {location}, the invasive case rate was {value} per 100,000.",
     "measure_type": "Rate",
     "unit": "Cases per 100,000",
@@ -1888,6 +1888,24 @@
     "sources": [
       {
         "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_rate_cases_by_onset": {
+    "id": "abcs_rate_cases_by_onset",
+    "short_name": "Case rate by infant onset",
+    "long_name": "Incidence rate of invasive disease by infant onset timing",
+    "category": "infectious_disease",
+    "short_description": "Annual incidence of invasive Group B disease per 100,000 general population, split by infant onset timing. NOT comparable with abcs_rate_cases.",
+    "long_description": "Annual incidence of invasive Group B Streptococcus disease in infants per 100,000 population, reported separately for early-onset (0-6 days of life) and late-onset (7-89 days) disease, and in some rows further split by race. CDC labels this and abcs_rate_cases identically as \"Per 100,000 population\", but the two use different denominators, so they are kept as separate measures and must never be added or plotted on one axis. abcs_rate_cases is per 100,000 of the age band on the row; this measure is per 100,000 of the general population. For 1997 Group B the \"<1\" age band reads 115.7 (3,900 infant cases / ~3.9M births * 100,000 ~= 100) while early-onset + late-onset read 0.70 + 0.40 = 1.10 (3,900 / ~272M * 100,000 ~= 1.4). They differ in all 28 years, mean absolute difference 66.3. Because the denominator is the general population rather than infants, these figures are also not summed into an infant total - the derived total provided in strep_counts.csv.gz is a count, where summing is valid. Active Bacterial Core surveillance (ABCs) is population-based but covers a defined catchment of selected US counties - roughly 35 million people - not the entire country. Rates are observed within that catchment; counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown.",
+    "statement": "",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
       }
     ],
     "citations": []

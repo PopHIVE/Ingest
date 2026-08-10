@@ -25,7 +25,7 @@ state or county breakdown.
 |---|---|---|
 | `data.csv.gz` | year × geography × age × serotype | pneumococcal IPD counts, percent, rate |
 | `uad.csv.gz` | 2020, 4-state area × serotype | pneumococcal urinary antigen detection |
-| `strep_rates.csv.gz` | year × pathogen × age × sex × race × onset | case and death rates per 100,000 |
+| `strep_rates.csv.gz` | year × pathogen × age × sex × race × onset | case and death rates per 100,000 (two case-rate measures — see below) |
 | `strep_counts.csv.gz` | year × pathogen × age × onset | estimated cases, deaths, survivals |
 | `strep_resistance.csv.gz` | year × pathogen × age × onset | percent non-susceptible, plus isolates tested |
 | `gas_syndromes.csv.gz` | year | Group A syndrome rates per 100,000 |
@@ -88,11 +88,28 @@ undocumented gaps.
   Group B, and its `18-64` / `65+` split does not line up with the `18-49` /
   `50-64` bands CLAUDE.md documents. `Total` is the all-ages aggregate throughout
   and overlaps the bands.
+- **Two case-rate measures, because CDC uses two denominators under one label.**
+  `abcs_rate_cases` is per 100,000 of the age band on the row;
+  `abcs_rate_cases_by_onset` is per 100,000 of the *general population*. CDC
+  labels both `"Per 100,000 population"`, but for 1997 Group B the `<1` band
+  reads **115.7** (≈ 3,900 infant cases / 3.9M births × 100,000) while
+  early-onset + late-onset read 0.70 + 0.40 = **1.10** (≈ 3,900 / 272M ×
+  100,000). They differ in all 28 years, mean absolute difference 66.3. They are
+  kept as separate measures, mutually exclusive by row, and **must never be added
+  or plotted on one axis**. The ingest asserts the exclusivity.
 - **`onset` is not additive.** CDC's Group B labels conflate age with infant
   onset timing (`Infants, early-onset disease`), which the ingest decomposes into
-  `age` + `onset`. Onset rows are a *subset* of infants, and the `Overall` rows
+  `age` + `onset`. Onset rows are a *subset* of infants, and the `Total` rows
   span all ages — 1997 reads 16,600 all-ages cases against 2,600 + 1,300 infant
   cases, so summing across `onset` double-counts.
+- **One derived row.** `strep_counts.csv.gz` carries an `age = "<1"` /
+  `onset = "Total"` case count computed as early + late (1997: 3,900), because CDC
+  publishes the parts but no combined infant figure. Summing is valid for counts,
+  which carry no denominator — which is exactly why no equivalent total is
+  derived for the rates. Everything else in these files is as published.
+- **`Total` is the aggregate level** for `age`, `sex`, `race_ethnicity` and
+  `onset`, matching the label used across the rest of the database. Note this
+  differs from the `Overall` that CLAUDE.md documents.
 - **Rates and counts are written to separate files.** Counts exist for only a few
   of the rate files' index combinations; folding them together left columns
   ~85–93% NA, sparse enough that `vroom`'s type guessing infers `logical` and
