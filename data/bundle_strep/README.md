@@ -1,4 +1,4 @@
-# bundle_gas
+# bundle_strep
 
 Group A and Group B Streptococcus surveillance, combining three sources into
 **three** long-format parquets under `dist/`.
@@ -25,7 +25,8 @@ handling NA.
 geography, geography_fips, date, year, pathogen,
 age, sex, race_ethnicity, onset, rate_denominator,      <- stratifications
 syndrome, antibiotic, emm_type, serotype, alph_type,    <- which entity
-measure, value, n_type, n_isolates, not_reported
+measure, value, value_not_reported,
+n_type, n_type_status, n_isolates, n_isolates_status
 ```
 
 `measure` names the quantity: `rate_cases`, `rate_deaths`, `n_cases`,
@@ -37,6 +38,19 @@ every percentage and `n_type` the numerator for emm types, both on the same row,
 so a tooltip reads *"emm1: 22.5% (99 of 440 isolates)"* from one line. Cases,
 deaths and survivals stay separate `measure` levels — they are three plottable
 series, not metadata for a single value.
+
+**Every blank is explained.** The two companions are the only columns that can be
+blank, and each carries a `_status` saying why, because NA alone conflates two
+different things:
+
+| status | meaning | rows |
+|---|---|---|
+| `reported` | the companion holds CDC's published figure | `n_isolates` 2,504 / `n_type` 550 |
+| `not_reported` | the measure has this companion, but CDC published nothing for that row | `n_isolates` 910 / `n_type` 38 |
+| `not_applicable` | the measure has no such companion at all | `n_isolates` 2,687 / `n_type` 5,513 |
+
+So `n_type` blank with `value_not_reported = 0` is not a data gap — it means the
+row isn't an emm row. Every other column, `value` included, is always populated.
 
 ## Notes for anyone reading these files
 
@@ -57,16 +71,23 @@ series, not metadata for a single value.
 - **`Total` is the aggregate level** throughout, matching the rest of the
   database. It overlaps the specific levels, so exclude it before summing across
   a stratification.
-- **`not_reported = 1` means the 0 is not real.** The ABCs file has no missing
-  values: unreported cells are filled with 0 and flagged. Reading a flagged row
-  as a measured zero understates resistance, syndrome rates and type shares, so
-  filter on the flag before aggregating. Reasons are structural — a drug off a
-  pathogen's panel, a type CDC pooled into "other" that year, a rate not broken
-  out for that stratification.
+- **`value_not_reported = 1` means the 0 is not real.** `value` is never blank:
+  unreported cells are filled with 0 and flagged. Reading a flagged row as a
+  measured zero understates resistance, syndrome rates and type shares, so filter
+  on the flag before aggregating. Reasons are structural — a drug off a pathogen's
+  panel, an emm type CDC pooled into "other" that year, a Group B serotype CDC
+  regrouped that year, a rate not broken out for that stratification.
 - **`suppressed = 1`** (Epic only) is a different thing: a small cell Epic
   withheld, imputed as 5.
 - **`n_isolates` and `n_type` stay blank rather than zero** where CDC published
-  no denominator, since "22.5% of 0 isolates" would read as broken.
+  no denominator, since "22.5% of 0 isolates" would read as broken. See the
+  status table above.
+- **`n_isolates` is the *apparent* denominator, not a documented one.** CDC ships
+  it beside each topic's percentages but never defines it, and the column
+  descriptions in the source metadata are empty. It is also not portable across
+  topics — 2023 emm-typed isolates read 3,930 against 3,908 resistance isolates.
+  Coverage is partial: 2006+ for resistance, and Group B publishes one overall
+  count rather than one per population stratum.
 - **NNDSS is published cumulatively.** The raw
   `streptococcal_toxic_shock_syndrome` column is a year-to-date running total
   that resets each MMWR year (national 2024 runs 5 → 647 across weeks 1–52).
@@ -99,5 +120,5 @@ This is a Data Collection Framework data bundle project, initialized with
 `dcf::dcf_add_bundle`.
 
 ```R
-dcf::dcf_process("bundle_gas")
+dcf::dcf_process("bundle_strep")
 ```

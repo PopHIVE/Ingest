@@ -24,6 +24,10 @@
 # `n_type` the numerator for emm types - "emm1: 22.5% (99 of 440 isolates)".
 # Cases, deaths and survivals stay separate `measure` levels: they are three
 # plottable series, not metadata for a single value.
+#
+# Each companion is blank on most rows, so each carries a `<name>_status` column
+# saying whether it is blank because the measure has no such companion or
+# because CDC never published it. See the status block below.
 # =============================================================================
 
 library(dplyr)
@@ -82,10 +86,31 @@ read_standard <- function(path) {
 
 # The standard files carry no NAs: every measure is zero-filled and paired with
 # its own `abcs_not_reported_flag_<measure>` saying whether that zero is a
-# measured value or a gap CDC never published. So `not_reported` here is read
-# straight off the source flag rather than inferred from a missing value - and a
-# flagged 0 must not be read as a measured zero.
+# measured value or a gap CDC never published. So `value_not_reported` here is
+# read straight off the source flag rather than inferred from a missing value -
+# and a flagged 0 must not be read as a measured zero.
 flag_of <- function(m) sub("^abcs_", "abcs_not_reported_flag_", m)
+
+# The companion columns (`n_isolates`, `n_type`) are blank on most rows for two
+# unrelated reasons, and a bare NA cannot tell them apart: either the measure has
+# no such companion at all (a case rate has no isolate denominator), or CDC
+# simply never published it for that row. Each companion therefore carries a
+# status column saying which:
+#
+#   "reported"        the companion holds CDC's published figure
+#   "not_reported"    the companion applies to this measure but CDC published
+#                     nothing - blank rather than 0, since "22.5% of 0 isolates"
+#                     would read as broken
+#   "not_applicable"  the measure has no such companion
+#
+# So a status of "reported" always accompanies a value, and the other two always
+# accompany NA. The assertion after the stacks below enforces exactly that.
+REPORTED       <- "reported"
+NOT_REPORTED   <- "not_reported"
+NOT_APPLICABLE <- "not_applicable"
+
+COMPANIONS <- c("n_isolates", "n_type")
+status_of <- function(x) paste0(x, "_status")
 
 # -----------------------------------------------------------------------------
 # 1. ABCs: stack all eight topics into one file
@@ -96,21 +121,29 @@ ENTITIES <- c("syndrome", "antibiotic", "emm_type", "serotype", "alph_type")
 # Melt one standard file into the shared long schema.
 #   spec        regex -> measure name, and which entity column the matched
 #               suffix belongs in
-#   companions  columns to carry alongside `value` instead of melting
+#   companions  output name -> source column, for columns carried alongside
+#               `value` instead of melted into their own rows. The two source
+#               files name the same isolate count differently
+#               (`abcs_n_isolates`, `abcs_gbs_n_isolates`), so normalising here
+#               keeps one `n_isolates` column across the stacks.
 stack_abcs <- function(path, spec, companions = character()) {
   d <- read_standard(path)
   flag_cols <- grep("^abcs_not_reported_flag_", names(d), value = TRUE)
-  comp_cols <- intersect(companions, names(d))
+  companions <- companions[companions %in% names(d)]
   base_ids <- c("geography", "geography_fips", "time",
                 intersect(DIMS, names(d)))
-  meas_cols <- setdiff(names(d), c(base_ids, flag_cols, comp_cols))
+  meas_cols <- setdiff(names(d), c(base_ids, flag_cols, unname(companions)))
 
-  # A companion denominator that CDC never published is zero in the source. Zero
-  # is a worse answer than blank for a denominator - "22.5% of 0 isolates" reads
-  # as broken - so blank it back out here.
-  for (cc in comp_cols) {
-    fl <- flag_of(cc)
-    if (fl %in% names(d)) d[[cc]][d[[fl]] == 1L] <- NA_real_
+  # Blank out the zero the source writes for a companion CDC never published,
+  # and record which of the two it was in the status column.
+  comp_cols <- character()
+  for (nm in names(companions)) {
+    src <- companions[[nm]]
+    fl <- flag_of(src)
+    absent <- if (fl %in% names(d)) d[[fl]] == 1L else rep(FALSE, nrow(d))
+    d[[nm]] <- replace(as.numeric(d[[src]]), absent, NA_real_)
+    d[[status_of(nm)]] <- if_else(absent, NOT_REPORTED, REPORTED)
+    comp_cols <- c(comp_cols, nm, status_of(nm))
   }
 
   out <- list()
@@ -119,14 +152,14 @@ stack_abcs <- function(path, spec, companions = character()) {
     for (s in spec) {
       if (grepl(s$pattern, m)) { hit <- s; break }
     }
-    if (is.null(hit)) stop("bundle_gas: no measure spec matches ", m, " in ", path)
+    if (is.null(hit)) stop("bundle_strep: no measure spec matches ", m, " in ", path)
     if (!(flag_of(m) %in% names(d))) {
-      stop("bundle_gas: ", m, " in ", path, " has no matching not-reported flag.")
+      stop("bundle_strep: ", m, " in ", path, " has no matching not-reported flag.")
     }
 
     piece <- d %>%
       select(all_of(c(base_ids, comp_cols)), value = all_of(m),
-             not_reported = all_of(flag_of(m))) %>%
+             value_not_reported = all_of(flag_of(m))) %>%
       mutate(measure = hit$measure)
     if (!is.na(hit$entity)) piece[[hit$entity]] <- sub(hit$pattern, "", m)
     out[[length(out) + 1]] <- piece
@@ -152,17 +185,20 @@ stack_emm <- function(path) {
     piece <- d %>%
       select(all_of(base_ids),
              value = all_of(pct),
-             not_reported = all_of(flag_of(pct)),
-             n_type = any_of(n),
+             value_not_reported = all_of(flag_of(pct)),
+             n_type = all_of(n),
              n_isolates = all_of(tot),
-             .n_type_flag = any_of(flag_of(n)),
+             .n_type_flag = all_of(flag_of(n)),
              .n_isolates_flag = all_of(flag_of(tot))) %>%
       mutate(measure = "pct_emm_type", emm_type = t)
-    if (".n_type_flag" %in% names(piece)) {
-      piece$n_type[piece$.n_type_flag == 1L] <- NA_real_
-    }
+    piece$n_type[piece$.n_type_flag == 1L] <- NA_real_
     piece$n_isolates[piece$.n_isolates_flag == 1L] <- NA_real_
-    piece %>% select(-any_of(c(".n_type_flag", ".n_isolates_flag")))
+    piece %>%
+      mutate(
+        n_type_status     = if_else(.n_type_flag == 1L, NOT_REPORTED, REPORTED),
+        n_isolates_status = if_else(.n_isolates_flag == 1L, NOT_REPORTED, REPORTED)
+      ) %>%
+      select(-c(.n_type_flag, .n_isolates_flag))
   }))
 }
 
@@ -186,7 +222,7 @@ abcs_strep <- bind_rows(
     "abcs/standard/strep_resistance.csv.gz",
     list(list(pattern = "^abcs_pct_resistant_", measure = "pct_resistant",
               entity = "antibiotic")),
-    companions = "abcs_n_isolates"
+    companions = c(n_isolates = "abcs_n_isolates")
   ),
   stack_abcs(
     "abcs/standard/gas_syndromes.csv.gz",
@@ -202,36 +238,50 @@ abcs_strep <- bind_rows(
     "abcs/standard/gbs_serotypes.csv.gz",
     list(list(pattern = "^abcs_gbs_pct_serotype_", measure = "pct_serotype",
               entity = "serotype")),
-    companions = "abcs_gbs_n_isolates"
+    companions = c(n_isolates = "abcs_gbs_n_isolates")
   ),
   stack_abcs(
     "abcs/standard/gbs_alph.csv.gz",
     list(list(pattern = "^abcs_gbs_pct_alph_", measure = "pct_alph_type",
               entity = "alph_type")),
-    companions = "abcs_gbs_n_isolates"
+    companions = c(n_isolates = "abcs_gbs_n_isolates")
   ),
   stack_emm("abcs/standard/gas_emm.csv.gz")
 ) %>%
-  # The three isolate-count companions are the same concept under per-file
-  # names; fold them into one column
-  mutate(
-    n_isolates = coalesce(n_isolates, abcs_n_isolates, abcs_gbs_n_isolates)
-  ) %>%
-  select(-abcs_n_isolates, -abcs_gbs_n_isolates) %>%
   rename(date = time) %>%
   mutate(
     year = as.integer(format(date, "%Y")),
-    not_reported = as.integer(not_reported),
+    value_not_reported = as.integer(value_not_reported),
     # "Total" fills any dimension a row is not stratified on, so every column is
     # populated and a consumer can filter on it without handling NA
-    across(all_of(c(DIMS, ENTITIES)), ~ tidyr::replace_na(as.character(.x), "Total"))
+    across(all_of(c(DIMS, ENTITIES)), ~ tidyr::replace_na(as.character(.x), "Total")),
+    # A stack that never had a companion contributes neither the value nor its
+    # status, so both arrive NA from bind_rows. That is the third case: the
+    # measure has no such companion at all.
+    across(all_of(status_of(COMPANIONS)),
+           ~ tidyr::replace_na(as.character(.x), NOT_APPLICABLE))
   ) %>%
   select(all_of(c("geography", "geography_fips", "date", "year", DIMS, ENTITIES,
-                  "measure", "value", "n_type", "n_isolates", "not_reported"))) %>%
+                  "measure", "value", "value_not_reported",
+                  "n_type", "n_type_status",
+                  "n_isolates", "n_isolates_status"))) %>%
   arrange(across(all_of(c("geography", "date", DIMS, ENTITIES, "measure"))))
 
 if (anyDuplicated(abcs_strep[c("geography", "date", DIMS, ENTITIES, "measure")])) {
-  stop("bundle_gas: duplicate index rows in abcs_strep.")
+  stop("bundle_strep: duplicate index rows in abcs_strep.")
+}
+
+# `value` is always populated (the source zero-fills and flags), and each
+# companion is populated exactly when its status says "reported". Assert both,
+# so a future change cannot reintroduce an unexplained blank.
+if (anyNA(abcs_strep$value) || anyNA(abcs_strep$value_not_reported)) {
+  stop("bundle_strep: NA in value or value_not_reported.")
+}
+for (cc in COMPANIONS) {
+  if (!identical(is.na(abcs_strep[[cc]]),
+                 abcs_strep[[status_of(cc)]] != REPORTED)) {
+    stop("bundle_strep: ", cc, " disagrees with ", status_of(cc), ".")
+  }
 }
 
 write_dist(abcs_strep, "abcs_strep.parquet")

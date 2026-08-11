@@ -245,19 +245,14 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   as_pct <- function(x) round(x * 100, 6)
 
   # Emit ONE 0/1 flag per measure column, then fill that measure's gaps with 0.
+  # A flagged 0 is NOT a measured zero - CDC published nothing for that cell.
   #
-  # Every measure gets its own flag, including measures CDC always reports (whose
-  # flag is all zeros), so a consumer never has to work out whether a flag exists
-  # for the column it cares about. A shared flag cannot express this: in
-  # gbs_serotypes for 2000 late-onset, serotypes II, IV and VI are genuine zeros
-  # while the two VI-grouping columns were never reported, and one flag over all
-  # of them cannot say which is which.
-  #
-  # A flagged 0 is NOT a measured zero. CDC published nothing for that cell -
-  # the drug is off that pathogen's panel, the emm type was pooled into "other"
-  # that year, the rate was not broken out for that stratification. Reading a
-  # flagged row as zero understates resistance, syndrome rates and type shares,
-  # so always check the flag before aggregating.
+  # One flag per measure rather than one shared flag per row, because a shared
+  # flag cannot express the common case: in gbs_serotypes for 2000 late-onset,
+  # serotypes II, IV and VI are genuine zeros while the two VI-grouping columns
+  # were never reported, and a single flag over all of them cannot say which is
+  # which. Measures CDC always reports get an all-zero flag, so a consumer never
+  # has to work out whether a flag exists for the column it cares about.
   #
   # Flag name is the measure name with the `abcs_` prefix replaced, so it is
   # derivable: abcs_gbs_pct_serotype_ia -> abcs_not_reported_flag_gbs_pct_serotype_ia.
@@ -626,10 +621,6 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     mutate(age = "Total", onset = "Total")
 
   emm_ids <- c(strep_ids, "age", "onset")
-
-  # Types CDC has not broken out in every year. Each type's percent and count
-  # are absent on exactly the same rows, so they share one flag.
-  emm_flag_types <- c("emm_43", "emm_49", "emm_59", "emm_60", "emm_81", "emm_91")
 
   gas_emm <- emm_long %>%
     select(all_of(c(emm_ids, "measure", "value"))) %>%
