@@ -656,3 +656,282 @@ if (!identical(process$ur_state, list(hash = ur_hash)) || !ur_cols_present) {
   dcf::dcf_process_record(updated = process)
 }
 
+# =============================================================================
+# Population Estimates Program (PEP) — annual county-level population,
+# age (65+, under 18), sex, and race/Hispanic-origin composition.
+# Source: U.S. Census Bureau PEP, "pep/charv" API.
+# Written to its own standard/data_pep.csv.gz (different vintage cadence
+# than ACS). Feeds chr_population, chr_65_and_older, chr_female, and the
+# chr_ race/Hispanic measures in PopHIVE/us-rates.
+# =============================================================================
+
+PEP_ENDPOINT <- "pep/charv"
+
+# Race-alone codes; no HISP breakdown published at the county level.
+PEP_RACE_ALONE <- c(aian = "006", asian = "012", nhpi = "050")
+
+# POPGROUP 451/453 ("White/Black alone, not Hispanic") return no data at
+# county or state level. Use the plain race code (002/004) crossed with
+# HISP=1 instead.
+PEP_RACE_NOT_HISPANIC <- c(nh_white = "002", nh_black = "004")
+
+latest_pep_vintage <- tryCatch({
+  censusapi::listCensusApis() %>%
+    filter(name == PEP_ENDPOINT) %>%
+    pull(vintage) %>%
+    as.integer() %>%
+    max(na.rm = TRUE)
+}, error = function(e) {
+  message("[WARN] Could not fetch PEP API metadata: ", conditionMessage(e))
+  if (!is.null(process$pep_vintage_year)) as.integer(process$pep_vintage_year) else NA_integer_
+})
+
+if (!is.na(latest_pep_vintage) &&
+    (is.null(process$pep_vintage_year) || process$pep_vintage_year < latest_pep_vintage)) {
+
+  message("PEP latest vintage year: ", latest_pep_vintage)
+  pep_dataset <- paste0(latest_pep_vintage, "/", PEP_ENDPOINT)
+  safe_div <- function(num, denom) if_else(denom == 0, NA_real_, num / denom)
+
+  # Each vintage bundles several reference dates (April 2020 Census Day,
+  # then a July estimate per year); keep only the most recent one.
+  latest_period <- function(df) {
+    df %>%
+      mutate(YEAR = as.integer(YEAR), MONTH = as.integer(MONTH)) %>%
+      filter(YEAR == max(YEAR)) %>%
+      filter(MONTH == max(MONTH))
+  }
+
+  # AGE "0" = all ages, matched on the returned string rather than passed
+  # as a query predicate (AGE="0" 404s as a predicate; AGE="0000" doesn't).
+  fetch_pep_race_alone <- function(popgroup_code) {
+    tryCatch({
+      censusapi::getCensus(
+        name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
+        region = "county:*", POPGROUP = popgroup_code, key = api_key
+      ) %>%
+        latest_period() %>%
+        filter(AGE == "0") %>%
+        transmute(state, county, pop = as.numeric(POP))
+    }, error = function(e) {
+      message("  [WARN] PEP fetch failed (POPGROUP=", popgroup_code, "): ", conditionMessage(e))
+      NULL
+    })
+  }
+
+  fetch_pep_race_not_hispanic <- function(popgroup_code) {
+    tryCatch({
+      censusapi::getCensus(
+        name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
+        region = "county:*", POPGROUP = popgroup_code, HISP = "1", key = api_key
+      ) %>%
+        latest_period() %>%
+        filter(AGE == "0") %>%
+        transmute(state, county, pop = as.numeric(POP))
+    }, error = function(e) {
+      message("  [WARN] PEP fetch failed (POPGROUP=", popgroup_code, ", HISP=1): ", conditionMessage(e))
+      NULL
+    })
+  }
+
+  pep_race <- Filter(Negate(is.null), c(
+    lapply(names(PEP_RACE_ALONE), function(nm) {
+      df <- fetch_pep_race_alone(PEP_RACE_ALONE[[nm]])
+      if (!is.null(df)) rename(df, !!nm := pop) else NULL
+    }),
+    lapply(names(PEP_RACE_NOT_HISPANIC), function(nm) {
+      df <- fetch_pep_race_not_hispanic(PEP_RACE_NOT_HISPANIC[[nm]])
+      if (!is.null(df)) rename(df, !!nm := pop) else NULL
+    })
+  ))
+
+  # Hispanic origin, any race: HISP=2. Omitting HISP (as below) defaults
+  # to its "Total" category, not a full breakdown.
+  pep_hispanic <- tryCatch({
+    censusapi::getCensus(
+      name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
+      region = "county:*", POPGROUP = "001", HISP = "2", key = api_key
+    ) %>%
+      latest_period() %>%
+      filter(AGE == "0") %>%
+      transmute(state, county, hispanic = as.numeric(POP))
+  }, error = function(e) {
+    message("  [WARN] PEP Hispanic-origin fetch failed: ", conditionMessage(e))
+    NULL
+  })
+
+  # Total population and the 65+/18+ pre-aggregated age codes, all races
+  # and Hispanic origins combined. Under-18 = total - 18+.
+  pep_age <- tryCatch({
+    df <- censusapi::getCensus(
+      name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
+      region = "county:*", POPGROUP = "001", key = api_key
+    ) %>% latest_period() %>% mutate(POP = as.numeric(POP))
+
+    df %>% filter(AGE == "0") %>% transmute(state, county, total = POP) %>%
+      left_join(df %>% filter(AGE == "6599") %>% transmute(state, county, age_65_plus = POP),
+                by = c("state", "county")) %>%
+      left_join(df %>% filter(AGE == "1899") %>% transmute(state, county, age_18_plus = POP),
+                by = c("state", "county"))
+  }, error = function(e) {
+    message("  [WARN] PEP age fetch failed: ", conditionMessage(e))
+    NULL
+  })
+
+  # Female, all races/ages/Hispanic origins combined: SEX=2.
+  pep_female <- tryCatch({
+    censusapi::getCensus(
+      name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
+      region = "county:*", POPGROUP = "001", SEX = "2", key = api_key
+    ) %>%
+      latest_period() %>%
+      filter(AGE == "0") %>%
+      transmute(state, county, female = as.numeric(POP))
+  }, error = function(e) {
+    message("  [WARN] PEP female fetch failed: ", conditionMessage(e))
+    NULL
+  })
+
+  pep_blocks <- Filter(Negate(is.null), c(pep_race, list(pep_hispanic, pep_age, pep_female)))
+
+  if (length(pep_blocks) > 0) {
+    pep_result <- Reduce(function(a, b) left_join(a, b, by = c("state", "county")), pep_blocks) %>%
+      mutate(
+        geography        = paste0(sprintf("%02d", as.integer(state)), sprintf("%03d", as.integer(county))),
+        time             = paste0(latest_pep_vintage, "-12-31"),
+        pep_population   = total,
+        pep_pct_65_older = safe_div(age_65_plus, total),
+        pep_pct_under_18 = safe_div(total - age_18_plus, total),
+        pep_pct_female   = safe_div(female, total),
+        pep_pct_aian     = safe_div(aian, total),
+        pep_pct_asian    = safe_div(asian, total),
+        pep_pct_nhpi     = safe_div(nhpi, total),
+        pep_pct_nh_black = safe_div(nh_black, total),
+        pep_pct_nh_white = safe_div(nh_white, total),
+        pep_pct_hispanic = safe_div(hispanic, total)
+      ) %>%
+      select(geography, time, starts_with("pep_"))
+
+    vroom::vroom_write(pep_result, "standard/data_pep.csv.gz", delim = ",")
+    process$pep_vintage_year <- latest_pep_vintage
+    dcf::dcf_process_record(updated = process)
+    message("PEP data written for vintage ", latest_pep_vintage)
+  }
+} else {
+  message("PEP data is up to date (last vintage: ", process$pep_vintage_year, ")")
+}
+
+# =============================================================================
+# SAIPE (Small Area Income and Poverty Estimates) — annual county-level
+# child poverty rate and median household income.
+# Source: U.S. Census Bureau SAIPE, "timeseries/poverty/saipe" API.
+# SAEPOVRT0_17_PT is a 0-100 percent; rescaled to this file's 0-1 convention.
+# Feeds chr_children_in_poverty and chr_median_household_income in us-rates.
+# =============================================================================
+
+SAIPE_ENDPOINT <- "timeseries/poverty/saipe"
+
+# SAIPE is a "time"-predicate timeseries dataset, not vintage-in-path like
+# ACS/PEP, so there's no vintage to discover from listCensusApis(). It's
+# released ~once/year; probe the current year and the two preceding it.
+latest_saipe_year <- tryCatch({
+  candidate_years <- as.integer(format(Sys.Date(), "%Y"))
+  candidate_years <- candidate_years:(candidate_years - 2L)
+  found <- NA_integer_
+  for (yr in candidate_years) {
+    test <- tryCatch(
+      censusapi::getCensus(
+        name = SAIPE_ENDPOINT, vars = "SAEMHI_PT",
+        region = "state:01", time = as.character(yr), key = api_key
+      ),
+      error = function(e) NULL
+    )
+    if (!is.null(test) && nrow(test) > 0) { found <- yr; break }
+  }
+  found
+}, error = function(e) {
+  message("[WARN] Could not probe SAIPE API: ", conditionMessage(e))
+  NA_integer_
+})
+
+if (!is.na(latest_saipe_year) &&
+    (is.null(process$saipe_year) || process$saipe_year < latest_saipe_year)) {
+
+  message("SAIPE latest year: ", latest_saipe_year)
+
+  saipe_raw <- tryCatch({
+    censusapi::getCensus(
+      name   = SAIPE_ENDPOINT,
+      vars   = c("SAEPOVRT0_17_PT", "SAEMHI_PT"),
+      region = "county:*",
+      time   = as.character(latest_saipe_year),
+      key    = api_key
+    )
+  }, error = function(e) {
+    message("  [WARN] SAIPE fetch failed: ", conditionMessage(e))
+    NULL
+  })
+
+  if (!is.null(saipe_raw) && nrow(saipe_raw) > 0) {
+    saipe_result <- saipe_raw %>%
+      mutate(
+        geography                      = paste0(sprintf("%02d", as.integer(state)), sprintf("%03d", as.integer(county))),
+        time                           = paste0(latest_saipe_year, "-12-31"),
+        saipe_pct_children_poverty    = as.numeric(SAEPOVRT0_17_PT) / 100,
+        saipe_median_household_income = as.numeric(SAEMHI_PT)
+      ) %>%
+      select(geography, time, saipe_pct_children_poverty, saipe_median_household_income)
+
+    vroom::vroom_write(saipe_result, "standard/data_saipe.csv.gz", delim = ",")
+    process$saipe_year <- latest_saipe_year
+    dcf::dcf_process_record(updated = process)
+    message("SAIPE data written for year ", latest_saipe_year)
+  }
+} else {
+  message("SAIPE data is up to date (last year: ", process$saipe_year, ")")
+}
+
+# =============================================================================
+# 2020 Census Operational Quality Metrics (OQM) — county-level self-response
+# rate. Static, one-time dataset tied to the 2020 Census; won't refresh
+# again until the 2030 Census releases its own OQM data. Feeds
+# chr_census_participation in us-rates.
+# Source: Release 4 (Oct 2022) county file. National total is already
+# present as State="00"/County="000".
+# =============================================================================
+
+oqm_url      <- "https://www2.census.gov/programs-surveys/decennial/2020/data/operational-quality-metrics/census-operational-quality-metrics-release_4.xlsx"
+oqm_raw_path <- "raw/census-operational-quality-metrics-release_4.xlsx"
+
+if (!file.exists(oqm_raw_path)) {
+  # This ~6MB file occasionally exceeds R's 60s default download timeout.
+  old_timeout <- getOption("timeout")
+  options(timeout = 120)
+  download.file(oqm_url, oqm_raw_path, mode = "wb")
+  options(timeout = old_timeout)
+}
+oqm_hash <- unname(tools::md5sum(oqm_raw_path))
+
+if (!identical(process$oqm_state, list(hash = oqm_hash)) || !file.exists("standard/data_oqm.csv.gz")) {
+
+  oqm_raw <- readxl::read_excel(oqm_raw_path, sheet = "County Metrics", skip = 1)
+
+  oqm_result <- oqm_raw %>%
+    rename(state = State, county = County, self_response = `Self-Response`) %>%
+    filter(!is.na(state), !is.na(county)) %>%  # drops one blank trailing row in the source sheet
+    mutate(
+      geography = if_else(state == "00" & county == "000", "00", paste0(state, county)),
+      time      = "2020-12-31",
+      # Source uses "-" for counties where self-response wasn't computed
+      # (e.g. Lake and Peninsula Borough, AK); coerces to NA as intended.
+      oqm_self_response_rate = suppressWarnings(as.numeric(self_response))
+    ) %>%
+    select(geography, time, oqm_self_response_rate)
+
+  vroom::vroom_write(oqm_result, "standard/data_oqm.csv.gz", delim = ",")
+
+  process$oqm_state <- list(hash = oqm_hash)
+  dcf::dcf_process_record(updated = process)
+  message("OQM data written (2020 Census, static)")
+}
+
