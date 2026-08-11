@@ -935,3 +935,84 @@ if (!identical(process$oqm_state, list(hash = oqm_hash)) || !file.exists("standa
   message("OQM data written (2020 Census, static)")
 }
 
+# =============================================================================
+# SAHIE (Small Area Health Insurance Estimates) — annual county-level
+# uninsured rate, overall and for two age subgroups.
+# Source: U.S. Census Bureau SAHIE, "timeseries/healthins/sahie" API.
+# AGECAT/IPRCAT/RACECAT/SEXCAT codes verified against this endpoint's own
+# variable metadata (values enumerated directly, unlike PEP's AGE/SEX/HISP):
+#   AGECAT 0 = Under 65, 1 = 18-64, 4 = Under 19
+#   IPRCAT/RACECAT/SEXCAT 0 = All Incomes/Races/Sexes
+# PCTUI_PT is a 0-100 percent; rescaled to this file's 0-1 convention.
+# Feeds chr_uninsured, chr_uninsured_adults, chr_uninsured_children in
+# us-rates.
+# =============================================================================
+
+SAHIE_ENDPOINT <- "timeseries/healthins/sahie"
+SAHIE_AGECATS  <- c(sahie_pct_uninsured = "0", sahie_pct_uninsured_adults = "1",
+                    sahie_pct_uninsured_children = "4")
+
+# Same reasoning as SAIPE: a "time"-predicate timeseries dataset with no
+# vintage to discover from listCensusApis(), released ~once/year.
+latest_sahie_year <- tryCatch({
+  candidate_years <- as.integer(format(Sys.Date(), "%Y"))
+  candidate_years <- candidate_years:(candidate_years - 2L)
+  found <- NA_integer_
+  for (yr in candidate_years) {
+    test <- tryCatch(
+      censusapi::getCensus(
+        name = SAHIE_ENDPOINT, vars = "PCTUI_PT",
+        region = "state:01", time = as.character(yr),
+        AGECAT = "0", IPRCAT = "0", RACECAT = "0", SEXCAT = "0", key = api_key
+      ),
+      error = function(e) NULL
+    )
+    if (!is.null(test) && nrow(test) > 0) { found <- yr; break }
+  }
+  found
+}, error = function(e) {
+  message("[WARN] Could not probe SAHIE API: ", conditionMessage(e))
+  NA_integer_
+})
+
+if (!is.na(latest_sahie_year) &&
+    (is.null(process$sahie_year) || process$sahie_year < latest_sahie_year)) {
+
+  message("SAHIE latest year: ", latest_sahie_year)
+
+  fetch_sahie_agecat <- function(agecat_code) {
+    tryCatch({
+      censusapi::getCensus(
+        name = SAHIE_ENDPOINT, vars = "PCTUI_PT",
+        region = "county:*", time = as.character(latest_sahie_year),
+        AGECAT = agecat_code, IPRCAT = "0", RACECAT = "0", SEXCAT = "0", key = api_key
+      ) %>%
+        transmute(state, county, value = as.numeric(PCTUI_PT) / 100)
+    }, error = function(e) {
+      message("  [WARN] SAHIE fetch failed (AGECAT=", agecat_code, "): ", conditionMessage(e))
+      NULL
+    })
+  }
+
+  sahie_blocks <- Filter(Negate(is.null), lapply(names(SAHIE_AGECATS), function(nm) {
+    df <- fetch_sahie_agecat(SAHIE_AGECATS[[nm]])
+    if (!is.null(df)) rename(df, !!nm := value) else NULL
+  }))
+
+  if (length(sahie_blocks) > 0) {
+    sahie_result <- Reduce(function(a, b) left_join(a, b, by = c("state", "county")), sahie_blocks) %>%
+      mutate(
+        geography = paste0(sprintf("%02d", as.integer(state)), sprintf("%03d", as.integer(county))),
+        time      = paste0(latest_sahie_year, "-12-31")
+      ) %>%
+      select(geography, time, starts_with("sahie_"))
+
+    vroom::vroom_write(sahie_result, "standard/data_sahie.csv.gz", delim = ",")
+    process$sahie_year <- latest_sahie_year
+    dcf::dcf_process_record(updated = process)
+    message("SAHIE data written for year ", latest_sahie_year)
+  }
+} else {
+  message("SAHIE data is up to date (last year: ", process$sahie_year, ")")
+}
+
