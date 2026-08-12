@@ -115,13 +115,16 @@ combine_organism <- function(...) {
 #' is flagged tested_no_mic. FDA publishes a susceptibility interpretation for
 #' some drugs (notably streptomycin) without publishing the concentration, so
 #' the counts are usable even though the MIC was never measured.
-#' All value columns are zero-filled; the flag carries the reason.
+#' Missing values stay NA rather than being filled with a sentinel: 0 is a real
+#' measurement for pct_resistant and is not a value MIC can take, so either
+#' would be indistinguishable from a genuine result. The flag says why a cell
+#' is empty; the value column says nothing was measured.
 #'
 #' @param data long data, one row per row_key x measure
 #' @param row_keys columns identifying a row (must include organism_col)
 #' @param measure_col column holding measure names (antimicrobial or pattern)
 #' @param organism_col column defining panel membership
-#' @param value_cols columns to zero-fill
+#' @param value_cols measure value columns, left as NA where absent
 #' @param mic_cols subset of value_cols that are MIC concentrations
 #' @param flag_col existing flag column for rows present in the source
 add_panel_flags <- function(data, row_keys, measure_col, organism_col,
@@ -163,7 +166,6 @@ add_panel_flags <- function(data, row_keys, measure_col, organism_col,
   }
 
   out %>%
-    mutate(across(all_of(value_cols), ~ replace(.x, is.na(.x), 0))) %>%
     select(-.on_panel, -any_of(setdiff(flag_col, "narms_flag")))
 }
 
@@ -1228,9 +1230,6 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
         !is.na(n_tested) & n_tested == 0 ~ "no_isolates_tested",
         TRUE ~ "tested"
       ),
-      pct_resistant = replace(pct_resistant, is.na(pct_resistant), 0),
-      n_resistant = replace(n_resistant, is.na(n_resistant), 0),
-      n_tested = replace(n_tested, is.na(n_tested), 0),
       genus_species_serotype = combine_organism(genus, species_serotype),
       antimicrobial = clean_name(antimicrobial_agent)
     ) %>%
@@ -1295,9 +1294,6 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
         !is.na(n_tested) & n_tested == 0 ~ "no_isolates_tested",
         TRUE ~ "tested"
       ),
-      pct_resistant = replace(pct_resistant, is.na(pct_resistant), 0),
-      n_resistant = replace(n_resistant, is.na(n_resistant), 0),
-      n_tested = replace(n_tested, is.na(n_tested), 0),
       genus_species_serotype = combine_organism(genus, species_serotype),
       pattern_name = clean_name(pattern)
     ) %>%

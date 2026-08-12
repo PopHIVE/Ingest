@@ -1,150 +1,3157 @@
 {
-  "_column_naming": {
-    "id": "_column_naming",
-    "short_name": "Column naming convention",
-    "long_name": "How measure columns are named in the standardized NARMS files",
+  "narms_pct_resistant_{category}": {
+    "full_name": "narms_pct_resistant_{category}",
+    "measure": "narms_pct_resistant_{category}",
+    "short_name": "Percent resistant to {category.short_name}",
+    "long_name": "Percentage of isolates resistant to {category.short_name}",
     "category": "antimicrobial_resistance",
-    "short_description": "Value columns are named narms_{measure}_{antimicrobial}",
-    "long_description": "All five standardized NARMS files are stored in wide format. Each row is one organism (plus geography, time, and any sampling context such as test method, meat source, host species, or collection source), and each antimicrobial agent or resistance pattern contributes its own set of columns. Column names follow the pattern narms_{measure}_{antimicrobial}, for example narms_pct_resistant_ciprofloxacin, narms_n_tested_ciprofloxacin, and narms_flag_ciprofloxacin. Antimicrobial and pattern names are lowercased with non-alphanumeric characters replaced by underscores. The entries below describe each {measure} prefix; they apply identically to every antimicrobial suffix.",
-    "measure_type": "Metadata",
-    "unit": "",
-    "time_resolution": "Year",
-    "sources": [
-      { "id": "narms_now" },
-      { "id": "narms_retail_meats" },
-      { "id": "narms_animal_pathogen" },
-      { "id": "narms_food_animals" }
-    ],
-    "citations": []
-  },
-
-  "narms_flag": {
-    "id": "narms_flag",
-    "short_name": "Measurement status flag",
-    "long_name": "Why a measurement is present or absent for this organism and antimicrobial",
-    "category": "antimicrobial_resistance",
-    "short_description": "Categorical flag explaining whether the accompanying values are real measurements",
-    "long_description": "Every antimicrobial has a matching narms_flag_{antimicrobial} column recording whether the values beside it are real. The value columns are never NA; missing measurements are stored as 0, and this flag carries the reason. A 0 is only a genuine finding when the flag reads 'tested'. VALUES: (1) 'tested' - isolates were collected, the antimicrobial was on the panel, and susceptibility results came back. The denominator, numerator, and percentage are all real, and a 0 percent means the lab tested isolates and found none resistant. (2) 'no_isolates_tested' - the antimicrobial was on the panel and tracked for that organism, geography, and year, but no isolates were available to test. CDC reports this as an explicit zero, meaning 'we looked and there was nothing' as distinct from 'we did not look'. All value columns are placeholder zeros. Occurs only in the human clinical files; the FDA files aggregate isolate records, so a group with no isolates produces no row rather than a zero. (3) 'not_tested' - the antimicrobial was not part of the panel run for that specific combination of organism, geography, year, and test method, although it is used against that organism elsewhere in the file. Causes include antimicrobials added to or dropped from panels partway through the surveillance period, states running narrower panels, and recent years where collection and testing are still in progress. In the human files this is overwhelmingly a state-level phenomenon and is concentrated in the most recent years, which are preliminary and will partly resolve to 'tested' in future releases. All value columns are placeholder zeros. (4) 'not_on_panel' - the antimicrobial is never used against that organism, in any geography, year, or test method. This is not a gap but a combination that does not exist as a clinical question, and it will never fill in. It arises because each file holds the union of every organism's panel in one set of columns, so each row carries columns for antimicrobials that do not apply to it. This is a property of the organism and antimicrobial pairing rather than of any particular row. All value columns are placeholder zeros. (5) 'tested_no_mic' - isolates were tested and the resistance counts and percentage are real, but no minimum inhibitory concentration was published. Occurs only in the food-producing animals file, almost entirely for streptomycin, because three of the four FDA source files publish a susceptibility interpretation for that agent without publishing the underlying concentration. IMPORTANT: rows flagged 'tested_no_mic' contain valid resistance measurements. Filtering on narms_flag == 'tested' will silently exclude them. To select all real resistance measurements, match both 'tested' and 'tested_no_mic'. The five values are mutually exclusive; each cell carries exactly one. A single row will normally contain several different flag values across its antimicrobial columns.",
-    "statement": "Measurement status for {antimicrobial} was {value}",
-    "measure_type": "Category",
-    "unit": "",
-    "time_resolution": "Year",
-    "sources": [
-      { "id": "narms_now" },
-      { "id": "narms_retail_meats" },
-      { "id": "narms_animal_pathogen" },
-      { "id": "narms_food_animals" }
-    ],
-    "citations": []
-  },
-
-  "pct_resistant": {
-    "id": "pct_resistant",
-    "short_name": "Percent resistant to antimicrobial",
-    "long_name": "Percentage of isolates resistant to a specific antimicrobial agent",
-    "category": "antimicrobial_resistance",
-    "short_description": "Percentage of isolates showing resistance to a specific antimicrobial agent",
-    "long_description": "Percentage of isolates tested by NARMS showing resistance to a specific antimicrobial agent, based on CLSI breakpoints. Calculated as n_resistant / n_tested * 100. Applies across all NARMS surveillance programs: human clinical isolates (CDC NARMS Now, AST and WGS methods), retail meat isolates (FDA, state-level), animal diagnostic pathogen isolates (FDA, state-level), and food-producing animal isolates (FDA HACCP/Cecal/Minor Species, national only). This column is never NA. Where no measurement exists the value is 0, and the matching narms_flag_{antimicrobial} column records why. A 0 is only a real finding when that flag reads 'tested' or 'tested_no_mic'; otherwise it is a placeholder and should be excluded from any calculation. Treating placeholder zeros as real will understate resistance.",
-    "statement": "In {location}, {value}% of isolates were resistant to {antimicrobial}",
+    "short_description": "Percentage of isolates showing resistance to {category.short_name}.",
+    "long_description": "Percentage of isolates tested by NARMS showing resistance to {category.short_name}, based on CLSI breakpoints. Calculated as narms_n_resistant_{category} divided by narms_n_tested_{category}, multiplied by 100. In the resistance pattern file the category is a multi-drug resistance pattern rather than a single agent, and the value is the percentage of isolates matching that pattern. Cells with no measurement are NA rather than a sentinel value, because 0 is a legitimate result for this measure and could not be distinguished from a placeholder. The matching narms_flag_{category} column records why a cell is empty. A 0 here is a real finding only where the flag reads tested or tested_no_mic: it means isolates were tested and none were resistant.",
+    "statement": "In {location}, {value}% of isolates were resistant to {category.short_name}",
     "measure_type": "Percent",
     "unit": "Percent",
     "time_resolution": "Year",
     "sources": [
-      { "id": "narms_now" },
-      { "id": "narms_retail_meats" },
-      { "id": "narms_animal_pathogen" },
-      { "id": "narms_food_animals" }
-    ],
-    "citations": [
       {
-        "title": "NARMS Now: Human Data",
-        "url": "https://www.cdc.gov/narms/data/index.html"
+        "id": "narms_now"
       },
       {
-        "title": "FDA NARMS Integrated Reports/Summaries",
-        "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries"
+        "id": "narms_retail_meats"
+      },
+      {
+        "id": "narms_animal_pathogen"
+      },
+      {
+        "id": "narms_food_animals"
       }
-    ]
+    ],
+    "categories": {
+      "_1_antibiotic_recommended_for_treatment": {
+        "default": "_1_antibiotic_recommended_for_treatment",
+        "short_name": "1 Antibiotic Recommended For Treatment"
+      },
+      "_3_antibiotics_recommended_for_treatment": {
+        "default": "_3_antibiotics_recommended_for_treatment",
+        "short_name": "3 Antibiotics Recommended For Treatment"
+      },
+      "aaucx": {
+        "default": "aaucx",
+        "short_name": "AAuCx"
+      },
+      "acssut": {
+        "default": "acssut",
+        "short_name": "ACSSuT"
+      },
+      "acssutaucx": {
+        "default": "acssutaucx",
+        "short_name": "ACSSuTAuCx"
+      },
+      "acsut": {
+        "default": "acsut",
+        "short_name": "ACSuT"
+      },
+      "acsutaucx": {
+        "default": "acsutaucx",
+        "short_name": "ACSuTAuCx"
+      },
+      "act_s": {
+        "default": "act_s",
+        "short_name": "Act S"
+      },
+      "amikacin": {
+        "default": "amikacin",
+        "short_name": "Amikacin"
+      },
+      "amoxicillin": {
+        "default": "amoxicillin",
+        "short_name": "Amoxicillin"
+      },
+      "amoxicillin_clavulanic_acid": {
+        "default": "amoxicillin_clavulanic_acid",
+        "short_name": "Amoxicillin Clavulanic Acid"
+      },
+      "amoxicillin_clavulanic_acid_2_1": {
+        "default": "amoxicillin_clavulanic_acid_2_1",
+        "short_name": "Amoxicillin Clavulanic Acid 2 1"
+      },
+      "ampicillin": {
+        "default": "ampicillin",
+        "short_name": "Ampicillin"
+      },
+      "ampicillin_sulbactam": {
+        "default": "ampicillin_sulbactam",
+        "short_name": "Ampicillin Sulbactam"
+      },
+      "assut_and_not_resistant_to_chloramphenicol": {
+        "default": "assut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASSuT And Not Resistant To Chloramphenicol"
+      },
+      "asut_and_not_resistant_to_chloramphenicol": {
+        "default": "asut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASuT And Not Resistant To Chloramphenicol"
+      },
+      "at_s": {
+        "default": "at_s",
+        "short_name": "At S"
+      },
+      "at_s_and_dsc": {
+        "default": "at_s_and_dsc",
+        "short_name": "At S And (DSC)"
+      },
+      "avilamycin": {
+        "default": "avilamycin",
+        "short_name": "Avilamycin"
+      },
+      "azithromycin": {
+        "default": "azithromycin",
+        "short_name": "Azithromycin"
+      },
+      "azithromycin_and_ceftriaxone": {
+        "default": "azithromycin_and_ceftriaxone",
+        "short_name": "Azithromycin And Ceftriaxone"
+      },
+      "azithromycin_and_ciprofloxacin": {
+        "default": "azithromycin_and_ciprofloxacin",
+        "short_name": "Azithromycin And Ciprofloxacin"
+      },
+      "azithromycin_and_dsc": {
+        "default": "azithromycin_and_dsc",
+        "short_name": "Azithromycin And (DSC)"
+      },
+      "azithromycin_or_ceftriaxone_or_ciprofloxacin": {
+        "default": "azithromycin_or_ceftriaxone_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ceftriaxone Or Ciprofloxacin"
+      },
+      "azithromycin_or_ciprofloxacin": {
+        "default": "azithromycin_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ciprofloxacin"
+      },
+      "azithromycin_or_dsc": {
+        "default": "azithromycin_or_dsc",
+        "short_name": "Azithromycin Or (DSC)"
+      },
+      "aztreonam": {
+        "default": "aztreonam",
+        "short_name": "Aztreonam"
+      },
+      "bacitracin": {
+        "default": "bacitracin",
+        "short_name": "Bacitracin"
+      },
+      "benzylpenicillin": {
+        "default": "benzylpenicillin",
+        "short_name": "Benzylpenicillin"
+      },
+      "cefazolin": {
+        "default": "cefazolin",
+        "short_name": "Cefazolin"
+      },
+      "cefepime": {
+        "default": "cefepime",
+        "short_name": "Cefepime"
+      },
+      "ceforanide": {
+        "default": "ceforanide",
+        "short_name": "Ceforanide"
+      },
+      "cefotetan": {
+        "default": "cefotetan",
+        "short_name": "Cefotetan"
+      },
+      "cefovecin": {
+        "default": "cefovecin",
+        "short_name": "Cefovecin"
+      },
+      "cefoxitin": {
+        "default": "cefoxitin",
+        "short_name": "Cefoxitin"
+      },
+      "cefpodoxime": {
+        "default": "cefpodoxime",
+        "short_name": "Cefpodoxime"
+      },
+      "ceftazidime": {
+        "default": "ceftazidime",
+        "short_name": "Ceftazidime"
+      },
+      "ceftiofur": {
+        "default": "ceftiofur",
+        "short_name": "Ceftiofur"
+      },
+      "ceftriaxone": {
+        "default": "ceftriaxone",
+        "short_name": "Ceftriaxone"
+      },
+      "ceftriaxone_and_dsc": {
+        "default": "ceftriaxone_and_dsc",
+        "short_name": "Ceftriaxone And (DSC)"
+      },
+      "cefuroxime": {
+        "default": "cefuroxime",
+        "short_name": "Cefuroxime"
+      },
+      "cephalexin": {
+        "default": "cephalexin",
+        "short_name": "Cephalexin"
+      },
+      "cephalothin": {
+        "default": "cephalothin",
+        "short_name": "Cephalothin"
+      },
+      "chloramphenicol": {
+        "default": "chloramphenicol",
+        "short_name": "Chloramphenicol"
+      },
+      "chlortetracycline": {
+        "default": "chlortetracycline",
+        "short_name": "Chlortetracycline"
+      },
+      "ciprofloxacin": {
+        "default": "ciprofloxacin",
+        "short_name": "Ciprofloxacin"
+      },
+      "ciprofloxacin_2nd_breakpoint": {
+        "default": "ciprofloxacin_2nd_breakpoint",
+        "short_name": "Ciprofloxacin 2nd Breakpoint"
+      },
+      "ciprofloxacin_dsc": {
+        "default": "ciprofloxacin_dsc",
+        "short_name": "Ciprofloxacin (DSC)"
+      },
+      "clarithromycin": {
+        "default": "clarithromycin",
+        "short_name": "Clarithromycin"
+      },
+      "clindamycin": {
+        "default": "clindamycin",
+        "short_name": "Clindamycin"
+      },
+      "danofloxacin": {
+        "default": "danofloxacin",
+        "short_name": "Danofloxacin"
+      },
+      "daptomycin": {
+        "default": "daptomycin",
+        "short_name": "Daptomycin"
+      },
+      "doxycycline": {
+        "default": "doxycycline",
+        "short_name": "Doxycycline"
+      },
+      "enrofloxacin": {
+        "default": "enrofloxacin",
+        "short_name": "Enrofloxacin"
+      },
+      "erythromycin": {
+        "default": "erythromycin",
+        "short_name": "Erythromycin"
+      },
+      "flaveomycin": {
+        "default": "flaveomycin",
+        "short_name": "Flaveomycin"
+      },
+      "florfenicol": {
+        "default": "florfenicol",
+        "short_name": "Florfenicol"
+      },
+      "fusidic_acid": {
+        "default": "fusidic_acid",
+        "short_name": "Fusidic Acid"
+      },
+      "gamithromycin": {
+        "default": "gamithromycin",
+        "short_name": "Gamithromycin"
+      },
+      "gatifloxacin": {
+        "default": "gatifloxacin",
+        "short_name": "Gatifloxacin"
+      },
+      "gentamicin": {
+        "default": "gentamicin",
+        "short_name": "Gentamicin"
+      },
+      "imipenem": {
+        "default": "imipenem",
+        "short_name": "Imipenem"
+      },
+      "kanamycin": {
+        "default": "kanamycin",
+        "short_name": "Kanamycin"
+      },
+      "levofloxacin": {
+        "default": "levofloxacin",
+        "short_name": "Levofloxacin"
+      },
+      "lincomycin": {
+        "default": "lincomycin",
+        "short_name": "Lincomycin"
+      },
+      "linezolid": {
+        "default": "linezolid",
+        "short_name": "Linezolid"
+      },
+      "macrolides_and_quinolones": {
+        "default": "macrolides_and_quinolones",
+        "short_name": "Macrolides And Quinolones"
+      },
+      "marbofloxacin": {
+        "default": "marbofloxacin",
+        "short_name": "Marbofloxacin"
+      },
+      "meropenem": {
+        "default": "meropenem",
+        "short_name": "Meropenem"
+      },
+      "minocycline": {
+        "default": "minocycline",
+        "short_name": "Minocycline"
+      },
+      "moxifloxacin": {
+        "default": "moxifloxacin",
+        "short_name": "Moxifloxacin"
+      },
+      "nalidixic_acid": {
+        "default": "nalidixic_acid",
+        "short_name": "Nalidixic Acid"
+      },
+      "neomycin": {
+        "default": "neomycin",
+        "short_name": "Neomycin"
+      },
+      "nitrofurantoin": {
+        "default": "nitrofurantoin",
+        "short_name": "Nitrofurantoin"
+      },
+      "no_resistance_detected": {
+        "default": "no_resistance_detected",
+        "short_name": "No Resistance Detected"
+      },
+      "novobiocin": {
+        "default": "novobiocin",
+        "short_name": "Novobiocin"
+      },
+      "ofloxacin": {
+        "default": "ofloxacin",
+        "short_name": "Ofloxacin"
+      },
+      "orbifloxacin": {
+        "default": "orbifloxacin",
+        "short_name": "Orbifloxacin"
+      },
+      "oxacillin": {
+        "default": "oxacillin",
+        "short_name": "Oxacillin"
+      },
+      "oxacillin_2_nacl": {
+        "default": "oxacillin_2_nacl",
+        "short_name": "Oxacillin 2 Nacl"
+      },
+      "oxytetracycline": {
+        "default": "oxytetracycline",
+        "short_name": "Oxytetracycline"
+      },
+      "penicillin": {
+        "default": "penicillin",
+        "short_name": "Penicillin"
+      },
+      "penicillin_novobiocin": {
+        "default": "penicillin_novobiocin",
+        "short_name": "Penicillin Novobiocin"
+      },
+      "piperacillin": {
+        "default": "piperacillin",
+        "short_name": "Piperacillin"
+      },
+      "piperacillin_tazobactam": {
+        "default": "piperacillin_tazobactam",
+        "short_name": "Piperacillin Tazobactam"
+      },
+      "pirlimycin": {
+        "default": "pirlimycin",
+        "short_name": "Pirlimycin"
+      },
+      "polymyxin_b": {
+        "default": "polymyxin_b",
+        "short_name": "Polymyxin B"
+      },
+      "pradofloxacin": {
+        "default": "pradofloxacin",
+        "short_name": "Pradofloxacin"
+      },
+      "quinupristin_dalfopristin": {
+        "default": "quinupristin_dalfopristin",
+        "short_name": "Quinupristin Dalfopristin"
+      },
+      "resistance_1_clsi_classes": {
+        "default": "resistance_1_clsi_classes",
+        "short_name": "Resistance 1 CLSI Classes"
+      },
+      "resistance_2_clsi_classes": {
+        "default": "resistance_2_clsi_classes",
+        "short_name": "Resistance 2 CLSI Classes"
+      },
+      "resistance_3_clsi_classes": {
+        "default": "resistance_3_clsi_classes",
+        "short_name": "Resistance 3 CLSI Classes"
+      },
+      "resistance_4_clsi_classes": {
+        "default": "resistance_4_clsi_classes",
+        "short_name": "Resistance 4 CLSI Classes"
+      },
+      "resistance_5_clsi_classes": {
+        "default": "resistance_5_clsi_classes",
+        "short_name": "Resistance 5 CLSI Classes"
+      },
+      "resistance_6_clsi_classes": {
+        "default": "resistance_6_clsi_classes",
+        "short_name": "Resistance 6 CLSI Classes"
+      },
+      "resistance_7_clsi_classes": {
+        "default": "resistance_7_clsi_classes",
+        "short_name": "Resistance 7 CLSI Classes"
+      },
+      "resistance_8_clsi_classes": {
+        "default": "resistance_8_clsi_classes",
+        "short_name": "Resistance 8 CLSI Classes"
+      },
+      "rifampin": {
+        "default": "rifampin",
+        "short_name": "Rifampin"
+      },
+      "salinomycin": {
+        "default": "salinomycin",
+        "short_name": "Salinomycin"
+      },
+      "spectinomycin": {
+        "default": "spectinomycin",
+        "short_name": "Spectinomycin"
+      },
+      "streptomycin": {
+        "default": "streptomycin",
+        "short_name": "Streptomycin"
+      },
+      "sulfameth_sulfiz": {
+        "default": "sulfameth_sulfiz",
+        "short_name": "Sulfameth Sulfiz"
+      },
+      "sulfamethoxazole": {
+        "default": "sulfamethoxazole",
+        "short_name": "Sulfamethoxazole"
+      },
+      "sulfisoxazole": {
+        "default": "sulfisoxazole",
+        "short_name": "Sulfisoxazole"
+      },
+      "sulfonamides": {
+        "default": "sulfonamides",
+        "short_name": "Sulfonamides"
+      },
+      "sulphadimethoxine": {
+        "default": "sulphadimethoxine",
+        "short_name": "Sulphadimethoxine"
+      },
+      "sulphathiazole": {
+        "default": "sulphathiazole",
+        "short_name": "Sulphathiazole"
+      },
+      "telithromycin": {
+        "default": "telithromycin",
+        "short_name": "Telithromycin"
+      },
+      "tetracycline": {
+        "default": "tetracycline",
+        "short_name": "Tetracycline"
+      },
+      "tiamulin": {
+        "default": "tiamulin",
+        "short_name": "Tiamulin"
+      },
+      "ticarcillin": {
+        "default": "ticarcillin",
+        "short_name": "Ticarcillin"
+      },
+      "ticarcillin_clavulanic_acid": {
+        "default": "ticarcillin_clavulanic_acid",
+        "short_name": "Ticarcillin Clavulanic Acid"
+      },
+      "tigecycline": {
+        "default": "tigecycline",
+        "short_name": "Tigecycline"
+      },
+      "tildipirosin": {
+        "default": "tildipirosin",
+        "short_name": "Tildipirosin"
+      },
+      "tilmicosin": {
+        "default": "tilmicosin",
+        "short_name": "Tilmicosin"
+      },
+      "tobramycin": {
+        "default": "tobramycin",
+        "short_name": "Tobramycin"
+      },
+      "trimethoprim_sulfamethoxazole": {
+        "default": "trimethoprim_sulfamethoxazole",
+        "short_name": "Trimethoprim Sulfamethoxazole"
+      },
+      "tulathromycin": {
+        "default": "tulathromycin",
+        "short_name": "Tulathromycin"
+      },
+      "tylosin": {
+        "default": "tylosin",
+        "short_name": "Tylosin"
+      },
+      "vancomycin": {
+        "default": "vancomycin",
+        "short_name": "Vancomycin"
+      }
+    }
   },
-
-  "n_resistant": {
-    "id": "n_resistant",
-    "short_name": "Number of resistant isolates",
-    "long_name": "Number of isolates resistant to a specific antimicrobial agent",
+  "narms_n_resistant_{category}": {
+    "full_name": "narms_n_resistant_{category}",
+    "measure": "narms_n_resistant_{category}",
+    "short_name": "Isolates resistant to {category.short_name}",
+    "long_name": "Number of isolates resistant to {category.short_name}",
     "category": "antimicrobial_resistance",
-    "short_description": "Count of isolates showing resistance to a specific antimicrobial agent",
-    "long_description": "Number of isolates classified as Resistant (R) by CLSI breakpoints for a specific antimicrobial agent. Numerator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. This column is never NA. Where no measurement exists the value is 0, and the matching narms_flag_{antimicrobial} column records why. A 0 is only a real count when that flag reads 'tested' or 'tested_no_mic'; otherwise it is a placeholder.",
-    "statement": "In {location}, {value} isolates were resistant to {antimicrobial}",
+    "short_description": "Count of isolates showing resistance to {category.short_name}.",
+    "long_description": "Number of isolates classified as Resistant (R) by CLSI breakpoints for {category.short_name}. Numerator of narms_pct_resistant_{category}. Cells with no measurement are NA rather than a sentinel value, because 0 is a legitimate result for this measure and could not be distinguished from a placeholder. The matching narms_flag_{category} column records why a cell is empty.",
+    "statement": "In {location}, {value} isolates were resistant to {category.short_name}",
     "measure_type": "Count",
     "unit": "Isolates",
     "time_resolution": "Year",
     "sources": [
-      { "id": "narms_now" },
-      { "id": "narms_retail_meats" },
-      { "id": "narms_animal_pathogen" },
-      { "id": "narms_food_animals" }
+      {
+        "id": "narms_now"
+      },
+      {
+        "id": "narms_retail_meats"
+      },
+      {
+        "id": "narms_animal_pathogen"
+      },
+      {
+        "id": "narms_food_animals"
+      }
     ],
-    "citations": []
+    "categories": {
+      "_1_antibiotic_recommended_for_treatment": {
+        "default": "_1_antibiotic_recommended_for_treatment",
+        "short_name": "1 Antibiotic Recommended For Treatment"
+      },
+      "_3_antibiotics_recommended_for_treatment": {
+        "default": "_3_antibiotics_recommended_for_treatment",
+        "short_name": "3 Antibiotics Recommended For Treatment"
+      },
+      "aaucx": {
+        "default": "aaucx",
+        "short_name": "AAuCx"
+      },
+      "acssut": {
+        "default": "acssut",
+        "short_name": "ACSSuT"
+      },
+      "acssutaucx": {
+        "default": "acssutaucx",
+        "short_name": "ACSSuTAuCx"
+      },
+      "acsut": {
+        "default": "acsut",
+        "short_name": "ACSuT"
+      },
+      "acsutaucx": {
+        "default": "acsutaucx",
+        "short_name": "ACSuTAuCx"
+      },
+      "act_s": {
+        "default": "act_s",
+        "short_name": "Act S"
+      },
+      "amikacin": {
+        "default": "amikacin",
+        "short_name": "Amikacin"
+      },
+      "amoxicillin": {
+        "default": "amoxicillin",
+        "short_name": "Amoxicillin"
+      },
+      "amoxicillin_clavulanic_acid": {
+        "default": "amoxicillin_clavulanic_acid",
+        "short_name": "Amoxicillin Clavulanic Acid"
+      },
+      "amoxicillin_clavulanic_acid_2_1": {
+        "default": "amoxicillin_clavulanic_acid_2_1",
+        "short_name": "Amoxicillin Clavulanic Acid 2 1"
+      },
+      "ampicillin": {
+        "default": "ampicillin",
+        "short_name": "Ampicillin"
+      },
+      "ampicillin_sulbactam": {
+        "default": "ampicillin_sulbactam",
+        "short_name": "Ampicillin Sulbactam"
+      },
+      "assut_and_not_resistant_to_chloramphenicol": {
+        "default": "assut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASSuT And Not Resistant To Chloramphenicol"
+      },
+      "asut_and_not_resistant_to_chloramphenicol": {
+        "default": "asut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASuT And Not Resistant To Chloramphenicol"
+      },
+      "at_s": {
+        "default": "at_s",
+        "short_name": "At S"
+      },
+      "at_s_and_dsc": {
+        "default": "at_s_and_dsc",
+        "short_name": "At S And (DSC)"
+      },
+      "avilamycin": {
+        "default": "avilamycin",
+        "short_name": "Avilamycin"
+      },
+      "azithromycin": {
+        "default": "azithromycin",
+        "short_name": "Azithromycin"
+      },
+      "azithromycin_and_ceftriaxone": {
+        "default": "azithromycin_and_ceftriaxone",
+        "short_name": "Azithromycin And Ceftriaxone"
+      },
+      "azithromycin_and_ciprofloxacin": {
+        "default": "azithromycin_and_ciprofloxacin",
+        "short_name": "Azithromycin And Ciprofloxacin"
+      },
+      "azithromycin_and_dsc": {
+        "default": "azithromycin_and_dsc",
+        "short_name": "Azithromycin And (DSC)"
+      },
+      "azithromycin_or_ceftriaxone_or_ciprofloxacin": {
+        "default": "azithromycin_or_ceftriaxone_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ceftriaxone Or Ciprofloxacin"
+      },
+      "azithromycin_or_ciprofloxacin": {
+        "default": "azithromycin_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ciprofloxacin"
+      },
+      "azithromycin_or_dsc": {
+        "default": "azithromycin_or_dsc",
+        "short_name": "Azithromycin Or (DSC)"
+      },
+      "aztreonam": {
+        "default": "aztreonam",
+        "short_name": "Aztreonam"
+      },
+      "bacitracin": {
+        "default": "bacitracin",
+        "short_name": "Bacitracin"
+      },
+      "benzylpenicillin": {
+        "default": "benzylpenicillin",
+        "short_name": "Benzylpenicillin"
+      },
+      "cefazolin": {
+        "default": "cefazolin",
+        "short_name": "Cefazolin"
+      },
+      "cefepime": {
+        "default": "cefepime",
+        "short_name": "Cefepime"
+      },
+      "ceforanide": {
+        "default": "ceforanide",
+        "short_name": "Ceforanide"
+      },
+      "cefotetan": {
+        "default": "cefotetan",
+        "short_name": "Cefotetan"
+      },
+      "cefovecin": {
+        "default": "cefovecin",
+        "short_name": "Cefovecin"
+      },
+      "cefoxitin": {
+        "default": "cefoxitin",
+        "short_name": "Cefoxitin"
+      },
+      "cefpodoxime": {
+        "default": "cefpodoxime",
+        "short_name": "Cefpodoxime"
+      },
+      "ceftazidime": {
+        "default": "ceftazidime",
+        "short_name": "Ceftazidime"
+      },
+      "ceftiofur": {
+        "default": "ceftiofur",
+        "short_name": "Ceftiofur"
+      },
+      "ceftriaxone": {
+        "default": "ceftriaxone",
+        "short_name": "Ceftriaxone"
+      },
+      "ceftriaxone_and_dsc": {
+        "default": "ceftriaxone_and_dsc",
+        "short_name": "Ceftriaxone And (DSC)"
+      },
+      "cefuroxime": {
+        "default": "cefuroxime",
+        "short_name": "Cefuroxime"
+      },
+      "cephalexin": {
+        "default": "cephalexin",
+        "short_name": "Cephalexin"
+      },
+      "cephalothin": {
+        "default": "cephalothin",
+        "short_name": "Cephalothin"
+      },
+      "chloramphenicol": {
+        "default": "chloramphenicol",
+        "short_name": "Chloramphenicol"
+      },
+      "chlortetracycline": {
+        "default": "chlortetracycline",
+        "short_name": "Chlortetracycline"
+      },
+      "ciprofloxacin": {
+        "default": "ciprofloxacin",
+        "short_name": "Ciprofloxacin"
+      },
+      "ciprofloxacin_2nd_breakpoint": {
+        "default": "ciprofloxacin_2nd_breakpoint",
+        "short_name": "Ciprofloxacin 2nd Breakpoint"
+      },
+      "ciprofloxacin_dsc": {
+        "default": "ciprofloxacin_dsc",
+        "short_name": "Ciprofloxacin (DSC)"
+      },
+      "clarithromycin": {
+        "default": "clarithromycin",
+        "short_name": "Clarithromycin"
+      },
+      "clindamycin": {
+        "default": "clindamycin",
+        "short_name": "Clindamycin"
+      },
+      "danofloxacin": {
+        "default": "danofloxacin",
+        "short_name": "Danofloxacin"
+      },
+      "daptomycin": {
+        "default": "daptomycin",
+        "short_name": "Daptomycin"
+      },
+      "doxycycline": {
+        "default": "doxycycline",
+        "short_name": "Doxycycline"
+      },
+      "enrofloxacin": {
+        "default": "enrofloxacin",
+        "short_name": "Enrofloxacin"
+      },
+      "erythromycin": {
+        "default": "erythromycin",
+        "short_name": "Erythromycin"
+      },
+      "flaveomycin": {
+        "default": "flaveomycin",
+        "short_name": "Flaveomycin"
+      },
+      "florfenicol": {
+        "default": "florfenicol",
+        "short_name": "Florfenicol"
+      },
+      "fusidic_acid": {
+        "default": "fusidic_acid",
+        "short_name": "Fusidic Acid"
+      },
+      "gamithromycin": {
+        "default": "gamithromycin",
+        "short_name": "Gamithromycin"
+      },
+      "gatifloxacin": {
+        "default": "gatifloxacin",
+        "short_name": "Gatifloxacin"
+      },
+      "gentamicin": {
+        "default": "gentamicin",
+        "short_name": "Gentamicin"
+      },
+      "imipenem": {
+        "default": "imipenem",
+        "short_name": "Imipenem"
+      },
+      "kanamycin": {
+        "default": "kanamycin",
+        "short_name": "Kanamycin"
+      },
+      "levofloxacin": {
+        "default": "levofloxacin",
+        "short_name": "Levofloxacin"
+      },
+      "lincomycin": {
+        "default": "lincomycin",
+        "short_name": "Lincomycin"
+      },
+      "linezolid": {
+        "default": "linezolid",
+        "short_name": "Linezolid"
+      },
+      "macrolides_and_quinolones": {
+        "default": "macrolides_and_quinolones",
+        "short_name": "Macrolides And Quinolones"
+      },
+      "marbofloxacin": {
+        "default": "marbofloxacin",
+        "short_name": "Marbofloxacin"
+      },
+      "meropenem": {
+        "default": "meropenem",
+        "short_name": "Meropenem"
+      },
+      "minocycline": {
+        "default": "minocycline",
+        "short_name": "Minocycline"
+      },
+      "moxifloxacin": {
+        "default": "moxifloxacin",
+        "short_name": "Moxifloxacin"
+      },
+      "nalidixic_acid": {
+        "default": "nalidixic_acid",
+        "short_name": "Nalidixic Acid"
+      },
+      "neomycin": {
+        "default": "neomycin",
+        "short_name": "Neomycin"
+      },
+      "nitrofurantoin": {
+        "default": "nitrofurantoin",
+        "short_name": "Nitrofurantoin"
+      },
+      "no_resistance_detected": {
+        "default": "no_resistance_detected",
+        "short_name": "No Resistance Detected"
+      },
+      "novobiocin": {
+        "default": "novobiocin",
+        "short_name": "Novobiocin"
+      },
+      "ofloxacin": {
+        "default": "ofloxacin",
+        "short_name": "Ofloxacin"
+      },
+      "orbifloxacin": {
+        "default": "orbifloxacin",
+        "short_name": "Orbifloxacin"
+      },
+      "oxacillin": {
+        "default": "oxacillin",
+        "short_name": "Oxacillin"
+      },
+      "oxacillin_2_nacl": {
+        "default": "oxacillin_2_nacl",
+        "short_name": "Oxacillin 2 Nacl"
+      },
+      "oxytetracycline": {
+        "default": "oxytetracycline",
+        "short_name": "Oxytetracycline"
+      },
+      "penicillin": {
+        "default": "penicillin",
+        "short_name": "Penicillin"
+      },
+      "penicillin_novobiocin": {
+        "default": "penicillin_novobiocin",
+        "short_name": "Penicillin Novobiocin"
+      },
+      "piperacillin": {
+        "default": "piperacillin",
+        "short_name": "Piperacillin"
+      },
+      "piperacillin_tazobactam": {
+        "default": "piperacillin_tazobactam",
+        "short_name": "Piperacillin Tazobactam"
+      },
+      "pirlimycin": {
+        "default": "pirlimycin",
+        "short_name": "Pirlimycin"
+      },
+      "polymyxin_b": {
+        "default": "polymyxin_b",
+        "short_name": "Polymyxin B"
+      },
+      "pradofloxacin": {
+        "default": "pradofloxacin",
+        "short_name": "Pradofloxacin"
+      },
+      "quinupristin_dalfopristin": {
+        "default": "quinupristin_dalfopristin",
+        "short_name": "Quinupristin Dalfopristin"
+      },
+      "resistance_1_clsi_classes": {
+        "default": "resistance_1_clsi_classes",
+        "short_name": "Resistance 1 CLSI Classes"
+      },
+      "resistance_2_clsi_classes": {
+        "default": "resistance_2_clsi_classes",
+        "short_name": "Resistance 2 CLSI Classes"
+      },
+      "resistance_3_clsi_classes": {
+        "default": "resistance_3_clsi_classes",
+        "short_name": "Resistance 3 CLSI Classes"
+      },
+      "resistance_4_clsi_classes": {
+        "default": "resistance_4_clsi_classes",
+        "short_name": "Resistance 4 CLSI Classes"
+      },
+      "resistance_5_clsi_classes": {
+        "default": "resistance_5_clsi_classes",
+        "short_name": "Resistance 5 CLSI Classes"
+      },
+      "resistance_6_clsi_classes": {
+        "default": "resistance_6_clsi_classes",
+        "short_name": "Resistance 6 CLSI Classes"
+      },
+      "resistance_7_clsi_classes": {
+        "default": "resistance_7_clsi_classes",
+        "short_name": "Resistance 7 CLSI Classes"
+      },
+      "resistance_8_clsi_classes": {
+        "default": "resistance_8_clsi_classes",
+        "short_name": "Resistance 8 CLSI Classes"
+      },
+      "rifampin": {
+        "default": "rifampin",
+        "short_name": "Rifampin"
+      },
+      "salinomycin": {
+        "default": "salinomycin",
+        "short_name": "Salinomycin"
+      },
+      "spectinomycin": {
+        "default": "spectinomycin",
+        "short_name": "Spectinomycin"
+      },
+      "streptomycin": {
+        "default": "streptomycin",
+        "short_name": "Streptomycin"
+      },
+      "sulfameth_sulfiz": {
+        "default": "sulfameth_sulfiz",
+        "short_name": "Sulfameth Sulfiz"
+      },
+      "sulfamethoxazole": {
+        "default": "sulfamethoxazole",
+        "short_name": "Sulfamethoxazole"
+      },
+      "sulfisoxazole": {
+        "default": "sulfisoxazole",
+        "short_name": "Sulfisoxazole"
+      },
+      "sulfonamides": {
+        "default": "sulfonamides",
+        "short_name": "Sulfonamides"
+      },
+      "sulphadimethoxine": {
+        "default": "sulphadimethoxine",
+        "short_name": "Sulphadimethoxine"
+      },
+      "sulphathiazole": {
+        "default": "sulphathiazole",
+        "short_name": "Sulphathiazole"
+      },
+      "telithromycin": {
+        "default": "telithromycin",
+        "short_name": "Telithromycin"
+      },
+      "tetracycline": {
+        "default": "tetracycline",
+        "short_name": "Tetracycline"
+      },
+      "tiamulin": {
+        "default": "tiamulin",
+        "short_name": "Tiamulin"
+      },
+      "ticarcillin": {
+        "default": "ticarcillin",
+        "short_name": "Ticarcillin"
+      },
+      "ticarcillin_clavulanic_acid": {
+        "default": "ticarcillin_clavulanic_acid",
+        "short_name": "Ticarcillin Clavulanic Acid"
+      },
+      "tigecycline": {
+        "default": "tigecycline",
+        "short_name": "Tigecycline"
+      },
+      "tildipirosin": {
+        "default": "tildipirosin",
+        "short_name": "Tildipirosin"
+      },
+      "tilmicosin": {
+        "default": "tilmicosin",
+        "short_name": "Tilmicosin"
+      },
+      "tobramycin": {
+        "default": "tobramycin",
+        "short_name": "Tobramycin"
+      },
+      "trimethoprim_sulfamethoxazole": {
+        "default": "trimethoprim_sulfamethoxazole",
+        "short_name": "Trimethoprim Sulfamethoxazole"
+      },
+      "tulathromycin": {
+        "default": "tulathromycin",
+        "short_name": "Tulathromycin"
+      },
+      "tylosin": {
+        "default": "tylosin",
+        "short_name": "Tylosin"
+      },
+      "vancomycin": {
+        "default": "vancomycin",
+        "short_name": "Vancomycin"
+      }
+    }
   },
-
-  "n_tested": {
-    "id": "n_tested",
-    "short_name": "Number of isolates tested",
-    "long_name": "Number of isolates tested for antimicrobial susceptibility",
+  "narms_n_tested_{category}": {
+    "full_name": "narms_n_tested_{category}",
+    "measure": "narms_n_tested_{category}",
+    "short_name": "Isolates tested for {category.short_name}",
+    "long_name": "Number of isolates tested for susceptibility to {category.short_name}",
     "category": "antimicrobial_resistance",
-    "short_description": "Total number of isolates tested for resistance to a specific antimicrobial agent",
-    "long_description": "Total number of isolates tested for susceptibility to a specific antimicrobial agent. Denominator of the resistance percentage (pct_resistant). Applies across all NARMS surveillance programs. This column is never NA. Where no measurement exists the value is 0, and the matching narms_flag_{antimicrobial} column records why. Note that a 0 here is ambiguous on its own: it covers both 'no_isolates_tested' (the antimicrobial was on the panel but no isolates were available) and 'not_tested' (the antimicrobial was not on the panel for that row), which are roughly equal in size in the human files. Only the flag distinguishes them. Selecting rows where n_tested > 0 is equivalent to selecting flag values of 'tested' or 'tested_no_mic'.",
-    "statement": "In {location}, {value} isolates were tested for {antimicrobial}",
+    "short_description": "Total isolates tested for resistance to {category.short_name}.",
+    "long_description": "Total number of isolates tested for susceptibility to {category.short_name}. Denominator of narms_pct_resistant_{category}. Cells with no measurement are NA rather than a sentinel value, because 0 is a legitimate result for this measure and could not be distinguished from a placeholder. The matching narms_flag_{category} column records why a cell is empty. A 0 here is ambiguous on its own: it covers both no_isolates_tested, where the agent was on the panel but no isolates were available, and not_tested, where the agent was not on the panel for that row. Only the flag separates them.",
+    "statement": "In {location}, {value} isolates were tested for {category.short_name}",
     "measure_type": "Count",
     "unit": "Isolates",
     "time_resolution": "Year",
     "sources": [
-      { "id": "narms_now" },
-      { "id": "narms_retail_meats" },
-      { "id": "narms_animal_pathogen" },
-      { "id": "narms_food_animals" }
+      {
+        "id": "narms_now"
+      },
+      {
+        "id": "narms_retail_meats"
+      },
+      {
+        "id": "narms_animal_pathogen"
+      },
+      {
+        "id": "narms_food_animals"
+      }
     ],
-    "citations": []
+    "categories": {
+      "_1_antibiotic_recommended_for_treatment": {
+        "default": "_1_antibiotic_recommended_for_treatment",
+        "short_name": "1 Antibiotic Recommended For Treatment"
+      },
+      "_3_antibiotics_recommended_for_treatment": {
+        "default": "_3_antibiotics_recommended_for_treatment",
+        "short_name": "3 Antibiotics Recommended For Treatment"
+      },
+      "aaucx": {
+        "default": "aaucx",
+        "short_name": "AAuCx"
+      },
+      "acssut": {
+        "default": "acssut",
+        "short_name": "ACSSuT"
+      },
+      "acssutaucx": {
+        "default": "acssutaucx",
+        "short_name": "ACSSuTAuCx"
+      },
+      "acsut": {
+        "default": "acsut",
+        "short_name": "ACSuT"
+      },
+      "acsutaucx": {
+        "default": "acsutaucx",
+        "short_name": "ACSuTAuCx"
+      },
+      "act_s": {
+        "default": "act_s",
+        "short_name": "Act S"
+      },
+      "amikacin": {
+        "default": "amikacin",
+        "short_name": "Amikacin"
+      },
+      "amoxicillin": {
+        "default": "amoxicillin",
+        "short_name": "Amoxicillin"
+      },
+      "amoxicillin_clavulanic_acid": {
+        "default": "amoxicillin_clavulanic_acid",
+        "short_name": "Amoxicillin Clavulanic Acid"
+      },
+      "amoxicillin_clavulanic_acid_2_1": {
+        "default": "amoxicillin_clavulanic_acid_2_1",
+        "short_name": "Amoxicillin Clavulanic Acid 2 1"
+      },
+      "ampicillin": {
+        "default": "ampicillin",
+        "short_name": "Ampicillin"
+      },
+      "ampicillin_sulbactam": {
+        "default": "ampicillin_sulbactam",
+        "short_name": "Ampicillin Sulbactam"
+      },
+      "assut_and_not_resistant_to_chloramphenicol": {
+        "default": "assut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASSuT And Not Resistant To Chloramphenicol"
+      },
+      "asut_and_not_resistant_to_chloramphenicol": {
+        "default": "asut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASuT And Not Resistant To Chloramphenicol"
+      },
+      "at_s": {
+        "default": "at_s",
+        "short_name": "At S"
+      },
+      "at_s_and_dsc": {
+        "default": "at_s_and_dsc",
+        "short_name": "At S And (DSC)"
+      },
+      "avilamycin": {
+        "default": "avilamycin",
+        "short_name": "Avilamycin"
+      },
+      "azithromycin": {
+        "default": "azithromycin",
+        "short_name": "Azithromycin"
+      },
+      "azithromycin_and_ceftriaxone": {
+        "default": "azithromycin_and_ceftriaxone",
+        "short_name": "Azithromycin And Ceftriaxone"
+      },
+      "azithromycin_and_ciprofloxacin": {
+        "default": "azithromycin_and_ciprofloxacin",
+        "short_name": "Azithromycin And Ciprofloxacin"
+      },
+      "azithromycin_and_dsc": {
+        "default": "azithromycin_and_dsc",
+        "short_name": "Azithromycin And (DSC)"
+      },
+      "azithromycin_or_ceftriaxone_or_ciprofloxacin": {
+        "default": "azithromycin_or_ceftriaxone_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ceftriaxone Or Ciprofloxacin"
+      },
+      "azithromycin_or_ciprofloxacin": {
+        "default": "azithromycin_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ciprofloxacin"
+      },
+      "azithromycin_or_dsc": {
+        "default": "azithromycin_or_dsc",
+        "short_name": "Azithromycin Or (DSC)"
+      },
+      "aztreonam": {
+        "default": "aztreonam",
+        "short_name": "Aztreonam"
+      },
+      "bacitracin": {
+        "default": "bacitracin",
+        "short_name": "Bacitracin"
+      },
+      "benzylpenicillin": {
+        "default": "benzylpenicillin",
+        "short_name": "Benzylpenicillin"
+      },
+      "cefazolin": {
+        "default": "cefazolin",
+        "short_name": "Cefazolin"
+      },
+      "cefepime": {
+        "default": "cefepime",
+        "short_name": "Cefepime"
+      },
+      "ceforanide": {
+        "default": "ceforanide",
+        "short_name": "Ceforanide"
+      },
+      "cefotetan": {
+        "default": "cefotetan",
+        "short_name": "Cefotetan"
+      },
+      "cefovecin": {
+        "default": "cefovecin",
+        "short_name": "Cefovecin"
+      },
+      "cefoxitin": {
+        "default": "cefoxitin",
+        "short_name": "Cefoxitin"
+      },
+      "cefpodoxime": {
+        "default": "cefpodoxime",
+        "short_name": "Cefpodoxime"
+      },
+      "ceftazidime": {
+        "default": "ceftazidime",
+        "short_name": "Ceftazidime"
+      },
+      "ceftiofur": {
+        "default": "ceftiofur",
+        "short_name": "Ceftiofur"
+      },
+      "ceftriaxone": {
+        "default": "ceftriaxone",
+        "short_name": "Ceftriaxone"
+      },
+      "ceftriaxone_and_dsc": {
+        "default": "ceftriaxone_and_dsc",
+        "short_name": "Ceftriaxone And (DSC)"
+      },
+      "cefuroxime": {
+        "default": "cefuroxime",
+        "short_name": "Cefuroxime"
+      },
+      "cephalexin": {
+        "default": "cephalexin",
+        "short_name": "Cephalexin"
+      },
+      "cephalothin": {
+        "default": "cephalothin",
+        "short_name": "Cephalothin"
+      },
+      "chloramphenicol": {
+        "default": "chloramphenicol",
+        "short_name": "Chloramphenicol"
+      },
+      "chlortetracycline": {
+        "default": "chlortetracycline",
+        "short_name": "Chlortetracycline"
+      },
+      "ciprofloxacin": {
+        "default": "ciprofloxacin",
+        "short_name": "Ciprofloxacin"
+      },
+      "ciprofloxacin_2nd_breakpoint": {
+        "default": "ciprofloxacin_2nd_breakpoint",
+        "short_name": "Ciprofloxacin 2nd Breakpoint"
+      },
+      "ciprofloxacin_dsc": {
+        "default": "ciprofloxacin_dsc",
+        "short_name": "Ciprofloxacin (DSC)"
+      },
+      "clarithromycin": {
+        "default": "clarithromycin",
+        "short_name": "Clarithromycin"
+      },
+      "clindamycin": {
+        "default": "clindamycin",
+        "short_name": "Clindamycin"
+      },
+      "danofloxacin": {
+        "default": "danofloxacin",
+        "short_name": "Danofloxacin"
+      },
+      "daptomycin": {
+        "default": "daptomycin",
+        "short_name": "Daptomycin"
+      },
+      "doxycycline": {
+        "default": "doxycycline",
+        "short_name": "Doxycycline"
+      },
+      "enrofloxacin": {
+        "default": "enrofloxacin",
+        "short_name": "Enrofloxacin"
+      },
+      "erythromycin": {
+        "default": "erythromycin",
+        "short_name": "Erythromycin"
+      },
+      "flaveomycin": {
+        "default": "flaveomycin",
+        "short_name": "Flaveomycin"
+      },
+      "florfenicol": {
+        "default": "florfenicol",
+        "short_name": "Florfenicol"
+      },
+      "fusidic_acid": {
+        "default": "fusidic_acid",
+        "short_name": "Fusidic Acid"
+      },
+      "gamithromycin": {
+        "default": "gamithromycin",
+        "short_name": "Gamithromycin"
+      },
+      "gatifloxacin": {
+        "default": "gatifloxacin",
+        "short_name": "Gatifloxacin"
+      },
+      "gentamicin": {
+        "default": "gentamicin",
+        "short_name": "Gentamicin"
+      },
+      "imipenem": {
+        "default": "imipenem",
+        "short_name": "Imipenem"
+      },
+      "kanamycin": {
+        "default": "kanamycin",
+        "short_name": "Kanamycin"
+      },
+      "levofloxacin": {
+        "default": "levofloxacin",
+        "short_name": "Levofloxacin"
+      },
+      "lincomycin": {
+        "default": "lincomycin",
+        "short_name": "Lincomycin"
+      },
+      "linezolid": {
+        "default": "linezolid",
+        "short_name": "Linezolid"
+      },
+      "macrolides_and_quinolones": {
+        "default": "macrolides_and_quinolones",
+        "short_name": "Macrolides And Quinolones"
+      },
+      "marbofloxacin": {
+        "default": "marbofloxacin",
+        "short_name": "Marbofloxacin"
+      },
+      "meropenem": {
+        "default": "meropenem",
+        "short_name": "Meropenem"
+      },
+      "minocycline": {
+        "default": "minocycline",
+        "short_name": "Minocycline"
+      },
+      "moxifloxacin": {
+        "default": "moxifloxacin",
+        "short_name": "Moxifloxacin"
+      },
+      "nalidixic_acid": {
+        "default": "nalidixic_acid",
+        "short_name": "Nalidixic Acid"
+      },
+      "neomycin": {
+        "default": "neomycin",
+        "short_name": "Neomycin"
+      },
+      "nitrofurantoin": {
+        "default": "nitrofurantoin",
+        "short_name": "Nitrofurantoin"
+      },
+      "no_resistance_detected": {
+        "default": "no_resistance_detected",
+        "short_name": "No Resistance Detected"
+      },
+      "novobiocin": {
+        "default": "novobiocin",
+        "short_name": "Novobiocin"
+      },
+      "ofloxacin": {
+        "default": "ofloxacin",
+        "short_name": "Ofloxacin"
+      },
+      "orbifloxacin": {
+        "default": "orbifloxacin",
+        "short_name": "Orbifloxacin"
+      },
+      "oxacillin": {
+        "default": "oxacillin",
+        "short_name": "Oxacillin"
+      },
+      "oxacillin_2_nacl": {
+        "default": "oxacillin_2_nacl",
+        "short_name": "Oxacillin 2 Nacl"
+      },
+      "oxytetracycline": {
+        "default": "oxytetracycline",
+        "short_name": "Oxytetracycline"
+      },
+      "penicillin": {
+        "default": "penicillin",
+        "short_name": "Penicillin"
+      },
+      "penicillin_novobiocin": {
+        "default": "penicillin_novobiocin",
+        "short_name": "Penicillin Novobiocin"
+      },
+      "piperacillin": {
+        "default": "piperacillin",
+        "short_name": "Piperacillin"
+      },
+      "piperacillin_tazobactam": {
+        "default": "piperacillin_tazobactam",
+        "short_name": "Piperacillin Tazobactam"
+      },
+      "pirlimycin": {
+        "default": "pirlimycin",
+        "short_name": "Pirlimycin"
+      },
+      "polymyxin_b": {
+        "default": "polymyxin_b",
+        "short_name": "Polymyxin B"
+      },
+      "pradofloxacin": {
+        "default": "pradofloxacin",
+        "short_name": "Pradofloxacin"
+      },
+      "quinupristin_dalfopristin": {
+        "default": "quinupristin_dalfopristin",
+        "short_name": "Quinupristin Dalfopristin"
+      },
+      "resistance_1_clsi_classes": {
+        "default": "resistance_1_clsi_classes",
+        "short_name": "Resistance 1 CLSI Classes"
+      },
+      "resistance_2_clsi_classes": {
+        "default": "resistance_2_clsi_classes",
+        "short_name": "Resistance 2 CLSI Classes"
+      },
+      "resistance_3_clsi_classes": {
+        "default": "resistance_3_clsi_classes",
+        "short_name": "Resistance 3 CLSI Classes"
+      },
+      "resistance_4_clsi_classes": {
+        "default": "resistance_4_clsi_classes",
+        "short_name": "Resistance 4 CLSI Classes"
+      },
+      "resistance_5_clsi_classes": {
+        "default": "resistance_5_clsi_classes",
+        "short_name": "Resistance 5 CLSI Classes"
+      },
+      "resistance_6_clsi_classes": {
+        "default": "resistance_6_clsi_classes",
+        "short_name": "Resistance 6 CLSI Classes"
+      },
+      "resistance_7_clsi_classes": {
+        "default": "resistance_7_clsi_classes",
+        "short_name": "Resistance 7 CLSI Classes"
+      },
+      "resistance_8_clsi_classes": {
+        "default": "resistance_8_clsi_classes",
+        "short_name": "Resistance 8 CLSI Classes"
+      },
+      "rifampin": {
+        "default": "rifampin",
+        "short_name": "Rifampin"
+      },
+      "salinomycin": {
+        "default": "salinomycin",
+        "short_name": "Salinomycin"
+      },
+      "spectinomycin": {
+        "default": "spectinomycin",
+        "short_name": "Spectinomycin"
+      },
+      "streptomycin": {
+        "default": "streptomycin",
+        "short_name": "Streptomycin"
+      },
+      "sulfameth_sulfiz": {
+        "default": "sulfameth_sulfiz",
+        "short_name": "Sulfameth Sulfiz"
+      },
+      "sulfamethoxazole": {
+        "default": "sulfamethoxazole",
+        "short_name": "Sulfamethoxazole"
+      },
+      "sulfisoxazole": {
+        "default": "sulfisoxazole",
+        "short_name": "Sulfisoxazole"
+      },
+      "sulfonamides": {
+        "default": "sulfonamides",
+        "short_name": "Sulfonamides"
+      },
+      "sulphadimethoxine": {
+        "default": "sulphadimethoxine",
+        "short_name": "Sulphadimethoxine"
+      },
+      "sulphathiazole": {
+        "default": "sulphathiazole",
+        "short_name": "Sulphathiazole"
+      },
+      "telithromycin": {
+        "default": "telithromycin",
+        "short_name": "Telithromycin"
+      },
+      "tetracycline": {
+        "default": "tetracycline",
+        "short_name": "Tetracycline"
+      },
+      "tiamulin": {
+        "default": "tiamulin",
+        "short_name": "Tiamulin"
+      },
+      "ticarcillin": {
+        "default": "ticarcillin",
+        "short_name": "Ticarcillin"
+      },
+      "ticarcillin_clavulanic_acid": {
+        "default": "ticarcillin_clavulanic_acid",
+        "short_name": "Ticarcillin Clavulanic Acid"
+      },
+      "tigecycline": {
+        "default": "tigecycline",
+        "short_name": "Tigecycline"
+      },
+      "tildipirosin": {
+        "default": "tildipirosin",
+        "short_name": "Tildipirosin"
+      },
+      "tilmicosin": {
+        "default": "tilmicosin",
+        "short_name": "Tilmicosin"
+      },
+      "tobramycin": {
+        "default": "tobramycin",
+        "short_name": "Tobramycin"
+      },
+      "trimethoprim_sulfamethoxazole": {
+        "default": "trimethoprim_sulfamethoxazole",
+        "short_name": "Trimethoprim Sulfamethoxazole"
+      },
+      "tulathromycin": {
+        "default": "tulathromycin",
+        "short_name": "Tulathromycin"
+      },
+      "tylosin": {
+        "default": "tylosin",
+        "short_name": "Tylosin"
+      },
+      "vancomycin": {
+        "default": "vancomycin",
+        "short_name": "Vancomycin"
+      }
+    }
   },
-
-  "mic50": {
-    "id": "mic50",
-    "short_name": "MIC50",
-    "long_name": "Median minimum inhibitory concentration (MIC50)",
+  "narms_mic50_{category}": {
+    "full_name": "narms_mic50_{category}",
+    "measure": "narms_mic50_{category}",
+    "short_name": "MIC50 for {category.short_name}",
+    "long_name": "Median minimum inhibitory concentration for {category.short_name}",
     "category": "antimicrobial_resistance",
-    "short_description": "Median MIC value across isolates tested for a specific antimicrobial",
-    "long_description": "The MIC50 is the minimum inhibitory concentration (in micrograms per milliliter) at which 50% of isolates are inhibited, i.e. the median MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages. This column is never NA; where no concentration was measured the value is 0. A concentration of 0 micrograms per milliliter does not occur on the MIC scale, so a 0 here always means the measurement is absent rather than very low, and the matching narms_flag_{antimicrobial} column records why. In the food-producing animals file, streptomycin carries a susceptibility interpretation but no concentration in roughly 99 percent of its rows, because three of the four FDA source spreadsheets publish an 'STR SIR' column without a corresponding 'STR' concentration column. Those rows are flagged 'tested_no_mic'. Anyone computing MIC distributions or MIC trends for streptomycin from that file should be aware that only a small number of records carry a real value.",
-    "statement": "The MIC50 for {antimicrobial} was {value} µg/mL",
+    "short_description": "Median MIC across isolates tested for {category.short_name}.",
+    "long_description": "The concentration in micrograms per millilitre at which 50% of isolates are inhibited, i.e. the median MIC, calculated from isolate-level data. Present only in the FDA retail meats, animal pathogen, and food-producing animal files; the human clinical files report aggregate resistance percentages only. Missing values are NA: a concentration of 0 does not occur on the MIC scale, so filling it would invent a measurement. In the food-producing animals file, streptomycin carries a susceptibility interpretation but no concentration in roughly 99% of its rows, because three of the four FDA source spreadsheets publish an STR SIR column with no matching STR concentration column. Those rows are flagged tested_no_mic.",
+    "statement": "The MIC50 for {category.short_name} was {value} µg/mL",
     "measure_type": "Concentration",
     "unit": "µg/mL",
     "time_resolution": "Year",
     "sources": [
-      { "id": "narms_retail_meats" },
-      { "id": "narms_animal_pathogen" },
-      { "id": "narms_food_animals" }
+      {
+        "id": "narms_retail_meats"
+      },
+      {
+        "id": "narms_animal_pathogen"
+      },
+      {
+        "id": "narms_food_animals"
+      }
     ],
-    "citations": []
+    "categories": {
+      "_1_antibiotic_recommended_for_treatment": {
+        "default": "_1_antibiotic_recommended_for_treatment",
+        "short_name": "1 Antibiotic Recommended For Treatment"
+      },
+      "_3_antibiotics_recommended_for_treatment": {
+        "default": "_3_antibiotics_recommended_for_treatment",
+        "short_name": "3 Antibiotics Recommended For Treatment"
+      },
+      "aaucx": {
+        "default": "aaucx",
+        "short_name": "AAuCx"
+      },
+      "acssut": {
+        "default": "acssut",
+        "short_name": "ACSSuT"
+      },
+      "acssutaucx": {
+        "default": "acssutaucx",
+        "short_name": "ACSSuTAuCx"
+      },
+      "acsut": {
+        "default": "acsut",
+        "short_name": "ACSuT"
+      },
+      "acsutaucx": {
+        "default": "acsutaucx",
+        "short_name": "ACSuTAuCx"
+      },
+      "act_s": {
+        "default": "act_s",
+        "short_name": "Act S"
+      },
+      "amikacin": {
+        "default": "amikacin",
+        "short_name": "Amikacin"
+      },
+      "amoxicillin": {
+        "default": "amoxicillin",
+        "short_name": "Amoxicillin"
+      },
+      "amoxicillin_clavulanic_acid": {
+        "default": "amoxicillin_clavulanic_acid",
+        "short_name": "Amoxicillin Clavulanic Acid"
+      },
+      "amoxicillin_clavulanic_acid_2_1": {
+        "default": "amoxicillin_clavulanic_acid_2_1",
+        "short_name": "Amoxicillin Clavulanic Acid 2 1"
+      },
+      "ampicillin": {
+        "default": "ampicillin",
+        "short_name": "Ampicillin"
+      },
+      "ampicillin_sulbactam": {
+        "default": "ampicillin_sulbactam",
+        "short_name": "Ampicillin Sulbactam"
+      },
+      "assut_and_not_resistant_to_chloramphenicol": {
+        "default": "assut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASSuT And Not Resistant To Chloramphenicol"
+      },
+      "asut_and_not_resistant_to_chloramphenicol": {
+        "default": "asut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASuT And Not Resistant To Chloramphenicol"
+      },
+      "at_s": {
+        "default": "at_s",
+        "short_name": "At S"
+      },
+      "at_s_and_dsc": {
+        "default": "at_s_and_dsc",
+        "short_name": "At S And (DSC)"
+      },
+      "avilamycin": {
+        "default": "avilamycin",
+        "short_name": "Avilamycin"
+      },
+      "azithromycin": {
+        "default": "azithromycin",
+        "short_name": "Azithromycin"
+      },
+      "azithromycin_and_ceftriaxone": {
+        "default": "azithromycin_and_ceftriaxone",
+        "short_name": "Azithromycin And Ceftriaxone"
+      },
+      "azithromycin_and_ciprofloxacin": {
+        "default": "azithromycin_and_ciprofloxacin",
+        "short_name": "Azithromycin And Ciprofloxacin"
+      },
+      "azithromycin_and_dsc": {
+        "default": "azithromycin_and_dsc",
+        "short_name": "Azithromycin And (DSC)"
+      },
+      "azithromycin_or_ceftriaxone_or_ciprofloxacin": {
+        "default": "azithromycin_or_ceftriaxone_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ceftriaxone Or Ciprofloxacin"
+      },
+      "azithromycin_or_ciprofloxacin": {
+        "default": "azithromycin_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ciprofloxacin"
+      },
+      "azithromycin_or_dsc": {
+        "default": "azithromycin_or_dsc",
+        "short_name": "Azithromycin Or (DSC)"
+      },
+      "aztreonam": {
+        "default": "aztreonam",
+        "short_name": "Aztreonam"
+      },
+      "bacitracin": {
+        "default": "bacitracin",
+        "short_name": "Bacitracin"
+      },
+      "benzylpenicillin": {
+        "default": "benzylpenicillin",
+        "short_name": "Benzylpenicillin"
+      },
+      "cefazolin": {
+        "default": "cefazolin",
+        "short_name": "Cefazolin"
+      },
+      "cefepime": {
+        "default": "cefepime",
+        "short_name": "Cefepime"
+      },
+      "ceforanide": {
+        "default": "ceforanide",
+        "short_name": "Ceforanide"
+      },
+      "cefotetan": {
+        "default": "cefotetan",
+        "short_name": "Cefotetan"
+      },
+      "cefovecin": {
+        "default": "cefovecin",
+        "short_name": "Cefovecin"
+      },
+      "cefoxitin": {
+        "default": "cefoxitin",
+        "short_name": "Cefoxitin"
+      },
+      "cefpodoxime": {
+        "default": "cefpodoxime",
+        "short_name": "Cefpodoxime"
+      },
+      "ceftazidime": {
+        "default": "ceftazidime",
+        "short_name": "Ceftazidime"
+      },
+      "ceftiofur": {
+        "default": "ceftiofur",
+        "short_name": "Ceftiofur"
+      },
+      "ceftriaxone": {
+        "default": "ceftriaxone",
+        "short_name": "Ceftriaxone"
+      },
+      "ceftriaxone_and_dsc": {
+        "default": "ceftriaxone_and_dsc",
+        "short_name": "Ceftriaxone And (DSC)"
+      },
+      "cefuroxime": {
+        "default": "cefuroxime",
+        "short_name": "Cefuroxime"
+      },
+      "cephalexin": {
+        "default": "cephalexin",
+        "short_name": "Cephalexin"
+      },
+      "cephalothin": {
+        "default": "cephalothin",
+        "short_name": "Cephalothin"
+      },
+      "chloramphenicol": {
+        "default": "chloramphenicol",
+        "short_name": "Chloramphenicol"
+      },
+      "chlortetracycline": {
+        "default": "chlortetracycline",
+        "short_name": "Chlortetracycline"
+      },
+      "ciprofloxacin": {
+        "default": "ciprofloxacin",
+        "short_name": "Ciprofloxacin"
+      },
+      "ciprofloxacin_2nd_breakpoint": {
+        "default": "ciprofloxacin_2nd_breakpoint",
+        "short_name": "Ciprofloxacin 2nd Breakpoint"
+      },
+      "ciprofloxacin_dsc": {
+        "default": "ciprofloxacin_dsc",
+        "short_name": "Ciprofloxacin (DSC)"
+      },
+      "clarithromycin": {
+        "default": "clarithromycin",
+        "short_name": "Clarithromycin"
+      },
+      "clindamycin": {
+        "default": "clindamycin",
+        "short_name": "Clindamycin"
+      },
+      "danofloxacin": {
+        "default": "danofloxacin",
+        "short_name": "Danofloxacin"
+      },
+      "daptomycin": {
+        "default": "daptomycin",
+        "short_name": "Daptomycin"
+      },
+      "doxycycline": {
+        "default": "doxycycline",
+        "short_name": "Doxycycline"
+      },
+      "enrofloxacin": {
+        "default": "enrofloxacin",
+        "short_name": "Enrofloxacin"
+      },
+      "erythromycin": {
+        "default": "erythromycin",
+        "short_name": "Erythromycin"
+      },
+      "flaveomycin": {
+        "default": "flaveomycin",
+        "short_name": "Flaveomycin"
+      },
+      "florfenicol": {
+        "default": "florfenicol",
+        "short_name": "Florfenicol"
+      },
+      "fusidic_acid": {
+        "default": "fusidic_acid",
+        "short_name": "Fusidic Acid"
+      },
+      "gamithromycin": {
+        "default": "gamithromycin",
+        "short_name": "Gamithromycin"
+      },
+      "gatifloxacin": {
+        "default": "gatifloxacin",
+        "short_name": "Gatifloxacin"
+      },
+      "gentamicin": {
+        "default": "gentamicin",
+        "short_name": "Gentamicin"
+      },
+      "imipenem": {
+        "default": "imipenem",
+        "short_name": "Imipenem"
+      },
+      "kanamycin": {
+        "default": "kanamycin",
+        "short_name": "Kanamycin"
+      },
+      "levofloxacin": {
+        "default": "levofloxacin",
+        "short_name": "Levofloxacin"
+      },
+      "lincomycin": {
+        "default": "lincomycin",
+        "short_name": "Lincomycin"
+      },
+      "linezolid": {
+        "default": "linezolid",
+        "short_name": "Linezolid"
+      },
+      "macrolides_and_quinolones": {
+        "default": "macrolides_and_quinolones",
+        "short_name": "Macrolides And Quinolones"
+      },
+      "marbofloxacin": {
+        "default": "marbofloxacin",
+        "short_name": "Marbofloxacin"
+      },
+      "meropenem": {
+        "default": "meropenem",
+        "short_name": "Meropenem"
+      },
+      "minocycline": {
+        "default": "minocycline",
+        "short_name": "Minocycline"
+      },
+      "moxifloxacin": {
+        "default": "moxifloxacin",
+        "short_name": "Moxifloxacin"
+      },
+      "nalidixic_acid": {
+        "default": "nalidixic_acid",
+        "short_name": "Nalidixic Acid"
+      },
+      "neomycin": {
+        "default": "neomycin",
+        "short_name": "Neomycin"
+      },
+      "nitrofurantoin": {
+        "default": "nitrofurantoin",
+        "short_name": "Nitrofurantoin"
+      },
+      "no_resistance_detected": {
+        "default": "no_resistance_detected",
+        "short_name": "No Resistance Detected"
+      },
+      "novobiocin": {
+        "default": "novobiocin",
+        "short_name": "Novobiocin"
+      },
+      "ofloxacin": {
+        "default": "ofloxacin",
+        "short_name": "Ofloxacin"
+      },
+      "orbifloxacin": {
+        "default": "orbifloxacin",
+        "short_name": "Orbifloxacin"
+      },
+      "oxacillin": {
+        "default": "oxacillin",
+        "short_name": "Oxacillin"
+      },
+      "oxacillin_2_nacl": {
+        "default": "oxacillin_2_nacl",
+        "short_name": "Oxacillin 2 Nacl"
+      },
+      "oxytetracycline": {
+        "default": "oxytetracycline",
+        "short_name": "Oxytetracycline"
+      },
+      "penicillin": {
+        "default": "penicillin",
+        "short_name": "Penicillin"
+      },
+      "penicillin_novobiocin": {
+        "default": "penicillin_novobiocin",
+        "short_name": "Penicillin Novobiocin"
+      },
+      "piperacillin": {
+        "default": "piperacillin",
+        "short_name": "Piperacillin"
+      },
+      "piperacillin_tazobactam": {
+        "default": "piperacillin_tazobactam",
+        "short_name": "Piperacillin Tazobactam"
+      },
+      "pirlimycin": {
+        "default": "pirlimycin",
+        "short_name": "Pirlimycin"
+      },
+      "polymyxin_b": {
+        "default": "polymyxin_b",
+        "short_name": "Polymyxin B"
+      },
+      "pradofloxacin": {
+        "default": "pradofloxacin",
+        "short_name": "Pradofloxacin"
+      },
+      "quinupristin_dalfopristin": {
+        "default": "quinupristin_dalfopristin",
+        "short_name": "Quinupristin Dalfopristin"
+      },
+      "resistance_1_clsi_classes": {
+        "default": "resistance_1_clsi_classes",
+        "short_name": "Resistance 1 CLSI Classes"
+      },
+      "resistance_2_clsi_classes": {
+        "default": "resistance_2_clsi_classes",
+        "short_name": "Resistance 2 CLSI Classes"
+      },
+      "resistance_3_clsi_classes": {
+        "default": "resistance_3_clsi_classes",
+        "short_name": "Resistance 3 CLSI Classes"
+      },
+      "resistance_4_clsi_classes": {
+        "default": "resistance_4_clsi_classes",
+        "short_name": "Resistance 4 CLSI Classes"
+      },
+      "resistance_5_clsi_classes": {
+        "default": "resistance_5_clsi_classes",
+        "short_name": "Resistance 5 CLSI Classes"
+      },
+      "resistance_6_clsi_classes": {
+        "default": "resistance_6_clsi_classes",
+        "short_name": "Resistance 6 CLSI Classes"
+      },
+      "resistance_7_clsi_classes": {
+        "default": "resistance_7_clsi_classes",
+        "short_name": "Resistance 7 CLSI Classes"
+      },
+      "resistance_8_clsi_classes": {
+        "default": "resistance_8_clsi_classes",
+        "short_name": "Resistance 8 CLSI Classes"
+      },
+      "rifampin": {
+        "default": "rifampin",
+        "short_name": "Rifampin"
+      },
+      "salinomycin": {
+        "default": "salinomycin",
+        "short_name": "Salinomycin"
+      },
+      "spectinomycin": {
+        "default": "spectinomycin",
+        "short_name": "Spectinomycin"
+      },
+      "streptomycin": {
+        "default": "streptomycin",
+        "short_name": "Streptomycin"
+      },
+      "sulfameth_sulfiz": {
+        "default": "sulfameth_sulfiz",
+        "short_name": "Sulfameth Sulfiz"
+      },
+      "sulfamethoxazole": {
+        "default": "sulfamethoxazole",
+        "short_name": "Sulfamethoxazole"
+      },
+      "sulfisoxazole": {
+        "default": "sulfisoxazole",
+        "short_name": "Sulfisoxazole"
+      },
+      "sulfonamides": {
+        "default": "sulfonamides",
+        "short_name": "Sulfonamides"
+      },
+      "sulphadimethoxine": {
+        "default": "sulphadimethoxine",
+        "short_name": "Sulphadimethoxine"
+      },
+      "sulphathiazole": {
+        "default": "sulphathiazole",
+        "short_name": "Sulphathiazole"
+      },
+      "telithromycin": {
+        "default": "telithromycin",
+        "short_name": "Telithromycin"
+      },
+      "tetracycline": {
+        "default": "tetracycline",
+        "short_name": "Tetracycline"
+      },
+      "tiamulin": {
+        "default": "tiamulin",
+        "short_name": "Tiamulin"
+      },
+      "ticarcillin": {
+        "default": "ticarcillin",
+        "short_name": "Ticarcillin"
+      },
+      "ticarcillin_clavulanic_acid": {
+        "default": "ticarcillin_clavulanic_acid",
+        "short_name": "Ticarcillin Clavulanic Acid"
+      },
+      "tigecycline": {
+        "default": "tigecycline",
+        "short_name": "Tigecycline"
+      },
+      "tildipirosin": {
+        "default": "tildipirosin",
+        "short_name": "Tildipirosin"
+      },
+      "tilmicosin": {
+        "default": "tilmicosin",
+        "short_name": "Tilmicosin"
+      },
+      "tobramycin": {
+        "default": "tobramycin",
+        "short_name": "Tobramycin"
+      },
+      "trimethoprim_sulfamethoxazole": {
+        "default": "trimethoprim_sulfamethoxazole",
+        "short_name": "Trimethoprim Sulfamethoxazole"
+      },
+      "tulathromycin": {
+        "default": "tulathromycin",
+        "short_name": "Tulathromycin"
+      },
+      "tylosin": {
+        "default": "tylosin",
+        "short_name": "Tylosin"
+      },
+      "vancomycin": {
+        "default": "vancomycin",
+        "short_name": "Vancomycin"
+      }
+    }
   },
-
-  "mic90": {
-    "id": "mic90",
-    "short_name": "MIC90",
-    "long_name": "90th percentile minimum inhibitory concentration (MIC90)",
+  "narms_mic90_{category}": {
+    "full_name": "narms_mic90_{category}",
+    "measure": "narms_mic90_{category}",
+    "short_name": "MIC90 for {category.short_name}",
+    "long_name": "90th percentile minimum inhibitory concentration for {category.short_name}",
     "category": "antimicrobial_resistance",
-    "short_description": "90th percentile MIC value across isolates tested for a specific antimicrobial",
-    "long_description": "The MIC90 is the minimum inhibitory concentration (in micrograms per milliliter) at which 90% of isolates are inhibited, i.e. the 90th percentile MIC value. Calculated from individual isolate-level MIC data. Available for retail meats, animal pathogen, and food-producing animal datasets. Not available for human clinical (NARMS Now) data, which reports only aggregate resistance percentages. This column is never NA; where no concentration was measured the value is 0. As with mic50, a 0 always means absent rather than very low, and the matching narms_flag_{antimicrobial} column records why. The same streptomycin limitation described under mic50 applies here.",
-    "statement": "The MIC90 for {antimicrobial} was {value} µg/mL",
+    "short_description": "90th percentile MIC across isolates tested for {category.short_name}.",
+    "long_description": "The concentration in micrograms per millilitre at which 90% of isolates are inhibited, i.e. the 90th percentile MIC, calculated from isolate-level data. Present only in the FDA files. Missing values are NA for the same reason as narms_mic50_{category}, and the same streptomycin limitation applies.",
+    "statement": "The MIC90 for {category.short_name} was {value} µg/mL",
     "measure_type": "Concentration",
     "unit": "µg/mL",
     "time_resolution": "Year",
     "sources": [
-      { "id": "narms_retail_meats" },
-      { "id": "narms_animal_pathogen" },
-      { "id": "narms_food_animals" }
+      {
+        "id": "narms_retail_meats"
+      },
+      {
+        "id": "narms_animal_pathogen"
+      },
+      {
+        "id": "narms_food_animals"
+      }
     ],
+    "categories": {
+      "_1_antibiotic_recommended_for_treatment": {
+        "default": "_1_antibiotic_recommended_for_treatment",
+        "short_name": "1 Antibiotic Recommended For Treatment"
+      },
+      "_3_antibiotics_recommended_for_treatment": {
+        "default": "_3_antibiotics_recommended_for_treatment",
+        "short_name": "3 Antibiotics Recommended For Treatment"
+      },
+      "aaucx": {
+        "default": "aaucx",
+        "short_name": "AAuCx"
+      },
+      "acssut": {
+        "default": "acssut",
+        "short_name": "ACSSuT"
+      },
+      "acssutaucx": {
+        "default": "acssutaucx",
+        "short_name": "ACSSuTAuCx"
+      },
+      "acsut": {
+        "default": "acsut",
+        "short_name": "ACSuT"
+      },
+      "acsutaucx": {
+        "default": "acsutaucx",
+        "short_name": "ACSuTAuCx"
+      },
+      "act_s": {
+        "default": "act_s",
+        "short_name": "Act S"
+      },
+      "amikacin": {
+        "default": "amikacin",
+        "short_name": "Amikacin"
+      },
+      "amoxicillin": {
+        "default": "amoxicillin",
+        "short_name": "Amoxicillin"
+      },
+      "amoxicillin_clavulanic_acid": {
+        "default": "amoxicillin_clavulanic_acid",
+        "short_name": "Amoxicillin Clavulanic Acid"
+      },
+      "amoxicillin_clavulanic_acid_2_1": {
+        "default": "amoxicillin_clavulanic_acid_2_1",
+        "short_name": "Amoxicillin Clavulanic Acid 2 1"
+      },
+      "ampicillin": {
+        "default": "ampicillin",
+        "short_name": "Ampicillin"
+      },
+      "ampicillin_sulbactam": {
+        "default": "ampicillin_sulbactam",
+        "short_name": "Ampicillin Sulbactam"
+      },
+      "assut_and_not_resistant_to_chloramphenicol": {
+        "default": "assut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASSuT And Not Resistant To Chloramphenicol"
+      },
+      "asut_and_not_resistant_to_chloramphenicol": {
+        "default": "asut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASuT And Not Resistant To Chloramphenicol"
+      },
+      "at_s": {
+        "default": "at_s",
+        "short_name": "At S"
+      },
+      "at_s_and_dsc": {
+        "default": "at_s_and_dsc",
+        "short_name": "At S And (DSC)"
+      },
+      "avilamycin": {
+        "default": "avilamycin",
+        "short_name": "Avilamycin"
+      },
+      "azithromycin": {
+        "default": "azithromycin",
+        "short_name": "Azithromycin"
+      },
+      "azithromycin_and_ceftriaxone": {
+        "default": "azithromycin_and_ceftriaxone",
+        "short_name": "Azithromycin And Ceftriaxone"
+      },
+      "azithromycin_and_ciprofloxacin": {
+        "default": "azithromycin_and_ciprofloxacin",
+        "short_name": "Azithromycin And Ciprofloxacin"
+      },
+      "azithromycin_and_dsc": {
+        "default": "azithromycin_and_dsc",
+        "short_name": "Azithromycin And (DSC)"
+      },
+      "azithromycin_or_ceftriaxone_or_ciprofloxacin": {
+        "default": "azithromycin_or_ceftriaxone_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ceftriaxone Or Ciprofloxacin"
+      },
+      "azithromycin_or_ciprofloxacin": {
+        "default": "azithromycin_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ciprofloxacin"
+      },
+      "azithromycin_or_dsc": {
+        "default": "azithromycin_or_dsc",
+        "short_name": "Azithromycin Or (DSC)"
+      },
+      "aztreonam": {
+        "default": "aztreonam",
+        "short_name": "Aztreonam"
+      },
+      "bacitracin": {
+        "default": "bacitracin",
+        "short_name": "Bacitracin"
+      },
+      "benzylpenicillin": {
+        "default": "benzylpenicillin",
+        "short_name": "Benzylpenicillin"
+      },
+      "cefazolin": {
+        "default": "cefazolin",
+        "short_name": "Cefazolin"
+      },
+      "cefepime": {
+        "default": "cefepime",
+        "short_name": "Cefepime"
+      },
+      "ceforanide": {
+        "default": "ceforanide",
+        "short_name": "Ceforanide"
+      },
+      "cefotetan": {
+        "default": "cefotetan",
+        "short_name": "Cefotetan"
+      },
+      "cefovecin": {
+        "default": "cefovecin",
+        "short_name": "Cefovecin"
+      },
+      "cefoxitin": {
+        "default": "cefoxitin",
+        "short_name": "Cefoxitin"
+      },
+      "cefpodoxime": {
+        "default": "cefpodoxime",
+        "short_name": "Cefpodoxime"
+      },
+      "ceftazidime": {
+        "default": "ceftazidime",
+        "short_name": "Ceftazidime"
+      },
+      "ceftiofur": {
+        "default": "ceftiofur",
+        "short_name": "Ceftiofur"
+      },
+      "ceftriaxone": {
+        "default": "ceftriaxone",
+        "short_name": "Ceftriaxone"
+      },
+      "ceftriaxone_and_dsc": {
+        "default": "ceftriaxone_and_dsc",
+        "short_name": "Ceftriaxone And (DSC)"
+      },
+      "cefuroxime": {
+        "default": "cefuroxime",
+        "short_name": "Cefuroxime"
+      },
+      "cephalexin": {
+        "default": "cephalexin",
+        "short_name": "Cephalexin"
+      },
+      "cephalothin": {
+        "default": "cephalothin",
+        "short_name": "Cephalothin"
+      },
+      "chloramphenicol": {
+        "default": "chloramphenicol",
+        "short_name": "Chloramphenicol"
+      },
+      "chlortetracycline": {
+        "default": "chlortetracycline",
+        "short_name": "Chlortetracycline"
+      },
+      "ciprofloxacin": {
+        "default": "ciprofloxacin",
+        "short_name": "Ciprofloxacin"
+      },
+      "ciprofloxacin_2nd_breakpoint": {
+        "default": "ciprofloxacin_2nd_breakpoint",
+        "short_name": "Ciprofloxacin 2nd Breakpoint"
+      },
+      "ciprofloxacin_dsc": {
+        "default": "ciprofloxacin_dsc",
+        "short_name": "Ciprofloxacin (DSC)"
+      },
+      "clarithromycin": {
+        "default": "clarithromycin",
+        "short_name": "Clarithromycin"
+      },
+      "clindamycin": {
+        "default": "clindamycin",
+        "short_name": "Clindamycin"
+      },
+      "danofloxacin": {
+        "default": "danofloxacin",
+        "short_name": "Danofloxacin"
+      },
+      "daptomycin": {
+        "default": "daptomycin",
+        "short_name": "Daptomycin"
+      },
+      "doxycycline": {
+        "default": "doxycycline",
+        "short_name": "Doxycycline"
+      },
+      "enrofloxacin": {
+        "default": "enrofloxacin",
+        "short_name": "Enrofloxacin"
+      },
+      "erythromycin": {
+        "default": "erythromycin",
+        "short_name": "Erythromycin"
+      },
+      "flaveomycin": {
+        "default": "flaveomycin",
+        "short_name": "Flaveomycin"
+      },
+      "florfenicol": {
+        "default": "florfenicol",
+        "short_name": "Florfenicol"
+      },
+      "fusidic_acid": {
+        "default": "fusidic_acid",
+        "short_name": "Fusidic Acid"
+      },
+      "gamithromycin": {
+        "default": "gamithromycin",
+        "short_name": "Gamithromycin"
+      },
+      "gatifloxacin": {
+        "default": "gatifloxacin",
+        "short_name": "Gatifloxacin"
+      },
+      "gentamicin": {
+        "default": "gentamicin",
+        "short_name": "Gentamicin"
+      },
+      "imipenem": {
+        "default": "imipenem",
+        "short_name": "Imipenem"
+      },
+      "kanamycin": {
+        "default": "kanamycin",
+        "short_name": "Kanamycin"
+      },
+      "levofloxacin": {
+        "default": "levofloxacin",
+        "short_name": "Levofloxacin"
+      },
+      "lincomycin": {
+        "default": "lincomycin",
+        "short_name": "Lincomycin"
+      },
+      "linezolid": {
+        "default": "linezolid",
+        "short_name": "Linezolid"
+      },
+      "macrolides_and_quinolones": {
+        "default": "macrolides_and_quinolones",
+        "short_name": "Macrolides And Quinolones"
+      },
+      "marbofloxacin": {
+        "default": "marbofloxacin",
+        "short_name": "Marbofloxacin"
+      },
+      "meropenem": {
+        "default": "meropenem",
+        "short_name": "Meropenem"
+      },
+      "minocycline": {
+        "default": "minocycline",
+        "short_name": "Minocycline"
+      },
+      "moxifloxacin": {
+        "default": "moxifloxacin",
+        "short_name": "Moxifloxacin"
+      },
+      "nalidixic_acid": {
+        "default": "nalidixic_acid",
+        "short_name": "Nalidixic Acid"
+      },
+      "neomycin": {
+        "default": "neomycin",
+        "short_name": "Neomycin"
+      },
+      "nitrofurantoin": {
+        "default": "nitrofurantoin",
+        "short_name": "Nitrofurantoin"
+      },
+      "no_resistance_detected": {
+        "default": "no_resistance_detected",
+        "short_name": "No Resistance Detected"
+      },
+      "novobiocin": {
+        "default": "novobiocin",
+        "short_name": "Novobiocin"
+      },
+      "ofloxacin": {
+        "default": "ofloxacin",
+        "short_name": "Ofloxacin"
+      },
+      "orbifloxacin": {
+        "default": "orbifloxacin",
+        "short_name": "Orbifloxacin"
+      },
+      "oxacillin": {
+        "default": "oxacillin",
+        "short_name": "Oxacillin"
+      },
+      "oxacillin_2_nacl": {
+        "default": "oxacillin_2_nacl",
+        "short_name": "Oxacillin 2 Nacl"
+      },
+      "oxytetracycline": {
+        "default": "oxytetracycline",
+        "short_name": "Oxytetracycline"
+      },
+      "penicillin": {
+        "default": "penicillin",
+        "short_name": "Penicillin"
+      },
+      "penicillin_novobiocin": {
+        "default": "penicillin_novobiocin",
+        "short_name": "Penicillin Novobiocin"
+      },
+      "piperacillin": {
+        "default": "piperacillin",
+        "short_name": "Piperacillin"
+      },
+      "piperacillin_tazobactam": {
+        "default": "piperacillin_tazobactam",
+        "short_name": "Piperacillin Tazobactam"
+      },
+      "pirlimycin": {
+        "default": "pirlimycin",
+        "short_name": "Pirlimycin"
+      },
+      "polymyxin_b": {
+        "default": "polymyxin_b",
+        "short_name": "Polymyxin B"
+      },
+      "pradofloxacin": {
+        "default": "pradofloxacin",
+        "short_name": "Pradofloxacin"
+      },
+      "quinupristin_dalfopristin": {
+        "default": "quinupristin_dalfopristin",
+        "short_name": "Quinupristin Dalfopristin"
+      },
+      "resistance_1_clsi_classes": {
+        "default": "resistance_1_clsi_classes",
+        "short_name": "Resistance 1 CLSI Classes"
+      },
+      "resistance_2_clsi_classes": {
+        "default": "resistance_2_clsi_classes",
+        "short_name": "Resistance 2 CLSI Classes"
+      },
+      "resistance_3_clsi_classes": {
+        "default": "resistance_3_clsi_classes",
+        "short_name": "Resistance 3 CLSI Classes"
+      },
+      "resistance_4_clsi_classes": {
+        "default": "resistance_4_clsi_classes",
+        "short_name": "Resistance 4 CLSI Classes"
+      },
+      "resistance_5_clsi_classes": {
+        "default": "resistance_5_clsi_classes",
+        "short_name": "Resistance 5 CLSI Classes"
+      },
+      "resistance_6_clsi_classes": {
+        "default": "resistance_6_clsi_classes",
+        "short_name": "Resistance 6 CLSI Classes"
+      },
+      "resistance_7_clsi_classes": {
+        "default": "resistance_7_clsi_classes",
+        "short_name": "Resistance 7 CLSI Classes"
+      },
+      "resistance_8_clsi_classes": {
+        "default": "resistance_8_clsi_classes",
+        "short_name": "Resistance 8 CLSI Classes"
+      },
+      "rifampin": {
+        "default": "rifampin",
+        "short_name": "Rifampin"
+      },
+      "salinomycin": {
+        "default": "salinomycin",
+        "short_name": "Salinomycin"
+      },
+      "spectinomycin": {
+        "default": "spectinomycin",
+        "short_name": "Spectinomycin"
+      },
+      "streptomycin": {
+        "default": "streptomycin",
+        "short_name": "Streptomycin"
+      },
+      "sulfameth_sulfiz": {
+        "default": "sulfameth_sulfiz",
+        "short_name": "Sulfameth Sulfiz"
+      },
+      "sulfamethoxazole": {
+        "default": "sulfamethoxazole",
+        "short_name": "Sulfamethoxazole"
+      },
+      "sulfisoxazole": {
+        "default": "sulfisoxazole",
+        "short_name": "Sulfisoxazole"
+      },
+      "sulfonamides": {
+        "default": "sulfonamides",
+        "short_name": "Sulfonamides"
+      },
+      "sulphadimethoxine": {
+        "default": "sulphadimethoxine",
+        "short_name": "Sulphadimethoxine"
+      },
+      "sulphathiazole": {
+        "default": "sulphathiazole",
+        "short_name": "Sulphathiazole"
+      },
+      "telithromycin": {
+        "default": "telithromycin",
+        "short_name": "Telithromycin"
+      },
+      "tetracycline": {
+        "default": "tetracycline",
+        "short_name": "Tetracycline"
+      },
+      "tiamulin": {
+        "default": "tiamulin",
+        "short_name": "Tiamulin"
+      },
+      "ticarcillin": {
+        "default": "ticarcillin",
+        "short_name": "Ticarcillin"
+      },
+      "ticarcillin_clavulanic_acid": {
+        "default": "ticarcillin_clavulanic_acid",
+        "short_name": "Ticarcillin Clavulanic Acid"
+      },
+      "tigecycline": {
+        "default": "tigecycline",
+        "short_name": "Tigecycline"
+      },
+      "tildipirosin": {
+        "default": "tildipirosin",
+        "short_name": "Tildipirosin"
+      },
+      "tilmicosin": {
+        "default": "tilmicosin",
+        "short_name": "Tilmicosin"
+      },
+      "tobramycin": {
+        "default": "tobramycin",
+        "short_name": "Tobramycin"
+      },
+      "trimethoprim_sulfamethoxazole": {
+        "default": "trimethoprim_sulfamethoxazole",
+        "short_name": "Trimethoprim Sulfamethoxazole"
+      },
+      "tulathromycin": {
+        "default": "tulathromycin",
+        "short_name": "Tulathromycin"
+      },
+      "tylosin": {
+        "default": "tylosin",
+        "short_name": "Tylosin"
+      },
+      "vancomycin": {
+        "default": "vancomycin",
+        "short_name": "Vancomycin"
+      }
+    }
+  },
+  "narms_flag_{category}": {
+    "full_name": "narms_flag_{category}",
+    "measure": "narms_flag_{category}",
+    "short_name": "Measurement status for {category.short_name}",
+    "long_name": "Why a measurement for {category.short_name} is present or absent",
+    "category": "antimicrobial_resistance",
+    "short_description": "Categorical flag explaining whether the values for {category.short_name} are real.",
+    "long_description": "Records whether the value columns for {category.short_name} hold a real measurement, and if not, why not. Values are mutually exclusive; every cell carries exactly one, and a single row will normally contain several different values across its columns. tested: isolates were collected, the agent was on the panel, and results came back; the counts and percentage are real, and a 0 percent means none were resistant. no_isolates_tested: the agent was on the panel and tracked for that organism, geography and year, but no isolates were available to test. CDC reports this as an explicit zero, meaning we looked and there was nothing, as distinct from we did not look. Occurs only in the human clinical files, since the FDA files aggregate isolate records and a group with no isolates produces no row. not_tested: the agent was not part of the panel run for that specific combination of organism, geography, year and test method, although it is used against that organism elsewhere in the file. Causes include agents added to or dropped from panels partway through the surveillance period, narrower panels in some states, and recent years where collection and testing are still in progress. In the human files this is overwhelmingly state-level and concentrated in the most recent years, which are preliminary and will partly resolve to tested in future releases. not_on_panel: the agent is never used against that organism, in any geography, year or test method. Not a gap but a combination that does not exist as a clinical question, and it will never fill in. Arises because each file holds the union of every organism's panel in one set of columns. tested_no_mic: isolates were tested and the counts and percentage are real, but no MIC was published. Occurs only in the food-producing animals file. Rows flagged this way contain valid resistance measurements, so filtering on a flag equal to tested alone will silently exclude them; match both tested and tested_no_mic to select all real resistance measurements.",
+    "statement": "Measurement status for {category.short_name} was {value}",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "narms_now"
+      },
+      {
+        "id": "narms_retail_meats"
+      },
+      {
+        "id": "narms_animal_pathogen"
+      },
+      {
+        "id": "narms_food_animals"
+      }
+    ],
+    "categories": {
+      "_1_antibiotic_recommended_for_treatment": {
+        "default": "_1_antibiotic_recommended_for_treatment",
+        "short_name": "1 Antibiotic Recommended For Treatment"
+      },
+      "_3_antibiotics_recommended_for_treatment": {
+        "default": "_3_antibiotics_recommended_for_treatment",
+        "short_name": "3 Antibiotics Recommended For Treatment"
+      },
+      "aaucx": {
+        "default": "aaucx",
+        "short_name": "AAuCx"
+      },
+      "acssut": {
+        "default": "acssut",
+        "short_name": "ACSSuT"
+      },
+      "acssutaucx": {
+        "default": "acssutaucx",
+        "short_name": "ACSSuTAuCx"
+      },
+      "acsut": {
+        "default": "acsut",
+        "short_name": "ACSuT"
+      },
+      "acsutaucx": {
+        "default": "acsutaucx",
+        "short_name": "ACSuTAuCx"
+      },
+      "act_s": {
+        "default": "act_s",
+        "short_name": "Act S"
+      },
+      "amikacin": {
+        "default": "amikacin",
+        "short_name": "Amikacin"
+      },
+      "amoxicillin": {
+        "default": "amoxicillin",
+        "short_name": "Amoxicillin"
+      },
+      "amoxicillin_clavulanic_acid": {
+        "default": "amoxicillin_clavulanic_acid",
+        "short_name": "Amoxicillin Clavulanic Acid"
+      },
+      "amoxicillin_clavulanic_acid_2_1": {
+        "default": "amoxicillin_clavulanic_acid_2_1",
+        "short_name": "Amoxicillin Clavulanic Acid 2 1"
+      },
+      "ampicillin": {
+        "default": "ampicillin",
+        "short_name": "Ampicillin"
+      },
+      "ampicillin_sulbactam": {
+        "default": "ampicillin_sulbactam",
+        "short_name": "Ampicillin Sulbactam"
+      },
+      "assut_and_not_resistant_to_chloramphenicol": {
+        "default": "assut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASSuT And Not Resistant To Chloramphenicol"
+      },
+      "asut_and_not_resistant_to_chloramphenicol": {
+        "default": "asut_and_not_resistant_to_chloramphenicol",
+        "short_name": "ASuT And Not Resistant To Chloramphenicol"
+      },
+      "at_s": {
+        "default": "at_s",
+        "short_name": "At S"
+      },
+      "at_s_and_dsc": {
+        "default": "at_s_and_dsc",
+        "short_name": "At S And (DSC)"
+      },
+      "avilamycin": {
+        "default": "avilamycin",
+        "short_name": "Avilamycin"
+      },
+      "azithromycin": {
+        "default": "azithromycin",
+        "short_name": "Azithromycin"
+      },
+      "azithromycin_and_ceftriaxone": {
+        "default": "azithromycin_and_ceftriaxone",
+        "short_name": "Azithromycin And Ceftriaxone"
+      },
+      "azithromycin_and_ciprofloxacin": {
+        "default": "azithromycin_and_ciprofloxacin",
+        "short_name": "Azithromycin And Ciprofloxacin"
+      },
+      "azithromycin_and_dsc": {
+        "default": "azithromycin_and_dsc",
+        "short_name": "Azithromycin And (DSC)"
+      },
+      "azithromycin_or_ceftriaxone_or_ciprofloxacin": {
+        "default": "azithromycin_or_ceftriaxone_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ceftriaxone Or Ciprofloxacin"
+      },
+      "azithromycin_or_ciprofloxacin": {
+        "default": "azithromycin_or_ciprofloxacin",
+        "short_name": "Azithromycin Or Ciprofloxacin"
+      },
+      "azithromycin_or_dsc": {
+        "default": "azithromycin_or_dsc",
+        "short_name": "Azithromycin Or (DSC)"
+      },
+      "aztreonam": {
+        "default": "aztreonam",
+        "short_name": "Aztreonam"
+      },
+      "bacitracin": {
+        "default": "bacitracin",
+        "short_name": "Bacitracin"
+      },
+      "benzylpenicillin": {
+        "default": "benzylpenicillin",
+        "short_name": "Benzylpenicillin"
+      },
+      "cefazolin": {
+        "default": "cefazolin",
+        "short_name": "Cefazolin"
+      },
+      "cefepime": {
+        "default": "cefepime",
+        "short_name": "Cefepime"
+      },
+      "ceforanide": {
+        "default": "ceforanide",
+        "short_name": "Ceforanide"
+      },
+      "cefotetan": {
+        "default": "cefotetan",
+        "short_name": "Cefotetan"
+      },
+      "cefovecin": {
+        "default": "cefovecin",
+        "short_name": "Cefovecin"
+      },
+      "cefoxitin": {
+        "default": "cefoxitin",
+        "short_name": "Cefoxitin"
+      },
+      "cefpodoxime": {
+        "default": "cefpodoxime",
+        "short_name": "Cefpodoxime"
+      },
+      "ceftazidime": {
+        "default": "ceftazidime",
+        "short_name": "Ceftazidime"
+      },
+      "ceftiofur": {
+        "default": "ceftiofur",
+        "short_name": "Ceftiofur"
+      },
+      "ceftriaxone": {
+        "default": "ceftriaxone",
+        "short_name": "Ceftriaxone"
+      },
+      "ceftriaxone_and_dsc": {
+        "default": "ceftriaxone_and_dsc",
+        "short_name": "Ceftriaxone And (DSC)"
+      },
+      "cefuroxime": {
+        "default": "cefuroxime",
+        "short_name": "Cefuroxime"
+      },
+      "cephalexin": {
+        "default": "cephalexin",
+        "short_name": "Cephalexin"
+      },
+      "cephalothin": {
+        "default": "cephalothin",
+        "short_name": "Cephalothin"
+      },
+      "chloramphenicol": {
+        "default": "chloramphenicol",
+        "short_name": "Chloramphenicol"
+      },
+      "chlortetracycline": {
+        "default": "chlortetracycline",
+        "short_name": "Chlortetracycline"
+      },
+      "ciprofloxacin": {
+        "default": "ciprofloxacin",
+        "short_name": "Ciprofloxacin"
+      },
+      "ciprofloxacin_2nd_breakpoint": {
+        "default": "ciprofloxacin_2nd_breakpoint",
+        "short_name": "Ciprofloxacin 2nd Breakpoint"
+      },
+      "ciprofloxacin_dsc": {
+        "default": "ciprofloxacin_dsc",
+        "short_name": "Ciprofloxacin (DSC)"
+      },
+      "clarithromycin": {
+        "default": "clarithromycin",
+        "short_name": "Clarithromycin"
+      },
+      "clindamycin": {
+        "default": "clindamycin",
+        "short_name": "Clindamycin"
+      },
+      "danofloxacin": {
+        "default": "danofloxacin",
+        "short_name": "Danofloxacin"
+      },
+      "daptomycin": {
+        "default": "daptomycin",
+        "short_name": "Daptomycin"
+      },
+      "doxycycline": {
+        "default": "doxycycline",
+        "short_name": "Doxycycline"
+      },
+      "enrofloxacin": {
+        "default": "enrofloxacin",
+        "short_name": "Enrofloxacin"
+      },
+      "erythromycin": {
+        "default": "erythromycin",
+        "short_name": "Erythromycin"
+      },
+      "flaveomycin": {
+        "default": "flaveomycin",
+        "short_name": "Flaveomycin"
+      },
+      "florfenicol": {
+        "default": "florfenicol",
+        "short_name": "Florfenicol"
+      },
+      "fusidic_acid": {
+        "default": "fusidic_acid",
+        "short_name": "Fusidic Acid"
+      },
+      "gamithromycin": {
+        "default": "gamithromycin",
+        "short_name": "Gamithromycin"
+      },
+      "gatifloxacin": {
+        "default": "gatifloxacin",
+        "short_name": "Gatifloxacin"
+      },
+      "gentamicin": {
+        "default": "gentamicin",
+        "short_name": "Gentamicin"
+      },
+      "imipenem": {
+        "default": "imipenem",
+        "short_name": "Imipenem"
+      },
+      "kanamycin": {
+        "default": "kanamycin",
+        "short_name": "Kanamycin"
+      },
+      "levofloxacin": {
+        "default": "levofloxacin",
+        "short_name": "Levofloxacin"
+      },
+      "lincomycin": {
+        "default": "lincomycin",
+        "short_name": "Lincomycin"
+      },
+      "linezolid": {
+        "default": "linezolid",
+        "short_name": "Linezolid"
+      },
+      "macrolides_and_quinolones": {
+        "default": "macrolides_and_quinolones",
+        "short_name": "Macrolides And Quinolones"
+      },
+      "marbofloxacin": {
+        "default": "marbofloxacin",
+        "short_name": "Marbofloxacin"
+      },
+      "meropenem": {
+        "default": "meropenem",
+        "short_name": "Meropenem"
+      },
+      "minocycline": {
+        "default": "minocycline",
+        "short_name": "Minocycline"
+      },
+      "moxifloxacin": {
+        "default": "moxifloxacin",
+        "short_name": "Moxifloxacin"
+      },
+      "nalidixic_acid": {
+        "default": "nalidixic_acid",
+        "short_name": "Nalidixic Acid"
+      },
+      "neomycin": {
+        "default": "neomycin",
+        "short_name": "Neomycin"
+      },
+      "nitrofurantoin": {
+        "default": "nitrofurantoin",
+        "short_name": "Nitrofurantoin"
+      },
+      "no_resistance_detected": {
+        "default": "no_resistance_detected",
+        "short_name": "No Resistance Detected"
+      },
+      "novobiocin": {
+        "default": "novobiocin",
+        "short_name": "Novobiocin"
+      },
+      "ofloxacin": {
+        "default": "ofloxacin",
+        "short_name": "Ofloxacin"
+      },
+      "orbifloxacin": {
+        "default": "orbifloxacin",
+        "short_name": "Orbifloxacin"
+      },
+      "oxacillin": {
+        "default": "oxacillin",
+        "short_name": "Oxacillin"
+      },
+      "oxacillin_2_nacl": {
+        "default": "oxacillin_2_nacl",
+        "short_name": "Oxacillin 2 Nacl"
+      },
+      "oxytetracycline": {
+        "default": "oxytetracycline",
+        "short_name": "Oxytetracycline"
+      },
+      "penicillin": {
+        "default": "penicillin",
+        "short_name": "Penicillin"
+      },
+      "penicillin_novobiocin": {
+        "default": "penicillin_novobiocin",
+        "short_name": "Penicillin Novobiocin"
+      },
+      "piperacillin": {
+        "default": "piperacillin",
+        "short_name": "Piperacillin"
+      },
+      "piperacillin_tazobactam": {
+        "default": "piperacillin_tazobactam",
+        "short_name": "Piperacillin Tazobactam"
+      },
+      "pirlimycin": {
+        "default": "pirlimycin",
+        "short_name": "Pirlimycin"
+      },
+      "polymyxin_b": {
+        "default": "polymyxin_b",
+        "short_name": "Polymyxin B"
+      },
+      "pradofloxacin": {
+        "default": "pradofloxacin",
+        "short_name": "Pradofloxacin"
+      },
+      "quinupristin_dalfopristin": {
+        "default": "quinupristin_dalfopristin",
+        "short_name": "Quinupristin Dalfopristin"
+      },
+      "resistance_1_clsi_classes": {
+        "default": "resistance_1_clsi_classes",
+        "short_name": "Resistance 1 CLSI Classes"
+      },
+      "resistance_2_clsi_classes": {
+        "default": "resistance_2_clsi_classes",
+        "short_name": "Resistance 2 CLSI Classes"
+      },
+      "resistance_3_clsi_classes": {
+        "default": "resistance_3_clsi_classes",
+        "short_name": "Resistance 3 CLSI Classes"
+      },
+      "resistance_4_clsi_classes": {
+        "default": "resistance_4_clsi_classes",
+        "short_name": "Resistance 4 CLSI Classes"
+      },
+      "resistance_5_clsi_classes": {
+        "default": "resistance_5_clsi_classes",
+        "short_name": "Resistance 5 CLSI Classes"
+      },
+      "resistance_6_clsi_classes": {
+        "default": "resistance_6_clsi_classes",
+        "short_name": "Resistance 6 CLSI Classes"
+      },
+      "resistance_7_clsi_classes": {
+        "default": "resistance_7_clsi_classes",
+        "short_name": "Resistance 7 CLSI Classes"
+      },
+      "resistance_8_clsi_classes": {
+        "default": "resistance_8_clsi_classes",
+        "short_name": "Resistance 8 CLSI Classes"
+      },
+      "rifampin": {
+        "default": "rifampin",
+        "short_name": "Rifampin"
+      },
+      "salinomycin": {
+        "default": "salinomycin",
+        "short_name": "Salinomycin"
+      },
+      "spectinomycin": {
+        "default": "spectinomycin",
+        "short_name": "Spectinomycin"
+      },
+      "streptomycin": {
+        "default": "streptomycin",
+        "short_name": "Streptomycin"
+      },
+      "sulfameth_sulfiz": {
+        "default": "sulfameth_sulfiz",
+        "short_name": "Sulfameth Sulfiz"
+      },
+      "sulfamethoxazole": {
+        "default": "sulfamethoxazole",
+        "short_name": "Sulfamethoxazole"
+      },
+      "sulfisoxazole": {
+        "default": "sulfisoxazole",
+        "short_name": "Sulfisoxazole"
+      },
+      "sulfonamides": {
+        "default": "sulfonamides",
+        "short_name": "Sulfonamides"
+      },
+      "sulphadimethoxine": {
+        "default": "sulphadimethoxine",
+        "short_name": "Sulphadimethoxine"
+      },
+      "sulphathiazole": {
+        "default": "sulphathiazole",
+        "short_name": "Sulphathiazole"
+      },
+      "telithromycin": {
+        "default": "telithromycin",
+        "short_name": "Telithromycin"
+      },
+      "tetracycline": {
+        "default": "tetracycline",
+        "short_name": "Tetracycline"
+      },
+      "tiamulin": {
+        "default": "tiamulin",
+        "short_name": "Tiamulin"
+      },
+      "ticarcillin": {
+        "default": "ticarcillin",
+        "short_name": "Ticarcillin"
+      },
+      "ticarcillin_clavulanic_acid": {
+        "default": "ticarcillin_clavulanic_acid",
+        "short_name": "Ticarcillin Clavulanic Acid"
+      },
+      "tigecycline": {
+        "default": "tigecycline",
+        "short_name": "Tigecycline"
+      },
+      "tildipirosin": {
+        "default": "tildipirosin",
+        "short_name": "Tildipirosin"
+      },
+      "tilmicosin": {
+        "default": "tilmicosin",
+        "short_name": "Tilmicosin"
+      },
+      "tobramycin": {
+        "default": "tobramycin",
+        "short_name": "Tobramycin"
+      },
+      "trimethoprim_sulfamethoxazole": {
+        "default": "trimethoprim_sulfamethoxazole",
+        "short_name": "Trimethoprim Sulfamethoxazole"
+      },
+      "tulathromycin": {
+        "default": "tulathromycin",
+        "short_name": "Tulathromycin"
+      },
+      "tylosin": {
+        "default": "tylosin",
+        "short_name": "Tylosin"
+      },
+      "vancomycin": {
+        "default": "vancomycin",
+        "short_name": "Vancomycin"
+      }
+    }
+  },
+  "genus_species_serotype": {
+    "id": "genus_species_serotype",
+    "short_name": "Organism",
+    "long_name": "Bacterial genus, species and serotype",
+    "category": "antimicrobial_resistance",
+    "short_description": "Organism the resistance measurements describe.",
+    "long_description": "Bacterial genus, species and serotype combined into a single label, with any absent part omitted. Present in the human clinical, retail meats and food-producing animal files. The human files use CDC's curated 30 species and serotype entries, including rollups such as All nontyphoidal; the FDA files report raw serotypes, giving 221 combinations in retail meats and 638 in food animals, of which 628 are Salmonella.",
+    "statement": "",
+    "measure_type": "Category",
+    "unit": "Organism",
+    "time_resolution": "",
+    "restrictions": "",
+    "sources": [],
     "citations": []
   },
-
+  "genus": {
+    "id": "genus",
+    "short_name": "Genus",
+    "long_name": "Bacterial genus",
+    "category": "antimicrobial_resistance",
+    "short_description": "Bacterial genus the resistance measurements describe.",
+    "long_description": "Bacterial genus. Used in the animal pathogen file, which reports at genus level only and covers E. coli, Klebsiella spp, S. pseudintermedius and Salmonella.",
+    "statement": "",
+    "measure_type": "Category",
+    "unit": "Genus",
+    "time_resolution": "",
+    "restrictions": "",
+    "sources": [],
+    "citations": []
+  },
+  "test_method": {
+    "id": "test_method",
+    "short_name": "Test method",
+    "long_name": "Antimicrobial susceptibility test method",
+    "category": "antimicrobial_resistance",
+    "short_description": "Whether results come from phenotypic or genotypic testing.",
+    "long_description": "AST is phenotypic antimicrobial susceptibility testing, available from 1999. WGS is whole genome sequencing, available from 2016 onward; there are no WGS rows before that year. The two methods give different results for the same organism and agent and are kept as separate rows rather than combined. Present in the human clinical files only.",
+    "statement": "",
+    "measure_type": "Category",
+    "unit": "Method",
+    "time_resolution": "",
+    "restrictions": "",
+    "sources": [],
+    "citations": []
+  },
+  "meat_source": {
+    "id": "meat_source",
+    "short_name": "Meat source",
+    "long_name": "Retail meat product sampled",
+    "category": "antimicrobial_resistance",
+    "short_description": "Retail meat product the isolate was recovered from.",
+    "long_description": "Retail meat product sampled, such as chicken, ground beef, ground turkey, pork chops or veal. Present in the retail meats file only.",
+    "statement": "",
+    "measure_type": "Category",
+    "unit": "Product",
+    "time_resolution": "",
+    "restrictions": "",
+    "sources": [],
+    "citations": []
+  },
+  "host_species": {
+    "id": "host_species",
+    "short_name": "Host species",
+    "long_name": "Animal host species",
+    "category": "antimicrobial_resistance",
+    "short_description": "Animal the isolate was recovered from.",
+    "long_description": "Animal host the isolate was recovered from. In the food-producing animals file this covers cattle, chickens, swine, turkeys and minor species such as goats, lambs and sheep, along with eggs and ready to eat products. In the animal pathogen file the isolates are from dogs.",
+    "statement": "",
+    "measure_type": "Category",
+    "unit": "Species",
+    "time_resolution": "",
+    "restrictions": "",
+    "sources": [],
+    "citations": []
+  },
+  "source_type": {
+    "id": "source_type",
+    "short_name": "Source type",
+    "long_name": "Sampling programme and stage",
+    "category": "antimicrobial_resistance",
+    "short_description": "Sampling programme the isolate was collected under.",
+    "long_description": "Sampling programme and stage, such as HACCP slaughter surveillance or cecal sampling broken out by animal type. Present in the food-producing animals file only.",
+    "statement": "",
+    "measure_type": "Category",
+    "unit": "Programme",
+    "time_resolution": "",
+    "restrictions": "",
+    "sources": [],
+    "citations": []
+  },
+  "collection_source": {
+    "id": "collection_source",
+    "short_name": "Collection source",
+    "long_name": "Clinical site of collection",
+    "category": "antimicrobial_resistance",
+    "short_description": "Clinical site the diagnostic isolate came from.",
+    "long_description": "Clinical site the isolate was collected from, such as urinary tract infections or other tissues and body sites. Because testing is driven by what a veterinarian ordered for a given case rather than a fixed panel, the set of agents tested varies by collection source within the same year. Present in the animal pathogen file only.",
+    "statement": "",
+    "measure_type": "Category",
+    "unit": "Site",
+    "time_resolution": "",
+    "restrictions": "",
+    "sources": [],
+    "citations": []
+  },
   "_sources": {
     "narms_now": {
       "name": "NARMS Now: Human Data - Antimicrobial Resistance",
