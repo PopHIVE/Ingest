@@ -74,20 +74,24 @@ row isn't an emm row. Every other column, `value` included, is always populated.
 - **`value_not_reported = 1` means the 0 is not real.** `value` is never blank:
   unreported cells are filled with 0 and flagged. Reading a flagged row as a
   measured zero understates resistance, syndrome rates and type shares, so filter
-  on the flag before aggregating. Reasons are structural — a drug off a pathogen's
-  panel, an emm type CDC pooled into "other" that year, a Group B serotype CDC
+  on the flag before aggregating. Reasons are structural: a drug off a pathogen's
+  panel, an emm type CDC did not itemise that year, a Group B serotype CDC
   regrouped that year, a rate not broken out for that stratification.
 - **`suppressed = 1`** (Epic only) is a different thing: a small cell Epic
   withheld, imputed as 5.
 - **`n_isolates` and `n_type` stay blank rather than zero** where CDC published
   no denominator, since "22.5% of 0 isolates" would read as broken. See the
   status table above.
-- **`n_isolates` is the *apparent* denominator, not a documented one.** CDC ships
-  it beside each topic's percentages but never defines it, and the column
-  descriptions in the source metadata are empty. It is also not portable across
-  topics — 2023 emm-typed isolates read 3,930 against 3,908 resistance isolates.
-  Coverage is partial: 2006+ for resistance, and Group B publishes one overall
-  count rather than one per population stratum.
+- **`n_isolates` is the reference-lab isolate count.** Invasive isolates are sent
+  to CDC's reference laboratory and characterised by whole genome sequencing,
+  which yields both the emm type and the predicted MICs behind the resistance
+  percentages ([ABCs surveillance reports](https://www.cdc.gov/abcs/reports/)).
+  Two cautions. CDC's own 2023 figures disagree slightly, the report citing 3,908
+  isolates while the per-type counts sum to 3,930, and the published emm
+  percentages reconcile against 3,930 — so the typing and resistance denominators
+  are kept as separate rows here rather than shared. And coverage is partial:
+  2006 onward for resistance, with Group B publishing one overall count rather
+  than one per population stratum.
 - **NNDSS is published cumulatively.** The raw
   `streptococcal_toxic_shock_syndrome` column is a year-to-date running total
   that resets each MMWR year (national 2024 runs 5 → 647 across weeks 1–52).

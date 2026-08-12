@@ -516,8 +516,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     "Bacteremia without focus"  = "bacteremia_without_focus",
     "Pneumonia"                 = "pneumonia",
     "Necrotizing fasciitis"     = "necrotizing_fasciitis",
-    "Streptococcal toxic shock" = "strep_toxic_shock",
-    "Other"                     = "other"
+    "Streptococcal toxic shock" = "strep_toxic_shock"
   )
 
   gas_syn_rows <- gas %>%

@@ -1,9 +1,9 @@
 {
   "{category}geography": {
     "short_name": "Geography",
-    "long_name": "Geography (state name or national)",
+    "long_name": "Geography name",
     "short_description": "State name, or \"United States\" for the national total.",
-    "long_description": "Geographic identifier as a human-readable name: a state name, or the literal \"United States\" for the national total. The matching FIPS code is in geography_fips. Only the 50 states, DC, and the national total are kept; territories and non-state NNDSS jurisdictions (for example New York City) are dropped. The ABCs file is national only, and even then covers a catchment of roughly 35 million people rather than the whole country.",
+    "long_description": "Geographic area the row describes, as a state name or \"United States\" for the national total.",
     "measure_type": "identifier",
     "unit": "state name",
     "categories": {
@@ -15,8 +15,8 @@
   "{category}geography_fips": {
     "short_name": "Geography FIPS",
     "long_name": "Geography FIPS code",
-    "short_description": "FIPS code for the geography; \"00\" is the national total.",
-    "long_description": "FIPS code for the row's geography, kept alongside the human-readable name so these files can be joined to other FIPS-keyed data. \"00\" is the national total and 2-digit codes are states. Stored as a string to preserve the leading zero.",
+    "short_description": "FIPS code for the geography; \"00\" is national.",
+    "long_description": "FIPS code for the row's geography, with \"00\" for the national total and 2-digit codes for states.",
     "measure_type": "identifier",
     "unit": "FIPS code",
     "categories": {
@@ -27,9 +27,9 @@
   },
   "{category}date": {
     "short_name": "Date",
-    "long_name": "Time period end date",
-    "short_description": "Period end date in YYYY-mm-dd (ISO 8601) format.",
-    "long_description": "End date of the reporting period. Resolution differs by file: the ABCs data is annual (YYYY-12-31), Epic Cosmos quarterly (last day of the calendar quarter), and NNDSS weekly (MMWR week ending Saturday). Named `date` per the bundle convention; the underlying standard files call the same column `time`.",
+    "long_name": "Period end date",
+    "short_description": "End date of the reporting period, in YYYY-mm-dd format.",
+    "long_description": "End date of the reporting period the row covers.",
     "measure_type": "date",
     "unit": "date",
     "categories": {
@@ -41,8 +41,8 @@
   "{category}year": {
     "short_name": "Year",
     "long_name": "Year",
-    "short_description": "Calendar year, or MMWR year for the weekly NNDSS series.",
-    "long_description": "Year of the reporting period, provided alongside `date` for convenient filtering and grouping. For NNDSS this is the MMWR year rather than the calendar year, so it aligns with the `week` column and with the year boundary the cumulative count resets on.",
+    "short_description": "Year of the reporting period.",
+    "long_description": "Year of the reporting period, the MMWR year for the weekly NNDSS series.",
     "measure_type": "identifier",
     "unit": "year",
     "categories": {
@@ -55,23 +55,23 @@
     "short_name": "Pathogen",
     "long_name": "Bacterial pathogen",
     "short_description": "Group A or Group B Streptococcus.",
-    "long_description": "Which organism the row describes: \"Group A Streptococcus\" (Streptococcus pyogenes) or \"Group B Streptococcus\" (Streptococcus agalactiae). These are different diseases with different at-risk populations - Group A causes strep throat and invasive disease across all ages, Group B is primarily neonatal sepsis and invasive disease in older adults - so do not pool them.",
+    "long_description": "Bacterial species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
     "measure_type": "category",
     "unit": ""
   },
   "bundle_strep/dist/abcs_strep.parquet|rate_denominator": {
     "short_name": "Rate denominator",
-    "long_name": "What the per-100,000 rate is relative to",
+    "long_name": "Population the rate is relative to",
     "short_description": "Whether a rate is per 100,000 of the row's stratum or of the whole population.",
-    "long_description": "CDC labels every ABCs rate \"Per 100,000 population\" while using two different bases, so this column records which applies. \"Stratum population\" is per 100,000 of the group the row describes - the \"<1\" age band rate is per 100,000 infants, 115.7 for 1997 Group B, consistent with 3,900 infant cases over ~3.9M births. \"Population\" is per 100,000 of the whole population regardless of the row's stratum, which is how CDC reports the infant early- and late-onset rates - 0.70 + 0.40 = 1.10 for the same cases over ~272M people. They differ in all 28 years, mean absolute difference 66.3, so rows with different denominators must never be summed or plotted on one axis. \"Total\" where the row is not a rate.",
+    "long_description": "Which population a per-100,000 rate is relative to, either the stratum the row describes or the whole population.",
     "measure_type": "category",
     "unit": ""
   },
   "bundle_strep/dist/abcs_strep.parquet|age": {
-    "short_name": "Age Group",
+    "short_name": "Age group",
     "long_name": "Age group",
     "short_description": "Age group; \"Total\" is the all-ages aggregate.",
-    "long_description": "Age group for the row. \"Total\" is the all-ages aggregate and overlaps the specific bands, so exclude it when summing across ages. ABCs bands differ by topic - rates use <1 / 1 / 2-4 / 5-17 / 18-34 / 35-49 / 50-64 / 65+, while resistance and typing use the coarser <1 / 18-64 / 65+. ABCs reports no 2-17 band for Group B, and its 18-64 / 65+ split does not line up with the 18-49 / 50-64 bands used elsewhere in this repo; both are source-determined.",
+    "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
     "measure_type": "category",
     "unit": ""
   },
@@ -79,63 +79,63 @@
     "short_name": "Sex",
     "long_name": "Sex",
     "short_description": "Sex; \"Total\" combines both.",
-    "long_description": "Sex as reported by ABCs. \"Total\" combines both sexes and must not be summed with the Male and Female rows. Reported for Group A only; Group B rows carry \"Total\".",
+    "long_description": "Sex of the cases the row describes, reported for Group A only.",
     "measure_type": "category",
     "unit": ""
   },
   "bundle_strep/dist/abcs_strep.parquet|race_ethnicity": {
     "short_name": "Race/Ethnicity",
     "long_name": "Race and ethnicity",
-    "short_description": "Race/ethnicity; \"Total\" combines all groups.",
-    "long_description": "Race and ethnicity as reported by ABCs, collapsed to White, Black, and Other. \"Total\" combines all groups and must not be summed with the specific levels.",
+    "short_description": "Race and ethnicity; \"Total\" combines all groups.",
+    "long_description": "Race and ethnicity of the cases the row describes, collapsed by ABCs to White, Black and Other.",
     "measure_type": "category",
     "unit": ""
   },
   "bundle_strep/dist/abcs_strep.parquet|onset": {
-    "short_name": "Infant onset timing",
+    "short_name": "Onset timing",
     "long_name": "Infant disease onset timing",
-    "short_description": "Early-onset (0-6 days) vs late-onset (7-89 days) infant Group B disease.",
-    "long_description": "Group B Streptococcus is the leading cause of neonatal sepsis, so CDC splits infant disease by onset timing: early-onset (0-6 days of life, usually acquired around delivery) and late-onset (7-89 days). \"Total\" rows are not onset-specific. The onset rows are a subset of infants, not additional population, so do not sum across this column - for case counts an explicit age \"<1\" / onset \"Total\" row is provided instead.",
+    "short_description": "Early- or late-onset infant Group B disease.",
+    "long_description": "Whether infant Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
     "measure_type": "category",
     "unit": ""
   },
   "bundle_strep/dist/abcs_strep.parquet|syndrome": {
     "short_name": "Clinical syndrome",
     "long_name": "Clinical syndrome",
-    "short_description": "Which clinical presentation the row describes; \"Total\" where not syndrome-specific.",
-    "long_description": "The clinical presentation the row reports, for the syndrome measures: cellulitis, bacteremia without focus, pneumonia, necrotizing fasciitis and streptococcal toxic shock for Group A; bacteremia without focus, bacteremia with pneumonia and meningitis for Group B. Syndromes are not mutually exclusive and do not sum to the overall case rate. \"Total\" on every row that is not syndrome-specific.",
+    "short_description": "Clinical presentation the row describes; \"Total\" where not syndrome-specific.",
+    "long_description": "Clinical presentation the row reports, for the syndrome measures.",
     "measure_type": "category",
     "unit": ""
   },
   "bundle_strep/dist/abcs_strep.parquet|antibiotic": {
     "short_name": "Antibiotic",
     "long_name": "Antibiotic tested",
-    "short_description": "Which drug the resistance percentage refers to; \"Total\" where not drug-specific.",
-    "long_description": "The antibiotic a pct_resistant row refers to. Group A is tested against penicillin, erythromycin, clindamycin, cefotaxime, tetracycline, vancomycin and (from partway through the series) linezolid; the Group B panel omits tetracycline and linezolid, so those rows are flagged value_not_reported. \"Total\" on every row that is not drug-specific.",
+    "short_description": "Drug the resistance percentage refers to; \"Total\" where not drug-specific.",
+    "long_description": "Antibiotic a pct_resistant row refers to.",
     "measure_type": "category",
     "unit": ""
   },
   "bundle_strep/dist/abcs_strep.parquet|emm_type": {
     "short_name": "emm type",
     "long_name": "Group A emm type",
-    "short_description": "Which emm type the row describes; \"Total\" where not type-specific.",
-    "long_description": "emm type of Group A Streptococcus isolates - the M protein gene sequence type, used to track strain diversity and prospective vaccine coverage. Types CDC does not itemise in a given year are pooled into \"other\", and which types are broken out changes over time, so \"other\" is not comparable across years. \"Total\" on every row that is not type-specific.",
+    "short_description": "emm type the row describes; \"Total\" where not type-specific.",
+    "long_description": "emm type of the Group A Streptococcus isolates, the M protein gene sequence type.",
     "measure_type": "category",
     "unit": ""
   },
   "bundle_strep/dist/abcs_strep.parquet|serotype": {
     "short_name": "Serotype",
     "long_name": "Group B capsular serotype",
-    "short_description": "Which capsular serotype the row describes; \"Total\" where not serotype-specific.",
-    "long_description": "Capsular serotype of Group B Streptococcus isolates (Ia, Ib, II-V, the VI-IX groupings, and non-typeable), which informs maternal vaccine development. CDC's grouping of the rarer serotypes changed over the series, so some serotype levels cover only part of the years. Rows for 1997-1998 are placeholder zeros; treat the series as starting in 1999. \"Total\" on every row that is not serotype-specific.",
+    "short_description": "Capsular serotype the row describes; \"Total\" where not serotype-specific.",
+    "long_description": "Capsular serotype of the Group B Streptococcus isolates.",
     "measure_type": "category",
     "unit": ""
   },
   "bundle_strep/dist/abcs_strep.parquet|alph_type": {
     "short_name": "ALPH type",
     "long_name": "Group B ALPH gene type",
-    "short_description": "Which alpha-like protein gene the row describes; \"Total\" where not type-specific.",
-    "long_description": "Alpha-like protein (ALPH) surface gene type of Group B Streptococcus isolates - ALP1, ALP23, ALPHA, RIB, or \"neg\" for none detected - used for strain characterisation. CDC reports these from 2015 on. \"Total\" on every row that is not type-specific.",
+    "short_description": "Alpha-like protein gene the row describes; \"Total\" where not type-specific.",
+    "long_description": "Alpha-like protein (ALPH) surface gene type of the Group B Streptococcus isolates.",
     "measure_type": "category",
     "unit": ""
   },
@@ -179,9 +179,9 @@
   },
   "bundle_strep/dist/abcs_strep.parquet|value": {
     "short_name": "Value",
-    "long_name": "ABCs Group A / Group B Streptococcus value",
-    "short_description": "Value of the measure named in the measure column (see that column for units).",
-    "long_description": "Value of the measure named in the measure column. Units are mixed across measures - rates per 100,000, estimated counts, and percentages - so always filter or facet by `measure` before plotting. Rate rows additionally carry a `rate_denominator` saying whether the per-100,000 figure is relative to the row's own stratum or to the whole population - the two are not comparable, so filter on it too. Where a percentage has a published denominator it is in n_isolates on the same row. A value of 0 with value_not_reported = 1 means CDC published nothing, not a measured zero.",
+    "long_name": "Measure value",
+    "short_description": "Value of the measure named in the measure column.",
+    "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
     "measure_type": "Mixed",
     "unit": "varies by measure",
     "time_resolution": "Year",
@@ -195,10 +195,10 @@
     ]
   },
   "bundle_strep/dist/abcs_strep.parquet|n_isolates": {
-    "short_name": "Isolates tested",
-    "long_name": "Number of isolates (apparent denominator)",
-    "short_description": "CDC's isolate count for this topic and year; blank unless n_isolates_status is \"reported\".",
-    "long_description": "The isolate count CDC publishes alongside the percentages for this topic and year, carried on the same row so a tooltip can read \"26.4% of 3,908 isolates\" from one line. CDC does not document what it counts, so treat it as the apparent denominator rather than a confirmed one, and do not carry it across topics - 2023 emm-typed isolates (3,930) and resistance isolates (3,908) differ. Coverage is partial: for resistance it starts in 2006, and for Group B only the overall stratum has one. Read n_isolates_status before using it.",
+    "short_name": "Isolates",
+    "long_name": "Number of isolates",
+    "short_description": "Isolate count behind the percentage on this row.",
+    "long_description": "Number of isolates the percentage on this row is calculated over.",
     "measure_type": "Count",
     "unit": "Isolates",
     "time_resolution": "Year",
@@ -213,9 +213,9 @@
   },
   "bundle_strep/dist/abcs_strep.parquet|n_isolates_status": {
     "short_name": "Isolate count status",
-    "long_name": "Why n_isolates is blank, where it is",
-    "short_description": "Whether n_isolates is published, applies but was not published, or does not apply.",
-    "long_description": "Says which of two unrelated reasons a blank n_isolates has, since NA alone cannot distinguish them.",
+    "long_name": "Availability of n_isolates",
+    "short_description": "Whether n_isolates is published, unpublished, or not applicable.",
+    "long_description": "Whether n_isolates is published, applies but was not published, or does not apply to the measure.",
     "measure_type": "category",
     "unit": "",
     "levels": {
@@ -225,19 +225,19 @@
       },
       "not_reported": {
         "short_name": "Not reported",
-        "short_description": "The measure has a denominator but CDC published none for this row - pre-2006 resistance, and every Group B stratum other than overall. Left blank rather than 0, since \"22.5% of 0 isolates\" would read as broken."
+        "short_description": "The measure has an isolate denominator but CDC published none for this row."
       },
       "not_applicable": {
         "short_name": "Not applicable",
-        "short_description": "The measure has no isolate denominator at all: the rate, count and syndrome measures."
+        "short_description": "The measure has no isolate denominator."
       }
     }
   },
   "bundle_strep/dist/abcs_strep.parquet|n_type": {
     "short_name": "Isolates of this type",
     "long_name": "Number of isolates of this type",
-    "short_description": "Numerator behind pct_emm_type; blank unless n_type_status is \"reported\".",
-    "long_description": "Number of isolates of the specific emm type on this row - the numerator behind pct_emm_type, with n_isolates as the denominator. Kept on the same row so a tooltip can read \"emm1: 22.5% (99 of 440 isolates)\" from one line. CDC publishes per-type counts only for Group A emm typing; read n_type_status for why it is blank elsewhere.",
+    "short_description": "Isolates of the emm type on this row.",
+    "long_description": "Number of isolates of the emm type on this row, the numerator behind pct_emm_type.",
     "measure_type": "Count",
     "unit": "Isolates",
     "time_resolution": "Year",
@@ -252,31 +252,31 @@
   },
   "bundle_strep/dist/abcs_strep.parquet|n_type_status": {
     "short_name": "Type count status",
-    "long_name": "Why n_type is blank, where it is",
-    "short_description": "Whether n_type is published, applies but was not published, or does not apply.",
-    "long_description": "Says which of two unrelated reasons a blank n_type has, since NA alone cannot distinguish them.",
+    "long_name": "Availability of n_type",
+    "short_description": "Whether n_type is published, unpublished, or not applicable.",
+    "long_description": "Whether n_type is published, applies but was not published, or does not apply to the measure.",
     "measure_type": "category",
     "unit": "",
     "levels": {
       "reported": {
         "short_name": "Reported",
-        "short_description": "n_type holds CDC's published per-type isolate count."
+        "short_description": "n_type holds CDC's published per-type count."
       },
       "not_reported": {
         "short_name": "Not reported",
-        "short_description": "An emm type CDC did not itemise that year, so neither its percent nor its count was published."
+        "short_description": "An emm type CDC did not itemise that year."
       },
       "not_applicable": {
         "short_name": "Not applicable",
-        "short_description": "Every measure other than pct_emm_type - CDC publishes per-level counts only for Group A emm typing."
+        "short_description": "Any measure other than pct_emm_type."
       }
     }
   },
   "bundle_strep/dist/abcs_strep.parquet|value_not_reported": {
     "short_name": "Value not reported",
-    "long_name": "Flag for values the source did not report",
-    "short_description": "1 where CDC did not report this measure for this row, in which case value reads 0; 0 otherwise.",
-    "long_description": "1 where CDC published nothing for the row's measure, in which case value reads 0 and must not be read as a measured zero; 0 otherwise. Read straight off the matching per-measure flag in the source rather than inferred. The gaps are structural rather than confidentiality suppression - an antibiotic off a pathogen's susceptibility panel, an emm type CDC did not itemise that year, a rate not broken out for that stratification. Describes `value` only; the companion columns have their own status columns.",
+    "long_name": "Flag for values CDC did not report",
+    "short_description": "1 where CDC did not report this measure for the row; 0 otherwise.",
+    "long_description": "1 where CDC published nothing for the row's measure, in which case value reads 0 and is not a measured zero.",
     "measure_type": "Binary",
     "unit": "0/1",
     "time_resolution": "Year",
@@ -290,10 +290,10 @@
     ]
   },
   "bundle_strep/dist/epic_gas.parquet|age": {
-    "short_name": "Age Group",
+    "short_name": "Age group",
     "long_name": "Age group",
     "short_description": "Age group; \"Total\" is the all-ages aggregate.",
-    "long_description": "Epic Cosmos age band for the row: \"<1 Years\", \"1-4 Years\", \"5-17 Years\", \"18-49 Years\", \"50-64 Years\", \"65+ Years\", or \"Total\". \"Total\" is the all-ages aggregate and overlaps the specific bands, so exclude it when summing across ages. These bands do not line up with the ABCs bands in abcs_strep.parquet, so the two files cannot be compared age for age.",
+    "long_description": "Epic Cosmos age band for the row, with \"Total\" as the all-ages aggregate.",
     "measure_type": "category",
     "unit": ""
   },
@@ -313,9 +313,9 @@
   },
   "bundle_strep/dist/epic_gas.parquet|value": {
     "short_name": "Value",
-    "long_name": "Epic Cosmos strep throat value",
-    "short_description": "Value of the measure named in the measure column (see that column for units).",
-    "long_description": "Value of the measure named in the measure column. Units are mixed: n_strep_throat and n_patients are patient counts, pct_strep_throat is a percent (0-100). Always filter or facet by measure before plotting. The denominator counts patients with ANY encounter, not emergency department visits only, so pct_strep_throat is not an ED visit share.",
+    "long_name": "Measure value",
+    "short_description": "Value of the measure named in the measure column.",
+    "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
     "measure_type": "Mixed",
     "unit": "varies by measure",
     "time_resolution": "Quarter",
@@ -327,9 +327,9 @@
   },
   "bundle_strep/dist/epic_gas.parquet|suppressed": {
     "short_name": "Suppressed",
-    "long_name": "Suppression flag for this measure value",
-    "short_description": "1 if Epic suppressed the underlying cell and the value was imputed as 5; 0 otherwise.",
-    "long_description": "1 when Epic Cosmos withheld the underlying cell (a count of 10 or fewer) and the value was imputed as 5; 0 otherwise. Measure-specific: for n_strep_throat and pct_strep_throat it reflects suppression of the strep throat numerator, and for n_patients the patient-total denominator. Computed upstream before imputation, so it records what Epic withheld rather than what the ingest wrote. Distinct from value_not_reported in the ABCs file, which marks data the source never published at all.",
+    "long_name": "Epic suppression flag",
+    "short_description": "1 where Epic withheld the underlying cell and the value was imputed as 5.",
+    "long_description": "1 where Epic Cosmos withheld the underlying cell as a count of 10 or fewer, in which case the value was imputed as 5.",
     "measure_type": "Binary",
     "unit": "0/1",
     "time_resolution": "Quarter",
@@ -346,7 +346,7 @@
         "short_name": "Strep TSS cases (weekly)",
         "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
         "short_description": "Newly reported STSS cases in the MMWR week.",
-        "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week, derived by build.R as the week-over-week difference in the cumulative year-to-date count within each geography and MMWR year. This is the series to plot. NNDSS sometimes revises earlier weeks downward, which produces a small number of negative increments; following the bundle_measles convention these are kept as reported for transparency rather than clamped, and plots should cut the y axis at 0 instead. Note STSS is the only Group A measure NNDSS carries - invasive Group A disease generally, and Group B disease, are not nationally notifiable.",
+        "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week.",
         "measure_type": "Count",
         "unit": "Cases",
         "time_resolution": "Week",
@@ -357,15 +357,17 @@
         ]
       },
       "stss_cases_cumulative": {
-        "source_id": "streptococcal_toxic_shock_syndrome"
+        "source_id": "streptococcal_toxic_shock_syndrome",
+        "short_description": "Year-to-date STSS cases as published by NNDSS.",
+        "long_description": "Cumulative streptococcal toxic shock syndrome cases reported since the start of the MMWR year."
       }
     }
   },
   "bundle_strep/dist/nnds_stss.parquet|value": {
     "short_name": "Value",
-    "long_name": "Streptococcal toxic shock syndrome cases",
-    "short_description": "Value of the measure named in the measure column (see that column for units).",
-    "long_description": "Reported case count of streptococcal toxic shock syndrome. The measure column distinguishes the weekly-incident series from the cumulative year-to-date series as published by NNDSS. The two are not additive - do not sum across measures.",
+    "long_name": "Reported STSS cases",
+    "short_description": "Reported cases of streptococcal toxic shock syndrome.",
+    "long_description": "Reported case count of streptococcal toxic shock syndrome.",
     "measure_type": "Mixed",
     "unit": "varies by measure",
     "time_resolution": "Week",
@@ -378,8 +380,8 @@
   "bundle_strep/dist/nnds_stss.parquet|week": {
     "short_name": "MMWR week",
     "long_name": "MMWR week number",
-    "short_description": "MMWR week number (1-53) within the MMWR year.",
-    "long_description": "MMWR (epidemiological) week number within `year`, provided alongside `date` for the weekly NNDSS series. The cumulative count published by NNDSS resets at week 1 of each MMWR year, which is the boundary build.R de-accumulates within.",
+    "short_description": "MMWR week number (1-53) within the year.",
+    "long_description": "MMWR (epidemiological) week number within the year.",
     "measure_type": "identifier",
     "unit": "week"
   },
