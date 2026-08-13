@@ -39,8 +39,17 @@ so a tooltip reads *"emm1: 22.5% (99 of 440 isolates)"* from one line. Cases,
 deaths and survivals stay separate `measure` levels — they are three plottable
 series, not metadata for a single value.
 
-**Every blank is explained.** The two companions are the only columns that can be
-blank, and each carries a `_status` saying why, because NA alone conflates two
+**Every blank is explained, and nothing is filled in.** Three columns can be
+blank — `value`, `n_isolates` and `n_type` — and each has a companion saying why.
+
+`value` is blank exactly where `value_not_reported = 1`, meaning CDC published
+nothing for that cell. **It is never filled with a zero**, so a 0 in `value` is
+always a measurement. That matters because both cases genuinely occur side by
+side: Group A penicillin resistance is a real 0 in every year, while Group B
+tetracycline is simply absent from CDC's panel. Of 6,101 rows, 3,927 carry a
+non-zero value, 924 a measured zero, and 1,250 a blank.
+
+The two companions each carry a `_status`, because NA alone conflates two
 different things:
 
 | status | meaning | rows |
@@ -49,8 +58,8 @@ different things:
 | `not_reported` | the measure has this companion, but CDC published nothing for that row | `n_isolates` 910 / `n_type` 38 |
 | `not_applicable` | the measure has no such companion at all | `n_isolates` 2,687 / `n_type` 5,513 |
 
-So `n_type` blank with `value_not_reported = 0` is not a data gap — it means the
-row isn't an emm row. Every other column, `value` included, is always populated.
+So `n_type` blank with `n_type_status = "not_applicable"` is not a data gap — it
+means the row isn't an emm row.
 
 ## Notes for anyone reading these files
 
@@ -71,12 +80,10 @@ row isn't an emm row. Every other column, `value` included, is always populated.
 - **`Total` is the aggregate level** throughout, matching the rest of the
   database. It overlaps the specific levels, so exclude it before summing across
   a stratification.
-- **`value_not_reported = 1` means the 0 is not real.** `value` is never blank:
-  unreported cells are filled with 0 and flagged. Reading a flagged row as a
-  measured zero understates resistance, syndrome rates and type shares, so filter
-  on the flag before aggregating. Reasons are structural: a drug off a pathogen's
-  panel, an emm type CDC did not itemise that year, a Group B serotype CDC
-  regrouped that year, a rate not broken out for that stratification.
+- **`value_not_reported = 1` means CDC published nothing**, and `value` is blank
+  on those rows rather than zero-filled. Reasons are structural: a drug off a
+  pathogen's panel, an emm type CDC did not itemise that year, a Group B serotype
+  CDC regrouped that year, a rate not broken out for that stratification.
 - **`suppressed = 1`** (Epic only) is a different thing: a small cell Epic
   withheld, imputed as 5.
 - **`n_isolates` and `n_type` stay blank rather than zero** where CDC published

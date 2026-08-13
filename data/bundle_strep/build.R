@@ -73,22 +73,29 @@ write_dist <- function(df, file) {
   arrow::write_parquet(df, file.path("dist", file))
 }
 
+# Read everything as text and convert the measure columns explicitly, rather
+# than letting vroom guess. The measure columns are sparse - a cell CDC never
+# published is NA - and vroom infers a column's type from a sample, so an
+# all-NA measure would otherwise come back `logical` and silently blank real
+# values elsewhere. Naming each column instead would warn on every file that
+# lacks one, since the eight files carry different dimensions.
 read_standard <- function(path) {
   vroom::vroom(
     file.path("..", path),
     show_col_types = FALSE,
-    # Explicit id types; several of these files have sparse numeric columns
-    # where vroom's guessing can otherwise infer logical and blank out values
-    col_types = vroom::cols(geography = "c", time = "D", .default = "?")
+    col_types = vroom::cols(.default = vroom::col_character())
   ) %>%
+    mutate(
+      time = as.Date(time),
+      across(starts_with("abcs_"), as.numeric)
+    ) %>%
     add_geography_names()
 }
 
-# The standard files carry no NAs: every measure is zero-filled and paired with
-# its own `abcs_not_reported_flag_<measure>` saying whether that zero is a
-# measured value or a gap CDC never published. So `value_not_reported` here is
-# read straight off the source flag rather than inferred from a missing value -
-# and a flagged 0 must not be read as a measured zero.
+# A measure the source did not publish is NA there, paired with its own
+# `abcs_not_reported_flag_<measure>`. The flag is carried through rather than
+# re-derived, so `value_not_reported` here says what CDC published rather than
+# what survived the pipeline.
 flag_of <- function(m) sub("^abcs_", "abcs_not_reported_flag_", m)
 
 # The companion columns (`n_isolates`, `n_type`) are blank on most rows for two
@@ -271,11 +278,15 @@ if (anyDuplicated(abcs_strep[c("geography", "date", DIMS, ENTITIES, "measure")])
   stop("bundle_strep: duplicate index rows in abcs_strep.")
 }
 
-# `value` is always populated (the source zero-fills and flags), and each
-# companion is populated exactly when its status says "reported". Assert both,
-# so a future change cannot reintroduce an unexplained blank.
-if (anyNA(abcs_strep$value) || anyNA(abcs_strep$value_not_reported)) {
-  stop("bundle_strep: NA in value or value_not_reported.")
+# Every blank must be accounted for: `value` is NA exactly where CDC published
+# nothing, and each companion is populated exactly when its status says
+# "reported". Assert both, so a future change cannot introduce an unexplained
+# blank - or a fabricated zero.
+if (anyNA(abcs_strep$value_not_reported)) {
+  stop("bundle_strep: NA in value_not_reported.")
+}
+if (!identical(is.na(abcs_strep$value), abcs_strep$value_not_reported == 1L)) {
+  stop("bundle_strep: value disagrees with value_not_reported.")
 }
 for (cc in COMPANIONS) {
   if (!identical(is.na(abcs_strep[[cc]]),

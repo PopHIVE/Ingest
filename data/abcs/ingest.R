@@ -244,8 +244,14 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   # (0.131 * 100 = 13.100000000000001)
   as_pct <- function(x) round(x * 100, 6)
 
-  # Emit ONE 0/1 flag per measure column, then fill that measure's gaps with 0.
-  # A flagged 0 is NOT a measured zero - CDC published nothing for that cell.
+  # Emit ONE 0/1 flag per measure column, marking cells CDC did not publish.
+  #
+  # The measure itself stays NA where CDC published nothing. An earlier version
+  # zero-filled those cells, which put fabricated zeros in the same column as
+  # measured ones - GAS penicillin resistance is genuinely 0 in every year, while
+  # tetracycline is simply absent from the Group B panel, and both read 0. That
+  # is silent when a consumer forgets the flag: averaging pulls toward zero and
+  # nothing looks wrong. NA propagates visibly instead.
   #
   # One flag per measure rather than one shared flag per row, because a shared
   # flag cannot express the common case: in gbs_serotypes for 2000 late-onset,
@@ -256,18 +262,19 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   #
   # Flag name is the measure name with the `abcs_` prefix replaced, so it is
   # derivable: abcs_gbs_pct_serotype_ia -> abcs_not_reported_flag_gbs_pct_serotype_ia.
-  add_not_reported_flags <- function(df, id_cols, ...) {
+  add_not_reported_flags <- function(df, id_cols) {
     meas <- setdiff(names(df), id_cols)
     out <- df[id_cols]
     for (m in meas) {
       flag <- sub("^abcs_", "abcs_not_reported_flag_", m)
       if (flag == m) stop("ABCs: measure name lacks the abcs_ prefix: ", m)
-      out[[m]] <- tidyr::replace_na(df[[m]], 0)
+      out[[m]] <- df[[m]]
       out[[flag]] <- as.integer(is.na(df[[m]]))
+      if (!identical(is.na(out[[m]]), out[[flag]] == 1L)) {
+        stop("ABCs: ", m, " disagrees with its not-reported flag.")
+      }
     }
-    if (anyNA(out)) {
-      stop("ABCs: NAs survived the zero fill - check the flag helper.")
-    }
+    if (anyNA(out[id_cols])) stop("ABCs: NA in an index column.")
     out
   }
 
