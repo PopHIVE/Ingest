@@ -339,7 +339,7 @@ Each `measure_info.json` file should include variable definitions and a centrali
     "id": "variable_name",
     "short_name": "Brief description (< 100 chars)",
     "long_name": "Full descriptive name",
-    "category": "respiratory|immunization|chronic|injury",
+    "category": "respiratory|immunization|chronic|injury|demographic|access|environment|utilization",
     "short_description": "One sentence description",
     "long_description": "Detailed description with methodology notes",
     "statement": "Template for narrative: 'In {location}, {value} cases were reported'",

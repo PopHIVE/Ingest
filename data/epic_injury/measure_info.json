@@ -35,6 +35,138 @@
     "sources": [{ "id": "epic_cosmos" }]
   },
 
+  "epic_n_ed_firearm": {
+    "id": "epic_n_ed_firearm",
+    "short_name": "ED firearm injury patients",
+    "long_name": "Number of patients in the ED for firearm injury",
+    "short_description": "Number of patients presenting to the emergency department for a firearm injury.",
+    "long_description": "Number of patients presenting to the emergency department with an initial firearm injury diagnosis. Data from Epic Cosmos. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Count",
+    "unit": "patient",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_rate_ed_firearm": {
+    "id": "epic_rate_ed_firearm",
+    "short_name": "ED firearm injury rate",
+    "long_name": "Firearm injury rate per 100,000 ED patients",
+    "short_description": "Number of firearm injuries per 100,000 ED patients.",
+    "long_description": "Rate of firearm injury ED encounters per 100,000 all-cause ED encounters. Data from Epic Cosmos. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_n_ed_heat": {
+    "id": "epic_n_ed_heat",
+    "short_name": "ED heat-related illness patients",
+    "long_name": "Number of patients in the ED for heat-related illness",
+    "short_description": "Number of patients presenting to the emergency department for a heat-related illness.",
+    "long_description": "Number of patients presenting to the emergency department with a heat-related illness diagnosis. Data from Epic Cosmos. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Count",
+    "unit": "patient",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_rate_ed_heat": {
+    "id": "epic_rate_ed_heat",
+    "short_name": "ED heat-related illness rate",
+    "long_name": "Heat-related illness rate per 100,000 ED patients",
+    "short_description": "Number of heat-related illnesses per 100,000 ED patients.",
+    "long_description": "Rate of heat-related illness ED encounters per 100,000 all-cause ED encounters. Data from Epic Cosmos. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_opioid": {
+    "id": "suppressed_opioid",
+    "short_name": "Suppressed flag (opioid)",
+    "long_name": "Suppression flag for opioid overdose ED count",
+    "short_description": "Indicates whether the opioid overdose count was suppressed and imputed.",
+    "long_description": "Due to privacy protections, counts of 10 or fewer are suppressed and imputed as 5. This flag is 1 when the underlying opioid overdose ED count (epic_n_ed_opioid) was suppressed, 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_firearm": {
+    "id": "suppressed_firearm",
+    "short_name": "Suppressed flag (firearm)",
+    "long_name": "Suppression flag for firearm injury ED count",
+    "short_description": "Indicates whether the firearm injury count was suppressed and imputed.",
+    "long_description": "Due to privacy protections, counts of 10 or fewer are suppressed and imputed as 5. This flag is 1 when the underlying firearm injury ED count (epic_n_ed_firearm) was suppressed, 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "suppressed_heat": {
+    "id": "suppressed_heat",
+    "short_name": "Suppressed flag (heat)",
+    "long_name": "Suppression flag for heat-related illness ED count",
+    "short_description": "Indicates whether the heat-related illness count was suppressed and imputed.",
+    "long_description": "Due to privacy protections, counts of 10 or fewer are suppressed and imputed as 5. This flag is 1 when the underlying heat-related illness ED count (epic_n_ed_heat) was suppressed, 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Month",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "heat_ed_patients": {
+    "id": "heat_ed_patients",
+    "short_name": "County ED heat-related illness patients",
+    "long_name": "Number of county-level patients in the ED for heat-related illness",
+    "short_description": "Number of patients presenting to the emergency department for a heat-related illness, by county.",
+    "long_description": "Annual county-level count of patients presenting to the emergency department with a heat-related illness diagnosis. Data from Epic Cosmos. County-level data may have high missingness in some states. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Count",
+    "unit": "patient",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "total_ed_patients": {
+    "id": "total_ed_patients",
+    "short_name": "County all-cause ED patients",
+    "long_name": "Number of county-level all-cause ED patients",
+    "short_description": "Total number of all-cause emergency department patients in the county, used as the denominator for heat-related illness rates.",
+    "long_description": "Annual county-level count of all-cause emergency department encounters, used as the denominator for the county heat-related illness incidence rate. Data from Epic Cosmos. County-level data may have high missingness in some states.",
+    "measure_type": "Count",
+    "unit": "patient",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "heat_ed_incidence": {
+    "id": "heat_ed_incidence",
+    "short_name": "County ED heat-related illness rate",
+    "long_name": "County heat-related illness rate per 100,000 ED patients",
+    "short_description": "Number of heat-related illnesses per 100,000 all-cause ED patients, by county.",
+    "long_description": "Annual county-level rate of heat-related illness ED encounters per 100,000 all-cause ED encounters. Data from Epic Cosmos. County-level data may have high missingness in some states. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "heat_suppressed": {
+    "id": "heat_suppressed",
+    "short_name": "Suppressed flag (county heat)",
+    "long_name": "Suppression flag for county heat-related illness ED count",
+    "short_description": "Indicates whether the county heat-related illness count was suppressed and imputed.",
+    "long_description": "Due to privacy protections, counts of 10 or fewer are suppressed and imputed as 5. This flag is 1 when the underlying county heat-related illness ED count (heat_ed_patients) was suppressed, 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
   "_sources": {
     "epic_cosmos": {
       "name": "Epic Cosmos",
