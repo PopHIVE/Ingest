@@ -1,6 +1,6 @@
 ---
 name: ingest-source
-description: Ingest a new data source into the PopHIVE/Ingest repository — creates the folder structure, writes an ingest.R script that standardizes raw data into wide format, and generates measure_info.json. Use when the user wants to add a new CDC/Socrata/URL/file-based data source, mentions "ingest", "new data source", or provides a dataset ID to onboard.
+description: Ingest a new data source into the PopHIVE/Ingest repository — creates the folder structure via the dcf R package (required), writes an ingest.R script that standardizes raw data into wide format, and generates measure_info.json. Use when the user wants to add a new CDC/Socrata/URL/file-based data source, mentions "ingest", "new data source", or provides a dataset ID to onboard.
 ---
 
 # ingest-source
@@ -17,7 +17,7 @@ Ingest a new data source: create the folder structure, write the ingest.R script
 
 End-to-end skill for adding and ingesting a new data source into the PopHIVE/Ingest repository. This skill:
 
-1. Creates the folder structure via `dcf::dcf_add_source()`
+1. Creates the folder structure **exclusively via `dcf::dcf_add_source()`** — never by hand
 2. Examines the raw data to understand its structure
 3. Writes an `ingest.R` script that transforms raw data into the standard wide format
 4. Creates a `measure_info.json` documenting all output variables
@@ -28,7 +28,28 @@ When the user invokes this skill:
 
 ### Phase 1: Create Folder Structure
 
-Initialize the directory structure for the new source by running `dcf::dcf_add_source()`.
+**CRITICAL — this phase is non-negotiable.** The directory and **every file inside it** MUST be
+created by the `dcf` R package via `dcf::dcf_add_source()`. This is the only supported way to
+initialize a source.
+
+**You MUST NOT:**
+- Create `data/<source_name>/` (or any subdirectory) with `mkdir`, `New-Item`, or the Write tool
+- Hand-write `process.json`, or copy one from another source or from a `bundle_*` directory
+- Scaffold empty `ingest.R` / `measure_info.json` files before running `dcf_add_source()`
+- Work around a missing/broken `dcf` installation by writing the structure manually
+
+**Why `process.json` in particular:** `dcf_add_source()` writes `process.json` with the exact
+`name`, `type: "source"`, and `scripts: [{path: "ingest.R", ...}]` fields that `dcf_build()` and
+`dcf_process()` depend on. A hand-written or copied `process.json` causes the source to be
+silently skipped or misidentified as a bundle during `dcf_build()` (symptoms: "no standard data
+files found", "processing bundle", or `process file process.json does not exist`). These failures
+are quiet and easy to miss, so there is no acceptable shortcut.
+
+**If `dcf_add_source()` fails** (package not installed, R not found, permissions), STOP and report
+the error to the user. Do not proceed to Phase 4/5 and do not fabricate the structure — fix the
+`dcf` installation first (`install.packages("dcf")` or `remotes::install_github("dissc-yale/dcf")`).
+
+Steps:
 
 1. **Validate the source name**:
    - Must be lowercase with underscores (e.g., `cdc_flu_data`, `epic_diabetes`)
@@ -54,15 +75,26 @@ Initialize the directory structure for the new source by running `dcf::dcf_add_s
    cd "<project_root>" && Rscript -e 'dcf::dcf_add_source("<source_name>")'
    ```
 
-4. **Verify the created structure**:
+4. **Verify the created structure** — confirm `dcf` actually produced all of it:
    ```
    data/<source_name>/
    ├── raw/                  # For downloaded source files
    ├── standard/             # For standardized output files
    ├── ingest.R              # Transformation script (filled in below)
    ├── measure_info.json     # Variable metadata (filled in below)
-   └── process.json          # Processing state (auto-generated)
+   └── process.json          # Processing state (dcf-generated — DO NOT hand-edit or create)
    ```
+
+5. **Confirm `process.json` is correct** before continuing. Read it and verify:
+   - `"name"` matches the source directory name exactly
+   - `"type"` is `"source"` (not `"bundle"`)
+   - `"scripts"` references `"ingest.R"` (not `"build.R"`)
+
+   If any of these are wrong, the source was not initialized properly — re-run
+   `dcf::dcf_add_source()` rather than patching the file by hand.
+
+From this point on, only `ingest.R` and `measure_info.json` are edited by you. `process.json` is
+owned by `dcf` and is updated at runtime through `dcf::dcf_process_record()` inside `ingest.R`.
 
 ### Phase 2: Gather Information
 
@@ -267,7 +299,10 @@ If multiple columns share the same structure differing only by a variant (e.g., 
 
 After writing all files:
 
-1. **Check file structure**: Verify `ingest.R`, `measure_info.json`, `process.json` all exist
+1. **Check file structure**: Verify `ingest.R`, `measure_info.json`, and the dcf-generated
+   `process.json` all exist, and that `process.json` still has `type: "source"`, the correct
+   `name`, and `scripts: ["ingest.R"]`. If `process.json` is missing, the source was not created
+   with `dcf::dcf_add_source()` — go back to Phase 1 and do so; do not write the file yourself.
 2. **If raw data is available**: Offer to run the ingest.R script to test
 3. **Run the visual QA report for each standardized output file**: For every `standard/data*.csv.gz` file the ingest produced (e.g. `standard/data.csv.gz`, plus `standard/data_state.csv.gz` / `standard/data_county.csv.gz` if split), render `scripts/validate_dataset.Rmd` against it and open the result as a pop-up browser window — do **not** let the report be written into the repo. Render to the OS temp directory and open it with `browseURL()` instead of the default in-place output:
 
@@ -304,7 +339,8 @@ After writing all files:
 User: `/ingest-source nssp_ili CDC NSSP ILI data, dataset ID abc-1234, state and county level weekly ED visits for ILI`
 
 The skill would:
-1. Run `dcf::dcf_add_source("nssp_ili")`
+1. Run `dcf::dcf_add_source("nssp_ili")` to create the directory and all of its contents, then
+   verify the generated `process.json`
 2. Write `ingest.R` that downloads via `dcf::dcf_download_cdc("abc-1234", ...)`, transforms to wide format with columns like `nssp_ili_pct_visits`
 3. Write `measure_info.json` with entries for each output column
 4. Report the created structure and suggest next steps

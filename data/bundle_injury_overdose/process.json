@@ -4,8 +4,10 @@
   "scripts": [
     {
       "path": "build.R",
-      "last_run": "2026-06-23 20:05:20",
-      "run_time": 13.32,
+      "manual": false,
+      "last_run": "2026-08-11 19:35:05",
+      "frequency": 0,
+      "run_time": 12.939,
       "last_status": {
         "log": [
           "Rows: 3314 Columns: 3",
@@ -31,7 +33,7 @@
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rℹ Use `spec()` to retrieve the full column specification for this data.",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r",
-          "Rows: 624 Columns: 13",
+          "Rows: 676 Columns: 13",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\r── Column specification ────────────────────────────────────────────────────────",
           "⠙ processing bundle bundle_injury_overdose (./data/bundle_injury_overdose/build…\rDelimiter: \",\"",
@@ -157,70 +159,104 @@
       }
     }
   ],
-  "source_files": [
-    "epic/standard/state_no_time.csv.gz",
-    "brfss/standard/data.csv.gz",
-    "cms_mmd/standard/data_state_county_age.csv.gz",
-    "nchs_mortality/standard/data.csv.gz",
-    "nchs_mortality/standard/data_county.csv.gz",
-    "wisqars/standard/data.csv.gz"
-  ],
-  "checked": "2026-06-23 20:06:42",
+  "source_files": {
+    "wisqars/standard/data.csv.gz": [
+      "deaths_cause_age.parquet",
+      "deaths_cause_age_demographics.parquet",
+      "overdose_by_demographics.parquet",
+      "overdose_by_geography_and_source.parquet",
+      "overdose_by_geography_and_source_county.parquet",
+      "overdose_by_geography_and_source_state_year.parquet",
+      "firearms_by_demographics.parquet",
+      "firearms_geography_source.parquet",
+      "firearms_by_geography_and_source_state_year.parquet"
+    ],
+    "cms_mmd/standard/data_state_county_age.csv.gz": [
+      "county_opioid_by_source.parquet",
+      "state_opioid_by_source.parquet",
+      "overdose_by_geography_and_source.parquet",
+      "overdose_by_geography_and_source_county.parquet",
+      "overdose_by_geography_and_source_state_year.parquet"
+    ],
+    "nchs_mortality/standard/data.csv.gz": [
+      "overdose_deaths_state.parquet",
+      "overdose_by_geography_and_source.parquet",
+      "overdose_by_geography_and_source_county.parquet",
+      "overdose_by_geography_and_source_state_year.parquet"
+    ],
+    "nchs_mortality/standard/data_county.csv.gz": [
+      "overdose_deaths_county.parquet",
+      "overdose_by_geography_and_source.parquet",
+      "overdose_by_geography_and_source_county.parquet",
+      "overdose_by_geography_and_source_state_year.parquet"
+    ],
+    "gtrends/standard/data_year.csv.gz": [
+      "overdose_by_geography_and_source.parquet",
+      "overdose_by_geography_and_source_county.parquet",
+      "overdose_by_geography_and_source_state_year.parquet",
+      "firearms_geography_source.parquet",
+      "firearms_by_geography_and_source_state_year.parquet",
+      "heat_by_geography_and_source_state_year.parquet"
+    ],
+    "epic_injury/standard/monthly_injury.csv.gz": [
+      "overdose_by_geography_and_source.parquet",
+      "overdose_by_geography_and_source_county.parquet",
+      "overdose_by_geography_and_source_state_year.parquet",
+      "firearms_geography_source.parquet"
+    ],
+    "epic_injury/standard/yearly_injury.csv.gz": [
+      "firearms_by_geography_and_source_state_year.parquet",
+      "heat_by_geography_and_source_state_year.parquet"
+    ],
+    "medicaid_quality/standard/data.csv.gz": [
+      "medicaid_injury_overdose.parquet"
+    ],
+    "gtrends/standard/data_dma_year.csv.gz": [
+      "google_dma.parquet"
+    ]
+  },
+  "checked": "2026-08-11 19:37:17",
   "check_results": {
-    "data/bundle_injury_overdose/dist/brfss_prevalence_by_geography.parquet": {
-      "measures": ["missing_info: year", "missing_info: age", "missing_info: source", "missing_info: outcome_name", "missing_info: value", "missing_info: value_lcl", "missing_info: value_ucl"]
-    },
     "data/bundle_injury_overdose/dist/county_opioid_by_source.parquet": {
-      "measures": ["missing_info: year", "missing_info: source"]
+      "measures": "missing_info: year"
     },
     "data/bundle_injury_overdose/dist/deaths_cause_age_demographics.parquet": {
-      "measures": ["missing_info: year", "missing_info: age", "missing_info: sex", "missing_info: race", "missing_info: ethnicity"]
+      "measures": ["missing_info: year", "missing_info: age", "missing_info: sex"]
     },
     "data/bundle_injury_overdose/dist/deaths_cause_age.parquet": {
       "measures": ["missing_info: year", "missing_info: age"]
     },
-    "data/bundle_injury_overdose/dist/epic_prevalence_by_geography_year.parquet": {
-      "measures": ["missing_info: fips", "missing_info: age", "missing_info: year", "missing_info: outcome_name", "missing_info: source", "missing_info: value", "missing_info: pct_captured", "missing_info: sample_size"]
-    },
     "data/bundle_injury_overdose/dist/firearms_by_demographics.parquet": {
-      "measures": ["missing_info: age", "missing_info: sex", "missing_info: race", "missing_info: ethnicity"]
+      "measures": ["missing_info: age", "missing_info: sex"]
     },
     "data/bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet": {
-      "measures": ["missing_info: age", "missing_info: year", "missing_info: epic_n_ed_firearm", "missing_info: suppressed_firearm"]
+      "measures": ["missing_info: age", "missing_info: year"]
     },
     "data/bundle_injury_overdose/dist/firearms_geography_source.parquet": {
-      "measures": ["missing_info: age", "missing_info: epic_n_ed_firearm", "missing_info: suppressed_firearm", "missing_info: state"]
+      "measures": "missing_info: age"
     },
     "data/bundle_injury_overdose/dist/google_dma.parquet": {
       "measures": ["missing_info: fips", "missing_info: date"]
     },
     "data/bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet": {
-      "measures": ["missing_info: year", "missing_info: age", "missing_info: suppressed_heat"]
+      "measures": ["missing_info: year", "missing_info: age"]
     },
-    "data/bundle_injury_overdose/dist/heat_related_geography_source.parquet": {
-      "measures": ["missing_info: source", "missing_info: value", "missing_info: age", "missing_info: suppressed_heat"]
-    },
-    "data/bundle_injury_overdose/dist/heat_risk-MWMJ0G3P8D.parquet": {
-      "measures": ["missing_info: value", "missing_info: forecast_day"]
-    },
-    "data/bundle_injury_overdose/dist/heat_risk.parquet": {
-      "measures": ["missing_info: value", "missing_info: forecast_day"]
-    },
+    "data/bundle_injury_overdose/dist/heat_risk.parquet": [],
     "data/bundle_injury_overdose/dist/medicaid_injury_overdose.parquet": {
-      "measures": ["missing_info: year", "missing_info: age", "missing_info: sex", "missing_info: race_ethnicity", "missing_info: payer"]
+      "measures": ["missing_info: year", "missing_info: age", "missing_info: sex", "missing_info: race_ethnicity"]
     },
     "data/bundle_injury_overdose/dist/overdose_by_demographics.parquet": {
-      "measures": ["missing_info: age", "missing_info: sex", "missing_info: race", "missing_info: ethnicity"]
+      "measures": ["missing_info: age", "missing_info: sex"]
     },
     "data/bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet": {
       "data": "geography_nas",
-      "measures": ["missing_info: geography_fips", "missing_info: date", "missing_info: age"]
+      "measures": ["missing_info: date", "missing_info: age"]
     },
     "data/bundle_injury_overdose/dist/overdose_by_geography_and_source_state_year.parquet": {
       "measures": ["missing_info: age", "missing_info: year"]
     },
     "data/bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet": {
-      "measures": ["missing_info: date", "missing_info: age", "missing_info: suppressed"]
+      "measures": ["missing_info: date", "missing_info: age"]
     },
     "data/bundle_injury_overdose/dist/overdose_deaths_county.parquet": [],
     "data/bundle_injury_overdose/dist/overdose_deaths_state.parquet": {
@@ -231,38 +267,39 @@
     }
   },
   "dist_state": {
-    "./data/bundle_injury_overdose/dist/brfss_prevalence_by_geography.parquet": "05dd664886542c09f3c857586955315f",
     "./data/bundle_injury_overdose/dist/county_opioid_by_source.parquet": "1e93c5d377bd6c8f4d5e0d6f02a18220",
     "./data/bundle_injury_overdose/dist/deaths_cause_age_demographics.parquet": "abdb4e3d6a88bb69ee17e3f1744d7738",
     "./data/bundle_injury_overdose/dist/deaths_cause_age.parquet": "b030f2532bc8251ef091a229466b9d8e",
-    "./data/bundle_injury_overdose/dist/epic_prevalence_by_geography_year.parquet": "50273d881ec4e84be00167180c0c63c1",
     "./data/bundle_injury_overdose/dist/firearms_by_demographics.parquet": "f24c00a636773fbdf929a98b8baa3a2c",
-    "./data/bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet": "089811cda1f53478f299f73019a642d8",
-    "./data/bundle_injury_overdose/dist/firearms_geography_source.parquet": "77d2599423f2e002454e5333fc6c2185",
-    "./data/bundle_injury_overdose/dist/google_dma.parquet": "de063df0648efe5c806022053ec502bd",
-    "./data/bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet": "f6fee7be02ac980b1af8804031c3109b",
-    "./data/bundle_injury_overdose/dist/heat_related_geography_source.parquet": "347f3ae467887e916e1b3e1edca50aff",
-    "./data/bundle_injury_overdose/dist/heat_risk-MWMJ0G3P8D.parquet": "cde938088212541a5e3c445241753560",
-    "./data/bundle_injury_overdose/dist/heat_risk.parquet": "547bfadb01afe6722098baf8daabc5a4",
+    "./data/bundle_injury_overdose/dist/firearms_by_geography_and_source_state_year.parquet": "0e5004c69874589f398335d5f904125e",
+    "./data/bundle_injury_overdose/dist/firearms_geography_source.parquet": "7eb63643e49e443b8d19464405e5bd93",
+    "./data/bundle_injury_overdose/dist/google_dma.parquet": "fbfa28e30eba9089ad4125a28fbb092d",
+    "./data/bundle_injury_overdose/dist/heat_by_geography_and_source_state_year.parquet": "49353751dd07124b003ad7b1df386d54",
+    "./data/bundle_injury_overdose/dist/heat_risk.parquet": "58a516095b0a83e17889ae447b8b5665",
     "./data/bundle_injury_overdose/dist/medicaid_injury_overdose.parquet": "bf80e4cef9d51550878ee738b17c8ae5",
     "./data/bundle_injury_overdose/dist/overdose_by_demographics.parquet": "b242a0cccf78063e6ea1eae801c70b20",
     "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source_county.parquet": "8c5b33836f14bd5b977fa40d2192380c",
-    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source_state_year.parquet": "b2eda00407fb4f5799f164f9a4f5c448",
-    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet": "1a5849b1aa1b11aea5bb5035894a5aef",
+    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source_state_year.parquet": "da38b0f6e3cb3ab849135c6866fd426c",
+    "./data/bundle_injury_overdose/dist/overdose_by_geography_and_source.parquet": "b2f859205640c2ebb45982a2e5d541ec",
     "./data/bundle_injury_overdose/dist/overdose_deaths_county.parquet": "decde21f34cee1097432a4f7656308dd",
     "./data/bundle_injury_overdose/dist/overdose_deaths_state.parquet": "56005dae6b679cb3de98e905282cfd59",
     "./data/bundle_injury_overdose/dist/state_opioid_by_source.parquet": "3b4506b992cf07d9ec757d1e4a68a15b",
-    "./data/brfss/standard/datapackage.json": "c716925e4638a5d6bcd2243caece43bb",
+    "./data/wisqars/standard/datapackage.json": "bd77432123a4ec8e6ba8c170afe193c3",
     "./data/cms_mmd/standard/datapackage.json": "f6ae03d00dc049e032d4d07495f785c3",
-    "./data/nchs_mortality/standard/datapackage.json": "90a1da21b8fd78c46cc145be81c7489b",
-    "./data/wisqars/standard/datapackage.json": "09375e2f3eea47526bd297eb696fcb32"
+    "./data/nchs_mortality/standard/datapackage.json": "a1e6636094bcba1dd8d813894df4f7e4",
+    "./data/gtrends/standard/datapackage.json": "d86aeacfd46dc20982a16043337e6ec3",
+    "./data/epic_injury/standard/datapackage.json": "8b2affd5095527470dbbe4a75d071730",
+    "./data/medicaid_quality/standard/datapackage.json": "b794f3fbfcbe4790e2dd0f898664fd7f"
   },
-  "standard_state": {
-    "./data/epic/standard/state_no_time.csv.gz": {},
-    "./data/brfss/standard/data.csv.gz": "03391818a9dba46c0eb86e17862527cf",
+  "source_state": {
+    "./data/wisqars/standard/data.csv.gz": "3eeefa7917a4d77c704820f78df94590",
     "./data/cms_mmd/standard/data_state_county_age.csv.gz": "88a800cf35c871a0c29f8908805e45bf",
     "./data/nchs_mortality/standard/data.csv.gz": "9e156829ea1333e564864ee580ea09bb",
     "./data/nchs_mortality/standard/data_county.csv.gz": "746c4a5a344cc6069123014bdf737a85",
-    "./data/wisqars/standard/data.csv.gz": "3eeefa7917a4d77c704820f78df94590"
+    "./data/gtrends/standard/data_year.csv.gz": "b10d28d9c6e29308e33bb6b566af3c45",
+    "./data/epic_injury/standard/monthly_injury.csv.gz": "552ed29cc7197f63e5b4e4de2c9ededc",
+    "./data/epic_injury/standard/yearly_injury.csv.gz": "72b26195a4cc57f633f6cfde63cfec22",
+    "./data/medicaid_quality/standard/data.csv.gz": "ce542e2aca1fc9844eea45f0150e9feb",
+    "./data/gtrends/standard/data_dma_year.csv.gz": "f49e8773d9fde4164e5893099f72b69d"
   }
 }

@@ -8,6 +8,21 @@ all_fips = vroom::vroom('../../resources/all_fips.csv.gz') %>%
   filter(geography_name  %in% c(state.name, 'United States','District of Columbia') & geography != '11001'
                               ) %>%
   mutate(geography_name = toupper(geography_name))
+
+# Territories are state-level rows in all_fips.csv.gz but have no geography_name
+# (only a postal abbreviation), so they can't join on name like states can --
+# map them in by hand using their postal code
+territory_fips <- vroom::vroom('../../resources/all_fips.csv.gz') %>%
+  filter(nchar(geography) == 2 & state %in% c('AS', 'GU', 'MP', 'PR', 'VI')) %>%
+  mutate(geography_name = recode(state,
+    AS = 'AMERICAN SAMOA',
+    GU = 'GUAM',
+    MP = 'NORTHERN MARIANA ISLANDS',
+    PR = 'PUERTO RICO',
+    VI = 'U.S. VIRGIN ISLANDS'
+  ))
+
+all_fips <- bind_rows(all_fips, territory_fips)
 #
 # Download and add files to the raw directory
 #
@@ -21,7 +36,7 @@ raw_state <- dcf::dcf_download_cdc(
 )
 
 if (!identical(process$raw_state, raw_state)) {
-  data <- vroom::vroom("./raw/x9gk-5huc.csv.xz", show_col_types = FALSE) %>%
+  data <- vroom::vroom("./raw/x9gk-5huc.csv.xz", delim = ",", show_col_types = FALSE) %>%
     mutate(time = MMWRweek2Date(`Current MMWR Year`, `MMWR WEEK`, MMWRday = NULL)+6 #week ending date
       ) %>%
       rename(mmwr_year = `Current MMWR Year`,
@@ -45,7 +60,16 @@ if (!identical(process$raw_state, raw_state)) {
     pivot_wider(id_cols = c(time,mmwr_year,mmwr_week, `Reporting Area` ), values_from= `Cumulative YTD Current MMWR Year`, names_from=Label) %>%
     clean_names() %>%
     mutate(
-          reporting_area = if_else(reporting_area == 'TOTAL', 'UNITED STATES',reporting_area )) %>%
+          reporting_area = case_when(
+            reporting_area == 'TOTAL' ~ 'UNITED STATES',
+            reporting_area == 'COMMONWEALTH OF NORTHERN MARIANA ISLANDS' ~ 'NORTHERN MARIANA ISLANDS',
+            # NNDSS reports New York City separately from the rest of New York
+            # State; fold it back into the state total so NY isn't undercounted
+            reporting_area == 'NEW YORK CITY' ~ 'NEW YORK',
+            TRUE ~ reporting_area
+          )) %>%
+    group_by(time, mmwr_year, mmwr_week, reporting_area) %>%
+    summarize(across(where(is.numeric), ~sum(.x, na.rm = TRUE)), .groups = 'drop') %>%
     left_join(all_fips, by=c('reporting_area'='geography_name')) %>%
     dplyr::relocate(time,mmwr_year,mmwr_week, geography) %>%
     dplyr::select( -reporting_area, -state)

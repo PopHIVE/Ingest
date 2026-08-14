@@ -14,6 +14,11 @@ library(glue)
 # -----------------------------------------------------------------------------
 `%||%` <- function(x, y) if (is.null(x) || (is.character(x) && nchar(x) == 0)) y else x
 
+# GitHub raw base for linking bundle source files in the docs. Defined here so
+# the bundle render functions below can use it (a matching GITHUB_RAW_BASE is set
+# later for the manifest section).
+GH_RAW_BASE <- "https://raw.githubusercontent.com/PopHIVE/Ingest/main"
+
 # -----------------------------------------------------------------------------
 # Configuration
 # -----------------------------------------------------------------------------
@@ -362,6 +367,46 @@ format_bundle_name <- function(name) {
   paste0("Bundle: ", display)
 }
 
+# Short one-sentence summary of a (possibly long) description. Used only as a
+# fallback for brand-new datasets with no hand-written summary yet -- see the
+# ingest-source skill (Phase 7), which is how a real summary should get in.
+short_summary <- function(x, max_chars = 300) {
+  x <- x %||% ""
+  x <- trimws(gsub("\\s+", " ", x))
+  if (!nzchar(x)) return("")
+
+  # A period/!/? followed by whitespace isn't always a sentence end -- it's
+  # also how abbreviations like "U.S." or initials like "J." look. Split
+  # naively, then merge fragments back while the accumulated text ends on one
+  # of those, so the "first sentence" doesn't get cut off after "U.S.".
+  abbreviations <- c("U.S.", "U.K.", "e.g.", "i.e.", "Mr.", "Mrs.", "Ms.", "Dr.",
+                      "Jr.", "Sr.", "St.", "vs.", "etc.", "No.", "Fig.", "Vol.",
+                      "Inc.", "Ph.D.", "M.D.")
+  ends_with_abbrev <- function(s) {
+    s <- trimws(s)
+    grepl("\\b[A-Z]\\.$", s) || any(endsWith(s, abbreviations))
+  }
+
+  parts <- strsplit(x, "(?<=[.!?])\\s+", perl = TRUE)[[1]]
+  first <- parts[1]
+  i <- 1
+  while (i < length(parts) && ends_with_abbrev(first)) {
+    i <- i + 1
+    first <- paste(first, parts[i])
+  }
+  if (is.na(first) || !nzchar(first)) first <- x
+
+  if (nchar(first) > max_chars) {
+    # Trim to the last full word so a long, punctuation-sparse sentence (e.g.
+    # one using semicolons instead of periods) doesn't get cut mid-word.
+    truncated <- substr(first, 1, max_chars - 1)
+    last_space <- max(gregexpr("\\s", truncated)[[1]])
+    if (last_space > 0) truncated <- substr(truncated, 1, last_space - 1)
+    first <- paste0(trimws(truncated), "…")
+  }
+  first
+}
+
 #' Generate HTML badge list for levels of a tall-format column
 make_levels_display <- function(levels_info) {
   if (is.null(levels_info) || length(levels_info) == 0) return(NULL)
@@ -471,8 +516,25 @@ make_bundle_file_section <- function(filepath, measure_info, bundle_name) {
     make_bundle_variable_row(col, var_info)
   })
 
+  # Source files that contribute to THIS parquet (from the _bundle block)
+  bundle_meta <- measure_info[["_bundle"]]
+  file_meta <- if (!is.null(bundle_meta) && !is.null(bundle_meta$dist_files)) {
+    bundle_meta$dist_files[[filename]]
+  } else NULL
+  src_files <- if (!is.null(file_meta)) unlist(file_meta$source_files) else NULL
+  source_files_display <- if (!is.null(src_files) && length(src_files) > 0) {
+    tags$div(class = "mb-2 small",
+      tags$span(class = "text-muted", tags$em("Source files: ")),
+      lapply(src_files, function(sf) {
+        tags$a(href = paste0(GH_RAW_BASE, "/data/", sf), target = "_blank",
+               class = "me-2 text-decoration-none", tags$code(sf))
+      })
+    )
+  } else NULL
+
   tagList(
     tags$h5(class = "mt-3", tags$code(filename)),
+    source_files_display,
     tags$div(class = "table-responsive",
       tags$table(class = "table table-striped table-sm",
         tags$thead(
@@ -642,6 +704,25 @@ make_bundle_section <- function(bundle_name, bundle_dir) {
 
   section_id <- gsub("[^a-zA-Z0-9]", "-", bundle_name)
 
+  # Data source sets feeding this bundle (from the _bundle block). Each dataset
+  # is shown by the same header text used for its own documentation section
+  # (format_source_name) and links to that section, which is its data dictionary.
+  bundle_meta <- measure_info[["_bundle"]]
+  bundle_srcs <- if (!is.null(bundle_meta)) unlist(bundle_meta$sources) else NULL
+  sources_display <- if (!is.null(bundle_srcs) && length(bundle_srcs) > 0) {
+    src_links <- list()
+    for (i in seq_along(bundle_srcs)) {
+      s <- bundle_srcs[[i]]
+      src_links[[length(src_links) + 1]] <- tags$a(
+        href = paste0("#", gsub("[^a-zA-Z0-9]", "-", s)),
+        class = "bundle-source-link",
+        format_source_name(s)
+      )
+      if (i < length(bundle_srcs)) src_links[[length(src_links) + 1]] <- "; "
+    }
+    tags$p(class = "mb-3", tags$strong("Data sources: "), src_links)
+  } else NULL
+
   tagList(
     tags$section(id = section_id, class = "mb-5",
       tags$h2(class = "border-bottom pb-2", format_bundle_name(bundle_name)),
@@ -650,6 +731,8 @@ make_bundle_section <- function(bundle_name, bundle_dir) {
         tags$em(sprintf("Combined output bundle. Dist files: %d parquet file(s).",
                         length(dist_files)))
       ),
+
+      sources_display,
 
       if (length(file_sections) > 0) {
         tagList(
@@ -1032,5 +1115,343 @@ write(toJSON(manifest, auto_unbox = TRUE, pretty = TRUE), manifest_path)
 cat(sprintf("Data manifest written to %s\n", manifest_path))
 cat(sprintf("  - %d bundles\n", length(manifest$bundles)))
 cat(sprintf("  - %d data sources\n", length(manifest$data_sources)))
+
+# =====================================================================
+# Build data sources index (docs/data_sources_index.json)
+# Lightweight per-source catalog: name, github_folder, data_url,
+# data_dictionary, latest_date, search_terms, bucket, summary, and a `files`
+# array (one entry per standardized csv.gz, each with a direct `dataset_link`
+# and a short `dataset_stratification` blurb).
+#
+# Five hand-editable fields are PRESERVED from the existing
+# docs/data_sources_index.json on rebuild -- edit them directly in that file and
+# they are maintained: `name`, `summary`, `search_terms`, `bucket`, and each
+# file's `dataset_stratification`. When absent they are derived: name from
+# measure_info, summary as a concise extractive first sentence, search_terms
+# and bucket both from bundle membership (bundle_* -> human-readable label,
+# identical starting values that can then be hand-edited independently), and
+# dataset_stratification from resources/stratification_cache.json or a
+# filename-derived blurb. To re-derive a preserved field, clear it in the JSON
+# and rebuild. All other fields (links, latest_date) are always recomputed.
+# =====================================================================
+
+cat("Building data sources index JSON...\n")
+
+# Cache of short, human-authored stratification blurbs for individual standard
+# files, keyed by "dataset/filename.csv.gz". Populated by the
+# update-data-sources-index skill (Claude writes the blurbs); this script only
+# reads it and falls back to a filename-derived blurb when a key is missing.
+STRATIFICATION_CACHE_PATH <- "resources/stratification_cache.json"
+
+load_stratification_cache <- function() {
+  if (!file.exists(STRATIFICATION_CACHE_PATH)) return(list())
+  fromJSON(STRATIFICATION_CACHE_PATH, simplifyVector = FALSE)
+}
+
+save_stratification_cache <- function(cache) {
+  if (length(cache) > 0) cache <- cache[order(names(cache))]
+  write(toJSON(cache, auto_unbox = TRUE, pretty = TRUE), STRATIFICATION_CACHE_PATH)
+}
+
+# Direct raw-content URL to a standardized csv.gz file on GitHub.
+github_raw_file <- function(source_name, filename) {
+  paste0(GITHUB_RAW_BASE, "/data/", source_name, "/standard/", filename)
+}
+
+# Format a bundle directory name as a human-readable label: strip the
+# "bundle_" prefix, turn remaining underscores into spaces, and capitalize the
+# first letter (e.g. bundle_chronic_diseases -> "Chronic diseases"). Used as
+# the default value for both the `search_terms` and `bucket` index fields.
+format_bundle_label <- function(bundle_name) {
+  x <- sub("^bundle_", "", bundle_name)
+  x <- gsub("_", " ", x)
+  if (nchar(x) > 0) x <- paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
+  x
+}
+
+# Fallback stratification blurb derived from a standard file's name, used only
+# when the stratification cache has no Claude-authored blurb for the file.
+# Strips the data/ prefix, extension, and geography tokens, leaving the
+# distinguishing tokens that describe the file's stratification dimension.
+derive_stratification <- function(filename) {
+  stem <- sub("\\.csv\\.gz$", "", basename(filename))
+  stem <- sub("^data_?", "", stem)
+  tokens <- strsplit(stem, "_")[[1]]
+  geo_tokens <- c("", "state", "county", "national", "nation", "us", "usa", "overall")
+  tokens <- tokens[!tolower(tokens) %in% geo_tokens]
+  if (length(tokens) == 0) {
+    return("Overall; no stratification beyond time and geography.")
+  }
+  paste0("Stratified by ", gsub("_", " ", paste(tokens, collapse = " ")), ".")
+}
+
+stratification_cache <- load_stratification_cache()
+
+# Preserve hand-edited text from the existing index so manual edits to
+# docs/data_sources_index.json survive a rebuild. `name`, `summary`,
+# `search_terms`, `bucket` (per dataset) and `dataset_stratification` (per
+# file) are treated as authoritative if already present; otherwise they are
+# derived (name from measure_info, summary extractively, search_terms/bucket
+# from bundle membership, stratification from the cache or file name). Links
+# and latest_date are always recomputed. To re-derive name/summary/
+# stratification, blank them and rebuild; to re-derive search_terms or bucket,
+# DELETE that field entirely (an empty [] is respected as an intentional
+# "none", so it is not re-derived).
+existing_name <- list()
+existing_summary <- list()
+existing_search_terms <- list()
+existing_search_terms_present <- character(0)  # datasets whose entry has a search_terms field
+existing_bucket <- list()
+existing_bucket_present <- character(0)  # datasets whose entry has a bucket field
+existing_strat <- list()
+existing_index_path <- "docs/data_sources_index.json"
+if (file.exists(existing_index_path)) {
+  prev <- tryCatch(fromJSON(existing_index_path, simplifyVector = FALSE),
+                   error = function(e) NULL)
+  if (!is.null(prev) && !is.null(prev$datasets)) {
+    for (d in prev$datasets) {
+      if (is.null(d$dataset)) next
+      if (!is.null(d$name) && nzchar(d$name)) {
+        existing_name[[d$dataset]] <- d$name
+      }
+      if (!is.null(d$summary) && nzchar(d$summary)) {
+        existing_summary[[d$dataset]] <- d$summary
+      }
+      if (!is.null(d$search_terms)) {  # field present (even []): preserve verbatim
+        vals <- unlist(d$search_terms)
+        existing_search_terms[[d$dataset]] <- if (is.null(vals)) character(0) else vals
+        existing_search_terms_present <- c(existing_search_terms_present, d$dataset)
+      }
+      if (!is.null(d$bucket)) {  # field present (even []): preserve verbatim
+        vals <- unlist(d$bucket)
+        existing_bucket[[d$dataset]] <- if (is.null(vals)) character(0) else vals
+        existing_bucket_present <- c(existing_bucket_present, d$dataset)
+      }
+      if (!is.null(d$files)) {
+        for (f in d$files) {
+          if (!is.null(f$dataset_link) && !is.null(f$dataset_stratification) &&
+              nzchar(f$dataset_stratification)) {
+            fn <- sub(".*/standard/", "", f$dataset_link)
+            existing_strat[[paste0(d$dataset, "/", fn)]] <- f$dataset_stratification
+          }
+        }
+      }
+    }
+  }
+}
+
+# Helper: find the most recent date across a source's standard files
+get_latest_date <- function(source_dir) {
+  files <- get_standard_files(source_dir)
+  if (length(files) == 0) return(NA_character_)
+
+  date_candidates <- c("time", "date", "week_end", "week_ending",
+                       "week_ending_date", "week_end_date")
+  latest_dates <- as.Date(character(0))
+  latest_year <- NA_integer_
+
+  # Read a single named column from a csv.gz (altrep off to force materializing)
+  read_column <- function(filepath, col_name) {
+    tryCatch(
+      vroom::vroom(filepath, show_col_types = FALSE, altrep = FALSE)[[col_name]],
+      error = function(e) NULL
+    )
+  }
+
+  # Parse dates defensively: as.Date() errors on non-standard strings, so try
+  # a few explicit formats. strptime parsing is lenient (e.g. format "%Y-%m-%d"
+  # will happily misparse "09-01-2009" as year 9), so a format is only trusted
+  # once every non-missing value matches its exact shape via regex - not merely
+  # once as.Date() manages to produce a non-NA value for at least one row.
+  parse_dates <- function(x) {
+    x <- as.character(x)
+    non_na <- x[!is.na(x) & nzchar(x)]
+    if (length(non_na) == 0) return(as.Date(rep(NA_character_, length(x))))
+
+    formats <- list(
+      "%Y-%m-%d" = "^\\d{4}-\\d{2}-\\d{2}$",
+      "%Y/%m/%d" = "^\\d{4}/\\d{2}/\\d{2}$",
+      "%m/%d/%Y" = "^\\d{2}/\\d{2}/\\d{4}$",
+      "%m-%d-%Y" = "^\\d{2}-\\d{2}-\\d{4}$"
+    )
+
+    for (fmt in names(formats)) {
+      if (all(grepl(formats[[fmt]], non_na))) {
+        return(suppressWarnings(as.Date(x, format = fmt)))
+      }
+    }
+    as.Date(rep(NA_character_, length(x)))
+  }
+
+  for (f in files) {
+    cols <- get_csv_columns(f)
+    if (length(cols) == 0) next
+    lower_cols <- tolower(cols)
+
+    match_idx <- match(date_candidates, lower_cols)
+    match_idx <- match_idx[!is.na(match_idx)]
+
+    if (length(match_idx) > 0) {
+      d <- parse_dates(read_column(f, cols[match_idx[1]]))
+      d <- d[!is.na(d)]
+      if (length(d) > 0) latest_dates <- c(latest_dates, max(d))
+    } else if ("year" %in% lower_cols) {
+      vals <- read_column(f, cols[match("year", lower_cols)])
+      yrs <- suppressWarnings(as.integer(vals))
+      yrs <- yrs[!is.na(yrs)]
+      if (length(yrs) > 0) latest_year <- max(c(latest_year, yrs), na.rm = TRUE)
+    }
+  }
+
+  if (length(latest_dates) > 0) {
+    return(format(max(latest_dates), "%Y-%m-%d"))
+  } else if (!is.na(latest_year)) {
+    return(sprintf("%d-12-31", latest_year))
+  }
+  return(NA_character_)
+}
+
+# Map each source -> the bundles that consume it, by scanning each bundle's
+# build.R for references to `../<source>/standard/...`. build.R is what actually
+# reads the source files, so it is the source of truth. (The bundle
+# process.json `source_files` record was previously used but is unreliable: it
+# reflects the LAST build, so it goes stale under old source names -- e.g.
+# `epic` after the source was split into epic_* dirs, or `vaccine_exemptions_kiang`
+# after a rename -- and is empty for bundles that have not been rebuilt.)
+source_to_bundles <- list()
+for (i in seq_along(bundle_dirs)) {
+  build_r <- file.path(bundle_dirs[i], "build.R")
+  if (!file.exists(build_r)) next
+  lines <- readLines(build_r, warn = FALSE)
+  lines <- lines[!grepl("^\\s*#", lines)]  # drop full-line comments
+  matches <- unlist(regmatches(
+    lines, gregexpr("\\.\\./[A-Za-z0-9_]+/standard/", lines)
+  ))
+  srcs <- unique(sub("^\\.\\./([A-Za-z0-9_]+)/standard/$", "\\1", matches))
+  for (s in srcs) {
+    source_to_bundles[[s]] <- unique(c(source_to_bundles[[s]], bundle_names[i]))
+  }
+}
+
+# Only index sources that have at least one standard data file (mirrors the
+# manifest); this excludes template/scratch dirs with no output.
+index_source_idx <- Filter(
+  function(i) length(get_standard_files(source_dirs[i])) > 0,
+  seq_along(source_dirs)
+)
+
+index_datasets <- lapply(index_source_idx, function(i) {
+  source_name <- source_names[i]
+  source_dir <- source_dirs[i]
+
+  measure_info <- tryCatch(
+    fromJSON(file.path(source_dir, "measure_info.json"), simplifyVector = FALSE),
+    error = function(e) list()
+  )
+  sources_meta <- measure_info[["_sources"]]
+  first_source <- if (!is.null(sources_meta) && length(sources_meta) > 0) {
+    sources_meta[[1]]
+  } else {
+    list()
+  }
+
+  # Concise extractive fallback (first sentence of each source description).
+  # Descriptions span ALL sources so multi-source datasets aren't
+  # misrepresented by only the first (e.g. NCHS covers overdose AND 21 causes
+  # of mortality). Used only for a brand-new dataset with no summary yet.
+  short_descs <- character(0)
+  if (!is.null(sources_meta)) {
+    for (s in sources_meta) {
+      ss <- short_summary(trimws(s$description %||% ""))
+      if (nzchar(ss)) short_descs <- c(short_descs, ss)
+    }
+  }
+  fallback_summary <- paste(unique(short_descs), collapse = " ")
+
+  # name: a hand-edited value in the index wins; otherwise the measure_info name.
+  display_name <- existing_name[[source_name]] %||%
+    first_source$name %||% format_source_name(source_name)
+  # A hand-edited summary already in the index wins and is preserved; a
+  # brand-new dataset falls back to a concise extractive summary.
+  if (is.null(existing_summary[[source_name]])) {
+    cat(sprintf(
+      "  WARNING: %s has no hand-written summary -- using an auto-derived fallback. Write a real one via the ingest-source skill.\n",
+      source_name
+    ))
+  }
+  dataset_summary <- existing_summary[[source_name]] %||% fallback_summary
+
+  section_id <- gsub("[^a-zA-Z0-9]", "-", source_name)
+
+  # search_terms and bucket: both preserved whenever the existing entry HAS the
+  # field (even an empty [] -- so clearing one sticks). Both derive from bundle
+  # membership only when the field is entirely absent, i.e. a brand-new
+  # dataset -- they start out identical, then diverge as each is hand-edited
+  # independently. To re-derive later, delete the field in the JSON and rebuild.
+  bundles <- source_to_bundles[[source_name]]
+  if (is.null(bundles)) bundles <- character(0)
+  bundle_labels <- sort(unique(vapply(bundles, format_bundle_label, character(1))))
+
+  if (source_name %in% existing_search_terms_present) {
+    search_terms <- existing_search_terms[[source_name]]
+  } else {
+    search_terms <- bundle_labels
+  }
+
+  if (source_name %in% existing_bucket_present) {
+    bucket <- existing_bucket[[source_name]]
+  } else {
+    bucket <- bundle_labels
+  }
+
+  cat(sprintf("  Indexing %s (%d/%d)\n", source_name, i, length(source_dirs)))
+
+  # One entry per standardized csv.gz: a short stratification blurb and a direct
+  # link. Blurb precedence: a hand-edited value already in the index, then the
+  # cache, then a value derived from the file name.
+  standard_files <- get_standard_files(source_dir)
+  files_entry <- lapply(sort(basename(standard_files)), function(fn) {
+    cache_key <- paste0(source_name, "/", fn)
+    strat <- existing_strat[[cache_key]] %||% stratification_cache[[cache_key]]
+    if (is.null(strat) || !nzchar(strat)) strat <- derive_stratification(fn)
+    list(
+      dataset_stratification = strat,
+      dataset_link = github_raw_file(source_name, fn)
+    )
+  })
+
+  entry <- list(
+    dataset = source_name,
+    name = display_name,
+    github_folder = sprintf("https://github.com/%s/tree/main/data/%s/standard",
+                            GITHUB_REPO, source_name),
+    data_url = first_source$url %||% "",
+    data_dictionary = sprintf("https://pophive.github.io/Ingest/#%s", section_id),
+    latest_date = get_latest_date(source_dir),
+    search_terms = I(search_terms),
+    bucket = I(bucket),
+    summary = if (nchar(dataset_summary) > 0) dataset_summary else NA
+  )
+  entry$files <- I(files_entry)
+  entry
+})
+
+save_stratification_cache(stratification_cache)
+
+data_sources_index <- list(
+  description = "Index of PopHIVE/Ingest standardized data sources (excludes bundle_* directories).",
+  repository = GITHUB_REPO,
+  n_datasets = length(index_datasets),
+  datasets = index_datasets
+)
+
+if (!dir.exists("docs")) dir.create("docs")
+index_path <- "docs/data_sources_index.json"
+write(
+  toJSON(data_sources_index, auto_unbox = TRUE, pretty = TRUE, na = "null"),
+  index_path
+)
+cat(sprintf("Data sources index written to %s (%d datasets)\n",
+            index_path, length(index_datasets)))
 
 cat("Done! Documentation generated successfully.\n")
