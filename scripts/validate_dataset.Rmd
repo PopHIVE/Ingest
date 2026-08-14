@@ -33,10 +33,9 @@ params:
   compare_measures: ""
   # ----- Paths / behaviour -------------------------------------------------
   project_root: ".."     # resolved relative to this .Rmd's directory
-  n_states: 5            # number of random states for the time-series section
   n_map_measures: 5      # max measures to map (random sample if more exist)
   make_maps: true        # set FALSE to skip choropleths (no internet needed)
-  seed: 1                # for reproducible random state / measure selection
+  seed: 1                # for reproducible random measure / map-year selection
 ---
 
 ```{r setup, include=FALSE}
@@ -143,6 +142,57 @@ hold_overall <- function(d, demo, keep = character(0)) {
 fmt_pct <- function(x) sprintf("%.1f%%", 100 * x)
 
 # ---------------------------------------------------------------------------
+# Shared file-reading helpers. Every standardized file is read with the same
+# geography/time column typing so FIPS leading zeros and date strings survive.
+# ---------------------------------------------------------------------------
+STD_COL_TYPES <- cols(geography = "c", time = "c")
+read_standard        <- function(path) vroom(path, show_col_types = FALSE, col_types = STD_COL_TYPES)
+read_standard_header <- function(path) vroom(path, show_col_types = FALSE, n_max = 0, col_types = STD_COL_TYPES)
+read_standard_cols   <- function(path, col_names) {
+  vroom(path, show_col_types = FALSE, col_types = STD_COL_TYPES,
+        col_select = any_of(col_names))
+}
+
+# measure_info.json lookup: loads the file (if present) alongside a standard/
+# data file, and builds short_name / labelling closures from it. Used for both
+# the main dataset and (in the comparison section) a second dataset.
+load_measure_info <- function(data_file_path) {
+  mi_path <- file.path(dirname(dirname(data_file_path)), "measure_info.json")
+  if (!file.exists(mi_path)) return(NULL)
+  tryCatch(jsonlite::read_json(mi_path), error = function(e) NULL)
+}
+make_label_fns <- function(measure_info) {
+  short_name <- function(v) {
+    if (!is.null(measure_info) && !is.null(measure_info[[v]]) &&
+        !is.null(measure_info[[v]]$short_name))
+      measure_info[[v]]$short_name else v
+  }
+  label <- function(vars) {
+    vapply(vars, function(v) {
+      sn <- short_name(v)
+      if (identical(sn, v)) v else sprintf("%s (%s)", sn, v)
+    }, character(1), USE.NAMES = FALSE)
+  }
+  list(short_name = short_name, label = label)
+}
+
+# Reports how many value measures have a confidence-bound/flag counterpart,
+# e.g. "- **Confidence bounds:** 3/5 value measures have them — missing for: x, y".
+report_coverage <- function(values, cols, re, label, verb) {
+  if (length(cols) == 0) {
+    cat(sprintf("- **%s:** none present (not applicable)\n", label))
+    return(invisible(NULL))
+  }
+  present <- intersect(values, unique(sub(re, "", cols)))
+  miss <- setdiff(values, present)
+  cat(sprintf("- **%s:** %d/%d value measures %s%s\n",
+              label, length(present), length(values), verb,
+              if (length(miss))
+                sprintf(" — **missing for:** %s", paste(miss, collapse = ", "))
+              else " (all present)"))
+}
+
+# ---------------------------------------------------------------------------
 # Git history: extract the previous committed version of the SAME data file so
 # its variables and demographic levels can be diffed automatically. Returns
 # NULL if git is unavailable, the file is untracked, or there is no distinct
@@ -202,30 +252,13 @@ extract_git_version <- function(data_path, ref_hint = "") {
 data_path <- proj_path(params$data_file)
 stopifnot("data_file does not exist" = file.exists(data_path))
 
-# Read with geography + time forced to character so FIPS leading zeros survive.
-dat <- vroom(
-  data_path, show_col_types = FALSE,
-  col_types = cols(geography = "c", time = "c")
-)
+dat <- read_standard(data_path)
 roles <- classify_columns(dat)
 
 # Load measure_info.json for short-name lookups (gracefully absent)
-measure_info <- NULL
-mi_path <- file.path(dirname(dirname(data_path)), "measure_info.json")
-if (file.exists(mi_path)) {
-  measure_info <- tryCatch(jsonlite::read_json(mi_path), error = function(e) NULL)
-}
-short_name_fn <- function(v) {
-  if (!is.null(measure_info) && !is.null(measure_info[[v]]) &&
-      !is.null(measure_info[[v]]$short_name))
-    measure_info[[v]]$short_name else v
-}
-measure_label <- function(vars) {
-  vapply(vars, function(v) {
-    sn <- short_name_fn(v)
-    if (identical(sn, v)) v else sprintf("%s (%s)", sn, v)
-  }, character(1), USE.NAMES = FALSE)
-}
+label_fns      <- make_label_fns(load_measure_info(data_path))
+short_name_fn  <- label_fns$short_name
+measure_label  <- label_fns$label
 ```
 
 # 1. Overview {#overview}
@@ -243,30 +276,8 @@ cat(sprintf("- **Value measures (%d):** %s\n", length(roles$values),
 # Confidence-bound / flag coverage: rather than listing every bound/flag column,
 # check whether any value measure is MISSING its bounds or flag (only meaningful
 # if the dataset uses them at all).
-parent_of <- function(cols, re) unique(sub(re, "", cols))
-meas_with_bounds <- intersect(roles$values, parent_of(roles$bounds, BOUND_RE))
-meas_with_flags  <- intersect(roles$values, parent_of(roles$flags,  FLAG_RE))
-
-if (length(roles$bounds) == 0) {
-  cat("- **Confidence bounds:** none present (not applicable)\n")
-} else {
-  miss <- setdiff(roles$values, meas_with_bounds)
-  cat(sprintf("- **Confidence bounds:** %d/%d value measures have them%s\n",
-              length(meas_with_bounds), length(roles$values),
-              if (length(miss))
-                sprintf(" — **missing for:** %s", paste(miss, collapse = ", "))
-              else " (all present)"))
-}
-if (length(roles$flags) == 0) {
-  cat("- **Flag columns:** none present (not applicable)\n")
-} else {
-  miss <- setdiff(roles$values, meas_with_flags)
-  cat(sprintf("- **Flag columns:** %d/%d value measures have at least one flag%s\n",
-              length(meas_with_flags), length(roles$values),
-              if (length(miss))
-                sprintf(" — **missing for:** %s", paste(miss, collapse = ", "))
-              else " (all present)"))
-}
+report_coverage(roles$values, roles$bounds, BOUND_RE, "Confidence bounds", "have them")
+report_coverage(roles$values, roles$flags,  FLAG_RE,  "Flag columns", "have at least one flag")
 
 # Geographic coverage
 gl <- nchar(dat$geography)
@@ -302,11 +313,7 @@ cat(sprintf("- Unique rows per geography/time/demographics: %s\n",
 # 2. Demographic categories {#categories}
 
 For every demographic variable, the number of categories and the categories
-themselves. A previous version is then compared to confirm nothing was silently
-added or dropped: either the file named in `old_data_file`, or — when that is
-blank — the **previous version of this same file pulled from git history**
-(working-tree edits vs the last commit, otherwise the last commit vs the one
-before it).
+themselves, compared to previous versions if available. 
 
 ```{r categories}
 if (length(roles$demo) == 0) {
@@ -339,8 +346,7 @@ if (nzchar(old_path) && file.exists(old_path)) {
 }
 
 if (!is.null(old_label) && file.exists(old_path)) {
-  old <- vroom(old_path, show_col_types = FALSE,
-               col_types = cols(geography = "c", time = "c"))
+  old <- read_standard(old_path)
   old_roles <- classify_columns(old)
 
   cat("## Comparison with previous version\n\n")
@@ -403,8 +409,8 @@ if (!is.null(old_label) && file.exists(old_path)) {
 
 Per-column NA counts and percentages. For datasets that encode missingness with
 flag columns (e.g. `_suppressed`, `_not_collected`), value measures that are
-**>50% suppressed** or **>50% not asked / collected** are listed below, with the
-contributing flag(s) — these are the variables with the sparsest real data.
+>50% suppressed or >50% not asked / collected are listed below, with the
+contributing flag(s).
 
 ```{r missing-na}
 na_tab <- data.frame(
@@ -468,17 +474,11 @@ if (!length(roles$flags)) {
 }
 ```
 
-# 4. National & state time series {#timeseries}
+# 4. National time series {#timeseries}
 
-National trends, shown overall and stratified by each demographic, plus
-`r params$n_states` randomly selected states (overall). Confidence-bound and
-flag columns are excluded. Where a demographic has no true "Overall" level, the
-other demographics are held at their most common level (noted in each title).
-
-Observations that were **suppressed or not asked/collected** (flagged 1 in a
-`_suppressed` / `_not_asked` / `_not_collected` column, with the value typically
-imputed to 0) are drawn as **hollow points but dropped from the connecting
-line**, so imputed zeros do not distort the trend.
+Observations that were suppressed or not asked/collected (flagged 1 in a
+`_suppressed` / `_not_asked` / `_not_collected` column) are drawn as hollow points but dropped from the connecting
+line, so imputed zeros do not distort the trend.
 
 ```{r ts-helpers}
 plot_measures <- roles$values
@@ -566,11 +566,30 @@ trend_plot <- function(d, color_col, title, subtitle = NULL, facet_col = NULL) {
   print(p)
 }
 
-has_true_overall <- function(v) any(na.omit(v) %in% OVERALL_LABELS)
-
 held_subtitle <- function(d) {
   n <- attr(d, "held_notes")
   if (length(n)) paste0("Held at: ", paste(n, collapse = "; ")) else NULL
+}
+
+# For every demographic column with >= 2 levels, hold the others at their
+# representative level and draw a stratified trend plot under a header. If
+# none of the demographic columns vary (including when there are none at
+# all), fall back to a single overall (unstratified) plot.
+plot_stratified_trends <- function(d, demo_cols, title_prefix = "",
+                                    header_tag = "h2", show_subtitle = TRUE) {
+  varying <- demo_cols[vapply(demo_cols, function(col) length(unique(d[[col]])) >= 2, logical(1))]
+  if (length(varying) == 0) {
+    if (nzchar(title_prefix)) cat(sprintf("<%s>%s</%s>\n\n", header_tag, title_prefix, header_tag))
+    trend_plot(hold_overall(d, demo_cols), NULL, "")
+    return(invisible(NULL))
+  }
+  for (col in varying) {
+    sub <- hold_overall(d, setdiff(demo_cols, col))
+    header <- if (nzchar(title_prefix)) sprintf("%s — by %s", title_prefix, col)
+              else sprintf("by %s", col)
+    cat(sprintf("<%s>%s</%s>\n\n", header_tag, header, header_tag))
+    trend_plot(sub, col, "", if (show_subtitle) held_subtitle(sub) else NULL)
+  }
 }
 ```
 
@@ -579,54 +598,16 @@ nat <- dat %>% filter(geography == "00")
 if (nrow(nat) == 0) {
   cat("_No national (geography == \"00\") rows; skipping national trends._\n")
 } else {
-  for (col in demo_cols) {
-    if (length(unique(nat[[col]])) < 2) next
-    sub <- hold_overall(nat, setdiff(demo_cols, col))
-    cat(sprintf("<h2>National — by %s</h2>\n\n", col))
-    trend_plot(sub, col, "", held_subtitle(sub))
-  }
-}
-```
-
-```{r ts-states, results='asis', fig.width=14, fig.height=facet_height(length(roles$values))}
-state_codes <- dat %>%
-  filter(nchar(geography) == 2, geography != "00") %>%
-  distinct(geography) %>% pull(geography)
-
-if (length(state_codes) == 0) {
-  cat("_No state-level rows; skipping state trends._\n")
-} else {
-  pick <- sort(sample(state_codes, min(params$n_states, length(state_codes))))
-  fips_path <- proj_path("resources/all_fips.csv.gz")
-  lab <- pick
-  if (file.exists(fips_path)) {
-    fips <- vroom(fips_path, show_col_types = FALSE,
-                  col_types = cols(geography = "c"))
-    nm <- fips$geography_name[match(pick, fips$geography)]
-    lab <- ifelse(is.na(nm), pick, nm)
-  }
-
-  for (i in seq_along(pick)) {
-    cat(sprintf("<h2>%s</h2>\n\n", lab[i]))
-    st_i <- dat %>% filter(geography == pick[i])
-    for (col in demo_cols) {
-      if (length(unique(st_i[[col]])) < 2) next
-      sub <- hold_overall(st_i, setdiff(demo_cols, col))
-      cat(sprintf("<h3>by %s</h3>\n\n", col))
-      trend_plot(sub, col, "")
-    }
-  }
+  plot_stratified_trends(nat, demo_cols, title_prefix = "National", header_tag = "h2")
 }
 ```
 
 # 5. Choropleth maps {#maps}
 
-For up to `r params$n_map_measures` measures, each map shows **4 random years in a
-2&times;2 grid** (overall demographics). Cells that were **suppressed are white
-with a diagonal hatch** and cells **not asked / not collected that year are solid
-black** (shown in the legend); other cells use the viridis value scale and cells
-with no data are grey. State maps use 2-digit FIPS; county maps use 5-digit FIPS.
-AK, HI and territories are dropped for display.
+For up to `r params$n_map_measures` measures, each map shows 4 random years in a
+2&times;2 grid (overall demographics). Cells that were suppressed are white
+with a diagonal hatch and cells not asked / not collected that year are solid
+black (shown in the legend). 
 
 ```{r maps, results='asis', fig.width=11, fig.height=8.5, eval=params$make_maps}
 map_ok <- requireNamespace("sf", quietly = TRUE) &&
@@ -800,16 +781,17 @@ cmp_path <- proj_path(params$compare_file)
 if (!nzchar(cmp_path) || !file.exists(cmp_path)) {
   cat("_No comparison source supplied (`compare_file` is blank), skipping._\n")
 } else {
-  # Build the measure mapping (main measure -> comparison measure).
+  # Build the measure mapping (main measure -> comparison measure). Read the
+  # comparison header once and reuse it both to auto-match shared measures
+  # (when no explicit mapping is given) and to determine its demographic cols.
+  cdat_hdr <- read_standard_header(cmp_path)
+
   mm <- trimws(strsplit(params$main_measures, ",")[[1]])
   cm <- trimws(strsplit(params$compare_measures, ",")[[1]])
   mm <- mm[nzchar(mm)]; cm <- cm[nzchar(cm)]
   if (length(mm) && length(mm) == length(cm)) {
     pairs <- data.frame(main = mm, comp = cm, stringsAsFactors = FALSE)
   } else {
-    # Read header only to find shared measure names — avoid loading all data.
-    cdat_hdr <- vroom(cmp_path, show_col_types = FALSE, n_max = 0,
-                      col_types = cols(geography = "c", time = "c"))
     shared <- intersect(roles$values, classify_columns(cdat_hdr)$values)
     pairs <- data.frame(main = shared, comp = shared, stringsAsFactors = FALSE)
   }
@@ -818,15 +800,11 @@ if (!nzchar(cmp_path) || !file.exists(cmp_path)) {
     cat("_No measures matched between the two sources. Provide `main_measures` / `compare_measures` to map them manually._\n")
   } else {
     # Load only the columns needed: id cols + demo cols + the comparison measures.
-    cdat_hdr <- vroom(cmp_path, show_col_types = FALSE, n_max = 0,
-                      col_types = cols(geography = "c", time = "c"))
     cmp_demo_cols <- setdiff(
       names(cdat_hdr)[vapply(cdat_hdr, function(x) is.character(x) || is.factor(x), logical(1))],
       c("geography", "time")
     )
-    cdat <- vroom(cmp_path, show_col_types = FALSE,
-                  col_types = cols(geography = "c", time = "c"),
-                  col_select = any_of(c("geography", "time", cmp_demo_cols, pairs$comp)))
+    cdat <- read_standard_cols(cmp_path, c("geography", "time", cmp_demo_cols, pairs$comp))
     croles <- classify_columns(cdat)
 
     cat(sprintf("Overlaying **%d** measure(s) at the national level vs. **%s**.\n\n",
@@ -834,16 +812,7 @@ if (!nzchar(cmp_path) || !file.exists(cmp_path)) {
     main_nat  <- hold_overall(dat  %>% filter(geography == "00"), roles$demo)
     comp_nat  <- hold_overall(cdat %>% filter(geography == "00"), croles$demo)
 
-    cmp_measure_info <- NULL
-    cmp_mi_path <- file.path(dirname(dirname(cmp_path)), "measure_info.json")
-    if (file.exists(cmp_mi_path)) {
-      cmp_measure_info <- tryCatch(jsonlite::read_json(cmp_mi_path), error = function(e) NULL)
-    }
-    cmp_short_name_fn <- function(v) {
-      if (!is.null(cmp_measure_info) && !is.null(cmp_measure_info[[v]]) &&
-          !is.null(cmp_measure_info[[v]]$short_name))
-        cmp_measure_info[[v]]$short_name else v
-    }
+    cmp_short_name_fn <- make_label_fns(load_measure_info(cmp_path))$short_name
 
     main_name <- basename(dirname(dirname(params$data_file)))
     cmp_name  <- basename(dirname(dirname(params$compare_file)))
