@@ -11,7 +11,7 @@ output:
     code_folding: hide
 params:
   # ----- Required: the standardized file to validate -----------------------
-  data_file: "C:/Users/as5325/Desktop/Ingest/data/respnet/standard/data.csv.gz"
+  data_file: "data/yrbss/standard/data_age_ethnicity.csv.gz"
   # ----- Optional: a previous version of the SAME dataset ------------------
   #   Used to confirm the same demographic categories / measures still exist.
   #   If left blank, the script automatically pulls the previous committed
@@ -646,12 +646,7 @@ if (!map_ok) {
 
   # choose up to 4 random years (shared across measures for comparability)
   all_times <- sort(unique(dat$time))
-  all_years <- unique(substr(all_times, 1, 4))
-  map_years <- sort(sample(all_years, min(4, length(all_years))))
-  map_times <- sort(sapply(map_years, function(y) {
-    yr_times <- all_times[substr(all_times, 1, 4) == y]
-    sample(yr_times, 1)
-  }))
+  map_times <- sort(sample(all_times, min(4, length(all_times))))
 
   base <- dat %>% filter(time %in% map_times) %>% hold_overall(demo_cols)
 
