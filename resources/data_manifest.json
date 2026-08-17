@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-13T14:16:57Z",
+  "generated": "2026-08-17T14:22:27Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -6026,14 +6026,6 @@
               "levels": {}
             },
             {
-              "name": "value_not_reported",
-              "short_name": "Value not reported",
-              "description": "1 where CDC did not report this measure for the row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "levels": {}
-            },
-            {
               "name": "n_type",
               "short_name": "Isolates of this type",
               "description": "Isolates of the emm type on this row.",
@@ -6094,90 +6086,9 @@
           ]
         },
         {
-          "filename": "epic_gas.parquet",
-          "path": "data/bundle_strep/dist/epic_gas.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_strep/dist/epic_gas.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is national.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "date",
-              "short_name": "Date",
-              "description": "End date of the reporting period, in YYYY-mm-dd format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "year",
-              "short_name": "Year",
-              "description": "Year of the reporting period.",
-              "measure_type": "identifier",
-              "unit": "year",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age group",
-              "description": "Age group; \"Total\" is the all-ages aggregate.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "n_strep_throat": {
-                  "source_id": "epic_n_strep_throat"
-                },
-                "pct_strep_throat": {
-                  "source_id": "epic_pct_strep_throat"
-                },
-                "n_patients": {
-                  "source_id": "epic_n_patients"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column.",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "suppressed",
-              "short_name": "Suppressed",
-              "description": "1 where Epic withheld the underlying cell and the value was imputed as 5.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "levels": {}
-            }
-          ]
-        },
-        {
-          "filename": "nnds_stss.parquet",
-          "path": "data/bundle_strep/dist/nnds_stss.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_strep/dist/nnds_stss.parquet",
+          "filename": "gas_state.parquet",
+          "path": "data/bundle_strep/dist/gas_state.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_strep/dist/gas_state.parquet",
           "columns": [
             {
               "name": "geography",
@@ -6214,10 +6125,35 @@
             {
               "name": "week",
               "short_name": "MMWR week",
-              "description": "MMWR week number (1-53) within the year.",
+              "description": "MMWR week number (1-53); blank for the quarterly Epic rows.",
               "measure_type": "identifier",
               "unit": "week",
               "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Source",
+              "description": "Which surveillance system reported the row.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "Epic Cosmos": {
+                  "short_name": "Epic Cosmos",
+                  "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age."
+                },
+                "NNDSS": {
+                  "short_name": "NNDSS",
+                  "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state."
+                }
+              }
             },
             {
               "name": "measure",
@@ -6226,6 +6162,15 @@
               "measure_type": "",
               "unit": "",
               "levels": {
+                "n_strep_throat": {
+                  "source_id": "epic_n_strep_throat"
+                },
+                "pct_strep_throat": {
+                  "source_id": "epic_pct_strep_throat"
+                },
+                "n_patients": {
+                  "source_id": "epic_n_patients"
+                },
                 "stss_cases_weekly": {
                   "short_name": "Strep TSS cases (weekly)",
                   "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
@@ -6250,9 +6195,17 @@
             {
               "name": "value",
               "short_name": "Value",
-              "description": "Reported cases of streptococcal toxic shock syndrome.",
+              "description": "Value of the measure named in the measure column.",
               "measure_type": "Mixed",
               "unit": "varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "suppressed",
+              "short_name": "Suppressed",
+              "description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
+              "measure_type": "Binary",
+              "unit": "0/1",
               "levels": {}
             }
           ]
@@ -9572,7 +9525,7 @@
             {
               "name": "serotype",
               "short_name": "Serotype",
-              "description": "Pneumococcal serotype",
+              "description": "Which serotype the row describes.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -9652,228 +9605,25 @@
               "unit": ""
             },
             {
-              "name": "abcs_gas_emm_n_emm_1",
-              "short_name": "emm1 isolates",
-              "description": "Emm-typed Group A isolates of emm1.",
+              "name": "emm_type",
+              "short_name": "emm type",
+              "description": "Which emm type the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gas_emm_n",
+              "short_name": "emm type isolates",
+              "description": "Emm-typed Group A isolates of the type on the row.",
               "measure_type": "Count",
               "unit": "Isolates"
             },
             {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_1",
-              "short_name": "Not reported: emm1 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_1 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_11",
-              "short_name": "emm11 isolates",
-              "description": "Emm-typed Group A isolates of emm11.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_11",
-              "short_name": "Not reported: emm11 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_11 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_12",
-              "short_name": "emm12 isolates",
-              "description": "Emm-typed Group A isolates of emm12.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_12",
-              "short_name": "Not reported: emm12 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_12 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_2",
-              "short_name": "emm2 isolates",
-              "description": "Emm-typed Group A isolates of emm2.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_2",
-              "short_name": "Not reported: emm2 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_2 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_28",
-              "short_name": "emm28 isolates",
-              "description": "Emm-typed Group A isolates of emm28.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_28",
-              "short_name": "Not reported: emm28 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_28 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_3",
-              "short_name": "emm3 isolates",
-              "description": "Emm-typed Group A isolates of emm3.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_3",
-              "short_name": "Not reported: emm3 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_3 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_4",
-              "short_name": "emm4 isolates",
-              "description": "Emm-typed Group A isolates of emm4.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_4",
-              "short_name": "Not reported: emm4 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_4 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_43",
-              "short_name": "emm43 isolates",
-              "description": "Emm-typed Group A isolates of emm43.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_43",
-              "short_name": "Not reported: emm43 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_43 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_59",
-              "short_name": "emm59 isolates",
-              "description": "Emm-typed Group A isolates of emm59.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_59",
-              "short_name": "Not reported: emm59 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_59 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_6",
-              "short_name": "emm6 isolates",
-              "description": "Emm-typed Group A isolates of emm6.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_6",
-              "short_name": "Not reported: emm6 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_6 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_75",
-              "short_name": "emm75 isolates",
-              "description": "Emm-typed Group A isolates of emm75.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_75",
-              "short_name": "Not reported: emm75 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_75 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_77",
-              "short_name": "emm77 isolates",
-              "description": "Emm-typed Group A isolates of emm77.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_77",
-              "short_name": "Not reported: emm77 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_77 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_82",
-              "short_name": "emm82 isolates",
-              "description": "Emm-typed Group A isolates of emm82.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_82",
-              "short_name": "Not reported: emm82 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_82 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_83",
-              "short_name": "emm83 isolates",
-              "description": "Emm-typed Group A isolates of emm83.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_83",
-              "short_name": "Not reported: emm83 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_83 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_89",
-              "short_name": "emm89 isolates",
-              "description": "Emm-typed Group A isolates of emm89.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_89",
-              "short_name": "Not reported: emm89 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_89 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_92",
-              "short_name": "emm92 isolates",
-              "description": "Emm-typed Group A isolates of emm92.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_92",
-              "short_name": "Not reported: emm92 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_92 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
+              "name": "abcs_gas_emm_pct",
+              "short_name": "emm type (%)",
+              "description": "Percent of emm-typed Group A isolates of the type on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
             },
             {
               "name": "abcs_gas_emm_n_isolates_total",
@@ -9881,377 +9631,6 @@
               "description": "Group A isolates assigned an emm type.",
               "measure_type": "Count",
               "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_isolates_total",
-              "short_name": "Not reported: emm-typed isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_isolates_total for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_other",
-              "short_name": "Other emm types",
-              "description": "Emm-typed isolates CDC reported as \"Other\".",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_other",
-              "short_name": "Not reported: Other emm types",
-              "description": "1 where CDC did not report abcs_gas_emm_n_other for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_1",
-              "short_name": "emm1 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm1.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_1",
-              "short_name": "Not reported: emm1 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_1 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_11",
-              "short_name": "emm11 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm11.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_11",
-              "short_name": "Not reported: emm11 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_11 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_12",
-              "short_name": "emm12 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm12.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_12",
-              "short_name": "Not reported: emm12 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_12 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_2",
-              "short_name": "emm2 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm2.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_2",
-              "short_name": "Not reported: emm2 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_2 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_28",
-              "short_name": "emm28 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm28.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_28",
-              "short_name": "Not reported: emm28 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_28 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_3",
-              "short_name": "emm3 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm3.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_3",
-              "short_name": "Not reported: emm3 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_3 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_4",
-              "short_name": "emm4 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm4.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_4",
-              "short_name": "Not reported: emm4 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_4 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_43",
-              "short_name": "emm43 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm43.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_43",
-              "short_name": "Not reported: emm43 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_43 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_59",
-              "short_name": "emm59 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm59.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_59",
-              "short_name": "Not reported: emm59 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_59 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_6",
-              "short_name": "emm6 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm6.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_6",
-              "short_name": "Not reported: emm6 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_6 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_75",
-              "short_name": "emm75 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm75.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_75",
-              "short_name": "Not reported: emm75 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_75 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_77",
-              "short_name": "emm77 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm77.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_77",
-              "short_name": "Not reported: emm77 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_77 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_82",
-              "short_name": "emm82 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm82.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_82",
-              "short_name": "Not reported: emm82 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_82 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_83",
-              "short_name": "emm83 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm83.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_83",
-              "short_name": "Not reported: emm83 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_83 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_89",
-              "short_name": "emm89 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm89.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_89",
-              "short_name": "Not reported: emm89 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_89 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_92",
-              "short_name": "emm92 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm92.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_92",
-              "short_name": "Not reported: emm92 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_92 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_other",
-              "short_name": "Other emm types (%)",
-              "description": "Percent of emm-typed isolates CDC reported as \"Other\".",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_other",
-              "short_name": "Not reported: Other emm types (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_other for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_49",
-              "short_name": "emm49 isolates",
-              "description": "Emm-typed Group A isolates of emm49.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_49",
-              "short_name": "Not reported: emm49 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_49 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_49",
-              "short_name": "emm49 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm49.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_49",
-              "short_name": "Not reported: emm49 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_49 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_81",
-              "short_name": "emm81 isolates",
-              "description": "Emm-typed Group A isolates of emm81.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_81",
-              "short_name": "Not reported: emm81 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_81 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_81",
-              "short_name": "emm81 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm81.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_81",
-              "short_name": "Not reported: emm81 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_81 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_60",
-              "short_name": "emm60 isolates",
-              "description": "Emm-typed Group A isolates of emm60.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_60",
-              "short_name": "Not reported: emm60 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_60 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_60",
-              "short_name": "emm60 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm60.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_60",
-              "short_name": "Not reported: emm60 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_60 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_n_emm_91",
-              "short_name": "emm91 isolates",
-              "description": "Emm-typed Group A isolates of emm91.",
-              "measure_type": "Count",
-              "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_n_emm_91",
-              "short_name": "Not reported: emm91 isolates",
-              "description": "1 where CDC did not report abcs_gas_emm_n_emm_91 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_emm_pct_emm_91",
-              "short_name": "emm91 (%)",
-              "description": "Percent of emm-typed Group A isolates of emm91.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_emm_pct_emm_91",
-              "short_name": "Not reported: emm91 (%)",
-              "description": "1 where CDC did not report abcs_gas_emm_pct_emm_91 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
             }
           ]
         },
@@ -10294,74 +9673,18 @@
               "unit": ""
             },
             {
-              "name": "abcs_gas_rate_syndrome_bacteremia_without_focus",
-              "short_name": "Bacteremia without focus rate",
-              "description": "Group A bacteremia without focus cases per 100,000 population.",
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Which clinical presentation the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gas_rate_syndrome",
+              "short_name": "Syndrome rate",
+              "description": "Group A cases presenting as the syndrome on the row, per 100,000.",
               "measure_type": "Rate",
               "unit": "Cases per 100,000"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_rate_syndrome_bacteremia_without_focus",
-              "short_name": "Not reported: Bacteremia without focus rate",
-              "description": "1 where CDC did not report abcs_gas_rate_syndrome_bacteremia_without_focus for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_rate_syndrome_cellulitis",
-              "short_name": "Cellulitis rate",
-              "description": "Group A cellulitis cases per 100,000 population.",
-              "measure_type": "Rate",
-              "unit": "Cases per 100,000"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_rate_syndrome_cellulitis",
-              "short_name": "Not reported: Cellulitis rate",
-              "description": "1 where CDC did not report abcs_gas_rate_syndrome_cellulitis for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_rate_syndrome_necrotizing_fasciitis",
-              "short_name": "Necrotizing fasciitis rate",
-              "description": "Group A necrotizing fasciitis cases per 100,000 population.",
-              "measure_type": "Rate",
-              "unit": "Cases per 100,000"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_rate_syndrome_necrotizing_fasciitis",
-              "short_name": "Not reported: Necrotizing fasciitis rate",
-              "description": "1 where CDC did not report abcs_gas_rate_syndrome_necrotizing_fasciitis for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_rate_syndrome_pneumonia",
-              "short_name": "Pneumonia rate",
-              "description": "Group A pneumonia cases per 100,000 population.",
-              "measure_type": "Rate",
-              "unit": "Cases per 100,000"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_rate_syndrome_pneumonia",
-              "short_name": "Not reported: Pneumonia rate",
-              "description": "1 where CDC did not report abcs_gas_rate_syndrome_pneumonia for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gas_rate_syndrome_strep_toxic_shock",
-              "short_name": "Streptococcal toxic shock syndrome rate",
-              "description": "Group A streptococcal toxic shock syndrome cases per 100,000 population.",
-              "measure_type": "Rate",
-              "unit": "Cases per 100,000"
-            },
-            {
-              "name": "abcs_not_reported_flag_gas_rate_syndrome_strep_toxic_shock",
-              "short_name": "Not reported: Streptococcal toxic shock syndrome rate",
-              "description": "1 where CDC did not report abcs_gas_rate_syndrome_strep_toxic_shock for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
             }
           ]
         },
@@ -10404,88 +9727,25 @@
               "unit": ""
             },
             {
+              "name": "alph_type",
+              "short_name": "ALPH type",
+              "description": "Which alpha-like protein gene the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gbs_pct_alph",
+              "short_name": "ALPH type (%)",
+              "description": "Percent of typed Group B isolates of the ALPH type on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
               "name": "abcs_gbs_n_isolates",
               "short_name": "Isolates typed",
               "description": "Typed Group B isolates in the population group on the row.",
               "measure_type": "Count",
               "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_n_isolates",
-              "short_name": "Not reported: Isolates typed",
-              "description": "1 where CDC did not report abcs_gbs_n_isolates for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_alph_alp1",
-              "short_name": "ALP1 (%)",
-              "description": "Percent of typed Group B isolates carrying ALP1.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_alph_alp1",
-              "short_name": "Not reported: ALP1 (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_alph_alp1 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_alph_alp23",
-              "short_name": "ALP23 (%)",
-              "description": "Percent of typed Group B isolates carrying ALP23.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_alph_alp23",
-              "short_name": "Not reported: ALP23 (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_alph_alp23 for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_alph_alpha",
-              "short_name": "ALPHA (%)",
-              "description": "Percent of typed Group B isolates carrying ALPHA.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_alph_alpha",
-              "short_name": "Not reported: ALPHA (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_alph_alpha for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_alph_neg",
-              "short_name": "No ALPH gene (%)",
-              "description": "Percent of typed Group B isolates with no ALPH gene detected.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_alph_neg",
-              "short_name": "Not reported: No ALPH gene (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_alph_neg for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_alph_rib",
-              "short_name": "RIB (%)",
-              "description": "Percent of typed Group B isolates carrying RIB.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_alph_rib",
-              "short_name": "Not reported: RIB (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_alph_rib for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
             }
           ]
         },
@@ -10528,158 +9788,25 @@
               "unit": ""
             },
             {
+              "name": "serotype",
+              "short_name": "Serotype",
+              "description": "Which serotype the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gbs_pct_serotype",
+              "short_name": "Serotype (%)",
+              "description": "Percent of typed Group B isolates of the serotype on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
               "name": "abcs_gbs_n_isolates",
               "short_name": "Isolates typed",
               "description": "Typed Group B isolates in the population group on the row.",
               "measure_type": "Count",
               "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_n_isolates",
-              "short_name": "Not reported: Isolates typed",
-              "description": "1 where CDC did not report abcs_gbs_n_isolates for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_ia",
-              "short_name": "Serotype Ia (%)",
-              "description": "Percent of typed Group B isolates of serotype Ia.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_ia",
-              "short_name": "Not reported: Serotype Ia (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_ia for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_ib",
-              "short_name": "Serotype Ib (%)",
-              "description": "Percent of typed Group B isolates of serotype Ib.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_ib",
-              "short_name": "Not reported: Serotype Ib (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_ib for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_ii",
-              "short_name": "Serotype II (%)",
-              "description": "Percent of typed Group B isolates of serotype II.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_ii",
-              "short_name": "Not reported: Serotype II (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_ii for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_iii",
-              "short_name": "Serotype III (%)",
-              "description": "Percent of typed Group B isolates of serotype III.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_iii",
-              "short_name": "Not reported: Serotype III (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_iii for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_iv",
-              "short_name": "Serotype IV (%)",
-              "description": "Percent of typed Group B isolates of serotype IV.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_iv",
-              "short_name": "Not reported: Serotype IV (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_iv for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_non_typeable",
-              "short_name": "Serotype non-typeable (%)",
-              "description": "Percent of typed Group B isolates of serotype non-typeable.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_non_typeable",
-              "short_name": "Not reported: Serotype non-typeable (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_non_typeable for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_v",
-              "short_name": "Serotype V (%)",
-              "description": "Percent of typed Group B isolates of serotype V.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_v",
-              "short_name": "Not reported: Serotype V (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_v for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_vi_vii_viii_or_ix",
-              "short_name": "Serotype VI, VII, VIII or IX (%)",
-              "description": "Percent of typed Group B isolates of serotype VI, VII, VIII or IX.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_vi_vii_viii_or_ix",
-              "short_name": "Not reported: Serotype VI, VII, VIII or IX (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_vi_vii_viii_or_ix for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_vi_viii",
-              "short_name": "Serotype VI, VIII (%)",
-              "description": "Percent of typed Group B isolates of serotype VI, VIII.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_vi_viii",
-              "short_name": "Not reported: Serotype VI, VIII (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_vi_viii for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_serotype_vi",
-              "short_name": "Serotype VI (%)",
-              "description": "Percent of typed Group B isolates of serotype VI.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_serotype_vi",
-              "short_name": "Not reported: Serotype VI (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_serotype_vi for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
             }
           ]
         },
@@ -10722,46 +9849,18 @@
               "unit": ""
             },
             {
-              "name": "abcs_gbs_pct_syndrome_bacteremia_with_pneumonia",
-              "short_name": "Bacteremia with pneumonia (%)",
-              "description": "Percent of Group B cases presenting as bacteremia with pneumonia.",
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Which clinical presentation the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gbs_pct_syndrome",
+              "short_name": "Syndrome (%)",
+              "description": "Percent of Group B cases presenting as the syndrome on the row.",
               "measure_type": "Percent",
               "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_syndrome_bacteremia_with_pneumonia",
-              "short_name": "Not reported: Bacteremia with pneumonia (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_syndrome_bacteremia_with_pneumonia for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_syndrome_bacteremia_without_focus",
-              "short_name": "Bacteremia without focus (%)",
-              "description": "Percent of Group B cases presenting as bacteremia without focus.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_syndrome_bacteremia_without_focus",
-              "short_name": "Not reported: Bacteremia without focus (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_syndrome_bacteremia_without_focus for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_gbs_pct_syndrome_meningitis",
-              "short_name": "Meningitis (%)",
-              "description": "Percent of Group B cases presenting as meningitis.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_gbs_pct_syndrome_meningitis",
-              "short_name": "Not reported: Meningitis (%)",
-              "description": "1 where CDC did not report abcs_gbs_pct_syndrome_meningitis for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
             }
           ]
         },
@@ -10811,13 +9910,6 @@
               "unit": "Cases"
             },
             {
-              "name": "abcs_not_reported_flag_N_cases",
-              "short_name": "Not reported: Cases",
-              "description": "1 where CDC did not report abcs_N_cases for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
               "name": "abcs_N_deaths",
               "short_name": "Deaths",
               "description": "Estimated annual deaths from invasive disease.",
@@ -10825,25 +9917,11 @@
               "unit": "Deaths"
             },
             {
-              "name": "abcs_not_reported_flag_N_deaths",
-              "short_name": "Not reported: Deaths",
-              "description": "1 where CDC did not report abcs_N_deaths for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
               "name": "abcs_N_survivals",
               "short_name": "Survivals",
               "description": "Estimated annual invasive disease cases who survived.",
               "measure_type": "Count",
               "unit": "People"
-            },
-            {
-              "name": "abcs_not_reported_flag_N_survivals",
-              "short_name": "Not reported: Survivals",
-              "description": "1 where CDC did not report abcs_N_survivals for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
             }
           ]
         },
@@ -10914,25 +9992,11 @@
               "unit": "Cases per 100,000"
             },
             {
-              "name": "abcs_not_reported_flag_rate_cases",
-              "short_name": "Not reported: Case rate",
-              "description": "1 where CDC did not report abcs_rate_cases for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
               "name": "abcs_rate_deaths",
               "short_name": "Death rate",
               "description": "Deaths from invasive disease per 100,000 population.",
               "measure_type": "Rate",
               "unit": "Deaths per 100,000"
-            },
-            {
-              "name": "abcs_not_reported_flag_rate_deaths",
-              "short_name": "Not reported: Death rate",
-              "description": "1 where CDC did not report abcs_rate_deaths for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
             }
           ]
         },
@@ -10975,88 +10039,18 @@
               "unit": ""
             },
             {
-              "name": "abcs_pct_resistant_cefotaxime",
-              "short_name": "Cefotaxime resistance (%)",
-              "description": "Percent of tested isolates non-susceptible to cefotaxime.",
+              "name": "antibiotic",
+              "short_name": "Antibiotic",
+              "description": "Which drug the resistance percentage refers to.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_pct_resistant",
+              "short_name": "Resistance (%)",
+              "description": "Percent of tested isolates non-susceptible to the antibiotic on the row.",
               "measure_type": "Percent",
               "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_pct_resistant_cefotaxime",
-              "short_name": "Not reported: Cefotaxime resistance (%)",
-              "description": "1 where CDC did not report abcs_pct_resistant_cefotaxime for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_pct_resistant_clindamycin",
-              "short_name": "Clindamycin resistance (%)",
-              "description": "Percent of tested isolates non-susceptible to clindamycin.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_pct_resistant_clindamycin",
-              "short_name": "Not reported: Clindamycin resistance (%)",
-              "description": "1 where CDC did not report abcs_pct_resistant_clindamycin for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_pct_resistant_erythromycin",
-              "short_name": "Erythromycin resistance (%)",
-              "description": "Percent of tested isolates non-susceptible to erythromycin.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_pct_resistant_erythromycin",
-              "short_name": "Not reported: Erythromycin resistance (%)",
-              "description": "1 where CDC did not report abcs_pct_resistant_erythromycin for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_pct_resistant_penicillin",
-              "short_name": "Penicillin resistance (%)",
-              "description": "Percent of tested isolates non-susceptible to penicillin.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_pct_resistant_penicillin",
-              "short_name": "Not reported: Penicillin resistance (%)",
-              "description": "1 where CDC did not report abcs_pct_resistant_penicillin for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_pct_resistant_tetracycline",
-              "short_name": "Tetracycline resistance (%)",
-              "description": "Percent of tested isolates non-susceptible to tetracycline.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_pct_resistant_tetracycline",
-              "short_name": "Not reported: Tetracycline resistance (%)",
-              "description": "1 where CDC did not report abcs_pct_resistant_tetracycline for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_pct_resistant_vancomycin",
-              "short_name": "Vancomycin resistance (%)",
-              "description": "Percent of tested isolates non-susceptible to vancomycin.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_pct_resistant_vancomycin",
-              "short_name": "Not reported: Vancomycin resistance (%)",
-              "description": "1 where CDC did not report abcs_pct_resistant_vancomycin for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
             },
             {
               "name": "abcs_n_isolates",
@@ -11064,27 +10058,6 @@
               "description": "Isolates characterised by CDC's reference laboratory.",
               "measure_type": "Count",
               "unit": "Isolates"
-            },
-            {
-              "name": "abcs_not_reported_flag_n_isolates",
-              "short_name": "Not reported: Isolates tested",
-              "description": "1 where CDC did not report abcs_n_isolates for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "abcs_pct_resistant_linezolid",
-              "short_name": "Linezolid resistance (%)",
-              "description": "Percent of tested isolates non-susceptible to linezolid.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "abcs_not_reported_flag_pct_resistant_linezolid",
-              "short_name": "Not reported: Linezolid resistance (%)",
-              "description": "1 where CDC did not report abcs_pct_resistant_linezolid for that row; 0 otherwise.",
-              "measure_type": "Binary",
-              "unit": "0/1"
             }
           ]
         },
@@ -11108,7 +10081,7 @@
             {
               "name": "serotype",
               "short_name": "Serotype",
-              "description": "Pneumococcal serotype",
+              "description": "Which serotype the row describes.",
               "measure_type": "Category",
               "unit": ""
             },

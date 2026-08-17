@@ -27,12 +27,12 @@ state or county breakdown.
 | `uad.csv.gz` | 2020, 4-state area × serotype | pneumococcal urinary antigen detection |
 | `strep_rates.csv.gz` | year × pathogen × age × sex × race × onset | case and death rates per 100,000 (two case-rate measures — see below) |
 | `strep_counts.csv.gz` | year × pathogen × age × onset | estimated cases, deaths, survivals |
-| `strep_resistance.csv.gz` | year × pathogen × age × onset | percent non-susceptible, plus isolates tested |
-| `gas_syndromes.csv.gz` | year | Group A syndrome rates per 100,000 |
-| `gas_emm.csv.gz` | year | Group A emm type percents and isolate counts |
-| `gbs_syndromes.csv.gz` | year × age × onset | Group B syndrome percents |
-| `gbs_serotypes.csv.gz` | year × age × onset | Group B capsular serotype percents |
-| `gbs_alph.csv.gz` | year × age × onset | Group B ALPH gene percents, 2015 on |
+| `strep_resistance.csv.gz` | year × pathogen × age × onset × antibiotic | percent non-susceptible, plus isolates tested |
+| `gas_syndromes.csv.gz` | year × syndrome | Group A syndrome rates per 100,000 |
+| `gas_emm.csv.gz` | year × emm type | Group A emm type percents and isolate counts |
+| `gbs_syndromes.csv.gz` | year × age × onset × syndrome | Group B syndrome percents |
+| `gbs_serotypes.csv.gz` | year × age × onset × serotype | Group B capsular serotype percents |
+| `gbs_alph.csv.gz` | year × age × onset × ALPH type | Group B ALPH gene percents, 2015 on |
 
 Group A and Group B share a raw layout, so rates, counts and resistance are
 **merged into single files keyed by a `pathogen` column** with
@@ -41,37 +41,28 @@ Syndromes and typing are **not** merged, because they are not the same
 measures: Group A syndromes are a rate per 100,000 while Group B's are a percent
 of cases, and emm types and capsular serotypes are different concepts.
 
-## No NAs — zero-filled with one flag per measure
+Antibiotics, syndromes, emm types, serotypes and ALPH genes are **dimensions,
+not measures**, so each gets a column of its own and the measures stay wide —
+the same shape `serotype` has in `data.csv.gz`, which carries 88 serotypes in
+one column rather than 88 columns. Encoding them in column names instead had
+made `gas_emm.csv.gz` 48 columns wide.
 
-**The strep files contain no missing values.** Every measure is zero-filled, and
-every measure has its own `abcs_not_reported_flag_<measure>` saying whether that
-zero is a published figure or a gap. The flag name is derivable from the measure
-name — `abcs_gbs_pct_serotype_ia` pairs with
-`abcs_not_reported_flag_gbs_pct_serotype_ia`.
+## Missing values
 
-> **A flagged 0 is not a measured zero.** CDC published nothing for that cell.
-> Reading flagged rows as zeros understates resistance, syndrome rates and type
-> shares, so filter on the flag before aggregating.
+**A blank is a cell CDC did not publish for that row, so a 0 is always a measured
+zero.** Nothing is imputed or filled in. In `gbs_serotypes` for 2000 late-onset,
+serotypes II, IV and VI read 0 because CDC reported none, while the two
+VI-grouping rows are blank because CDC did not break them out that year.
 
-Every measure gets a flag, including ones CDC always reports (whose flag is all
-zeros), so a consumer never has to work out whether a flag exists for the column
-it cares about. A shared flag cannot do this job: in `gbs_serotypes` for 2000
-late-onset, serotypes II, IV and VI are genuine zeros while the two VI-grouping
-columns were never reported —
-
-| serotype | value | flag | |
-|---|---|---|---|
-| `ii`, `iv`, `non_typeable`, `vi` | 0 | 0 | true zero |
-| `vi_vii_viii_or_ix`, `vi_viii` | 0 | 1 | not reported |
-
-Common reasons a cell goes unreported: an antibiotic off that pathogen's
-susceptibility panel (tetracycline and linezolid are Group A only), an emm type
-or serotype CDC pooled into "other" that year, a rate not broken out for that
-stratification (death rates are published only overall and by age), or a
+Common reasons a cell is blank: an antibiotic off that pathogen's susceptibility
+panel (tetracycline and linezolid are Group A only), an emm type CDC did not
+itemise that year or a Group B serotype it regrouped, a rate not broken out for
+that stratification (death rates are published only overall and by age), or a
 denominator CDC omits for most of the resistance series.
 
-The helper `stop()`s if any NA survives the fill or if a measure lacks the
-`abcs_` prefix its flag name is derived from.
+Earlier versions zero-filled these cells and paired every measure with an
+`abcs_not_reported_flag_<measure>` column. Both are gone: the flags were exactly
+`is.na(measure)`, and 57 of 81 never fired.
 
 ## Notes and gotchas
 

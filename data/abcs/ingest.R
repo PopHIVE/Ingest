@@ -244,39 +244,18 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   # (0.131 * 100 = 13.100000000000001)
   as_pct <- function(x) round(x * 100, 6)
 
-  # Emit ONE 0/1 flag per measure column, marking cells CDC did not publish.
+  # A measure is NA where CDC published nothing for that combination, which the
+  # pivot below produces naturally: the row simply is not in the source. Nothing
+  # is filled in, so a 0 in a measure column is always a measured zero.
   #
-  # The measure itself stays NA where CDC published nothing. An earlier version
-  # zero-filled those cells, which put fabricated zeros in the same column as
-  # measured ones - GAS penicillin resistance is genuinely 0 in every year, while
-  # tetracycline is simply absent from the Group B panel, and both read 0. That
-  # is silent when a consumer forgets the flag: averaging pulls toward zero and
-  # nothing looks wrong. NA propagates visibly instead.
-  #
-  # One flag per measure rather than one shared flag per row, because a shared
-  # flag cannot express the common case: in gbs_serotypes for 2000 late-onset,
-  # serotypes II, IV and VI are genuine zeros while the two VI-grouping columns
-  # were never reported, and a single flag over all of them cannot say which is
-  # which. Measures CDC always reports get an all-zero flag, so a consumer never
-  # has to work out whether a flag exists for the column it cares about.
-  #
-  # Flag name is the measure name with the `abcs_` prefix replaced, so it is
-  # derivable: abcs_gbs_pct_serotype_ia -> abcs_not_reported_flag_gbs_pct_serotype_ia.
-  add_not_reported_flags <- function(df, id_cols) {
-    meas <- setdiff(names(df), id_cols)
-    out <- df[id_cols]
-    for (m in meas) {
-      flag <- sub("^abcs_", "abcs_not_reported_flag_", m)
-      if (flag == m) stop("ABCs: measure name lacks the abcs_ prefix: ", m)
-      out[[m]] <- df[[m]]
-      out[[flag]] <- as.integer(is.na(df[[m]]))
-      if (!identical(is.na(out[[m]]), out[[flag]] == 1L)) {
-        stop("ABCs: ", m, " disagrees with its not-reported flag.")
-      }
-    }
-    if (anyNA(out[id_cols])) stop("ABCs: NA in an index column.")
-    out
-  }
+  # An earlier version zero-filled those cells and paired every measure with an
+  # abcs_not_reported_flag_<measure> column to say which zeros were real. That
+  # put fabricated zeros in the same column as measured ones - GAS penicillin
+  # resistance is genuinely 0 in every year, while tetracycline is simply absent
+  # from the Group B panel, and both read 0 - which is silent when a consumer
+  # forgets the flag. Leaving the cell NA says it in the value itself, so the
+  # flags were dropped: they were exactly is.na(measure), and 57 of the 81 never
+  # fired at all.
 
   pivot_check <- function(df, id_cols, label) {
     out <- df %>%
@@ -289,6 +268,53 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
       arrange(across(all_of(id_cols)))
     if (anyDuplicated(out[id_cols])) {
       stop("ABCs ", label, ": duplicate index rows after pivot.")
+    }
+    if (anyNA(out[id_cols])) {
+      stop("ABCs ", label, ": NA in an index column after pivot.")
+    }
+    out
+  }
+
+  # Antibiotics, syndromes, emm types, serotypes and ALPH genes are dimensions,
+  # not measures - the same relationship `serotype` has to the pneumococcal file
+  # in this folder, which carries 88 serotypes in one column rather than 88
+  # columns. So they get a column of their own and the measures stay wide, which
+  # is what the standard format asks for. Encoding them in column names instead
+  # made gas_emm 48 columns wide, and the bundle's build.R then had to parse the
+  # types back out of the names.
+  #
+  #   `entity`      name of the dimension column
+  #   `companions`  per-row columns keyed on `ids` alone, such as the isolate
+  #                 count a whole year's percentages share. Repeated across the
+  #                 dimension, as `pop` is across serotypes in the pneumococcal
+  #                 file.
+  #
+  # The dimension grid is completed, so a level CDC did not publish in some year
+  # is present as a row with an NA value rather than absent. Nothing is filled.
+  entity_table <- function(df, id_cols, entity, label, companions = NULL) {
+    out <- df %>%
+      group_by(across(all_of(c(id_cols, entity, "measure")))) %>%
+      slice_max(value, n = 1, with_ties = FALSE) %>%
+      ungroup() %>%
+      tidyr::pivot_wider(names_from = measure, values_from = value)
+
+    combos <- dplyr::distinct(out[id_cols])
+    levels <- sort(unique(out[[entity]]))
+    grid <- combos[rep(seq_len(nrow(combos)), each = length(levels)), ,
+                   drop = FALSE]
+    grid[[entity]] <- rep(levels, nrow(combos))
+    out <- dplyr::left_join(grid, out, by = c(id_cols, entity))
+
+    if (!is.null(companions)) {
+      out <- dplyr::left_join(out, companions, by = id_cols)
+    }
+    out <- out %>% arrange(across(all_of(c(id_cols, entity))))
+
+    if (anyDuplicated(out[c(id_cols, entity)])) {
+      stop("ABCs ", label, ": duplicate index rows after reshape.")
+    }
+    if (anyNA(out[c(id_cols, entity)])) {
+      stop("ABCs ", label, ": NA in an index column after reshape.")
     }
     out
   }
@@ -413,8 +439,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     rates_onset, rates_onset_race
   ) %>%
     select(all_of(c(rate_ids, "measure", "value"))) %>%
-    pivot_check(rate_ids, "rates") %>%
-    add_not_reported_flags(rate_ids)
+    pivot_check(rate_ids, "rates")
 
   vroom::vroom_write(strep_rates, "standard/strep_rates.csv.gz", delim = ",")
 
@@ -470,8 +495,7 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
 
   strep_counts <- bind_rows(counts_all, counts_onset, counts_onset_total) %>%
     select(all_of(c(count_ids, "measure", "value"))) %>%
-    pivot_check(count_ids, "counts") %>%
-    add_not_reported_flags(count_ids)
+    pivot_check(count_ids, "counts")
 
   vroom::vroom_write(strep_counts, "standard/strep_counts.csv.gz", delim = ",")
 
@@ -499,17 +523,24 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     filter(!is.na(age)) %>%
     mutate(drug_raw = if_else(is_count, "Number of isolates", drug_raw))
 
-  strep_resistance <- bind_rows(res_gas, res_gbs) %>%
+  res_long <- bind_rows(res_gas, res_gbs) %>%
     mutate(
       drug     = trimws(sub("\\*+$", "", drug_raw)),
       is_count = tolower(drug) == "number of isolates",
-      measure  = if_else(is_count, "abcs_n_isolates",
-                         paste0("abcs_pct_resistant_", tolower(drug))),
       value    = if_else(is_count, value, as_pct(value))
-    ) %>%
-    select(all_of(c(res_ids, "measure", "value"))) %>%
-    pivot_check(res_ids, "resistance") %>%
-    add_not_reported_flags(res_ids)
+    )
+
+  # One isolate count per pathogen-year, shared by that year's drugs
+  res_counts <- res_long %>%
+    filter(is_count) %>%
+    select(all_of(res_ids), abcs_n_isolates = value) %>%
+    distinct()
+
+  strep_resistance <- res_long %>%
+    filter(!is_count) %>%
+    mutate(antibiotic = tolower(drug), measure = "abcs_pct_resistant") %>%
+    select(all_of(c(res_ids, "antibiotic", "measure", "value"))) %>%
+    entity_table(res_ids, "antibiotic", "resistance", res_counts)
 
   vroom::vroom_write(strep_resistance, "standard/strep_resistance.csv.gz",
                      delim = ",")
@@ -539,43 +570,58 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
     )
   }
 
+  syn_ids <- c(strep_ids, "age", "onset")
+
   gas_syndromes <- gas_syn_rows %>%
     mutate(
-      measure = paste0("abcs_gas_rate_syndrome_", GAS_SYNDROME[viewby_a]),
+      syndrome = GAS_SYNDROME[viewby_a], measure = "abcs_gas_rate_syndrome",
       age = "Total", onset = "Total"
     ) %>%
-    select(all_of(c(strep_ids, "age", "onset", "measure", "value"))) %>%
-    pivot_check(c(strep_ids, "age", "onset"), "gas syndromes") %>%
-    add_not_reported_flags(c(strep_ids, "age", "onset"))
+    select(all_of(c(syn_ids, "syndrome", "measure", "value"))) %>%
+    entity_table(syn_ids, "syndrome", "gas syndromes")
 
   vroom::vroom_write(gas_syndromes, "standard/gas_syndromes.csv.gz", delim = ",")
 
   # Shared builder for the Group B topics that are keyed on a population group
   # in `viewby` and a level in `viewby2`.
-  build_gbs_group_table <- function(topic_name, prefix, label) {
-    rows <- gbs %>% filter(topic_l == topic_name, viewby_a %in% names(GROUP_AGE))
+  build_gbs_group_table <- function(topic_name, entity, measure_name, label) {
+    rows <- gbs %>%
+      filter(topic_l == topic_name, viewby_a %in% names(GROUP_AGE))
     if (nrow(rows) == 0) {
       stop("ABCs Group B: no rows matched topic '", topic_name,
            "' - the source layout changed.")
     }
     ids <- c(strep_ids, "age", "onset")
-    rows %>%
+    rows <- rows %>%
       mutate(
         age      = GROUP_AGE[viewby_a],
         onset    = GROUP_ONSET[viewby_a],
         is_count = viewby2_a == "Number of isolates",
-        level    = gsub("^_|_$", "", gsub("[^a-z0-9]+", "_", tolower(viewby2_a))),
-        measure  = if_else(is_count, "abcs_gbs_n_isolates",
-                           paste0("abcs_gbs_pct_", prefix, "_", level)),
         value    = if_else(is_count, value, as_pct(value))
-      ) %>%
-      select(all_of(c(ids, "measure", "value"))) %>%
-      pivot_check(ids, label)
+      )
+
+    counts <- rows %>%
+      filter(is_count) %>%
+      select(all_of(ids), abcs_gbs_n_isolates = value) %>%
+      distinct()
+    if (nrow(counts) == 0) counts <- NULL
+
+    levels <- rows %>%
+      filter(!is_count) %>%
+      mutate(
+        .level  = gsub("^_|_$", "", gsub("[^a-z0-9]+", "_", tolower(viewby2_a))),
+        measure = measure_name
+      )
+    levels[[entity]] <- levels$.level
+
+    levels %>%
+      select(all_of(c(ids, entity, "measure", "value"))) %>%
+      entity_table(ids, entity, label, counts)
   }
 
   gbs_syndromes <- build_gbs_group_table("syndromes", "syndrome",
-                                         "gbs syndromes") %>%
-    add_not_reported_flags(c(strep_ids, "age", "onset"))
+                                         "abcs_gbs_pct_syndrome",
+                                         "gbs syndromes")
 
   vroom::vroom_write(gbs_syndromes, "standard/gbs_syndromes.csv.gz", delim = ",")
 
@@ -584,13 +630,13 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
   #    and ALPH surface-gene types.
   # ---------------------------------------------------------------------------
   gbs_serotypes <- build_gbs_group_table("serotypes", "serotype",
-                                         "gbs serotypes") %>%
-    add_not_reported_flags(c(strep_ids, "age", "onset"))
+                                         "abcs_gbs_pct_serotype",
+                                         "gbs serotypes")
 
   vroom::vroom_write(gbs_serotypes, "standard/gbs_serotypes.csv.gz", delim = ",")
 
-  gbs_alph <- build_gbs_group_table("alph", "alph", "gbs alph") %>%
-    add_not_reported_flags(c(strep_ids, "age", "onset"))
+  gbs_alph <- build_gbs_group_table("alph", "alph_type",
+                                    "abcs_gbs_pct_alph", "gbs alph")
 
   vroom::vroom_write(gbs_alph, "standard/gbs_alph.csv.gz", delim = ",")
 
@@ -611,27 +657,32 @@ if (!identical(process$raw_state_gas, raw_state_gas) ||
          "the source layout changed again.")
   }
 
+  emm_ids <- c(strep_ids, "age", "onset")
+
+  # The typed total is the sum of the per-type counts, shared by every type in
+  # the year, so it rides alongside as a companion rather than as a type of
+  # its own
+  emm_totals <- emm_rows %>%
+    group_by(geography, time, pathogen) %>%
+    summarise(abcs_gas_emm_n_isolates_total = sum(n_type, na.rm = TRUE),
+              .groups = "drop") %>%
+    mutate(age = "Total", onset = "Total")
+
   emm_long <- bind_rows(
     emm_rows %>% transmute(
-      geography, time, pathogen,
-      measure = paste0("abcs_gas_emm_pct_", emm_clean), value = as_pct(value)
+      geography, time, pathogen, emm_type = emm_clean,
+      measure = "abcs_gas_emm_pct", value = as_pct(value)
     ),
     emm_rows %>% filter(!is.na(n_type)) %>% transmute(
-      geography, time, pathogen,
-      measure = paste0("abcs_gas_emm_n_", emm_clean), value = n_type
-    ),
-    emm_rows %>% group_by(geography, time, pathogen) %>%
-      summarise(value = sum(n_type, na.rm = TRUE), .groups = "drop") %>%
-      mutate(measure = "abcs_gas_emm_n_isolates_total")
+      geography, time, pathogen, emm_type = emm_clean,
+      measure = "abcs_gas_emm_n", value = n_type
+    )
   ) %>%
     mutate(age = "Total", onset = "Total")
 
-  emm_ids <- c(strep_ids, "age", "onset")
-
   gas_emm <- emm_long %>%
-    select(all_of(c(emm_ids, "measure", "value"))) %>%
-    pivot_check(emm_ids, "gas emm") %>%
-    add_not_reported_flags(emm_ids)
+    select(all_of(c(emm_ids, "emm_type", "measure", "value"))) %>%
+    entity_table(emm_ids, "emm_type", "gas emm", emm_totals)
 
   vroom::vroom_write(gas_emm, "standard/gas_emm.csv.gz", delim = ",")
 

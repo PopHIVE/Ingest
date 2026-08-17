@@ -8,12 +8,15 @@
 #   epic_resp_infections  quarterly_gas.csv.gz - Epic Cosmos strep throat
 #                         patients, by state and age
 #   nnds                  streptococcal toxic shock syndrome, weekly by state
+#                         (Epic and NNDSS are combined into gas_state.parquet)
 #
-# Three long parquets. All eight ABCs topics are stacked into one file with a
+# Two long parquets. All eight ABCs topics are stacked into one file with a
 # named column per stratification and "Total" wherever a row is not stratified
-# on that dimension. Epic and NNDSS stay separate because they differ in
-# geography grain (state vs national), time resolution (quarterly and weekly vs
-# annual), and measure.
+# on that dimension. Epic and NNDSS share the second: both are state + national
+# Group A series keyed on geography, date and one measure. ABCs stays apart
+# because it is national-only and annual and carries fourteen dimension and
+# companion columns neither of the others has - merging it would leave 62% of
+# the cells as padding.
 #
 # Shared columns: geography (state name or "United States"), geography_fips,
 # date (bundles use `date`; the standard files use `time`), year, measure,
@@ -92,12 +95,9 @@ read_standard <- function(path) {
     add_geography_names()
 }
 
-# A measure the source did not publish is NA there, paired with its own
-# `abcs_not_reported_flag_<measure>`. The flag is carried through rather than
-# re-derived, so `value_not_reported` here says what CDC published rather than
-# what survived the pipeline.
-flag_of <- function(m) sub("^abcs_", "abcs_not_reported_flag_", m)
-
+# A measure the source did not publish is NA there, and stays NA here. Nothing
+# is filled in, so a 0 in `value` is always a measured zero.
+#
 # The companion columns (`n_isolates`, `n_type`) are blank on most rows for two
 # unrelated reasons, and a bare NA cannot tell them apart: either the measure has
 # no such companion at all (a case rate has no isolate denominator), or CDC
@@ -125,140 +125,85 @@ status_of <- function(x) paste0(x, "_status")
 DIMS <- c("pathogen", "age", "sex", "race_ethnicity", "onset", "rate_denominator")
 ENTITIES <- c("syndrome", "antibiotic", "emm_type", "serotype", "alph_type")
 
-# Melt one standard file into the shared long schema.
-#   spec        regex -> measure name, and which entity column the matched
-#               suffix belongs in
+# Melt one standard file into the shared long schema. The standard files already
+# carry their dimensions as columns - `antibiotic`, `emm_type`, `serotype` and so
+# on - so this only stacks the measure columns and normalises their names.
+#
+#   measures    output measure level -> source column
 #   companions  output name -> source column, for columns carried alongside
-#               `value` instead of melted into their own rows. The two source
-#               files name the same isolate count differently
-#               (`abcs_n_isolates`, `abcs_gbs_n_isolates`), so normalising here
-#               keeps one `n_isolates` column across the stacks.
-stack_abcs <- function(path, spec, companions = character()) {
+#               `value` rather than melted. The files name the same isolate
+#               count three ways (`abcs_n_isolates`, `abcs_gbs_n_isolates`,
+#               `abcs_gas_emm_n_isolates_total`), so normalising here keeps one
+#               `n_isolates` column across the stacks.
+stack_abcs <- function(path, measures, companions = character()) {
   d <- read_standard(path)
-  flag_cols <- grep("^abcs_not_reported_flag_", names(d), value = TRUE)
   companions <- companions[companions %in% names(d)]
-  base_ids <- c("geography", "geography_fips", "time",
-                intersect(DIMS, names(d)))
-  meas_cols <- setdiff(names(d), c(base_ids, flag_cols, unname(companions)))
+  ids <- c("geography", "geography_fips", "time",
+           intersect(c(DIMS, ENTITIES), names(d)))
 
-  # Blank out the zero the source writes for a companion CDC never published,
-  # and record which of the two it was in the status column.
+  # Record why a companion is blank, which its own NA cannot say on its own.
   comp_cols <- character()
   for (nm in names(companions)) {
-    src <- companions[[nm]]
-    fl <- flag_of(src)
-    absent <- if (fl %in% names(d)) d[[fl]] == 1L else rep(FALSE, nrow(d))
-    d[[nm]] <- replace(as.numeric(d[[src]]), absent, NA_real_)
-    d[[status_of(nm)]] <- if_else(absent, NOT_REPORTED, REPORTED)
+    d[[nm]] <- as.numeric(d[[companions[[nm]]]])
+    d[[status_of(nm)]] <- if_else(is.na(d[[nm]]), NOT_REPORTED, REPORTED)
     comp_cols <- c(comp_cols, nm, status_of(nm))
   }
 
-  out <- list()
-  for (m in meas_cols) {
-    hit <- NULL
-    for (s in spec) {
-      if (grepl(s$pattern, m)) { hit <- s; break }
-    }
-    if (is.null(hit)) stop("bundle_strep: no measure spec matches ", m, " in ", path)
-    if (!(flag_of(m) %in% names(d))) {
-      stop("bundle_strep: ", m, " in ", path, " has no matching not-reported flag.")
-    }
-
-    piece <- d %>%
-      select(all_of(c(base_ids, comp_cols)), value = all_of(m),
-             value_not_reported = all_of(flag_of(m))) %>%
-      mutate(measure = hit$measure)
-    if (!is.na(hit$entity)) piece[[hit$entity]] <- sub(hit$pattern, "", m)
-    out[[length(out) + 1]] <- piece
+  missing <- setdiff(unname(measures), names(d))
+  if (length(missing)) {
+    stop("bundle_strep: ", path, " has no column ", paste(missing, collapse = ", "))
   }
 
-  bind_rows(out)
-}
-
-# emm needs the per-type isolate count paired with the per-type percent on the
-# same row, which a plain melt cannot do (the count lives in a sibling column).
-stack_emm <- function(path) {
-  d <- read_standard(path)
-  base_ids <- c("geography", "geography_fips", "time", intersect(DIMS, names(d)))
-  types <- sub("^abcs_gas_emm_pct_", "",
-               grep("^abcs_gas_emm_pct_", names(d), value = TRUE))
-
-  # A per-type count or typed total CDC never published is zero in the source;
-  # blank those back out, as with the other denominators
-  bind_rows(lapply(types, function(t) {
-    pct <- paste0("abcs_gas_emm_pct_", t)
-    n   <- paste0("abcs_gas_emm_n_", t)
-    tot <- "abcs_gas_emm_n_isolates_total"
-    piece <- d %>%
-      select(all_of(base_ids),
-             value = all_of(pct),
-             value_not_reported = all_of(flag_of(pct)),
-             n_type = all_of(n),
-             n_isolates = all_of(tot),
-             .n_type_flag = all_of(flag_of(n)),
-             .n_isolates_flag = all_of(flag_of(tot))) %>%
-      mutate(measure = "pct_emm_type", emm_type = t)
-    piece$n_type[piece$.n_type_flag == 1L] <- NA_real_
-    piece$n_isolates[piece$.n_isolates_flag == 1L] <- NA_real_
-    piece %>%
-      mutate(
-        n_type_status     = if_else(.n_type_flag == 1L, NOT_REPORTED, REPORTED),
-        n_isolates_status = if_else(.n_isolates_flag == 1L, NOT_REPORTED, REPORTED)
-      ) %>%
-      select(-c(.n_type_flag, .n_isolates_flag))
+  bind_rows(lapply(names(measures), function(m) {
+    d %>%
+      select(all_of(c(ids, comp_cols)), value = all_of(measures[[m]])) %>%
+      mutate(measure = m)
   }))
 }
 
 abcs_strep <- bind_rows(
   stack_abcs(
     "abcs/standard/strep_rates.csv.gz",
-    list(
-      list(pattern = "^abcs_rate_cases$",  measure = "rate_cases",  entity = NA),
-      list(pattern = "^abcs_rate_deaths$", measure = "rate_deaths", entity = NA)
-    )
+    c(rate_cases = "abcs_rate_cases", rate_deaths = "abcs_rate_deaths")
   ),
   stack_abcs(
     "abcs/standard/strep_counts.csv.gz",
-    list(
-      list(pattern = "^abcs_N_cases$",      measure = "n_cases",      entity = NA),
-      list(pattern = "^abcs_N_deaths$",     measure = "n_deaths",     entity = NA),
-      list(pattern = "^abcs_N_survivals$",  measure = "n_survivals",  entity = NA)
-    )
+    c(n_cases = "abcs_N_cases", n_deaths = "abcs_N_deaths",
+      n_survivals = "abcs_N_survivals")
   ),
   stack_abcs(
     "abcs/standard/strep_resistance.csv.gz",
-    list(list(pattern = "^abcs_pct_resistant_", measure = "pct_resistant",
-              entity = "antibiotic")),
+    c(pct_resistant = "abcs_pct_resistant"),
     companions = c(n_isolates = "abcs_n_isolates")
   ),
   stack_abcs(
     "abcs/standard/gas_syndromes.csv.gz",
-    list(list(pattern = "^abcs_gas_rate_syndrome_", measure = "rate_syndrome",
-              entity = "syndrome"))
+    c(rate_syndrome = "abcs_gas_rate_syndrome")
   ),
   stack_abcs(
     "abcs/standard/gbs_syndromes.csv.gz",
-    list(list(pattern = "^abcs_gbs_pct_syndrome_", measure = "pct_syndrome",
-              entity = "syndrome"))
+    c(pct_syndrome = "abcs_gbs_pct_syndrome")
   ),
   stack_abcs(
     "abcs/standard/gbs_serotypes.csv.gz",
-    list(list(pattern = "^abcs_gbs_pct_serotype_", measure = "pct_serotype",
-              entity = "serotype")),
+    c(pct_serotype = "abcs_gbs_pct_serotype"),
     companions = c(n_isolates = "abcs_gbs_n_isolates")
   ),
   stack_abcs(
     "abcs/standard/gbs_alph.csv.gz",
-    list(list(pattern = "^abcs_gbs_pct_alph_", measure = "pct_alph_type",
-              entity = "alph_type")),
+    c(pct_alph_type = "abcs_gbs_pct_alph"),
     companions = c(n_isolates = "abcs_gbs_n_isolates")
   ),
-  stack_emm("abcs/standard/gas_emm.csv.gz")
+  stack_abcs(
+    "abcs/standard/gas_emm.csv.gz",
+    c(pct_emm_type = "abcs_gas_emm_pct"),
+    companions = c(n_type = "abcs_gas_emm_n",
+                   n_isolates = "abcs_gas_emm_n_isolates_total")
+  )
 ) %>%
   rename(date = time) %>%
   mutate(
     year = as.integer(format(date, "%Y")),
-    value_not_reported = as.integer(value_not_reported),
     # "Total" fills any dimension a row is not stratified on, so every column is
     # populated and a consumer can filter on it without handling NA
     across(all_of(c(DIMS, ENTITIES)), ~ tidyr::replace_na(as.character(.x), "Total")),
@@ -269,7 +214,7 @@ abcs_strep <- bind_rows(
            ~ tidyr::replace_na(as.character(.x), NOT_APPLICABLE))
   ) %>%
   select(all_of(c("geography", "geography_fips", "date", "year", DIMS, ENTITIES,
-                  "measure", "value", "value_not_reported",
+                  "measure", "value",
                   "n_type", "n_type_status",
                   "n_isolates", "n_isolates_status"))) %>%
   arrange(across(all_of(c("geography", "date", DIMS, ENTITIES, "measure"))))
@@ -278,15 +223,13 @@ if (anyDuplicated(abcs_strep[c("geography", "date", DIMS, ENTITIES, "measure")])
   stop("bundle_strep: duplicate index rows in abcs_strep.")
 }
 
-# Every blank must be accounted for: `value` is NA exactly where CDC published
-# nothing, and each companion is populated exactly when its status says
-# "reported". Assert both, so a future change cannot introduce an unexplained
-# blank - or a fabricated zero.
-if (anyNA(abcs_strep$value_not_reported)) {
-  stop("bundle_strep: NA in value_not_reported.")
-}
-if (!identical(is.na(abcs_strep$value), abcs_strep$value_not_reported == 1L)) {
-  stop("bundle_strep: value disagrees with value_not_reported.")
+# `value` may be NA - that is how the file says CDC published nothing - but no
+# column a consumer filters on may be, and each companion must be populated
+# exactly when its status says "reported".
+index_cols <- c("geography", "geography_fips", "date", "year", DIMS, ENTITIES,
+                "measure")
+if (anyNA(abcs_strep[index_cols])) {
+  stop("bundle_strep: NA in an index, dimension or entity column.")
 }
 for (cc in COMPANIONS) {
   if (!identical(is.na(abcs_strep[[cc]]),
@@ -328,10 +271,9 @@ epic_gas <- vroom::vroom(
     date = time,
     year = as.integer(format(time, "%Y"))
   ) %>%
-  select(geography, geography_fips, date, year, age, measure, value, suppressed) %>%
-  arrange(geography, date, age, measure)
-
-write_dist(epic_gas, "epic_gas.parquet")
+  mutate(source = "Epic Cosmos", week = NA_integer_) %>%
+  select(geography, geography_fips, date, year, week, age,
+         source, measure, value, suppressed)
 
 # -----------------------------------------------------------------------------
 # 3. NNDSS streptococcal toxic shock syndrome
@@ -385,6 +327,26 @@ nnds_stss <- nnds_stss %>%
   pivot_longer(c(stss_cases_weekly, stss_cases_cumulative),
                names_to = "measure", values_to = "value") %>%
   filter(!is.na(value)) %>%
-  arrange(geography, date, measure)
+  # NNDSS publishes no age breakdown, so "Total" per the aggregate convention;
+  # `suppressed` is an Epic mechanism and does not apply
+  mutate(source = "NNDSS", age = "Total", suppressed = NA_real_) %>%
+  select(geography, geography_fips, date, year, week, age,
+         source, measure, value, suppressed)
 
-write_dist(nnds_stss, "nnds_stss.parquet")
+# -----------------------------------------------------------------------------
+# 4. State-level Group A surveillance: Epic and NNDSS in one file
+#    Both are state + national Group A series keyed on geography, date and a
+#    single measure, so they share a schema. `source` separates them, `week`
+#    is empty for the quarterly Epic rows and `age` is "Total" for NNDSS.
+#    ABCs stays separate: it is national-only and annual, and carries fourteen
+#    dimension and companion columns neither of these has.
+# -----------------------------------------------------------------------------
+gas_state <- bind_rows(epic_gas, nnds_stss) %>%
+  arrange(geography, date, source, age, measure)
+
+if (anyNA(gas_state[c("geography", "geography_fips", "date", "year",
+                      "age", "source", "measure")])) {
+  stop("bundle_strep: NA in an index column of gas_state.")
+}
+
+write_dist(gas_state, "gas_state.parquet")
