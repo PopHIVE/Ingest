@@ -35,6 +35,30 @@
     "sources": [{ "id": "epic_cosmos" }]
   },
 
+  "epic_n_ed_vomiting": {
+    "id": "epic_n_ed_vomiting",
+    "short_name": "Nausea and Vomiting ED Encounters (Weekly)",
+    "long_name": "Nausea and Vomiting Emergency Room (ER) Encounters (Weekly)",
+    "short_description": "Number of ED encounters with nausea and vomiting diagnoses, weekly.",
+    "long_description": "Number of emergency department encounters with a nausea and vomiting ICD-10-CM diagnosis (R11.*), weekly. Comes from the same Epic Cosmos ED crosstab as epic_n_ed_diarrhea and shares its denominator, epic_n_ed_encounters_weekly. The diarrhea (A00-A09, R19.7) and nausea/vomiting (R11.*) buckets are not mutually exclusive -- an encounter carrying both diagnoses is counted in both -- so the two measures must not be summed. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+    "measure_type": "Count",
+    "unit": "encounters",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_pct_ed_vomiting": {
+    "id": "epic_pct_ed_vomiting",
+    "short_name": "Nausea and Vomiting ED Encounters (%, Weekly)",
+    "long_name": "Nausea and Vomiting Emergency Room (ER) Encounters (%, Weekly)",
+    "short_description": "Percentage of ED encounters attributable to nausea and vomiting, weekly.",
+    "long_description": "Percentage of emergency department encounters attributable to a nausea and vomiting ICD-10-CM diagnosis (R11.*), calculated as epic_n_ed_vomiting divided by epic_n_ed_encounters_weekly for the same geography, age, and week. Where the denominator was itself suppressed (epic_suppressed_flag_ed_encounters_weekly == 1) it was imputed as 5, so the ratio is 100% by construction rather than by observation; this affects a small number of low-volume state/age/week cells and applies identically to epic_pct_ed_diarrhea. Because the diarrhea and nausea/vomiting buckets overlap, this percentage must not be added to epic_pct_ed_diarrhea.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
   "epic_n_ed_encounters_weekly": {
     "id": "epic_n_ed_encounters_weekly",
     "short_name": "All-Cause ED Encounters (Weekly)",
@@ -53,6 +77,18 @@
     "long_name": "Suppression flag: fewer than 10 all-cause diarrhea ED encounters in the strata (weekly)",
     "short_description": "Binary indicator: 1 if the weekly diarrhea ED encounter count was suppressed, 0 otherwise.",
     "long_description": "Binary indicator: 1 if fewer than 10 all-cause diarrhea emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_ed_diarrhea) is imputed as 5.",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_cosmos" }]
+  },
+
+  "epic_suppressed_flag_ed_vomiting": {
+    "id": "epic_suppressed_flag_ed_vomiting",
+    "short_name": "Nausea and Vomiting Count Suppressed? (Weekly)",
+    "long_name": "Suppression flag: fewer than 10 nausea and vomiting ED encounters in the strata (weekly)",
+    "short_description": "Binary indicator: 1 if the weekly nausea and vomiting ED encounter count was suppressed, 0 otherwise.",
+    "long_description": "Binary indicator: 1 if fewer than 10 nausea and vomiting emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_ed_vomiting) is imputed as 5 and epic_pct_ed_vomiting is computed from that imputed numerator.",
     "measure_type": "binary",
     "unit": "",
     "time_resolution": "Week",
