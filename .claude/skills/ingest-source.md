@@ -304,7 +304,30 @@ After writing all files:
    `name`, and `scripts: ["ingest.R"]`. If `process.json` is missing, the source was not created
    with `dcf::dcf_add_source()` — go back to Phase 1 and do so; do not write the file yourself.
 2. **If raw data is available**: Offer to run the ingest.R script to test
-3. **Report what was created**:
+3. **Run the visual QA report for each standardized output file**: For every `standard/data*.csv.gz` file the ingest produced (e.g. `standard/data.csv.gz`, plus `standard/data_state.csv.gz` / `standard/data_county.csv.gz` if split), render `scripts/validate_dataset.Rmd` against it and open the result as a pop-up browser window — do **not** let the report be written into the repo. Render to the OS temp directory and open it with `browseURL()` instead of the default in-place output:
+
+   ```r
+   standard_files <- list.files(
+     "data/<source_name>/standard",
+     pattern = "\\.csv\\.gz$", full.names = TRUE
+   )
+
+   for (f in standard_files) {
+     rel_path <- sub("^.*(data/.*)$", "\\1", f)  # path relative to project root
+     report <- rmarkdown::render(
+       "scripts/validate_dataset.Rmd",
+       output_file = tempfile("validate_", fileext = ".html"),
+       output_dir  = tempdir(),
+       params  = list(data_file = rel_path),
+       envir   = new.env(),
+       quiet   = TRUE
+     )
+     utils::browseURL(report)
+   }
+   ```
+
+   Run this from the project root (the Rmd's `project_root: ".."` param resolves `data_file` relative to it). Because `output_file`/`output_dir` point at `tempdir()`, nothing lands in `scripts/` or `data/<source_name>/`; `rmarkdown::render()`'s default `clean = TRUE` also removes any intermediate knitting artifacts, and `browseURL()` pops the finished HTML report open in the user's default browser as its own window/tab. Requires pandoc to be set up per the "Pandoc requirement" section of CLAUDE.md — if rendering fails with a pandoc-not-found error, point the user there. Do this for each standardized file even if `git_compare` finds no prior version (a brand-new source has no history yet, so the report just skips that section).
+4. **Report what was created**:
    - Source directory path
    - List of standardized output columns (prefix + name)
    - Geographic levels covered

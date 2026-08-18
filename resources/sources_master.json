@@ -1,13 +1,4 @@
 {
-  "nrevss": {
-    "name": "National Respiratory and Enteric Virus Surveillance System (NREVSS)",
-    "url": "https://data.cdc.gov/resource/3cxc-4k8q",
-    "organization": "Centers for Disease Control and Prevention",
-    "organization_url": "https://www.cdc.gov/surveillance/nrevss/",
-    "description": "The National Respiratory and Enteric Virus Surveillance System (NREVSS) is a voluntary, laboratory-based surveillance system that monitors temporal and geographic trends for respiratory syncytial virus (RSV), human parainfluenza viruses, respiratory adenoviruses, human metapneumovirus, human coronaviruses, and rotavirus circulation in the United States. Participating laboratories report weekly to CDC on the number of tests performed and the number positive for each virus. NREVSS data are used to characterize seasonal patterns of these viruses and to help public health officials anticipate and prepare for outbreaks. Data are aggregated at the HHS regional and national levels. The system has been operational since 1987 and includes approximately 300 participating laboratories across the United States.",
-    "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
-    "data_source": "NREVSS"
-  },
   "abcs": {
     "name": "Active Bacterial Core surveillance (ABCs)",
     "url": "https://www.cdc.gov/abcs/index.html",
@@ -80,6 +71,18 @@
     "date_accessed": 2026,
     "data_source": ["beam", "bundle_enteric_diseases"]
   },
+  "bls_laus": {
+    "name": "Local Area Unemployment Statistics (LAUS)",
+    "url": "https://www.bls.gov/lau/",
+    "organization": "U.S. Bureau of Labor Statistics",
+    "organization_url": "https://www.bls.gov",
+    "location": "BLS API v2 — api.bls.gov/publicAPI/v2/timeseries/data/",
+    "location_url": "https://www.bls.gov/developers/api_signature_v2.htm",
+    "description": "LAUS produces monthly and annual employment, unemployment, and labor force estimates for states, counties, metropolitan areas, and cities by place of residence. County-level estimates are model-based, combining Current Population Survey, Current Employment Statistics, and Unemployment Insurance data, and are not seasonally adjusted. Used here as the direct source for county annual-average unemployment rate.",
+    "restrictions": "Public domain. U.S. Bureau of Labor Statistics data are generally not subject to copyright restrictions. A registered API key (free, instant signup at https://data.bls.gov/registrationEngine/) is required to request annual-average data and to stay within reasonable daily query limits for a full county-level pull.",
+    "date_accessed": 2026,
+    "data_source": "bls_laus"
+  },
   "brfss": {
     "name": "Behavioral Risk Factor Surveillance System (BRFSS)",
     "url": "https://www.cdc.gov/brfss/index.html",
@@ -119,7 +122,7 @@
     "organization_url": "https://www.census.gov",
     "location": "2020 Census Urban Area to County Allocation File (XLSX)",
     "location_url": "https://www2.census.gov/geo/docs/reference/ua/2020_UA_COUNTY.xlsx",
-    "description": "The 2020 Census Urban Area to County Allocation File maps Census-defined urban areas (urbanized areas with population <U+2265> 50,000 and urban clusters with population 2,500<U+2013>49,999) to counties. Each row represents a county-urban area intersection and includes the share of county population, land area, and housing units within that urban area. Summing across all urban areas for a county yields total percent urban. Counties not appearing in the file have no urban area and are considered 100% rural. Urban area boundaries are based on the 2020 decennial Census and reflect the updated delineation methodology that increased the minimum population threshold for urbanized areas from 50,000 to 50,000 and revised cluster definitions.",
+    "description": "The 2020 Census Urban Area to County Allocation File maps Census-defined urban areas (urbanized areas with population ≥ 50,000 and urban clusters with population 2,500–49,999) to counties. Each row represents a county-urban area intersection and includes the share of county population, land area, and housing units within that urban area. Summing across all urban areas for a county yields total percent urban. Counties not appearing in the file have no urban area and are considered 100% rural. Urban area boundaries are based on the 2020 decennial Census and reflect the updated delineation methodology that increased the minimum population threshold for urbanized areas from 50,000 to 50,000 and revised cluster definitions.",
     "restrictions": "Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.",
     "date_accessed": 2026,
     "data_source": "census"
@@ -129,12 +132,60 @@
     "url": "https://www.census.gov/programs-surveys/acs/data.html",
     "organization": "U.S. Census Bureau",
     "organization_url": "https://www.census.gov",
-    "location": "Census API <U+2014> ACS 5-Year Detailed Tables and Subject Tables",
+    "location": "Census API — ACS 5-Year Detailed Tables and Subject Tables",
     "location_url": "https://api.census.gov/data.html",
     "description": "Extraction and formatting provided by Metopio, The American Community Survey (ACS) is an ongoing survey conducted by the U.S. Census Bureau that provides detailed demographic, social, economic, and housing data for communities across the United States. The 5-year estimates pool data over a 60-month period, providing greater statistical reliability for small geographic areas (including ZIP Code Tabulation Areas) at the cost of timeliness. Variables cover a broad range of social determinants of health including poverty, housing, education, employment, insurance coverage, and racial/ethnic composition. Data are retrieved via the Census Bureau's public API using the censusapi R package.",
-    "restrictions": "Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.",
+    "restrictions": "This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau. Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.",
     "date_accessed": 2026,
     "data_source": ["census", "bundle_maternal_health"]
+  },
+  "pep_charv": {
+    "name": "Population Estimates Program (PEP): Annual Population Estimates by Age, Sex, Race, and Hispanic Origin",
+    "url": "https://www.census.gov/programs-surveys/popest.html",
+    "organization": "U.S. Census Bureau",
+    "organization_url": "https://www.census.gov",
+    "location": "Census API — pep/charv",
+    "location_url": "https://api.census.gov/data/2023/pep/charv.html",
+    "description": "The Population Estimates Program (PEP) produces annual postcensal estimates of the resident population for the nation, states, and counties by age, sex, race, and Hispanic origin, benchmarked to the most recent decennial census and updated using birth, death, and migration data. Used here as the Census Bureau's own source for county population totals and demographic composition, rather than pulling those figures from a downstream redistribution.",
+    "restrictions": "This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau. Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.",
+    "date_accessed": 2026,
+    "data_source": "census"
+  },
+  "saipe": {
+    "name": "Small Area Income and Poverty Estimates (SAIPE)",
+    "url": "https://www.census.gov/programs-surveys/saipe.html",
+    "organization": "U.S. Census Bureau",
+    "organization_url": "https://www.census.gov",
+    "location": "Census API — timeseries/poverty/saipe",
+    "location_url": "https://api.census.gov/data/timeseries/poverty/saipe.html",
+    "description": "SAIPE provides annual, model-based estimates of income and poverty for states, counties, and school districts, combining American Community Survey data with administrative records (tax, SNAP, and population data) to improve precision for small geographies. Used here as the direct source for county child poverty rate and median household income.",
+    "restrictions": "This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau. Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.",
+    "date_accessed": 2026,
+    "data_source": "census"
+  },
+  "oqm_2020": {
+    "name": "2020 Census Operational Quality Metrics",
+    "url": "https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/process/data-quality.html",
+    "organization": "U.S. Census Bureau",
+    "organization_url": "https://www.census.gov",
+    "location": "Release 4 county-level file (October 2022)",
+    "location_url": "https://www2.census.gov/programs-surveys/decennial/2020/data/operational-quality-metrics/census-operational-quality-metrics-release_4.xlsx",
+    "description": "The Census Bureau's Operational Quality Metrics describe how 2020 Census addresses were counted, including self-response rates, online response share, and nonresponse followup resolution, using final processed census data. This is a one-time release tied to the 2020 Census; the next comparable release will follow the 2030 Census.",
+    "restrictions": "Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.",
+    "date_accessed": 2026,
+    "data_source": "census"
+  },
+  "sahie": {
+    "name": "Small Area Health Insurance Estimates (SAHIE)",
+    "url": "https://www.census.gov/programs-surveys/sahie.html",
+    "organization": "U.S. Census Bureau",
+    "organization_url": "https://www.census.gov",
+    "location": "Census API — timeseries/healthins/sahie",
+    "location_url": "https://api.census.gov/data/timeseries/healthins/sahie.html",
+    "description": "SAHIE provides annual, model-based estimates of health insurance coverage for counties and states by age, sex, race/ethnicity, and income, combining ACS data with administrative health insurance program records to improve precision for small geographies. Used here as the direct source for county uninsured rates.",
+    "restrictions": "This product uses the Census Bureau Data API but is not endorsed or certified by the Census Bureau. Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.",
+    "date_accessed": 2026,
+    "data_source": "census"
   },
   "cms_mmd": {
     "name": "Mapping Medicare Disparities by Population Tool",
@@ -230,6 +281,18 @@
     "restrictions": "Data can be reused with attribution of data from the Google Health Trends API, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).",
     "data_source": "gtrends"
   },
+  "hud_chas": {
+    "name": "Comprehensive Housing Affordability Strategy (CHAS) data",
+    "url": "https://www.huduser.gov/portal/datasets/cp.html",
+    "organization": "U.S. Department of Housing and Urban Development",
+    "organization_url": "https://www.huduser.gov",
+    "location": "CHAS county-level (sumlevel 050) CSV download",
+    "location_url": "https://www.huduser.gov/portal/datasets/cp.html",
+    "description": "CHAS data is a custom tabulation of American Community Survey data produced for HUD, providing detailed cross-tabulations of housing problems (cost burden, overcrowding, and facilities adequacy) by income, tenure, and race, at multiple geographic levels including county. Used here as the direct source for the county-level severe housing problems rate.",
+    "restrictions": "Public domain. HUD data are generally not subject to copyright restrictions.",
+    "date_accessed": 2026,
+    "data_source": "hud_chas"
+  },
   "kinsa": {
     "name": "Kinsa Insights API",
     "url": "https://apiv2.kinsainsights.com/api/v1/docs",
@@ -276,9 +339,9 @@
     "url": "https://data.medicaid.gov/datasets?theme%5B0%5D=Quality",
     "organization": "Centers for Medicare & Medicaid Services (CMS)",
     "organization_url": "https://www.medicaid.gov",
-    "location": "Medicaid.gov Open Data <U+2013> Quality Measures datasets (2014<U+2013>2023)",
+    "location": "Medicaid.gov Open Data – Quality Measures datasets (2014–2023)",
     "location_url": "https://data.medicaid.gov/datasets?theme%5B0%5D=Quality",
-    "description": "Annual state-level performance data on the Medicaid and CHIP Adult Core Set and Child Core Set quality measures, as voluntarily reported by states to CMS and analyzed by Mathematica via the Quality Measure Reporting (QMR) system. Measures span behavioral health (e.g., follow-up after ED visits for mental illness, substance use disorder treatment), primary and preventive care (e.g., well-child visits, immunizations), maternal and perinatal health (e.g., prenatal and postpartum care, low birthweight), dental health, care of chronic conditions (e.g., diabetes, asthma, hypertension), and long-term services and supports. Each annual dataset includes state rates and national 25th and 75th percentile benchmarks. Data cover federal fiscal years 2014<U+2013>2023. Reporting is voluntary; not all states report all measures each year. The wide-format standard file contains one row per state-year-payer-domain combination, with each measure-statistic combination as a separate column following the naming convention medicaid_{measure_abbr}_{population}_{sub_metric}_{stat} where population is 'ch' (child) or 'ad' (adult), sub_metric captures time windows or sub-components, and stat is 'rate', 'pct_25', or 'pct_75'.",
+    "description": "Annual state-level performance data on the Medicaid and CHIP Adult Core Set and Child Core Set quality measures, as voluntarily reported by states to CMS and analyzed by Mathematica via the Quality Measure Reporting (QMR) system. Measures span behavioral health (e.g., follow-up after ED visits for mental illness, substance use disorder treatment), primary and preventive care (e.g., well-child visits, immunizations), maternal and perinatal health (e.g., prenatal and postpartum care, low birthweight), dental health, care of chronic conditions (e.g., diabetes, asthma, hypertension), and long-term services and supports. Each annual dataset includes state rates and national 25th and 75th percentile benchmarks. Data cover federal fiscal years 2014–2023. Reporting is voluntary; not all states report all measures each year. The wide-format standard file contains one row per state-year-payer-domain combination, with each measure-statistic combination as a separate column following the naming convention medicaid_{measure_abbr}_{population}_{sub_metric}_{stat} where population is 'ch' (child) or 'ad' (adult), sub_metric captures time windows or sub-components, and stat is 'rate', 'pct_25', or 'pct_75'.",
     "restrictions": "Public domain. CMS/Medicaid.gov data is generally not subject to copyright restrictions.",
     "date_accessed": 2025,
     "data_source": ["medicaid_quality", "bundle_maternal_health", "bundle_youth_wellbeing"]
@@ -352,7 +415,7 @@
     "date_accessed": 2025,
     "organization": "National Center for Health Statistics (NCHS)",
     "organization_url": "https://www.cdc.gov/nchs/",
-    "description": "The National Center for Health Statistics (NCHS) houses the the Vital Statistics Rapid Release (VSRR) program. The program reports monthly deaths from drug overdose at the state level and quarterly deaths from drug overdose at the county level, as well as quarterly age-adjusted mortality rates for 21 selected causes of death at the state level.  Rates are expressed as per 100,000 people. Counts of 1<U+2013>9 deaths are suppressed to protect privacy and imputed as 5; the suppressed_flag column identifies these records. Data from the VSSR program and are provisional, meaning they are subject to revision as more death certificates are received and processed. New York City and New York State are combined.",
+    "description": "The National Center for Health Statistics (NCHS) houses the the Vital Statistics Rapid Release (VSRR) program. The program reports monthly deaths from drug overdose at the state level and quarterly deaths from drug overdose at the county level, as well as quarterly age-adjusted mortality rates for 21 selected causes of death at the state level.  Rates are expressed as per 100,000 people. Counts of 1–9 deaths are suppressed to protect privacy and imputed as 5; the suppressed_flag column identifies these records. Data from the VSSR program and are provisional, meaning they are subject to revision as more death certificates are received and processed. New York City and New York State are combined.",
     "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions.",
     "data_source": "nchs_mortality"
   },
@@ -362,7 +425,7 @@
     "date_accessed": 2025,
     "organization": "National Center for Health Statistics (NCHS)",
     "organization_url": "https://www.cdc.gov/nchs/",
-    "description": "Rates are expressed as per 100,000 people. Counts of 1<U+2013>9 deaths are suppressed to protect privacy and imputed as 5; the suppressed_flag column identifies these records.",
+    "description": "Rates are expressed as per 100,000 people. Counts of 1–9 deaths are suppressed to protect privacy and imputed as 5; the suppressed_flag column identifies these records.",
     "restrictions": "Public domain. CDC/NCHS data is generally not subject to copyright restrictions.",
     "data_source": "nchs_mortality"
   },
@@ -393,7 +456,7 @@
     "url": "https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/",
     "organization": "National Highway Traffic Safety Administration (NHTSA)",
     "organization_url": "https://www.nhtsa.gov/",
-    "location": "NHTSA File Downloads <U+2014> FARS National CSV archives",
+    "location": "NHTSA File Downloads — FARS National CSV archives",
     "location_url": "https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/",
     "description": "FARS is a nationwide census providing NHTSA, Congress, and the American public with yearly data on fatal injuries suffered in motor vehicle traffic crashes. FARS contains data on all crashes in the United States involving a fatality in a motor vehicle traffic crash on a public road. A fatal crash is one in which a motor vehicle is involved and at least one person dies within 30 days of the crash. Data are collected from police crash reports, state vehicle registration files, state driver licensing files, state highway department data, vital statistics, and other sources. FARS has been operational since 1975 and covers all 50 states, the District of Columbia, and Puerto Rico (national files cover the 50 states and DC).",
     "restrictions": "Public domain. NHTSA data is generally not subject to copyright restrictions.",
@@ -425,10 +488,19 @@
     "organization_url": "https://www.wpc.ncep.noaa.gov/",
     "location": "HeatRisk GeoTIFF Archive and 7-Day Forecast",
     "location_url": "https://www.wpc.ncep.noaa.gov/heatrisk/data.html",
-    "description": "The NOAA Weather Prediction Center HeatRisk product provides a daily, gridded (2.5 km) assessment of heat risk across the contiguous United States for the current day and 7-day forecast period. Risk is classified on a 0<U+2013>4 scale based on the combination of heat intensity and duration relative to local historical thresholds, with consideration for overnight low temperatures and heat index. The archive provides daily GeoTIFF rasters back to August 1, 2024. County- and state-level summaries in this dataset are computed as the mean pixel value within each geographic boundary using area-weighted zonal statistics.",
+    "description": "The NOAA Weather Prediction Center HeatRisk product provides a daily, gridded (2.5 km) assessment of heat risk across the contiguous United States for the current day and 7-day forecast period. Risk is classified on a 0–4 scale based on the combination of heat intensity and duration relative to local historical thresholds, with consideration for overnight low temperatures and heat index. The archive provides daily GeoTIFF rasters back to August 1, 2024. County- and state-level summaries in this dataset are computed as the mean pixel value within each geographic boundary using area-weighted zonal statistics.",
     "restrictions": "Public domain. NOAA data is generally not subject to copyright restrictions.",
     "date_accessed": 2026,
     "data_source": ["noaa_heat_risk", "bundle_youth_wellbeing"]
+  },
+  "nrevss": {
+    "name": "National Respiratory and Enteric Virus Surveillance System (NREVSS)",
+    "url": "https://data.cdc.gov/resource/3cxc-4k8q",
+    "organization": "Centers for Disease Control and Prevention",
+    "organization_url": "https://www.cdc.gov/surveillance/nrevss/",
+    "description": "The National Respiratory and Enteric Virus Surveillance System (NREVSS) is a voluntary, laboratory-based surveillance system that monitors temporal and geographic trends for respiratory syncytial virus (RSV), human parainfluenza viruses, respiratory adenoviruses, human metapneumovirus, human coronaviruses, and rotavirus circulation in the United States. Participating laboratories report weekly to CDC on the number of tests performed and the number positive for each virus. NREVSS data are used to characterize seasonal patterns of these viruses and to help public health officials anticipate and prepare for outbreaks. Data are aggregated at the HHS regional and national levels. The system has been operational since 1987 and includes approximately 300 participating laboratories across the United States.",
+    "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+    "data_source": "NREVSS"
   },
   "nssp": {
     "name": "National Syndromic Surveillance Program (NSSP)",
@@ -479,6 +551,18 @@
     "description": "SchoolVaxView monitors vaccination coverage among U.S. school-aged children. Data are collected annually by states, territories, and select local jurisdictions through school vaccination assessments, which review student vaccination records at kindergarten entry. These data are made available by the CDC.",
     "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
     "data_source": ["schoolvaxview", "bundle_youth_wellbeing"]
+  },
+  "usda_fea": {
+    "name": "Food Environment Atlas",
+    "url": "https://www.ers.usda.gov/data-products/food-environment-atlas/",
+    "organization": "U.S. Department of Agriculture, Economic Research Service",
+    "organization_url": "https://www.ers.usda.gov",
+    "location": "Food Environment Atlas data download",
+    "location_url": "https://www.ers.usda.gov/data-products/food-environment-atlas/data-access-and-documentation-downloads",
+    "description": "The Food Environment Atlas assembles county-level statistics on food environment indicators, including store/restaurant availability, food and nutrition assistance programs, food insecurity, and food access. Its ACCESS sheet includes USDA's own county-level aggregation of the tract-level Food Access Research Atlas, including the percent of the population that is low-income and has limited access to a grocery store. Used here as the direct source for county-level limited healthy food access.",
+    "restrictions": "Public domain. USDA data are generally not subject to copyright restrictions.",
+    "date_accessed": 2026,
+    "data_source": "usda_food_access"
   },
   "fattah_exemptions": {
     "name": "Medical Exemptions From Childhood Vaccination in the US (Kiang et al. 2025)",
