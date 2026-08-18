@@ -11,7 +11,8 @@ process <- dcf::dcf_process_record()
 base_url <- "https://raw.githubusercontent.com/PopHIVE/hud-chas/main"
 
 standard_files <- c(
-  "data_county.csv.gz"
+  "data_county.csv.gz",
+  "data_state.csv.gz"
 )
 
 current_hashes <- list()
