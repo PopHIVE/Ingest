@@ -28,10 +28,25 @@
       "Bash(curl -s \"https://app.sigmacomputing.com/1-2JVo44RJB1WGjgoCL44RhD/tag/prod\")",
       "Bash(curl -s \"https://app.sigmacomputing.com/static/js/index.CkWRZN0h.js\")",
       "WebFetch(domain:help.sigmacomputing.com)",
-      "Bash(curl -s \"https://api.sigmacomputing.com/v2/workbooks?search=crisis\" -H \"Accept: application/json\")"
+      "Bash(curl -s \"https://api.sigmacomputing.com/v2/workbooks?search=crisis\" -H \"Accept: application/json\")",
+      "PowerShell(Rscript -e \"cat\\('R version:', R.version.string, '\\\\n'\\); cat\\('pkgType:', getOption\\('pkgType'\\), '\\\\n'\\); cat\\('gcc:', Sys.which\\('gcc'\\), '\\\\n'\\); cat\\('make:', Sys.which\\('make'\\), '\\\\n'\\)\")",
+      "PowerShell($rscript = Get-ChildItem \"C:\\\\Program Files\\\\R\" -Filter Rscript.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName; Write-Output $rscript; & $rscript -e \"cat\\('R version:', R.version.string, '\\\\n'\\); cat\\('pkgType:', getOption\\('pkgType'\\), '\\\\n'\\); cat\\('gcc:', Sys.which\\('gcc'\\), '\\\\n'\\); cat\\('make:', Sys.which\\('make'\\), '\\\\n'\\)\")",
+      "PowerShell($rscript44 = \"C:\\\\Program Files\\\\R\\\\R-4.4.1\\\\bin\\\\Rscript.exe\"; Test-Path $rscript44; & $rscript44 -e \"cat\\('R version:', R.version.string, '\\\\n'\\); cat\\('pkgType:', getOption\\('pkgType'\\), '\\\\n'\\); cat\\('gcc:', Sys.which\\('gcc'\\), '\\\\n'\\); cat\\('make:', Sys.which\\('make'\\), '\\\\n'\\); cat\\('PATH:\\\\n'\\); cat\\(Sys.getenv\\('PATH'\\), sep='\\\\n'\\)\")",
+      "Read(//c//**)",
+      "PowerShell(winget --version 2>&1)",
+      "PowerShell(winget search Rtools 2>&1)",
+      "PowerShell(winget show RProject.Rtools 2>&1)",
+      "PowerShell(winget show RProject.Rtools --versions 2>&1)",
+      "PowerShell(winget install --id RProject.Rtools --version 4.4.6459 -e --accept-source-agreements --accept-package-agreements)",
+      "Read(//c/rtools44/**)",
+      "PowerShell([System.Environment]::GetEnvironmentVariable\\(\"PATH\", \"User\"\\) -split \";\" | Select-String -Pattern \"rtools\")",
+      "PowerShell(Write-Output \"--- Machine PATH rtools entries ---\"; [System.Environment]::GetEnvironmentVariable\\(\"PATH\", \"Machine\"\\) -split \";\" | Select-String -Pattern \"rtools\"; Write-Output \"--- Registry Rtools entries ---\"; Get-ChildItem \"HKLM:\\\\SOFTWARE\\\\R-core\" -Recurse -ErrorAction SilentlyContinue; Get-ChildItem \"HKCU:\\\\SOFTWARE\\\\R-core\" -Recurse -ErrorAction SilentlyContinue)",
+      "PowerShell($rscript44 = \"C:\\\\Program Files\\\\R\\\\R-4.4.1\\\\bin\\\\Rscript.exe\"; & $rscript44 -e \"cat\\('gcc:', Sys.which\\('gcc'\\), '\\\\n'\\); cat\\('make:', Sys.which\\('make'\\), '\\\\n'\\)\")",
+      "PowerShell($rscript44 = \"C:\\\\Program Files\\\\R\\\\R-4.4.1\\\\bin\\\\Rscript.exe\"; & $rscript44 -e \"renv::restore\\(prompt = FALSE\\)\")"
     ],
     "additionalDirectories": [
-      "\\tmp"
+      "\\tmp",
+      "C:\\Users\\DMW63\\OneDrive - Yale University\\Documents"
     ]
   }
 }
