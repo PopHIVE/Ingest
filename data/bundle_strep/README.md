@@ -10,9 +10,9 @@ Group A and Group B Streptococcus surveillance, combining three sources into
 
 `gas_state.parquet` holds both state-level Group A series, separated by `source`:
 Epic Cosmos strep throat diagnoses (quarterly, by age) and NNDSS streptococcal
-toxic shock syndrome (weekly by MMWR week). They share a schema, so `week` is
-blank on the Epic rows, `age` is `"Total"` on the NNDSS rows, and `suppressed`
-is blank on them since it is an Epic mechanism.
+toxic shock syndrome (weekly). They share a schema, so `age` is `"Total"` on
+the NNDSS rows and `suppressed` is blank on them, since it is an Epic mechanism.
+`date` is the MMWR week ending Saturday, so no separate week number is carried.
 
 ABCs stays separate. It is national-only and annual, and carries fourteen
 dimension and companion columns the other two do not have — folding it in would

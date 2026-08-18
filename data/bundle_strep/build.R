@@ -271,8 +271,8 @@ epic_gas <- vroom::vroom(
     date = time,
     year = as.integer(format(time, "%Y"))
   ) %>%
-  mutate(source = "Epic Cosmos", week = NA_integer_) %>%
-  select(geography, geography_fips, date, year, week, age,
+  mutate(source = "Epic Cosmos") %>%
+  select(geography, geography_fips, date, year, age,
          source, measure, value, suppressed)
 
 # -----------------------------------------------------------------------------
@@ -321,8 +321,9 @@ if (n_negative > 0) {
 }
 
 nnds_stss <- nnds_stss %>%
-  rename(date = time, year = mmwr_year, week = mmwr_week) %>%
-  select(geography, geography_fips, date, year, week,
+  # `date` is the MMWR week ending Saturday, so the week number adds nothing
+  rename(date = time, year = mmwr_year) %>%
+  select(geography, geography_fips, date, year,
          stss_cases_weekly, stss_cases_cumulative) %>%
   pivot_longer(c(stss_cases_weekly, stss_cases_cumulative),
                names_to = "measure", values_to = "value") %>%
@@ -330,14 +331,14 @@ nnds_stss <- nnds_stss %>%
   # NNDSS publishes no age breakdown, so "Total" per the aggregate convention;
   # `suppressed` is an Epic mechanism and does not apply
   mutate(source = "NNDSS", age = "Total", suppressed = NA_real_) %>%
-  select(geography, geography_fips, date, year, week, age,
+  select(geography, geography_fips, date, year, age,
          source, measure, value, suppressed)
 
 # -----------------------------------------------------------------------------
 # 4. State-level Group A surveillance: Epic and NNDSS in one file
 #    Both are state + national Group A series keyed on geography, date and a
-#    single measure, so they share a schema. `source` separates them, `week`
-#    is empty for the quarterly Epic rows and `age` is "Total" for NNDSS.
+#    single measure, so they share a schema. `source` separates them and `age`
+#    is "Total" for NNDSS.
 #    ABCs stays separate: it is national-only and annual, and carries fourteen
 #    dimension and companion columns neither of these has.
 # -----------------------------------------------------------------------------
