@@ -9,13 +9,30 @@
   },
   "resources": [
     {
-      "bytes": 27238,
+      "bytes": 26549,
       "encoding": "ISO-8859-1",
-      "md5": "98839470d746ff3e24c611362552a6f4",
+      "md5": "cff11243fd803d3b2d60acde7a30a5d3",
       "format": "parquet",
       "name": "abcs_strep",
       "filename": "abcs_strep.parquet",
-      "versions": {},
+      "versions": {
+        "hash": [
+          "54bc6c8af953ea52fbd070b4434043133fe2c07a",
+          "8a138991268faefe54c15501ec57c322da5f803a"
+        ],
+        "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"
+        ],
+        "date": [
+          "Mon Aug 17 14:31:49 2026 -0400",
+          "Thu Aug 13 14:15:34 2026 -0400"
+        ],
+        "message": [
+          "Reshape strep files by entity, merge Epic and NNDSS parquets",
+          "Leave unreported ABCs values blank instead of zero-filling"
+        ]
+      },
       "source": [],
       "data_format": "tall",
       "ids": [
@@ -26,8 +43,8 @@
       "id_length": 13,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-08-13 11:23:34.066758",
-      "last_modified": "2026-08-13 11:23:34.066758",
+      "created": "2026-08-18 10:01:32.69465",
+      "last_modified": "2026-08-18 10:01:32.69465",
       "vintage": {},
       "row_count": 6101,
       "entity_count": 1,
@@ -618,234 +635,27 @@
                 },
                 "pct_resistant": {
                   "source_id": "abcs_pct_resistant_penicillin",
-                  "id": "pct_resistant",
-                  "name": "abcs_pct_resistant_penicillin",
-                  "duplicates": 167,
-                  "info": {
-                    "id": "abcs_pct_resistant_penicillin",
-                    "short_name": "Penicillin resistance (%)",
-                    "long_name": "Percent of isolates non-susceptible to penicillin",
-                    "category": "infectious_disease",
-                    "short_description": "Percent of tested isolates non-susceptible to penicillin.",
-                    "long_description": "Percent of tested isolates non-susceptible to penicillin.",
-                    "measure_type": "Percent",
-                    "unit": "Percent",
-                    "time_resolution": "Year",
-                    "sources": [
-                      {
-                        "id": "abcs_gas"
-                      },
-                      {
-                        "id": "abcs_gbs"
-                      }
-                    ],
-                    "citations": [],
-                    "source_file": {
-                      "project": "abcs",
-                      "data_dir": "/data/abcs/standard",
-                      "file": "strep_resistance.csv.gz"
-                    }
-                  },
-                  "time_range": [
-                    0,
-                    27
-                  ],
-                  "type": "integer",
-                  "missing": 0,
-                  "mean": 0,
-                  "sd": 0,
-                  "min": 0,
-                  "max": 0
+                  "id": "pct_resistant"
                 },
                 "rate_syndrome": {
                   "source_id": "abcs_gas_rate_syndrome_cellulitis",
-                  "id": "rate_syndrome",
-                  "name": "abcs_gas_rate_syndrome_cellulitis",
-                  "duplicates": 3,
-                  "info": {
-                    "id": "abcs_gas_rate_syndrome_cellulitis",
-                    "short_name": "Cellulitis rate",
-                    "long_name": "Rate of Group A cellulitis",
-                    "category": "infectious_disease",
-                    "short_description": "Group A cellulitis cases per 100,000 population.",
-                    "long_description": "Rate of invasive Group A Streptococcus cases presenting as cellulitis, per 100,000 population.",
-                    "measure_type": "Rate",
-                    "unit": "Cases per 100,000",
-                    "time_resolution": "Year",
-                    "sources": [
-                      {
-                        "id": "abcs_gas"
-                      }
-                    ],
-                    "citations": [],
-                    "source_file": {
-                      "project": "abcs",
-                      "data_dir": "/data/abcs/standard",
-                      "file": "gas_syndromes.csv.gz"
-                    }
-                  },
-                  "time_range": [
-                    0,
-                    23
-                  ],
-                  "type": "float",
-                  "missing": 0,
-                  "mean": 2.26875,
-                  "sd": 1.40583,
-                  "min": 1.06,
-                  "max": 6.01
+                  "id": "rate_syndrome"
                 },
                 "pct_syndrome": {
                   "source_id": "abcs_gbs_pct_syndrome_meningitis",
-                  "id": "pct_syndrome",
-                  "name": "abcs_gbs_pct_syndrome_meningitis",
-                  "duplicates": 18,
-                  "info": {
-                    "id": "abcs_gbs_pct_syndrome_meningitis",
-                    "short_name": "Meningitis (%)",
-                    "long_name": "Percent of Group B cases presenting as meningitis",
-                    "category": "infectious_disease",
-                    "short_description": "Percent of Group B cases presenting as meningitis.",
-                    "long_description": "Percent of invasive Group B Streptococcus cases presenting as meningitis.",
-                    "measure_type": "Percent",
-                    "unit": "Percent",
-                    "time_resolution": "Year",
-                    "sources": [
-                      {
-                        "id": "abcs_gbs"
-                      }
-                    ],
-                    "citations": [],
-                    "source_file": {
-                      "project": "abcs",
-                      "data_dir": "/data/abcs/standard",
-                      "file": "gbs_syndromes.csv.gz"
-                    }
-                  },
-                  "time_range": [
-                    0,
-                    26
-                  ],
-                  "type": "float",
-                  "missing": 0,
-                  "mean": 14.532099,
-                  "sd": 12.467025,
-                  "min": 2.2,
-                  "max": 41.8
+                  "id": "pct_syndrome"
                 },
                 "pct_emm_type": {
                   "source_id": "abcs_gas_emm_pct_emm_1",
-                  "id": "pct_emm_type",
-                  "name": "abcs_gas_emm_pct_emm_1",
-                  "duplicates": 1,
-                  "info": {
-                    "id": "abcs_gas_emm_pct_emm_1",
-                    "short_name": "emm1 (%)",
-                    "long_name": "Percent of isolates of emm1",
-                    "category": "infectious_disease",
-                    "short_description": "Percent of emm-typed Group A isolates of emm1.",
-                    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates of emm1.",
-                    "measure_type": "Percent",
-                    "unit": "Percent",
-                    "time_resolution": "Year",
-                    "sources": [
-                      {
-                        "id": "abcs_gas"
-                      }
-                    ],
-                    "citations": [],
-                    "source_file": {
-                      "project": "abcs",
-                      "data_dir": "/data/abcs/standard",
-                      "file": "gas_emm.csv.gz"
-                    }
-                  },
-                  "time_range": [
-                    0,
-                    27
-                  ],
-                  "type": "float",
-                  "missing": 0,
-                  "mean": 18.456071,
-                  "sd": 5.6874,
-                  "min": 1.25,
-                  "max": 25.47
+                  "id": "pct_emm_type"
                 },
                 "pct_serotype": {
                   "source_id": "abcs_gbs_pct_serotype_ia",
-                  "id": "pct_serotype",
-                  "name": "abcs_gbs_pct_serotype_ia",
-                  "duplicates": 52,
-                  "info": {
-                    "id": "abcs_gbs_pct_serotype_ia",
-                    "short_name": "Serotype Ia (%)",
-                    "long_name": "Percent of Group B isolates of serotype Ia",
-                    "category": "infectious_disease",
-                    "short_description": "Percent of typed Group B isolates of serotype Ia.",
-                    "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype Ia.",
-                    "measure_type": "Percent",
-                    "unit": "Percent",
-                    "time_resolution": "Year",
-                    "sources": [
-                      {
-                        "id": "abcs_gbs"
-                      }
-                    ],
-                    "citations": [],
-                    "source_file": {
-                      "project": "abcs",
-                      "data_dir": "/data/abcs/standard",
-                      "file": "gbs_serotypes.csv.gz"
-                    }
-                  },
-                  "time_range": [
-                    0,
-                    27
-                  ],
-                  "type": "float",
-                  "missing": 0,
-                  "mean": 21.632143,
-                  "sd": 7.641596,
-                  "min": 0,
-                  "max": 38.2
+                  "id": "pct_serotype"
                 },
                 "pct_alph_type": {
                   "source_id": "abcs_gbs_pct_alph_alp1",
-                  "id": "pct_alph_type",
-                  "name": "abcs_gbs_pct_alph_alp1",
-                  "duplicates": 11,
-                  "info": {
-                    "id": "abcs_gbs_pct_alph_alp1",
-                    "short_name": "ALP1 (%)",
-                    "long_name": "Percent of Group B isolates carrying ALP1",
-                    "category": "infectious_disease",
-                    "short_description": "Percent of typed Group B isolates carrying ALP1.",
-                    "long_description": "Percent of typed invasive Group B Streptococcus isolates carrying the ALP1 alpha-like protein gene.",
-                    "measure_type": "Percent",
-                    "unit": "Percent",
-                    "time_resolution": "Year",
-                    "sources": [
-                      {
-                        "id": "abcs_gbs"
-                      }
-                    ],
-                    "citations": [],
-                    "source_file": {
-                      "project": "abcs",
-                      "data_dir": "/data/abcs/standard",
-                      "file": "gbs_alph.csv.gz"
-                    }
-                  },
-                  "time_range": [
-                    0,
-                    9
-                  ],
-                  "type": "float",
-                  "missing": 0,
-                  "mean": 26.594,
-                  "sd": 5.861058,
-                  "min": 10.8,
-                  "max": 37.1
+                  "id": "pct_alph_type"
                 }
               },
               "id": "measure"
@@ -874,7 +684,7 @@
               "short_name": "Value",
               "long_name": "Measure value",
               "short_description": "Value of the measure named in the measure column.",
-              "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
+              "long_description": "Value of the measure named in the measure column, whose units differ by measure; blank where CDC published nothing, so a 0 is always a measured zero.",
               "measure_type": "Mixed",
               "unit": "varies by measure",
               "time_resolution": "Year",
@@ -895,35 +705,6 @@
             "sd": 3227.368943,
             "min": 0,
             "max": 43100
-          },
-          {
-            "name": "value_not_reported",
-            "duplicates": 6099,
-            "info": {
-              "short_name": "Value not reported",
-              "long_name": "Flag for values CDC did not report",
-              "short_description": "1 where CDC did not report this measure for the row; 0 otherwise.",
-              "long_description": "1 where CDC published nothing for the row's measure, leaving value blank.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "time_resolution": "Year",
-              "sources": [
-                {
-                  "id": "abcs_gas"
-                },
-                {
-                  "id": "abcs_gbs"
-                }
-              ],
-              "id": "value_not_reported"
-            },
-            "time_range": [-1, -1],
-            "type": "integer",
-            "missing": 0,
-            "mean": 0.204884,
-            "sd": 0.40365,
-            "min": 0,
-            "max": 1
           },
           {
             "name": "n_type",
@@ -1059,16 +840,21 @@
           }
         ]
       },
-      "sha512": "94c013e86becc2880164be4ea9d208120f04dedcceb0f6a8c595f00130821bb31f04a906e3fc17f1b75e16c2bf3a697ebdf46a4fc2e2459586a6ada2cc295ff0"
+      "sha512": "347e5123f31c721c14fd09cd08b03f96688c823e628d00dc0bd7755435b43b51cb9a5186c944ecbe7677d14eb6ead5102978c566ee2fc25eaac614e4e3703bfb"
     },
     {
-      "bytes": 270647,
+      "bytes": 299749,
       "encoding": "ISO-8859-1",
-      "md5": "f61dc90653b3770453b68d662fb73798",
+      "md5": "7bd5942d211b6c1463c52b135ecea444",
       "format": "parquet",
-      "name": "epic_gas",
-      "filename": "epic_gas.parquet",
-      "versions": {},
+      "name": "gas_state",
+      "filename": "gas_state.parquet",
+      "versions": {
+        "hash": ["54bc6c8af953ea52fbd070b4434043133fe2c07a"],
+        "author": ["Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"],
+        "date": ["Mon Aug 17 14:31:49 2026 -0400"],
+        "message": ["Reshape strep files by entity, merge Epic and NNDSS parquets"]
+      },
       "source": [],
       "data_format": "tall",
       "ids": [
@@ -1079,16 +865,16 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-08-13 11:23:34.15517",
-      "last_modified": "2026-08-13 11:23:34.15517",
+      "created": "2026-08-18 10:01:32.824398",
+      "last_modified": "2026-08-18 10:01:32.824398",
       "vintage": {},
-      "row_count": 39312,
+      "row_count": 64168,
       "entity_count": 52,
       "schema": {
         "fields": [
           {
             "name": "geography",
-            "duplicates": 39260,
+            "duplicates": 64116,
             "info": {
               "short_name": "Geography",
               "long_name": "Geography name",
@@ -1102,63 +888,63 @@
             "type": "string",
             "missing": 0,
             "table": {
-              "Alabama": 756,
-              "Alaska": 756,
-              "Arizona": 756,
-              "Arkansas": 756,
-              "California": 756,
-              "Colorado": 756,
-              "Connecticut": 756,
-              "Delaware": 756,
-              "District of Columbia": 756,
-              "Florida": 756,
-              "Georgia": 756,
-              "Hawaii": 756,
-              "Idaho": 756,
-              "Illinois": 756,
-              "Indiana": 756,
-              "Iowa": 756,
-              "Kansas": 756,
-              "Kentucky": 756,
-              "Louisiana": 756,
-              "Maine": 756,
-              "Maryland": 756,
-              "Massachusetts": 756,
-              "Michigan": 756,
-              "Minnesota": 756,
-              "Mississippi": 756,
-              "Missouri": 756,
-              "Montana": 756,
-              "Nebraska": 756,
-              "Nevada": 756,
-              "New Hampshire": 756,
-              "New Jersey": 756,
-              "New Mexico": 756,
-              "New York": 756,
-              "North Carolina": 756,
-              "North Dakota": 756,
-              "Ohio": 756,
-              "Oklahoma": 756,
-              "Oregon": 756,
-              "Pennsylvania": 756,
-              "Rhode Island": 756,
-              "South Carolina": 756,
-              "South Dakota": 756,
-              "Tennessee": 756,
-              "Texas": 756,
-              "United States": 756,
-              "Utah": 756,
-              "Vermont": 756,
-              "Virginia": 756,
-              "Washington": 756,
-              "West Virginia": 756,
-              "Wisconsin": 756,
-              "Wyoming": 756
+              "Alabama": 1234,
+              "Alaska": 1234,
+              "Arizona": 1234,
+              "Arkansas": 1234,
+              "California": 1234,
+              "Colorado": 1234,
+              "Connecticut": 1234,
+              "Delaware": 1234,
+              "District of Columbia": 1234,
+              "Florida": 1234,
+              "Georgia": 1234,
+              "Hawaii": 1234,
+              "Idaho": 1234,
+              "Illinois": 1234,
+              "Indiana": 1234,
+              "Iowa": 1234,
+              "Kansas": 1234,
+              "Kentucky": 1234,
+              "Louisiana": 1234,
+              "Maine": 1234,
+              "Maryland": 1234,
+              "Massachusetts": 1234,
+              "Michigan": 1234,
+              "Minnesota": 1234,
+              "Mississippi": 1234,
+              "Missouri": 1234,
+              "Montana": 1234,
+              "Nebraska": 1234,
+              "Nevada": 1234,
+              "New Hampshire": 1234,
+              "New Jersey": 1234,
+              "New Mexico": 1234,
+              "New York": 1234,
+              "North Carolina": 1234,
+              "North Dakota": 1234,
+              "Ohio": 1234,
+              "Oklahoma": 1234,
+              "Oregon": 1234,
+              "Pennsylvania": 1234,
+              "Rhode Island": 1234,
+              "South Carolina": 1234,
+              "South Dakota": 1234,
+              "Tennessee": 1234,
+              "Texas": 1234,
+              "United States": 1234,
+              "Utah": 1234,
+              "Vermont": 1234,
+              "Virginia": 1234,
+              "Washington": 1234,
+              "West Virginia": 1234,
+              "Wisconsin": 1234,
+              "Wyoming": 1234
             }
           },
           {
             "name": "geography_fips",
-            "duplicates": 39260,
+            "duplicates": 64116,
             "info": {
               "short_name": "Geography FIPS",
               "long_name": "Geography FIPS code",
@@ -1172,63 +958,63 @@
             "type": "string",
             "missing": 0,
             "table": {
-              "00": 756,
-              "01": 756,
-              "02": 756,
-              "04": 756,
-              "05": 756,
-              "06": 756,
-              "08": 756,
-              "09": 756,
-              "10": 756,
-              "11": 756,
-              "12": 756,
-              "13": 756,
-              "15": 756,
-              "16": 756,
-              "17": 756,
-              "18": 756,
-              "19": 756,
-              "20": 756,
-              "21": 756,
-              "22": 756,
-              "23": 756,
-              "24": 756,
-              "25": 756,
-              "26": 756,
-              "27": 756,
-              "28": 756,
-              "29": 756,
-              "30": 756,
-              "31": 756,
-              "32": 756,
-              "33": 756,
-              "34": 756,
-              "35": 756,
-              "36": 756,
-              "37": 756,
-              "38": 756,
-              "39": 756,
-              "40": 756,
-              "41": 756,
-              "42": 756,
-              "44": 756,
-              "45": 756,
-              "46": 756,
-              "47": 756,
-              "48": 756,
-              "49": 756,
-              "50": 756,
-              "51": 756,
-              "53": 756,
-              "54": 756,
-              "55": 756,
-              "56": 756
+              "00": 1234,
+              "01": 1234,
+              "02": 1234,
+              "04": 1234,
+              "05": 1234,
+              "06": 1234,
+              "08": 1234,
+              "09": 1234,
+              "10": 1234,
+              "11": 1234,
+              "12": 1234,
+              "13": 1234,
+              "15": 1234,
+              "16": 1234,
+              "17": 1234,
+              "18": 1234,
+              "19": 1234,
+              "20": 1234,
+              "21": 1234,
+              "22": 1234,
+              "23": 1234,
+              "24": 1234,
+              "25": 1234,
+              "26": 1234,
+              "27": 1234,
+              "28": 1234,
+              "29": 1234,
+              "30": 1234,
+              "31": 1234,
+              "32": 1234,
+              "33": 1234,
+              "34": 1234,
+              "35": 1234,
+              "36": 1234,
+              "37": 1234,
+              "38": 1234,
+              "39": 1234,
+              "40": 1234,
+              "41": 1234,
+              "42": 1234,
+              "44": 1234,
+              "45": 1234,
+              "46": 1234,
+              "47": 1234,
+              "48": 1234,
+              "49": 1234,
+              "50": 1234,
+              "51": 1234,
+              "53": 1234,
+              "54": 1234,
+              "55": 1234,
+              "56": 1234
             }
           },
           {
             "name": "date",
-            "duplicates": 39276,
+            "duplicates": 63895,
             "info": {
               "short_name": "Date",
               "long_name": "Period end date",
@@ -1262,27 +1048,264 @@
               "2021-06-30": 1092,
               "2021-09-30": 1092,
               "2021-12-31": 1092,
+              "2022-01-08": 104,
+              "2022-01-15": 104,
+              "2022-01-22": 104,
+              "2022-01-29": 104,
+              "2022-02-05": 104,
+              "2022-02-12": 104,
+              "2022-02-19": 104,
+              "2022-02-26": 104,
+              "2022-03-05": 104,
+              "2022-03-12": 104,
+              "2022-03-19": 104,
+              "2022-03-26": 104,
               "2022-03-31": 1092,
+              "2022-04-02": 104,
+              "2022-04-09": 104,
+              "2022-04-16": 104,
+              "2022-04-23": 104,
+              "2022-04-30": 104,
+              "2022-05-07": 104,
+              "2022-05-14": 104,
+              "2022-05-21": 104,
+              "2022-05-28": 104,
+              "2022-06-04": 104,
+              "2022-06-11": 104,
+              "2022-06-18": 104,
+              "2022-06-25": 104,
               "2022-06-30": 1092,
+              "2022-07-02": 104,
+              "2022-07-09": 104,
+              "2022-07-16": 104,
+              "2022-07-23": 104,
+              "2022-07-30": 104,
+              "2022-08-06": 104,
+              "2022-08-13": 104,
+              "2022-08-20": 104,
+              "2022-08-27": 104,
+              "2022-09-03": 104,
+              "2022-09-10": 104,
+              "2022-09-17": 104,
+              "2022-09-24": 104,
               "2022-09-30": 1092,
-              "2022-12-31": 1092,
+              "2022-10-01": 104,
+              "2022-10-08": 104,
+              "2022-10-15": 104,
+              "2022-10-22": 104,
+              "2022-10-29": 104,
+              "2022-11-05": 104,
+              "2022-11-12": 104,
+              "2022-11-19": 104,
+              "2022-11-26": 104,
+              "2022-12-03": 104,
+              "2022-12-10": 104,
+              "2022-12-17": 104,
+              "2022-12-24": 104,
+              "2022-12-31": 1196,
+              "2023-01-07": 104,
+              "2023-01-14": 104,
+              "2023-01-21": 104,
+              "2023-01-28": 104,
+              "2023-02-04": 104,
+              "2023-02-11": 104,
+              "2023-02-18": 104,
+              "2023-02-25": 104,
+              "2023-03-04": 104,
+              "2023-03-11": 104,
+              "2023-03-18": 104,
+              "2023-03-25": 104,
               "2023-03-31": 1092,
+              "2023-04-01": 104,
+              "2023-04-08": 104,
+              "2023-04-15": 104,
+              "2023-04-22": 104,
+              "2023-04-29": 104,
+              "2023-05-06": 104,
+              "2023-05-13": 104,
+              "2023-05-20": 104,
+              "2023-05-27": 104,
+              "2023-06-03": 104,
+              "2023-06-10": 104,
+              "2023-06-17": 104,
+              "2023-06-24": 104,
               "2023-06-30": 1092,
-              "2023-09-30": 1092,
+              "2023-07-01": 104,
+              "2023-07-08": 104,
+              "2023-07-15": 104,
+              "2023-07-22": 104,
+              "2023-07-29": 104,
+              "2023-08-05": 104,
+              "2023-08-12": 104,
+              "2023-08-19": 104,
+              "2023-08-26": 104,
+              "2023-09-02": 104,
+              "2023-09-09": 104,
+              "2023-09-16": 104,
+              "2023-09-23": 104,
+              "2023-09-30": 1196,
+              "2023-10-07": 104,
+              "2023-10-14": 104,
+              "2023-10-21": 104,
+              "2023-10-28": 104,
+              "2023-11-04": 104,
+              "2023-11-11": 104,
+              "2023-11-18": 104,
+              "2023-11-25": 104,
+              "2023-12-02": 104,
+              "2023-12-09": 104,
+              "2023-12-16": 104,
+              "2023-12-23": 104,
+              "2023-12-30": 104,
               "2023-12-31": 1092,
+              "2024-01-06": 104,
+              "2024-01-13": 104,
+              "2024-01-20": 104,
+              "2024-01-27": 104,
+              "2024-02-03": 104,
+              "2024-02-10": 104,
+              "2024-02-17": 104,
+              "2024-02-24": 104,
+              "2024-03-02": 104,
+              "2024-03-09": 104,
+              "2024-03-16": 104,
+              "2024-03-23": 104,
+              "2024-03-30": 104,
               "2024-03-31": 1092,
+              "2024-04-06": 104,
+              "2024-04-13": 104,
+              "2024-04-20": 104,
+              "2024-04-27": 104,
+              "2024-05-04": 104,
+              "2024-05-11": 104,
+              "2024-05-18": 104,
+              "2024-05-25": 104,
+              "2024-06-01": 104,
+              "2024-06-08": 104,
+              "2024-06-15": 104,
+              "2024-06-22": 104,
+              "2024-06-29": 104,
               "2024-06-30": 1092,
+              "2024-07-06": 104,
+              "2024-07-13": 104,
+              "2024-07-20": 104,
+              "2024-07-27": 104,
+              "2024-08-03": 104,
+              "2024-08-10": 104,
+              "2024-08-17": 104,
+              "2024-08-24": 104,
+              "2024-08-31": 104,
+              "2024-09-07": 104,
+              "2024-09-14": 104,
+              "2024-09-21": 104,
+              "2024-09-28": 104,
               "2024-09-30": 1092,
+              "2024-10-05": 104,
+              "2024-10-12": 104,
+              "2024-10-19": 104,
+              "2024-10-26": 104,
+              "2024-11-02": 104,
+              "2024-11-09": 104,
+              "2024-11-16": 104,
+              "2024-11-23": 104,
+              "2024-11-30": 104,
+              "2024-12-07": 104,
+              "2024-12-14": 104,
+              "2024-12-21": 104,
+              "2024-12-28": 104,
               "2024-12-31": 1092,
+              "2025-01-04": 104,
+              "2025-01-11": 104,
+              "2025-01-18": 104,
+              "2025-01-25": 104,
+              "2025-02-01": 104,
+              "2025-02-08": 104,
+              "2025-02-15": 104,
+              "2025-02-22": 104,
+              "2025-03-01": 104,
+              "2025-03-08": 104,
+              "2025-03-15": 104,
+              "2025-03-22": 104,
+              "2025-03-29": 104,
               "2025-03-31": 1092,
+              "2025-04-05": 104,
+              "2025-04-12": 104,
+              "2025-04-19": 104,
+              "2025-04-26": 104,
+              "2025-05-03": 104,
+              "2025-05-10": 104,
+              "2025-05-17": 104,
+              "2025-05-24": 104,
+              "2025-05-31": 104,
+              "2025-06-07": 104,
+              "2025-06-14": 104,
+              "2025-06-21": 104,
+              "2025-06-28": 104,
               "2025-06-30": 1092,
+              "2025-07-05": 104,
+              "2025-07-12": 104,
+              "2025-07-19": 104,
+              "2025-07-26": 104,
+              "2025-08-02": 104,
+              "2025-08-09": 104,
+              "2025-08-16": 104,
+              "2025-08-23": 104,
+              "2025-08-30": 104,
+              "2025-09-06": 104,
+              "2025-09-13": 104,
+              "2025-09-20": 104,
+              "2025-09-27": 104,
               "2025-09-30": 1092,
-              "2025-12-31": 1092
+              "2025-10-04": 104,
+              "2025-10-11": 104,
+              "2025-10-18": 104,
+              "2025-10-25": 104,
+              "2025-11-01": 104,
+              "2025-11-08": 104,
+              "2025-11-15": 104,
+              "2025-11-22": 104,
+              "2025-11-29": 104,
+              "2025-12-06": 104,
+              "2025-12-13": 104,
+              "2025-12-20": 104,
+              "2025-12-27": 104,
+              "2025-12-31": 1092,
+              "2026-01-03": 104,
+              "2026-01-10": 104,
+              "2026-01-17": 104,
+              "2026-01-24": 104,
+              "2026-01-31": 104,
+              "2026-02-07": 104,
+              "2026-02-14": 104,
+              "2026-02-21": 104,
+              "2026-02-28": 104,
+              "2026-03-07": 104,
+              "2026-03-14": 104,
+              "2026-03-21": 104,
+              "2026-03-28": 104,
+              "2026-04-04": 104,
+              "2026-04-11": 104,
+              "2026-04-18": 104,
+              "2026-04-25": 104,
+              "2026-05-02": 104,
+              "2026-05-09": 104,
+              "2026-05-16": 104,
+              "2026-05-23": 104,
+              "2026-05-30": 104,
+              "2026-06-06": 104,
+              "2026-06-13": 104,
+              "2026-06-20": 104,
+              "2026-06-27": 104,
+              "2026-07-04": 104,
+              "2026-07-11": 104,
+              "2026-07-18": 104,
+              "2026-07-25": 104,
+              "2026-08-01": 104
             }
           },
           {
             "name": "year",
-            "duplicates": 39303,
+            "duplicates": 64158,
             "info": {
               "short_name": "Year",
               "long_name": "Year",
@@ -1295,19 +1318,19 @@
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
-            "mean": 2021,
-            "sd": 2.582022,
+            "mean": 2022.092382,
+            "sd": 2.580879,
             "min": 2017,
-            "max": 2025
+            "max": 2026
           },
           {
             "name": "age",
-            "duplicates": 39305,
+            "duplicates": 64161,
             "info": {
               "short_name": "Age group",
               "long_name": "Age group",
               "short_description": "Age group; \"Total\" is the all-ages aggregate.",
-              "long_description": "Epic Cosmos age band for the row, with \"Total\" as the all-ages aggregate.",
+              "long_description": "Epic Cosmos age band for the row, with \"Total\" as the all-ages aggregate and on every NNDSS row.",
               "measure_type": "category",
               "id": "age"
             },
@@ -1321,12 +1344,43 @@
               "50-64 Years": 5616,
               "65+ Years": 5616,
               "<1 Years": 5616,
-              "Total": 5616
+              "Total": 30472
+            }
+          },
+          {
+            "name": "source",
+            "duplicates": 64166,
+            "info": {
+              "short_name": "Source",
+              "long_name": "Data source",
+              "short_description": "Which surveillance system reported the row.",
+              "long_description": "Which surveillance system the row comes from, Epic Cosmos or NNDSS.",
+              "measure_type": "category",
+              "levels": {
+                "Epic Cosmos": {
+                  "short_name": "Epic Cosmos",
+                  "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age.",
+                  "id": "Epic Cosmos"
+                },
+                "NNDSS": {
+                  "short_name": "NNDSS",
+                  "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state.",
+                  "id": "NNDSS"
+                }
+              },
+              "id": "source"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Epic Cosmos": 39312,
+              "NNDSS": 24856
             }
           },
           {
             "name": "measure",
-            "duplicates": 39309,
+            "duplicates": 64163,
             "info": {
               "short_name": "Measure",
               "levels": {
@@ -1445,543 +1499,7 @@
                   "sd": 4451446.849236,
                   "min": 92,
                   "max": 98758918
-                }
-              },
-              "id": "measure"
-            },
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "n_patients": 13104,
-              "n_strep_throat": 13104,
-              "pct_strep_throat": 13104
-            }
-          },
-          {
-            "name": "value",
-            "duplicates": 9637,
-            "info": {
-              "short_name": "Value",
-              "long_name": "Measure value",
-              "short_description": "Value of the measure named in the measure column.",
-              "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "time_resolution": "Quarter",
-              "sources": [
-                {
-                  "id": "epic_cosmos"
-                }
-              ],
-              "id": "value"
-            },
-            "time_range": [-1, -1],
-            "type": "float",
-            "missing": 0,
-            "mean": 261775.116146,
-            "sd": 2596107.576386,
-            "min": 0.002825,
-            "max": 98758918
-          },
-          {
-            "name": "suppressed",
-            "duplicates": 39310,
-            "info": {
-              "short_name": "Suppressed",
-              "long_name": "Epic suppression flag",
-              "short_description": "1 where Epic withheld the underlying cell and the value was imputed as 5.",
-              "long_description": "1 where Epic Cosmos withheld the underlying cell as a count of 10 or fewer, in which case the value was imputed as 5.",
-              "measure_type": "Binary",
-              "unit": "0/1",
-              "time_resolution": "Quarter",
-              "sources": [
-                {
-                  "id": "epic_cosmos"
-                }
-              ],
-              "id": "suppressed"
-            },
-            "time_range": [-1, -1],
-            "type": "integer",
-            "missing": 0,
-            "mean": 0.076669,
-            "sd": 0.266068,
-            "min": 0,
-            "max": 1
-          }
-        ]
-      },
-      "sha512": "48d9109a7d473f063e735aa8fb6529e00c1722da34feb0b4edb60e0ad18c1c05aa300d31987fdee43acf70b2469315a410e04cb096907b10d5a6a28b6b9332bf"
-    },
-    {
-      "bytes": 16282,
-      "encoding": "ISO-8859-1",
-      "md5": "997a5b72621d9fa695079104a9678ec9",
-      "format": "parquet",
-      "name": "nnds_stss",
-      "filename": "nnds_stss.parquet",
-      "versions": {},
-      "source": [],
-      "data_format": "tall",
-      "ids": [
-        {
-          "variable": "geography"
-        }
-      ],
-      "id_length": 0,
-      "time": "time",
-      "profile": "data-resource",
-      "created": "2026-08-13 11:23:34.258077",
-      "last_modified": "2026-08-13 11:23:34.258077",
-      "vintage": {},
-      "row_count": 24856,
-      "entity_count": 52,
-      "schema": {
-        "fields": [
-          {
-            "name": "geography",
-            "duplicates": 24804,
-            "info": {
-              "short_name": "Geography",
-              "long_name": "Geography name",
-              "short_description": "State name, or \"United States\" for the national total.",
-              "long_description": "Geographic area the row describes, as a state name or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "id": "geography"
-            },
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "Alabama": 478,
-              "Alaska": 478,
-              "Arizona": 478,
-              "Arkansas": 478,
-              "California": 478,
-              "Colorado": 478,
-              "Connecticut": 478,
-              "Delaware": 478,
-              "District of Columbia": 478,
-              "Florida": 478,
-              "Georgia": 478,
-              "Hawaii": 478,
-              "Idaho": 478,
-              "Illinois": 478,
-              "Indiana": 478,
-              "Iowa": 478,
-              "Kansas": 478,
-              "Kentucky": 478,
-              "Louisiana": 478,
-              "Maine": 478,
-              "Maryland": 478,
-              "Massachusetts": 478,
-              "Michigan": 478,
-              "Minnesota": 478,
-              "Mississippi": 478,
-              "Missouri": 478,
-              "Montana": 478,
-              "Nebraska": 478,
-              "Nevada": 478,
-              "New Hampshire": 478,
-              "New Jersey": 478,
-              "New Mexico": 478,
-              "New York": 478,
-              "North Carolina": 478,
-              "North Dakota": 478,
-              "Ohio": 478,
-              "Oklahoma": 478,
-              "Oregon": 478,
-              "Pennsylvania": 478,
-              "Rhode Island": 478,
-              "South Carolina": 478,
-              "South Dakota": 478,
-              "Tennessee": 478,
-              "Texas": 478,
-              "United States": 478,
-              "Utah": 478,
-              "Vermont": 478,
-              "Virginia": 478,
-              "Washington": 478,
-              "West Virginia": 478,
-              "Wisconsin": 478,
-              "Wyoming": 478
-            }
-          },
-          {
-            "name": "geography_fips",
-            "duplicates": 24804,
-            "info": {
-              "short_name": "Geography FIPS",
-              "long_name": "Geography FIPS code",
-              "short_description": "FIPS code for the geography; \"00\" is national.",
-              "long_description": "FIPS code for the row's geography, with \"00\" for the national total and 2-digit codes for states.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "id": "geography_fips"
-            },
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "00": 478,
-              "01": 478,
-              "02": 478,
-              "04": 478,
-              "05": 478,
-              "06": 478,
-              "08": 478,
-              "09": 478,
-              "10": 478,
-              "11": 478,
-              "12": 478,
-              "13": 478,
-              "15": 478,
-              "16": 478,
-              "17": 478,
-              "18": 478,
-              "19": 478,
-              "20": 478,
-              "21": 478,
-              "22": 478,
-              "23": 478,
-              "24": 478,
-              "25": 478,
-              "26": 478,
-              "27": 478,
-              "28": 478,
-              "29": 478,
-              "30": 478,
-              "31": 478,
-              "32": 478,
-              "33": 478,
-              "34": 478,
-              "35": 478,
-              "36": 478,
-              "37": 478,
-              "38": 478,
-              "39": 478,
-              "40": 478,
-              "41": 478,
-              "42": 478,
-              "44": 478,
-              "45": 478,
-              "46": 478,
-              "47": 478,
-              "48": 478,
-              "49": 478,
-              "50": 478,
-              "51": 478,
-              "53": 478,
-              "54": 478,
-              "55": 478,
-              "56": 478
-            }
-          },
-          {
-            "name": "date",
-            "duplicates": 24617,
-            "info": {
-              "short_name": "Date",
-              "long_name": "Period end date",
-              "short_description": "End date of the reporting period, in YYYY-mm-dd format.",
-              "long_description": "End date of the reporting period the row covers.",
-              "measure_type": "date",
-              "unit": "date",
-              "id": "date"
-            },
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "2022-01-08": 104,
-              "2022-01-15": 104,
-              "2022-01-22": 104,
-              "2022-01-29": 104,
-              "2022-02-05": 104,
-              "2022-02-12": 104,
-              "2022-02-19": 104,
-              "2022-02-26": 104,
-              "2022-03-05": 104,
-              "2022-03-12": 104,
-              "2022-03-19": 104,
-              "2022-03-26": 104,
-              "2022-04-02": 104,
-              "2022-04-09": 104,
-              "2022-04-16": 104,
-              "2022-04-23": 104,
-              "2022-04-30": 104,
-              "2022-05-07": 104,
-              "2022-05-14": 104,
-              "2022-05-21": 104,
-              "2022-05-28": 104,
-              "2022-06-04": 104,
-              "2022-06-11": 104,
-              "2022-06-18": 104,
-              "2022-06-25": 104,
-              "2022-07-02": 104,
-              "2022-07-09": 104,
-              "2022-07-16": 104,
-              "2022-07-23": 104,
-              "2022-07-30": 104,
-              "2022-08-06": 104,
-              "2022-08-13": 104,
-              "2022-08-20": 104,
-              "2022-08-27": 104,
-              "2022-09-03": 104,
-              "2022-09-10": 104,
-              "2022-09-17": 104,
-              "2022-09-24": 104,
-              "2022-10-01": 104,
-              "2022-10-08": 104,
-              "2022-10-15": 104,
-              "2022-10-22": 104,
-              "2022-10-29": 104,
-              "2022-11-05": 104,
-              "2022-11-12": 104,
-              "2022-11-19": 104,
-              "2022-11-26": 104,
-              "2022-12-03": 104,
-              "2022-12-10": 104,
-              "2022-12-17": 104,
-              "2022-12-24": 104,
-              "2022-12-31": 104,
-              "2023-01-07": 104,
-              "2023-01-14": 104,
-              "2023-01-21": 104,
-              "2023-01-28": 104,
-              "2023-02-04": 104,
-              "2023-02-11": 104,
-              "2023-02-18": 104,
-              "2023-02-25": 104,
-              "2023-03-04": 104,
-              "2023-03-11": 104,
-              "2023-03-18": 104,
-              "2023-03-25": 104,
-              "2023-04-01": 104,
-              "2023-04-08": 104,
-              "2023-04-15": 104,
-              "2023-04-22": 104,
-              "2023-04-29": 104,
-              "2023-05-06": 104,
-              "2023-05-13": 104,
-              "2023-05-20": 104,
-              "2023-05-27": 104,
-              "2023-06-03": 104,
-              "2023-06-10": 104,
-              "2023-06-17": 104,
-              "2023-06-24": 104,
-              "2023-07-01": 104,
-              "2023-07-08": 104,
-              "2023-07-15": 104,
-              "2023-07-22": 104,
-              "2023-07-29": 104,
-              "2023-08-05": 104,
-              "2023-08-12": 104,
-              "2023-08-19": 104,
-              "2023-08-26": 104,
-              "2023-09-02": 104,
-              "2023-09-09": 104,
-              "2023-09-16": 104,
-              "2023-09-23": 104,
-              "2023-09-30": 104,
-              "2023-10-07": 104,
-              "2023-10-14": 104,
-              "2023-10-21": 104,
-              "2023-10-28": 104,
-              "2023-11-04": 104,
-              "2023-11-11": 104,
-              "2023-11-18": 104,
-              "2023-11-25": 104,
-              "2023-12-02": 104,
-              "2023-12-09": 104,
-              "2023-12-16": 104,
-              "2023-12-23": 104,
-              "2023-12-30": 104,
-              "2024-01-06": 104,
-              "2024-01-13": 104,
-              "2024-01-20": 104,
-              "2024-01-27": 104,
-              "2024-02-03": 104,
-              "2024-02-10": 104,
-              "2024-02-17": 104,
-              "2024-02-24": 104,
-              "2024-03-02": 104,
-              "2024-03-09": 104,
-              "2024-03-16": 104,
-              "2024-03-23": 104,
-              "2024-03-30": 104,
-              "2024-04-06": 104,
-              "2024-04-13": 104,
-              "2024-04-20": 104,
-              "2024-04-27": 104,
-              "2024-05-04": 104,
-              "2024-05-11": 104,
-              "2024-05-18": 104,
-              "2024-05-25": 104,
-              "2024-06-01": 104,
-              "2024-06-08": 104,
-              "2024-06-15": 104,
-              "2024-06-22": 104,
-              "2024-06-29": 104,
-              "2024-07-06": 104,
-              "2024-07-13": 104,
-              "2024-07-20": 104,
-              "2024-07-27": 104,
-              "2024-08-03": 104,
-              "2024-08-10": 104,
-              "2024-08-17": 104,
-              "2024-08-24": 104,
-              "2024-08-31": 104,
-              "2024-09-07": 104,
-              "2024-09-14": 104,
-              "2024-09-21": 104,
-              "2024-09-28": 104,
-              "2024-10-05": 104,
-              "2024-10-12": 104,
-              "2024-10-19": 104,
-              "2024-10-26": 104,
-              "2024-11-02": 104,
-              "2024-11-09": 104,
-              "2024-11-16": 104,
-              "2024-11-23": 104,
-              "2024-11-30": 104,
-              "2024-12-07": 104,
-              "2024-12-14": 104,
-              "2024-12-21": 104,
-              "2024-12-28": 104,
-              "2025-01-04": 104,
-              "2025-01-11": 104,
-              "2025-01-18": 104,
-              "2025-01-25": 104,
-              "2025-02-01": 104,
-              "2025-02-08": 104,
-              "2025-02-15": 104,
-              "2025-02-22": 104,
-              "2025-03-01": 104,
-              "2025-03-08": 104,
-              "2025-03-15": 104,
-              "2025-03-22": 104,
-              "2025-03-29": 104,
-              "2025-04-05": 104,
-              "2025-04-12": 104,
-              "2025-04-19": 104,
-              "2025-04-26": 104,
-              "2025-05-03": 104,
-              "2025-05-10": 104,
-              "2025-05-17": 104,
-              "2025-05-24": 104,
-              "2025-05-31": 104,
-              "2025-06-07": 104,
-              "2025-06-14": 104,
-              "2025-06-21": 104,
-              "2025-06-28": 104,
-              "2025-07-05": 104,
-              "2025-07-12": 104,
-              "2025-07-19": 104,
-              "2025-07-26": 104,
-              "2025-08-02": 104,
-              "2025-08-09": 104,
-              "2025-08-16": 104,
-              "2025-08-23": 104,
-              "2025-08-30": 104,
-              "2025-09-06": 104,
-              "2025-09-13": 104,
-              "2025-09-20": 104,
-              "2025-09-27": 104,
-              "2025-10-04": 104,
-              "2025-10-11": 104,
-              "2025-10-18": 104,
-              "2025-10-25": 104,
-              "2025-11-01": 104,
-              "2025-11-08": 104,
-              "2025-11-15": 104,
-              "2025-11-22": 104,
-              "2025-11-29": 104,
-              "2025-12-06": 104,
-              "2025-12-13": 104,
-              "2025-12-20": 104,
-              "2025-12-27": 104,
-              "2026-01-03": 104,
-              "2026-01-10": 104,
-              "2026-01-17": 104,
-              "2026-01-24": 104,
-              "2026-01-31": 104,
-              "2026-02-07": 104,
-              "2026-02-14": 104,
-              "2026-02-21": 104,
-              "2026-02-28": 104,
-              "2026-03-07": 104,
-              "2026-03-14": 104,
-              "2026-03-21": 104,
-              "2026-03-28": 104,
-              "2026-04-04": 104,
-              "2026-04-11": 104,
-              "2026-04-18": 104,
-              "2026-04-25": 104,
-              "2026-05-02": 104,
-              "2026-05-09": 104,
-              "2026-05-16": 104,
-              "2026-05-23": 104,
-              "2026-05-30": 104,
-              "2026-06-06": 104,
-              "2026-06-13": 104,
-              "2026-06-20": 104,
-              "2026-06-27": 104,
-              "2026-07-04": 104,
-              "2026-07-11": 104,
-              "2026-07-18": 104,
-              "2026-07-25": 104,
-              "2026-08-01": 104
-            }
-          },
-          {
-            "name": "year",
-            "duplicates": 24851,
-            "info": {
-              "short_name": "Year",
-              "long_name": "Year",
-              "short_description": "Year of the reporting period.",
-              "long_description": "Year of the reporting period, the MMWR year for the weekly NNDSS series.",
-              "measure_type": "identifier",
-              "unit": "year",
-              "id": "year"
-            },
-            "time_range": [-1, -1],
-            "type": "integer",
-            "missing": 0,
-            "mean": 2023.820084,
-            "sd": 1.333948,
-            "min": 2022,
-            "max": 2026
-          },
-          {
-            "name": "week",
-            "duplicates": 24803,
-            "info": {
-              "short_name": "MMWR week",
-              "long_name": "MMWR week number",
-              "short_description": "MMWR week number (1-53) within the year.",
-              "long_description": "MMWR (epidemiological) week number within the year.",
-              "measure_type": "identifier",
-              "unit": "week",
-              "id": "week"
-            },
-            "time_range": [-1, -1],
-            "type": "integer",
-            "missing": 0,
-            "mean": 25.230126,
-            "sd": 14.898327,
-            "min": 1,
-            "max": 53
-          },
-          {
-            "name": "measure",
-            "duplicates": 24854,
-            "info": {
-              "short_name": "Measure",
-              "levels": {
+                },
                 "stss_cases_weekly": {
                   "short_name": "Strep TSS cases (weekly)",
                   "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
@@ -2042,39 +1560,61 @@
             "type": "string",
             "missing": 0,
             "table": {
+              "n_patients": 13104,
+              "n_strep_throat": 13104,
+              "pct_strep_throat": 13104,
               "stss_cases_cumulative": 12428,
               "stss_cases_weekly": 12428
             }
           },
           {
             "name": "value",
-            "duplicates": 24613,
+            "duplicates": 34481,
             "info": {
               "short_name": "Value",
-              "long_name": "Reported STSS cases",
-              "short_description": "Reported cases of streptococcal toxic shock syndrome.",
-              "long_description": "Reported case count of streptococcal toxic shock syndrome.",
+              "long_name": "Measure value",
+              "short_description": "Value of the measure named in the measure column.",
+              "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
               "measure_type": "Mixed",
               "unit": "varies by measure",
-              "time_resolution": "Week",
-              "sources": [
-                {
-                  "id": "nnds"
-                }
-              ],
               "id": "value"
             },
             "time_range": [-1, -1],
-            "type": "integer",
+            "type": "float",
             "missing": 0,
-            "mean": 4.494689,
-            "sd": 29.211256,
+            "mean": 160376.123394,
+            "sd": 2035998.232491,
             "min": -3,
-            "max": 647
+            "max": 98758918
+          },
+          {
+            "name": "suppressed",
+            "duplicates": 64165,
+            "info": {
+              "short_name": "Suppressed",
+              "long_name": "Epic suppression flag",
+              "short_description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
+              "long_description": "1 where Epic Cosmos withheld the underlying cell as a count of 10 or fewer, in which case the value was imputed as 5; blank on NNDSS rows, which have no such mechanism.",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "id": "suppressed"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 24856,
+            "mean": 0.076669,
+            "sd": 0.266068,
+            "min": 0,
+            "max": 1
           }
         ]
       },
-      "sha512": "f566ec95c6a05cdceb55ee8da640459a1d1b83971c521090fbddd9989f9183f4cc1071a90e2d1364fc29c4ad8a9ba44ee4d011e871b4f5fb6c3ec456f31ff29c"
+      "sha512": "d5808473fc21bf122b2113c376ecfa010b1bf612b6a0a666b9f96b4f92449a04c6476c322053e86fd40a3d9ca60f752b85ae2233abaa775e3f744437be68e0e3"
     }
   ],
   "measure_info": {
@@ -2087,23 +1627,14 @@
       "unit": "state name",
       "id": "bundle_strep/dist/abcs_strep.parquet|geography"
     },
-    "bundle_strep/dist/epic_gas.parquet|geography": {
+    "bundle_strep/dist/gas_state.parquet|geography": {
       "short_name": "Geography",
       "long_name": "Geography name",
       "short_description": "State name, or \"United States\" for the national total.",
       "long_description": "Geographic area the row describes, as a state name or \"United States\" for the national total.",
       "measure_type": "identifier",
       "unit": "state name",
-      "id": "bundle_strep/dist/epic_gas.parquet|geography"
-    },
-    "bundle_strep/dist/nnds_stss.parquet|geography": {
-      "short_name": "Geography",
-      "long_name": "Geography name",
-      "short_description": "State name, or \"United States\" for the national total.",
-      "long_description": "Geographic area the row describes, as a state name or \"United States\" for the national total.",
-      "measure_type": "identifier",
-      "unit": "state name",
-      "id": "bundle_strep/dist/nnds_stss.parquet|geography"
+      "id": "bundle_strep/dist/gas_state.parquet|geography"
     },
     "bundle_strep/dist/abcs_strep.parquet|geography_fips": {
       "short_name": "Geography FIPS",
@@ -2114,23 +1645,14 @@
       "unit": "FIPS code",
       "id": "bundle_strep/dist/abcs_strep.parquet|geography_fips"
     },
-    "bundle_strep/dist/epic_gas.parquet|geography_fips": {
+    "bundle_strep/dist/gas_state.parquet|geography_fips": {
       "short_name": "Geography FIPS",
       "long_name": "Geography FIPS code",
       "short_description": "FIPS code for the geography; \"00\" is national.",
       "long_description": "FIPS code for the row's geography, with \"00\" for the national total and 2-digit codes for states.",
       "measure_type": "identifier",
       "unit": "FIPS code",
-      "id": "bundle_strep/dist/epic_gas.parquet|geography_fips"
-    },
-    "bundle_strep/dist/nnds_stss.parquet|geography_fips": {
-      "short_name": "Geography FIPS",
-      "long_name": "Geography FIPS code",
-      "short_description": "FIPS code for the geography; \"00\" is national.",
-      "long_description": "FIPS code for the row's geography, with \"00\" for the national total and 2-digit codes for states.",
-      "measure_type": "identifier",
-      "unit": "FIPS code",
-      "id": "bundle_strep/dist/nnds_stss.parquet|geography_fips"
+      "id": "bundle_strep/dist/gas_state.parquet|geography_fips"
     },
     "bundle_strep/dist/abcs_strep.parquet|date": {
       "short_name": "Date",
@@ -2141,23 +1663,14 @@
       "unit": "date",
       "id": "bundle_strep/dist/abcs_strep.parquet|date"
     },
-    "bundle_strep/dist/epic_gas.parquet|date": {
+    "bundle_strep/dist/gas_state.parquet|date": {
       "short_name": "Date",
       "long_name": "Period end date",
       "short_description": "End date of the reporting period, in YYYY-mm-dd format.",
       "long_description": "End date of the reporting period the row covers.",
       "measure_type": "date",
       "unit": "date",
-      "id": "bundle_strep/dist/epic_gas.parquet|date"
-    },
-    "bundle_strep/dist/nnds_stss.parquet|date": {
-      "short_name": "Date",
-      "long_name": "Period end date",
-      "short_description": "End date of the reporting period, in YYYY-mm-dd format.",
-      "long_description": "End date of the reporting period the row covers.",
-      "measure_type": "date",
-      "unit": "date",
-      "id": "bundle_strep/dist/nnds_stss.parquet|date"
+      "id": "bundle_strep/dist/gas_state.parquet|date"
     },
     "bundle_strep/dist/abcs_strep.parquet|year": {
       "short_name": "Year",
@@ -2168,23 +1681,14 @@
       "unit": "year",
       "id": "bundle_strep/dist/abcs_strep.parquet|year"
     },
-    "bundle_strep/dist/epic_gas.parquet|year": {
+    "bundle_strep/dist/gas_state.parquet|year": {
       "short_name": "Year",
       "long_name": "Year",
       "short_description": "Year of the reporting period.",
       "long_description": "Year of the reporting period, the MMWR year for the weekly NNDSS series.",
       "measure_type": "identifier",
       "unit": "year",
-      "id": "bundle_strep/dist/epic_gas.parquet|year"
-    },
-    "bundle_strep/dist/nnds_stss.parquet|year": {
-      "short_name": "Year",
-      "long_name": "Year",
-      "short_description": "Year of the reporting period.",
-      "long_description": "Year of the reporting period, the MMWR year for the weekly NNDSS series.",
-      "measure_type": "identifier",
-      "unit": "year",
-      "id": "bundle_strep/dist/nnds_stss.parquet|year"
+      "id": "bundle_strep/dist/gas_state.parquet|year"
     },
     "bundle_strep/dist/abcs_strep.parquet|pathogen": {
       "short_name": "Pathogen",
@@ -2485,234 +1989,27 @@
         },
         "pct_resistant": {
           "source_id": "abcs_pct_resistant_penicillin",
-          "id": "pct_resistant",
-          "name": "abcs_pct_resistant_penicillin",
-          "duplicates": 167,
-          "info": {
-            "id": "abcs_pct_resistant_penicillin",
-            "short_name": "Penicillin resistance (%)",
-            "long_name": "Percent of isolates non-susceptible to penicillin",
-            "category": "infectious_disease",
-            "short_description": "Percent of tested isolates non-susceptible to penicillin.",
-            "long_description": "Percent of tested isolates non-susceptible to penicillin.",
-            "measure_type": "Percent",
-            "unit": "Percent",
-            "time_resolution": "Year",
-            "sources": [
-              {
-                "id": "abcs_gas"
-              },
-              {
-                "id": "abcs_gbs"
-              }
-            ],
-            "citations": [],
-            "source_file": {
-              "project": "abcs",
-              "data_dir": "/data/abcs/standard",
-              "file": "strep_resistance.csv.gz"
-            }
-          },
-          "time_range": [
-            0,
-            27
-          ],
-          "type": "integer",
-          "missing": 0,
-          "mean": 0,
-          "sd": 0,
-          "min": 0,
-          "max": 0
+          "id": "pct_resistant"
         },
         "rate_syndrome": {
           "source_id": "abcs_gas_rate_syndrome_cellulitis",
-          "id": "rate_syndrome",
-          "name": "abcs_gas_rate_syndrome_cellulitis",
-          "duplicates": 3,
-          "info": {
-            "id": "abcs_gas_rate_syndrome_cellulitis",
-            "short_name": "Cellulitis rate",
-            "long_name": "Rate of Group A cellulitis",
-            "category": "infectious_disease",
-            "short_description": "Group A cellulitis cases per 100,000 population.",
-            "long_description": "Rate of invasive Group A Streptococcus cases presenting as cellulitis, per 100,000 population.",
-            "measure_type": "Rate",
-            "unit": "Cases per 100,000",
-            "time_resolution": "Year",
-            "sources": [
-              {
-                "id": "abcs_gas"
-              }
-            ],
-            "citations": [],
-            "source_file": {
-              "project": "abcs",
-              "data_dir": "/data/abcs/standard",
-              "file": "gas_syndromes.csv.gz"
-            }
-          },
-          "time_range": [
-            0,
-            23
-          ],
-          "type": "float",
-          "missing": 0,
-          "mean": 2.26875,
-          "sd": 1.40583,
-          "min": 1.06,
-          "max": 6.01
+          "id": "rate_syndrome"
         },
         "pct_syndrome": {
           "source_id": "abcs_gbs_pct_syndrome_meningitis",
-          "id": "pct_syndrome",
-          "name": "abcs_gbs_pct_syndrome_meningitis",
-          "duplicates": 18,
-          "info": {
-            "id": "abcs_gbs_pct_syndrome_meningitis",
-            "short_name": "Meningitis (%)",
-            "long_name": "Percent of Group B cases presenting as meningitis",
-            "category": "infectious_disease",
-            "short_description": "Percent of Group B cases presenting as meningitis.",
-            "long_description": "Percent of invasive Group B Streptococcus cases presenting as meningitis.",
-            "measure_type": "Percent",
-            "unit": "Percent",
-            "time_resolution": "Year",
-            "sources": [
-              {
-                "id": "abcs_gbs"
-              }
-            ],
-            "citations": [],
-            "source_file": {
-              "project": "abcs",
-              "data_dir": "/data/abcs/standard",
-              "file": "gbs_syndromes.csv.gz"
-            }
-          },
-          "time_range": [
-            0,
-            26
-          ],
-          "type": "float",
-          "missing": 0,
-          "mean": 14.532099,
-          "sd": 12.467025,
-          "min": 2.2,
-          "max": 41.8
+          "id": "pct_syndrome"
         },
         "pct_emm_type": {
           "source_id": "abcs_gas_emm_pct_emm_1",
-          "id": "pct_emm_type",
-          "name": "abcs_gas_emm_pct_emm_1",
-          "duplicates": 1,
-          "info": {
-            "id": "abcs_gas_emm_pct_emm_1",
-            "short_name": "emm1 (%)",
-            "long_name": "Percent of isolates of emm1",
-            "category": "infectious_disease",
-            "short_description": "Percent of emm-typed Group A isolates of emm1.",
-            "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates of emm1.",
-            "measure_type": "Percent",
-            "unit": "Percent",
-            "time_resolution": "Year",
-            "sources": [
-              {
-                "id": "abcs_gas"
-              }
-            ],
-            "citations": [],
-            "source_file": {
-              "project": "abcs",
-              "data_dir": "/data/abcs/standard",
-              "file": "gas_emm.csv.gz"
-            }
-          },
-          "time_range": [
-            0,
-            27
-          ],
-          "type": "float",
-          "missing": 0,
-          "mean": 18.456071,
-          "sd": 5.6874,
-          "min": 1.25,
-          "max": 25.47
+          "id": "pct_emm_type"
         },
         "pct_serotype": {
           "source_id": "abcs_gbs_pct_serotype_ia",
-          "id": "pct_serotype",
-          "name": "abcs_gbs_pct_serotype_ia",
-          "duplicates": 52,
-          "info": {
-            "id": "abcs_gbs_pct_serotype_ia",
-            "short_name": "Serotype Ia (%)",
-            "long_name": "Percent of Group B isolates of serotype Ia",
-            "category": "infectious_disease",
-            "short_description": "Percent of typed Group B isolates of serotype Ia.",
-            "long_description": "Percent of typed invasive Group B Streptococcus isolates of capsular serotype Ia.",
-            "measure_type": "Percent",
-            "unit": "Percent",
-            "time_resolution": "Year",
-            "sources": [
-              {
-                "id": "abcs_gbs"
-              }
-            ],
-            "citations": [],
-            "source_file": {
-              "project": "abcs",
-              "data_dir": "/data/abcs/standard",
-              "file": "gbs_serotypes.csv.gz"
-            }
-          },
-          "time_range": [
-            0,
-            27
-          ],
-          "type": "float",
-          "missing": 0,
-          "mean": 21.632143,
-          "sd": 7.641596,
-          "min": 0,
-          "max": 38.2
+          "id": "pct_serotype"
         },
         "pct_alph_type": {
           "source_id": "abcs_gbs_pct_alph_alp1",
-          "id": "pct_alph_type",
-          "name": "abcs_gbs_pct_alph_alp1",
-          "duplicates": 11,
-          "info": {
-            "id": "abcs_gbs_pct_alph_alp1",
-            "short_name": "ALP1 (%)",
-            "long_name": "Percent of Group B isolates carrying ALP1",
-            "category": "infectious_disease",
-            "short_description": "Percent of typed Group B isolates carrying ALP1.",
-            "long_description": "Percent of typed invasive Group B Streptococcus isolates carrying the ALP1 alpha-like protein gene.",
-            "measure_type": "Percent",
-            "unit": "Percent",
-            "time_resolution": "Year",
-            "sources": [
-              {
-                "id": "abcs_gbs"
-              }
-            ],
-            "citations": [],
-            "source_file": {
-              "project": "abcs",
-              "data_dir": "/data/abcs/standard",
-              "file": "gbs_alph.csv.gz"
-            }
-          },
-          "time_range": [
-            0,
-            9
-          ],
-          "type": "float",
-          "missing": 0,
-          "mean": 26.594,
-          "sd": 5.861058,
-          "min": 10.8,
-          "max": 37.1
+          "id": "pct_alph_type"
         }
       },
       "id": "bundle_strep/dist/abcs_strep.parquet|measure"
@@ -2721,7 +2018,7 @@
       "short_name": "Value",
       "long_name": "Measure value",
       "short_description": "Value of the measure named in the measure column.",
-      "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
+      "long_description": "Value of the measure named in the measure column, whose units differ by measure; blank where CDC published nothing, so a 0 is always a measured zero.",
       "measure_type": "Mixed",
       "unit": "varies by measure",
       "time_resolution": "Year",
@@ -2821,33 +2118,35 @@
       },
       "id": "bundle_strep/dist/abcs_strep.parquet|n_type_status"
     },
-    "bundle_strep/dist/abcs_strep.parquet|value_not_reported": {
-      "short_name": "Value not reported",
-      "long_name": "Flag for values CDC did not report",
-      "short_description": "1 where CDC did not report this measure for the row; 0 otherwise.",
-      "long_description": "1 where CDC published nothing for the row's measure, leaving value blank.",
-      "measure_type": "Binary",
-      "unit": "0/1",
-      "time_resolution": "Year",
-      "sources": [
-        {
-          "id": "abcs_gas"
-        },
-        {
-          "id": "abcs_gbs"
-        }
-      ],
-      "id": "bundle_strep/dist/abcs_strep.parquet|value_not_reported"
-    },
-    "bundle_strep/dist/epic_gas.parquet|age": {
+    "bundle_strep/dist/gas_state.parquet|age": {
       "short_name": "Age group",
       "long_name": "Age group",
       "short_description": "Age group; \"Total\" is the all-ages aggregate.",
-      "long_description": "Epic Cosmos age band for the row, with \"Total\" as the all-ages aggregate.",
+      "long_description": "Epic Cosmos age band for the row, with \"Total\" as the all-ages aggregate and on every NNDSS row.",
       "measure_type": "category",
-      "id": "bundle_strep/dist/epic_gas.parquet|age"
+      "id": "bundle_strep/dist/gas_state.parquet|age"
     },
-    "bundle_strep/dist/epic_gas.parquet|measure": {
+    "bundle_strep/dist/gas_state.parquet|source": {
+      "short_name": "Source",
+      "long_name": "Data source",
+      "short_description": "Which surveillance system reported the row.",
+      "long_description": "Which surveillance system the row comes from, Epic Cosmos or NNDSS.",
+      "measure_type": "category",
+      "levels": {
+        "Epic Cosmos": {
+          "short_name": "Epic Cosmos",
+          "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age.",
+          "id": "Epic Cosmos"
+        },
+        "NNDSS": {
+          "short_name": "NNDSS",
+          "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state.",
+          "id": "NNDSS"
+        }
+      },
+      "id": "bundle_strep/dist/gas_state.parquet|source"
+    },
+    "bundle_strep/dist/gas_state.parquet|measure": {
       "short_name": "Measure",
       "levels": {
         "n_strep_throat": {
@@ -2965,43 +2264,7 @@
           "sd": 4451446.849236,
           "min": 92,
           "max": 98758918
-        }
-      },
-      "id": "bundle_strep/dist/epic_gas.parquet|measure"
-    },
-    "bundle_strep/dist/epic_gas.parquet|value": {
-      "short_name": "Value",
-      "long_name": "Measure value",
-      "short_description": "Value of the measure named in the measure column.",
-      "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
-      "measure_type": "Mixed",
-      "unit": "varies by measure",
-      "time_resolution": "Quarter",
-      "sources": [
-        {
-          "id": "epic_cosmos"
-        }
-      ],
-      "id": "bundle_strep/dist/epic_gas.parquet|value"
-    },
-    "bundle_strep/dist/epic_gas.parquet|suppressed": {
-      "short_name": "Suppressed",
-      "long_name": "Epic suppression flag",
-      "short_description": "1 where Epic withheld the underlying cell and the value was imputed as 5.",
-      "long_description": "1 where Epic Cosmos withheld the underlying cell as a count of 10 or fewer, in which case the value was imputed as 5.",
-      "measure_type": "Binary",
-      "unit": "0/1",
-      "time_resolution": "Quarter",
-      "sources": [
-        {
-          "id": "epic_cosmos"
-        }
-      ],
-      "id": "bundle_strep/dist/epic_gas.parquet|suppressed"
-    },
-    "bundle_strep/dist/nnds_stss.parquet|measure": {
-      "short_name": "Measure",
-      "levels": {
+        },
         "stss_cases_weekly": {
           "short_name": "Strep TSS cases (weekly)",
           "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
@@ -3056,31 +2319,30 @@
           "max": 647
         }
       },
-      "id": "bundle_strep/dist/nnds_stss.parquet|measure"
+      "id": "bundle_strep/dist/gas_state.parquet|measure"
     },
-    "bundle_strep/dist/nnds_stss.parquet|value": {
+    "bundle_strep/dist/gas_state.parquet|value": {
       "short_name": "Value",
-      "long_name": "Reported STSS cases",
-      "short_description": "Reported cases of streptococcal toxic shock syndrome.",
-      "long_description": "Reported case count of streptococcal toxic shock syndrome.",
+      "long_name": "Measure value",
+      "short_description": "Value of the measure named in the measure column.",
+      "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
       "measure_type": "Mixed",
       "unit": "varies by measure",
-      "time_resolution": "Week",
+      "id": "bundle_strep/dist/gas_state.parquet|value"
+    },
+    "bundle_strep/dist/gas_state.parquet|suppressed": {
+      "short_name": "Suppressed",
+      "long_name": "Epic suppression flag",
+      "short_description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
+      "long_description": "1 where Epic Cosmos withheld the underlying cell as a count of 10 or fewer, in which case the value was imputed as 5; blank on NNDSS rows, which have no such mechanism.",
+      "measure_type": "Binary",
+      "unit": "0/1",
       "sources": [
         {
-          "id": "nnds"
+          "id": "epic_cosmos"
         }
       ],
-      "id": "bundle_strep/dist/nnds_stss.parquet|value"
-    },
-    "bundle_strep/dist/nnds_stss.parquet|week": {
-      "short_name": "MMWR week",
-      "long_name": "MMWR week number",
-      "short_description": "MMWR week number (1-53) within the year.",
-      "long_description": "MMWR (epidemiological) week number within the year.",
-      "measure_type": "identifier",
-      "unit": "week",
-      "id": "bundle_strep/dist/nnds_stss.parquet|week"
+      "id": "bundle_strep/dist/gas_state.parquet|suppressed"
     },
     "_bundle": {
       "name": "bundle_strep",
@@ -3103,13 +2365,15 @@
             "abcs/standard/gbs_alph.csv.gz"
           ]
         },
-        "epic_gas.parquet": {
-          "sources": "epic_resp_infections",
-          "source_files": "epic_resp_infections/standard/quarterly_gas.csv.gz"
-        },
-        "nnds_stss.parquet": {
-          "sources": "nnds",
-          "source_files": "nnds/standard/data.csv.gz"
+        "gas_state.parquet": {
+          "sources": [
+            "epic_resp_infections",
+            "nnds"
+          ],
+          "source_files": [
+            "epic_resp_infections/standard/quarterly_gas.csv.gz",
+            "nnds/standard/data.csv.gz"
+          ]
         }
       },
       "id": "_bundle"
