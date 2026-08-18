@@ -21,8 +21,7 @@ gas_base_url <- "https://raw.githubusercontent.com/PopHIVE/epic_preprocessing/ma
 # Standard files to download from cosmos_resp_infections
 standard_files <- c(
   "weekly.csv.gz",
-  "monthly_tests.csv.gz",
-  "no_geo.csv.gz"
+  "monthly_tests.csv.gz"
 )
 
 # Download each standard file and track hashes for change detection
