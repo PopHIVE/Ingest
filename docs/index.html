@@ -24,7 +24,7 @@
     <nav class="navbar navbar-dark fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
-        <span class="navbar-text text-light">Last updated: August 18, 2026</span>
+        <span class="navbar-text text-light">Last updated: August 19, 2026</span>
       </div>
     </nav>
     <div class="container-fluid">
@@ -39338,31 +39338,12 @@ VAERS data have important limitations: the number of reports alone cannot establ
                   <tbody>
                     <tr>
                       <td>
-                        <code>geography</code>
+                        <code>fips</code>
                       </td>
-                      <td>Geography</td>
-                      <td>Geographic identifier. For national/state rows (see geography_level) this holds the full state/territory name (e.g. 'California') or 'United States', rather than a FIPS code. For county rows this holds the 5-digit county FIPS code. Connecticut reported by county through 2022 and by planning region (FIPS 09110-09190) from 2023 onward, so its county geography codes change mid-series.</td>
+                      <td>FIPS code</td>
+                      <td>FIPS code identifier for the row: '00' for national rows, 2-digit state/territory FIPS for state rows, and 5-digit county FIPS for county rows.</td>
                       <td></td>
                       <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>geography_level</code>
-                      </td>
-                      <td>Geography level</td>
-                      <td>
-                        Granularity of the geography column: 'national', 'state', or 'county'.
-                        <div class="mt-1">
-                          <small class="text-muted">
-                            <em>Values: </em>
-                          </small>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">national</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">state</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">county</span>
-                        </div>
-                      </td>
-                      <td>Category</td>
-                      <td>Category</td>
                     </tr>
                     <tr>
                       <td>
@@ -39430,7 +39411,7 @@ VAERS data have important limitations: the number of reports alone cannot establ
                         <code>value</code>
                       </td>
                       <td>Value</td>
-                      <td>Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), or weekly cumulative year-to-date case counts as reported through the NNDSS (national and state only).</td>
+                      <td>Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), or weekly case counts for the NNDSS measures (national and state only). NNDSS publishes cumulative year-to-date counts; this bundle de-cumulates them into weekly incident counts by differencing consecutive weeks within each MMWR year, so occasional negative values reflect downward revisions to the source's cumulative totals.</td>
                       <td></td>
                       <td></td>
                     </tr>
