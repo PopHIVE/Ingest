@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-19T09:41:20Z",
+  "generated": "2026-08-19T09:51:15Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -5846,6 +5846,364 @@
         }
       ]
     },
+    "bundle_strep": {
+      "name": "bundle_strep",
+      "display_name": "Bundle: Strep",
+      "dist_files": [
+        {
+          "filename": "abcs_strep.parquet",
+          "path": "data/bundle_strep/dist/abcs_strep.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_strep/dist/abcs_strep.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State name, or \"United States\" for the national total.",
+              "measure_type": "identifier",
+              "unit": "state name",
+              "levels": {}
+            },
+            {
+              "name": "geography_fips",
+              "short_name": "Geography FIPS",
+              "description": "FIPS code for the geography; \"00\" is national.",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "date",
+              "short_name": "Date",
+              "description": "End date of the reporting period, in YYYY-mm-dd format.",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Year of the reporting period.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex; \"Total\" combines both.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/Ethnicity",
+              "description": "Race and ethnicity; \"Total\" combines all groups.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "rate_denominator",
+              "short_name": "Rate denominator",
+              "description": "Whether a rate is per 100,000 of the row's stratum or of the whole population.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Clinical presentation the row describes; \"Total\" where not syndrome-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "antibiotic",
+              "short_name": "Antibiotic",
+              "description": "Drug the resistance percentage refers to; \"Total\" where not drug-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "emm_type",
+              "short_name": "emm type",
+              "description": "emm type the row describes; \"Total\" where not type-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "serotype",
+              "short_name": "Serotype",
+              "description": "Capsular serotype the row describes; \"Total\" where not serotype-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "alph_type",
+              "short_name": "ALPH type",
+              "description": "Alpha-like protein gene the row describes; \"Total\" where not type-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "rate_cases": {
+                  "source_id": "abcs_rate_cases"
+                },
+                "rate_deaths": {
+                  "source_id": "abcs_rate_deaths"
+                },
+                "n_cases": {
+                  "source_id": "abcs_N_cases"
+                },
+                "n_deaths": {
+                  "source_id": "abcs_N_deaths"
+                },
+                "n_survivals": {
+                  "source_id": "abcs_N_survivals"
+                },
+                "pct_resistant": {
+                  "source_id": "abcs_pct_resistant_penicillin"
+                },
+                "rate_syndrome": {
+                  "source_id": "abcs_gas_rate_syndrome_cellulitis"
+                },
+                "pct_syndrome": {
+                  "source_id": "abcs_gbs_pct_syndrome_meningitis"
+                },
+                "pct_emm_type": {
+                  "source_id": "abcs_gas_emm_pct_emm_1"
+                },
+                "pct_serotype": {
+                  "source_id": "abcs_gbs_pct_serotype_ia"
+                },
+                "pct_alph_type": {
+                  "source_id": "abcs_gbs_pct_alph_alp1"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value of the measure named in the measure column.",
+              "measure_type": "Mixed",
+              "unit": "varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "n_type",
+              "short_name": "Isolates of this type",
+              "description": "Isolates of the emm type on this row.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "n_type_status",
+              "short_name": "Type count status",
+              "description": "Whether n_type is published, unpublished, or not applicable.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "reported": {
+                  "short_name": "Reported",
+                  "short_description": "n_type holds CDC's published per-type count."
+                },
+                "not_reported": {
+                  "short_name": "Not reported",
+                  "short_description": "An emm type CDC did not itemise that year."
+                },
+                "not_applicable": {
+                  "short_name": "Not applicable",
+                  "short_description": "Any measure other than pct_emm_type."
+                }
+              }
+            },
+            {
+              "name": "n_isolates",
+              "short_name": "Isolates",
+              "description": "Isolate count behind the percentage on this row.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "n_isolates_status",
+              "short_name": "Isolate count status",
+              "description": "Whether n_isolates is published, unpublished, or not applicable.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "reported": {
+                  "short_name": "Reported",
+                  "short_description": "n_isolates holds CDC's published count."
+                },
+                "not_reported": {
+                  "short_name": "Not reported",
+                  "short_description": "The measure has an isolate denominator but CDC published none for this row."
+                },
+                "not_applicable": {
+                  "short_name": "Not applicable",
+                  "short_description": "The measure has no isolate denominator."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "filename": "gas_state.parquet",
+          "path": "data/bundle_strep/dist/gas_state.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_strep/dist/gas_state.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State name, or \"United States\" for the national total.",
+              "measure_type": "identifier",
+              "unit": "state name",
+              "levels": {}
+            },
+            {
+              "name": "geography_fips",
+              "short_name": "Geography FIPS",
+              "description": "FIPS code for the geography; \"00\" is national.",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "date",
+              "short_name": "Date",
+              "description": "End date of the reporting period, in YYYY-mm-dd format.",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Year of the reporting period.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Source",
+              "description": "Which surveillance system reported the row.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "Epic Cosmos": {
+                  "short_name": "Epic Cosmos",
+                  "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age."
+                },
+                "NNDSS": {
+                  "short_name": "NNDSS",
+                  "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state."
+                }
+              }
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "n_strep_throat": {
+                  "source_id": "epic_n_strep_throat"
+                },
+                "pct_strep_throat": {
+                  "source_id": "epic_pct_strep_throat"
+                },
+                "n_patients": {
+                  "source_id": "epic_n_patients"
+                },
+                "stss_cases_weekly": {
+                  "short_name": "Strep TSS cases (weekly)",
+                  "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
+                  "short_description": "Newly reported STSS cases in the MMWR week.",
+                  "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "stss_cases_cumulative": {
+                  "source_id": "streptococcal_toxic_shock_syndrome",
+                  "short_description": "Year-to-date STSS cases as published by NNDSS.",
+                  "long_description": "Cumulative streptococcal toxic shock syndrome cases reported since the start of the MMWR year."
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value of the measure named in the measure column.",
+              "measure_type": "Mixed",
+              "unit": "varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "suppressed",
+              "short_name": "Suppressed",
+              "description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "levels": {}
+            }
+          ]
+        }
+      ]
+    },
     "bundle_vector_borne": {
       "name": "bundle_vector_borne",
       "display_name": "Bundle: Vector Borne",
@@ -9440,14 +9798,14 @@
             {
               "name": "age",
               "short_name": "Age group",
-              "description": "",
-              "measure_type": "Age group (years)",
-              "unit": "years"
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
             },
             {
               "name": "serotype",
               "short_name": "Serotype",
-              "description": "Pneumococcal serotype",
+              "description": "Which serotype the row describes.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -9474,10 +9832,10 @@
             },
             {
               "name": "pop",
-              "short_name": "pop",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Surveillance population",
+              "description": "Population of the ABCs catchment area.",
+              "measure_type": "Count",
+              "unit": "People"
             },
             {
               "name": "rate_IPD",
@@ -9485,6 +9843,501 @@
               "description": "Annual rate of invasive pneumococcal disease cases per 100,000 persons in the ABCs catchment area",
               "measure_type": "Rate",
               "unit": "Cases per 100,000"
+            }
+          ]
+        },
+        {
+          "filename": "gas_emm.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "emm_type",
+              "short_name": "emm type",
+              "description": "Which emm type the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gas_emm_n",
+              "short_name": "emm type isolates",
+              "description": "Emm-typed Group A isolates of the type on the row.",
+              "measure_type": "Count",
+              "unit": "Isolates"
+            },
+            {
+              "name": "abcs_gas_emm_pct",
+              "short_name": "emm type (%)",
+              "description": "Percent of emm-typed Group A isolates of the type on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "abcs_gas_emm_n_isolates_total",
+              "short_name": "emm-typed isolates",
+              "description": "Group A isolates assigned an emm type.",
+              "measure_type": "Count",
+              "unit": "Isolates"
+            }
+          ]
+        },
+        {
+          "filename": "gas_syndromes.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Which clinical presentation the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gas_rate_syndrome",
+              "short_name": "Syndrome rate",
+              "description": "Group A cases presenting as the syndrome on the row, per 100,000.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000"
+            }
+          ]
+        },
+        {
+          "filename": "gbs_alph.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "alph_type",
+              "short_name": "ALPH type",
+              "description": "Which alpha-like protein gene the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gbs_pct_alph",
+              "short_name": "ALPH type (%)",
+              "description": "Percent of typed Group B isolates of the ALPH type on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "abcs_gbs_n_isolates",
+              "short_name": "Isolates typed",
+              "description": "Typed Group B isolates in the population group on the row.",
+              "measure_type": "Count",
+              "unit": "Isolates"
+            }
+          ]
+        },
+        {
+          "filename": "gbs_serotypes.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "serotype",
+              "short_name": "Serotype",
+              "description": "Which serotype the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gbs_pct_serotype",
+              "short_name": "Serotype (%)",
+              "description": "Percent of typed Group B isolates of the serotype on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "abcs_gbs_n_isolates",
+              "short_name": "Isolates typed",
+              "description": "Typed Group B isolates in the population group on the row.",
+              "measure_type": "Count",
+              "unit": "Isolates"
+            }
+          ]
+        },
+        {
+          "filename": "gbs_syndromes.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Which clinical presentation the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gbs_pct_syndrome",
+              "short_name": "Syndrome (%)",
+              "description": "Percent of Group B cases presenting as the syndrome on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            }
+          ]
+        },
+        {
+          "filename": "strep_counts.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_N_cases",
+              "short_name": "Cases",
+              "description": "Estimated annual invasive disease cases.",
+              "measure_type": "Count",
+              "unit": "Cases"
+            },
+            {
+              "name": "abcs_N_deaths",
+              "short_name": "Deaths",
+              "description": "Estimated annual deaths from invasive disease.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "abcs_N_survivals",
+              "short_name": "Survivals",
+              "description": "Estimated annual invasive disease cases who survived.",
+              "measure_type": "Count",
+              "unit": "People"
+            }
+          ]
+        },
+        {
+          "filename": "strep_rates.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex; \"Total\" combines both.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/Ethnicity",
+              "description": "Race and ethnicity; \"Total\" combines all groups.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "rate_denominator",
+              "short_name": "Rate denominator",
+              "description": "Indicates if rate is per 100,000 of the row's stratum or of the whole population.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_rate_cases",
+              "short_name": "Case rate",
+              "description": "Invasive disease cases per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000"
+            },
+            {
+              "name": "abcs_rate_deaths",
+              "short_name": "Death rate",
+              "description": "Deaths from invasive disease per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000"
+            }
+          ]
+        },
+        {
+          "filename": "strep_resistance.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "antibiotic",
+              "short_name": "Antibiotic",
+              "description": "Which drug the resistance percentage refers to.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_pct_resistant",
+              "short_name": "Resistance (%)",
+              "description": "Percent of tested isolates non-susceptible to the antibiotic on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "abcs_n_isolates",
+              "short_name": "Isolates tested",
+              "description": "Isolates characterised by CDC's reference laboratory.",
+              "measure_type": "Count",
+              "unit": "Isolates"
             }
           ]
         },
@@ -9508,7 +10361,7 @@
             {
               "name": "serotype",
               "short_name": "Serotype",
-              "description": "Pneumococcal serotype",
+              "description": "Which serotype the row describes.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -10096,6 +10949,32 @@
       "standard_files": [
         {
           "filename": "data_county.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "bls_pct_unemployment",
+              "short_name": "Unemployment rate",
+              "description": "Share of the civilian labor force ages 16+ that is unemployed but seeking work.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            }
+          ]
+        },
+        {
+          "filename": "data_state.csv.gz",
           "columns": [
             {
               "name": "geography",
@@ -17422,6 +18301,13 @@
               "unit": "encounters"
             },
             {
+              "name": "epic_n_ed_vomiting",
+              "short_name": "Nausea and Vomiting ED Encounters (Weekly)",
+              "description": "Number of ED encounters with nausea and vomiting diagnoses, weekly.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
               "name": "epic_n_ed_encounters_weekly",
               "short_name": "All-Cause ED Encounters (Weekly)",
               "description": "Total number of weekly emergency department encounters for any cause.",
@@ -17436,9 +18322,23 @@
               "unit": "%"
             },
             {
+              "name": "epic_pct_ed_vomiting",
+              "short_name": "Nausea and Vomiting ED Encounters (%, Weekly)",
+              "description": "Percentage of ED encounters attributable to nausea and vomiting, weekly.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
               "name": "epic_suppressed_flag_ed_diarrhea",
               "short_name": "Diarrhea Count Suppressed? (Weekly)",
               "description": "Binary indicator: 1 if the weekly diarrhea ED encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_ed_vomiting",
+              "short_name": "Nausea and Vomiting Count Suppressed? (Weekly)",
+              "description": "Binary indicator: 1 if the weekly nausea and vomiting ED encounter count was suppressed, 0 otherwise.",
               "measure_type": "binary",
               "unit": ""
             },
@@ -18547,6 +19447,32 @@
       "standard_files": [
         {
           "filename": "data_county.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "hud_pct_severe_housing_problems",
+              "short_name": "Severe housing problems",
+              "description": "Share of occupied housing units with at least 1 of 4 severe housing problems.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            }
+          ]
+        },
+        {
+          "filename": "data_state.csv.gz",
           "columns": [
             {
               "name": "geography",
