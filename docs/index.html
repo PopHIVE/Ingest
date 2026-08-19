@@ -24,7 +24,7 @@
     <nav class="navbar navbar-dark fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
-        <span class="navbar-text text-light">Last updated: August 17, 2026</span>
+        <span class="navbar-text text-light">Last updated: August 18, 2026</span>
       </div>
     </nav>
     <div class="container-fluid">
@@ -222,6 +222,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#bundle-respiratory">Bundle: Respiratory</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#bundle-vector-borne">Bundle: Vector Borne</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#bundle-youth-wellbeing">Bundle: Youth Wellbeing</a>
@@ -425,7 +428,7 @@
             </section>
             <section id="arbonet" class="mb-5">
               <h2 class="border-bottom pb-2">Arbonet</h2>
-              <p class="lead">ArboNET is the national arboviral surveillance system managed by CDC together with state and territorial health departments. In addition to human disease, ArboNET maintains data on arboviral infections among presumptive viremic blood donors, veterinary disease cases, mosquitoes, dead birds, and sentinel animals. Human cases are reported by county of residence rather than location of exposure, which is not necessarily the county or state where exposure occurred, and are assigned to the year of illness onset. Several caveats apply: under-reporting is inherent to any surveillance system that depends on clinicians suspecting the disease, ordering the appropriate test, and reporting confirmed results; non-neuroinvasive cases are substantially more under-reported than neuroinvasive cases, so total case counts should not be used to compare disease activity between locations or over time; and there is a lag in reporting to CDC. Values are the counts CDC publishes for public use and are not suppressed or imputed here. Connecticut reported by county through 2022 and by planning region from 2023 onward, so its geography codes change mid-series. Records that CDC assigns to an unallocated placeholder geography (state FIPS plus '999') because the county of residence is unknown are excluded from the county file but retained in the state and national totals. Reporting years differ by disease and the most recent year is preliminary and subject to change.</p>
+              <p class="lead">ArboNET is the national arboviral surveillance system managed by CDC together with state and territorial health departments. In addition to human disease, ArboNET maintains data on arboviral infections among presumptive viremic blood donors, veterinary disease cases, mosquitoes, dead birds, and sentinel animals. Human cases are reported by county of residence rather than location of exposure, which is not necessarily the county or state where exposure occurred, and are assigned to the year of illness onset. Several caveats apply: under-reporting is inherent to any surveillance system that depends on clinicians suspecting the disease, ordering the appropriate test, and reporting confirmed results; non-neuroinvasive cases are substantially more under-reported than neuroinvasive cases, so total case counts should not be used to compare disease activity between locations or over time; and there is a lag in reporting to CDC. Values are the counts CDC publishes for public use and are not suppressed or imputed here. Connecticut reported by county through 2022 and by planning region from 2023 onward, so its geography codes change mid-series. Records that CDC assigns to an unallocated placeholder geography (state FIPS plus '999') because the county of residence is unknown are excluded from the county file but retained in the state and national totals. Reporting years differ by disease and the most recent year is preliminary and subject to change. Data that were not collected in a given year are coded as NA, so cells with count 0 indicate that disease was tested for but not reported.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
@@ -39286,6 +39289,167 @@ VAERS data have important limitations: the number of reports alone cannot establ
                       <td>Suppressed flag</td>
                       <td>Equals 1 when the underlying Epic Cosmos count for this age group was suppressed (small cell) and imputed; 0 otherwise.</td>
                       <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="bundle-vector-borne" class="mb-5">
+              <h2 class="border-bottom pb-2">Bundle: Vector Borne</h2>
+              <p class="text-muted">
+                <em>Combined output bundle. Dist files: 1 parquet file(s).</em>
+              </p>
+              <p class="mb-3">
+                <strong>Data sources: </strong>
+                <a href="#arbonet" class="bundle-source-link">Arbonet</a>
+                ; 
+                <a href="#nnds" class="bundle-source-link">NNDS</a>
+              </p>
+              <h4 class="mt-4">Output Files (dist/)</h4>
+              <h5 class="mt-3">
+                <code>vector_borne.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/arbonet/standard/data_state.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>arbonet/standard/data_state.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/arbonet/standard/data_county.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>arbonet/standard/data_county.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nnds/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nnds/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic identifier. For national/state rows (see geography_level) this holds the full state/territory name (e.g. 'California') or 'United States', rather than a FIPS code. For county rows this holds the 5-digit county FIPS code. Connecticut reported by county through 2022 and by planning region (FIPS 09110-09190) from 2023 onward, so its county geography codes change mid-series.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_level</code>
+                      </td>
+                      <td>Geography level</td>
+                      <td>
+                        Granularity of the geography column: 'national', 'state', or 'county'.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">national</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">state</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">county</span>
+                        </div>
+                      </td>
+                      <td>Category</td>
+                      <td>Category</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date</code>
+                      </td>
+                      <td>Date</td>
+                      <td>Date (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>measure</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_eee_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_eee_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_eee_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_jcv_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_jcv_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_jcv_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_lac_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_lac_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_lac_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_pow_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_pow_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_sle_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_sle_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_sle_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_wnv_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_wnv_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_wnv_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_wnv_blood_donors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_chikungunya_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_eastern_equine_encephalitis_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_jamestown_canyon_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_la_crosse_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_powassan_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_st_louis_encephalitis_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_west_nile_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_western_equine_encephalitis_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">babesiosis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">dengue_virus_infections_dengue</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">dengue_virus_infections_dengue_like_illness</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">dengue_virus_infections_severe_dengue</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ehrlichiosis_and_anaplasmosis_anaplasma_phagocytophilum_infection</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ehrlichiosis_and_anaplasmosis_ehrlichia_chaffeensis_infection</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ehrlichiosis_and_anaplasmosis_ehrlichia_ewingii_infection</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ehrlichiosis_and_anaplasmosis_undetermined_ehrlichiosis_anaplasmosis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">malaria</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">zika_virus_disease_non_congenital</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), or weekly cumulative year-to-date case counts as reported through the NNDSS (national and state only).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Data source</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">CDC ArboNET</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">CDC NNDSS</span>
+                        </div>
+                      </td>
+                      <td></td>
                       <td></td>
                     </tr>
                   </tbody>

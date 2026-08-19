@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-17T15:34:06Z",
+  "generated": "2026-08-18T15:26:23Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -5846,6 +5846,381 @@
         }
       ]
     },
+    "bundle_vector_borne": {
+      "name": "bundle_vector_borne",
+      "display_name": "Bundle: Vector Borne",
+      "dist_files": [
+        {
+          "filename": "vector_borne.parquet",
+          "path": "data/bundle_vector_borne/dist/vector_borne.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_vector_borne/dist/vector_borne.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "Geographic identifier. For national/state rows (see geography_level) this holds the full state/territory name (e.g. 'California') or 'United States', rather than a FIPS code. For county rows this holds the 5-digit county FIPS code. Connecticut reported by county through 2022 and by planning region (FIPS 09110-09190) from 2023 onward, so its county geography codes change mid-series.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "geography_level",
+              "short_name": "Geography level",
+              "description": "Granularity of the geography column: 'national', 'state', or 'county'.",
+              "measure_type": "Category",
+              "unit": "Category",
+              "levels": {
+                "national": {},
+                "state": {},
+                "county": {}
+              }
+            },
+            {
+              "name": "date",
+              "short_name": "Date",
+              "description": "Date (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "arbonet_eee_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_eee_cases",
+                  "short_name": "EEE disease cases",
+                  "long_name": "Eastern equine encephalitis virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Eastern equine encephalitis virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of Eastern equine encephalitis (EEE) virus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_eee_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_eee_neuro_cases",
+                  "short_name": "EEE neuroinvasive cases",
+                  "long_name": "Eastern equine encephalitis virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Eastern equine encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of Eastern equine encephalitis (EEE) virus neuroinvasive disease (meningitis, encephalitis, or acute flaccid paralysis), as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_eee_cases. Because severe neuroinvasive illness is far more likely to be diagnosed and reported than milder non-neuroinvasive illness, CDC considers neuroinvasive counts the more reliable basis for comparing disease activity across locations and over time. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_eee_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_eee_nonhuman_activity",
+                  "short_name": "EEE non-human activity",
+                  "long_name": "Eastern equine encephalitis virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human Eastern equine encephalitis virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_jcv_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_jcv_cases",
+                  "short_name": "Jamestown Canyon disease cases",
+                  "long_name": "Jamestown Canyon virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Jamestown Canyon virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of Jamestown Canyon virus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2011.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_jcv_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_jcv_neuro_cases",
+                  "short_name": "Jamestown Canyon neuroinvasive cases",
+                  "long_name": "Jamestown Canyon virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Jamestown Canyon virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of Jamestown Canyon virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_jcv_cases. Coverage begins in 2011.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_jcv_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_jcv_nonhuman_activity",
+                  "short_name": "Jamestown Canyon non-human activity",
+                  "long_name": "Jamestown Canyon virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human Jamestown Canyon virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_lac_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_lac_cases",
+                  "short_name": "La Crosse disease cases",
+                  "long_name": "La Crosse virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human La Crosse virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of La Crosse virus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_lac_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_lac_neuro_cases",
+                  "short_name": "La Crosse neuroinvasive cases",
+                  "long_name": "La Crosse virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human La Crosse virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of La Crosse virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_lac_cases. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_lac_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_lac_nonhuman_activity",
+                  "short_name": "La Crosse non-human activity",
+                  "long_name": "La Crosse virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human La Crosse virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_pow_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_pow_cases",
+                  "short_name": "Powassan disease cases",
+                  "long_name": "Powassan virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Powassan virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of Powassan virus, a tick-borne arbovirus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2004. A non-human activity measure is not produced for Powassan virus, whose dashboard reports human disease cases only.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_pow_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_pow_neuro_cases",
+                  "short_name": "Powassan neuroinvasive cases",
+                  "long_name": "Powassan virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Powassan virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of Powassan virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_pow_cases. Coverage begins in 2004.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_sle_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_sle_cases",
+                  "short_name": "SLE disease cases",
+                  "long_name": "St. Louis encephalitis virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human St. Louis encephalitis virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of St. Louis encephalitis (SLE) virus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_sle_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_sle_neuro_cases",
+                  "short_name": "SLE neuroinvasive cases",
+                  "long_name": "St. Louis encephalitis virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human St. Louis encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of St. Louis encephalitis (SLE) virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_sle_cases. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_sle_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_sle_nonhuman_activity",
+                  "short_name": "SLE non-human activity",
+                  "long_name": "St. Louis encephalitis virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human St. Louis encephalitis virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_wnv_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_wnv_cases",
+                  "short_name": "West Nile disease cases",
+                  "long_name": "West Nile virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human West Nile virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of West Nile virus, the most common arboviral disease in the US, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 1999.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_wnv_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_wnv_neuro_cases",
+                  "short_name": "West Nile neuroinvasive cases",
+                  "long_name": "West Nile virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human West Nile virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of West Nile virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_wnv_cases. Because severe neuroinvasive illness is far more likely to be diagnosed and reported than milder non-neuroinvasive illness, CDC considers neuroinvasive counts the more reliable basis for comparing disease activity across locations and over time. Coverage begins in 1999.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_wnv_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_wnv_nonhuman_activity",
+                  "short_name": "West Nile non-human activity",
+                  "long_name": "West Nile virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human West Nile virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_wnv_blood_donors": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_wnv_blood_donors",
+                  "short_name": "West Nile presumptive viremic blood donors",
+                  "long_name": "West Nile virus presumptive viremic blood donors identified by blood donor screening",
+                  "category": "vector_borne",
+                  "short_description": "Presumptive viremic blood donors identified through West Nile virus blood donor screening.",
+                  "long_description": "Count of presumptive viremic blood donors, defined by CDC as people who had no symptoms at the time of donating blood but whose blood tested positive when screened for West Nile virus. Identified through blood supply screening rather than clinical care, so counted separately from reported human disease cases. Reported for West Nile virus only, as it is the only one of ArboNET's arboviruses with routine blood donor screening.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arboviral_diseases_chikungunya_virus_disease": {},
+                "arboviral_diseases_eastern_equine_encephalitis_virus_disease": {},
+                "arboviral_diseases_jamestown_canyon_virus_disease": {},
+                "arboviral_diseases_la_crosse_virus_disease": {},
+                "arboviral_diseases_powassan_virus_disease": {},
+                "arboviral_diseases_st_louis_encephalitis_virus_disease": {},
+                "arboviral_diseases_west_nile_virus_disease": {},
+                "arboviral_diseases_western_equine_encephalitis_virus_disease": {},
+                "babesiosis": {},
+                "dengue_virus_infections_dengue": {},
+                "dengue_virus_infections_dengue_like_illness": {},
+                "dengue_virus_infections_severe_dengue": {},
+                "ehrlichiosis_and_anaplasmosis_anaplasma_phagocytophilum_infection": {},
+                "ehrlichiosis_and_anaplasmosis_ehrlichia_chaffeensis_infection": {},
+                "ehrlichiosis_and_anaplasmosis_ehrlichia_ewingii_infection": {},
+                "ehrlichiosis_and_anaplasmosis_undetermined_ehrlichiosis_anaplasmosis": {},
+                "malaria": {},
+                "zika_virus_disease_non_congenital": {}
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), or weekly cumulative year-to-date case counts as reported through the NNDSS (national and state only).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "CDC ArboNET": {},
+                "CDC NNDSS": {}
+              }
+            }
+          ]
+        }
+      ]
+    },
     "bundle_youth_wellbeing": {
       "name": "bundle_youth_wellbeing",
       "display_name": "Bundle: Youth Wellbeing",
@@ -9163,7 +9538,7 @@
     "arbonet": {
       "name": "arbonet",
       "display_name": "Arbonet",
-      "description": "ArboNET is the national arboviral surveillance system managed by CDC together with state and territorial health departments. In addition to human disease, ArboNET maintains data on arboviral infections among presumptive viremic blood donors, veterinary disease cases, mosquitoes, dead birds, and sentinel animals. Human cases are reported by county of residence rather than location of exposure, which is not necessarily the county or state where exposure occurred, and are assigned to the year of illness onset. Several caveats apply: under-reporting is inherent to any surveillance system that depends on clinicians suspecting the disease, ordering the appropriate test, and reporting confirmed results; non-neuroinvasive cases are substantially more under-reported than neuroinvasive cases, so total case counts should not be used to compare disease activity between locations or over time; and there is a lag in reporting to CDC. Values are the counts CDC publishes for public use and are not suppressed or imputed here. Connecticut reported by county through 2022 and by planning region from 2023 onward, so its geography codes change mid-series. Records that CDC assigns to an unallocated placeholder geography (state FIPS plus '999') because the county of residence is unknown are excluded from the county file but retained in the state and national totals. Reporting years differ by disease and the most recent year is preliminary and subject to change.",
+      "description": "ArboNET is the national arboviral surveillance system managed by CDC together with state and territorial health departments. In addition to human disease, ArboNET maintains data on arboviral infections among presumptive viremic blood donors, veterinary disease cases, mosquitoes, dead birds, and sentinel animals. Human cases are reported by county of residence rather than location of exposure, which is not necessarily the county or state where exposure occurred, and are assigned to the year of illness onset. Several caveats apply: under-reporting is inherent to any surveillance system that depends on clinicians suspecting the disease, ordering the appropriate test, and reporting confirmed results; non-neuroinvasive cases are substantially more under-reported than neuroinvasive cases, so total case counts should not be used to compare disease activity between locations or over time; and there is a lag in reporting to CDC. Values are the counts CDC publishes for public use and are not suppressed or imputed here. Connecticut reported by county through 2022 and by planning region from 2023 onward, so its geography codes change mid-series. Records that CDC assigns to an unallocated placeholder geography (state FIPS plus '999') because the county of residence is unknown are excluded from the county file but retained in the state and national totals. Reporting years differ by disease and the most recent year is preliminary and subject to change. Data that were not collected in a given year are coded as NA, so cells with count 0 indicate that disease was tested for but not reported.",
       "standard_files": [
         {
           "filename": "data_county.csv.gz",
