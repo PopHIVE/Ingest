@@ -77,16 +77,13 @@
         <dd>
           The first and last observation dates found in the time column of the dataset's 
           <code>standard/*.csv.gz</code>
-           files. These describe the data itself — the period it covers.
+           files.
         </dd>
         <dt>Last Refreshed</dt>
         <dd>
           The most recent git commit date of the dataset's 
           <code>standard/*.csv.gz</code>
-           files: when our pipeline last wrote standardized output. It can move without any new 
-          upstream data — for example after an 
-          <code>ingest.R</code>
-           fix — so it reflects our processing cadence, not the publisher's.
+           files, or when our pipeline last wrote standardized output. 
         </dd>
         <dt>Latest Issue</dt>
         <dd>
@@ -96,9 +93,7 @@
            field of the metadata saved alongside 
           each download (
           <code>raw/&lt;id&gt;.json</code>
-          ). That is the source's own claim, so 
-          unlike a file-based proxy it cannot be moved by a re-export of identical rows, a 
-          metadata-only refresh, or repository housekeeping. Sources not pulled through the 
+          ). Sources not pulled through the 
           Socrata API report no such timestamp; those fall back to the most recent commit that 
           changed a raw data file, and are marked 
           <span class="basis-inferred">est.</span>
@@ -106,26 +101,10 @@
         </dd>
         <dt>&#9888; flag on Latest Issue</dt>
         <dd>
-          Shown when Latest Issue is more than 7 days after Last Refreshed: the publisher has updated the data since we last rebuilt the standardized output, so the files here are behind the source. The badge gives the gap in days. 
+          Shown when Latest Issue is more than 7 days after Last Refreshed. The publisher has updated the data since we last rebuilt the standardized output, so the files here are behind the source. 
           <strong>2 of 47 datasets flagged</strong>
-          ; 14 use a publisher timestamp, 21 fall back to raw-file commits, 12 have neither.
         </dd>
       </dl>
-      <p class="caveat">
-        <strong>Caveats. </strong>
-        Last Refreshed is a repository commit date read from the branch this page was built on, so a 
-        branch behind 
-        <code>origin/main</code>
-         reports it as stale for every dataset. Latest Issue is only as current as the last time we 
-        downloaded the dataset, since it comes from the metadata saved with that download: if a source 
-        has not been fetched in a while, its publisher timestamp is stale too, and the gap between the 
-        two columns understates how far behind we are. It also reflects whatever the publisher chooses 
-        to report — some update the timestamp on a full re-publish that changes no values. The 
-        <span class="basis-inferred">est.</span>
-         fallback dates carry the weaknesses of any file-based proxy: a publisher that re-exports 
-        identical rows in a different order changes the file's bytes and moves the date with no new 
-        data behind it, and like Last Refreshed they are read from the current branch.
-      </p>
     </details>
     <ul class="nav nav-tabs" id="mainTabs" role="tablist">
       <li class="nav-item" role="presentation">
