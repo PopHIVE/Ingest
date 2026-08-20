@@ -10,7 +10,14 @@
 #     time_resolution, and a fallback description)
 #   - standard/*.csv.gz data files (spatial / age / sex / other resolutions,
 #     earliest & latest observation dates)
-#   - git commit history (last-updated date of the standard data files)
+#   - git commit history of standard/*.csv.gz (Last Refreshed: when our
+#     pipeline last processed this source -- can move even without new
+#     upstream data, e.g. a script fix)
+#   - git commit history of raw/ (Latest Issue: when the original data source
+#     last published new/changed data. Raw files are only committed when their
+#     content actually differs -- see the `git diff --exit-code` gate in
+#     .github/workflows/update_daily_data.yaml -- so this tracks upstream
+#     releases rather than our processing cadence)
 #
 # Run from the repository root (same as scripts/build_docs.R):
 #   Rscript scripts/build_data_table.R
@@ -399,6 +406,7 @@ summarize_source <- function(source_name, source_dir) {
     latest       = if (length(maxs)) format(max(maxs), "%Y-%m-%d") else "—",
     time_scale   = if (nzchar(time_scale)) time_scale else "—",
     last_updated = git_last_updated(files) %||% "—",
+    latest_issue = git_last_updated(file.path(source_dir, "raw")) %||% "—",
     restrictions = if (nzchar(restrictions)) restrictions else "—",
     organization = if (nzchar(organization)) organization else "—",
     data_url     = data_url
@@ -447,11 +455,11 @@ summarize_bundle <- function(bundle_name, bundle_dir, valid_sources) {
 # -----------------------------------------------------------------------------
 # HTML building
 # -----------------------------------------------------------------------------
-DATASET_HEADERS <- c("Dataset", "Content Title", "Brief Description", "Search Terms",
+DATASET_HEADERS <- c("Dataset", "Content Title", "Brief Description", "Subject Tags",
                      "Spatial Resolution", "Age Resolution", "Sex Resolution",
                      "Other Resolutions", "Earliest Data", "Latest Data",
-                     "Time Scale", "Last Refreshed", "Data Restrictions",
-                     "Organization", "Source URL", "Data URL")
+                     "Time Scale", "Last Refreshed", "Latest Issue",
+                     "Data Restrictions", "Organization", "Source URL", "Data URL")
 
 strat_class <- function(v) if (identical(v, "Not Stratified")) "strat-notstratified" else "strat-stratified"
 
@@ -480,6 +488,7 @@ dataset_row <- function(s) {
     tags$td(s$latest),
     tags$td(s$time_scale),
     tags$td(s$last_updated),
+    tags$td(s$latest_issue),
     tags$td(s$restrictions),
     tags$td(s$organization),
     tags$td(source_cell),
