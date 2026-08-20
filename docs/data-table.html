@@ -28,6 +28,35 @@
       .strat-stratified { color: #146c43; font-weight: 600; }
       .strat-notstratified { color: #6c757d; }
       .nav-tabs { margin-bottom: 1rem; }
+      /* "How to read this table" note */
+      .table-notes {
+        background: #f8f9fa; border: 1px solid #dee2e6; border-radius: .5rem;
+        padding: .75rem 1rem; margin-bottom: 1.25rem; font-size: .85rem;
+      }
+      .table-notes > summary {
+        cursor: pointer; font-weight: 600; font-size: .9rem;
+      }
+      .table-notes dl { margin: .75rem 0 0; }
+      .table-notes dt { margin-top: .5rem; }
+      .table-notes dd { margin: 0 0 0 1.25rem; color: #495057; }
+      .table-notes .caveat { margin: .75rem 0 0; color: #495057; }
+      .table-notes code, table.dataTable code { font-size: .8rem; }
+      /* Staleness flag: Latest Issue well after Last Refreshed. */
+      .issue-stale { white-space: nowrap; }
+      .stale-flag {
+        display: inline-block; margin-left: .35rem; padding: .05rem .4rem;
+        background: #fff3cd; border: 1px solid #ffe69c; border-radius: .5rem;
+        color: #664d03; font-size: .75rem; font-weight: 600; cursor: help;
+      }
+      .basis-inferred {
+        display: inline-block; margin-left: .3rem; padding: 0 .3rem;
+        background: #eef2f7; border: 1px solid #d6dee8; border-radius: .4rem;
+        color: #6c757d; font-size: .7rem; font-style: italic; cursor: help;
+      }
+      .branch-warning {
+        background: #f8d7da; border: 1px solid #f1aeb5; border-radius: .5rem;
+        padding: .6rem .9rem; margin-bottom: 1rem; font-size: .85rem; color: #58151c;
+      }
     </style>
 </head>
 <html lang="en">
@@ -37,10 +66,76 @@
       Overview of all standardized data sources and combined bundles in the 
       <a href="https://github.com/PopHIVE/Ingest" target="_blank">PopHIVE/Ingest</a>
        repository. Automatically generated from repository files — last updated 
-      August 14, 2026
+      August 20, 2026
       . 
       <a href="index.html">View full data documentation →</a>
     </p>
+    <div class="branch-warning">
+      <strong>Built from a branch that is behind. </strong>
+      HEAD is 211 commits behind origin/main. Last Refreshed, Latest Issue and the 
+      &#9888;
+       flags below are computed from this branch's git history and will look 
+      stale for datasets that are current on 
+      origin/main
+      .
+    </div>
+    <details class="table-notes" open>
+      <summary>How to read this table</summary>
+      <dl>
+        <dt>Earliest Data / Latest Data</dt>
+        <dd>
+          The first and last observation dates found in the time column of the dataset's 
+          <code>standard/*.csv.gz</code>
+           files. These describe the data itself — the period it covers.
+        </dd>
+        <dt>Last Refreshed</dt>
+        <dd>
+          The most recent git commit date of the dataset's 
+          <code>standard/*.csv.gz</code>
+           files: when our pipeline last wrote standardized output. It can move without any new 
+          upstream data — for example after an 
+          <code>ingest.R</code>
+           fix — so it reflects our processing cadence, not the publisher's.
+        </dd>
+        <dt>Latest Issue</dt>
+        <dd>
+          When the source last published new or changed data, taken from the publisher wherever 
+          possible: the 
+          <code>rowsUpdatedAt</code>
+           field of the metadata saved alongside 
+          each download (
+          <code>raw/&lt;id&gt;.json</code>
+          ). That is the source's own claim, so 
+          unlike a file-based proxy it cannot be moved by a re-export of identical rows, a 
+          metadata-only refresh, or repository housekeeping. Sources not pulled through the 
+          Socrata API report no such timestamp; those fall back to the most recent commit that 
+          changed a raw data file, and are marked 
+          <span class="basis-inferred">est.</span>
+           to show the date is inferred rather than reported. A dash means neither was available.
+        </dd>
+        <dt>&#9888; flag on Latest Issue</dt>
+        <dd>
+          Shown when Latest Issue is more than 7 days after Last Refreshed: the publisher has updated the data since we last rebuilt the standardized output, so the files here are behind the source. The badge gives the gap in days. 
+          <strong>1 of 41 dataset flagged</strong>
+          ; 13 use a publisher timestamp, 22 fall back to raw-file commits, 6 have neither.
+        </dd>
+      </dl>
+      <p class="caveat">
+        <strong>Caveats. </strong>
+        Last Refreshed is a repository commit date read from the branch this page was built on, so a 
+        branch behind 
+        <code>origin/main</code>
+         reports it as stale for every dataset. Latest Issue is only as current as the last time we 
+        downloaded the dataset, since it comes from the metadata saved with that download: if a source 
+        has not been fetched in a while, its publisher timestamp is stale too, and the gap between the 
+        two columns understates how far behind we are. It also reflects whatever the publisher chooses 
+        to report — some update the timestamp on a full re-publish that changes no values. The 
+        <span class="basis-inferred">est.</span>
+         fallback dates carry the weaknesses of any file-based proxy: a publisher that re-exports 
+        identical rows in a different order changes the file's bytes and moves the date with no new 
+        data behind it, and like Last Refreshed they are read from the current branch.
+      </p>
+    </details>
     <ul class="nav nav-tabs" id="mainTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="datasets-tab" data-bs-toggle="tab" data-bs-target="#datasets-pane" type="button" role="tab">
@@ -102,7 +197,7 @@
                 <td>2024-01-01</td>
                 <td>Annual</td>
                 <td>2026-05-29</td>
-                <td>2026-05-29</td>
+                <td data-order="2026-05-28">2026-05-28</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -133,7 +228,10 @@
                 <td>2025-12-31</td>
                 <td>Annual</td>
                 <td>2026-06-25</td>
-                <td>2026-06-25</td>
+                <td data-order="2026-06-25">
+                  2026-06-25
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. HRSA data is produced by a U.S. federal agency and is generally not subject to copyright restrictions.</td>
                 <td>Health Resources and Services Administration (HRSA)</td>
                 <td>
@@ -162,7 +260,7 @@
                 <td>2025-01-01</td>
                 <td>Annual</td>
                 <td>2026-02-01</td>
-                <td>2026-02-01</td>
+                <td data-order="2025-12-10">2025-12-10</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -194,7 +292,7 @@
                 <td>2026-06-16</td>
                 <td>Daily</td>
                 <td>2026-06-19</td>
-                <td>2026-06-30</td>
+                <td data-order="2026-06-26">2026-06-26</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>CDC Center for Forecasting and Outbreak Analytics (CFA)</td>
                 <td>
@@ -225,7 +323,10 @@
                 <td>2024-12-31</td>
                 <td>Annual</td>
                 <td>2026-04-28</td>
-                <td>2026-04-28</td>
+                <td data-order="2026-04-28">
+                  2026-04-28
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. U.S. Census Bureau data are generally not subject to copyright restrictions.</td>
                 <td>U.S. Census Bureau</td>
                 <td>
@@ -257,7 +358,10 @@
                 <td>2023-01-01</td>
                 <td>Annual</td>
                 <td>2026-06-09</td>
-                <td>2025-10-29</td>
+                <td data-order="2025-08-29">
+                  2025-08-29
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. CMS data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Medicare and Medicaid Services (CMS)</td>
                 <td>
@@ -288,7 +392,7 @@
                 <td>2025-12-31</td>
                 <td>Annual</td>
                 <td>2026-06-18</td>
-                <td>—</td>
+                <td data-order="—">—</td>
                 <td>CC BY 4.0. Attribution required. Cite as: University of Wisconsin Population Health Institute. County Health Rankings &amp; Roadmaps. https://www.countyhealthrankings.org.</td>
                 <td>University of Wisconsin Population Health Institute</td>
                 <td>
@@ -317,7 +421,10 @@
                 <td>2026-05-30</td>
                 <td>Weekly</td>
                 <td>2026-06-09</td>
-                <td>2026-06-09</td>
+                <td data-order="2026-06-09">
+                  2026-06-09
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>CC-BY Attribution license. Data may be used with attribution to the CMU Delphi Group.</td>
                 <td>Carnegie Mellon University Delphi Research Group</td>
                 <td>
@@ -346,7 +453,10 @@
                 <td>2026-05-30</td>
                 <td>Daily</td>
                 <td>2026-06-09</td>
-                <td>2026-06-09</td>
+                <td data-order="2026-06-09">
+                  2026-06-09
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>CC-BY Attribution license. Data may be used with attribution to the CMU Delphi Group.</td>
                 <td>Carnegie Mellon University Delphi Research Group</td>
                 <td>
@@ -375,7 +485,10 @@
                 <td>2026-06-20</td>
                 <td>Weekly</td>
                 <td>2026-06-30</td>
-                <td>2026-06-30</td>
+                <td data-order="2026-06-30">
+                  2026-06-30
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. Original CDC ILI data is not subject to copyright restrictions.</td>
                 <td>Carnegie Mellon University Delphi Research Group</td>
                 <td>
@@ -404,7 +517,10 @@
                 <td>2026-06-20</td>
                 <td>Weekly</td>
                 <td>2026-06-26</td>
-                <td>2026-06-26</td>
+                <td data-order="2026-06-26">
+                  2026-06-26
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>CC-BY Attribution license. Data may be used with attribution to the CMU Delphi Group and CDC NHSN.</td>
                 <td>Carnegie Mellon University Delphi Research Group</td>
                 <td>
@@ -435,7 +551,7 @@
                 <td>2025-01-01</td>
                 <td>Annual</td>
                 <td>2026-06-24</td>
-                <td>—</td>
+                <td data-order="—">—</td>
                 <td>The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'</td>
                 <td>Epic Systems</td>
                 <td>
@@ -469,7 +585,10 @@
                 <td>2026-07-18</td>
                 <td>Weekly</td>
                 <td>2026-07-17</td>
-                <td>2026-07-17</td>
+                <td data-order="2026-07-17">
+                  2026-07-17
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'</td>
                 <td>Epic Research</td>
                 <td>
@@ -499,7 +618,7 @@
                 <td>2026-01-31</td>
                 <td>Monthly</td>
                 <td>2026-03-11</td>
-                <td>—</td>
+                <td data-order="—">—</td>
                 <td>The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'</td>
                 <td>Epic Systems</td>
                 <td>
@@ -533,7 +652,7 @@
                 <td>2025-09-01</td>
                 <td>Annual, Monthly</td>
                 <td>2026-03-11</td>
-                <td>—</td>
+                <td data-order="—">—</td>
                 <td>The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'</td>
                 <td>Epic Systems</td>
                 <td>
@@ -565,7 +684,7 @@
                 <td>2026-05-30</td>
                 <td>Annual, Weekly, Monthly, Quarterly</td>
                 <td>2026-06-19</td>
-                <td>—</td>
+                <td data-order="—">—</td>
                 <td>The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'</td>
                 <td>Epic Systems</td>
                 <td>
@@ -595,7 +714,10 @@
                 <td>2026-06-27</td>
                 <td>Weekly</td>
                 <td>2026-06-30</td>
-                <td>2026-06-30</td>
+                <td data-order="2026-06-30">
+                  2026-06-30
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Data can be reused with attribution of data from the Google Health Trends API, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).</td>
                 <td>Yale Data-Intensive Social Science Center (DISSC)</td>
                 <td>
@@ -627,7 +749,10 @@
                 <td>2026-07-01</td>
                 <td>Daily</td>
                 <td>2026-07-02</td>
-                <td>2026-07-02</td>
+                <td data-order="2026-07-02">
+                  2026-07-02
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Kinsa Insights data were obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).'</td>
                 <td>Kinsa</td>
                 <td>
@@ -656,7 +781,10 @@
                 <td>2026-06-27</td>
                 <td>Weekly</td>
                 <td>2026-06-26</td>
-                <td>2026-06-26</td>
+                <td data-order="2026-06-26">
+                  2026-06-26
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -685,7 +813,7 @@
                 <td>2026-06-27</td>
                 <td>Weekly</td>
                 <td>2026-06-26</td>
-                <td>2026-06-26</td>
+                <td data-order="2025-07-31">2025-07-31</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -714,7 +842,10 @@
                 <td>2026-06-27</td>
                 <td>Weekly</td>
                 <td>2026-06-30</td>
-                <td>2026-06-30</td>
+                <td data-order="2026-06-30">
+                  2026-06-30
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>CC BY 4.0. Attribution required for reuse. Please cite as JHU Measles Tracking Team Data Repository at Johns Hopkins University or JHU Measles Tracking Team Data for short. Copyright: Johns Hopkins University 2025</td>
                 <td>Johns Hopkins Bloomberg School of Public Health</td>
                 <td>
@@ -751,7 +882,10 @@
                 <td>2023-01-01</td>
                 <td>Annual</td>
                 <td>2026-04-05</td>
-                <td>2026-04-05</td>
+                <td data-order="2026-04-05">
+                  2026-04-05
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. CMS/Medicaid.gov data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Medicare &amp; Medicaid Services (CMS)</td>
                 <td>
@@ -780,7 +914,10 @@
                 <td>2024-12-31</td>
                 <td>Cross-Sectional</td>
                 <td>2026-04-06</td>
-                <td>2026-01-20</td>
+                <td data-order="2026-01-20">
+                  2026-01-20
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>MIT License: Copyright (c) 2025 Eric Zhou.  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the Software), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:Attribution required. Cite Zhou EG, Brownstein J, Rader B. Assessing MMR Vaccination Coverage Gaps in US Children with Digital Participatory Surveillance. Nature Health. 2025.</td>
                 <td>HealthMap / Boston Children's Hospital</td>
                 <td>
@@ -809,7 +946,10 @@
                 <td>2025-12-31</td>
                 <td>Annual</td>
                 <td>2026-06-09</td>
-                <td>2026-06-09</td>
+                <td data-order="2026-06-09">
+                  2026-06-09
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -838,7 +978,10 @@
                 <td>2022-12-31</td>
                 <td>Annual</td>
                 <td>2026-06-26</td>
-                <td>2026-06-26</td>
+                <td data-order="2026-06-26">
+                  2026-06-26
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. Data from the National Childhood Cancer Registry, produced by the National Cancer Institute, is generally not subject to copyright restrictions. Suggested attribution: National Childhood Cancer Registry Explorer (NCCR*Explorer), National Cancer Institute.</td>
                 <td>National Cancer Institute (NCI), Childhood Cancer Data Initiative</td>
                 <td>
@@ -871,7 +1014,7 @@
                 <td>2026-01-01</td>
                 <td>Monthly, Quarterly</td>
                 <td>2026-06-23</td>
-                <td>2026-06-30</td>
+                <td data-order="2026-06-23">2026-06-23</td>
                 <td>Public domain. CDC/NCHS data is generally not subject to copyright restrictions.</td>
                 <td>National Center for Health Statistics (NCHS)</td>
                 <td>
@@ -903,7 +1046,10 @@
                 <td>2025-12-31</td>
                 <td>Annual</td>
                 <td>2026-07-17</td>
-                <td>2026-07-17</td>
+                <td data-order="2026-07-17">
+                  2026-07-17
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. NEISS data are produced by the U.S. Consumer Product Safety Commission and are generally not subject to copyright restrictions.</td>
                 <td>U.S. Consumer Product Safety Commission (CPSC)</td>
                 <td>
@@ -934,7 +1080,7 @@
                 <td>2024-12-31</td>
                 <td>Annual</td>
                 <td>2026-06-29</td>
-                <td>—</td>
+                <td data-order="—">—</td>
                 <td>Public domain. NHTSA data is generally not subject to copyright restrictions.</td>
                 <td>National Highway Traffic Safety Administration (NHTSA)</td>
                 <td>
@@ -963,7 +1109,7 @@
                 <td>2024-11-30</td>
                 <td>Annual</td>
                 <td>2026-04-03</td>
-                <td>2026-04-03</td>
+                <td data-order="2026-04-02">2026-04-02</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -995,7 +1141,10 @@
                 <td>2026-03-28</td>
                 <td>Weekly</td>
                 <td>2026-04-03</td>
-                <td>2026-06-30</td>
+                <td data-order="2026-06-24" class="issue-stale">
+                  2026-06-24
+                  <span class="stale-flag" title="The publisher reports updating this data 82 days after our last standardized output commit (threshold: 7 days), so the standardized files here are probably missing that update.">⚠ +82d</span>
+                </td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -1026,7 +1175,10 @@
                 <td>2026-07-07</td>
                 <td>Daily</td>
                 <td>2026-07-02</td>
-                <td>2026-03-26</td>
+                <td data-order="2026-03-26">
+                  2026-03-26
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. NOAA data is generally not subject to copyright restrictions.</td>
                 <td>NOAA Weather Prediction Center (WPC)</td>
                 <td>
@@ -1058,7 +1210,7 @@
                 <td>2026-06-20</td>
                 <td>Weekly</td>
                 <td>2026-06-26</td>
-                <td>2026-06-26</td>
+                <td data-order="2026-06-25">2026-06-25</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -1090,7 +1242,7 @@
                 <td>2026-06-20</td>
                 <td>Weekly</td>
                 <td>2026-06-26</td>
-                <td>2026-06-26</td>
+                <td data-order="2026-06-26">2026-06-26</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -1122,7 +1274,7 @@
                 <td>2026-06-20</td>
                 <td>Weekly</td>
                 <td>2026-06-26</td>
-                <td>2026-06-26</td>
+                <td data-order="2026-06-26">2026-06-26</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -1152,7 +1304,10 @@
                 <td>2024-09-01</td>
                 <td>Annual</td>
                 <td>2026-07-15</td>
-                <td>2026-06-09</td>
+                <td data-order="2026-06-09">
+                  2026-06-09
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Attribution required. Cite The Washington Post.</td>
                 <td>The Washington Post</td>
                 <td>
@@ -1181,7 +1336,7 @@
                 <td>2024-09-01</td>
                 <td>Annual</td>
                 <td>2025-08-25</td>
-                <td>2026-02-03</td>
+                <td data-order="2025-07-31">2025-07-31</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -1211,7 +1366,10 @@
                 <td>2025-09-01</td>
                 <td>Annual</td>
                 <td>2026-07-15</td>
-                <td>2026-04-06</td>
+                <td data-order="2026-04-06">
+                  2026-04-06
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Attribution required. Cite Fattah M, Stoffel LA, Bubar KM, Bents SJ, Maldonado Y, Hotez PJ, Kiang MV, Lo NC. Trends in County-Level Childhood Vaccination Exemptions in the US. JAMA. 2026 Feb 10;335(6):546-549. doi: 10.1001/jama.2025.24407. PMID: 41533386; PMCID: PMC12805488.</td>
                 <td>Stanford University / Massachusetts General Hospital</td>
                 <td>
@@ -1243,7 +1401,7 @@
                 <td>2026-06-20</td>
                 <td>Weekly</td>
                 <td>2026-06-26</td>
-                <td>2026-06-26</td>
+                <td data-order="2026-06-26">2026-06-26</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -1272,7 +1430,7 @@
                 <td>2026-06-27</td>
                 <td>Weekly</td>
                 <td>2026-07-15</td>
-                <td>2026-06-26</td>
+                <td data-order="2026-06-26">2026-06-26</td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -1304,7 +1462,10 @@
                 <td>2024-01-01</td>
                 <td>Annual</td>
                 <td>2026-06-19</td>
-                <td>2026-06-03</td>
+                <td data-order="2026-06-03">
+                  2026-06-03
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. CDC data is generally not subject to copyright restrictions.</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>
@@ -1335,7 +1496,10 @@
                 <td>2023-12-31</td>
                 <td>Annual</td>
                 <td>2026-06-25</td>
-                <td>2026-06-25</td>
+                <td data-order="2026-06-25">
+                  2026-06-25
+                  <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
+                </td>
                 <td>Public domain. Suggested attribution: Centers for Disease Control and Prevention (CDC). Youth Risk Behavior Surveillance System (YRBSS).</td>
                 <td>Centers for Disease Control and Prevention</td>
                 <td>

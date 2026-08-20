@@ -13,11 +13,17 @@
 #   - git commit history of standard/*.csv.gz (Last Refreshed: when our
 #     pipeline last processed this source -- can move even without new
 #     upstream data, e.g. a script fix)
-#   - git commit history of raw/ (Latest Issue: when the original data source
-#     last published new/changed data. Raw files are only committed when their
-#     content actually differs -- see the `git diff --exit-code` gate in
-#     .github/workflows/update_daily_data.yaml -- so this tracks upstream
-#     releases rather than our processing cadence)
+#   - raw/<id>.json metadata sidecars (Latest Issue: the publisher's own
+#     `rowsUpdatedAt` timestamp, i.e. when the SOURCE says it last updated the
+#     data. Sources with no such timestamp fall back to the newest commit that
+#     changed a raw data file, marked "est." in the table.)
+#
+# Because those two dates mean different things -- one is the publisher's claim,
+# the other is our processing cadence -- the page carries a "How to read this
+# table" note defining them, and any dataset whose Latest Issue is more than
+# STALE_THRESHOLD_DAYS after its Last Refreshed is flagged (in the table and in
+# the build log): the source has published data that our standardized output has
+# not caught up with.
 #
 # Run from the repository root (same as scripts/build_docs.R):
 #   Rscript scripts/build_data_table.R
@@ -78,6 +84,11 @@ TIME_COLS <- c("time", "date", "week_end", "year")
 
 # Base URL for the source folders on GitHub (for the "Data URL" column).
 GITHUB_DATA_BASE <- "https://github.com/PopHIVE/Ingest/tree/main/data"
+
+# Flag a dataset when its Latest Issue (newest raw/ commit) is more than this
+# many days after its Last Refreshed (newest standard/ commit) -- i.e. upstream
+# published new data that our standardized output has not picked up.
+STALE_THRESHOLD_DAYS <- 7
 
 # Section anchor id for a folder on the data-dictionary page (docs/index.html).
 # Must match build_docs.R: gsub("[^a-zA-Z0-9]", "-", name).
@@ -307,6 +318,130 @@ git_last_updated <- function(files) {
   max(dates)  # ISO dates sort lexicographically
 }
 
+# Latest Issue: the date the PUBLISHER says the data was last updated, read from
+# the metadata sidecar `dcf_download_cdc()` saves next to each download
+# (`raw/<id>.json`, the payload of https://data.<host>/api/views/<id>). The
+# `rowsUpdatedAt` field there is the publisher's own row-update timestamp, epoch
+# seconds.
+#
+# This is a claim by the source rather than anything inferred from our
+# repository, which is the whole point: file-based proxies cannot tell a real
+# release from a re-export of identical rows in a different order, from a
+# metadata-only refresh, or from repo housekeeping -- all three were observed
+# producing phantom staleness flags. A publisher timestamp has none of those
+# failure modes and is not relative to the checked-out branch.
+#
+# A source with several datasets has one sidecar each; take the newest. Sources
+# not downloaded through the Socrata API have no sidecar, and those fall back to
+# raw_last_issued() below. Because the two are different kinds of claim, the
+# table marks which one each row used rather than silently blending them.
+METADATA_DATE_FIELD <- "rowsUpdatedAt"
+
+latest_issue_from_metadata <- function(source_dir) {
+  raw_dir <- file.path(source_dir, "raw")
+  if (!dir.exists(raw_dir)) return(NA_character_)
+  sidecars <- list.files(raw_dir, pattern = "\\.json$", recursive = TRUE,
+                         full.names = TRUE, ignore.case = TRUE)
+  if (!length(sidecars)) return(NA_character_)
+
+  dates <- character(0)
+  for (s in sidecars) {
+    meta <- tryCatch(fromJSON(s, simplifyVector = FALSE), error = function(e) NULL)
+    if (is.null(meta)) next
+    v <- meta[[METADATA_DATE_FIELD]]
+    if (is.null(v) || length(v) == 0) next        # not a Socrata view payload
+    v <- v[[1]]
+    d <- if (is.numeric(v)) {
+      format(as.POSIXct(v, origin = "1970-01-01", tz = "UTC"), "%Y-%m-%d")
+    } else if (is.character(v) && grepl("^[0-9]{4}-[0-9]{2}-[0-9]{2}", v)) {
+      substr(v, 1, 10)
+    } else NA_character_
+    if (!is.na(d)) dates <- c(dates, d)
+  }
+  if (!length(dates)) return(NA_character_)
+  max(dates)  # ISO dates sort lexicographically
+}
+
+# Fallback for sources with no publisher timestamp: the most recent commit date
+# on which a raw DATA file changed. This is a proxy, so it is narrowed to shed
+# the noise that made the directory-level version unusable --
+#   * only files that exist at HEAD are considered, so a ghost-file cleanup or a
+#     sub-source moved into its own directory cannot pass as a release;
+#   * `<id>.json` sidecars are excluded, since Socrata metadata churns on its own
+#     schedule (they are the preferred signal above, but a metadata-only commit
+#     is not evidence of new data). If raw/ holds nothing else, they are kept.
+# One `git log` call with every file as a pathspec gives the newest commit
+# touching any of them. Note this is still read from the checked-out branch.
+raw_last_issued <- function(source_dir) {
+  raw_dir <- file.path(source_dir, "raw")
+  if (!dir.exists(raw_dir)) return(NA_character_)
+  files <- list.files(raw_dir, recursive = TRUE, full.names = TRUE, all.files = FALSE)
+  if (!length(files)) return(NA_character_)
+  data_files <- files[!grepl("\\.json$", files, ignore.case = TRUE)]
+  if (!length(data_files)) data_files <- files
+  out <- tryCatch(
+    system2("git", c("log", "-1", "--format=%cs", "--", gsub("\\\\", "/", data_files)),
+            stdout = TRUE, stderr = FALSE),
+    error = function(e) character(0))
+  if (length(out) == 0 || is.na(out[1]) || !nzchar(out[1])) return(NA_character_)
+  out[1]
+}
+
+# Latest Issue, preferring the publisher's own timestamp and falling back to the
+# raw-file proxy. Returns the date plus which basis produced it, so the table can
+# show that a value is an inference rather than a reported date.
+latest_issue_for <- function(source_dir) {
+  d <- latest_issue_from_metadata(source_dir)
+  if (!is.na(d)) return(list(date = d, basis = "metadata"))
+  d <- raw_last_issued(source_dir)
+  if (!is.na(d)) return(list(date = d, basis = "files"))
+  list(date = NA_character_, basis = "none")
+}
+
+# Name of the default branch, for the behind-check below.
+git_default_branch <- function() {
+  out <- tryCatch(
+    system2("git", c("symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"),
+            stdout = TRUE, stderr = FALSE),
+    error = function(e) character(0))
+  if (length(out) && !is.na(out[1]) && nzchar(out[1])) return(out[1])
+  for (b in c("main", "master")) {
+    ok <- tryCatch(
+      system2("git", c("rev-parse", "--verify", "--quiet", b), stdout = TRUE, stderr = FALSE),
+      error = function(e) character(0))
+    if (length(ok) && !is.na(ok[1]) && nzchar(ok[1])) return(b)
+  }
+  NA_character_
+}
+
+# How many commits HEAD is missing relative to `ref`. Every date column here
+# comes from `git log` on the CHECKED-OUT branch, so a branch that trails the
+# default branch reports stale dates for every dataset -- and the staleness flag
+# then fires on datasets that are perfectly healthy on the default branch.
+git_commits_behind <- function(ref) {
+  if (is.na(ref)) return(NA_integer_)
+  out <- tryCatch(
+    system2("git", c("rev-list", "--count", paste0("HEAD..", ref)),
+            stdout = TRUE, stderr = FALSE),
+    error = function(e) character(0))
+  if (length(out) == 0 || is.na(out[1]) || !nzchar(out[1])) return(NA_integer_)
+  suppressWarnings(as.integer(out[1]))
+}
+
+# Days by which Latest Issue leads Last Refreshed. Positive means new upstream
+# data landed in raw/ after the last time standardized output was committed.
+# NA when either date is unavailable (nothing to compare).
+issue_lead_days <- function(last_refreshed, latest_issue) {
+  iso <- function(x) {
+    if (is.null(x) || length(x) == 0 || is.na(x[1])) return(as.Date(NA))
+    if (!grepl("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", x[1])) return(as.Date(NA))  # "—" etc.
+    as.Date(x[1])
+  }
+  d1 <- iso(last_refreshed); d2 <- iso(latest_issue)
+  if (is.na(d1) || is.na(d2)) return(NA_integer_)
+  as.integer(d2 - d1)
+}
+
 # -----------------------------------------------------------------------------
 # Per-source summary
 # -----------------------------------------------------------------------------
@@ -392,6 +527,10 @@ summarize_source <- function(source_name, source_dir) {
   time_scale <- if (length(declared_res)) paste(declared_res, collapse = ", ")
                 else paste(unique(derived_res), collapse = ", ")
 
+  last_updated <- git_last_updated(files) %||% "—"
+  issue <- latest_issue_for(source_dir)
+  latest_issue <- issue$date %||% "—"
+
   list(
     folder       = source_name,
     title        = title,
@@ -405,8 +544,10 @@ summarize_source <- function(source_name, source_dir) {
     earliest     = if (length(mins)) format(min(mins), "%Y-%m-%d") else "—",
     latest       = if (length(maxs)) format(max(maxs), "%Y-%m-%d") else "—",
     time_scale   = if (nzchar(time_scale)) time_scale else "—",
-    last_updated = git_last_updated(files) %||% "—",
-    latest_issue = git_last_updated(file.path(source_dir, "raw")) %||% "—",
+    last_updated = last_updated,
+    latest_issue = latest_issue,
+    issue_basis  = issue$basis,
+    issue_lead   = issue_lead_days(last_updated, latest_issue),
     restrictions = if (nzchar(restrictions)) restrictions else "—",
     organization = if (nzchar(organization)) organization else "—",
     data_url     = data_url
@@ -463,6 +604,12 @@ DATASET_HEADERS <- c("Dataset", "Content Title", "Brief Description", "Subject T
 
 strat_class <- function(v) if (identical(v, "Not Stratified")) "strat-notstratified" else "strat-stratified"
 
+# TRUE when new upstream data (raw/) landed well after the last standardized
+# output commit -- see STALE_THRESHOLD_DAYS.
+is_stale <- function(s) {
+  !is.null(s$issue_lead) && !is.na(s$issue_lead) && s$issue_lead > STALE_THRESHOLD_DAYS
+}
+
 dataset_row <- function(s) {
   source_cell <- if (nzchar(s$data_url)) {
     tags$a(href = s$data_url, target = "_blank", rel = "noopener", "Link")
@@ -475,6 +622,27 @@ dataset_row <- function(s) {
   terms_cell <- if (length(s$search_terms)) {
     lapply(s$search_terms, function(t) tags$span(class = "term-badge", t))
   } else "—"
+  # A date derived from raw-file commits rather than reported by the publisher is
+  # marked, so the column is never read as though every value means the same thing.
+  basis_marker <- if (identical(s$issue_basis, "files")) {
+    tags$span(class = "basis-inferred",
+      title = paste0("No publisher timestamp for this source; inferred from the most recent ",
+                     "commit that changed a raw data file."),
+      "est.")
+  } else NULL
+  # Latest Issue carries the staleness flag. `data-order` keeps DataTables
+  # sorting on the bare date rather than on the date plus badge text.
+  issue_cell <- if (is_stale(s)) {
+    tagList(
+      s$latest_issue, basis_marker,
+      tags$span(class = "stale-flag",
+        title = sprintf(paste0("The publisher reports updating this data %d days after our last ",
+                               "standardized output commit (threshold: %d days), so the ",
+                               "standardized files here are probably missing that update."),
+                        s$issue_lead, STALE_THRESHOLD_DAYS),
+        sprintf("⚠ +%dd", s$issue_lead))
+    )
+  } else tagList(s$latest_issue, basis_marker)
   tags$tr(
     tags$td(dataset_cell),
     tags$td(class = "title-cell", s$title),
@@ -488,7 +656,9 @@ dataset_row <- function(s) {
     tags$td(s$latest),
     tags$td(s$time_scale),
     tags$td(s$last_updated),
-    tags$td(s$latest_issue),
+    tags$td(`data-order` = s$latest_issue,
+            class = if (is_stale(s)) "issue-stale" else NULL,
+            issue_cell),
     tags$td(s$restrictions),
     tags$td(s$organization),
     tags$td(source_cell),
@@ -563,6 +733,104 @@ bundle_summaries <- lapply(seq_along(bundle_dirs), function(i) {
 
 updated_stamp <- format(Sys.Date(), "%B %d, %Y")
 
+# Every date column is read from the checked-out branch's git history, so a
+# branch trailing the default branch produces stale dates and phantom staleness
+# flags across the board. Say so loudly rather than letting the page look
+# authoritative. (In CI this runs on the default branch, so `behind` is 0.)
+default_branch <- git_default_branch()
+commits_behind <- git_commits_behind(default_branch)
+branch_is_behind <- !is.na(commits_behind) && commits_behind > 0
+if (branch_is_behind) {
+  cat(sprintf(paste0(
+    "WARNING: HEAD is %d commit(s) behind %s. Last Refreshed / Latest Issue and the\n",
+    "         staleness flag are computed from THIS branch's history, so they will look\n",
+    "         stale for datasets that are current on %s. Rebuild after merging.\n"),
+    commits_behind, default_branch, default_branch))
+}
+
+# Datasets where upstream raw data is materially newer than our standardized
+# output. Surfaced both on the page and in the build/CI log.
+basis_count <- function(b) sum(vapply(source_summaries,
+                                      function(s) identical(s$issue_basis, b), logical(1)))
+cat(sprintf("Latest Issue basis: %d publisher timestamp, %d raw-file commit (est.), %d unavailable\n",
+            basis_count("metadata"), basis_count("files"), basis_count("none")))
+
+stale_sources <- Filter(is_stale, source_summaries)
+if (length(stale_sources)) {
+  cat(sprintf(
+    "WARNING: %d dataset(s) have a Latest Issue more than %d days after their Last Refreshed (new raw data not yet standardized): %s\n",
+    length(stale_sources), STALE_THRESHOLD_DAYS,
+    paste(vapply(stale_sources, function(s) sprintf("%s (+%dd)", s$folder, s$issue_lead),
+                 character(1)), collapse = ", ")))
+} else {
+  cat(sprintf("No datasets flagged stale (Latest Issue within %d days of Last Refreshed).\n",
+              STALE_THRESHOLD_DAYS))
+}
+
+# "How to read this table": the date columns are easy to misread -- two of them
+# are git commit dates about our pipeline, one is a property of the data.
+notes_block <- tags$details(class = "table-notes", open = NA,
+  tags$summary("How to read this table"),
+  tags$dl(
+    tags$dt("Earliest Data / Latest Data"),
+    tags$dd("The first and last observation dates found in the time column of the dataset's ",
+            tags$code("standard/*.csv.gz"), " files. These describe the data itself — the period it covers."),
+
+    tags$dt("Last Refreshed"),
+    tags$dd("The most recent git commit date of the dataset's ", tags$code("standard/*.csv.gz"),
+            " files: when our pipeline last wrote standardized output. It can move without any new ",
+            "upstream data — for example after an ", tags$code("ingest.R"),
+            " fix — so it reflects our processing cadence, not the publisher's."),
+
+    tags$dt("Latest Issue"),
+    tags$dd("When the source last published new or changed data, taken from the publisher wherever ",
+            "possible: the ", tags$code("rowsUpdatedAt"), " field of the metadata saved alongside ",
+            "each download (", tags$code("raw/<id>.json"), "). That is the source's own claim, so ",
+            "unlike a file-based proxy it cannot be moved by a re-export of identical rows, a ",
+            "metadata-only refresh, or repository housekeeping. Sources not pulled through the ",
+            "Socrata API report no such timestamp; those fall back to the most recent commit that ",
+            "changed a raw data file, and are marked ", tags$span(class = "basis-inferred", "est."),
+            " to show the date is inferred rather than reported. A dash means neither was available."),
+
+    tags$dt(HTML("&#9888; flag on Latest Issue")),
+    tags$dd(sprintf(paste0("Shown when Latest Issue is more than %d days after Last Refreshed: the ",
+                           "publisher has updated the data since we last rebuilt the standardized ",
+                           "output, so the files here are behind the source. The badge gives the gap ",
+                           "in days. "), STALE_THRESHOLD_DAYS),
+            tags$strong(sprintf("%d of %d dataset%s flagged", length(stale_sources),
+                                length(source_summaries),
+                                if (length(stale_sources) == 1) "" else "s")),
+            sprintf("; %d use a publisher timestamp, %d fall back to raw-file commits, %d have neither.",
+                    sum(vapply(source_summaries, function(s) identical(s$issue_basis, "metadata"), logical(1))),
+                    sum(vapply(source_summaries, function(s) identical(s$issue_basis, "files"), logical(1))),
+                    sum(vapply(source_summaries, function(s) identical(s$issue_basis, "none"), logical(1)))))
+  ),
+  tags$p(class = "caveat",
+    tags$strong("Caveats. "),
+    "Last Refreshed is a repository commit date read from the branch this page was built on, so a ",
+    "branch behind ",
+    if (is.na(default_branch)) "the default branch" else tags$code(default_branch),
+    " reports it as stale for every dataset. Latest Issue is only as current as the last time we ",
+    "downloaded the dataset, since it comes from the metadata saved with that download: if a source ",
+    "has not been fetched in a while, its publisher timestamp is stale too, and the gap between the ",
+    "two columns understates how far behind we are. It also reflects whatever the publisher chooses ",
+    "to report — some update the timestamp on a full re-publish that changes no values. The ",
+    tags$span(class = "basis-inferred", "est."),
+    " fallback dates carry the weaknesses of any file-based proxy: a publisher that re-exports ",
+    "identical rows in a different order changes the file's bytes and moves the date with no new ",
+    "data behind it, and like Last Refreshed they are read from the current branch.")
+)
+
+# Prominent, page-level version of the behind-branch warning above.
+branch_banner <- if (branch_is_behind) {
+  tags$div(class = "branch-warning",
+    tags$strong("Built from a branch that is behind. "),
+    sprintf("HEAD is %d commit%s behind %s. Last Refreshed, Latest Issue and the ",
+            commits_behind, if (commits_behind == 1) "" else "s", default_branch),
+    HTML("&#9888;"), " flags below are computed from this branch's git history and will look ",
+    "stale for datasets that are current on ", default_branch, ".")
+} else NULL
+
 datasets_table <- tags$table(id = "datasets-table",
   class = "display table table-striped table-bordered table-hover", style = "width:100%",
   tags$thead(tags$tr(lapply(DATASET_HEADERS, tags$th))),
@@ -606,6 +874,35 @@ page <- tags$html(lang = "en",
       .strat-stratified { color: #146c43; font-weight: 600; }
       .strat-notstratified { color: #6c757d; }
       .nav-tabs { margin-bottom: 1rem; }
+      /* \"How to read this table\" note */
+      .table-notes {
+        background: #f8f9fa; border: 1px solid #dee2e6; border-radius: .5rem;
+        padding: .75rem 1rem; margin-bottom: 1.25rem; font-size: .85rem;
+      }
+      .table-notes > summary {
+        cursor: pointer; font-weight: 600; font-size: .9rem;
+      }
+      .table-notes dl { margin: .75rem 0 0; }
+      .table-notes dt { margin-top: .5rem; }
+      .table-notes dd { margin: 0 0 0 1.25rem; color: #495057; }
+      .table-notes .caveat { margin: .75rem 0 0; color: #495057; }
+      .table-notes code, table.dataTable code { font-size: .8rem; }
+      /* Staleness flag: Latest Issue well after Last Refreshed. */
+      .issue-stale { white-space: nowrap; }
+      .stale-flag {
+        display: inline-block; margin-left: .35rem; padding: .05rem .4rem;
+        background: #fff3cd; border: 1px solid #ffe69c; border-radius: .5rem;
+        color: #664d03; font-size: .75rem; font-weight: 600; cursor: help;
+      }
+      .basis-inferred {
+        display: inline-block; margin-left: .3rem; padding: 0 .3rem;
+        background: #eef2f7; border: 1px solid #d6dee8; border-radius: .4rem;
+        color: #6c757d; font-size: .7rem; font-style: italic; cursor: help;
+      }
+      .branch-warning {
+        background: #f8d7da; border: 1px solid #f1aeb5; border-radius: .5rem;
+        padding: .6rem .9rem; margin-bottom: 1rem; font-size: .85rem; color: #58151c;
+      }
     "))
   ),
   tags$body(
@@ -616,6 +913,9 @@ page <- tags$html(lang = "en",
       " repository. Automatically generated from repository files — last updated ",
       updated_stamp, ". ",
       tags$a(href = "index.html", "View full data documentation →")),
+
+    branch_banner,
+    notes_block,
 
     tags$ul(class = "nav nav-tabs", id = "mainTabs", role = "tablist",
       tags$li(class = "nav-item", role = "presentation",
