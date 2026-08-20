@@ -1,6 +1,6 @@
 {
-  "heat_risk": {
-    "id": "heat_risk",
+  "value": {
+    "id": "value",
     "short_name": "Heat Risk Score",
     "long_name": "NOAA HeatRisk Mean Score",
     "category": "heat",
@@ -17,6 +17,33 @@
         "url": "https://www.wpc.ncep.noaa.gov/heatrisk/"
       }
     ]
+  },
+
+  "forecast_day": {
+    "id": "forecast_day",
+    "short_name": "Forecast day",
+    "long_name": "Forecast day offset",
+    "category": "heat",
+    "short_description": "0 = historical archive (observed Day 1), 1–7 = number of days ahead in the current forecast.",
+    "long_description": "Indicates whether a row is historical archive data or part of the current 7-day forecast. A value of 0 marks archive data (the observed Day 1 value for a past date). Values of 1–7 mark rows from the current forecast, where the number is the number of days ahead of the run date that the value is valid for.",
+    "measure_type": "Integer",
+    "unit": "Days",
+    "time_resolution": "Day",
+    "sources": [{ "id": "noaa_wpc_heatrisk" }]
+  },
+
+  "low_coverage_flag": {
+    "id": "low_coverage_flag",
+    "short_name": "Low coverage flag",
+    "long_name": "County low pixel coverage flag",
+    "category": "heat",
+    "short_description": "1 if fewer than 9 grid pixels cover the county (~<56 km²), 0 otherwise.",
+    "long_description": "County-level only. Value is 1 when fewer than 9 raster pixels (roughly a 3x3 block at 2.5 km resolution, ~<56 km²) fall within the county boundary, indicating the mean heat risk estimate is derived from very few grid cells and should be interpreted with caution. Value is 0 otherwise.",
+    "statement": "The heat risk estimate for {location} on {time} was based on low pixel coverage ({value}).",
+    "measure_type": "Binary",
+    "unit": "Binary indicator",
+    "time_resolution": "Day",
+    "sources": [{ "id": "noaa_wpc_heatrisk" }]
   },
 
   "_sources": {

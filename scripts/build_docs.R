@@ -14,6 +14,11 @@ library(glue)
 # -----------------------------------------------------------------------------
 `%||%` <- function(x, y) if (is.null(x) || (is.character(x) && nchar(x) == 0)) y else x
 
+# GitHub raw base for linking bundle source files in the docs. Defined here so
+# the bundle render functions below can use it (a matching GITHUB_RAW_BASE is set
+# later for the manifest section).
+GH_RAW_BASE <- "https://raw.githubusercontent.com/PopHIVE/Ingest/main"
+
 # -----------------------------------------------------------------------------
 # Configuration
 # -----------------------------------------------------------------------------
@@ -511,8 +516,25 @@ make_bundle_file_section <- function(filepath, measure_info, bundle_name) {
     make_bundle_variable_row(col, var_info)
   })
 
+  # Source files that contribute to THIS parquet (from the _bundle block)
+  bundle_meta <- measure_info[["_bundle"]]
+  file_meta <- if (!is.null(bundle_meta) && !is.null(bundle_meta$dist_files)) {
+    bundle_meta$dist_files[[filename]]
+  } else NULL
+  src_files <- if (!is.null(file_meta)) unlist(file_meta$source_files) else NULL
+  source_files_display <- if (!is.null(src_files) && length(src_files) > 0) {
+    tags$div(class = "mb-2 small",
+      tags$span(class = "text-muted", tags$em("Source files: ")),
+      lapply(src_files, function(sf) {
+        tags$a(href = paste0(GH_RAW_BASE, "/data/", sf), target = "_blank",
+               class = "me-2 text-decoration-none", tags$code(sf))
+      })
+    )
+  } else NULL
+
   tagList(
     tags$h5(class = "mt-3", tags$code(filename)),
+    source_files_display,
     tags$div(class = "table-responsive",
       tags$table(class = "table table-striped table-sm",
         tags$thead(
@@ -682,6 +704,25 @@ make_bundle_section <- function(bundle_name, bundle_dir) {
 
   section_id <- gsub("[^a-zA-Z0-9]", "-", bundle_name)
 
+  # Data source sets feeding this bundle (from the _bundle block). Each dataset
+  # is shown by the same header text used for its own documentation section
+  # (format_source_name) and links to that section, which is its data dictionary.
+  bundle_meta <- measure_info[["_bundle"]]
+  bundle_srcs <- if (!is.null(bundle_meta)) unlist(bundle_meta$sources) else NULL
+  sources_display <- if (!is.null(bundle_srcs) && length(bundle_srcs) > 0) {
+    src_links <- list()
+    for (i in seq_along(bundle_srcs)) {
+      s <- bundle_srcs[[i]]
+      src_links[[length(src_links) + 1]] <- tags$a(
+        href = paste0("#", gsub("[^a-zA-Z0-9]", "-", s)),
+        class = "bundle-source-link",
+        format_source_name(s)
+      )
+      if (i < length(bundle_srcs)) src_links[[length(src_links) + 1]] <- "; "
+    }
+    tags$p(class = "mb-3", tags$strong("Data sources: "), src_links)
+  } else NULL
+
   tagList(
     tags$section(id = section_id, class = "mb-5",
       tags$h2(class = "border-bottom pb-2", format_bundle_name(bundle_name)),
@@ -690,6 +731,8 @@ make_bundle_section <- function(bundle_name, bundle_dir) {
         tags$em(sprintf("Combined output bundle. Dist files: %d parquet file(s).",
                         length(dist_files)))
       ),
+
+      sources_display,
 
       if (length(file_sections) > 0) {
         tagList(

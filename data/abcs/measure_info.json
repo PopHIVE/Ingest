@@ -3,14 +3,17 @@
     "id": "age",
     "short_name": "Age group",
     "long_name": "Age group",
-    "category": "Respiratory diseases",
-    "short_description": "",
-    "statement": "",
-    "measure_type": "Age group (years)",
-    "unit": "years",
-    "time_resolution": "",
-    "restrictions": "",
-    "sources": ["abcs"],
+    "category": "demographic",
+    "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+    "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
     "citations": []
   },
   "serotype": {
@@ -18,14 +21,17 @@
     "short_name": "Serotype",
     "long_name": "Serotype",
     "category": "Respiratory diseases",
-    "short_description": "Pneumococcal serotype",
+    "short_description": "Which serotype the row describes.",
     "statement": "",
     "measure_type": "Category",
     "unit": "",
     "time_resolution": "",
     "restrictions": "",
-    "sources": ["abcs"],
-    "citations": []
+    "sources": [
+      "abcs"
+    ],
+    "citations": [],
+    "long_description": "Bacterial serotype the row describes: a pneumococcal serotype in data.csv.gz, a Group B capsular serotype in gbs_serotypes.csv.gz."
   },
   "N_SSUAD": {
     "id": "N_SSUAD",
@@ -38,7 +44,9 @@
     "unit": "Number",
     "time_resolution": "",
     "restrictions": "",
-    "sources": ["ssuad"],
+    "sources": [
+      "ssuad"
+    ],
     "citations": []
   },
   "N_IPD": {
@@ -52,7 +60,9 @@
     "unit": "Number",
     "time_resolution": "year",
     "restrictions": "",
-    "sources": ["abcs"],
+    "sources": [
+      "abcs"
+    ],
     "citations": []
   },
   "pct_IPD": {
@@ -66,7 +76,9 @@
     "unit": "%",
     "time_resolution": "year",
     "restrictions": "",
-    "sources": ["abcs"],
+    "sources": [
+      "abcs"
+    ],
     "citations": []
   },
   "spn_surveillance_population": {
@@ -81,7 +93,9 @@
     "unit": "Persons",
     "time_resolution": "year",
     "restrictions": "",
-    "sources": ["abcs"],
+    "sources": [
+      "abcs"
+    ],
     "citations": []
   },
   "rate_IPD": {
@@ -96,8 +110,438 @@
     "unit": "Cases per 100,000",
     "time_resolution": "year",
     "restrictions": "",
-    "sources": ["abcs"],
+    "sources": [
+      "abcs"
+    ],
     "citations": []
+  },
+  "sex": {
+    "id": "sex",
+    "short_name": "Sex",
+    "long_name": "Sex",
+    "category": "demographic",
+    "short_description": "Sex; \"Total\" combines both.",
+    "long_description": "Sex of the cases the row describes, reported for Group A only.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "race_ethnicity": {
+    "id": "race_ethnicity",
+    "short_name": "Race/Ethnicity",
+    "long_name": "Race and ethnicity",
+    "category": "demographic",
+    "short_description": "Race and ethnicity; \"Total\" combines all groups.",
+    "long_description": "Race and ethnicity of the cases the row describes, collapsed by ABCs to White, Black and Other.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "onset": {
+    "id": "onset",
+    "short_name": "Onset timing",
+    "long_name": "Infant disease onset timing",
+    "category": "demographic",
+    "short_description": "Early- or late-onset infant Group B disease.",
+    "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "pathogen": {
+    "id": "pathogen",
+    "short_name": "Pathogen",
+    "long_name": "Bacterial pathogen",
+    "category": "infectious_disease",
+    "short_description": "Group A or Group B Streptococcus.",
+    "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "pop": {
+    "id": "pop",
+    "short_name": "Surveillance population",
+    "long_name": "ABCs surveillance population",
+    "category": "infectious_disease",
+    "short_description": "Population of the ABCs catchment area.",
+    "long_description": "Census-derived population of the ABCs catchment area, the denominator for rate_IPD.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "People",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gas_emm_n_isolates_total": {
+    "id": "abcs_gas_emm_n_isolates_total",
+    "short_name": "emm-typed isolates",
+    "long_name": "Total emm-typed isolates",
+    "category": "infectious_disease",
+    "short_description": "Group A isolates assigned an emm type.",
+    "long_description": "Number of invasive Group A Streptococcus isolates assigned an emm type, the denominator for the emm percentages.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_gbs_n_isolates": {
+    "id": "abcs_gbs_n_isolates",
+    "short_name": "Isolates typed",
+    "long_name": "Number of isolates typed",
+    "category": "infectious_disease",
+    "short_description": "Typed Group B isolates in the population group on the row.",
+    "long_description": "Number of typed invasive Group B Streptococcus isolates in the population group on the row, the denominator for the serotype and ALPH percentages.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_N_cases": {
+    "id": "abcs_N_cases",
+    "short_name": "Cases",
+    "long_name": "Estimated number of invasive cases",
+    "category": "infectious_disease",
+    "short_description": "Estimated annual invasive disease cases.",
+    "long_description": "Estimated number of invasive disease cases in the year.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Cases",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      },
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_N_deaths": {
+    "id": "abcs_N_deaths",
+    "short_name": "Deaths",
+    "long_name": "Estimated number of deaths",
+    "category": "infectious_disease",
+    "short_description": "Estimated annual deaths from invasive disease.",
+    "long_description": "Estimated number of deaths from invasive disease in the year.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      },
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_N_survivals": {
+    "id": "abcs_N_survivals",
+    "short_name": "Survivals",
+    "long_name": "Estimated number of survivals",
+    "category": "infectious_disease",
+    "short_description": "Estimated annual invasive disease cases who survived.",
+    "long_description": "Estimated number of people with invasive disease who survived, in the year.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "People",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      },
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_rate_cases": {
+    "id": "abcs_rate_cases",
+    "short_name": "Case rate",
+    "long_name": "Invasive disease case rate",
+    "category": "infectious_disease",
+    "short_description": "Invasive disease cases per 100,000 population.",
+    "long_description": "Rate of invasive disease cases per 100,000 population.",
+    "statement": "In {location}, the invasive case rate was {value} per 100,000.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      },
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_rate_deaths": {
+    "id": "abcs_rate_deaths",
+    "short_name": "Death rate",
+    "long_name": "Invasive disease death rate",
+    "category": "infectious_disease",
+    "short_description": "Deaths from invasive disease per 100,000 population.",
+    "long_description": "Rate of deaths from invasive disease per 100,000 population.",
+    "statement": "",
+    "measure_type": "Rate",
+    "unit": "Deaths per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      },
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "abcs_n_isolates": {
+    "id": "abcs_n_isolates",
+    "short_name": "Isolates tested",
+    "long_name": "Number of isolates tested",
+    "category": "infectious_disease",
+    "short_description": "Isolates characterised by CDC's reference laboratory.",
+    "long_description": "Number of isolates characterised by whole genome sequencing at CDC's reference laboratory, the denominator for the resistance percentages.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      },
+      {
+        "id": "abcs_gbs"
+      }
+    ],
+    "citations": []
+  },
+  "rate_denominator": {
+    "id": "rate_denominator",
+    "short_name": "Rate denominator",
+    "long_name": "Population the rate is relative to",
+    "category": "demographic",
+    "short_description": "Indicates if rate is per 100,000 of the row's stratum or of the whole population.",
+    "long_description": "Indicates if rate is per 100,000 of the row's stratum or of the whole population.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs"
+      }
+    ],
+    "citations": []
+  },
+  "antibiotic": {
+    "short_name": "Antibiotic",
+    "long_name": "Antibiotic tested",
+    "short_description": "Which drug the resistance percentage refers to.",
+    "long_description": "Antibiotic the isolates on the row were tested against.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      },
+      {
+        "id": "abcs_gbs"
+      }
+    ]
+  },
+  "syndrome": {
+    "short_name": "Clinical syndrome",
+    "long_name": "Clinical syndrome",
+    "short_description": "Which clinical presentation the row describes.",
+    "long_description": "Clinical presentation of the invasive disease the row describes.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      },
+      {
+        "id": "abcs_gbs"
+      }
+    ]
+  },
+  "emm_type": {
+    "short_name": "emm type",
+    "long_name": "Group A emm type",
+    "short_description": "Which emm type the row describes.",
+    "long_description": "emm type of the Group A Streptococcus isolates, the M protein gene sequence type; \"other\" is CDC's residual category.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ]
+  },
+  "alph_type": {
+    "short_name": "ALPH type",
+    "long_name": "Group B ALPH gene type",
+    "short_description": "Which alpha-like protein gene the row describes.",
+    "long_description": "Alpha-like protein (ALPH) surface gene type of the Group B Streptococcus isolates.",
+    "measure_type": "Category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ]
+  },
+  "abcs_pct_resistant": {
+    "short_name": "Resistance (%)",
+    "long_name": "Percent of isolates non-susceptible",
+    "short_description": "Percent of tested isolates non-susceptible to the antibiotic on the row.",
+    "long_description": "Percent of invasive isolates non-susceptible to the antibiotic on the row.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      },
+      {
+        "id": "abcs_gbs"
+      }
+    ]
+  },
+  "abcs_gas_rate_syndrome": {
+    "short_name": "Syndrome rate",
+    "long_name": "Rate of Group A cases by syndrome",
+    "short_description": "Group A cases presenting as the syndrome on the row, per 100,000.",
+    "long_description": "Rate of invasive Group A Streptococcus cases presenting as the syndrome on the row, per 100,000 population.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ]
+  },
+  "abcs_gbs_pct_syndrome": {
+    "short_name": "Syndrome (%)",
+    "long_name": "Percent of Group B cases by syndrome",
+    "short_description": "Percent of Group B cases presenting as the syndrome on the row.",
+    "long_description": "Percent of invasive Group B Streptococcus cases presenting as the syndrome on the row.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ]
+  },
+  "abcs_gbs_pct_serotype": {
+    "short_name": "Serotype (%)",
+    "long_name": "Percent of Group B isolates by serotype",
+    "short_description": "Percent of typed Group B isolates of the serotype on the row.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates of the capsular serotype on the row.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ]
+  },
+  "abcs_gbs_pct_alph": {
+    "short_name": "ALPH type (%)",
+    "long_name": "Percent of Group B isolates by ALPH type",
+    "short_description": "Percent of typed Group B isolates of the ALPH type on the row.",
+    "long_description": "Percent of typed invasive Group B Streptococcus isolates carrying the alpha-like protein gene on the row.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gbs"
+      }
+    ]
+  },
+  "abcs_gas_emm_pct": {
+    "short_name": "emm type (%)",
+    "long_name": "Percent of isolates by emm type",
+    "short_description": "Percent of emm-typed Group A isolates of the type on the row.",
+    "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates of the emm type on the row.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ]
+  },
+  "abcs_gas_emm_n": {
+    "short_name": "emm type isolates",
+    "long_name": "Number of isolates by emm type",
+    "short_description": "Emm-typed Group A isolates of the type on the row.",
+    "long_description": "Number of emm-typed invasive Group A Streptococcus isolates of the emm type on the row.",
+    "measure_type": "Count",
+    "unit": "Isolates",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "abcs_gas"
+      }
+    ]
   },
   "_sources": {
     "abcs": {
@@ -121,6 +565,28 @@
       "date_accessed": 2025,
       "description": "The CAAP (Community-Acquired Acute Pneumonia) study by Ramirez et al. (2025) used serotype-specific urinary antigen detection (SSUAD) to identify pneumococcal serotypes causing non-invasive pneumonia in Louisville, Kentucky. This methodology allows identification of pneumococcal serotypes in patients with pneumonia who do not have positive blood cultures, providing insight into the full spectrum of pneumococcal disease burden. The study demonstrates that serotypes causing invasive disease also commonly cause non-invasive pneumonia, validating the use of IPD surveillance data for understanding overall pneumococcal disease patterns.",
       "restrictions": "Attribution required. Cite Ramirez et al. Open Forum for Infectious Diseases. 2025."
+    },
+    "abcs_gas": {
+      "name": "Active Bacterial Core surveillance (ABCs) Group A Streptococcus",
+      "url": "https://data.cdc.gov/d/9y49-tura",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/abcs/",
+      "location": "CDC ABCs surveillance reports",
+      "location_url": "https://www.cdc.gov/abcs/reports/",
+      "date_accessed": 2026,
+      "description": "Active Bacterial Core surveillance (ABCs) is a collaboration between CDC, state health departments and universities running active, population-based, laboratory-confirmed surveillance for invasive bacterial disease since 1997. CDC publishes one dataset per pathogen; this is the Group A Streptococcus. ABCs covers a catchment of selected US counties, roughly 35 million people, not the whole country. Rates are observed within that catchment and counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown. Invasive isolates are sent to CDC's reference laboratory and characterized by whole genome sequencing, which yields both the emm type and the predicted minimum inhibitory concentrations behind the resistance percentages. The published isolate counts start in 2006. Note CDC's own figures for 2023 disagree slightly: the surveillance report cites 3,908 isolates while the per-type counts in this dataset sum to 3,930, so the resistance and typing denominators are kept as separate columns here. A blank value is a cell CDC did not publish for that row, so a 0 is always a measured zero. CDC's case definition: invasive disease is isolation of group A Streptococcus from a normally sterile site, or from a wound culture accompanied by necrotizing fasciitis or streptococcal toxic shock syndrome, in a resident of a surveillance area.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+    },
+    "abcs_gbs": {
+      "name": "Active Bacterial Core surveillance (ABCs) Group B Streptococcus",
+      "url": "https://data.cdc.gov/d/95m5-agj4",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/abcs/",
+      "location": "CDC ABCs surveillance reports",
+      "location_url": "https://www.cdc.gov/abcs/reports/",
+      "date_accessed": 2026,
+      "description": "Active Bacterial Core surveillance (ABCs) is a collaboration between CDC, state health departments and universities running active, population-based, laboratory-confirmed surveillance for invasive bacterial disease since 1997. CDC publishes one dataset per pathogen; this is the Group B Streptococcus. ABCs covers a catchment of selected US counties, roughly 35 million people, not the whole country. Rates are observed within that catchment and counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown. Invasive isolates are characterized at CDC's reference laboratory. Serotype and ALPH percentages carry a per-population-group isolate count; the resistance percentages have a single overall count published from 2006 on, and none for the individual population groups. A blank value is a cell CDC did not publish for that row, so a 0 is always a measured zero. CDC's case definition: invasive disease is isolation of group B Streptococcus from a normally sterile site in a resident of a surveillance area.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
     }
   }
 }

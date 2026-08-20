@@ -1,6 +1,6 @@
 library(dcf)
 library(tidyverse)
-#dcf::dcf_process("epic")
+
 dcf_process("delphi_doctors_claims")
 dcf_process("delphi_hospital_claims")
 dcf_process("delphi_ili_fluview")
@@ -16,3 +16,5 @@ dcf::dcf_process("epic_resp_infections")
 
 
 dcf::dcf_process("bundle_respiratory", ".")
+
+#dcf::dcf_process("epic_diarrhea")

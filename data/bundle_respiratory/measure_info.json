@@ -1,5 +1,6 @@
 {
   "bundle_respiratory/dist/rsv_overall_trends.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "Epic Cosmos, ED": { "source_id": "epic_pct_rsv" },
       "Google Health Trends": { "source_id": "gtrends_rsv_adjusted" },
@@ -10,6 +11,7 @@
     }
   },
   "bundle_respiratory/dist/flu_overall_trends.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "Epic Cosmos, ED": { "source_id": "epic_pct_flu" },
       "CDC NSSP": { "source_id": "percent_visits_flu" },
@@ -17,10 +19,12 @@
       "CDC NWSS": { "source_id": "wastewater_flua" },
       "CDC NHSN": { "source_id": "delphi_nhsn_flu" },
       "Delphi Hospital Claims": { "source_id": "delphi_hospital_flu_smooth" },
-      "CDC ILINet": { "source_id": "delphi_fluview_wili" }
+      "CDC ILINet": { "source_id": "delphi_fluview_wili" },
+      "Kinsa": { "source_id": "kinsa_cough_cold_flu" }
     }
   },
   "bundle_respiratory/dist/covid_overall_trends.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "Epic Cosmos, ED": { "source_id": "epic_pct_covid" },
       "CDC NSSP": { "source_id": "percent_visits_covid" },
@@ -32,21 +36,52 @@
     }
   },
   "bundle_respiratory/dist/rsv_trends_by_age.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "Epic Cosmos (ED)": { "source_id": "epic_pct_rsv" },
       "CDC RSV-NET (Hospitalization)": { "source_id": "rate_rsv" }
     }
   },
   "bundle_respiratory/dist/flu_trends_by_age.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "Epic Cosmos (ED)": { "source_id": "epic_pct_flu" },
       "CDC RSV-NET (Hospitalization)": { "source_id": "rate_flu" }
     }
   },
   "bundle_respiratory/dist/covid_trends_by_age.parquet|source": {
+    "short_name": "Data source",
     "levels": {
       "Epic Cosmos (ED)": { "source_id": "epic_pct_covid" },
       "CDC RSV-NET (Hospitalization)": { "source_id": "rate_covid" }
+    }
+  },
+  "bundle_respiratory/dist/rsv_ed_visits_by_county.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "CDC NSSP": { "source_id": "percent_visits_rsv" }
+    }
+  },
+  "bundle_respiratory/dist/flu_ed_visits_by_county.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "CDC NSSP": { "source_id": "percent_visits_flu" }
+    }
+  },
+  "bundle_respiratory/dist/covid_ed_visits_by_county.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "CDC NSSP": { "source_id": "percent_visits_covid" }
+    }
+  },
+  "bundle_respiratory/dist/rsv_positive_tests.parquet|source": {
+    "short_name": "Data source",
+    "short_description": "Data source identifier; positive RSV test counts from the CDC National Respiratory and Enteric Virus Surveillance System (NREVSS)."
+  },
+  "bundle_respiratory/dist/rsv_testing_pct.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "Epic Cosmos, ED": { "source_id": "epic_pct_rsv_pos_tests" }
     }
   },
   "{category}value{variant}": {
@@ -78,6 +113,73 @@
       }
     }
   },
+  "bundle_respiratory/dist/rsv_overall_trends.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "Equals 1 when the underlying Epic Cosmos count was suppressed (small cell) and imputed; 0 otherwise. Non-Epic sources are 0.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_respiratory/dist/flu_overall_trends.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "Equals 1 when the underlying Epic Cosmos count was suppressed (small cell) and imputed; 0 otherwise. Non-Epic sources are 0.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_respiratory/dist/covid_overall_trends.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "Equals 1 when the underlying Epic Cosmos count was suppressed (small cell) and imputed; 0 otherwise. Non-Epic sources are 0.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_respiratory/dist/rsv_trends_by_age.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "Equals 1 when the underlying Epic Cosmos count for this age group was suppressed (small cell) and imputed; 0 otherwise.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_respiratory/dist/flu_trends_by_age.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "Equals 1 when the underlying Epic Cosmos count for this age group was suppressed (small cell) and imputed; 0 otherwise.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_respiratory/dist/covid_trends_by_age.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "Equals 1 when the underlying Epic Cosmos count for this age group was suppressed (small cell) and imputed; 0 otherwise.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_respiratory/dist/rsv_testing_pct.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "Equals 1 when the number of ED encounters coded J12-J18 was '10 or fewer' (suppressed); 0 otherwise.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Month"
+  },
+  "bundle_respiratory/dist/rsv_ed_visits_by_county.parquet|week_end": {
+    "short_name": "Week ending date",
+    "short_description": "Saturday date marking the end of the reporting week.",
+    "measure_type": "date",
+    "unit": "date"
+  },
+  "bundle_respiratory/dist/flu_ed_visits_by_county.parquet|week_end": {
+    "short_name": "Week ending date",
+    "short_description": "Saturday date marking the end of the reporting week.",
+    "measure_type": "date",
+    "unit": "date"
+  },
+  "bundle_respiratory/dist/covid_ed_visits_by_county.parquet|week_end": {
+    "short_name": "Week ending date",
+    "short_description": "Saturday date marking the end of the reporting week.",
+    "measure_type": "date",
+    "unit": "date"
+  },
   "bundle_respiratory/dist/rsv_ed_visits_by_county.parquet|percent_visits_rsv": {
     "source_id": "percent_visits_rsv"
   },
@@ -87,8 +189,26 @@
   "bundle_respiratory/dist/covid_ed_visits_by_county.parquet|percent_visits_covid": {
     "source_id": "percent_visits_covid"
   },
+  "bundle_respiratory/dist/rsv_ed_visits_by_county.parquet|is_state_estimate": {
+    "source_id": "is_state_estimate"
+  },
+  "bundle_respiratory/dist/flu_ed_visits_by_county.parquet|is_state_estimate": {
+    "source_id": "is_state_estimate"
+  },
+  "bundle_respiratory/dist/covid_ed_visits_by_county.parquet|is_state_estimate": {
+    "source_id": "is_state_estimate"
+  },
   "bundle_respiratory/dist/rsv_positive_tests.parquet|value": {
     "source_id": "pcr_detections"
+  },
+  "bundle_respiratory/dist/rsv_positive_tests.parquet|scaled_cases": {
+    "source_id": "scaled_cases"
+  },
+  "bundle_respiratory/dist/rsv_positive_tests.parquet|epiyr": {
+    "source_id": "epiyr"
+  },
+  "bundle_respiratory/dist/rsv_positive_tests.parquet|epiwk": {
+    "source_id": "epiwk"
   },
   "bundle_respiratory/dist/rsv_google_dma.parquet|value": {
     "source_id": "gtrends_rsv"
@@ -105,11 +225,26 @@
   "bundle_respiratory/dist/pneumococcus_serotype_trends.parquet|value": {
     "source_id": "N_IPD"
   },
+  "bundle_respiratory/dist/pneumococcus_serotype_trends.parquet|value_incidence": {
+    "source_id": "rate_IPD"
+  },
+  "bundle_respiratory/dist/pneumococcus_by_geography.parquet|geography": {
+    "short_name": "State",
+    "short_description": "Two-letter USPS state abbreviation of the ABCs surveillance site.",
+    "measure_type": "identifier",
+    "unit": ""
+  },
   "bundle_respiratory/dist/pneumococcus_by_geography.parquet|value": {
     "source_id": "pct_IPD"
   },
   "bundle_respiratory/dist/pneumococcus_by_geography.parquet|value_N": {
     "source_id": "N_IPD"
+  },
+  "bundle_respiratory/dist/pneumococcus_by_geography_year.parquet|geography": {
+    "short_name": "State",
+    "short_description": "Two-letter USPS state abbreviation of the ABCs surveillance site.",
+    "measure_type": "identifier",
+    "unit": ""
   },
   "bundle_respiratory/dist/pneumococcus_by_geography_year.parquet|value": {
     "source_id": "pct_IPD"
@@ -134,5 +269,124 @@
   },
   "bundle_respiratory/dist/pneumococcus_comparison.parquet|pneumonia": {
     "source_id": "N_SSUAD"
+  },
+  "_bundle": {
+    "name": "bundle_respiratory",
+    "sources": [
+      "abcs",
+      "delphi_doctors_claims",
+      "delphi_hospital_claims",
+      "delphi_ili_fluview",
+      "delphi_nhsn",
+      "epic_resp_infections",
+      "gtrends",
+      "kinsa_ili",
+      "NREVSS",
+      "nssp",
+      "respnet",
+      "wastewater"
+    ],
+    "dist_files": {
+      "rsv_overall_trends.parquet": {
+        "sources": ["delphi_nhsn", "epic_resp_infections", "gtrends", "nssp", "respnet", "wastewater"],
+        "source_files": [
+          "epic_resp_infections/standard/weekly.csv.gz",
+          "gtrends/standard/data.csv.gz",
+          "nssp/standard/data.csv.gz",
+          "respnet/standard/data.csv.gz",
+          "wastewater/standard/data.csv.gz",
+          "delphi_nhsn/standard/data.csv.gz"
+        ]
+      },
+      "flu_overall_trends.parquet": {
+        "sources": ["delphi_hospital_claims", "delphi_ili_fluview", "delphi_nhsn", "epic_resp_infections", "kinsa_ili", "nssp", "respnet", "wastewater"],
+        "source_files": [
+          "epic_resp_infections/standard/weekly.csv.gz",
+          "nssp/standard/data.csv.gz",
+          "respnet/standard/data.csv.gz",
+          "wastewater/standard/data.csv.gz",
+          "delphi_nhsn/standard/data.csv.gz",
+          "delphi_hospital_claims/standard/data.csv.gz",
+          "delphi_ili_fluview/standard/data.csv.gz",
+          "kinsa_ili/standard/data.csv.gz"
+        ]
+      },
+      "covid_overall_trends.parquet": {
+        "sources": ["delphi_doctors_claims", "delphi_hospital_claims", "delphi_nhsn", "epic_resp_infections", "nssp", "respnet", "wastewater"],
+        "source_files": [
+          "epic_resp_infections/standard/weekly.csv.gz",
+          "nssp/standard/data.csv.gz",
+          "respnet/standard/data.csv.gz",
+          "wastewater/standard/data.csv.gz",
+          "delphi_nhsn/standard/data.csv.gz",
+          "delphi_hospital_claims/standard/data.csv.gz",
+          "delphi_doctors_claims/standard/data.csv.gz"
+        ]
+      },
+      "rsv_trends_by_age.parquet": {
+        "sources": ["epic_resp_infections", "respnet"],
+        "source_files": [
+          "epic_resp_infections/standard/weekly.csv.gz",
+          "respnet/standard/data.csv.gz"
+        ]
+      },
+      "flu_trends_by_age.parquet": {
+        "sources": ["epic_resp_infections", "respnet"],
+        "source_files": [
+          "epic_resp_infections/standard/weekly.csv.gz",
+          "respnet/standard/data.csv.gz"
+        ]
+      },
+      "covid_trends_by_age.parquet": {
+        "sources": ["epic_resp_infections", "respnet"],
+        "source_files": [
+          "epic_resp_infections/standard/weekly.csv.gz",
+          "respnet/standard/data.csv.gz"
+        ]
+      },
+      "rsv_ed_visits_by_county.parquet": {
+        "sources": ["nssp"],
+        "source_files": ["nssp/standard/data.csv.gz"]
+      },
+      "flu_ed_visits_by_county.parquet": {
+        "sources": ["nssp"],
+        "source_files": ["nssp/standard/data.csv.gz"]
+      },
+      "covid_ed_visits_by_county.parquet": {
+        "sources": ["nssp"],
+        "source_files": ["nssp/standard/data.csv.gz"]
+      },
+      "rsv_positive_tests.parquet": {
+        "sources": ["NREVSS"],
+        "source_files": ["NREVSS/standard/data.csv.gz"]
+      },
+      "rsv_testing_pct.parquet": {
+        "sources": ["epic_resp_infections"],
+        "source_files": ["epic_resp_infections/standard/monthly_tests.csv.gz"]
+      },
+      "rsv_google_dma.parquet": {
+        "sources": ["gtrends"],
+        "source_files": ["gtrends/standard/data_dma.csv.gz"]
+      },
+      "pneumococcus_serotype_trends.parquet": {
+        "sources": ["abcs"],
+        "source_files": ["abcs/standard/data.csv.gz"]
+      },
+      "pneumococcus_by_geography.parquet": {
+        "sources": ["abcs"],
+        "source_files": ["abcs/standard/data.csv.gz"]
+      },
+      "pneumococcus_by_geography_year.parquet": {
+        "sources": ["abcs"],
+        "source_files": ["abcs/standard/data.csv.gz"]
+      },
+      "pneumococcus_comparison.parquet": {
+        "sources": ["abcs"],
+        "source_files": [
+          "abcs/standard/data.csv.gz",
+          "abcs/standard/uad.csv.gz"
+        ]
+      }
+    }
   }
 }

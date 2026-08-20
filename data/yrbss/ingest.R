@@ -126,13 +126,9 @@ measure_dict <- tibble::tribble(
 )
 
 # -----------------------------------------------------------------------------
-# Initialize process record (creates process.json if it doesn't exist)
+# Initialize process record (process.json is created by dcf::dcf_add_source())
 # -----------------------------------------------------------------------------
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+process <- dcf::dcf_process_record()
 
 # Small wrapper: fetch a URL as parsed JSON, retrying once on failure.
 fetch_json <- function(url) {
@@ -199,7 +195,20 @@ locations <- loc_raw %>%
 # -----------------------------------------------------------------------------
 sig <- list(years = year_vec, questions = sort(selected$question_code))
 
-if (!identical(process$raw_state$sig, sig) || !file.exists(RAW_FILE)) {
+# dcf::dcf_process_record() reads process.json via jsonlite::read_json(),
+# which returns JSON arrays as R lists of scalars (not atomic vectors), so
+# process$raw_state$sig round-trips as e.g. list(1991, 1993, ...) instead of
+# c(1991L, 1993L, ...). identical() treats a list and an atomic vector as
+# different even when their elements match, which made this comparison fail
+# on every run and forced a full re-download every time regardless of
+# whether the underlying YRBSS data had changed. Unlist + recast to the same
+# types as `sig` before comparing so unchanged data is actually detected.
+disk_sig  <- process$raw_state$sig
+sig_same  <- !is.null(disk_sig) &&
+  identical(as.integer(unlist(disk_sig$years)), sig$years) &&
+  identical(as.character(unlist(disk_sig$questions)), sig$questions)
+
+if (!sig_same || !file.exists(RAW_FILE)) {
 
   message(sprintf("Downloading YRBSS ChartData: %d questions x %d locations",
                   nrow(selected), nrow(locations)))

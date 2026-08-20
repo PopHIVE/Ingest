@@ -11,12 +11,8 @@ library(vroom)
 library(httr)
 library(jsonlite)
 
-# Initialize process record (creates process.json if it doesn't exist)
-if (!file.exists("process.json")) {
-  process <- list(raw_state = NULL)
-} else {
-  process <- dcf::dcf_process_record()
-}
+# Initialize process record (process.json is created by dcf::dcf_add_source())
+process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
 # 1. Check GitHub for updates and download if changed
