@@ -3,34 +3,46 @@ library(tidyverse)
 library(arrow)
 library(reshape2)
 
+# CDC's CSV export renders values >= 1000 with thousands separators ("4,133"),
+# which makes the whole column parse as character and breaks any arithmetic on
+# it (sum(), weighted means, pivots). Strip the separators and coerce back.
+as_num <- function(x) {
+  if (is.character(x)) as.numeric(gsub(",", "", x, fixed = TRUE)) else x
+}
+
+# This source ingests three separate CDC datasets, so each needs its own key in
+# the process record. They previously all read and wrote `process$raw_state`,
+# which meant each block clobbered the others: whichever ran last owned the
+# field, so the quarterly block was skipped on every subsequent run while the
+# other two re-ran needlessly. One shared record object, three distinct keys.
+process <- dcf::dcf_process_record()
+
 #State level, including type of drug
-process1 <- dcf::dcf_process_record()
 raw_state1 <- dcf::dcf_download_cdc(
   "xkb8-kh2a",
   "raw",
-  process1$raw_state,
+  process$raw_state,
   parquet=T
 )
 
 #County-level
-process2 <- dcf::dcf_process_record()
 raw_state2 <- dcf::dcf_download_cdc(
   "gb4e-yj24",
   "raw",
-  process2$raw_state,
+  process$raw_state_county,
   parquet=T
 )
 
-process3 <- dcf::dcf_process_record()
+#Quarterly provisional estimates, 21 causes
 raw_state3 <- dcf::dcf_download_cdc(
   "489q-934x",
   "raw",
-  process3$raw_state,
+  process$raw_state_quarterly,
   parquet=T
 )
 
 
-if (!identical(process1$raw_state, raw_state1)) {
+if (!identical(process$raw_state, raw_state1)) {
 
   all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
   state_fips_lookup <- all_fips %>%
@@ -41,7 +53,8 @@ if (!identical(process1$raw_state, raw_state1)) {
   data_type <- open_dataset('./raw/xkb8-kh2a.parquet') %>%
     collect() %>%
     as.data.frame() %>%
-    mutate( time = as.Date(paste(Year, Month, '01', sep='-'), '%Y-%B-%d'),
+    mutate( across(any_of(c('Data Value', 'Predicted Value')), as_num),
+            time = as.Date(paste(Year, Month, '01', sep='-'), '%Y-%B-%d'),
             State = if_else(State=='YC','NY', State), #combines NYC and NY state
     ) %>%
     group_by(time,State, Indicator) %>%
@@ -64,7 +77,8 @@ if (!identical(process1$raw_state, raw_state1)) {
   data_pct_specified <- open_dataset('./raw/xkb8-kh2a.parquet') %>%
     collect() %>%
     as.data.frame() %>%
-    mutate( time = as.Date(paste(Year, Month, '01', sep='-'), '%Y-%B-%d'),
+    mutate( across(any_of(c('Data Value', 'Predicted Value')), as_num),
+            time = as.Date(paste(Year, Month, '01', sep='-'), '%Y-%B-%d'),
             State = if_else(State=='YC','NY', State), #combines NYC and NY state
     ) %>%
     filter(Indicator== "Percent with drugs specified") %>%
@@ -91,7 +105,8 @@ if (!identical(process1$raw_state, raw_state1)) {
     collect() %>%
     as.data.frame() %>%
     #population-weighted average for New York
-    mutate(State = if_else(State=='YC','NY', State)) %>% #combines NYC and NY state
+    mutate(across(any_of(c('Percent Complete', 'Percent Pending Investigation')), as_num),
+           State = if_else(State=='YC','NY', State)) %>% #combines NYC and NY state
     left_join(state_fips_lookup, by = c("State" = "state")) %>%
     mutate( geography = if_else(State == 'US', "00", geography),
               wgt = if_else(`State Name`=='New York', (19.87-8.258)/19.87,
@@ -136,24 +151,26 @@ if (!identical(process1$raw_state, raw_state1)) {
     "standard/data.csv.gz",
     ","
   )
-  
+
   # record processed raw state
-  process1$raw_state <- raw_state1
-  dcf::dcf_process_record(updated = process1)
-    
+  process$raw_state <- raw_state1
+  dcf::dcf_process_record(updated = process)
+
 }
 
 ##############################
 #2nd county-level dataset
 ##############################
 
-if (!identical(process2$raw_state, raw_state2)) {
-  
+if (!identical(process$raw_state_county, raw_state2)) {
+
   #type of overdose counts by state (12 month backward total)
   data2 <- open_dataset('./raw/gb4e-yj24.parquet') %>%
     collect() %>%
     as.data.frame() %>%
-    mutate( time = as.Date(MonthEndingDate, '%m/%d/%Y'),
+    mutate( across(any_of(c('Provisional Drug Overdose Deaths',
+                            'Percentage Of Records Pending Investigation')), as_num),
+            time = as.Date(MonthEndingDate, '%m/%d/%Y'),
             time = floor_date(time, unit='month'),
             STATEFIPS = sprintf("%02d", STATEFIPS),
             COUNTYFIPS = sprintf("%03d", COUNTYFIPS),
@@ -174,12 +191,12 @@ if (!identical(process2$raw_state, raw_state2)) {
   )
   
   # record processed raw state
-  process2$raw_state <- raw_state2
-  dcf::dcf_process_record(updated = process2)
-  
+  process$raw_state_county <- raw_state2
+  dcf::dcf_process_record(updated = process)
+
 }
 
-if (!identical(process3$raw_state, raw_state3)) {
+if (!identical(process$raw_state_quarterly, raw_state3)) {
   
   data_type <- open_dataset('./raw/489q-934x.parquet') %>%
     collect() %>%
@@ -191,6 +208,7 @@ if (!identical(process3$raw_state, raw_state3)) {
            Rate_overall = 'Overall Rate'
            ) %>%
     filter(time_period == "3-month period" & type_rate == 'Age-adjusted'  ) %>%
+    mutate(across(starts_with('Rate'), as_num)) %>%
     pivot_longer( cols= starts_with('Rate')) %>%
     mutate(state = map_lgl(name, ~ any(str_detect(.x, c('Rate_overall',state.name))))
            )%>%
@@ -230,7 +248,7 @@ if (!identical(process3$raw_state, raw_state3)) {
   )
     
   # record processed raw state
-  process3$raw_state <- raw_state3
-  dcf::dcf_process_record(updated = process3)
-  
+  process$raw_state_quarterly <- raw_state3
+  dcf::dcf_process_record(updated = process)
+
 }

@@ -51,7 +51,7 @@ if (!identical(process$raw_state, raw_state)) {
     # Format time - use September 1 of each year for school-entry data
     mutate(
       time = paste0("09-01-", year),
-      time = format(as.Date(time, format = "%m-%d-%Y"), "%m-%d-%Y")
+      time = format(as.Date(time, format = "%m-%d-%Y"), "%Y-%m-%d")
     ) %>%
     # Pivot exemption types to wide format
     select(geography, time, exemption_type, pct) %>%
@@ -113,7 +113,7 @@ if (!identical(process$raw_state, raw_state)) {
     # Format time - use September 1 of each year for school-entry data
     mutate(
       time = paste0("09-01-", year),
-      time = format(as.Date(time, format = "%m-%d-%Y"), "%m-%d-%Y")
+      time = format(as.Date(time, format = "%m-%d-%Y"), "%Y-%m-%d")
     ) %>%
     # Join county populations for weighted averaging of IHME-merged counties
     left_join(county_pop, by = "fips_orig") %>%
