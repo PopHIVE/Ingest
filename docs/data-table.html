@@ -66,7 +66,7 @@
       Overview of all standardized data sources and combined bundles in the 
       <a href="https://github.com/PopHIVE/Ingest" target="_blank">PopHIVE/Ingest</a>
        repository. Automatically generated from repository files — last updated 
-      August 20, 2026
+      August 21, 2026
       . 
       <a href="index.html">View full data documentation →</a>
     </p>
@@ -77,13 +77,16 @@
         <dd>
           The first and last observation dates found in the time column of the dataset's 
           <code>standard/*.csv.gz</code>
-           files.
+           files. These describe the data itself — the period it covers.
         </dd>
         <dt>Last Refreshed</dt>
         <dd>
           The most recent git commit date of the dataset's 
           <code>standard/*.csv.gz</code>
-           files, or when our pipeline last wrote standardized output. 
+           files: when our pipeline last wrote standardized output. It can move without any new 
+          upstream data — for example after an 
+          <code>ingest.R</code>
+           fix — so it reflects our processing cadence, not the publisher's.
         </dd>
         <dt>Latest Issue</dt>
         <dd>
@@ -93,7 +96,9 @@
            field of the metadata saved alongside 
           each download (
           <code>raw/&lt;id&gt;.json</code>
-          ). Sources not pulled through the 
+          ). That is the source's own claim, so 
+          unlike a file-based proxy it cannot be moved by a re-export of identical rows, a 
+          metadata-only refresh, or repository housekeeping. Sources not pulled through the 
           Socrata API report no such timestamp; those fall back to the most recent commit that 
           changed a raw data file, and are marked 
           <span class="basis-inferred">est.</span>
@@ -101,10 +106,26 @@
         </dd>
         <dt>&#9888; flag on Latest Issue</dt>
         <dd>
-          Shown when Latest Issue is more than 7 days after Last Refreshed. The publisher has updated the data since we last rebuilt the standardized output, so the files here are behind the source. 
+          Shown when Latest Issue is more than 7 days after Last Refreshed: the publisher has updated the data since we last rebuilt the standardized output, so the files here are behind the source. The badge gives the gap in days. 
           <strong>2 of 47 datasets flagged</strong>
+          ; 14 use a publisher timestamp, 21 fall back to raw-file commits, 12 have neither.
         </dd>
       </dl>
+      <p class="caveat">
+        <strong>Caveats. </strong>
+        Last Refreshed is a repository commit date read from the branch this page was built on, so a 
+        branch behind 
+        <code>main</code>
+         reports it as stale for every dataset. Latest Issue is only as current as the last time we 
+        downloaded the dataset, since it comes from the metadata saved with that download: if a source 
+        has not been fetched in a while, its publisher timestamp is stale too, and the gap between the 
+        two columns understates how far behind we are. It also reflects whatever the publisher chooses 
+        to report — some update the timestamp on a full re-publish that changes no values. The 
+        <span class="basis-inferred">est.</span>
+         fallback dates carry the weaknesses of any file-based proxy: a publisher that re-exports 
+        identical rows in a different order changes the file's bytes and moves the date with no new 
+        data behind it, and like Last Refreshed they are read from the current branch.
+      </p>
     </details>
     <ul class="nav nav-tabs" id="mainTabs" role="tablist">
       <li class="nav-item" role="presentation">
@@ -871,7 +892,7 @@
                 <td class="strat-notstratified">Not Stratified</td>
                 <td>—</td>
                 <td>2019-01-01</td>
-                <td>2026-08-19</td>
+                <td>2026-08-20</td>
                 <td>Daily</td>
                 <td>2026-08-20</td>
                 <td data-order="2026-08-20">
@@ -1167,15 +1188,15 @@
                   <span class="term-badge">emergency department</span>
                 </td>
                 <td>National</td>
-                <td class="strat-stratified">00 months, 01 months, 02 months, 2-4, Under 2, 03 months, 04 months, 05 months, 5-9, 06 months, 07 months, 08 months, 09 months, 10-14, 10 months, 11 months, 12 months, 13 months, 14 months, 15-19, 15 months, 16 months, 17 months, 18 months, 19 months, 20-29, 20 months, 21 months, 22 months, 23 months, 30-39, 40-49, 50-59, 60-69, 70-79, 80+</td>
+                <td class="strat-stratified">00 months, 01 months, 02 months, 2-4, Under 2, 03 months, 04 months, 05 months, 5-9, 06 months, 07 months, 08 months, 09 months, 10 months, 10-14, 11 months, 12 months, 13 months, 14 months, 15 months, 15-19, 16 months, 17 months, 18 months, 19 months, 20 months, 20-29, 21 months, 22 months, 23 months, 30-39, 40-49, 50-59, 60-69, 70-79, 80+</td>
                 <td class="strat-stratified">Stratified</td>
                 <td>Race/Ethnicity</td>
                 <td>2019-12-31</td>
                 <td>2025-12-31</td>
                 <td>Annual</td>
                 <td>2026-07-29</td>
-                <td data-order="2026-07-17">
-                  2026-07-17
+                <td data-order="2026-07-06">
+                  2026-07-06
                   <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
                 </td>
                 <td>Public domain. NEISS data are produced by the U.S. Consumer Product Safety Commission and are generally not subject to copyright restrictions.</td>
@@ -1297,7 +1318,7 @@
                 <td class="strat-notstratified">Not Stratified</td>
                 <td>—</td>
                 <td>2024-08-01</td>
-                <td>2026-08-25</td>
+                <td>2026-08-26</td>
                 <td>Daily</td>
                 <td>2026-08-20</td>
                 <td data-order="2026-03-26">
@@ -1428,7 +1449,7 @@
                 <td>2018-09-01</td>
                 <td>2024-09-01</td>
                 <td>Annual</td>
-                <td>2026-07-15</td>
+                <td>2026-08-20</td>
                 <td data-order="2026-06-09">
                   2026-06-09
                   <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
@@ -1522,7 +1543,7 @@
                 <td>2009-09-01</td>
                 <td>2025-09-01</td>
                 <td>Annual</td>
-                <td>2026-07-15</td>
+                <td>2026-08-20</td>
                 <td data-order="2026-04-06">
                   2026-04-06
                   <span class="basis-inferred" title="No publisher timestamp for this source; inferred from the most recent commit that changed a raw data file.">est.</span>
