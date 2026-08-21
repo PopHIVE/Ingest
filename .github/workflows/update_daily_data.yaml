@@ -65,4 +65,16 @@ jobs:
           git config user.name "GitHub Actions"
           git add -A
           git commit -m "scheduled daily data update"
-          git push
+          # Same non-fast-forward hazard as build.yaml: anything merged to main
+          # while this job runs makes a bare push fail and throws the data
+          # update away. Rebase onto whatever landed and retry.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected (attempt $attempt); rebasing onto origin/main"
+            git fetch origin
+            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+          done
+          echo "::error::could not push daily data update after 3 attempts"
+          exit 1
