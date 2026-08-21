@@ -368,7 +368,7 @@ trends_age %>%
 trends_age %>% 
   ungroup() %>%
   filter(variable %in% c('epic_pct_covid','rate_covid') & !is.na(value)) %>%
-  full_join(suppressed_covid_age, by=c('fips','date','age','variable')) %>%
+  left_join(suppressed_covid_age, by=c('fips','date','age','variable')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag),0,suppressed_flag)) %>%
   dplyr::select(-variable, -fips) %>%
   arrow::write_parquet(., "dist/covid_trends_by_age.parquet")
