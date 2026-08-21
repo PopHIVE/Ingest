@@ -5,13 +5,14 @@
   "resources": [
     {
       "bytes": 2282683,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "4d7f5c3dd41587e55c0641f9d5a5633f",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "a3a88cb5e9d5afda114dcb35b151a014d3042df0",
           "0b78a0026f6b9166699201ab5ba2e8d5e75a877a",
           "b17348ffc63e58e4fc7e67d94c0d24c3bf0515e4",
           "fb7784ec8ef12a583ef3690a1555a20736d29fe5",
@@ -121,6 +122,7 @@
           "9e2458b4be952a110ecea3aa1a337a555d6dd638"
         ],
         "author": [
+          "weinbergerlab <dweinber@gmail.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -230,6 +232,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Jun 9 12:07:10 2026 -0400",
           "Tue Jun 2 20:49:58 2026 +0000",
           "Fri May 29 20:20:58 2026 +0000",
           "Tue May 19 19:56:40 2026 +0000",
@@ -339,6 +342,7 @@
           "Mon Aug 11 12:33:11 2025 -0400"
         ],
         "message": [
+          "Add CDC CFA RT (respiratory tract) data source",
           "scheduled data build",
           "scheduled data build",
           "scheduled data build",
@@ -456,6 +460,7 @@
           "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html"
         }
       ],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
@@ -464,8 +469,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-06-09 12:07:00",
-      "last_modified": "2025-08-11 11:57:24.66357",
+      "created": "2026-08-21 18:21:06.767192",
+      "last_modified": "2026-08-21 18:21:06.767192",
       "vintage": {},
       "row_count": 213028,
       "entity_count": 1267,
@@ -474,6 +479,7 @@
           {
             "name": "geography",
             "duplicates": 211761,
+            "info": [],
             "time_range": [0, 330],
             "type": "string",
             "missing": 0,
@@ -1750,6 +1756,7 @@
           {
             "name": "time",
             "duplicates": 212697,
+            "info": [],
             "time_range": [0, 330],
             "type": "string",
             "missing": 0,
@@ -2090,6 +2097,23 @@
           {
             "name": "delphi_hospital_covid_smooth",
             "duplicates": 13878,
+            "info": {
+              "id": "delphi_hospital_covid_smooth",
+              "category": "respiratory",
+              "short_description": "Estimated percentage of new hospital admissions with COVID-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother",
+              "long_description": "This data source is based on electronic medical records and claims data about hospital admissions, provided to Delphi by health system partners. We use this inpatient data to estimate the percentage of new hospital admissions with a COVID-associated diagnosis code in a given location, on a given day",
+              "unit": "Percent of new hospital admissions, smoothed",
+              "time_resolution": "day",
+              "restrictions": "CC-BY Attribution license",
+              "sources": [
+                {
+                  "name": "CMU Delphi",
+                  "url": "https://cmu-delphi.github.io/delphi-epidata/",
+                  "location": "COVIDcast > Hospital Admissions",
+                  "location_url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html"
+                }
+              ]
+            },
             "time_range": [0, 330],
             "type": "float",
             "missing": 0,
@@ -2101,6 +2125,23 @@
           {
             "name": "delphi_hospital_flu_smooth",
             "duplicates": 54161,
+            "info": {
+              "id": "delphi_hospital_flu_smooth",
+              "short_name": "Influenza Hospital Admissions",
+              "long_name": "Percentage of Hospital Admissions with Influenza Diagnosis",
+              "category": "respiratory",
+              "short_description": "Estimated percentage of new hospital admissions with influenza-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother",
+              "long_description": "This data source is based on electronic medical records and claims data about hospital admissions, provided to Delphi by health system partners. We use this inpatient data to estimate the percentage of new hospital admissions with an influenza-associated diagnosis code in a given location, on a given day",
+              "measure_type": "percent",
+              "unit": "Percent of new hospital admissions, smoothed",
+              "time_resolution": "day",
+              "restrictions": "CC-BY Attribution license",
+              "sources": [
+                {
+                  "id": "delphi_hospital_admissions"
+                }
+              ]
+            },
             "time_range": [0, 330],
             "type": "float",
             "missing": 656,
@@ -2167,29 +2208,7 @@
   },
   "change_report": {
     "data.csv.gz": {
-      "state": "changed",
-      "variables": {
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "time": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": "2026-05-30",
-          "dropped_levels": []
-        },
-        "delphi_hospital_covid_smooth": {
-          "status": "present",
-          "same_type": true
-        },
-        "delphi_hospital_flu_smooth": {
-          "status": "present",
-          "same_type": true
-        }
-      }
+      "state": "unchanged"
     }
   }
 }
