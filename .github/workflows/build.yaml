@@ -83,4 +83,23 @@ jobs:
           git config user.name "GitHub Actions"
           git add -A
           git commit -m "scheduled data build"
-          git push
+          # This build takes ~15-60 minutes, so main frequently moves while it
+          # runs (one merged PR is enough). A bare `git push` is then rejected as
+          # non-fast-forward and the ENTIRE data build is discarded silently --
+          # the job fails, but the next run only re-detects sources whose
+          # upstream data changed again, so anything refreshed in the lost run
+          # stays stale until its source updates. This is what left
+          # nchs_mortality and yrbss stale after the 2026-08-14 and 2026-08-18
+          # runs. Rebase onto whatever landed and retry instead. `-X theirs`
+          # favors the commit being replayed (our freshly built data) when both
+          # sides touched the same generated file.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected (attempt $attempt); rebasing onto origin/main"
+            git fetch origin
+            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+          done
+          echo "::error::could not push data build after 3 attempts"
+          exit 1
