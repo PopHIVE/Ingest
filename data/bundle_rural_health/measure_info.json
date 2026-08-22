@@ -1,0 +1,118 @@
+{
+  "{category}geography": {
+    "short_name": "FIPS code",
+    "short_description": "Geographic FIPS code as a string: 5-digit county code in rural_health_county.parquet; 2-digit state code or '00' (national) in rural_health_state.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.",
+    "categories": {
+      "bundle_rural_health/dist/rural_health_county.parquet|": {},
+      "bundle_rural_health/dist/rural_health_state.parquet|": {}
+    }
+  },
+  "{category}time": {
+    "short_name": "Date",
+    "short_description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
+    "categories": {
+      "bundle_rural_health/dist/rural_health_county.parquet|": {},
+      "bundle_rural_health/dist/rural_health_state.parquet|": {}
+    }
+  },
+  "{category}source": {
+    "short_name": "Data source",
+    "levels": {
+      "HUD CHAS": {},
+      "HRSA AHRF": {},
+      "BLS LAUS": {},
+      "USDA Food Access Research Atlas": {}
+    },
+    "categories": {
+      "bundle_rural_health/dist/rural_health_county.parquet|": {},
+      "bundle_rural_health/dist/rural_health_state.parquet|": {}
+    }
+  },
+  "bundle_rural_health/dist/rural_health_county.parquet|outcome_name": {
+    "short_name": "Rural health measure",
+    "short_description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file.",
+    "levels": {
+      "hud_pct_severe_housing_problems": { "source_id": "hud_pct_severe_housing_problems" },
+      "ahrf_hpsa_prim_care": { "source_id": "ahrf_hpsa_prim_care" },
+      "ahrf_hpsa_dental": { "source_id": "ahrf_hpsa_dental" },
+      "ahrf_hpsa_mental_health": { "source_id": "ahrf_hpsa_mental_health" },
+      "ahrf_rural_urban_code": { "source_id": "ahrf_rural_urban_code" },
+      "ahrf_pcp": { "source_id": "ahrf_pcp" },
+      "ahrf_md_all": { "source_id": "ahrf_md_all" },
+      "ahrf_psych": { "source_id": "ahrf_psych" },
+      "ahrf_dentists": { "source_id": "ahrf_dentists" },
+      "ahrf_hospitals": { "source_id": "ahrf_hospitals" },
+      "ahrf_critical_access_hosp": { "source_id": "ahrf_critical_access_hosp" },
+      "ahrf_population": { "source_id": "ahrf_population" },
+      "ahrf_good_air_pct": { "source_id": "ahrf_good_air_pct" },
+      "ahrf_pm25": { "source_id": "ahrf_pm25" },
+      "ahrf_pop_density": { "source_id": "ahrf_pop_density" },
+      "ahrf_medicare_per_capita": { "source_id": "ahrf_medicare_per_capita" },
+      "ahrf_ed_per_1k_medicare": { "source_id": "ahrf_ed_per_1k_medicare" },
+      "bls_pct_unemployment": { "source_id": "bls_pct_unemployment" },
+      "usda_pct_limited_access_low_income": { "source_id": "usda_pct_limited_access_low_income" }
+    }
+  },
+  "bundle_rural_health/dist/rural_health_state.parquet|outcome_name": {
+    "short_name": "Rural health measure",
+    "short_description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file. USDA food access is county-only and does not appear in this file.",
+    "levels": {
+      "hud_pct_severe_housing_problems": { "source_id": "hud_pct_severe_housing_problems" },
+      "ahrf_hpsa_prim_care": { "source_id": "ahrf_hpsa_prim_care" },
+      "ahrf_hpsa_dental": { "source_id": "ahrf_hpsa_dental" },
+      "ahrf_hpsa_mental_health": { "source_id": "ahrf_hpsa_mental_health" },
+      "ahrf_rural_urban_code": { "source_id": "ahrf_rural_urban_code" },
+      "ahrf_pcp": { "source_id": "ahrf_pcp" },
+      "ahrf_md_all": { "source_id": "ahrf_md_all" },
+      "ahrf_psych": { "source_id": "ahrf_psych" },
+      "ahrf_dentists": { "source_id": "ahrf_dentists" },
+      "ahrf_hospitals": { "source_id": "ahrf_hospitals" },
+      "ahrf_critical_access_hosp": { "source_id": "ahrf_critical_access_hosp" },
+      "ahrf_population": { "source_id": "ahrf_population" },
+      "ahrf_good_air_pct": { "source_id": "ahrf_good_air_pct" },
+      "ahrf_pm25": { "source_id": "ahrf_pm25" },
+      "ahrf_pop_density": { "source_id": "ahrf_pop_density" },
+      "ahrf_medicare_per_capita": { "source_id": "ahrf_medicare_per_capita" },
+      "ahrf_ed_per_1k_medicare": { "source_id": "ahrf_ed_per_1k_medicare" },
+      "bls_pct_unemployment": { "source_id": "bls_pct_unemployment" }
+    }
+  },
+  "{category}value": {
+    "measure_column": "{category}outcome_name",
+    "short_name": "Value",
+    "long_name": "Value of the rural health measure identified by outcome_name",
+    "short_description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
+    "long_description": "Value for the measure identified by the `outcome_name` column, taken unchanged from the contributing source's standard file (see each level's source documentation for definition and unit). Rows with missing values are dropped, so sparse AHRF measures have fewer rows than the full county x year grid. Note that `ahrf_rural_urban_code` is a categorical USDA Rural-Urban Continuum Code (1-9) stored numerically.",
+    "measure_type": "Mixed",
+    "unit": "Varies by measure",
+    "time_resolution": "Year",
+    "categories": {
+      "bundle_rural_health/dist/rural_health_county.parquet|": {},
+      "bundle_rural_health/dist/rural_health_state.parquet|": {}
+    }
+  },
+
+  "_bundle": {
+    "name": "bundle_rural_health",
+    "sources": ["area_health_resource_file", "bls_laus", "hud_chas", "usda_food_access"],
+    "dist_files": {
+      "rural_health_county.parquet": {
+        "sources": ["area_health_resource_file", "bls_laus", "hud_chas", "usda_food_access"],
+        "source_files": [
+          "hud_chas/standard/data_county.csv.gz",
+          "area_health_resource_file/standard/data.csv.gz",
+          "bls_laus/standard/data_county.csv.gz",
+          "usda_food_access/standard/data_county.csv.gz"
+        ]
+      },
+      "rural_health_state.parquet": {
+        "sources": ["area_health_resource_file", "bls_laus", "hud_chas"],
+        "source_files": [
+          "hud_chas/standard/data_state.csv.gz",
+          "area_health_resource_file/standard/data.csv.gz",
+          "bls_laus/standard/data_state.csv.gz"
+        ]
+      }
+    }
+  }
+}

@@ -4,28 +4,32 @@
   "licenses": [],
   "resources": [
     {
-      "bytes": 25306,
+      "bytes": 26217,
       "encoding": "ISO-8859-1",
-      "md5": "ad1682ef59b130c5e8dd6707d9842937",
+      "md5": "b5d8d0085625b853b4f8e00b00846cb8",
       "format": "parquet",
       "name": "cms_cancer_screening_by_race",
       "filename": "cms_cancer_screening_by_race.parquet",
       "versions": {
         "hash": [
+          "5756a7b9f2ecdf915627077e85acca19930d037d",
           "8671ce54e806c41222d7d7c8b9d8946ee883da0b"
         ],
         "author": [
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>"
         ],
         "date": [
+          "Tue Jun 9 20:07:17 2026 +0000",
           "Fri Apr 10 15:29:41 2026 +0000"
         ],
         "message": [
+          "scheduled data build",
           "scheduled data build"
         ]
       },
       "source": [],
-      "data_format": "wide",
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -34,8 +38,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-06-09 20:05:04.844001",
-      "last_modified": "2026-06-09 20:05:04.844001",
+      "created": "2026-08-21 20:25:51.846105",
+      "last_modified": "2026-08-21 20:25:51.846105",
       "vintage": {},
       "row_count": 22146,
       "entity_count": 52,
@@ -44,7 +48,11 @@
           {
             "name": "geography",
             "duplicates": 22094,
-            "info": [],
+            "info": {
+              "short_name": "State",
+              "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code.",
+              "id": "geography"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -106,7 +114,11 @@
           {
             "name": "fips",
             "duplicates": 22094,
-            "info": [],
+            "info": {
+              "short_name": "FIPS code",
+              "short_description": "Geographic FIPS code ('00' = national, 2-digit = state).",
+              "id": "fips"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -168,7 +180,11 @@
           {
             "name": "year",
             "duplicates": 22143,
-            "info": [],
+            "info": {
+              "short_name": "Year",
+              "short_description": "Calendar year of the reported screening rate.",
+              "id": "year"
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -180,23 +196,31 @@
           {
             "name": "age",
             "duplicates": 22140,
-            "info": [],
+            "info": {
+              "short_name": "Age group",
+              "short_description": "Beneficiary age group (e.g., '65+ Years', 'Total').",
+              "id": "age"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
             "table": {
-              "<65 Years": 3703,
-              "65-74 Years": 3712,
               "65+ Years": 3724,
+              "65-74 Years": 3712,
               "75-84 Years": 3679,
               "85+ Years": 3596,
+              "<65 Years": 3703,
               "Total": 3732
             }
           },
           {
             "name": "race_ethnicity",
             "duplicates": 22140,
-            "info": [],
+            "info": {
+              "short_name": "Race/ethnicity",
+              "short_description": "Race/ethnicity category of Medicare FFS beneficiaries.",
+              "id": "race_ethnicity"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -212,7 +236,24 @@
           {
             "name": "outcome_name",
             "duplicates": 22142,
-            "info": [],
+            "info": {
+              "short_name": "Cancer screening measure",
+              "levels": {
+                "Breast Cancer Screening": {
+                  "id": "Breast Cancer Screening"
+                },
+                "Cervical Cancer Screening": {
+                  "id": "Cervical Cancer Screening"
+                },
+                "Colorectal Cancer Screening": {
+                  "id": "Colorectal Cancer Screening"
+                },
+                "Prostate Cancer Screening": {
+                  "id": "Prostate Cancer Screening"
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -226,7 +267,15 @@
           {
             "name": "source",
             "duplicates": 22145,
-            "info": [],
+            "info": {
+              "short_name": "Data source",
+              "levels": {
+                "Medicare FFS": {
+                  "id": "Medicare FFS"
+                }
+              },
+              "id": "source"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -263,31 +312,35 @@
           }
         ]
       },
-      "sha512": "c48b0dcf9e51373a8dfb5010a2fb665e8d5ddd87dc1f6bcafd59e652034a7837f9391255025c6d5bf6d25a78ab9a705a90c6ebdb34d629a5c253ae3187411ce7"
+      "sha512": "e6858a3bdba7e5eeaa10fde1d0c64fdc3fedea5dd8515450d6216a27db959841061faf3f7cf171d63a8724afd187e6140e47c81d7a6fc67cfd728b92a757c230"
     },
     {
-      "bytes": 13997,
+      "bytes": 14013,
       "encoding": "ISO-8859-1",
-      "md5": "03016f583607dab5a4bfdf699aeee5f7",
+      "md5": "a28628788a34c51e32304f6ee8e0fc22",
       "format": "parquet",
       "name": "cms_cancer_screening_by_sex",
       "filename": "cms_cancer_screening_by_sex.parquet",
       "versions": {
         "hash": [
+          "5756a7b9f2ecdf915627077e85acca19930d037d",
           "8671ce54e806c41222d7d7c8b9d8946ee883da0b"
         ],
         "author": [
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>"
         ],
         "date": [
+          "Tue Jun 9 20:07:17 2026 +0000",
           "Fri Apr 10 15:29:41 2026 +0000"
         ],
         "message": [
+          "scheduled data build",
           "scheduled data build"
         ]
       },
       "source": [],
-      "data_format": "wide",
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -296,8 +349,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-06-09 20:05:01.143935",
-      "last_modified": "2026-06-09 20:05:01.143935",
+      "created": "2026-08-21 20:25:49.596141",
+      "last_modified": "2026-08-21 20:25:49.596141",
       "vintage": {},
       "row_count": 8424,
       "entity_count": 52,
@@ -306,7 +359,11 @@
           {
             "name": "geography",
             "duplicates": 8372,
-            "info": [],
+            "info": {
+              "short_name": "State",
+              "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code.",
+              "id": "geography"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -368,7 +425,11 @@
           {
             "name": "fips",
             "duplicates": 8372,
-            "info": [],
+            "info": {
+              "short_name": "FIPS code",
+              "short_description": "Geographic FIPS code ('00' = national, 2-digit = state).",
+              "id": "fips"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -430,7 +491,11 @@
           {
             "name": "year",
             "duplicates": 8421,
-            "info": [],
+            "info": {
+              "short_name": "Year",
+              "short_description": "Calendar year of the reported screening rate.",
+              "id": "year"
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -442,23 +507,31 @@
           {
             "name": "age",
             "duplicates": 8418,
-            "info": [],
+            "info": {
+              "short_name": "Age group",
+              "short_description": "Beneficiary age group (e.g., '65+ Years', 'Total').",
+              "id": "age"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
             "table": {
-              "<65 Years": 1404,
-              "65-74 Years": 1404,
               "65+ Years": 1404,
+              "65-74 Years": 1404,
               "75-84 Years": 1404,
               "85+ Years": 1404,
+              "<65 Years": 1404,
               "Total": 1404
             }
           },
           {
             "name": "sex",
             "duplicates": 8421,
-            "info": [],
+            "info": {
+              "short_name": "Sex",
+              "short_description": "Sex of Medicare FFS beneficiaries (Male, Female, Total).",
+              "id": "sex"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -471,7 +544,24 @@
           {
             "name": "outcome_name",
             "duplicates": 8420,
-            "info": [],
+            "info": {
+              "short_name": "Cancer screening measure",
+              "levels": {
+                "Breast Cancer Screening": {
+                  "id": "Breast Cancer Screening"
+                },
+                "Cervical Cancer Screening": {
+                  "id": "Cervical Cancer Screening"
+                },
+                "Colorectal Cancer Screening": {
+                  "id": "Colorectal Cancer Screening"
+                },
+                "Prostate Cancer Screening": {
+                  "id": "Prostate Cancer Screening"
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -485,7 +575,15 @@
           {
             "name": "source",
             "duplicates": 8423,
-            "info": [],
+            "info": {
+              "short_name": "Data source",
+              "levels": {
+                "Medicare FFS": {
+                  "id": "Medicare FFS"
+                }
+              },
+              "id": "source"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -522,31 +620,35 @@
           }
         ]
       },
-      "sha512": "becd3eeeb3172a71fe6982c5c2b5e78a3c2ae08042436c008d6e9df9a161fadccca0e2185c1278e2f50f74c3198d274c280c548d3d92f9021f3f88a9b4e55f54"
+      "sha512": "d2d377a986b55dbcae276c66de7f177451a91f85ccede6bc65e361ce2e6ac1f7c2e9ee5bb716b30512d1404e0128d9f718b0cb94dd8202db46ccc5879f2a7a9e"
     },
     {
-      "bytes": 7013,
+      "bytes": 7027,
       "encoding": "ISO-8859-1",
-      "md5": "b5e15ccf8a35ae7753d2a8628bcade45",
+      "md5": "ef5646c0bbef47ae25201a58b59ce488",
       "format": "parquet",
       "name": "cms_cancer_screening_state",
       "filename": "cms_cancer_screening_state.parquet",
       "versions": {
         "hash": [
+          "5756a7b9f2ecdf915627077e85acca19930d037d",
           "8671ce54e806c41222d7d7c8b9d8946ee883da0b"
         ],
         "author": [
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>"
         ],
         "date": [
+          "Tue Jun 9 20:07:17 2026 +0000",
           "Fri Apr 10 15:29:41 2026 +0000"
         ],
         "message": [
+          "scheduled data build",
           "scheduled data build"
         ]
       },
       "source": [],
-      "data_format": "wide",
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -555,8 +657,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-06-09 20:04:59.183901",
-      "last_modified": "2026-06-09 20:04:59.183901",
+      "created": "2026-08-21 20:25:48.340928",
+      "last_modified": "2026-08-21 20:25:48.340928",
       "vintage": {},
       "row_count": 3744,
       "entity_count": 52,
@@ -565,7 +667,11 @@
           {
             "name": "geography",
             "duplicates": 3692,
-            "info": [],
+            "info": {
+              "short_name": "State",
+              "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code.",
+              "id": "geography"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -627,7 +733,11 @@
           {
             "name": "fips",
             "duplicates": 3692,
-            "info": [],
+            "info": {
+              "short_name": "FIPS code",
+              "short_description": "Geographic FIPS code ('00' = national, 2-digit = state).",
+              "id": "fips"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -689,7 +799,11 @@
           {
             "name": "year",
             "duplicates": 3741,
-            "info": [],
+            "info": {
+              "short_name": "Year",
+              "short_description": "Calendar year of the reported screening rate.",
+              "id": "year"
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -701,23 +815,44 @@
           {
             "name": "age",
             "duplicates": 3738,
-            "info": [],
+            "info": {
+              "short_name": "Age group",
+              "short_description": "Beneficiary age group (e.g., '65+ Years', 'Total').",
+              "id": "age"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
             "table": {
-              "<65 Years": 624,
-              "65-74 Years": 624,
               "65+ Years": 624,
+              "65-74 Years": 624,
               "75-84 Years": 624,
               "85+ Years": 624,
+              "<65 Years": 624,
               "Total": 624
             }
           },
           {
             "name": "outcome_name",
             "duplicates": 3740,
-            "info": [],
+            "info": {
+              "short_name": "Cancer screening measure",
+              "levels": {
+                "Breast Cancer Screening": {
+                  "id": "Breast Cancer Screening"
+                },
+                "Cervical Cancer Screening": {
+                  "id": "Cervical Cancer Screening"
+                },
+                "Colorectal Cancer Screening": {
+                  "id": "Colorectal Cancer Screening"
+                },
+                "Prostate Cancer Screening": {
+                  "id": "Prostate Cancer Screening"
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -731,7 +866,15 @@
           {
             "name": "source",
             "duplicates": 3743,
-            "info": [],
+            "info": {
+              "short_name": "Data source",
+              "levels": {
+                "Medicare FFS": {
+                  "id": "Medicare FFS"
+                }
+              },
+              "id": "source"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -768,31 +911,35 @@
           }
         ]
       },
-      "sha512": "461caea49a6413e038acb11704197234c4468df132124d4b13284b7278f7e8cd0cab3d952bd411ccba910b30dc40eca8e568bebc623ec7744bd9ff0f021dcc16"
+      "sha512": "f9fb7b0f5ea210fbf4130238a86bb1322bcf3eaadd883e4cc900a9873762cf2052e1be6ce411ac9d3f49db796836db9d78a5ed6c2449d8356471a0b556441b2e"
     },
     {
-      "bytes": 5365,
+      "bytes": 5377,
       "encoding": "ISO-8859-1",
-      "md5": "761c04eb6e85b95a545d84510a3a8c99",
+      "md5": "aedd0da03b3e6acaa440ca3227d875d7",
       "format": "parquet",
       "name": "combined_cancer_screening",
       "filename": "combined_cancer_screening.parquet",
       "versions": {
         "hash": [
+          "5756a7b9f2ecdf915627077e85acca19930d037d",
           "8671ce54e806c41222d7d7c8b9d8946ee883da0b"
         ],
         "author": [
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>"
         ],
         "date": [
+          "Tue Jun 9 20:07:17 2026 +0000",
           "Fri Apr 10 15:29:41 2026 +0000"
         ],
         "message": [
+          "scheduled data build",
           "scheduled data build"
         ]
       },
       "source": [],
-      "data_format": "wide",
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -801,8 +948,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-06-09 20:05:04.862001",
-      "last_modified": "2026-06-09 20:05:04.862001",
+      "created": "2026-08-21 20:25:51.859061",
+      "last_modified": "2026-08-21 20:25:51.859061",
       "vintage": {},
       "row_count": 468,
       "entity_count": 52,
@@ -811,7 +958,11 @@
           {
             "name": "geography",
             "duplicates": 416,
-            "info": [],
+            "info": {
+              "short_name": "State",
+              "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code.",
+              "id": "geography"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -873,7 +1024,11 @@
           {
             "name": "fips",
             "duplicates": 416,
-            "info": [],
+            "info": {
+              "short_name": "FIPS code",
+              "short_description": "Geographic FIPS code ('00' = national, 2-digit = state).",
+              "id": "fips"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -935,7 +1090,11 @@
           {
             "name": "year",
             "duplicates": 465,
-            "info": [],
+            "info": {
+              "short_name": "Year",
+              "short_description": "Calendar year of the reported screening rate.",
+              "id": "year"
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -947,7 +1106,21 @@
           {
             "name": "outcome_name",
             "duplicates": 465,
-            "info": [],
+            "info": {
+              "short_name": "Cancer screening measure",
+              "levels": {
+                "Breast Cancer Screening": {
+                  "id": "Breast Cancer Screening"
+                },
+                "Cervical Cancer Screening": {
+                  "id": "Cervical Cancer Screening"
+                },
+                "Colorectal Cancer Screening": {
+                  "id": "Colorectal Cancer Screening"
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -1013,35 +1186,39 @@
           }
         ]
       },
-      "sha512": "1de99cb03fe3b4fcf3e82b8d09144f927f58b02090840926781f8fceec244f868da44472c3e874b9e012cc7c7f0f1aee4b910d6367f839293cb14d0830667a0d"
+      "sha512": "785bfbaea774191645315cfd28a19309e4d28fa1734d41bd6d140bb0bad8569b9f415f6df82f9315979a8611b2a64f782219d87ccc11cc73fa271076205cc3c7"
     },
     {
-      "bytes": 6800,
+      "bytes": 6818,
       "encoding": "ISO-8859-1",
-      "md5": "d39de51b955d604b668ce80eb098a3df",
+      "md5": "baa9ff99a43f73b145bf32709ef6c2e6",
       "format": "parquet",
       "name": "medicaid_cancer_screening",
       "filename": "medicaid_cancer_screening.parquet",
       "versions": {
         "hash": [
+          "5756a7b9f2ecdf915627077e85acca19930d037d",
           "0b78a0026f6b9166699201ab5ba2e8d5e75a877a",
           "8671ce54e806c41222d7d7c8b9d8946ee883da0b"
         ],
         "author": [
           "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>"
         ],
         "date": [
+          "Tue Jun 9 20:07:17 2026 +0000",
           "Tue Jun 2 20:49:58 2026 +0000",
           "Fri Apr 10 15:29:41 2026 +0000"
         ],
         "message": [
           "scheduled data build",
+          "scheduled data build",
           "scheduled data build"
         ]
       },
       "source": [],
-      "data_format": "wide",
+      "data_format": "tall",
       "ids": [
         {
           "variable": "geography"
@@ -1050,8 +1227,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-06-09 20:04:58.511889",
-      "last_modified": "2026-06-09 20:04:58.511889",
+      "created": "2026-08-21 20:25:47.904176",
+      "last_modified": "2026-08-21 20:25:47.904176",
       "vintage": {},
       "row_count": 850,
       "entity_count": 50,
@@ -1060,7 +1237,11 @@
           {
             "name": "geography",
             "duplicates": 800,
-            "info": [],
+            "info": {
+              "short_name": "State",
+              "short_description": "State or national name (e.g., 'California', 'District of Columbia'); the FIPS code is not stored in this file.",
+              "id": "geography"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -1120,7 +1301,11 @@
           {
             "name": "year",
             "duplicates": 840,
-            "info": [],
+            "info": {
+              "short_name": "Year",
+              "short_description": "Calendar year of the reported screening rate.",
+              "id": "year"
+            },
             "time_range": [-1, -1],
             "type": "integer",
             "missing": 0,
@@ -1132,7 +1317,11 @@
           {
             "name": "age",
             "duplicates": 849,
-            "info": [],
+            "info": {
+              "short_name": "Age group",
+              "short_description": "Beneficiary age group for the measure (e.g., 'Total').",
+              "id": "age"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -1143,7 +1332,11 @@
           {
             "name": "sex",
             "duplicates": 849,
-            "info": [],
+            "info": {
+              "short_name": "Sex",
+              "short_description": "Sex of beneficiaries (Male, Female, Total).",
+              "id": "sex"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -1154,7 +1347,11 @@
           {
             "name": "race_ethnicity",
             "duplicates": 849,
-            "info": [],
+            "info": {
+              "short_name": "Race/ethnicity",
+              "short_description": "Race/ethnicity category of beneficiaries.",
+              "id": "race_ethnicity"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -1165,7 +1362,22 @@
           {
             "name": "payer",
             "duplicates": 849,
-            "info": [],
+            "info": {
+              "short_name": "Payer",
+              "short_description": "Medicaid program payer for the reported measure.",
+              "levels": {
+                "Medicaid": {
+                  "id": "Medicaid"
+                },
+                "CHIP": {
+                  "id": "CHIP"
+                },
+                "Total": {
+                  "id": "Total"
+                }
+              },
+              "id": "payer"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -1176,7 +1388,129 @@
           {
             "name": "outcome_name",
             "duplicates": 847,
-            "info": [],
+            "info": {
+              "short_name": "Cancer screening measure",
+              "levels": {
+                "Breast Cancer Screening": {
+                  "source_id": "medicaid_bcs_ad_rate",
+                  "id": "Breast Cancer Screening",
+                  "name": "medicaid_bcs_ad_rate",
+                  "duplicates": 2816,
+                  "info": {
+                    "id": "medicaid_bcs_ad_rate",
+                    "short_name": "BCS: Breast Cancer Screening (Adult)",
+                    "long_name": "Breast Cancer Screening – Adults",
+                    "category": "preventive",
+                    "short_description": "Percent of women aged 50–74 who received a mammogram for breast cancer screening.",
+                    "long_description": "Adult Core Set measure (BCS). Percentage of women aged 50–74 who had at least one mammogram during the measurement year or the year prior. Associated columns: medicaid_bcs_ad_rate, medicaid_bcs_ad_pct_25, medicaid_bcs_ad_pct_75.",
+                    "statement": "In {location}, {value}% of women received breast cancer screening",
+                    "measure_type": "Percent",
+                    "unit": "Percent",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "medicaid_quality_cms"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "medicaid_quality",
+                      "data_dir": "/data/medicaid_quality/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    9
+                  ],
+                  "type": "float",
+                  "missing": 2649,
+                  "mean": 51.132187,
+                  "sd": 9.944069,
+                  "min": 21.7,
+                  "max": 72.8
+                },
+                "Cervical Cancer Screening": {
+                  "source_id": "medicaid_ccs_ad_rate",
+                  "id": "Cervical Cancer Screening",
+                  "name": "medicaid_ccs_ad_rate",
+                  "duplicates": 2809,
+                  "info": {
+                    "id": "medicaid_ccs_ad_rate",
+                    "short_name": "CCS: Cervical Cancer Screening (Adult)",
+                    "long_name": "Cervical Cancer Screening – Adults",
+                    "category": "preventive",
+                    "short_description": "Percent of women aged 21–64 who received appropriate cervical cancer screening.",
+                    "long_description": "Adult Core Set measure (CCS). Percentage of women aged 21–64 who had appropriate cervical cancer screening (Pap smear within 3 years or Pap + HPV co-test within 5 years). Associated columns: medicaid_ccs_ad_rate, medicaid_ccs_ad_pct_25, medicaid_ccs_ad_pct_75.",
+                    "statement": "In {location}, {value}% of women received cervical cancer screening",
+                    "measure_type": "Percent",
+                    "unit": "Percent",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "medicaid_quality_cms"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "medicaid_quality",
+                      "data_dir": "/data/medicaid_quality/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    9
+                  ],
+                  "type": "float",
+                  "missing": 2639,
+                  "mean": 53.554436,
+                  "sd": 9.269485,
+                  "min": 24.8,
+                  "max": 73.5
+                },
+                "Colorectal Cancer Screening": {
+                  "source_id": "medicaid_col_ad_rate",
+                  "id": "Colorectal Cancer Screening",
+                  "name": "medicaid_col_ad_rate",
+                  "duplicates": 3020,
+                  "info": {
+                    "id": "medicaid_col_ad_rate",
+                    "short_name": "COL: Colorectal Cancer Screening (Adult)",
+                    "long_name": "Colorectal Cancer Screening – Adults",
+                    "category": "preventive",
+                    "short_description": "Percent of adults aged 50–75 who received appropriate colorectal cancer screening.",
+                    "long_description": "Adult Core Set measure (COL). Percentage of adults aged 50–75 who had appropriate colorectal cancer screening (colonoscopy, sigmoidoscopy, FOBT, or FIT-DNA). Associated columns: medicaid_col_ad_rate, medicaid_col_ad_pct_25, medicaid_col_ad_pct_75.",
+                    "statement": "In {location}, {value}% of adults received colorectal cancer screening",
+                    "measure_type": "Percent",
+                    "unit": "Percent",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "medicaid_quality_cms"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "medicaid_quality",
+                      "data_dir": "/data/medicaid_quality/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    9,
+                    9
+                  ],
+                  "type": "float",
+                  "missing": 3014,
+                  "mean": 18.735714,
+                  "sd": 5.539121,
+                  "min": 6.2,
+                  "max": 39.1
+                }
+              },
+              "id": "outcome_name"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -1189,7 +1523,15 @@
           {
             "name": "source",
             "duplicates": 849,
-            "info": [],
+            "info": {
+              "short_name": "Data source",
+              "levels": {
+                "Medicaid": {
+                  "id": "Medicaid"
+                }
+              },
+              "id": "source"
+            },
             "time_range": [-1, -1],
             "type": "string",
             "missing": 0,
@@ -1226,10 +1568,1073 @@
           }
         ]
       },
-      "sha512": "38eb711db0c1c871bef52f3a55c06c6d9fe39055bcf2e9eed137cabb0da1c08697e322a8de76322aa323fff3fcf995e9f3be0cbab184da2cc18b83d13299de36"
+      "sha512": "3e0efadb55df038a8aba8c7c5fb4c69f8919628aa8c13b91c75108c61ae8ac8b8c48839faa4d977f27e12e79fdb5b831c9102e084e9fab7142d070a9e4c05ade"
+    },
+    {
+      "bytes": 1417337,
+      "encoding": "ISO-8859-1",
+      "md5": "aba2843a60ae7cfd7a9305fbb80f056e",
+      "format": "parquet",
+      "name": "nccr_incidence",
+      "filename": "nccr_incidence.parquet",
+      "versions": {},
+      "source": [],
+      "data_format": "tall",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 13,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-21 20:25:52.289878",
+      "last_modified": "2026-08-21 20:25:52.289878",
+      "vintage": {},
+      "row_count": 71280,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 71279,
+            "info": {
+              "short_name": "Geography",
+              "short_description": "Always 'United States'; NCCR*Explorer reports national-level statistics only. The paired `fips` column holds '00'.",
+              "id": "geography"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "United States": 71280
+            }
+          },
+          {
+            "name": "fips",
+            "duplicates": 71279,
+            "info": {
+              "short_name": "FIPS code",
+              "short_description": "Geographic FIPS code ('00' = national).",
+              "id": "fips"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 71280
+            }
+          },
+          {
+            "name": "year",
+            "duplicates": 71258,
+            "info": {
+              "short_name": "Year",
+              "short_description": "Calendar year of diagnosis (2001 onward).",
+              "id": "year"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 0,
+            "mean": 2011.5,
+            "sd": 6.344333,
+            "min": 2001,
+            "max": 2022
+          },
+          {
+            "name": "age",
+            "duplicates": 71268,
+            "info": {
+              "short_name": "Age group",
+              "short_description": "Age group at diagnosis in years. Groups overlap: '<1', '1-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-39' are disjoint; '0-19', '15-39', '20-39', and '0-39' are aggregates.",
+              "id": "age"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "0-19": 5940,
+              "0-39": 5940,
+              "1-4": 5940,
+              "10-14": 5940,
+              "15-19": 5940,
+              "15-39": 5940,
+              "20-24": 5940,
+              "20-39": 5940,
+              "25-29": 5940,
+              "30-39": 5940,
+              "5-9": 5940,
+              "<1": 5940
+            }
+          },
+          {
+            "name": "sex",
+            "duplicates": 71277,
+            "info": {
+              "short_name": "Sex",
+              "short_description": "Sex (Overall, Male, Female).",
+              "id": "sex"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Female": 23760,
+              "Male": 23760,
+              "Overall": 23760
+            }
+          },
+          {
+            "name": "race_ethnicity",
+            "duplicates": 71274,
+            "info": {
+              "short_name": "Race/ethnicity",
+              "short_description": "Race/ethnicity category (Overall, White, Black, Asian/Pacific Islander, American Indian/Alaska Native, Hispanic).",
+              "id": "race_ethnicity"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "American Indian/Alaska Native": 11880,
+              "Asian/Pacific Islander": 11880,
+              "Black": 11880,
+              "Hispanic": 11880,
+              "Overall": 11880,
+              "White": 11880
+            }
+          },
+          {
+            "name": "outcome_name",
+            "duplicates": 71265,
+            "info": {
+              "short_name": "Cancer site (ICCC)",
+              "short_description": "International Classification of Childhood Cancer (ICCC) diagnostic group the rate refers to.",
+              "levels": {
+                "All ICCC Sites Combined": {
+                  "source_id": "nccr_all_iccc_sites",
+                  "id": "All ICCC Sites Combined",
+                  "name": "nccr_all_iccc_sites",
+                  "duplicates": 23,
+                  "info": {
+                    "id": "nccr_all_iccc_sites",
+                    "short_name": "Incidence rate: All ICCC Sites Combined",
+                    "long_name": "Childhood/AYA cancer incidence rate (All ICCC Sites Combined)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of All ICCC Sites Combined among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of All ICCC Sites Combined (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of All ICCC Sites Combined was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 421.617634,
+                  "sd": 334.691653,
+                  "min": 0,
+                  "max": 2219.1257
+                },
+                "I. Leukemias": {
+                  "source_id": "nccr_leukemias",
+                  "id": "I. Leukemias",
+                  "name": "nccr_leukemias",
+                  "duplicates": 175,
+                  "info": {
+                    "id": "nccr_leukemias",
+                    "short_name": "Incidence rate: I. Leukemias",
+                    "long_name": "Childhood/AYA cancer incidence rate (I. Leukemias)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of I. Leukemias among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of I. Leukemias (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of I. Leukemias was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 46.82547,
+                  "sd": 24.527936,
+                  "min": 0,
+                  "max": 380.8073
+                },
+                "II. Lymphomas": {
+                  "source_id": "nccr_lymphomas",
+                  "id": "II. Lymphomas",
+                  "name": "nccr_lymphomas",
+                  "duplicates": 282,
+                  "info": {
+                    "id": "nccr_lymphomas",
+                    "short_name": "Incidence rate: II. Lymphomas",
+                    "long_name": "Childhood/AYA cancer incidence rate (II. Lymphomas)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of II. Lymphomas among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of II. Lymphomas (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of II. Lymphomas was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 48.245436,
+                  "sd": 33.965331,
+                  "min": 0,
+                  "max": 270.9293
+                },
+                "III. CNS Neoplasms (Malignant)": {
+                  "source_id": "nccr_cns_neoplasms_malignant",
+                  "id": "III. CNS Neoplasms (Malignant)",
+                  "name": "nccr_cns_neoplasms_malignant",
+                  "duplicates": 277,
+                  "info": {
+                    "id": "nccr_cns_neoplasms_malignant",
+                    "short_name": "Incidence rate: III. Central Nervous System Neoplasms (Malignant)",
+                    "long_name": "Childhood/AYA cancer incidence rate (III. Central Nervous System Neoplasms (Malignant))",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of III. Central Nervous System Neoplasms (Malignant) among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of III. Central Nervous System Neoplasms (Malignant) (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of III. Central Nervous System Neoplasms (Malignant) was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 27.711784,
+                  "sd": 15.493505,
+                  "min": 0,
+                  "max": 277.7006
+                },
+                "III. CNS Neoplasms (Non-Malignant)": {
+                  "source_id": "nccr_cns_neoplasms_non_malignant",
+                  "id": "III. CNS Neoplasms (Non-Malignant)",
+                  "name": "nccr_cns_neoplasms_non_malignant",
+                  "duplicates": 883,
+                  "info": {
+                    "id": "nccr_cns_neoplasms_non_malignant",
+                    "short_name": "Incidence rate: III Central Nervous System Neoplasms (Non-Malignant)",
+                    "long_name": "Childhood/AYA cancer incidence rate (III Central Nervous System Neoplasms (Non-Malignant))",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of III Central Nervous System Neoplasms (Non-Malignant) among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of III Central Nervous System Neoplasms (Non-Malignant) (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of III Central Nervous System Neoplasms (Non-Malignant) was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 38.442916,
+                  "sd": 41.416974,
+                  "min": 0,
+                  "max": 331.1251
+                },
+                "IV. Neuroblastoma and Peripheral Nervous Cell Tumors": {
+                  "source_id": "nccr_neuroblastoma_and_pns_tumors",
+                  "id": "IV. Neuroblastoma and Peripheral Nervous Cell Tumors",
+                  "name": "nccr_neuroblastoma_and_pns_tumors",
+                  "duplicates": 1023,
+                  "info": {
+                    "id": "nccr_neuroblastoma_and_pns_tumors",
+                    "short_name": "Incidence rate: IV. Neuroblastoma and Peripheral Nervous Cell",
+                    "long_name": "Childhood/AYA cancer incidence rate (IV. Neuroblastoma and Peripheral Nervous Cell)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of IV. Neuroblastoma and Peripheral Nervous Cell among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of IV. Neuroblastoma and Peripheral Nervous Cell (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of IV. Neuroblastoma and Peripheral Nervous Cell was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 8.275608,
+                  "sd": 20.930808,
+                  "min": 0,
+                  "max": 533.3333
+                },
+                "V. Retinoblastoma": {
+                  "source_id": "nccr_retinoblastoma",
+                  "id": "V. Retinoblastoma",
+                  "name": "nccr_retinoblastoma",
+                  "duplicates": 2897,
+                  "info": {
+                    "id": "nccr_retinoblastoma",
+                    "short_name": "Incidence rate: V. Retinoblastoma",
+                    "long_name": "Childhood/AYA cancer incidence rate (V. Retinoblastoma)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of V. Retinoblastoma among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of V. Retinoblastoma (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of V. Retinoblastoma was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 3.715153,
+                  "sd": 12.589393,
+                  "min": 0,
+                  "max": 374.1815
+                },
+                "VI. Renal Tumors": {
+                  "source_id": "nccr_renal_tumors",
+                  "id": "VI. Renal Tumors",
+                  "name": "nccr_renal_tumors",
+                  "duplicates": 596,
+                  "info": {
+                    "id": "nccr_renal_tumors",
+                    "short_name": "Incidence rate: VI. Renal Tumors",
+                    "long_name": "Childhood/AYA cancer incidence rate (VI. Renal Tumors)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of VI. Renal Tumors among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of VI. Renal Tumors (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of VI. Renal Tumors was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 14.537553,
+                  "sd": 18.115356,
+                  "min": 0,
+                  "max": 248.2005
+                },
+                "VII. Hepatic Tumors": {
+                  "source_id": "nccr_hepatic_tumors",
+                  "id": "VII. Hepatic Tumors",
+                  "name": "nccr_hepatic_tumors",
+                  "duplicates": 855,
+                  "info": {
+                    "id": "nccr_hepatic_tumors",
+                    "short_name": "Incidence rate: VII. Hepatic Tumors",
+                    "long_name": "Childhood/AYA cancer incidence rate (VII. Hepatic Tumors)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of VII. Hepatic Tumors among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of VII. Hepatic Tumors (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of VII. Hepatic Tumors was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 5.177384,
+                  "sd": 8.67603,
+                  "min": 0,
+                  "max": 202.7575
+                },
+                "VIII. Bone Tumors": {
+                  "source_id": "nccr_bone_tumors",
+                  "id": "VIII. Bone Tumors",
+                  "name": "nccr_bone_tumors",
+                  "duplicates": 809,
+                  "info": {
+                    "id": "nccr_bone_tumors",
+                    "short_name": "Incidence rate: VIII. Bone Tumors",
+                    "long_name": "Childhood/AYA cancer incidence rate (VIII. Bone Tumors)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of VIII. Bone Tumors among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of VIII. Bone Tumors (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of VIII. Bone Tumors was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 7.561446,
+                  "sd": 7.776997,
+                  "min": 0,
+                  "max": 208.5071
+                },
+                "IX. Soft Tissue Sarcomas": {
+                  "source_id": "nccr_soft_tissue_sarcomas",
+                  "id": "IX. Soft Tissue Sarcomas",
+                  "name": "nccr_soft_tissue_sarcomas",
+                  "duplicates": 399,
+                  "info": {
+                    "id": "nccr_soft_tissue_sarcomas",
+                    "short_name": "Incidence rate: IX. Soft Tissue Tumors",
+                    "long_name": "Childhood/AYA cancer incidence rate (IX. Soft Tissue Tumors)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of IX. Soft Tissue Tumors among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of IX. Soft Tissue Tumors (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of IX. Soft Tissue Tumors was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 20.686286,
+                  "sd": 16.255173,
+                  "min": 0,
+                  "max": 233.9729
+                },
+                "X. Germ Cell Tumors (Malignant)": {
+                  "source_id": "nccr_germ_cell_tumors_malignant",
+                  "id": "X. Germ Cell Tumors (Malignant)",
+                  "name": "nccr_germ_cell_tumors_malignant",
+                  "duplicates": 364,
+                  "info": {
+                    "id": "nccr_germ_cell_tumors_malignant",
+                    "short_name": "Incidence rate: X. Germ Cell Tumors (Malignant)",
+                    "long_name": "Childhood/AYA cancer incidence rate (X. Germ Cell Tumors (Malignant))",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of X. Germ Cell Tumors (Malignant) among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of X. Germ Cell Tumors (Malignant) (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of X. Germ Cell Tumors (Malignant) was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 39.358515,
+                  "sd": 45.934281,
+                  "min": 0,
+                  "max": 357.129
+                },
+                "X. Germ Cell Tumors (Non-Malignant)": {
+                  "source_id": "nccr_germ_cell_tumors_non_malignant",
+                  "id": "X. Germ Cell Tumors (Non-Malignant)",
+                  "name": "nccr_germ_cell_tumors_non_malignant",
+                  "duplicates": 2667,
+                  "info": {
+                    "id": "nccr_germ_cell_tumors_non_malignant",
+                    "short_name": "Incidence rate: X. Germ Cell Tumors (Non-Malignant)",
+                    "long_name": "Childhood/AYA cancer incidence rate (X. Germ Cell Tumors (Non-Malignant))",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of X. Germ Cell Tumors (Non-Malignant) among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of X. Germ Cell Tumors (Non-Malignant) (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of X. Germ Cell Tumors (Non-Malignant) was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 0.359633,
+                  "sd": 0.943959,
+                  "min": 0,
+                  "max": 36.0367
+                },
+                "XI. Epithelial Neoplasms and Melanomas": {
+                  "source_id": "nccr_epithelial_neoplasms_and_melanomas",
+                  "id": "XI. Epithelial Neoplasms and Melanomas",
+                  "name": "nccr_epithelial_neoplasms_and_melanomas",
+                  "duplicates": 446,
+                  "info": {
+                    "id": "nccr_epithelial_neoplasms_and_melanomas",
+                    "short_name": "Incidence rate: XI. Epithelial Neoplasms And Melanomas",
+                    "long_name": "Childhood/AYA cancer incidence rate (XI. Epithelial Neoplasms And Melanomas)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of XI. Epithelial Neoplasms And Melanomas among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of XI. Epithelial Neoplasms And Melanomas (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of XI. Epithelial Neoplasms And Melanomas was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 194.554368,
+                  "sd": 274.082214,
+                  "min": 0,
+                  "max": 1668.647
+                },
+                "XII. Other and Unspecified Neoplasms": {
+                  "source_id": "nccr_neoplasms_other_and_nos",
+                  "id": "XII. Other and Unspecified Neoplasms",
+                  "name": "nccr_neoplasms_other_and_nos",
+                  "duplicates": 1168,
+                  "info": {
+                    "id": "nccr_neoplasms_other_and_nos",
+                    "short_name": "Incidence rate: XII. Other/ Unspecified Neoplasms",
+                    "long_name": "Childhood/AYA cancer incidence rate (XII. Other/ Unspecified Neoplasms)",
+                    "category": "chronic",
+                    "short_description": "Age-adjusted incidence rate of XII. Other/ Unspecified Neoplasms among children, adolescents, and young adults (ages 0-39).",
+                    "long_description": "Age-adjusted annual incidence rate of XII. Other/ Unspecified Neoplasms (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+                    "statement": "In {location}, the incidence rate of XII. Other/ Unspecified Neoplasms was {value} per 1,000,000.",
+                    "measure_type": "Incidence",
+                    "unit": "Cases per 1,000,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "nccr"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "nccr",
+                      "data_dir": "/data/nccr/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    21
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 4.968628,
+                  "sd": 7.575638,
+                  "min": 0,
+                  "max": 187.0907
+                }
+              },
+              "id": "outcome_name"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "All ICCC Sites Combined": 4752,
+              "I. Leukemias": 4752,
+              "II. Lymphomas": 4752,
+              "III. CNS Neoplasms (Malignant)": 4752,
+              "III. CNS Neoplasms (Non-Malignant)": 4752,
+              "IV. Neuroblastoma and Peripheral Nervous Cell Tumors": 4752,
+              "IX. Soft Tissue Sarcomas": 4752,
+              "V. Retinoblastoma": 4752,
+              "VI. Renal Tumors": 4752,
+              "VII. Hepatic Tumors": 4752,
+              "VIII. Bone Tumors": 4752,
+              "X. Germ Cell Tumors (Malignant)": 4752,
+              "X. Germ Cell Tumors (Non-Malignant)": 4752,
+              "XI. Epithelial Neoplasms and Melanomas": 4752,
+              "XII. Other and Unspecified Neoplasms": 4752
+            }
+          },
+          {
+            "name": "source",
+            "duplicates": 71279,
+            "info": {
+              "short_name": "Data source",
+              "levels": {
+                "NCI NCCR*Explorer": {
+                  "id": "NCI NCCR*Explorer"
+                }
+              },
+              "id": "source"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "NCI NCCR*Explorer": 71280
+            }
+          },
+          {
+            "name": "value",
+            "duplicates": 16545,
+            "info": {
+              "id": "value",
+              "short_name": "Childhood/AYA cancer incidence rate",
+              "long_name": "Age-Adjusted Childhood, Adolescent and Young Adult Cancer Incidence Rate by ICCC Site",
+              "category": "chronic",
+              "short_description": "Age-adjusted annual incidence rate per 1,000,000 of the ICCC cancer site named in `outcome_name`, among ages 0-39, national level.",
+              "long_description": "Age-adjusted annual incidence rate per 1,000,000 population for the ICCC diagnostic group in `outcome_name`, among children, adolescents, and young adults (ages 0-39), from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are age-adjusted to the 2000 U.S. standard population. Stratified by sex, race/ethnicity, and age group. A value of 0 is only meaningful when both `suppressed_flag` and `not_collected_flag` are 0; suppressed or not-collected cells were set to 0 in the source.",
+              "measure_type": "Incidence",
+              "unit": "Cases per 1,000,000",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "nccr"
+                }
+              ]
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 0,
+            "mean": 58.802521,
+            "sd": 156.460805,
+            "min": 0,
+            "max": 2219.1257
+          },
+          {
+            "name": "value_lcl",
+            "duplicates": 20346,
+            "info": {
+              "short_name": "Incidence rate, lower 95% CI",
+              "long_name": "Lower 95% confidence limit of the incidence rate",
+              "category": "chronic",
+              "short_description": "Lower bound of the 95% confidence interval for `value`.",
+              "measure_type": "Incidence",
+              "unit": "Cases per 1,000,000",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "nccr"
+                }
+              ],
+              "id": "value_lcl"
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 0,
+            "mean": 49.593223,
+            "sd": 145.988663,
+            "min": 0,
+            "max": 1822.9561
+          },
+          {
+            "name": "value_ucl",
+            "duplicates": 15257,
+            "info": {
+              "short_name": "Incidence rate, upper 95% CI",
+              "long_name": "Upper 95% confidence limit of the incidence rate",
+              "category": "chronic",
+              "short_description": "Upper bound of the 95% confidence interval for `value`.",
+              "measure_type": "Incidence",
+              "unit": "Cases per 1,000,000",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "nccr"
+                }
+              ],
+              "id": "value_ucl"
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 0,
+            "mean": 75.607784,
+            "sd": 179.825397,
+            "min": 0,
+            "max": 2896.0864
+          },
+          {
+            "name": "suppressed_flag",
+            "duplicates": 71278,
+            "info": {
+              "short_name": "Suppressed?",
+              "long_name": "Suppression flag for the rate in this row",
+              "short_description": "Binary indicator: 1 if NCCR*Explorer suppressed the rate for this cell (fewer than 16 cases), in which case `value` is 0; 0 otherwise.",
+              "measure_type": "binary",
+              "time_resolution": "Year",
+              "id": "suppressed_flag"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.150561,
+            "sd": 0.357623,
+            "min": 0,
+            "max": 1
+          },
+          {
+            "name": "not_collected_flag",
+            "duplicates": 71278,
+            "info": {
+              "short_name": "Not collected?",
+              "long_name": "Not-collected flag for the rate in this row",
+              "short_description": "Binary indicator: 1 if the statistic was not collected/not available for this cell, in which case `value` is 0; 0 otherwise.",
+              "measure_type": "binary",
+              "time_resolution": "Year",
+              "id": "not_collected_flag"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.018182,
+            "sd": 0.133609,
+            "min": 0,
+            "max": 1
+          }
+        ]
+      },
+      "sha512": "43080c63cdcdff7deff98bdf76c4f10db38dba53f39619a41ab753a3b347959fe327789fe0c9a3c4b09faf644ddf06acd9670b489511d3cc51f44d117bd07cbe"
     }
   ],
   "measure_info": {
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|geography": {
+      "short_name": "State",
+      "short_description": "State or national name (e.g., 'California', 'District of Columbia'); the FIPS code is not stored in this file.",
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|geography"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|year": {
+      "short_name": "Year",
+      "short_description": "Calendar year of the reported screening rate.",
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|year"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|age": {
+      "short_name": "Age group",
+      "short_description": "Beneficiary age group for the measure (e.g., 'Total').",
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|age"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|sex": {
+      "short_name": "Sex",
+      "short_description": "Sex of beneficiaries (Male, Female, Total).",
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|sex"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|race_ethnicity": {
+      "short_name": "Race/ethnicity",
+      "short_description": "Race/ethnicity category of beneficiaries.",
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|race_ethnicity"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|payer": {
+      "short_name": "Payer",
+      "short_description": "Medicaid program payer for the reported measure.",
+      "levels": {
+        "Medicaid": {
+          "id": "Medicaid"
+        },
+        "CHIP": {
+          "id": "CHIP"
+        },
+        "Total": {
+          "id": "Total"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|payer"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|outcome_name": {
+      "short_name": "Cancer screening measure",
+      "levels": {
+        "Breast Cancer Screening": {
+          "source_id": "medicaid_bcs_ad_rate",
+          "id": "Breast Cancer Screening",
+          "name": "medicaid_bcs_ad_rate",
+          "duplicates": 2816,
+          "info": {
+            "id": "medicaid_bcs_ad_rate",
+            "short_name": "BCS: Breast Cancer Screening (Adult)",
+            "long_name": "Breast Cancer Screening – Adults",
+            "category": "preventive",
+            "short_description": "Percent of women aged 50–74 who received a mammogram for breast cancer screening.",
+            "long_description": "Adult Core Set measure (BCS). Percentage of women aged 50–74 who had at least one mammogram during the measurement year or the year prior. Associated columns: medicaid_bcs_ad_rate, medicaid_bcs_ad_pct_25, medicaid_bcs_ad_pct_75.",
+            "statement": "In {location}, {value}% of women received breast cancer screening",
+            "measure_type": "Percent",
+            "unit": "Percent",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "medicaid_quality_cms"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "medicaid_quality",
+              "data_dir": "/data/medicaid_quality/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            9
+          ],
+          "type": "float",
+          "missing": 2649,
+          "mean": 51.132187,
+          "sd": 9.944069,
+          "min": 21.7,
+          "max": 72.8
+        },
+        "Cervical Cancer Screening": {
+          "source_id": "medicaid_ccs_ad_rate",
+          "id": "Cervical Cancer Screening",
+          "name": "medicaid_ccs_ad_rate",
+          "duplicates": 2809,
+          "info": {
+            "id": "medicaid_ccs_ad_rate",
+            "short_name": "CCS: Cervical Cancer Screening (Adult)",
+            "long_name": "Cervical Cancer Screening – Adults",
+            "category": "preventive",
+            "short_description": "Percent of women aged 21–64 who received appropriate cervical cancer screening.",
+            "long_description": "Adult Core Set measure (CCS). Percentage of women aged 21–64 who had appropriate cervical cancer screening (Pap smear within 3 years or Pap + HPV co-test within 5 years). Associated columns: medicaid_ccs_ad_rate, medicaid_ccs_ad_pct_25, medicaid_ccs_ad_pct_75.",
+            "statement": "In {location}, {value}% of women received cervical cancer screening",
+            "measure_type": "Percent",
+            "unit": "Percent",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "medicaid_quality_cms"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "medicaid_quality",
+              "data_dir": "/data/medicaid_quality/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            9
+          ],
+          "type": "float",
+          "missing": 2639,
+          "mean": 53.554436,
+          "sd": 9.269485,
+          "min": 24.8,
+          "max": 73.5
+        },
+        "Colorectal Cancer Screening": {
+          "source_id": "medicaid_col_ad_rate",
+          "id": "Colorectal Cancer Screening",
+          "name": "medicaid_col_ad_rate",
+          "duplicates": 3020,
+          "info": {
+            "id": "medicaid_col_ad_rate",
+            "short_name": "COL: Colorectal Cancer Screening (Adult)",
+            "long_name": "Colorectal Cancer Screening – Adults",
+            "category": "preventive",
+            "short_description": "Percent of adults aged 50–75 who received appropriate colorectal cancer screening.",
+            "long_description": "Adult Core Set measure (COL). Percentage of adults aged 50–75 who had appropriate colorectal cancer screening (colonoscopy, sigmoidoscopy, FOBT, or FIT-DNA). Associated columns: medicaid_col_ad_rate, medicaid_col_ad_pct_25, medicaid_col_ad_pct_75.",
+            "statement": "In {location}, {value}% of adults received colorectal cancer screening",
+            "measure_type": "Percent",
+            "unit": "Percent",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "medicaid_quality_cms"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "medicaid_quality",
+              "data_dir": "/data/medicaid_quality/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            9,
+            9
+          ],
+          "type": "float",
+          "missing": 3014,
+          "mean": 18.735714,
+          "sd": 5.539121,
+          "min": 6.2,
+          "max": 39.1
+        }
+      },
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|outcome_name"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|source": {
+      "short_name": "Data source",
+      "levels": {
+        "Medicaid": {
+          "id": "Medicaid"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|source"
+    },
     "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|value": {
       "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|value",
       "short_name": "Medicaid cancer screening rate",
@@ -1246,21 +2651,52 @@
         }
       ]
     },
-    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|median": {
-      "source_id": "median",
-      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|median"
+    "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|geography": {
+      "short_name": "State",
+      "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code.",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|geography"
     },
-    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|pct25": {
-      "source_id": "pct25",
-      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|pct25"
+    "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|fips": {
+      "short_name": "FIPS code",
+      "short_description": "Geographic FIPS code ('00' = national, 2-digit = state).",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|fips"
     },
-    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|pct75": {
-      "source_id": "pct75",
-      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|pct75"
+    "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|year": {
+      "short_name": "Year",
+      "short_description": "Calendar year of the reported screening rate.",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|year"
     },
-    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|n_states": {
-      "source_id": "n_states",
-      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|n_states"
+    "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|age": {
+      "short_name": "Age group",
+      "short_description": "Beneficiary age group (e.g., '65+ Years', 'Total').",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|age"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|outcome_name": {
+      "short_name": "Cancer screening measure",
+      "levels": {
+        "Breast Cancer Screening": {
+          "id": "Breast Cancer Screening"
+        },
+        "Cervical Cancer Screening": {
+          "id": "Cervical Cancer Screening"
+        },
+        "Colorectal Cancer Screening": {
+          "id": "Colorectal Cancer Screening"
+        },
+        "Prostate Cancer Screening": {
+          "id": "Prostate Cancer Screening"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|outcome_name"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|source": {
+      "short_name": "Data source",
+      "levels": {
+        "Medicare FFS": {
+          "id": "Medicare FFS"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|source"
     },
     "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|value": {
       "id": "bundle_cancer_screening/dist/cms_cancer_screening_state.parquet|value",
@@ -1278,6 +2714,58 @@
         }
       ]
     },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|geography": {
+      "short_name": "State",
+      "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code.",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|geography"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|fips": {
+      "short_name": "FIPS code",
+      "short_description": "Geographic FIPS code ('00' = national, 2-digit = state).",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|fips"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|year": {
+      "short_name": "Year",
+      "short_description": "Calendar year of the reported screening rate.",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|year"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|age": {
+      "short_name": "Age group",
+      "short_description": "Beneficiary age group (e.g., '65+ Years', 'Total').",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|age"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|sex": {
+      "short_name": "Sex",
+      "short_description": "Sex of Medicare FFS beneficiaries (Male, Female, Total).",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|sex"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|outcome_name": {
+      "short_name": "Cancer screening measure",
+      "levels": {
+        "Breast Cancer Screening": {
+          "id": "Breast Cancer Screening"
+        },
+        "Cervical Cancer Screening": {
+          "id": "Cervical Cancer Screening"
+        },
+        "Colorectal Cancer Screening": {
+          "id": "Colorectal Cancer Screening"
+        },
+        "Prostate Cancer Screening": {
+          "id": "Prostate Cancer Screening"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|outcome_name"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|source": {
+      "short_name": "Data source",
+      "levels": {
+        "Medicare FFS": {
+          "id": "Medicare FFS"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|source"
+    },
     "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|value": {
       "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_sex.parquet|value",
       "short_name": "Medicare FFS cancer screening rate by sex",
@@ -1294,6 +2782,58 @@
         }
       ]
     },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|geography": {
+      "short_name": "State",
+      "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code.",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|geography"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|fips": {
+      "short_name": "FIPS code",
+      "short_description": "Geographic FIPS code ('00' = national, 2-digit = state).",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|fips"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|year": {
+      "short_name": "Year",
+      "short_description": "Calendar year of the reported screening rate.",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|year"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|age": {
+      "short_name": "Age group",
+      "short_description": "Beneficiary age group (e.g., '65+ Years', 'Total').",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|age"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|race_ethnicity": {
+      "short_name": "Race/ethnicity",
+      "short_description": "Race/ethnicity category of Medicare FFS beneficiaries.",
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|race_ethnicity"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|outcome_name": {
+      "short_name": "Cancer screening measure",
+      "levels": {
+        "Breast Cancer Screening": {
+          "id": "Breast Cancer Screening"
+        },
+        "Cervical Cancer Screening": {
+          "id": "Cervical Cancer Screening"
+        },
+        "Colorectal Cancer Screening": {
+          "id": "Colorectal Cancer Screening"
+        },
+        "Prostate Cancer Screening": {
+          "id": "Prostate Cancer Screening"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|outcome_name"
+    },
+    "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|source": {
+      "short_name": "Data source",
+      "levels": {
+        "Medicare FFS": {
+          "id": "Medicare FFS"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|source"
+    },
     "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|value": {
       "id": "bundle_cancer_screening/dist/cms_cancer_screening_by_race.parquet|value",
       "short_name": "Medicare FFS cancer screening rate by race/ethnicity",
@@ -1309,6 +2849,36 @@
           "id": "cms_mmd"
         }
       ]
+    },
+    "bundle_cancer_screening/dist/combined_cancer_screening.parquet|geography": {
+      "short_name": "State",
+      "short_description": "State or national name (e.g., 'California', 'United States'); the paired `fips` column holds the FIPS code.",
+      "id": "bundle_cancer_screening/dist/combined_cancer_screening.parquet|geography"
+    },
+    "bundle_cancer_screening/dist/combined_cancer_screening.parquet|fips": {
+      "short_name": "FIPS code",
+      "short_description": "Geographic FIPS code ('00' = national, 2-digit = state).",
+      "id": "bundle_cancer_screening/dist/combined_cancer_screening.parquet|fips"
+    },
+    "bundle_cancer_screening/dist/combined_cancer_screening.parquet|year": {
+      "short_name": "Year",
+      "short_description": "Calendar year of the reported screening rate.",
+      "id": "bundle_cancer_screening/dist/combined_cancer_screening.parquet|year"
+    },
+    "bundle_cancer_screening/dist/combined_cancer_screening.parquet|outcome_name": {
+      "short_name": "Cancer screening measure",
+      "levels": {
+        "Breast Cancer Screening": {
+          "id": "Breast Cancer Screening"
+        },
+        "Cervical Cancer Screening": {
+          "id": "Cervical Cancer Screening"
+        },
+        "Colorectal Cancer Screening": {
+          "id": "Colorectal Cancer Screening"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/combined_cancer_screening.parquet|outcome_name"
     },
     "bundle_cancer_screening/dist/combined_cancer_screening.parquet|value_medicare": {
       "id": "bundle_cancer_screening/dist/combined_cancer_screening.parquet|value_medicare",
@@ -1341,6 +2911,774 @@
           "id": "medicaid_quality"
         }
       ]
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|geography": {
+      "short_name": "Geography",
+      "short_description": "Always 'United States'; NCCR*Explorer reports national-level statistics only. The paired `fips` column holds '00'.",
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|geography"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|fips": {
+      "short_name": "FIPS code",
+      "short_description": "Geographic FIPS code ('00' = national).",
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|fips"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|year": {
+      "short_name": "Year",
+      "short_description": "Calendar year of diagnosis (2001 onward).",
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|year"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|age": {
+      "short_name": "Age group",
+      "short_description": "Age group at diagnosis in years. Groups overlap: '<1', '1-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-39' are disjoint; '0-19', '15-39', '20-39', and '0-39' are aggregates.",
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|age"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|sex": {
+      "short_name": "Sex",
+      "short_description": "Sex (Overall, Male, Female).",
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|sex"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|race_ethnicity": {
+      "short_name": "Race/ethnicity",
+      "short_description": "Race/ethnicity category (Overall, White, Black, Asian/Pacific Islander, American Indian/Alaska Native, Hispanic).",
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|race_ethnicity"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|outcome_name": {
+      "short_name": "Cancer site (ICCC)",
+      "short_description": "International Classification of Childhood Cancer (ICCC) diagnostic group the rate refers to.",
+      "levels": {
+        "All ICCC Sites Combined": {
+          "source_id": "nccr_all_iccc_sites",
+          "id": "All ICCC Sites Combined",
+          "name": "nccr_all_iccc_sites",
+          "duplicates": 23,
+          "info": {
+            "id": "nccr_all_iccc_sites",
+            "short_name": "Incidence rate: All ICCC Sites Combined",
+            "long_name": "Childhood/AYA cancer incidence rate (All ICCC Sites Combined)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of All ICCC Sites Combined among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of All ICCC Sites Combined (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of All ICCC Sites Combined was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 421.617634,
+          "sd": 334.691653,
+          "min": 0,
+          "max": 2219.1257
+        },
+        "I. Leukemias": {
+          "source_id": "nccr_leukemias",
+          "id": "I. Leukemias",
+          "name": "nccr_leukemias",
+          "duplicates": 175,
+          "info": {
+            "id": "nccr_leukemias",
+            "short_name": "Incidence rate: I. Leukemias",
+            "long_name": "Childhood/AYA cancer incidence rate (I. Leukemias)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of I. Leukemias among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of I. Leukemias (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of I. Leukemias was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 46.82547,
+          "sd": 24.527936,
+          "min": 0,
+          "max": 380.8073
+        },
+        "II. Lymphomas": {
+          "source_id": "nccr_lymphomas",
+          "id": "II. Lymphomas",
+          "name": "nccr_lymphomas",
+          "duplicates": 282,
+          "info": {
+            "id": "nccr_lymphomas",
+            "short_name": "Incidence rate: II. Lymphomas",
+            "long_name": "Childhood/AYA cancer incidence rate (II. Lymphomas)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of II. Lymphomas among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of II. Lymphomas (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of II. Lymphomas was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 48.245436,
+          "sd": 33.965331,
+          "min": 0,
+          "max": 270.9293
+        },
+        "III. CNS Neoplasms (Malignant)": {
+          "source_id": "nccr_cns_neoplasms_malignant",
+          "id": "III. CNS Neoplasms (Malignant)",
+          "name": "nccr_cns_neoplasms_malignant",
+          "duplicates": 277,
+          "info": {
+            "id": "nccr_cns_neoplasms_malignant",
+            "short_name": "Incidence rate: III. Central Nervous System Neoplasms (Malignant)",
+            "long_name": "Childhood/AYA cancer incidence rate (III. Central Nervous System Neoplasms (Malignant))",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of III. Central Nervous System Neoplasms (Malignant) among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of III. Central Nervous System Neoplasms (Malignant) (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of III. Central Nervous System Neoplasms (Malignant) was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 27.711784,
+          "sd": 15.493505,
+          "min": 0,
+          "max": 277.7006
+        },
+        "III. CNS Neoplasms (Non-Malignant)": {
+          "source_id": "nccr_cns_neoplasms_non_malignant",
+          "id": "III. CNS Neoplasms (Non-Malignant)",
+          "name": "nccr_cns_neoplasms_non_malignant",
+          "duplicates": 883,
+          "info": {
+            "id": "nccr_cns_neoplasms_non_malignant",
+            "short_name": "Incidence rate: III Central Nervous System Neoplasms (Non-Malignant)",
+            "long_name": "Childhood/AYA cancer incidence rate (III Central Nervous System Neoplasms (Non-Malignant))",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of III Central Nervous System Neoplasms (Non-Malignant) among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of III Central Nervous System Neoplasms (Non-Malignant) (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of III Central Nervous System Neoplasms (Non-Malignant) was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 38.442916,
+          "sd": 41.416974,
+          "min": 0,
+          "max": 331.1251
+        },
+        "IV. Neuroblastoma and Peripheral Nervous Cell Tumors": {
+          "source_id": "nccr_neuroblastoma_and_pns_tumors",
+          "id": "IV. Neuroblastoma and Peripheral Nervous Cell Tumors",
+          "name": "nccr_neuroblastoma_and_pns_tumors",
+          "duplicates": 1023,
+          "info": {
+            "id": "nccr_neuroblastoma_and_pns_tumors",
+            "short_name": "Incidence rate: IV. Neuroblastoma and Peripheral Nervous Cell",
+            "long_name": "Childhood/AYA cancer incidence rate (IV. Neuroblastoma and Peripheral Nervous Cell)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of IV. Neuroblastoma and Peripheral Nervous Cell among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of IV. Neuroblastoma and Peripheral Nervous Cell (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of IV. Neuroblastoma and Peripheral Nervous Cell was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 8.275608,
+          "sd": 20.930808,
+          "min": 0,
+          "max": 533.3333
+        },
+        "V. Retinoblastoma": {
+          "source_id": "nccr_retinoblastoma",
+          "id": "V. Retinoblastoma",
+          "name": "nccr_retinoblastoma",
+          "duplicates": 2897,
+          "info": {
+            "id": "nccr_retinoblastoma",
+            "short_name": "Incidence rate: V. Retinoblastoma",
+            "long_name": "Childhood/AYA cancer incidence rate (V. Retinoblastoma)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of V. Retinoblastoma among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of V. Retinoblastoma (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of V. Retinoblastoma was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 3.715153,
+          "sd": 12.589393,
+          "min": 0,
+          "max": 374.1815
+        },
+        "VI. Renal Tumors": {
+          "source_id": "nccr_renal_tumors",
+          "id": "VI. Renal Tumors",
+          "name": "nccr_renal_tumors",
+          "duplicates": 596,
+          "info": {
+            "id": "nccr_renal_tumors",
+            "short_name": "Incidence rate: VI. Renal Tumors",
+            "long_name": "Childhood/AYA cancer incidence rate (VI. Renal Tumors)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of VI. Renal Tumors among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of VI. Renal Tumors (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of VI. Renal Tumors was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 14.537553,
+          "sd": 18.115356,
+          "min": 0,
+          "max": 248.2005
+        },
+        "VII. Hepatic Tumors": {
+          "source_id": "nccr_hepatic_tumors",
+          "id": "VII. Hepatic Tumors",
+          "name": "nccr_hepatic_tumors",
+          "duplicates": 855,
+          "info": {
+            "id": "nccr_hepatic_tumors",
+            "short_name": "Incidence rate: VII. Hepatic Tumors",
+            "long_name": "Childhood/AYA cancer incidence rate (VII. Hepatic Tumors)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of VII. Hepatic Tumors among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of VII. Hepatic Tumors (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of VII. Hepatic Tumors was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 5.177384,
+          "sd": 8.67603,
+          "min": 0,
+          "max": 202.7575
+        },
+        "VIII. Bone Tumors": {
+          "source_id": "nccr_bone_tumors",
+          "id": "VIII. Bone Tumors",
+          "name": "nccr_bone_tumors",
+          "duplicates": 809,
+          "info": {
+            "id": "nccr_bone_tumors",
+            "short_name": "Incidence rate: VIII. Bone Tumors",
+            "long_name": "Childhood/AYA cancer incidence rate (VIII. Bone Tumors)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of VIII. Bone Tumors among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of VIII. Bone Tumors (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of VIII. Bone Tumors was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 7.561446,
+          "sd": 7.776997,
+          "min": 0,
+          "max": 208.5071
+        },
+        "IX. Soft Tissue Sarcomas": {
+          "source_id": "nccr_soft_tissue_sarcomas",
+          "id": "IX. Soft Tissue Sarcomas",
+          "name": "nccr_soft_tissue_sarcomas",
+          "duplicates": 399,
+          "info": {
+            "id": "nccr_soft_tissue_sarcomas",
+            "short_name": "Incidence rate: IX. Soft Tissue Tumors",
+            "long_name": "Childhood/AYA cancer incidence rate (IX. Soft Tissue Tumors)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of IX. Soft Tissue Tumors among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of IX. Soft Tissue Tumors (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of IX. Soft Tissue Tumors was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 20.686286,
+          "sd": 16.255173,
+          "min": 0,
+          "max": 233.9729
+        },
+        "X. Germ Cell Tumors (Malignant)": {
+          "source_id": "nccr_germ_cell_tumors_malignant",
+          "id": "X. Germ Cell Tumors (Malignant)",
+          "name": "nccr_germ_cell_tumors_malignant",
+          "duplicates": 364,
+          "info": {
+            "id": "nccr_germ_cell_tumors_malignant",
+            "short_name": "Incidence rate: X. Germ Cell Tumors (Malignant)",
+            "long_name": "Childhood/AYA cancer incidence rate (X. Germ Cell Tumors (Malignant))",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of X. Germ Cell Tumors (Malignant) among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of X. Germ Cell Tumors (Malignant) (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of X. Germ Cell Tumors (Malignant) was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 39.358515,
+          "sd": 45.934281,
+          "min": 0,
+          "max": 357.129
+        },
+        "X. Germ Cell Tumors (Non-Malignant)": {
+          "source_id": "nccr_germ_cell_tumors_non_malignant",
+          "id": "X. Germ Cell Tumors (Non-Malignant)",
+          "name": "nccr_germ_cell_tumors_non_malignant",
+          "duplicates": 2667,
+          "info": {
+            "id": "nccr_germ_cell_tumors_non_malignant",
+            "short_name": "Incidence rate: X. Germ Cell Tumors (Non-Malignant)",
+            "long_name": "Childhood/AYA cancer incidence rate (X. Germ Cell Tumors (Non-Malignant))",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of X. Germ Cell Tumors (Non-Malignant) among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of X. Germ Cell Tumors (Non-Malignant) (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of X. Germ Cell Tumors (Non-Malignant) was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 0.359633,
+          "sd": 0.943959,
+          "min": 0,
+          "max": 36.0367
+        },
+        "XI. Epithelial Neoplasms and Melanomas": {
+          "source_id": "nccr_epithelial_neoplasms_and_melanomas",
+          "id": "XI. Epithelial Neoplasms and Melanomas",
+          "name": "nccr_epithelial_neoplasms_and_melanomas",
+          "duplicates": 446,
+          "info": {
+            "id": "nccr_epithelial_neoplasms_and_melanomas",
+            "short_name": "Incidence rate: XI. Epithelial Neoplasms And Melanomas",
+            "long_name": "Childhood/AYA cancer incidence rate (XI. Epithelial Neoplasms And Melanomas)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of XI. Epithelial Neoplasms And Melanomas among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of XI. Epithelial Neoplasms And Melanomas (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of XI. Epithelial Neoplasms And Melanomas was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 194.554368,
+          "sd": 274.082214,
+          "min": 0,
+          "max": 1668.647
+        },
+        "XII. Other and Unspecified Neoplasms": {
+          "source_id": "nccr_neoplasms_other_and_nos",
+          "id": "XII. Other and Unspecified Neoplasms",
+          "name": "nccr_neoplasms_other_and_nos",
+          "duplicates": 1168,
+          "info": {
+            "id": "nccr_neoplasms_other_and_nos",
+            "short_name": "Incidence rate: XII. Other/ Unspecified Neoplasms",
+            "long_name": "Childhood/AYA cancer incidence rate (XII. Other/ Unspecified Neoplasms)",
+            "category": "chronic",
+            "short_description": "Age-adjusted incidence rate of XII. Other/ Unspecified Neoplasms among children, adolescents, and young adults (ages 0-39).",
+            "long_description": "Age-adjusted annual incidence rate of XII. Other/ Unspecified Neoplasms (ICCC classification) per 1,000,000 population, among children, adolescents, and young adults ages 0-39, from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are reported at the national level only. Estimates are stratified by sex, race/ethnicity, and age group. Rates are age-adjusted to the 2000 U.S. standard population.",
+            "statement": "In {location}, the incidence rate of XII. Other/ Unspecified Neoplasms was {value} per 1,000,000.",
+            "measure_type": "Incidence",
+            "unit": "Cases per 1,000,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "nccr"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "nccr",
+              "data_dir": "/data/nccr/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            21
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 4.968628,
+          "sd": 7.575638,
+          "min": 0,
+          "max": 187.0907
+        }
+      },
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|outcome_name"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|source": {
+      "short_name": "Data source",
+      "levels": {
+        "NCI NCCR*Explorer": {
+          "id": "NCI NCCR*Explorer"
+        }
+      },
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|source"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|value": {
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|value",
+      "short_name": "Childhood/AYA cancer incidence rate",
+      "long_name": "Age-Adjusted Childhood, Adolescent and Young Adult Cancer Incidence Rate by ICCC Site",
+      "category": "chronic",
+      "short_description": "Age-adjusted annual incidence rate per 1,000,000 of the ICCC cancer site named in `outcome_name`, among ages 0-39, national level.",
+      "long_description": "Age-adjusted annual incidence rate per 1,000,000 population for the ICCC diagnostic group in `outcome_name`, among children, adolescents, and young adults (ages 0-39), from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are age-adjusted to the 2000 U.S. standard population. Stratified by sex, race/ethnicity, and age group. A value of 0 is only meaningful when both `suppressed_flag` and `not_collected_flag` are 0; suppressed or not-collected cells were set to 0 in the source.",
+      "measure_type": "Incidence",
+      "unit": "Cases per 1,000,000",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "nccr"
+        }
+      ]
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|value_lcl": {
+      "short_name": "Incidence rate, lower 95% CI",
+      "long_name": "Lower 95% confidence limit of the incidence rate",
+      "category": "chronic",
+      "short_description": "Lower bound of the 95% confidence interval for `value`.",
+      "measure_type": "Incidence",
+      "unit": "Cases per 1,000,000",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "nccr"
+        }
+      ],
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|value_lcl"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|value_ucl": {
+      "short_name": "Incidence rate, upper 95% CI",
+      "long_name": "Upper 95% confidence limit of the incidence rate",
+      "category": "chronic",
+      "short_description": "Upper bound of the 95% confidence interval for `value`.",
+      "measure_type": "Incidence",
+      "unit": "Cases per 1,000,000",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "nccr"
+        }
+      ],
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|value_ucl"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|suppressed_flag": {
+      "short_name": "Suppressed?",
+      "long_name": "Suppression flag for the rate in this row",
+      "short_description": "Binary indicator: 1 if NCCR*Explorer suppressed the rate for this cell (fewer than 16 cases), in which case `value` is 0; 0 otherwise.",
+      "measure_type": "binary",
+      "time_resolution": "Year",
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|suppressed_flag"
+    },
+    "bundle_cancer_screening/dist/nccr_incidence.parquet|not_collected_flag": {
+      "short_name": "Not collected?",
+      "long_name": "Not-collected flag for the rate in this row",
+      "short_description": "Binary indicator: 1 if the statistic was not collected/not available for this cell, in which case `value` is 0; 0 otherwise.",
+      "measure_type": "binary",
+      "time_resolution": "Year",
+      "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|not_collected_flag"
+    },
+    "_bundle": {
+      "name": "bundle_cancer_screening",
+      "sources": [
+        "cms_mmd",
+        "medicaid_quality",
+        "nccr"
+      ],
+      "dist_files": {
+        "medicaid_cancer_screening.parquet": {
+          "sources": [
+            "medicaid_quality"
+          ],
+          "source_files": [
+            "medicaid_quality/standard/data.csv.gz"
+          ]
+        },
+        "cms_cancer_screening_state.parquet": {
+          "sources": [
+            "cms_mmd"
+          ],
+          "source_files": [
+            "cms_mmd/standard/data_state_county_age.csv.gz"
+          ]
+        },
+        "cms_cancer_screening_by_sex.parquet": {
+          "sources": [
+            "cms_mmd"
+          ],
+          "source_files": [
+            "cms_mmd/standard/data_state_county_age_by_sex.csv.gz"
+          ]
+        },
+        "cms_cancer_screening_by_race.parquet": {
+          "sources": [
+            "cms_mmd"
+          ],
+          "source_files": [
+            "cms_mmd/standard/data_state_county_age_by_race.csv.gz"
+          ]
+        },
+        "combined_cancer_screening.parquet": {
+          "sources": [
+            "cms_mmd",
+            "medicaid_quality"
+          ],
+          "source_files": [
+            "cms_mmd/standard/data_state_county_age.csv.gz",
+            "medicaid_quality/standard/data.csv.gz"
+          ]
+        },
+        "nccr_incidence.parquet": {
+          "sources": [
+            "nccr"
+          ],
+          "source_files": [
+            "nccr/standard/data.csv.gz"
+          ]
+        }
+      },
+      "id": "_bundle"
+    },
+    "_sources": {
+      "nccr": {
+        "name": "National Childhood Cancer Registry Explorer (NCCR*Explorer)",
+        "url": "https://nccrexplorer.ccdi.cancer.gov/",
+        "organization": "National Cancer Institute (NCI), Childhood Cancer Data Initiative",
+        "organization_url": "https://www.cancer.gov/",
+        "location": "NCCR*Explorer: An interactive website for NCCR cancer statistics",
+        "location_url": "https://nccrexplorer.ccdi.cancer.gov/application.html",
+        "description": "The National Childhood Cancer Registry (NCCR) is a federated data resource maintained by the National Cancer Institute (NCI) as part of the Childhood Cancer Data Initiative (CCDI). NCCR*Explorer provides precalculated incidence statistics for cancers among children, adolescents, and young adults (ages 0-39) diagnosed from 2001 forward, pooled from up to 29 U.S. cancer registries representing approximately 76% of the U.S. population ages 0-39. Cancers are classified using the International Classification of Childhood Cancer (ICCC). Rates are age-adjusted to the 2000 U.S. standard population and reported at the national level only.",
+        "restrictions": "Public domain. Data from the National Childhood Cancer Registry, produced by the National Cancer Institute, is generally not subject to copyright restrictions.",
+        "date_accessed": 2026
+      },
+      "id": "_sources"
     }
   },
   "change_report": {
