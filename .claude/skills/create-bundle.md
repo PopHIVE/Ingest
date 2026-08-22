@@ -75,15 +75,21 @@ Follow the Bundle `build.R` template in `CLAUDE.md`. Rules specific to bundles:
 
 ### Phase 4 — Build it and generate process.json
 
-From the project root, build the bundle. This runs `build.R`, writes the `dist/*.parquet` files, and (re)generates `process.json` — including the authoritative **`source_files`** map (which source file contributed to which parquet):
+From the project root, build the bundle. This runs `build.R`, writes the `dist/*.parquet` files, and records `source_state`/`dist_state` (md5s) in `process.json`:
 
 ```r
 dcf::dcf_process("bundle_<name>")
 ```
 
-**Important:** the `source_files` block in a bundle's `process.json` is only trustworthy right after a successful `dcf_process`/`dcf_build`. It reflects the *last* build, so it goes stale if `build.R` later changes which sources it reads (e.g. after a source is renamed or split). Always (re)build **before** you read `source_files` to construct the `measure_info.json` `_bundle` map in Phase 5.
+**How `source_files` actually works (dcf 0.1.0):** `dcf_process` does *not* read `build.R` to work out which source files a bundle uses. The `source_files` map in `process.json` is seeded by `dcf_add_bundle(source_files = ...)` (as a flat list) and after that is maintained by hand. Keep it as a named map, `"<source>/standard/<file>.csv.gz": ["<out>.parquet", ...]`, and add an entry every time `build.R` starts reading a new file. If it is left empty the bundle rebuilds on every run; if a file is missing from it, changes to that file will not trigger a rebuild.
 
-If R/dcf is unavailable, write a minimal valid bundle `process.json` by hand (`type: "bundle"`, `scripts: [{ "path": "build.R", ... }]`) and note that the `source_files` map will be filled on the next real build.
+**Rebuilding after editing `build.R`:** a bundle only reruns when the md5 of a file in `source_files` differs from `source_state`. `force = TRUE` has no effect on bundles (it only applies to sources). To rerun a bundle whose inputs have not changed:
+
+```r
+dcf::dcf_process("bundle_<name>", clear_state = TRUE)
+```
+
+If R/dcf is unavailable, write a minimal valid bundle `process.json` by hand (`type: "bundle"`, `scripts: [{ "path": "build.R", ... }]`, `source_files` as above).
 
 ### Phase 5 — Write a fully-documented measure_info.json
 
@@ -204,6 +210,7 @@ Sources `medicaid_quality` + `cms_mmd`; four tall parquets each with an `outcome
 
 - **Bundle vs. source schema** differ. Bundle keys are path-prefixed (`bundle_x/dist/file.parquet|col`); source keys are bare column names. Do not mix them.
 - **`dist/` is parquet-only.** No CSV in `dist/`.
-- **`source_files` staleness** — regenerate `process.json` (Phase 4) before trusting it (Phase 5b).
+- **`source_files` is hand-maintained** — dcf never derives it from `build.R`. Update it in `process.json` whenever `build.R` reads a new file, then use `clear_state = TRUE` to rebuild (Phase 4).
+- **`build_docs.R` needs a UTF-8 locale** — run it with `LANG=en_US.UTF-8` (on macOS `Rscript` may not inherit one). Otherwise en-dashes in preserved `summary` fields are written out as `<U+2013>`, and because those fields are preserved the damage survives later rebuilds.
 - **Never hand-copy a source `process.json`** into a bundle — use `dcf_add_bundle` so `type`/`scripts` are correct.
 - **Read real columns** from the built parquets; do not infer them from `build.R` alone.

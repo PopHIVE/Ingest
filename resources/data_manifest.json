@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-21T07:42:14Z",
+  "generated": "2026-08-21T20:32:01Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -646,6 +646,165 @@
               "description": "Percentage of Medicaid and CHIP beneficiaries who received cancer screening.",
               "measure_type": "Percent",
               "unit": "%",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "nccr_incidence.parquet",
+          "path": "data/bundle_cancer_screening/dist/nccr_incidence.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_cancer_screening/dist/nccr_incidence.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "Always 'United States'; NCCR*Explorer reports national-level statistics only. The paired `fips` column holds '00'.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "fips",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code ('00' = national).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year of diagnosis (2001 onward).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group at diagnosis in years. Groups overlap: '<1', '1-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-39' are disjoint; '0-19', '15-39', '20-39', and '0-39' are aggregates.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex (Overall, Male, Female).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/ethnicity",
+              "description": "Race/ethnicity category (Overall, White, Black, Asian/Pacific Islander, American Indian/Alaska Native, Hispanic).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "outcome_name",
+              "short_name": "Cancer site (ICCC)",
+              "description": "International Classification of Childhood Cancer (ICCC) diagnostic group the rate refers to.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "All ICCC Sites Combined": {
+                  "source_id": "nccr_all_iccc_sites"
+                },
+                "I. Leukemias": {
+                  "source_id": "nccr_leukemias"
+                },
+                "II. Lymphomas": {
+                  "source_id": "nccr_lymphomas"
+                },
+                "III. CNS Neoplasms (Malignant)": {
+                  "source_id": "nccr_cns_neoplasms_malignant"
+                },
+                "III. CNS Neoplasms (Non-Malignant)": {
+                  "source_id": "nccr_cns_neoplasms_non_malignant"
+                },
+                "IV. Neuroblastoma and Peripheral Nervous Cell Tumors": {
+                  "source_id": "nccr_neuroblastoma_and_pns_tumors"
+                },
+                "V. Retinoblastoma": {
+                  "source_id": "nccr_retinoblastoma"
+                },
+                "VI. Renal Tumors": {
+                  "source_id": "nccr_renal_tumors"
+                },
+                "VII. Hepatic Tumors": {
+                  "source_id": "nccr_hepatic_tumors"
+                },
+                "VIII. Bone Tumors": {
+                  "source_id": "nccr_bone_tumors"
+                },
+                "IX. Soft Tissue Sarcomas": {
+                  "source_id": "nccr_soft_tissue_sarcomas"
+                },
+                "X. Germ Cell Tumors (Malignant)": {
+                  "source_id": "nccr_germ_cell_tumors_malignant"
+                },
+                "X. Germ Cell Tumors (Non-Malignant)": {
+                  "source_id": "nccr_germ_cell_tumors_non_malignant"
+                },
+                "XI. Epithelial Neoplasms and Melanomas": {
+                  "source_id": "nccr_epithelial_neoplasms_and_melanomas"
+                },
+                "XII. Other and Unspecified Neoplasms": {
+                  "source_id": "nccr_neoplasms_other_and_nos"
+                }
+              }
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "NCI NCCR*Explorer": {}
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Childhood/AYA cancer incidence rate",
+              "description": "Age-adjusted annual incidence rate per 1,000,000 of the ICCC cancer site named in `outcome_name`, among ages 0-39, national level.",
+              "measure_type": "Incidence",
+              "unit": "Cases per 1,000,000",
+              "levels": {}
+            },
+            {
+              "name": "value_lcl",
+              "short_name": "Incidence rate, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for `value`.",
+              "measure_type": "Incidence",
+              "unit": "Cases per 1,000,000",
+              "levels": {}
+            },
+            {
+              "name": "value_ucl",
+              "short_name": "Incidence rate, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for `value`.",
+              "measure_type": "Incidence",
+              "unit": "Cases per 1,000,000",
+              "levels": {}
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed?",
+              "description": "Binary indicator: 1 if NCCR*Explorer suppressed the rate for this cell (fewer than 16 cases), in which case `value` is 0; 0 otherwise.",
+              "measure_type": "binary",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "not_collected_flag",
+              "short_name": "Not collected?",
+              "description": "Binary indicator: 1 if the statistic was not collected/not available for this cell, in which case `value` is 0; 0 otherwise.",
+              "measure_type": "binary",
+              "unit": "",
               "levels": {}
             }
           ]
@@ -2087,6 +2246,115 @@
               "measure_type": "category",
               "unit": "",
               "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "epic_health_alerts.parquet",
+          "path": "data/bundle_enteric_diseases/dist/epic_health_alerts.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_enteric_diseases/dist/epic_health_alerts.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State or county name (e.g., 'Iowa', 'Los Angeles County'); the paired `fips` column holds the FIPS code and `geography_level` says which level the row is.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "fips",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code (2-digit = state, 5-digit = county).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "geography_level",
+              "short_name": "Geography level",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "state": {},
+                "county": {}
+              }
+            },
+            {
+              "name": "date",
+              "short_name": "Week ending date",
+              "description": "Week-ending (Saturday) date of the snapshot in which the alert was active (ISO date).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "condition",
+              "short_name": "Alerted condition",
+              "description": "The condition for which Epic Research flagged the geography with an active health alert. All conditions published on the page are kept, not only enteric ones.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "Acute Pharyngitis": {},
+                "Campylobacteriosis": {},
+                "Cyclosporiasis": {},
+                "Hand, Foot, and Mouth Disease": {},
+                "Heat Illness": {},
+                "Salmonellosis": {},
+                "Toxic Effect of Smoke": {},
+                "Viral Gastroenteritis": {}
+              }
+            },
+            {
+              "name": "estimated_onset",
+              "short_name": "Estimated onset date",
+              "description": "Epic Research's estimated onset date of the elevated activity for this geography and condition (ISO date).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "value",
+              "short_name": "Health alert rate (cases per 100k)",
+              "description": "Latest-week case rate per 100,000 for a state or county flagged with an active Epic Research health alert; the alerted condition is given in the `condition` column.",
+              "measure_type": "Rate",
+              "unit": "cases per 100,000",
+              "levels": {}
+            },
+            {
+              "name": "partial_week_flag",
+              "short_name": "Partial week?",
+              "description": "Binary indicator: 1 if the rate reflects a partial (incomplete) reporting week and may rise as more data arrives, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "date_scraped",
+              "short_name": "Date scraped",
+              "description": "Date on which the ingestion script downloaded the Epic Research health-alerts page and recorded this row (ISO date).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "date_epic_updated",
+              "short_name": "Date Epic updated",
+              "description": "The page-wide 'Last updated' date shown on the Epic Research health-alerts page at scrape time (ISO date).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "Epic Research Health Alerts": {}
+              }
             }
           ]
         },
@@ -5841,6 +6109,229 @@
               "measure_type": "Flag",
               "unit": "",
               "levels": {}
+            }
+          ]
+        }
+      ]
+    },
+    "bundle_rural_health": {
+      "name": "bundle_rural_health",
+      "display_name": "Bundle: Rural Health",
+      "dist_files": [
+        {
+          "filename": "rural_health_county.parquet",
+          "path": "data/bundle_rural_health/dist/rural_health_county.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_rural_health/dist/rural_health_county.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code as a string: 5-digit county code in rural_health_county.parquet; 2-digit state code or '00' (national) in rural_health_state.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Date",
+              "description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "outcome_name",
+              "short_name": "Rural health measure",
+              "description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "hud_pct_severe_housing_problems": {
+                  "source_id": "hud_pct_severe_housing_problems"
+                },
+                "ahrf_hpsa_prim_care": {
+                  "source_id": "ahrf_hpsa_prim_care"
+                },
+                "ahrf_hpsa_dental": {
+                  "source_id": "ahrf_hpsa_dental"
+                },
+                "ahrf_hpsa_mental_health": {
+                  "source_id": "ahrf_hpsa_mental_health"
+                },
+                "ahrf_rural_urban_code": {
+                  "source_id": "ahrf_rural_urban_code"
+                },
+                "ahrf_pcp": {
+                  "source_id": "ahrf_pcp"
+                },
+                "ahrf_md_all": {
+                  "source_id": "ahrf_md_all"
+                },
+                "ahrf_psych": {
+                  "source_id": "ahrf_psych"
+                },
+                "ahrf_dentists": {
+                  "source_id": "ahrf_dentists"
+                },
+                "ahrf_hospitals": {
+                  "source_id": "ahrf_hospitals"
+                },
+                "ahrf_critical_access_hosp": {
+                  "source_id": "ahrf_critical_access_hosp"
+                },
+                "ahrf_population": {
+                  "source_id": "ahrf_population"
+                },
+                "ahrf_good_air_pct": {
+                  "source_id": "ahrf_good_air_pct"
+                },
+                "ahrf_pm25": {
+                  "source_id": "ahrf_pm25"
+                },
+                "ahrf_pop_density": {
+                  "source_id": "ahrf_pop_density"
+                },
+                "ahrf_medicare_per_capita": {
+                  "source_id": "ahrf_medicare_per_capita"
+                },
+                "ahrf_ed_per_1k_medicare": {
+                  "source_id": "ahrf_ed_per_1k_medicare"
+                },
+                "bls_pct_unemployment": {
+                  "source_id": "bls_pct_unemployment"
+                },
+                "usda_pct_limited_access_low_income": {
+                  "source_id": "usda_pct_limited_access_low_income"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
+              "measure_type": "Mixed",
+              "unit": "Varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "HUD CHAS": {},
+                "HRSA AHRF": {},
+                "BLS LAUS": {},
+                "USDA Food Access Research Atlas": {}
+              }
+            }
+          ]
+        },
+        {
+          "filename": "rural_health_state.parquet",
+          "path": "data/bundle_rural_health/dist/rural_health_state.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_rural_health/dist/rural_health_state.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code as a string: 5-digit county code in rural_health_county.parquet; 2-digit state code or '00' (national) in rural_health_state.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Date",
+              "description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "outcome_name",
+              "short_name": "Rural health measure",
+              "description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file. USDA food access is county-only and does not appear in this file.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "hud_pct_severe_housing_problems": {
+                  "source_id": "hud_pct_severe_housing_problems"
+                },
+                "ahrf_hpsa_prim_care": {
+                  "source_id": "ahrf_hpsa_prim_care"
+                },
+                "ahrf_hpsa_dental": {
+                  "source_id": "ahrf_hpsa_dental"
+                },
+                "ahrf_hpsa_mental_health": {
+                  "source_id": "ahrf_hpsa_mental_health"
+                },
+                "ahrf_rural_urban_code": {
+                  "source_id": "ahrf_rural_urban_code"
+                },
+                "ahrf_pcp": {
+                  "source_id": "ahrf_pcp"
+                },
+                "ahrf_md_all": {
+                  "source_id": "ahrf_md_all"
+                },
+                "ahrf_psych": {
+                  "source_id": "ahrf_psych"
+                },
+                "ahrf_dentists": {
+                  "source_id": "ahrf_dentists"
+                },
+                "ahrf_hospitals": {
+                  "source_id": "ahrf_hospitals"
+                },
+                "ahrf_critical_access_hosp": {
+                  "source_id": "ahrf_critical_access_hosp"
+                },
+                "ahrf_population": {
+                  "source_id": "ahrf_population"
+                },
+                "ahrf_good_air_pct": {
+                  "source_id": "ahrf_good_air_pct"
+                },
+                "ahrf_pm25": {
+                  "source_id": "ahrf_pm25"
+                },
+                "ahrf_pop_density": {
+                  "source_id": "ahrf_pop_density"
+                },
+                "ahrf_medicare_per_capita": {
+                  "source_id": "ahrf_medicare_per_capita"
+                },
+                "ahrf_ed_per_1k_medicare": {
+                  "source_id": "ahrf_ed_per_1k_medicare"
+                },
+                "bls_pct_unemployment": {
+                  "source_id": "bls_pct_unemployment"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
+              "measure_type": "Mixed",
+              "unit": "Varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "HUD CHAS": {},
+                "HRSA AHRF": {},
+                "BLS LAUS": {},
+                "USDA Food Access Research Atlas": {}
+              }
             }
           ]
         }
