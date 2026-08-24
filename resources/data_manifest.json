@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-21T20:32:01Z",
+  "generated": "2026-08-24T11:26:00Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -2024,6 +2024,223 @@
               "measure_type": "Rate",
               "unit": "Varies by measure (population per provider or percent)",
               "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "county_determinants.parquet",
+          "path": "data/bundle_county_access/dist/county_determinants.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_county_access/dist/county_determinants.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code as a string: 5-digit county code in county_determinants.parquet; 2-digit state code or '00' (national) in state_determinants.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Date",
+              "description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "outcome_name",
+              "short_name": "Determinant measure",
+              "description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "hud_pct_severe_housing_problems": {
+                  "source_id": "hud_pct_severe_housing_problems"
+                },
+                "ahrf_hpsa_prim_care": {
+                  "source_id": "ahrf_hpsa_prim_care"
+                },
+                "ahrf_hpsa_dental": {
+                  "source_id": "ahrf_hpsa_dental"
+                },
+                "ahrf_hpsa_mental_health": {
+                  "source_id": "ahrf_hpsa_mental_health"
+                },
+                "ahrf_rural_urban_code": {
+                  "source_id": "ahrf_rural_urban_code"
+                },
+                "ahrf_pcp": {
+                  "source_id": "ahrf_pcp"
+                },
+                "ahrf_md_all": {
+                  "source_id": "ahrf_md_all"
+                },
+                "ahrf_psych": {
+                  "source_id": "ahrf_psych"
+                },
+                "ahrf_dentists": {
+                  "source_id": "ahrf_dentists"
+                },
+                "ahrf_hospitals": {
+                  "source_id": "ahrf_hospitals"
+                },
+                "ahrf_critical_access_hosp": {
+                  "source_id": "ahrf_critical_access_hosp"
+                },
+                "ahrf_population": {
+                  "source_id": "ahrf_population"
+                },
+                "ahrf_good_air_pct": {
+                  "source_id": "ahrf_good_air_pct"
+                },
+                "ahrf_pm25": {
+                  "source_id": "ahrf_pm25"
+                },
+                "ahrf_pop_density": {
+                  "source_id": "ahrf_pop_density"
+                },
+                "ahrf_medicare_per_capita": {
+                  "source_id": "ahrf_medicare_per_capita"
+                },
+                "ahrf_ed_per_1k_medicare": {
+                  "source_id": "ahrf_ed_per_1k_medicare"
+                },
+                "bls_pct_unemployment": {
+                  "source_id": "bls_pct_unemployment"
+                },
+                "usda_pct_limited_access_low_income": {
+                  "source_id": "usda_pct_limited_access_low_income"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
+              "measure_type": "Mixed",
+              "unit": "Varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "HUD CHAS": {},
+                "HRSA AHRF": {},
+                "BLS LAUS": {},
+                "USDA Food Access Research Atlas": {}
+              }
+            }
+          ]
+        },
+        {
+          "filename": "state_determinants.parquet",
+          "path": "data/bundle_county_access/dist/state_determinants.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_county_access/dist/state_determinants.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code as a string: 5-digit county code in county_determinants.parquet; 2-digit state code or '00' (national) in state_determinants.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Date",
+              "description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "outcome_name",
+              "short_name": "Determinant measure",
+              "description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file. USDA food access is county-only and does not appear in this file.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "hud_pct_severe_housing_problems": {
+                  "source_id": "hud_pct_severe_housing_problems"
+                },
+                "ahrf_hpsa_prim_care": {
+                  "source_id": "ahrf_hpsa_prim_care"
+                },
+                "ahrf_hpsa_dental": {
+                  "source_id": "ahrf_hpsa_dental"
+                },
+                "ahrf_hpsa_mental_health": {
+                  "source_id": "ahrf_hpsa_mental_health"
+                },
+                "ahrf_rural_urban_code": {
+                  "source_id": "ahrf_rural_urban_code"
+                },
+                "ahrf_pcp": {
+                  "source_id": "ahrf_pcp"
+                },
+                "ahrf_md_all": {
+                  "source_id": "ahrf_md_all"
+                },
+                "ahrf_psych": {
+                  "source_id": "ahrf_psych"
+                },
+                "ahrf_dentists": {
+                  "source_id": "ahrf_dentists"
+                },
+                "ahrf_hospitals": {
+                  "source_id": "ahrf_hospitals"
+                },
+                "ahrf_critical_access_hosp": {
+                  "source_id": "ahrf_critical_access_hosp"
+                },
+                "ahrf_population": {
+                  "source_id": "ahrf_population"
+                },
+                "ahrf_good_air_pct": {
+                  "source_id": "ahrf_good_air_pct"
+                },
+                "ahrf_pm25": {
+                  "source_id": "ahrf_pm25"
+                },
+                "ahrf_pop_density": {
+                  "source_id": "ahrf_pop_density"
+                },
+                "ahrf_medicare_per_capita": {
+                  "source_id": "ahrf_medicare_per_capita"
+                },
+                "ahrf_ed_per_1k_medicare": {
+                  "source_id": "ahrf_ed_per_1k_medicare"
+                },
+                "bls_pct_unemployment": {
+                  "source_id": "bls_pct_unemployment"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
+              "measure_type": "Mixed",
+              "unit": "Varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "HUD CHAS": {},
+                "HRSA AHRF": {},
+                "BLS LAUS": {},
+                "USDA Food Access Research Atlas": {}
+              }
             }
           ]
         }
@@ -6109,229 +6326,6 @@
               "measure_type": "Flag",
               "unit": "",
               "levels": {}
-            }
-          ]
-        }
-      ]
-    },
-    "bundle_rural_health": {
-      "name": "bundle_rural_health",
-      "display_name": "Bundle: Rural Health",
-      "dist_files": [
-        {
-          "filename": "rural_health_county.parquet",
-          "path": "data/bundle_rural_health/dist/rural_health_county.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_rural_health/dist/rural_health_county.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "FIPS code",
-              "description": "Geographic FIPS code as a string: 5-digit county code in rural_health_county.parquet; 2-digit state code or '00' (national) in rural_health_state.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.",
-              "measure_type": "",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "time",
-              "short_name": "Date",
-              "description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
-              "measure_type": "",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "outcome_name",
-              "short_name": "Rural health measure",
-              "description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file.",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "hud_pct_severe_housing_problems": {
-                  "source_id": "hud_pct_severe_housing_problems"
-                },
-                "ahrf_hpsa_prim_care": {
-                  "source_id": "ahrf_hpsa_prim_care"
-                },
-                "ahrf_hpsa_dental": {
-                  "source_id": "ahrf_hpsa_dental"
-                },
-                "ahrf_hpsa_mental_health": {
-                  "source_id": "ahrf_hpsa_mental_health"
-                },
-                "ahrf_rural_urban_code": {
-                  "source_id": "ahrf_rural_urban_code"
-                },
-                "ahrf_pcp": {
-                  "source_id": "ahrf_pcp"
-                },
-                "ahrf_md_all": {
-                  "source_id": "ahrf_md_all"
-                },
-                "ahrf_psych": {
-                  "source_id": "ahrf_psych"
-                },
-                "ahrf_dentists": {
-                  "source_id": "ahrf_dentists"
-                },
-                "ahrf_hospitals": {
-                  "source_id": "ahrf_hospitals"
-                },
-                "ahrf_critical_access_hosp": {
-                  "source_id": "ahrf_critical_access_hosp"
-                },
-                "ahrf_population": {
-                  "source_id": "ahrf_population"
-                },
-                "ahrf_good_air_pct": {
-                  "source_id": "ahrf_good_air_pct"
-                },
-                "ahrf_pm25": {
-                  "source_id": "ahrf_pm25"
-                },
-                "ahrf_pop_density": {
-                  "source_id": "ahrf_pop_density"
-                },
-                "ahrf_medicare_per_capita": {
-                  "source_id": "ahrf_medicare_per_capita"
-                },
-                "ahrf_ed_per_1k_medicare": {
-                  "source_id": "ahrf_ed_per_1k_medicare"
-                },
-                "bls_pct_unemployment": {
-                  "source_id": "bls_pct_unemployment"
-                },
-                "usda_pct_limited_access_low_income": {
-                  "source_id": "usda_pct_limited_access_low_income"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
-              "measure_type": "Mixed",
-              "unit": "Varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "source",
-              "short_name": "Data source",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "HUD CHAS": {},
-                "HRSA AHRF": {},
-                "BLS LAUS": {},
-                "USDA Food Access Research Atlas": {}
-              }
-            }
-          ]
-        },
-        {
-          "filename": "rural_health_state.parquet",
-          "path": "data/bundle_rural_health/dist/rural_health_state.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_rural_health/dist/rural_health_state.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "FIPS code",
-              "description": "Geographic FIPS code as a string: 5-digit county code in rural_health_county.parquet; 2-digit state code or '00' (national) in rural_health_state.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.",
-              "measure_type": "",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "time",
-              "short_name": "Date",
-              "description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
-              "measure_type": "",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "outcome_name",
-              "short_name": "Rural health measure",
-              "description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file. USDA food access is county-only and does not appear in this file.",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "hud_pct_severe_housing_problems": {
-                  "source_id": "hud_pct_severe_housing_problems"
-                },
-                "ahrf_hpsa_prim_care": {
-                  "source_id": "ahrf_hpsa_prim_care"
-                },
-                "ahrf_hpsa_dental": {
-                  "source_id": "ahrf_hpsa_dental"
-                },
-                "ahrf_hpsa_mental_health": {
-                  "source_id": "ahrf_hpsa_mental_health"
-                },
-                "ahrf_rural_urban_code": {
-                  "source_id": "ahrf_rural_urban_code"
-                },
-                "ahrf_pcp": {
-                  "source_id": "ahrf_pcp"
-                },
-                "ahrf_md_all": {
-                  "source_id": "ahrf_md_all"
-                },
-                "ahrf_psych": {
-                  "source_id": "ahrf_psych"
-                },
-                "ahrf_dentists": {
-                  "source_id": "ahrf_dentists"
-                },
-                "ahrf_hospitals": {
-                  "source_id": "ahrf_hospitals"
-                },
-                "ahrf_critical_access_hosp": {
-                  "source_id": "ahrf_critical_access_hosp"
-                },
-                "ahrf_population": {
-                  "source_id": "ahrf_population"
-                },
-                "ahrf_good_air_pct": {
-                  "source_id": "ahrf_good_air_pct"
-                },
-                "ahrf_pm25": {
-                  "source_id": "ahrf_pm25"
-                },
-                "ahrf_pop_density": {
-                  "source_id": "ahrf_pop_density"
-                },
-                "ahrf_medicare_per_capita": {
-                  "source_id": "ahrf_medicare_per_capita"
-                },
-                "ahrf_ed_per_1k_medicare": {
-                  "source_id": "ahrf_ed_per_1k_medicare"
-                },
-                "bls_pct_unemployment": {
-                  "source_id": "bls_pct_unemployment"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
-              "measure_type": "Mixed",
-              "unit": "Varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "source",
-              "short_name": "Data source",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "HUD CHAS": {},
-                "HRSA AHRF": {},
-                "BLS LAUS": {},
-                "USDA Food Access Research Atlas": {}
-              }
             }
           ]
         }
