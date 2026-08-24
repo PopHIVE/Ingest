@@ -765,6 +765,33 @@ pop_county <- bind_rows(pop_county, ct_pop)
 | 09180 | Southeastern Connecticut |
 | 09190 | Western Connecticut |
 
+### Issue: Bundle does not rebuild after editing build.R
+
+`dcf_process()` reruns a bundle only when the md5 of a file listed in its
+`process.json` `source_files` differs from the stored `source_state`. It does not
+look at `build.R`, and `force = TRUE` only applies to sources. So after changing
+`build.R` (e.g. adding a source) with no change in the source data, nothing runs
+and the "success" in `process.json` is from the previous build.
+
+```r
+# 1. add the new file to process.json source_files by hand, e.g.
+#    "nccr/standard/data.csv.gz": ["nccr_incidence.parquet"]
+# 2. rebuild with the stored state cleared
+dcf::dcf_process("bundle_name", clear_state = TRUE)
+```
+
+`source_files` is never derived from `build.R`: `dcf_add_bundle(source_files = ...)`
+seeds it and it is hand-maintained afterwards. An empty map means the bundle
+rebuilds on every run (no change detection).
+
+### Issue: `<U+2013>` appearing in docs/data_sources_index.json
+
+`scripts/build_docs.R` was run without a UTF-8 locale, so en-dashes in the
+preserved `summary` fields were written as `<U+2013>`. Because those fields are
+preserved across rebuilds the corruption persists. Run the script with
+`LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 Rscript scripts/build_docs.R` and, if it
+already happened, restore the affected summaries from `git show main:docs/data_sources_index.json`.
+
 ---
 
 ## Quick Reference Commands

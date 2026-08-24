@@ -3,7 +3,8 @@
 # Combines: nnds (NNDSS enteric/gastrointestinal disease case counts),
 #           beam (CDC BEAM Dashboard enteric pathogen isolate counts/rates),
 #           narms (antimicrobial resistance surveillance for enteric pathogens),
-#           epic_diarrhea (Epic Cosmos all-cause diarrhea encounters)
+#           epic_diarrhea (Epic Cosmos all-cause diarrhea encounters),
+#           epic_health_alerts (Epic Research active health alerts)
 # Output:
 #   1. enteric_diseases.parquet      - NNDSS case counts + BEAM isolate counts,
 #                                       long format, distinguished by `source`
@@ -13,6 +14,8 @@
 #                                       human clinical isolates only
 #   4. epic_diarrhea.parquet         - Epic Cosmos weekly all-cause diarrhea
 #                                       encounters, long format, by age
+#   5. epic_health_alerts.parquet     - Epic Research weekly health-alert case
+#                                       rates by state/county and condition
 # =============================================================================
 
 library(dplyr)
@@ -255,4 +258,45 @@ arrow::write_parquet(
   compression = "snappy"
 )
 message(sprintf("Wrote %d rows to dist/epic_diarrhea.parquet", nrow(epic_diarrhea)))
+
+# -----------------------------------------------------------------------------
+# 4. Epic Research Health Alerts: weekly condition-specific alert rates for
+#    states and counties flagged with an active alert. All conditions are kept
+#    (enteric and non-enteric); filter on `condition` downstream. Source dates
+#    are MM-DD-YYYY and are converted to ISO Dates here. County rows are kept,
+#    so `fips` + `geography_level` are carried alongside the geography name.
+# -----------------------------------------------------------------------------
+geography_name_lookup <- all_fips %>% select(geography, geography_name)
+
+health_alerts <- vroom::vroom(
+  '../epic_health_alerts/standard/data.csv.gz',
+  show_col_types = FALSE,
+  col_types = vroom::cols(.default = vroom::col_character())
+) %>%
+  filter(!is.na(geography)) %>%
+  rename(fips = geography) %>%
+  left_join(geography_name_lookup, by = c("fips" = "geography")) %>%
+  mutate(
+    geography         = if_else(fips == '00', 'United States', geography_name),
+    geography_level   = if_else(nchar(fips) == 5, "county", "state"),
+    date              = as.Date(time, format = "%m-%d-%Y"),
+    estimated_onset   = as.Date(estimated_onset, format = "%m-%d-%Y"),
+    date_scraped      = as.Date(date_scraped, format = "%m-%d-%Y"),
+    date_epic_updated = as.Date(date_epic_updated, format = "%m-%d-%Y"),
+    value             = suppressWarnings(as.numeric(value)),
+    partial_week_flag = as.integer(partial_week_flag),
+    source            = 'Epic Research Health Alerts'
+  ) %>%
+  filter(!is.na(geography), !is.na(value)) %>%
+  dplyr::select(geography, fips, geography_level, date, condition,
+                estimated_onset, value, partial_week_flag,
+                date_scraped, date_epic_updated, source) %>%
+  arrange(condition, geography, date)
+
+arrow::write_parquet(
+  health_alerts,
+  "dist/epic_health_alerts.parquet",
+  compression = "snappy"
+)
+message(sprintf("Wrote %d rows to dist/epic_health_alerts.parquet", nrow(health_alerts)))
 
