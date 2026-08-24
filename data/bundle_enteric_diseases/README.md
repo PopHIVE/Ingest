@@ -11,6 +11,7 @@ encounters for the PopHIVE platform.
 - **CDC BEAM Dashboard**: Monthly isolate counts, outbreak-associated isolate counts, and isolate rates per 100,000 population, by state and pathogen (Campylobacter, Salmonella, Shigella, STEC, Vibrio).
 - **NARMS**: Antimicrobial resistance surveillance across human clinical isolates (NARMS Now), FDA retail meats, FDA animal pathogen, and FDA food-producing animal (HACCP, Cecal, Minor Species) programs.
 - **Epic Cosmos**: Weekly counts and percentages of encounters with all-cause diarrhea diagnoses (ICD-10-CM A00-A09, R19.7), by state and age, for emergency department encounters and for encounters of any type. Only `epic_diarrhea/standard/data_weekly.csv.gz` is bundled; the cyclospora lab testing file (`weekly_tests.csv.gz`) is not included.
+- **Epic Research Health Alerts**: Weekly snapshots of states and counties flagged with an active health alert (unusual rise in a condition), with the latest-week case rate per 100,000 and estimated onset date. All alerted conditions are kept (e.g. Cyclosporiasis, Salmonellosis, Viral Gastroenteritis, and also non-enteric ones such as Heat Illness); filter on `condition`.
 
 ## Output Files
 
@@ -63,6 +64,20 @@ Kept separate from `enteric_diseases.parquet` because it is age-stratified.
 - `value`: Encounter count or percentage, per `measure`
 - `suppressed_flag`: 1 if the underlying count was fewer than 10 and imputed as 5, 0 otherwise. For percentage measures, 1 if either the numerator or the denominator was suppressed.
 - `source`: Data source ("Epic Cosmos")
+
+### epic_health_alerts.parquet
+
+Weekly health-alert case rates by geography and condition.
+
+**Columns:**
+- `geography`: State or county name; `fips` holds the FIPS code and `geography_level` is "state" or "county"
+- `date`: Week-ending date of the snapshot (ISO)
+- `condition`: Alerted condition
+- `estimated_onset`: Estimated onset date of the elevated activity (ISO)
+- `value`: Latest-week case rate per 100,000
+- `partial_week_flag`: 1 if the rate reflects an incomplete reporting week
+- `date_scraped`, `date_epic_updated`: provenance dates (ISO)
+- `source`: "Epic Research Health Alerts"
 
 ## Building the Bundle
 
