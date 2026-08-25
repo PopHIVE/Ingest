@@ -4,7 +4,7 @@
   "resources": [
     {
       "bytes": 159282,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "8bf27dd399ebc63f01bc7ce0976e23c6",
       "format": "csv",
       "name": "monthly_tests.csv",
@@ -14,42 +14,39 @@
           "bfe790de4dfd56e083b62f93dc9841b43f47a52b",
           "423586a775dc25dcc3f7852bad81115fa44a7e2e",
           "574b9ae903f3fb1094521744acb82c28987bfd39",
-          "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "2fe58d28ac1246d06d417a92ddcf363f481f10f9"
         ],
         "author": [
           "Callie Annas <callie.annas@yale.edu>",
           "danweinberger <daniel.weinberger@yale.edu>",
           "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
           "Fri Aug 14 10:02:38 2026 -0400",
           "Sun Mar 22 22:49:43 2026 -0400",
           "Fri Mar 20 15:09:39 2026 +0000",
-          "Wed Mar 11 11:41:55 2026 -0400",
           "Wed Mar 11 11:41:55 2026 -0400"
         ],
         "message": [
           "manual update of rsv data",
           "update bundle to fix issue with national epic data",
           "scheduled data build",
-          "Squashed ",
           "Squashed commit of the following:"
         ]
       },
       "source": [],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
         }
       ],
-      "id_length": 0,
+      "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-08-18 08:32:05.596296",
-      "last_modified": "2026-03-11 15:17:34.446684",
+      "created": "2026-08-21 18:26:12.326575",
+      "last_modified": "2026-08-21 18:26:12.326575",
       "vintage": {},
       "row_count": 19296,
       "entity_count": 54,
@@ -58,7 +55,8 @@
           {
             "name": "time",
             "duplicates": 19260,
-            "time_range": [0, 34],
+            "info": [],
+            "time_range": [0, 35],
             "type": "string",
             "missing": 536,
             "table": {
@@ -102,18 +100,86 @@
           {
             "name": "geography",
             "duplicates": 19242,
-            "time_range": [35, 35],
-            "type": "integer",
+            "info": [],
+            "time_range": [0, 35],
+            "type": "string",
             "missing": 0,
-            "mean": 29.541045,
-            "sd": 17.086326,
-            "min": 0,
-            "max": 72
+            "table": {
+              "00": 360,
+              "01": 360,
+              "02": 360,
+              "04": 360,
+              "05": 360,
+              "06": 360,
+              "08": 360,
+              "09": 360,
+              "10": 360,
+              "11": 360,
+              "12": 360,
+              "13": 360,
+              "15": 360,
+              "16": 360,
+              "17": 360,
+              "18": 360,
+              "19": 360,
+              "20": 360,
+              "21": 360,
+              "22": 360,
+              "23": 360,
+              "24": 360,
+              "25": 360,
+              "26": 360,
+              "27": 360,
+              "28": 360,
+              "29": 360,
+              "30": 360,
+              "31": 360,
+              "32": 360,
+              "33": 360,
+              "34": 360,
+              "35": 360,
+              "36": 360,
+              "37": 360,
+              "38": 360,
+              "39": 360,
+              "40": 360,
+              "41": 360,
+              "42": 360,
+              "44": 216,
+              "45": 360,
+              "46": 360,
+              "47": 360,
+              "48": 360,
+              "49": 360,
+              "50": 360,
+              "51": 360,
+              "52": 360,
+              "53": 360,
+              "54": 360,
+              "55": 360,
+              "56": 360,
+              "72": 360
+            }
           },
           {
             "name": "age",
             "duplicates": 19286,
-            "time_range": [35, 35],
+            "info": {
+              "id": "age",
+              "short_name": "Age",
+              "long_name": "Age group",
+              "short_description": "Age group.",
+              "long_description": "Age group, based on age in current years.",
+              "measure_type": "integer",
+              "unit": "years",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
+            "time_range": [0, 35],
             "type": "string",
             "missing": 0,
             "table": {
@@ -132,7 +198,22 @@
           {
             "name": "epic_pct_rsv_pos_tests",
             "duplicates": 17602,
-            "time_range": [35, 35],
+            "info": {
+              "id": "epic_pct_rsv_pos_tests",
+              "short_name": "RSV Positive Tests Patients (%)",
+              "long_name": "RSV Positive Tests Emergency Room (ER) Encounters (%)",
+              "short_description": "Percentage of RSV Positive Tests patients among all ER encounters.",
+              "long_description": "Percentage of emergency room encounters attributable to RSV Positive Tests ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+              "measure_type": "percent",
+              "unit": "%",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
+            "time_range": [0, 35],
             "type": "float",
             "missing": 13353,
             "mean": 5.865761,
@@ -143,7 +224,22 @@
           {
             "name": "epic_pct_j12_j18_tested_rsv",
             "duplicates": 13303,
-            "time_range": [35, 35],
+            "info": {
+              "id": "epic_pct_j12_j18_tested_rsv",
+              "short_name": "J12-J18 Tested RSV Patients (%)",
+              "long_name": "J12-J18 Tested RSV Emergency Room (ER) Encounters (%)",
+              "short_description": "Percentage of J12-J18 Tested RSV patients among all ER encounters.",
+              "long_description": "Percentage of emergency room encounters attributable to J12-J18 Tested RSV ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+              "measure_type": "percent",
+              "unit": "%",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
+            "time_range": [0, 35],
             "type": "float",
             "missing": 2854,
             "mean": 46.6887,
@@ -154,7 +250,22 @@
           {
             "name": "epic_n_ed_j12_j18",
             "duplicates": 13942,
-            "time_range": [35, 35],
+            "info": {
+              "id": "epic_n_ed_j12_j18",
+              "short_name": "Pneumonia (J12-J18) Patients",
+              "long_name": "Pneumonia (J12-J18) Emergency Room (ER) Encounters",
+              "short_description": "Number of Pneumonia (J12-J18) patients.",
+              "long_description": "Number of emergency room (ER) encounters with Pneumonia (J12-J18) ICD-10-CM codes. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+              "measure_type": "integer",
+              "unit": "encounters",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
+            "time_range": [0, 35],
             "type": "integer",
             "missing": 0,
             "mean": 3938.792703,
@@ -165,7 +276,21 @@
           {
             "name": "suppressed_rsv_test",
             "duplicates": 19294,
-            "time_range": [35, 35],
+            "info": {
+              "id": "suppressed_rsv_test",
+              "short_name": "RSV Test Count Suppressed?",
+              "long_name": "Suppression flag for RSV test encounter count",
+              "short_description": "Binary indicator: 1 if the RSV test encounter count was suppressed (fewer than 10), 0 otherwise.",
+              "long_description": "Binary indicator: 1 if the count of J12-J18 pneumonia encounters with RSV testing (epic_n_ed_j12_j18) was suppressed due to fewer than 10 cases, in which case the count is imputed as 5. Otherwise 0.",
+              "measure_type": "binary",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
+            "time_range": [0, 35],
             "type": "integer",
             "missing": 0,
             "mean": 0.106706,
@@ -179,44 +304,45 @@
     },
     {
       "bytes": 252253,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "e4c628211a213d25b38fc561d40d4563",
       "format": "csv",
       "name": "quarterly_gas.csv",
       "filename": "quarterly_gas.csv.gz",
       "versions": {
         "hash": [
+          "b7cf8f1f74b2d83298de9506f7feb2f71252961a",
           "ec699b785810223eeb113927429ec1493f962fe2",
-          "eba327bddc30b7e95328899b9c408c0850f2bf38",
-          "b7cf8f1f74b2d83298de9506f7feb2f71252961a"
+          "eba327bddc30b7e95328899b9c408c0850f2bf38"
         ],
         "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
           "danweinberger <daniel.weinberger@yale.edu>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"
+          "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Thu Aug 6 16:30:14 2026 -0400",
           "Fri Apr 3 14:11:23 2026 -0400",
-          "Thu Apr 2 16:29:47 2026 -0400",
-          "Thu Aug 6 16:30:14 2026 -0400"
+          "Thu Apr 2 16:29:47 2026 -0400"
         ],
         "message": [
+          "Update GAS data in place in epic_resp_infections",
           "partial update bundle",
-          "adds strep throat to epic standard files",
-          "Update GAS data in place in epic_resp_infections"
+          "adds strep throat to epic standard files"
         ]
       },
       "source": [],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
         }
       ],
-      "id_length": 0,
+      "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-08-18 08:32:05.997372",
-      "last_modified": "2026-04-02 17:55:50.399221",
+      "created": "2026-08-21 18:26:12.419575",
+      "last_modified": "2026-08-21 18:26:12.419575",
       "vintage": {},
       "row_count": 13104,
       "entity_count": 52,
@@ -225,17 +351,69 @@
           {
             "name": "geography",
             "duplicates": 13052,
+            "info": [],
             "time_range": [0, 35],
-            "type": "integer",
+            "type": "string",
             "missing": 0,
-            "mean": 28.403846,
-            "sd": 16.027344,
-            "min": 0,
-            "max": 56
+            "table": {
+              "00": 252,
+              "01": 252,
+              "02": 252,
+              "04": 252,
+              "05": 252,
+              "06": 252,
+              "08": 252,
+              "09": 252,
+              "10": 252,
+              "11": 252,
+              "12": 252,
+              "13": 252,
+              "15": 252,
+              "16": 252,
+              "17": 252,
+              "18": 252,
+              "19": 252,
+              "20": 252,
+              "21": 252,
+              "22": 252,
+              "23": 252,
+              "24": 252,
+              "25": 252,
+              "26": 252,
+              "27": 252,
+              "28": 252,
+              "29": 252,
+              "30": 252,
+              "31": 252,
+              "32": 252,
+              "33": 252,
+              "34": 252,
+              "35": 252,
+              "36": 252,
+              "37": 252,
+              "38": 252,
+              "39": 252,
+              "40": 252,
+              "41": 252,
+              "42": 252,
+              "44": 252,
+              "45": 252,
+              "46": 252,
+              "47": 252,
+              "48": 252,
+              "49": 252,
+              "50": 252,
+              "51": 252,
+              "53": 252,
+              "54": 252,
+              "55": 252,
+              "56": 252
+            }
           },
           {
             "name": "time",
             "duplicates": 13068,
+            "info": [],
             "time_range": [0, 35],
             "type": "string",
             "missing": 0,
@@ -281,6 +459,21 @@
           {
             "name": "age",
             "duplicates": 13097,
+            "info": {
+              "id": "age",
+              "short_name": "Age",
+              "long_name": "Age group",
+              "short_description": "Age group.",
+              "long_description": "Age group, based on age in current years.",
+              "measure_type": "integer",
+              "unit": "years",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
             "time_range": [0, 35],
             "type": "string",
             "missing": 0,
@@ -297,6 +490,23 @@
           {
             "name": "epic_n_strep_throat",
             "duplicates": 8685,
+            "info": {
+              "id": "epic_n_strep_throat",
+              "short_name": "Strep Throat Patients",
+              "long_name": "Patients with a Strep Throat Diagnosis",
+              "category": "respiratory",
+              "short_description": "Quarterly count of patients with a strep throat diagnosis (J02.0, J03.00, J03.01).",
+              "long_description": "Quarterly count of patients with a strep throat diagnosis, including streptococcal pharyngitis (J02.0), acute streptococcal tonsillitis, unspecified (J03.00), and acute recurrent streptococcal tonsillitis (J03.01). Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_strep_throat_suppressed_flag. Quarters only partially covered by the exported date range are dropped, so every value covers a full calendar quarter. Population base per SlicerDicer session 2809857: data model Patients, population base All Patients, criteria Country of Care = United States of America and Has Any Encounters - the denominator is all patients with any encounter, NOT emergency department visits only.",
+              "statement": "In {location}, {value} patients had a strep throat diagnosis.",
+              "measure_type": "Count",
+              "unit": "patients",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
             "time_range": [0, 35],
             "type": "integer",
             "missing": 0,
@@ -308,6 +518,23 @@
           {
             "name": "epic_pct_strep_throat",
             "duplicates": 82,
+            "info": {
+              "id": "epic_pct_strep_throat",
+              "short_name": "Strep Throat Percentage",
+              "long_name": "Percent of Patients with a Strep Throat Diagnosis",
+              "category": "respiratory",
+              "short_description": "Quarterly percent of patients with a strep throat diagnosis (J02.0, J03.00, J03.01).",
+              "long_description": "Quarterly percentage of patients with a strep throat diagnosis, computed as epic_n_strep_throat / epic_n_patients * 100. Diagnosis codes include streptococcal pharyngitis (J02.0), acute streptococcal tonsillitis, unspecified (J03.00), and acute recurrent streptococcal tonsillitis (J03.01). Where the numerator was suppressed it is imputed as 5 before the percentage is computed. Where the denominator was itself suppressed the percentage is left missing, because dividing by the imputed denominator of 5 would assert a meaningless value; those cells are marked by epic_n_patients_suppressed_flag. Data from Epic Cosmos SlicerDicer. Population base per SlicerDicer session 2809857: data model Patients, population base All Patients, criteria Country of Care = United States of America and Has Any Encounters - the denominator is all patients with any encounter, NOT emergency department visits only.",
+              "statement": "In {location}, {value}% of patients had a strep throat diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
             "time_range": [0, 35],
             "type": "float",
             "missing": 0,
@@ -319,6 +546,22 @@
           {
             "name": "epic_strep_throat_suppressed_flag",
             "duplicates": 13102,
+            "info": {
+              "id": "epic_strep_throat_suppressed_flag",
+              "short_name": "Suppressed flag: strep throat",
+              "long_name": "Suppression flag for the strep throat numerator (count and percent)",
+              "category": "respiratory",
+              "short_description": "Indicates whether the strep throat numerator was suppressed and imputed; applies to both epic_n_strep_throat and epic_pct_strep_throat.",
+              "long_description": "1 when Epic Cosmos suppressed the strep throat cell (a count of 10 or fewer, reported as \"10 or fewer\" or left blank) and epic_n_strep_throat was imputed as 5; 0 otherwise. The flag is computed before imputation, so it records what the source withheld rather than what the ingest wrote. It covers epic_pct_strep_throat as well, because the percentage is derived from this same numerator cell. Suppression of the denominator is tracked separately by epic_n_patients_suppressed_flag; a reader wanting to know whether the percentage was affected by suppression at all takes the OR of the two flags.",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
             "time_range": [0, 35],
             "type": "integer",
             "missing": 0,
@@ -330,6 +573,22 @@
           {
             "name": "epic_n_patients",
             "duplicates": 294,
+            "info": {
+              "id": "epic_n_patients",
+              "short_name": "Total Patients",
+              "long_name": "Total Patients (Denominator)",
+              "category": "respiratory",
+              "short_description": "Quarterly total patient count used as the denominator for the strep throat percentage.",
+              "long_description": "Quarterly total count of patients, used as the denominator for epic_pct_strep_throat. Data from Epic Cosmos SlicerDicer. Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_n_patients_suppressed_flag. Population base per SlicerDicer session 2809857: data model Patients, population base All Patients, criteria Country of Care = United States of America and Has Any Encounters - the denominator is all patients with any encounter, NOT emergency department visits only.",
+              "measure_type": "Count",
+              "unit": "patients",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
             "time_range": [0, 35],
             "type": "integer",
             "missing": 0,
@@ -341,6 +600,22 @@
           {
             "name": "epic_n_patients_suppressed_flag",
             "duplicates": 13103,
+            "info": {
+              "id": "epic_n_patients_suppressed_flag",
+              "short_name": "Suppressed flag: total patients",
+              "long_name": "Suppression flag for the total patient count",
+              "category": "respiratory",
+              "short_description": "Indicates whether the total patient count was suppressed and imputed.",
+              "long_description": "1 when Epic Cosmos suppressed the denominator cell (a count of 10 or fewer, reported as \"10 or fewer\" or left blank) and epic_n_patients was imputed as 5; 0 otherwise. Where this flag is 1, epic_pct_strep_throat is left missing rather than computed from an imputed denominator.",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
             "time_range": [0, 35],
             "type": "integer",
             "missing": 0,
@@ -355,7 +630,7 @@
     },
     {
       "bytes": 4185708,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "202f7a38f139e47e88751af78485cef1",
       "format": "csv",
       "name": "weekly.csv",
@@ -375,7 +650,6 @@
           "b758468b9e7860052c677a5fa7d955dace816ecf",
           "d88ac7354f825234c925d0ab2c1e52c41c6d4c82",
           "2e22f489b0131c97d17350917a3fd4ccd9e1508b",
-          "2fe58d28ac1246d06d417a92ddcf363f481f10f9",
           "2fe58d28ac1246d06d417a92ddcf363f481f10f9"
         ],
         "author": [
@@ -392,7 +666,6 @@
           "weinbergerlab <dweinber@gmail.com>",
           "danweinberger <daniel.weinberger@yale.edu>",
           "danweinberger <daniel.weinberger@yale.edu>",
-          "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
@@ -409,7 +682,6 @@
           "Thu Mar 12 10:46:04 2026 -0400",
           "Wed Mar 11 23:33:59 2026 -0400",
           "Wed Mar 11 23:09:51 2026 -0400",
-          "Wed Mar 11 11:41:55 2026 -0400",
           "Wed Mar 11 11:41:55 2026 -0400"
         ],
         "message": [
@@ -426,21 +698,21 @@
           "update epic respiratpry file with correct date boundaries",
           "fixes date alignment issue with new epic files",
           "replace flu epic file",
-          "Squashed ",
           "Squashed commit of the following:"
         ]
       },
       "source": [],
+      "data_format": "wide",
       "ids": [
         {
           "variable": "geography"
         }
       ],
-      "id_length": 0,
+      "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-08-18 08:32:05.315626",
-      "last_modified": "2026-03-11 15:17:34.43652",
+      "created": "2026-08-21 18:26:12.213575",
+      "last_modified": "2026-08-21 18:26:12.213575",
       "vintage": {},
       "row_count": 162703,
       "entity_count": 52,
@@ -449,17 +721,83 @@
           {
             "name": "geography",
             "duplicates": 162651,
+            "info": [],
             "time_range": [0, 446],
-            "type": "integer",
+            "type": "string",
             "missing": 0,
-            "mean": 28.403674,
-            "sd": 16.026746,
-            "min": 0,
-            "max": 56
+            "table": {
+              "00": 3129,
+              "01": 3129,
+              "02": 3129,
+              "04": 3129,
+              "05": 3129,
+              "06": 3129,
+              "08": 3129,
+              "09": 3129,
+              "10": 3129,
+              "11": 3128,
+              "12": 3129,
+              "13": 3129,
+              "15": 3129,
+              "16": 3129,
+              "17": 3129,
+              "18": 3129,
+              "19": 3129,
+              "20": 3129,
+              "21": 3129,
+              "22": 3129,
+              "23": 3128,
+              "24": 3129,
+              "25": 3129,
+              "26": 3129,
+              "27": 3129,
+              "28": 3129,
+              "29": 3129,
+              "30": 3129,
+              "31": 3129,
+              "32": 3128,
+              "33": 3129,
+              "34": 3129,
+              "35": 3129,
+              "36": 3129,
+              "37": 3129,
+              "38": 3129,
+              "39": 3129,
+              "40": 3129,
+              "41": 3129,
+              "42": 3129,
+              "44": 3129,
+              "45": 3129,
+              "46": 3129,
+              "47": 3129,
+              "48": 3129,
+              "49": 3129,
+              "50": 3128,
+              "51": 3129,
+              "53": 3129,
+              "54": 3128,
+              "55": 3129,
+              "56": 3129
+            }
           },
           {
             "name": "age",
             "duplicates": 162696,
+            "info": {
+              "id": "age",
+              "short_name": "Age",
+              "long_name": "Age group",
+              "short_description": "Age group.",
+              "long_description": "Age group, based on age in current years.",
+              "measure_type": "integer",
+              "unit": "years",
+              "time_resolution": "year",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
             "time_range": [0, 446],
             "type": "string",
             "missing": 0,
@@ -476,6 +814,7 @@
           {
             "name": "time",
             "duplicates": 162256,
+            "info": [],
             "time_range": [0, 446],
             "type": "string",
             "missing": 0,
@@ -932,6 +1271,21 @@
           {
             "name": "epic_n_rsv",
             "duplicates": 161471,
+            "info": {
+              "id": "epic_n_rsv",
+              "short_name": "RSV Patients",
+              "long_name": "RSV Emergency Room (ER) Encounters",
+              "short_description": "Number of RSV patients.",
+              "long_description": "Number of emergency room (ER) encounters with RSV ICD-10-CM codes. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+              "measure_type": "integer",
+              "unit": "encounters",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
             "time_range": [0, 446],
             "type": "integer",
             "missing": 0,
@@ -943,6 +1297,21 @@
           {
             "name": "epic_n_covid",
             "duplicates": 159237,
+            "info": {
+              "id": "epic_n_covid",
+              "short_name": "COVID Patients",
+              "long_name": "COVID Emergency Room (ER) Encounters",
+              "short_description": "Number of COVID patients.",
+              "long_description": "Number of emergency room (ER) encounters with COVID ICD-10-CM codes. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+              "measure_type": "integer",
+              "unit": "encounters",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
             "time_range": [0, 446],
             "type": "integer",
             "missing": 0,
@@ -954,6 +1323,21 @@
           {
             "name": "epic_n_flu",
             "duplicates": 159594,
+            "info": {
+              "id": "epic_n_flu",
+              "short_name": "Influenza Patients",
+              "long_name": "Influenza Emergency Room (ER) Encounters",
+              "short_description": "Number of Influenza patients.",
+              "long_description": "Number of emergency room (ER) encounters with Influenza ICD-10-CM codes. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+              "measure_type": "integer",
+              "unit": "encounters",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
             "time_range": [0, 446],
             "type": "integer",
             "missing": 0,
@@ -965,6 +1349,21 @@
           {
             "name": "epic_n_all_encounters_weekly",
             "duplicates": 134170,
+            "info": {
+              "id": "epic_n_all_encounters_weekly",
+              "short_name": "All-Cause ED Encounters (Weekly)",
+              "long_name": "Total Weekly Emergency Department Encounters (All Causes)",
+              "short_description": "Total number of weekly emergency department encounters for any cause.",
+              "long_description": "Total count of weekly emergency department encounters for any cause, used as the denominator for respiratory illness percentages. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+              "measure_type": "integer",
+              "unit": "encounters",
+              "time_resolution": "Week",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
             "time_range": [0, 446],
             "type": "integer",
             "missing": 0,
@@ -976,6 +1375,21 @@
           {
             "name": "epic_pct_rsv",
             "duplicates": 116810,
+            "info": {
+              "id": "epic_pct_rsv",
+              "short_name": "RSV Patients (%)",
+              "long_name": "RSV Emergency Room (ER) Encounters (%)",
+              "short_description": "Percentage of RSV patients among all ER encounters.",
+              "long_description": "Percentage of emergency room encounters attributable to RSV ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+              "measure_type": "percent",
+              "unit": "%",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
             "time_range": [0, 446],
             "type": "float",
             "missing": 0,
@@ -987,6 +1401,21 @@
           {
             "name": "epic_pct_flu",
             "duplicates": 96565,
+            "info": {
+              "id": "epic_pct_flu",
+              "short_name": "Influenza Patients (%)",
+              "long_name": "Influenza Emergency Room (ER) Encounters (%)",
+              "short_description": "Percentage of Influenza patients among all ER encounters.",
+              "long_description": "Percentage of emergency room encounters attributable to Influenza ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+              "measure_type": "percent",
+              "unit": "%",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
             "time_range": [0, 446],
             "type": "float",
             "missing": 0,
@@ -998,6 +1427,21 @@
           {
             "name": "epic_pct_covid",
             "duplicates": 87315,
+            "info": {
+              "id": "epic_pct_covid",
+              "short_name": "COVID Patients (%)",
+              "long_name": "COVID Emergency Room (ER) Encounters (%)",
+              "short_description": "Percentage of COVID patients among all ER encounters.",
+              "long_description": "Percentage of emergency room encounters attributable to COVID ICD-10-CM codes, calculated as the count divided by total all-cause ER encounters.",
+              "measure_type": "percent",
+              "unit": "%",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
             "time_range": [0, 446],
             "type": "float",
             "missing": 0,
@@ -1009,6 +1453,20 @@
           {
             "name": "epic_suppressed_flag_rsv",
             "duplicates": 162701,
+            "info": {
+              "id": "epic_suppressed_flag_rsv",
+              "short_name": "Fewer than 10 cases in the strata?",
+              "long_name": "Suppression flag: fewer than 10 cases in the strata",
+              "short_description": "Binary indicator for low counts.",
+              "long_description": "Binary indicator: 1 if fewer than 10 cases in the strata, 0 otherwise. When suppressed, the corresponding count is imputed as 5.",
+              "measure_type": "binary",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
             "time_range": [0, 446],
             "type": "integer",
             "missing": 0,
@@ -1020,6 +1478,20 @@
           {
             "name": "epic_suppressed_flag_covid",
             "duplicates": 162701,
+            "info": {
+              "id": "epic_suppressed_flag_covid",
+              "short_name": "Fewer than 10 cases in the strata?",
+              "long_name": "Suppression flag: fewer than 10 cases in the strata",
+              "short_description": "Binary indicator for low counts.",
+              "long_description": "Binary indicator: 1 if fewer than 10 cases in the strata, 0 otherwise. When suppressed, the corresponding count is imputed as 5.",
+              "measure_type": "binary",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
             "time_range": [0, 446],
             "type": "integer",
             "missing": 0,
@@ -1031,6 +1503,20 @@
           {
             "name": "epic_suppressed_flag_flu",
             "duplicates": 162701,
+            "info": {
+              "id": "epic_suppressed_flag_flu",
+              "short_name": "Fewer than 10 cases in the strata?",
+              "long_name": "Suppression flag: fewer than 10 cases in the strata",
+              "short_description": "Binary indicator for low counts.",
+              "long_description": "Binary indicator: 1 if fewer than 10 cases in the strata, 0 otherwise. When suppressed, the corresponding count is imputed as 5.",
+              "measure_type": "binary",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "category": "respiratory"
+            },
             "time_range": [0, 446],
             "type": "integer",
             "missing": 0,
@@ -1042,6 +1528,20 @@
           {
             "name": "epic_suppressed_flag_all_encounters_weekly",
             "duplicates": 162701,
+            "info": {
+              "id": "epic_suppressed_flag_all_encounters_weekly",
+              "short_name": "All Encounters Count Suppressed? (Weekly)",
+              "long_name": "Suppression flag: fewer than 10 all-cause weekly ED encounters in the strata",
+              "short_description": "Binary indicator: 1 if the all-cause weekly ED encounter count was suppressed, 0 otherwise.",
+              "long_description": "Binary indicator: 1 if fewer than 10 all-cause weekly emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_all_encounters_weekly) is imputed as 5.",
+              "measure_type": "binary",
+              "time_resolution": "Week",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
             "time_range": [0, 446],
             "type": "integer",
             "missing": 0,
@@ -1528,119 +2028,13 @@
   },
   "change_report": {
     "monthly_tests.csv.gz": {
-      "state": "changed",
-      "variables": {
-        "time": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "age": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "epic_pct_rsv_pos_tests": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_pct_j12_j18_tested_rsv": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_n_ed_j12_j18": {
-          "status": "present",
-          "same_type": true
-        },
-        "suppressed_rsv_test": {
-          "status": "present",
-          "same_type": true
-        }
-      }
+      "state": "unchanged"
     },
     "quarterly_gas.csv.gz": {
       "state": "unchanged"
     },
     "weekly.csv.gz": {
-      "state": "changed",
-      "variables": {
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "age": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "time": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [
-            "2026-07-25",
-            "2026-08-01"
-          ],
-          "dropped_levels": []
-        },
-        "epic_n_rsv": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_n_covid": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_n_flu": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_n_all_encounters_weekly": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_pct_rsv": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_pct_flu": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_pct_covid": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_suppressed_flag_rsv": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_suppressed_flag_covid": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_suppressed_flag_flu": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_suppressed_flag_all_encounters_weekly": {
-          "status": "present",
-          "same_type": true
-        }
-      }
-    },
-    "no_geo.csv.gz": {
-      "state": "removed file"
+      "state": "unchanged"
     }
   }
 }

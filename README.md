@@ -4,8 +4,8 @@ Documentation for our databases can be found on our [Process documentation](http
 ## Data dictionary and rules for re-use for individual datasets
 https://pophive.github.io/Ingest/
 
-## See the data flows and relationships
-https://github.com/PopHIVE/Ingest/blob/main/status.md
+## See and search our available datasets
+https://pophive.github.io/Ingest/data-table.html
 
 ## Check the data status
 https://dissc-yale.github.io/dcf/report/?repo=PopHIVE/Ingest
