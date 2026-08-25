@@ -68,6 +68,9 @@ The CDC updated their invsdive pneumococcal disease file to i clude geographic s
 **June 5, 2026**
 The county-level MMR school vaccine coverage data obtained from the Washington Post for Tennessee was flagged as inaccurate by the Tennessee Department of Health, and they provided an alternative data source that is collected with a more robust methodology, which has now been included in the schoolvax_washpost data in its place
 
+** August 25, 2026**
+Delphi has upgraded to a new platform and changed how they smooth their data. This impacts Delphi Doctors Claims and Hospital Claims. Under the old system, the mathematical approach prevented case counts from ever reaching zero. The new system now provides daily updates smoothed using a rolling seven-day average, and we are pulling the Saturday value from this new feed to represent each week. This update impacts low values of flu cases but has very little impact on COVID-19 data. 
+
 # Guide to adding data and rebuilding the bundle
 
 ## Steps for adding new datasets
