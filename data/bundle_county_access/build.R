@@ -128,3 +128,112 @@ message(
   ), "\n",
   "  Measures: ", paste(available_measures, collapse = ", ")
 )
+
+# -----------------------------------------------------------------------------
+# 5. County and state social/economic/health-resource determinants
+#    (moved here from the former bundle_rural_health)
+#    Sources: hud_chas, area_health_resource_file, bls_laus, usda_food_access
+#    Outputs: dist/county_determinants.parquet, dist/state_determinants.parquet
+#    Same long format as county_access.parquet, plus a `source` column.
+# -----------------------------------------------------------------------------
+
+det_paths <- c(
+  hud_county  = "../hud_chas/standard/data_county.csv.gz",
+  hud_state   = "../hud_chas/standard/data_state.csv.gz",
+  ahrf        = "../area_health_resource_file/standard/data.csv.gz",
+  bls_county  = "../bls_laus/standard/data_county.csv.gz",
+  bls_state   = "../bls_laus/standard/data_state.csv.gz",
+  usda_county = "../usda_food_access/standard/data_county.csv.gz"
+)
+
+det_missing <- det_paths[!file.exists(det_paths)]
+if (length(det_missing) > 0) {
+  stop(
+    "Missing source files (run the corresponding ingest first):\n",
+    paste(" -", det_missing, collapse = "\n")
+  )
+}
+
+read_det_source <- function(path, source_label) {
+  vroom(path, show_col_types = FALSE,
+        col_types = cols(geography = col_character(), .default = col_guess())) %>%
+    filter(!is.na(geography)) %>%
+    mutate(
+      time = as.Date(time),
+      geography = if_else(
+        nchar(geography) > 2,
+        formatC(as.integer(geography), width = 5, flag = "0"),
+        formatC(as.integer(geography), width = 2, flag = "0")
+      )
+    ) %>%
+    pivot_longer(
+      cols = -c(geography, time),
+      names_to = "outcome_name",
+      values_to = "value",
+      values_transform = as.numeric
+    ) %>%
+    filter(!is.na(value)) %>%
+    mutate(source = source_label)
+}
+
+det_hud_county  <- read_det_source(det_paths[["hud_county"]],  "HUD CHAS")
+det_hud_state   <- read_det_source(det_paths[["hud_state"]],   "HUD CHAS")
+det_ahrf        <- read_det_source(det_paths[["ahrf"]],        "HRSA AHRF")
+det_bls_county  <- read_det_source(det_paths[["bls_county"]],  "BLS LAUS")
+det_bls_state   <- read_det_source(det_paths[["bls_state"]],   "BLS LAUS")
+det_usda_county <- read_det_source(det_paths[["usda_county"]], "USDA Food Access Research Atlas")
+
+county_determinants <- bind_rows(
+  det_hud_county,
+  det_ahrf %>% filter(nchar(geography) == 5),
+  det_bls_county,
+  det_usda_county
+) %>%
+  filter(nchar(geography) == 5) %>%
+  select(geography, time, outcome_name, value, source) %>%
+  arrange(outcome_name, geography, time)
+
+state_determinants <- bind_rows(
+  det_hud_state,
+  det_ahrf %>% filter(nchar(geography) == 2),
+  det_bls_state
+) %>%
+  filter(nchar(geography) == 2) %>%
+  select(geography, time, outcome_name, value, source) %>%
+  arrange(outcome_name, geography, time)
+
+check_det_dupes <- function(df, label) {
+  det_dupes <- df %>%
+    count(geography, time, outcome_name) %>%
+    filter(n > 1)
+  if (nrow(det_dupes) > 0) {
+    stop(
+      nrow(det_dupes), " duplicate geography-time-outcome_name combinations in ",
+      label, ". Inspect before proceeding."
+    )
+  }
+  invisible(TRUE)
+}
+
+check_det_dupes(county_determinants, "county_determinants")
+check_det_dupes(state_determinants,  "state_determinants")
+
+write_parquet(county_determinants, "dist/county_determinants.parquet", compression = "snappy")
+message(sprintf(
+  "Wrote %d rows to dist/county_determinants.parquet (%d counties, %d measures, %s to %s)",
+  nrow(county_determinants),
+  n_distinct(county_determinants$geography),
+  n_distinct(county_determinants$outcome_name),
+  format(min(county_determinants$time), "%Y"),
+  format(max(county_determinants$time), "%Y")
+))
+
+write_parquet(state_determinants, "dist/state_determinants.parquet", compression = "snappy")
+message(sprintf(
+  "Wrote %d rows to dist/state_determinants.parquet (%d states, %d measures, %s to %s)",
+  nrow(state_determinants),
+  n_distinct(state_determinants$geography),
+  n_distinct(state_determinants$outcome_name),
+  format(min(state_determinants$time), "%Y"),
+  format(max(state_determinants$time), "%Y")
+))

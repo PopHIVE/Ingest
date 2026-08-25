@@ -61,9 +61,8 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     # Convert state abbreviation to FIPS code
     left_join(state_fips_lookup, by = c("state_territory" = "state")) %>%
-    # Format time as MM-DD-YYYY
     mutate(
-      time = format(weekdate, "%m-%d-%Y")
+      time = format(weekdate, "%Y-%m-%d")
     ) %>%
     select(
       geography,
@@ -93,7 +92,7 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     mutate(
       geography = "00",
-      time = format(weekdate, "%m-%d-%Y")
+      time = format(weekdate, "%Y-%m-%d")
     ) %>%
     select(
       geography,
@@ -134,9 +133,8 @@ if (!identical(process$raw_state, raw_state)) {
             sample_count = NA, 
             population_served = NA)
             ) %>%
-    # Format time as MM-DD-YYYY
     mutate(
-      time = format(weekdate, "%m-%d-%Y")
+      time = format(weekdate, "%Y-%m-%d")
     ) %>%
     select(
       geography,
