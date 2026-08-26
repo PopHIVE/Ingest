@@ -209,24 +209,24 @@
     "data_source": ["county_health_rankings", "bundle_county_access", "bundle_maternal_health", "bundle_youth_wellbeing"]
   },
   "delphi_doctor_visits": {
-    "name": "CMU Delphi COVIDcast - Doctor Visits",
-    "url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/doctor-visits.html",
+    "name": "CMU Delphi Epidata - Outpatient Claims",
+    "url": "https://delphi.cmu.edu/epidata/v5/",
     "organization": "Carnegie Mellon University Delphi Research Group",
     "organization_url": "https://delphi.cmu.edu/",
-    "location": "COVIDcast Epidata API",
+    "location": "Epidata API, claims_outpatient source",
     "location_url": "https://cmu-delphi.github.io/delphi-epidata/",
-    "description": "The Delphi Doctor Visits signal estimates the percentage of outpatient doctor visits with COVID-related diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal is calculated as the percentage of outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). Data are smoothed using a Gaussian linear smoother to reduce day-to-day noise. This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are available at state and county levels with approximately 3-4 day lag from the date of service.",
+    "description": "The Delphi outpatient claims signal estimates the percentage of outpatient doctor visits with COVID-19 diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal tracks outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of service. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile and a lag-1 autocorrelation of 0.998), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. This signal replaces the retired COVIDcast doctor-visits signal (smoothed_cli), which was smoothed with a Gaussian linear smoother.",
     "restrictions": "CC-BY Attribution license. Data may be used with attribution to the CMU Delphi Group.",
     "data_source": "delphi_doctors_claims"
   },
   "delphi_hospital_admissions": {
-    "name": "CMU Delphi COVIDcast - Hospital Admissions",
-    "url": "https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html",
+    "name": "CMU Delphi Epidata - Inpatient Claims",
+    "url": "https://delphi.cmu.edu/epidata/v5/",
     "organization": "Carnegie Mellon University Delphi Research Group",
     "organization_url": "https://delphi.cmu.edu/",
-    "location": "COVIDcast Epidata API",
+    "location": "Epidata API, claims_inpatient source",
     "location_url": "https://cmu-delphi.github.io/delphi-epidata/",
-    "description": "The Delphi Hospital Admissions signal estimates the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. Data are smoothed using a Gaussian linear smoother to reduce day-to-day variation. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are available at state and county levels with approximately 3-4 day lag from the date of admission.",
+    "description": "The Delphi inpatient claims signals estimate the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of admission. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile, and runs of non-zero days bottom out at exactly seven), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. Geography-weeks with no Saturday observation are therefore absent, which affects about 11% of county-weeks. These signals replace the retired COVIDcast hospital-admissions signals (smoothed_covid19_from_claims and smoothed_flu_from_claims), which were smoothed with a Gaussian linear smoother.",
     "restrictions": "CC-BY Attribution license. Data may be used with attribution to the CMU Delphi Group.",
     "data_source": "delphi_hospital_claims"
   },
