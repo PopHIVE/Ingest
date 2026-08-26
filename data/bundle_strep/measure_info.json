@@ -8,8 +8,7 @@
     "unit": "state name",
     "categories": {
       "bundle_strep/dist/abcs_strep.parquet|": {},
-      "bundle_strep/dist/epic_gas.parquet|": {},
-      "bundle_strep/dist/nnds_stss.parquet|": {}
+      "bundle_strep/dist/gas_state.parquet|": {}
     }
   },
   "{category}geography_fips": {
@@ -21,8 +20,7 @@
     "unit": "FIPS code",
     "categories": {
       "bundle_strep/dist/abcs_strep.parquet|": {},
-      "bundle_strep/dist/epic_gas.parquet|": {},
-      "bundle_strep/dist/nnds_stss.parquet|": {}
+      "bundle_strep/dist/gas_state.parquet|": {}
     }
   },
   "{category}date": {
@@ -34,8 +32,7 @@
     "unit": "date",
     "categories": {
       "bundle_strep/dist/abcs_strep.parquet|": {},
-      "bundle_strep/dist/epic_gas.parquet|": {},
-      "bundle_strep/dist/nnds_stss.parquet|": {}
+      "bundle_strep/dist/gas_state.parquet|": {}
     }
   },
   "{category}year": {
@@ -47,8 +44,7 @@
     "unit": "year",
     "categories": {
       "bundle_strep/dist/abcs_strep.parquet|": {},
-      "bundle_strep/dist/epic_gas.parquet|": {},
-      "bundle_strep/dist/nnds_stss.parquet|": {}
+      "bundle_strep/dist/gas_state.parquet|": {}
     }
   },
   "bundle_strep/dist/abcs_strep.parquet|pathogen": {
@@ -181,7 +177,7 @@
     "short_name": "Value",
     "long_name": "Measure value",
     "short_description": "Value of the measure named in the measure column.",
-    "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
+    "long_description": "Value of the measure named in the measure column, whose units differ by measure; blank where CDC published nothing, so a 0 is always a measured zero.",
     "measure_type": "Mixed",
     "unit": "varies by measure",
     "time_resolution": "Year",
@@ -272,32 +268,33 @@
       }
     }
   },
-  "bundle_strep/dist/abcs_strep.parquet|value_not_reported": {
-    "short_name": "Value not reported",
-    "long_name": "Flag for values CDC did not report",
-    "short_description": "1 where CDC did not report this measure for the row; 0 otherwise.",
-    "long_description": "1 where CDC published nothing for the row's measure, leaving value blank.",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "abcs_gas"
-      },
-      {
-        "id": "abcs_gbs"
-      }
-    ]
-  },
-  "bundle_strep/dist/epic_gas.parquet|age": {
+  "bundle_strep/dist/gas_state.parquet|age": {
     "short_name": "Age group",
     "long_name": "Age group",
     "short_description": "Age group; \"Total\" is the all-ages aggregate.",
-    "long_description": "Epic Cosmos age band for the row, with \"Total\" as the all-ages aggregate.",
+    "long_description": "Epic Cosmos age band for the row, with \"Total\" as the all-ages aggregate and on every NNDSS row.",
     "measure_type": "category",
     "unit": ""
   },
-  "bundle_strep/dist/epic_gas.parquet|measure": {
+  "bundle_strep/dist/gas_state.parquet|source": {
+    "short_name": "Source",
+    "long_name": "Data source",
+    "short_description": "Which surveillance system reported the row.",
+    "long_description": "Which surveillance system the row comes from, Epic Cosmos or NNDSS.",
+    "measure_type": "category",
+    "unit": "",
+    "levels": {
+      "Epic Cosmos": {
+        "short_name": "Epic Cosmos",
+        "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age."
+      },
+      "NNDSS": {
+        "short_name": "NNDSS",
+        "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state."
+      }
+    }
+  },
+  "bundle_strep/dist/gas_state.parquet|measure": {
     "short_name": "Measure",
     "levels": {
       "n_strep_throat": {
@@ -308,40 +305,7 @@
       },
       "n_patients": {
         "source_id": "epic_n_patients"
-      }
-    }
-  },
-  "bundle_strep/dist/epic_gas.parquet|value": {
-    "short_name": "Value",
-    "long_name": "Measure value",
-    "short_description": "Value of the measure named in the measure column.",
-    "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
-    "measure_type": "Mixed",
-    "unit": "varies by measure",
-    "time_resolution": "Quarter",
-    "sources": [
-      {
-        "id": "epic_cosmos"
-      }
-    ]
-  },
-  "bundle_strep/dist/epic_gas.parquet|suppressed": {
-    "short_name": "Suppressed",
-    "long_name": "Epic suppression flag",
-    "short_description": "1 where Epic withheld the underlying cell and the value was imputed as 5.",
-    "long_description": "1 where Epic Cosmos withheld the underlying cell as a count of 10 or fewer, in which case the value was imputed as 5.",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Quarter",
-    "sources": [
-      {
-        "id": "epic_cosmos"
-      }
-    ]
-  },
-  "bundle_strep/dist/nnds_stss.parquet|measure": {
-    "short_name": "Measure",
-    "levels": {
+      },
       "stss_cases_weekly": {
         "short_name": "Strep TSS cases (weekly)",
         "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
@@ -363,27 +327,26 @@
       }
     }
   },
-  "bundle_strep/dist/nnds_stss.parquet|value": {
+  "bundle_strep/dist/gas_state.parquet|value": {
     "short_name": "Value",
-    "long_name": "Reported STSS cases",
-    "short_description": "Reported cases of streptococcal toxic shock syndrome.",
-    "long_description": "Reported case count of streptococcal toxic shock syndrome.",
+    "long_name": "Measure value",
+    "short_description": "Value of the measure named in the measure column.",
+    "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
     "measure_type": "Mixed",
-    "unit": "varies by measure",
-    "time_resolution": "Week",
+    "unit": "varies by measure"
+  },
+  "bundle_strep/dist/gas_state.parquet|suppressed": {
+    "short_name": "Suppressed",
+    "long_name": "Epic suppression flag",
+    "short_description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
+    "long_description": "1 where Epic Cosmos withheld the underlying cell as a count of 10 or fewer, in which case the value was imputed as 5; blank on NNDSS rows, which have no such mechanism.",
+    "measure_type": "Binary",
+    "unit": "0/1",
     "sources": [
       {
-        "id": "nnds"
+        "id": "epic_cosmos"
       }
     ]
-  },
-  "bundle_strep/dist/nnds_stss.parquet|week": {
-    "short_name": "MMWR week",
-    "long_name": "MMWR week number",
-    "short_description": "MMWR week number (1-53) within the year.",
-    "long_description": "MMWR (epidemiological) week number within the year.",
-    "measure_type": "identifier",
-    "unit": "week"
   },
   "_bundle": {
     "name": "bundle_strep",
@@ -406,13 +369,15 @@
           "abcs/standard/gbs_alph.csv.gz"
         ]
       },
-      "epic_gas.parquet": {
-        "sources": "epic_resp_infections",
-        "source_files": "epic_resp_infections/standard/quarterly_gas.csv.gz"
-      },
-      "nnds_stss.parquet": {
-        "sources": "nnds",
-        "source_files": "nnds/standard/data.csv.gz"
+      "gas_state.parquet": {
+        "sources": [
+          "epic_resp_infections",
+          "nnds"
+        ],
+        "source_files": [
+          "epic_resp_infections/standard/quarterly_gas.csv.gz",
+          "nnds/standard/data.csv.gz"
+        ]
       }
     }
   }

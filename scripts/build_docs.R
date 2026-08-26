@@ -369,7 +369,7 @@ format_bundle_name <- function(name) {
 
 # Short one-sentence summary of a (possibly long) description. Used only as a
 # fallback for brand-new datasets with no hand-written summary yet -- see the
-# ingest-source skill (Phase 7), which is how a real summary should get in.
+# update-data-sources-index skill, which is how a real summary should get in.
 short_summary <- function(x, max_chars = 300) {
   x <- x %||% ""
   x <- trimws(gsub("\\s+", " ", x))
@@ -833,8 +833,12 @@ html_page <- tags$html(lang = "en",
     tags$nav(class = "navbar navbar-dark fixed-top",
       tags$div(class = "container-fluid",
         tags$a(class = "navbar-brand", href = "#", "PopHIVE Data Documentation"),
-        tags$span(class = "navbar-text text-light",
-          sprintf("Last updated: %s", format(Sys.Date(), "%B %d, %Y"))
+        tags$div(class = "d-flex align-items-center",
+          tags$a(class = "btn btn-outline-light btn-sm me-3", href = "data-table.html",
+                 "Data Table →"),
+          tags$span(class = "navbar-text text-light",
+            sprintf("Last updated: %s", format(Sys.Date(), "%B %d, %Y"))
+          )
         )
       )
     ),
@@ -1375,7 +1379,7 @@ index_datasets <- lapply(index_source_idx, function(i) {
   # brand-new dataset falls back to a concise extractive summary.
   if (is.null(existing_summary[[source_name]])) {
     cat(sprintf(
-      "  WARNING: %s has no hand-written summary -- using an auto-derived fallback. Write a real one via the ingest-source skill.\n",
+      "  WARNING: %s has no hand-written summary -- using an auto-derived fallback. Write a real one via the update-data-sources-index skill.\n",
       source_name
     ))
   }

@@ -1,13 +1,22 @@
 # bundle_strep
 
 Group A and Group B Streptococcus surveillance, combining three sources into
-**three** long-format parquets under `dist/`.
+**two** long-format parquets under `dist/`.
 
 | Parquet | Source | Rows | Grain |
 |---|---|---|---|
 | `abcs_strep.parquet` | `abcs` | 6,101 | national, annual — all eight ABCs topics stacked |
-| `epic_gas.parquet` | `epic_resp_infections` | 39,312 | state + national, quarterly, by age |
-| `nnds_stss.parquet` | `nnds` | 24,856 | state + national, weekly (MMWR) |
+| `gas_state.parquet` | `epic_resp_infections`, `nnds` | 64,168 | state + national, quarterly and weekly |
+
+`gas_state.parquet` holds both state-level Group A series, separated by `source`:
+Epic Cosmos strep throat diagnoses (quarterly, by age) and NNDSS streptococcal
+toxic shock syndrome (weekly). They share a schema, so `age` is `"Total"` on
+the NNDSS rows and `suppressed` is blank on them, since it is an Epic mechanism.
+`date` is the MMWR week ending Saturday, so no separate week number is carried.
+
+ABCs stays separate. It is national-only and annual, and carries fourteen
+dimension and companion columns the other two do not have — folding it in would
+leave 62% of the merged table as padding.
 
 Shared columns: `geography` (state name, or `"United States"`), `geography_fips`,
 `date`, `year`, `measure`, `value`. Bundles name the time column **`date`**; the
@@ -25,7 +34,7 @@ handling NA.
 geography, geography_fips, date, year, pathogen,
 age, sex, race_ethnicity, onset, rate_denominator,      <- stratifications
 syndrome, antibiotic, emm_type, serotype, alph_type,    <- which entity
-measure, value, value_not_reported,
+measure, value,
 n_type, n_type_status, n_isolates, n_isolates_status
 ```
 
@@ -42,9 +51,8 @@ series, not metadata for a single value.
 **Every blank is explained, and nothing is filled in.** Three columns can be
 blank — `value`, `n_isolates` and `n_type` — and each has a companion saying why.
 
-`value` is blank exactly where `value_not_reported = 1`, meaning CDC published
-nothing for that cell. **It is never filled with a zero**, so a 0 in `value` is
-always a measurement. That matters because both cases genuinely occur side by
+`value` is blank where CDC published nothing for that cell. **It is never filled
+with a zero**, so a 0 in `value` is always a measurement. That matters because both cases genuinely occur side by
 side: Group A penicillin resistance is a real 0 in every year, while Group B
 tetracycline is simply absent from CDC's panel. Of 6,101 rows, 3,927 carry a
 non-zero value, 924 a measured zero, and 1,250 a blank.
@@ -80,10 +88,10 @@ means the row isn't an emm row.
 - **`Total` is the aggregate level** throughout, matching the rest of the
   database. It overlaps the specific levels, so exclude it before summing across
   a stratification.
-- **`value_not_reported = 1` means CDC published nothing**, and `value` is blank
-  on those rows rather than zero-filled. Reasons are structural: a drug off a
-  pathogen's panel, an emm type CDC did not itemise that year, a Group B serotype
-  CDC regrouped that year, a rate not broken out for that stratification.
+- **A blank `value` means CDC published nothing** for that cell, rather than a
+  zero. Reasons are structural: a drug off a pathogen's panel, an emm type CDC
+  did not itemise that year, a Group B serotype CDC regrouped that year, a rate
+  not broken out for that stratification.
 - **`suppressed = 1`** (Epic only) is a different thing: a small cell Epic
   withheld, imputed as 5.
 - **`n_isolates` and `n_type` stay blank rather than zero** where CDC published

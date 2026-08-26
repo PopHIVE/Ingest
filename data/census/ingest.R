@@ -5,7 +5,10 @@
 #Due to the large size of the ZCTA-level data, it is split across several files by vintage year (see Outputs below).
 #
 # Outputs:
-#   standard/data_state.csv.gz        -- 2-digit FIPS, vintage years 2019 to latest available
+#   standard/data_state.csv.gz        -- 2-digit FIPS, vintage years 2019 to latest available.
+#                                         Also carries the national total as geography "00"
+#                                         (Census ACS5 "us" geography level), same convention
+#                                         as county_health_rankings and bls_laus.
 #   standard/data_county.csv.gz       -- 5-digit FIPS, vintage years 2019 to latest available
 #   standard/data_zcta_YYYY_YYYY.csv.gz -- 5-digit ZCTA, split into pairs of years
 #
@@ -82,14 +85,16 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   message("  Fetching ", geo_level, " ", vintage_year, "...")
 
   region <- switch(geo_level,
-    "state"  = "state:*",
-    "county" = "county:*",
-    "zcta"   = "zip code tabulation area:*"
+    "state"    = "state:*",
+    "county"   = "county:*",
+    "zcta"     = "zip code tabulation area:*",
+    "national" = "us:*"
   )
   id_cols <- switch(geo_level,
-    "state"  = "state",
-    "county" = c("state", "county"),
-    "zcta"   = "zcta"          # normalised name; Census returns "zip code tabulation area"
+    "state"    = "state",
+    "county"   = c("state", "county"),
+    "zcta"     = "zcta",       # normalised name; Census returns "zip code tabulation area"
+    "national" = "us"
   )
 
   # Helper: call Census API, return NULL on error.
@@ -526,6 +531,10 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
     result <- result %>%
       rename(geography = zcta) %>%
       select(-any_of("state"))
+  } else if (geo_level == "national") {
+    result <- result %>%
+      mutate(geography = "00") %>%
+      select(-any_of("us"))
   }
 
   # Annual time standard: YYYY-12-31
@@ -565,16 +574,20 @@ if (!output_exists || is.null(last_vintage) || last_vintage < latest_vintage) {
 
   # Fetch all geographies and combine into a single data frame
   data_all <- bind_rows(
-    fetch_all_years("state",  api_key),
-    fetch_all_years("county", api_key),
-    fetch_all_years("zcta",   api_key)
+    fetch_all_years("state",    api_key),
+    fetch_all_years("national", api_key),
+    fetch_all_years("county",   api_key),
+    fetch_all_years("zcta",     api_key)
   )
 
   if (nrow(data_all) > 0) {
     # Write combined file
-    # Split combined file by geo_level into three separate files
+    # Split combined file by geo_level into three separate files.
+    # "national" rows (single geography "00") are folded into the state
+    # file, not written separately -- same convention as
+    # county_health_rankings and bls_laus's data_state.csv.gz.
     data_state  <- data_all %>%
-                    filter(geo_level == "state") %>%
+                    filter(geo_level %in% c("state", "national")) %>%
                     select(-geo_level)
 
     data_county <- data_all %>%
