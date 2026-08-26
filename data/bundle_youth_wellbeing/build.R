@@ -237,6 +237,13 @@ SPEC <- bind_rows(
        'chr_contaminants_in_municipal_water_wi', 'chr_air_pollution_particulate_matter',
        'chr_adverse_climate_events')),
   sp('chr', 'Preventative health and wellness', 'Pregnancy', 'chr_teen_births'),
+  # Added post-launch: chr_infant_mortality / chr_child_mortality are present
+  # with substantial real data in the raw CHR source (unlike
+  # chr_lead_poisoned_children, which is present but empty) -- they were
+  # simply never transcribed from the workbook. Deaths per 1,000 live births
+  # (infant) / per 100,000 population ages 1-19 (child), CHR's standard units.
+  sp('chr', 'Preventative health and wellness', 'Child and infant mortality',
+     c('chr_infant_mortality', 'chr_child_mortality')),
   sp('chr', 'Preventative health and wellness', 'Nutrition',
      c('chr_limited_access_to_healthy_foods', 'chr_food_environment_index')),
   sp('chr', 'Social determinants of health', 'Schools',

@@ -1,0 +1,1790 @@
+---
+title: "Youth Well-being Draft Dashboard"
+format:
+  html:
+    embed-resources: true
+    page-layout: full
+    toc: false
+    grid:
+      body-width: 1500px
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| include: false
+source("_dashboard_utils.R")
+```
+
+```{=html}
+<script>
+window.__phErrors = [];
+window.addEventListener('error', function (e) {
+  window.__phErrors.push((e.message || 'Unknown error') + ' (' + (e.filename || '').split('/').pop() + ':' + e.lineno + ':' + e.colno + ')');
+  var b = document.getElementById('__ph-error-banner');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = '__ph-error-banner';
+    b.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#d03b3b;color:#fff;font-family:monospace;font-size:11px;padding:8px 12px;z-index:99999;max-height:220px;overflow:auto;white-space:pre-wrap;';
+    document.body.appendChild(b);
+  }
+  b.textContent = window.__phErrors.length + ' chart script error(s) on this page:\n' + window.__phErrors.join('\n');
+});
+
+// All charts on every tab render on page load (Bootstrap tabs are just
+// display:none, not lazy), so any chart on a tab other than the initially
+// active one gets measured at zero/stale width by Plotly. Resize every
+// Plotly graph in a tab pane the moment Bootstrap reveals it.
+document.addEventListener('shown.bs.tab', function (e) {
+  var targetSel = e.target.getAttribute('data-bs-target') || e.target.getAttribute('href');
+  var pane = targetSel ? document.querySelector(targetSel) : null;
+  if (!pane || !window.Plotly) return;
+  pane.querySelectorAll('.js-plotly-plot').forEach(function (gd) { Plotly.Plots.resize(gd); });
+});
+</script>
+```
+
+```{r inject-plotly}
+#| include: false
+# Referenced below via <script src>, not injected as R text output --
+# routing a multi-MB minified bundle through cat()/knitr's text pipeline on
+# Windows corrupts it (likely CRLF translation on an embedded literal
+# newline inside the bundle). A <script src> tag lets Quarto's own
+# embed-resources machinery inline the file byte-safely instead.
+#
+# plotly-geo (cartesian + choropleth/geo traces only, no 3D/gl/mapbox) is
+# ~1.2MB vs. ~4.5MB for the full bundle -- this dashboard never uses 3D,
+# WebGL, or mapbox traces, so the full bundle was pure dead weight.
+invisible(file.exists("plotly-geo.min.js"))
+```
+
+```{r inject-geojson}
+#| include: false
+# Same rationale as above: write a byte-exact .js companion file and load
+# it via <script src> rather than cat()-ing the text into the page.
+geo_con <- gzfile("us_counties_fips.geojson.gz", "rb")
+geo_raw <- readBin(geo_con, "raw", n = 50 * 1024 * 1024)
+close(geo_con)
+out_con <- file("counties_geojson.js", "wb")
+writeBin(charToRaw("window.PH_COUNTIES_GEOJSON = "), out_con)
+writeBin(geo_raw, out_con)
+writeBin(charToRaw(";\n"), out_con)
+close(out_con)
+```
+
+```{r inject-geo-canon}
+#| results: asis
+# Emitted ONCE for the whole page. Every choropleth measure and every
+# scatter-tool measure aligns its values to these two id/label arrays
+# instead of carrying its own -- see the comment on geo_state_canon /
+# geo_county_canon in _dashboard_utils.R.
+emit_json("PH_GEO_STATE", list(locs = I(geo_state_canon$loc), labels = I(geo_state_canon$loc_label)))
+emit_json("PH_GEO_COUNTY", list(locs = I(geo_county_canon$loc), labels = I(geo_county_canon$loc_label)))
+```
+
+```{=html}
+<script src="plotly-geo.min.js"></script>
+<script src="counties_geojson.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy: #00356b;
+  --navy-light: #bedeff;
+  --accent: #4e98e4;
+  --gray: #767676;
+  --ink: #26323d;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7; --s8: #e34948;
+}
+body { font-family: 'Rubik', sans-serif; color: var(--ink); background-color: #ffffff; padding-top: 2.75rem; }
+h1, h2, h3, h4, .title, .subtitle { font-family: 'Source Serif 4', serif; color: var(--navy); font-weight: 600; }
+h2 { border-bottom: 2px solid var(--navy-light); padding-bottom: .3rem; margin-top: 1.5rem; }
+h3 { margin-top: 2rem; }
+a { color: var(--navy); }
+a:hover { color: var(--accent); }
+.quarto-title-block .quarto-title-banner, .quarto-title-banner { background-color: var(--navy); }
+.quarto-title-banner .title, .quarto-title-banner .subtitle, .quarto-title-banner .quarto-title-meta { color: #ffffff !important; }
+::selection { background: var(--navy-light); }
+.source-note { font-size: .85rem; color: var(--gray); margin-top: -.5rem; margin-bottom: 1.25rem; }
+
+.pophive-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: var(--navy); padding: .7rem 1.5rem; display: flex; align-items: center;
+  justify-content: space-between; font-family: 'Rubik', sans-serif;
+}
+.pophive-nav a { color: #ffffff !important; text-decoration: none; font-size: .95rem; font-weight: 500; }
+.pophive-nav a:hover { color: var(--navy-light) !important; }
+.pophive-brand { font-family: 'Source Serif 4', serif !important; font-weight: 600 !important; font-size: 1.15rem !important; letter-spacing: .02em; }
+.pophive-nav-links { display: flex; gap: 1.75rem; }
+
+.pophive-footer {
+  width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
+  margin-top: 3rem; padding: 1.75rem 1.5rem; text-align: center; background: var(--navy); color: #dbe7f5;
+  font-family: 'Rubik', sans-serif; font-size: .85rem; line-height: 1.6;
+}
+.pophive-footer strong { font-family: 'Source Serif 4', serif; color: #ffffff; font-size: 1rem; }
+.pophive-footer a { color: var(--navy-light) !important; }
+.pophive-footer a:hover { color: #ffffff !important; }
+.pophive-footer .disclaimer { color: #a9bdd4; font-size: .8rem; margin-top: .4rem; }
+
+.chart-info { margin: .5rem 0 2rem 0; }
+.chart-info summary {
+  display: inline-block; cursor: pointer; list-style: none; font-family: 'Rubik', sans-serif;
+  font-size: .85rem; font-weight: 500; color: var(--navy); background: #ffffff; border: 1px solid var(--navy);
+  border-radius: 999px; padding: .35rem .9rem; user-select: none;
+}
+.chart-info summary::-webkit-details-marker { display: none; }
+.chart-info summary::before { content: "\24D8 "; }
+.chart-info summary:hover { background: #eaf2fc; }
+.chart-info[open] summary { background: var(--navy); color: #ffffff; }
+.chart-info p, .chart-info ul {
+  margin: .75rem 0 0 0; font-size: .85rem; color: #444; max-width: 46rem;
+  background: #f7f9fc; border-left: 3px solid var(--navy-light); padding: .6rem .9rem;
+}
+
+.data-note {
+  font-size: .85rem; color: #7a4a00; background: #fff7e8; border: 1px solid #f0d69a;
+  border-radius: 6px; padding: .6rem .9rem; max-width: 46rem; margin: .5rem 0 1.25rem;
+}
+
+/* Quarto panel-tabset restyled as top navigation tabs */
+.panel-tabset > .nav-tabs { border-bottom: 2px solid var(--navy-light); margin-bottom: 1.25rem; flex-wrap: wrap; }
+.panel-tabset > .nav-tabs .nav-link {
+  font-family: 'Rubik', sans-serif; color: var(--navy); font-weight: 500; border: none;
+  border-bottom: 3px solid transparent; background: transparent;
+}
+.panel-tabset > .nav-tabs .nav-link.active { color: var(--navy); border-bottom-color: var(--navy); font-weight: 600; }
+.panel-tabset > .nav-tabs .nav-link:hover { border-bottom-color: var(--navy-light); }
+
+.ph-card { margin: 1.75rem 0 2.5rem; }
+.ph-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.5rem; margin: .5rem 0 .75rem; font-family: 'Rubik', sans-serif; }
+.ph-control { font-size: .85rem; color: var(--navy); font-weight: 500; }
+.ph-control select, .ph-control input[type=text] {
+  font-family: 'Rubik', sans-serif; font-size: .85rem; color: var(--ink); border: 1px solid var(--navy-light);
+  border-radius: 6px; padding: .3rem .5rem; margin-left: .35rem;
+}
+.ph-toggle { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--navy); border-radius: 999px; overflow: hidden; }
+.ph-toggle button { border: 0; background: #ffffff; color: var(--navy); font-family: 'Rubik', sans-serif; font-size: .8rem; font-weight: 500; padding: .35rem .85rem; cursor: pointer; }
+.ph-toggle button.active { background: var(--navy); color: #ffffff; }
+.ph-legend-toggle { display: flex; flex-wrap: wrap; gap: .35rem .6rem; margin: .5rem 0; font-family: 'Rubik', sans-serif; font-size: .8rem; }
+.ph-legend-item { display: inline-flex; align-items: center; gap: .35rem; cursor: pointer; padding: .15rem .55rem; border-radius: 5px; user-select: none; background: #f7f9fc; }
+.ph-legend-item .swatch { width: 1.4rem; height: 0; border-top-width: 3px; border-top-style: solid; }
+.ph-legend-item.off { opacity: .35; }
+.ph-slider-row { display: flex; align-items: center; gap: .75rem; margin: .5rem 0 0; font-family: 'Rubik', sans-serif; font-size: .82rem; color: var(--navy); }
+.ph-slider-row input[type=range] { flex: 1; accent-color: var(--navy); max-width: 26rem; }
+.ph-period-label { min-width: 6.5rem; font-weight: 500; }
+.ph-chart-title { font-family: 'Source Serif 4', serif; color: var(--navy); font-weight: 600; font-size: 1.1rem; margin: .5rem 0 0; }
+.ph-chart-sub { color: var(--gray); font-size: .82rem; margin: .15rem 0 .5rem; }
+.ph-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 2rem; }
+@media (max-width: 900px) { .ph-grid-2 { grid-template-columns: 1fr; } }
+.ph-stat-line { font-family: 'Rubik', sans-serif; font-size: .95rem; color: var(--navy); margin: .5rem 0; font-weight: 500; }
+.ph-stat-line .stat-num { font-family: 'Source Serif 4', serif; font-weight: 700; }
+.ph-bars { display: flex; flex-direction: column; gap: .55rem; margin-top: .5rem; }
+.ph-bar-row { display: grid; grid-template-columns: minmax(8rem, 13rem) 1fr 4rem; align-items: center; gap: .6rem; }
+.ph-bar-label { font-family: 'Rubik', sans-serif; font-size: .82rem; color: var(--ink); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ph-bar-track { background: #eef2f8; border-radius: 3px; height: 1.05rem; overflow: hidden; }
+.ph-bar-fill { display: block; height: 100%; background: var(--s1); border-radius: 3px; }
+.ph-bar-row:hover .ph-bar-fill { background: var(--accent); }
+.ph-bar-value { font-family: 'Rubik', sans-serif; font-size: .8rem; color: var(--navy); font-variant-numeric: tabular-nums; }
+.ph-tooltip {
+  display: none; position: absolute; z-index: 10000; background: var(--navy); color: #fff; font-family: 'Rubik', sans-serif;
+  font-size: .78rem; line-height: 1.4; padding: .5rem .7rem; border-radius: 6px; max-width: 18rem; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+#TOC a { white-space: normal; word-wrap: break-word; }
+</style>
+
+<nav class="pophive-nav">
+  <a href="https://www.pophive.org/" class="pophive-brand">PopHIVE</a>
+  <div class="pophive-nav-links">
+    <a href="https://www.pophive.org/">Home</a>
+    <a href="https://www.pophive.org/about">About</a>
+  </div>
+</nav>
+```
+
+<p class="source-note">
+Draft dashboard for internal review. Data are combined from CDC/NEISS, CDC/WISQARS, CDC/YRBSS, Epic Cosmos, Medicaid/CHIP Child Core Set, County Health Rankings &amp; Roadmaps, NHTSA FARS, and NOAA/NWS HeatRisk &mdash; see the <a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_youth_wellbeing">bundle README</a> for full source details. Hover any chart for exact values.
+</p>
+
+```{=html}
+<script>
+window.PH = (function () {
+  "use strict";
+  var CAT = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'];
+  var DASH = ['solid','dash','dot','dashdot','longdash','longdashdot'];
+  var SEQ = [[0,'#cde2fb'],[0.16,'#9ec5f4'],[0.33,'#6da7ec'],[0.5,'#3987e5'],[0.66,'#256abf'],[0.83,'#184f95'],[1,'#0d366b']];
+
+  function colorFor(i) { return CAT[((i % CAT.length) + CAT.length) % CAT.length]; }
+  function dashFor(i) { return DASH[Math.floor(i / CAT.length) % DASH.length]; }
+  function el(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function fmtNum(v, decimals) {
+    if (v === null || v === undefined || (typeof v === 'number' && isNaN(v))) return 'N/A';
+    decimals = (decimals === undefined) ? 1 : decimals;
+    return Number(v).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: decimals });
+  }
+  function onReady(fn) {
+    function check() { if (window.Plotly) fn(); else setTimeout(check, 80); }
+    check();
+  }
+
+  // ------------------------------------------------------------------
+  // Generic multi-series time series with dropdown filters + legend
+  // checkbox toggles. See Youth_Wellbeing_Draft_Dashboard.qmd for the
+  // config contract produced by each R chunk.
+  // ------------------------------------------------------------------
+  function renderLineChart(root, cfg) {
+    onReady(function () {
+      var wrap = el(root);
+      var filters = cfg.filters || [];
+      var state = { filters: {}, visible: {} };
+      filters.forEach(function (f) { state.filters[f.key] = f.default; });
+
+      // Optional "Compare by" mode: cfg.compareBy.groups is a map of
+      // dimension-name -> {label, fixed: {otherDim: value}, seriesOrder,
+      // seriesMeta}. Whichever group is active becomes the toggleable
+      // series (read off l.dims[activeKey] at render time); every other
+      // dimension in that group's `fixed` map is held constant instead of
+      // shown as a dropdown. This is how one chart lets a single legend
+      // compare either by age or by sex without two toggle dimensions at
+      // once, which the data model doesn't otherwise support.
+      var cmp = cfg.compareBy;
+      if (cmp) state.cmpBy = cmp.default;
+      function activeGroup() { return cmp ? cmp.groups[state.cmpBy] : null; }
+      function curSeriesOrder() { return cmp ? activeGroup().seriesOrder : (cfg.seriesOrder || []); }
+      function curSeriesMeta() { return cmp ? activeGroup().seriesMeta : cfg.seriesMeta; }
+      function curDefaultOn() { return cmp ? activeGroup().seriesOrder : (cfg.defaultOn || cfg.seriesOrder); }
+      function seriesIdOf(l) { return cmp ? l.dims[state.cmpBy] : l.series; }
+
+      function resetVisible() {
+        state.visible = {};
+        var def = curDefaultOn() || [];
+        curSeriesOrder().forEach(function (s) { state.visible[s] = def.indexOf(s) > -1; });
+      }
+      resetVisible();
+
+      var controlsHtml = '<div class="ph-controls">';
+      filters.forEach(function (f) {
+        controlsHtml += '<span class="ph-control">' + esc(f.label) + ':' +
+          '<select id="' + root + '-f-' + f.key + '">' +
+          f.options.map(function (o) {
+            var val = (typeof o === 'object') ? o.value : o;
+            var lab = (typeof o === 'object') ? o.label : o;
+            return '<option value="' + esc(val) + '"' + (val === f.default ? ' selected' : '') + '>' + esc(lab) + '</option>';
+          }).join('') + '</select></span>';
+      });
+      if (cmp) {
+        controlsHtml += '<span class="ph-control">' + esc(cmp.label || 'Compare by') + ':' +
+          '<select id="' + root + '-cmpby">' +
+          Object.keys(cmp.groups).map(function (k) {
+            return '<option value="' + esc(k) + '"' + (k === cmp.default ? ' selected' : '') + '>' + esc(cmp.groups[k].label) + '</option>';
+          }).join('') + '</select></span>';
+      }
+      controlsHtml += '</div>';
+
+      wrap.innerHTML = controlsHtml +
+        '<p class="ph-chart-title">' + esc(cfg.title || '') + '</p>' +
+        '<p class="ph-chart-sub" id="' + root + '-sub">' + esc(cfg.subtitle || '') + '</p>' +
+        '<div id="' + root + '-chart" style="width:100%;height:' + (cfg.height || 440) + 'px;"></div>' +
+        '<div class="ph-legend-toggle" id="' + root + '-legend"></div>';
+
+      function renderLegend() {
+        var legendEl = el(root + '-legend');
+        if (!cfg.toggle && !cmp) { legendEl.innerHTML = ''; return; }
+        var order = curSeriesOrder(), meta = curSeriesMeta();
+        legendEl.innerHTML = order.map(function (s, i) {
+          var lab = (meta && meta[s] && meta[s].label) || s;
+          var on = state.visible[s];
+          return '<span class="ph-legend-item' + (on ? '' : ' off') + '" data-series="' + esc(s) + '">' +
+            '<span class="swatch" style="border-top-color:' + colorFor(i) + ';border-top-style:' + dashFor(i).replace('longdash', 'dashed').replace('dashdot', 'dashed') + '"></span>' +
+            esc(lab) + '</span>';
+        }).join('');
+      }
+      renderLegend();
+
+      function matches(l) {
+        for (var k in state.filters) { if (l.dims[k] !== state.filters[k]) return false; }
+        if (cmp) {
+          var fixed = activeGroup().fixed || {};
+          for (var k2 in fixed) { if (l.dims[k2] !== fixed[k2]) return false; }
+        }
+        return true;
+      }
+
+      function currentYTitle() {
+        if (cfg.unitFilterKey && cfg.yTitleMap) return cfg.yTitleMap[state.filters[cfg.unitFilterKey]] || cfg.yTitle || '';
+        return cfg.yTitle || '';
+      }
+      function currentYUnit() {
+        if (cfg.unitFilterKey && cfg.yUnitMap) return cfg.yUnitMap[state.filters[cfg.unitFilterKey]] || '';
+        return cfg.yUnit || '';
+      }
+
+      function render() {
+        var filtered = (cfg.lines || []).filter(matches);
+        var unit = currentYUnit();
+        var order = curSeriesOrder(), meta = curSeriesMeta();
+        var useToggle = cfg.toggle || !!cmp;
+        var traces = filtered
+          .filter(function (l) { return !useToggle || state.visible[seriesIdOf(l)]; })
+          .map(function (l) {
+            var sid = seriesIdOf(l);
+            var idx = order.indexOf(sid);
+            var m = (meta && meta[sid]) || {};
+            var label = m.label || sid;
+            var notes = l.note || l.x.map(function () { return ''; });
+            return {
+              x: l.x, y: l.y, customdata: notes, type: 'scatter', mode: 'lines+markers',
+              name: label, legendgroup: sid,
+              line: { color: colorFor(idx), dash: dashFor(idx), width: 2.25 },
+              marker: { color: colorFor(idx), size: 6 },
+              hovertemplate: '<b>' + esc(label) + '</b><br>%{x}: %{y:.' + (cfg.decimals === undefined ? 1 : cfg.decimals) + 'f}' + unit + '%{customdata}<extra></extra>'
+            };
+          });
+        var layout = {
+          margin: { t: 10, b: 45, l: 60, r: 20 }, paper_bgcolor: 'white', plot_bgcolor: 'white',
+          font: { family: 'Rubik, sans-serif', color: '#00356b', size: 11 }, hovermode: 'closest',
+          xaxis: { title: cfg.xTitle || '', gridcolor: 'white', zeroline: false, type: 'category', categoryorder: 'category ascending' },
+          yaxis: { title: currentYTitle(), gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false, rangemode: 'tozero' },
+          showlegend: !useToggle,
+          legend: { orientation: 'h', x: 0.01, y: 1.12, yanchor: 'bottom' }
+        };
+        Plotly.react(root + '-chart', traces, layout, { displayModeBar: false, responsive: true });
+      }
+
+      filters.forEach(function (f) {
+        el(root + '-f-' + f.key).addEventListener('change', function (e) {
+          state.filters[f.key] = e.target.value; render();
+        });
+      });
+      if (cmp) {
+        el(root + '-cmpby').addEventListener('change', function (e) {
+          state.cmpBy = e.target.value; resetVisible(); renderLegend(); render();
+        });
+      }
+      var legendEl = el(root + '-legend');
+      legendEl.addEventListener('click', function (e) {
+        var item = e.target.closest('.ph-legend-item');
+        if (!item) return;
+        var s = item.getAttribute('data-series');
+        state.visible[s] = !state.visible[s];
+        item.classList.toggle('off', !state.visible[s]);
+        render();
+      });
+      render();
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // Choropleth (state or county) with a measure dropdown + time slider.
+  // ------------------------------------------------------------------
+  function renderChoropleth(root, cfg) {
+    onReady(function () {
+      var wrap = el(root);
+      var byId = {}; (cfg.measures || []).forEach(function (m) { byId[m.id] = m; });
+      var extraFilters = cfg.filters || [];
+      var stateF = {}; extraFilters.forEach(function (f) { stateF[f.key] = f.default; });
+      var curIdx = 0;
+
+      function visibleMeasures() {
+        return cfg.measures.filter(function (m) {
+          var tags = m.tags || {};
+          for (var k in stateF) { if (tags[k] !== undefined && String(tags[k]) !== String(stateF[k])) return false; }
+          return true;
+        });
+      }
+      var curMeasure = cfg.defaultMeasure || visibleMeasures()[0].id;
+
+      var controlsHtml = '<div class="ph-controls">';
+      extraFilters.forEach(function (f) {
+        controlsHtml += '<span class="ph-control">' + esc(f.label) + ':' +
+          '<select id="' + root + '-f-' + f.key + '">' +
+          f.options.map(function (o) {
+            var val = (typeof o === 'object') ? o.value : o;
+            var lab = (typeof o === 'object') ? o.label : o;
+            return '<option value="' + esc(val) + '"' + (val === f.default ? ' selected' : '') + '>' + esc(lab) + '</option>';
+          }).join('') +
+          '</select></span>';
+      });
+      controlsHtml += '<span class="ph-control" id="' + root + '-measurewrap">' + esc(cfg.measureLabel || 'Measure') + ':<select id="' + root + '-measure"></select></span>';
+      controlsHtml += '</div>';
+
+      wrap.innerHTML = controlsHtml +
+        '<p class="ph-chart-title" id="' + root + '-title"></p>' +
+        '<p class="ph-chart-sub" id="' + root + '-sub"></p>' +
+        '<div id="' + root + '-map" style="width:100%;height:' + (cfg.height || 480) + 'px;"></div>' +
+        '<p class="ph-chart-sub">Grey = no data available for this selection.</p>' +
+        '<div class="ph-slider-row" id="' + root + '-sliderrow">' +
+        '<span class="ph-period-label" id="' + root + '-period"></span>' +
+        '<input type="range" id="' + root + '-slider" min="0" max="1" value="0" step="1" aria-label="time period"></div>';
+
+      function currentMeasure() { return byId[curMeasure]; }
+
+      function rebuildMeasureOptions() {
+        var vis = visibleMeasures();
+        if (!vis.length) return;
+        if (!vis.some(function (m) { return m.id === curMeasure; })) curMeasure = vis[0].id;
+        el(root + '-measure').innerHTML = vis.map(function (m) {
+          return '<option value="' + esc(m.id) + '"' + (m.id === curMeasure ? ' selected' : '') + '>' + esc(m.label) + '</option>';
+        }).join('');
+        el(root + '-measurewrap').style.display = (vis.length > 1 || cfg.measures.length > 1) ? 'inline' : 'none';
+      }
+
+      function render() {
+        var m = currentMeasure();
+        if (curIdx > m.times.length - 1) curIdx = m.times.length - 1;
+        el(root + '-slider').max = Math.max(0, m.times.length - 1);
+        el(root + '-slider').value = curIdx;
+        el(root + '-sliderrow').style.display = m.times.length > 1 ? 'flex' : 'none';
+        el(root + '-period').textContent = String(m.times[curIdx]);
+        el(root + '-title').textContent = m.label;
+        el(root + '-sub').textContent = m.sub || '';
+
+        var geo = (m.level === 'county') ? window.PH_GEO_COUNTY : window.PH_GEO_STATE;
+        var z = m.z[curIdx];
+        var notes = (m.extra && m.extra[curIdx]) || z.map(function () { return ''; });
+
+        // Two layers: a flat grey base covering every location (so "no
+        // data" reads as a deliberate grey, not blank white, and still
+        // gets its own hover), then the real choropleth on top wherever a
+        // value exists.
+        var baseTrace = {
+          type: 'choropleth', locations: geo.locs, z: geo.locs.map(function () { return 1; }),
+          customdata: geo.labels, showscale: false, colorscale: [[0, '#cfcfcf'], [1, '#cfcfcf']],
+          marker: { line: { color: '#ffffff', width: 0.5 } },
+          hovertemplate: '<b>%{customdata}</b><br>No data available<extra></extra>'
+        };
+        var validIdx = [];
+        for (var i = 0; i < z.length; i++) { if (z[i] !== null && z[i] !== undefined) validIdx.push(i); }
+        var dataTrace = {
+          type: 'choropleth',
+          locations: validIdx.map(function (i) { return geo.locs[i]; }),
+          z: validIdx.map(function (i) { return z[i]; }),
+          customdata: validIdx.map(function (i) { return [geo.labels[i], notes[i]]; }),
+          colorscale: SEQ, reversescale: !!m.reverse, marker: { line: { color: '#ffffff', width: 0.5 } },
+          colorbar: { title: { text: m.unit || '', font: { size: 10 } }, thickness: 14 },
+          hovertemplate: '<b>%{customdata[0]}</b><br>' + esc(m.label) + ': %{z:.' + (m.decimals === undefined ? 1 : m.decimals) + 'f}' + (m.unit ? ' ' + m.unit : '') + '%{customdata[1]}<extra></extra>'
+        };
+        [baseTrace, dataTrace].forEach(function (t) {
+          if (m.level === 'county') { t.geojson = window.PH_COUNTIES_GEOJSON; t.featureidkey = 'id'; }
+          else { t.locationmode = 'USA-states'; }
+        });
+        var layout = {
+          margin: { t: 0, b: 0, l: 0, r: 0 }, paper_bgcolor: 'white',
+          font: { family: 'Rubik, sans-serif', color: '#00356b', size: 11 },
+          geo: { scope: 'usa', projection: { type: 'albers usa' }, showlakes: false, lakecolor: 'white' }
+        };
+        Plotly.react(root + '-map', [baseTrace, dataTrace], layout, { displayModeBar: false, responsive: true });
+      }
+
+      el(root + '-measure').addEventListener('change', function (e) { curMeasure = e.target.value; curIdx = currentMeasure().times.length - 1; render(); });
+      el(root + '-slider').addEventListener('input', function (e) { curIdx = +e.target.value; render(); });
+      extraFilters.forEach(function (f) {
+        el(root + '-f-' + f.key).addEventListener('change', function (e) {
+          stateF[f.key] = e.target.value; rebuildMeasureOptions(); curIdx = currentMeasure().times.length - 1; render();
+        });
+      });
+      rebuildMeasureOptions();
+      curIdx = currentMeasure().times.length - 1;
+      render();
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // Small-multiple horizontal bar grid (e.g., top-5 causes of injury).
+  // Hand-rolled HTML/CSS bars rather than a Plotly bar trace: this is the
+  // only chart in the dashboard that would need Plotly's cartesian "bar"
+  // module, and every other chart only needs "choropleth" (maps) or plain
+  // "scatter" (lines/points) -- pulling in bar support would mean shipping
+  // the full ~4.5MB Plotly bundle instead of the ~1.2MB geo-only one, for
+  // the sake of one chart. A plain div-based bar is lighter anyway.
+  // ------------------------------------------------------------------
+  function renderBarGrid(root, cfg) {
+    var wrap = el(root);
+    var filters = cfg.filters || [];
+    var stateF = {}; filters.forEach(function (f) { stateF[f.key] = f.default; });
+
+    var controlsHtml = '<div class="ph-controls">';
+    filters.forEach(function (f) {
+      controlsHtml += '<span class="ph-control">' + esc(f.label) + ':' +
+        '<select id="' + root + '-f-' + f.key + '">' +
+        f.options.map(function (o) {
+          var val = (typeof o === 'object') ? o.value : o;
+          var lab = (typeof o === 'object') ? o.label : o;
+          return '<option value="' + esc(val) + '"' + (val === f.default ? ' selected' : '') + '>' + esc(lab) + '</option>';
+        }).join('') +
+        '</select></span>';
+    });
+    controlsHtml += '</div>';
+    var gridHtml = '<div class="ph-grid-2">' + cfg.panels.map(function (p) {
+      return '<div><p class="ph-chart-title">' + esc(p.title) + '</p><div class="ph-bars" id="' + root + '-' + p.id + '"></div></div>';
+    }).join('') + '</div>';
+    wrap.innerHTML = controlsHtml + gridHtml + '<div class="ph-tooltip" id="' + root + '-tip"></div>';
+    var tip = el(root + '-tip');
+
+    function render() {
+      cfg.panels.forEach(function (p) {
+        var rows = p.rows.filter(function (r) {
+          for (var k in stateF) { if (String(r[k]) !== String(stateF[k])) return false; }
+          return r.rank <= (cfg.topN || 5);
+        }).sort(function (a, b) { return a.rank - b.rank; });
+        var maxVal = Math.max.apply(null, rows.map(function (r) { return r.value; }).concat([1]));
+        el(root + '-' + p.id).innerHTML = rows.map(function (r) {
+          var pct = maxVal ? (100 * r.value / maxVal) : 0;
+          var tipText = '<b>' + esc(r.rank + '. ' + r.label) + '</b><br>Estimated ' + esc(cfg.valueLabel || 'count') + ': ' +
+            fmtNum(r.value, 0) + '<br>' + fmtNum(r.pct_of_all, 1) + '% of all cases<br>n sampled: ' + fmtNum(r.n_sampled, 0) +
+            (r.unstable ? ' (small sample - interpret with caution)' : '');
+          return '<div class="ph-bar-row" data-tip="' + esc(tipText) + '">' +
+            '<span class="ph-bar-label">' + r.rank + '. ' + esc(r.label) + '</span>' +
+            '<span class="ph-bar-track"><span class="ph-bar-fill" style="width:' + pct.toFixed(1) + '%"></span></span>' +
+            '<span class="ph-bar-value">' + fmtNum(r.value, 0) + '</span></div>';
+        }).join('') || '<p class="ph-chart-sub">No data for this selection.</p>';
+      });
+    }
+
+    wrap.addEventListener('mouseover', function (e) {
+      var row = e.target.closest('.ph-bar-row');
+      if (!row) return;
+      tip.innerHTML = row.getAttribute('data-tip');
+      tip.style.display = 'block';
+    });
+    wrap.addEventListener('mousemove', function (e) {
+      if (tip.style.display === 'block') { tip.style.left = (e.pageX + 14) + 'px'; tip.style.top = (e.pageY + 14) + 'px'; }
+    });
+    wrap.addEventListener('mouseout', function (e) {
+      if (!e.relatedTarget || !e.relatedTarget.closest('.ph-bar-row')) tip.style.display = 'none';
+    });
+
+    filters.forEach(function (f) {
+      el(root + '-f-' + f.key).addEventListener('change', function (e) { stateF[f.key] = e.target.value; render(); });
+    });
+    render();
+  }
+
+  // ------------------------------------------------------------------
+  // Scatter explorer with client-side Pearson correlation + p-value.
+  // ------------------------------------------------------------------
+  function logGamma(x) {
+    var cof = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+    var y = x, tmp = x + 5.5; tmp -= (x + 0.5) * Math.log(tmp);
+    var ser = 1.000000000190015;
+    for (var j = 0; j < 6; j++) { y += 1; ser += cof[j] / y; }
+    return -tmp + Math.log(2.5066282746310005 * ser / x);
+  }
+  function betacf(x, a, b) {
+    var MAXIT = 100, EPS = 3e-7, FPMIN = 1e-30;
+    var qab = a + b, qap = a + 1, qam = a - 1;
+    var c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < FPMIN) d = FPMIN;
+    d = 1 / d; var h = d;
+    for (var m = 1; m <= MAXIT; m++) {
+      var m2 = 2 * m;
+      var aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d; h *= d * c;
+      aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d; var del = d * c; h *= del;
+      if (Math.abs(del - 1) < EPS) break;
+    }
+    return h;
+  }
+  function betai(a, b, x) {
+    if (x <= 0) return 0; if (x >= 1) return 1;
+    var bt = Math.exp(logGamma(a + b) - logGamma(a) - logGamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+    if (x < (a + 1) / (a + b + 2)) return bt * betacf(x, a, b) / a;
+    return 1 - bt * betacf(1 - x, b, a) / b;
+  }
+  function pearson(xs, ys) {
+    var n = xs.length, mx = 0, my = 0, i;
+    for (i = 0; i < n; i++) { mx += xs[i]; my += ys[i]; }
+    mx /= n; my /= n;
+    var sxy = 0, sxx = 0, syy = 0;
+    for (i = 0; i < n; i++) { var dx = xs[i] - mx, dy = ys[i] - my; sxy += dx * dy; sxx += dx * dx; syy += dy * dy; }
+    var r = sxy / Math.sqrt(sxx * syy);
+    var df = n - 2;
+    var t = r * Math.sqrt(df / (1 - r * r));
+    var p = (df > 0) ? betai(df / 2, 0.5, df / (df + t * t)) : NaN;
+    return { r: r, p: p, n: n };
+  }
+
+  function renderScatter(root, cfg) {
+    onReady(function () {
+      var wrap = el(root);
+      var levels = Object.keys(cfg.measuresByLevel);
+      var curLevel = cfg.defaultLevel || levels[0];
+      var opts = function () { return cfg.measuresByLevel[curLevel]; };
+      var curX = cfg.defaultX || opts()[0].id;
+      var curY = cfg.defaultY || (opts()[1] ? opts()[1].id : opts()[0].id);
+
+      function measureOptionsHtml(selId) {
+        return opts().map(function (m) { return '<option value="' + esc(m.id) + '"' + (m.id === selId ? ' selected' : '') + '>' + esc(m.label) + '</option>'; }).join('');
+      }
+
+      var levelHtml = '';
+      if (levels.length > 1) {
+        levelHtml = '<div class="ph-toggle" id="' + root + '-level">' +
+          levels.map(function (lv) { return '<button data-level="' + lv + '" type="button" class="' + (lv === curLevel ? 'active' : '') + '">' + esc(cfg.levelLabels && cfg.levelLabels[lv] ? cfg.levelLabels[lv] : lv) + '</button>'; }).join('') + '</div>';
+      }
+
+      wrap.innerHTML =
+        '<div class="ph-controls">' + levelHtml +
+        '<span class="ph-control">X axis:<select id="' + root + '-x">' + measureOptionsHtml(curX) + '</select></span>' +
+        '<span class="ph-control">Y axis:<select id="' + root + '-y">' + measureOptionsHtml(curY) + '</select></span>' +
+        '</div>' +
+        '<p class="ph-stat-line" id="' + root + '-stat"></p>' +
+        '<div id="' + root + '-chart" style="width:100%;height:' + (cfg.height || 480) + 'px;"></div>';
+
+      function render() {
+        var mx = opts().filter(function (m) { return m.id === curX; })[0];
+        var my = opts().filter(function (m) { return m.id === curY; })[0];
+        if (!mx || !my) return;
+        var geo = (curLevel === 'county') ? window.PH_GEO_COUNTY : window.PH_GEO_STATE;
+        var xs = [], ys = [], labels = [];
+        for (var i = 0; i < mx.values.length; i++) {
+          var xv = mx.values[i], yv = my.values[i];
+          if (xv === null || yv === null || xv === undefined || yv === undefined) continue;
+          xs.push(xv); ys.push(yv); labels.push(geo.labels[i]);
+        }
+        var trace = {
+          type: 'scatter', mode: 'markers', x: xs, y: ys, text: labels,
+          marker: { color: '#2a78d6', size: 8, opacity: 0.7, line: { color: '#ffffff', width: 0.5 } },
+          hovertemplate: '<b>%{text}</b><br>' + esc(mx.label) + ': %{x:,.1f}<br>' + esc(my.label) + ': %{y:,.1f}<extra></extra>'
+        };
+        var layout = {
+          margin: { t: 10, b: 55, l: 65, r: 20 }, paper_bgcolor: 'white', plot_bgcolor: 'white',
+          font: { family: 'Rubik, sans-serif', color: '#00356b', size: 11 },
+          xaxis: { title: mx.label, gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false },
+          yaxis: { title: my.label, gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false }
+        };
+        Plotly.react(root + '-chart', [trace], layout, { displayModeBar: false, responsive: true });
+        if (xs.length > 2) {
+          var res = pearson(xs, ys);
+          var sig = res.p < 0.001 ? 'p &lt; 0.001' : ('p = ' + res.p.toFixed(3));
+          el(root + '-stat').innerHTML = 'Pearson <em>r</em> = <span class="stat-num">' + res.r.toFixed(2) + '</span> (' + sig + ', n = ' + res.n.toLocaleString('en-US') + ' ' + (curLevel === 'county' ? 'counties' : 'states') + ')';
+        } else {
+          el(root + '-stat').textContent = 'Not enough overlapping data to compute a correlation.';
+        }
+      }
+
+      el(root + '-x').addEventListener('change', function (e) { curX = e.target.value; render(); });
+      el(root + '-y').addEventListener('change', function (e) { curY = e.target.value; render(); });
+      if (levels.length > 1) {
+        el(root + '-level').addEventListener('click', function (e) {
+          var b = e.target.closest('button'); if (!b) return;
+          curLevel = b.getAttribute('data-level');
+          el(root + '-level').querySelectorAll('button').forEach(function (btn) { btn.classList.toggle('active', btn === b); });
+          curX = opts()[0].id; curY = opts()[1] ? opts()[1].id : opts()[0].id;
+          el(root + '-x').innerHTML = measureOptionsHtml(curX);
+          el(root + '-y').innerHTML = measureOptionsHtml(curY);
+          render();
+        });
+      }
+      render();
+    });
+  }
+
+  return { renderLineChart: renderLineChart, renderChoropleth: renderChoropleth, renderBarGrid: renderBarGrid, renderScatter: renderScatter, colorFor: colorFor, dashFor: dashFor, fmtNum: fmtNum };
+})();
+</script>
+```
+
+::: {.panel-tabset}
+
+## Overview
+
+### Top causes of childhood injury (CPSC NEISS)
+
+```{r ov-injury-data}
+#| results: asis
+neiss_prep <- function(df, cause_col) {
+  df %>%
+    # rank <= 5: the grid only ever shows the top 5, so ranks 6-10 would be
+    # dead weight in the embedded JSON.
+    filter(sex %in% c("All", "Female", "Male"), age %in% neiss_age_order, rank <= 5) %>%
+    transmute(
+      age = age, sex = sex, year = year, rank = rank,
+      label = .data[[cause_col]], value = value,
+      pct_of_all = pct_of_all, n_sampled = n_sampled,
+      unstable = unstable_flag == 1
+    )
+}
+
+prod_rows <- neiss_prep(neiss_prod, "product")
+diag_rows <- neiss_prep(neiss_diag, "diagnosis")
+
+age_present <- neiss_age_order[neiss_age_order %in% union(prod_rows$age, diag_rows$age)]
+age_opts <- lapply(age_present, function(a) list(value = a, label = neiss_age_label(a)))
+year_opts <- sort(unique(c(prod_rows$year, diag_rows$year)), decreasing = TRUE)
+
+ov_injury_cfg <- list(
+  topN = 5, valueLabel = "ED visits", height = 380,
+  filters = list(
+    list(key = "age", label = "Age", options = age_opts, default = "5-9 years"),
+    list(key = "sex", label = "Sex", options = c("All", "Female", "Male"), default = "All"),
+    list(key = "year", label = "Year", options = year_opts, default = year_opts[1])
+  ),
+  panels = list(
+    list(id = "product", title = "Top 5 consumer products involved", rows = prod_rows),
+    list(id = "diagnosis", title = "Top 5 diagnoses", rows = diag_rows)
+  )
+)
+emit_json("OV_INJURY_GRID", ov_injury_cfg)
+```
+
+```{=html}
+<div class="ph-card" id="ov-injury-grid"></div>
+<script>PH.renderBarGrid('ov-injury-grid', window.OV_INJURY_GRID);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Each panel shows the 5 leading products (left) and diagnoses (right) involved in emergency-department-treated childhood injuries for the selected age group, sex, and year, ranked by CPSC NEISS's national weighted estimate of ED visits. Use the dropdowns to change age, sex, or year for both panels at once. Bars marked "small sample" are based on fewer than 20 sampled NEISS cases and should be interpreted with caution per CPSC guidance. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/neiss">CPSC NEISS</a>, national estimates only (no state/county breakdown available).</p>
+</details>
+```
+
+### Infant and child mortality by county
+
+```{r ov-mortality}
+#| results: asis
+emit_json("OV_MORTALITY_MAP", list(
+  measureLabel = "Measure", height = 520, defaultMeasure = "chr_infant_mortality",
+  measures = list(
+    chr_choropleth_measure("chr_infant_mortality", "county"),
+    chr_choropleth_measure("chr_child_mortality", "county")
+  )
+))
+```
+
+```{=html}
+<div class="ph-card" id="ov-mortality"></div>
+<script>PH.renderChoropleth('ov-mortality', window.OV_MORTALITY_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Infant mortality (deaths per 1,000 live births) and child mortality (deaths per 100,000 population, ages 1-19), by county and year, from County Health Rankings & Roadmaps. Use the Measure dropdown to switch between the two and the slider to change year. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/chr">County Health Rankings & Roadmaps</a>.</p>
+</details>
+```
+
+## Substance Abuse
+
+```{r sa-shared}
+#| include: false
+subst_measures <- c("pct_ever_cigarette", "pct_ever_vape", "pct_current_smokeless_tobacco", "pct_current_alcohol",
+  "pct_binge_drinking", "pct_ever_marijuana", "pct_early_marijuana", "pct_current_marijuana",
+  "pct_ever_rx_opioid_misuse", "pct_current_rx_opioid_misuse", "pct_ever_cocaine", "pct_ever_inhalants",
+  "pct_ever_heroin", "pct_ever_methamphetamines", "pct_ever_ecstasy", "pct_ever_hallucinogens",
+  "pct_ever_inject_drug", "pct_ever_illicit_drug")
+
+subst_labels <- c(
+  pct_ever_cigarette = "Ever smoked a cigarette", pct_ever_vape = "Ever used an e-cigarette/vape",
+  pct_current_smokeless_tobacco = "Currently uses smokeless tobacco", pct_current_alcohol = "Currently drinks alcohol",
+  pct_binge_drinking = "Binge drinking (past 30 days)", pct_ever_marijuana = "Ever used marijuana",
+  pct_early_marijuana = "First used marijuana before age 13", pct_current_marijuana = "Currently uses marijuana",
+  pct_ever_rx_opioid_misuse = "Ever misused prescription opioids", pct_current_rx_opioid_misuse = "Currently misuses prescription opioids",
+  pct_ever_cocaine = "Ever used cocaine", pct_ever_inhalants = "Ever used inhalants",
+  pct_ever_heroin = "Ever used heroin", pct_ever_methamphetamines = "Ever used methamphetamines",
+  pct_ever_ecstasy = "Ever used ecstasy", pct_ever_hallucinogens = "Ever used hallucinogens",
+  pct_ever_inject_drug = "Ever injected an illegal drug", pct_ever_illicit_drug = "Ever used any illicit drug"
+)
+```
+
+### Substance use by state
+
+```{r sa-map}
+#| results: asis
+subst_map_data <- yrbss %>%
+  filter(measure %in% subst_measures, age == "Overall", sex == "All", race == "All", ethnicity == "All",
+         not_asked == 0, geography != "United States") %>%
+  mutate(loc = fips2abbr[fips], t = year,
+         note = if_else(suppressed == 1, " (suppressed - estimate imputed)", ""))
+
+subst_map_measures <- lapply(subst_measures, function(mid) {
+  d <- subst_map_data %>% filter(measure == mid) %>% select(loc, t, value, note)
+  build_measure_entry(d, id = mid, label = subst_labels[[mid]], level = "state", unit = "%", decimals = 1,
+                       sub = "Overall estimate, grades 9-12 (CDC YRBSS)")
+})
+
+emit_json("SA_MAP", list(measureLabel = "Substance", height = 480,
+                          defaultMeasure = "pct_ever_cigarette", measures = subst_map_measures))
+```
+
+```{=html}
+<div class="ph-card" id="sa-map"></div>
+<script>PH.renderChoropleth('sa-map', window.SA_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of high school students (grades 9-12, all ages combined) reporting each substance-use behavior, by state and survey year. Choose a substance from the dropdown and drag the slider to change year. States are only shown for years YRBSS collected and reported the item, since not every state asks every question every cycle. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+</details>
+```
+
+### Substance use over time
+
+```{r sa-ts}
+#| results: asis
+subst_ts_data <- yrbss %>%
+  filter(measure %in% subst_measures, race == "All", ethnicity == "All", not_asked == 0, age %in% yrbss_age_order) %>%
+  mutate(note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
+
+subst_ts_lines <- build_lines(subst_ts_data, dim_cols = c("geography", "age", "sex", "measure"),
+                               series_col = "age", x_col = "year", y_col = "value", note_col = "note")
+state_opts_sa <- c("United States", sort(setdiff(unique(subst_ts_data$geography), "United States")))
+age_opts_sa <- yrbss_age_order[yrbss_age_order %in% unique(subst_ts_data$age)]
+
+emit_json("SA_TS", list(
+  title = "Substance use over time, grades 9-12", height = 480,
+  xTitle = "Year", yTitle = "Percent of students (%)", yUnit = "%", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_sa, default = "United States"),
+    list(key = "measure", label = "Substance", options = lapply(subst_measures, function(m) list(value = m, label = subst_labels[[m]])), default = "pct_ever_cigarette")
+  ),
+  compareBy = yrbss_compare_by(age_opts_sa),
+  lines = subst_ts_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="sa-ts"></div>
+<script>PH.renderLineChart('sa-ts', window.SA_TS);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Trends over time in the percent of high school students reporting each substance-use behavior. Choose a state and substance. Use Compare by to switch the legend between one line per age (sex fixed at "All") or one line per sex (age fixed at "Overall"); toggle individual lines on/off below the chart. Race and Hispanic ethnicity are not broken out separately here. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>, biennial since 2005 (not every state/item in every cycle).</p>
+</details>
+```
+
+### Overdose trends
+
+```{r sa-overdose}
+#| results: asis
+# Annual only for both sources -- monthly x-axis labels were too dense to
+# read, and going annual-only means WISQARS (which has no monthly data) and
+# Epic Cosmos can share one axis without a resolution toggle. The two
+# sources still use different age bands (WISQARS: 0-14/15-24; Epic:
+# 0-14/15-25), so those are harmonized into one merged age filter.
+age_map_wisqars <- c("0-14 years" = "0-14", "15-24 years" = "15-24")
+age_map_epic <- c("0-14 years" = "0-14", "15-25 years" = "15-24")
+
+od_wisqars <- wisqars %>%
+  filter(measure == "wisqars_rate_drug_poisoning", sex == "All", race == "All", ethnicity == "All") %>%
+  mutate(age_grp = age_map_wisqars[age]) %>%
+  filter(!is.na(age_grp)) %>%
+  transmute(geography, age_grp, source = "wisqars_drug_poisoning", series = "wisqars_drug_poisoning", period = as.character(year), value)
+
+od_epic <- epic_injury_year %>%
+  filter(measure == "epic_rate_ed_opioid") %>%
+  mutate(age_grp = age_map_epic[age]) %>%
+  filter(!is.na(age_grp)) %>%
+  transmute(geography, age_grp, source = "epic_opioid_ed", series = "epic_opioid_ed", period = as.character(year), value)
+
+od_all <- bind_rows(od_wisqars, od_epic)
+od_lines <- build_lines(od_all, dim_cols = c("geography", "age_grp", "source"),
+                         series_col = "series", x_col = "period", y_col = "value")
+state_opts_od <- c("United States", sort(setdiff(unique(od_all$geography), "United States")))
+
+emit_json("SA_OD", list(
+  title = "Drug overdose / opioid ED visit trends", height = 460, toggle = FALSE,
+  xTitle = "Year", yTitle = "Rate (per 100,000 population)", yUnit = " per 100k", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_od, default = "United States"),
+    list(key = "age_grp", label = "Age", options = list(list(value = "0-14", label = "Ages 0-14"), list(value = "15-24", label = "Ages 15-24")), default = "15-24"),
+    list(key = "source", label = "Data source", options = list(
+      list(value = "wisqars_drug_poisoning", label = "CDC/WISQARS drug poisoning deaths"),
+      list(value = "epic_opioid_ed", label = "Epic Cosmos opioid-related ED visits")
+    ), default = "wisqars_drug_poisoning")
+  ),
+  seriesOrder = c("wisqars_drug_poisoning", "epic_opioid_ed"),
+  seriesMeta = list(
+    wisqars_drug_poisoning = list(label = "CDC/WISQARS drug poisoning deaths"),
+    epic_opioid_ed = list(label = "Epic Cosmos opioid-related ED visits")
+  ),
+  lines = od_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="sa-od"></div>
+<script>PH.renderLineChart('sa-od', window.SA_OD);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Compares fatal drug-poisoning trends from CDC/WISQARS with opioid-related emergency-department visit trends from Epic Cosmos, both at annual resolution. Use the Data source dropdown to switch between the two. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/wisqars">CDC/WISQARS</a>, <a href="https://github.com/PopHIVE/Ingest/tree/main/data/epic_injury">Epic Cosmos</a>.</p>
+</details>
+```
+
+### Follow-up after ED visits for substance use (Medicaid/CHIP)
+
+```{r sa-fua}
+#| results: asis
+# Medicaid/CHIP payers are pooled into one "Medicaid" label (averaged on the
+# rare state-year where both are reported) -- same treatment as every other
+# Medicaid Child Core Set chart in this dashboard -- but the 7-day and
+# 30-day follow-up windows are kept separate as a measure toggle rather than
+# pooled, since they answer different questions.
+fua_labels <- c(medicaid_fua_ch_7d_rate = "Follow-up within 7 days", medicaid_fua_ch_30d_rate = "Follow-up within 30 days")
+fua_data <- medicaid %>% filter(measure %in% names(fua_labels)) %>%
+  mutate(loc = fips2abbr[fips], t = year) %>%
+  group_by(measure, loc, t) %>% summarise(value = mean(value, na.rm = TRUE), .groups = "drop")
+fua_entries <- lapply(names(fua_labels), function(mid) {
+  d <- fua_data %>% filter(measure == mid) %>% select(loc, t, value)
+  build_measure_entry(d, id = mid, label = fua_labels[[mid]], level = "state", unit = "%", decimals = 1)
+})
+emit_json("SA_FUA_MAP", list(
+  measureLabel = "Follow-up window", height = 460,
+  defaultMeasure = "medicaid_fua_ch_7d_rate", measures = fua_entries
+))
+```
+
+```{=html}
+<div class="ph-card" id="sa-fua"></div>
+<script>PH.renderChoropleth('sa-fua', window.SA_FUA_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of child Medicaid/CHIP beneficiaries with a follow-up visit after an emergency-department visit involving alcohol or other drug use (Medicaid/CHIP Child Core Set FUA measure), by state and year. Toggle between the 7-day and 30-day follow-up windows. This Medicaid/CHIP file reports only state-level rates. Data are voluntarily self-reported by states, so not every state reports every year. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid">CMS Medicaid/CHIP Child Core Set</a>.</p>
+</details>
+```
+
+## Injury and Violence
+
+### Motor vehicle crash deaths
+
+```{r iv-mv-map}
+#| results: asis
+mv_age_opts <- c("0-14 years", "15-24 years")
+mv_sex_opts <- c("All", "Female", "Male")
+
+mv_wisqars_labels <- c(
+  wisqars_rate_pedestrian_mv_traffic = "Pedestrian deaths in MV crashes (rate per 100k)",
+  wisqars_rate_motor_vehicle_traffic = "All motor-vehicle traffic deaths (rate per 100k)"
+)
+
+mv_base <- wisqars %>%
+  filter(measure %in% names(mv_wisqars_labels), race == "All", ethnicity == "All", geography != "United States",
+         age %in% mv_age_opts, sex %in% mv_sex_opts) %>%
+  mutate(loc = fips2abbr[fips], t = year)
+
+mv_entries <- list()
+for (mid in names(mv_wisqars_labels)) for (ag in mv_age_opts) for (sx in mv_sex_opts) {
+  d <- mv_base %>% filter(measure == mid, age == ag, sex == sx) %>% select(loc, t, value)
+  if (nrow(d) == 0) next
+  eid <- paste("wisqars", mid, ag, sx, sep = "|")
+  mv_entries[[eid]] <- build_measure_entry(
+    d, id = eid, label = paste0(mv_wisqars_labels[[mid]], " — ", ag, ", ", sx),
+    level = "state", unit = if (grepl("_rate_", mid)) "per 100k" else "deaths",
+    decimals = if (grepl("_rate_", mid)) 2 else 0, tags = list(source = "WISQARS", age = ag, sex = sx)
+  )
+}
+for (ag in mv_age_opts) for (sx in mv_sex_opts) {
+  d <- nhtsa_state %>% filter(age == ag, sex == sx, geography != "United States") %>%
+    mutate(loc = fips2abbr[fips], t = year) %>% select(loc, t, value)
+  if (nrow(d) == 0) next
+  eid <- paste("nhtsa_state", ag, sx, sep = "|")
+  mv_entries[[eid]] <- build_measure_entry(
+    d, id = eid, label = paste0("NHTSA traffic fatalities, state (count) — ", ag, ", ", sx),
+    level = "state", unit = "deaths", decimals = 0, tags = list(source = "NHTSA (state)", age = ag, sex = sx)
+  )
+}
+for (ag in mv_age_opts) for (sx in mv_sex_opts) {
+  d <- nhtsa_county %>% filter(age == ag, sex == sx) %>%
+    mutate(loc = fips, t = year) %>% select(loc, t, value)
+  if (nrow(d) == 0) next
+  eid <- paste("nhtsa_county", ag, sx, sep = "|")
+  mv_entries[[eid]] <- build_measure_entry(
+    d, id = eid, label = paste0("NHTSA traffic fatalities, county (count) — ", ag, ", ", sx),
+    level = "county", unit = "deaths", decimals = 0, tags = list(source = "NHTSA (county)", age = ag, sex = sx)
+  )
+}
+mv_all <- unname(mv_entries)
+mv_sources <- unique(vapply(mv_all, function(m) m$tags$source, character(1)))
+
+emit_json("IV_MV_MAP", list(
+  measureLabel = "Source / measure", height = 500,
+  filters = list(
+    list(key = "source", label = "Source", options = mv_sources, default = "NHTSA (state)"),
+    list(key = "age", label = "Age", options = mv_age_opts, default = "15-24 years"),
+    list(key = "sex", label = "Sex", options = mv_sex_opts, default = "All")
+  ),
+  defaultMeasure = "nhtsa_state|15-24 years|All",
+  measures = mv_all
+))
+```
+
+```{=html}
+<div class="ph-card" id="iv-mv-map"></div>
+<script>PH.renderChoropleth('iv-mv-map', window.IV_MV_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Motor-vehicle-related traffic deaths by state (NHTSA state totals, WISQARS) or by county (NHTSA county totals), by age and sex. Switch Source to compare CDC/WISQARS cause-specific death rates (pedestrian and all motor-vehicle-traffic deaths, per 100,000 population) against NHTSA FARS fatality counts; switching to "NHTSA (county)" automatically switches the map to county geography. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/wisqars">CDC/WISQARS</a>, <a href="https://github.com/PopHIVE/Ingest/tree/main/data/nhtsa">NHTSA FARS</a>.</p>
+</details>
+```
+
+### Dangerous driving
+
+```{r iv-driving}
+#| results: asis
+driving_measures <- c("pct_no_seatbelt", "pct_rode_drinking_driver", "pct_drove_drinking", "pct_text_while_driving")
+driving_labels <- c(
+  pct_no_seatbelt = "Rarely/never wears a seatbelt",
+  pct_rode_drinking_driver = "Rode with a driver who had been drinking",
+  pct_drove_drinking = "Drove after drinking alcohol",
+  pct_text_while_driving = "Texted/emailed while driving"
+)
+driving_data <- yrbss %>%
+  filter(measure %in% driving_measures, race == "All", ethnicity == "All", not_asked == 0, age %in% yrbss_age_order) %>%
+  mutate(note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
+driving_lines <- build_lines(driving_data, dim_cols = c("geography", "age", "sex", "measure"),
+                              series_col = "age", x_col = "year", y_col = "value", note_col = "note")
+state_opts_drv <- c("United States", sort(setdiff(unique(driving_data$geography), "United States")))
+age_opts_drv <- yrbss_age_order[yrbss_age_order %in% unique(driving_data$age)]
+
+emit_json("IV_DRIVING", list(
+  title = "Dangerous driving behaviors, by state and age", height = 460,
+  xTitle = "Year", yTitle = "Percent of students (%)", yUnit = "%", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_drv, default = "United States"),
+    list(key = "measure", label = "Behavior", options = lapply(driving_measures, function(m) list(value = m, label = driving_labels[[m]])), default = "pct_no_seatbelt")
+  ),
+  compareBy = yrbss_compare_by(age_opts_drv),
+  lines = driving_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="iv-driving"></div>
+<script>PH.renderLineChart('iv-driving', window.IV_DRIVING);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of high school students reporting each risky driving/riding behavior in the past 30 days (only ages old enough to legally drive report the driving-specific items in meaningful numbers). Choose a state and behavior. Use Compare by to switch the legend between one line per age or one line per sex; toggle individual lines on/off below the chart. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+</details>
+```
+
+### Sports-related concussions
+
+```{r iv-concussion}
+#| results: asis
+conc_data <- yrbss %>%
+  filter(measure == "pct_sports_concussion", race == "All", ethnicity == "All", not_asked == 0, age %in% yrbss_age_order) %>%
+  mutate(note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
+conc_lines <- build_lines(conc_data, dim_cols = c("geography", "age", "sex"), series_col = "age",
+                           x_col = "year", y_col = "value", note_col = "note")
+state_opts_conc <- c("United States", sort(setdiff(unique(conc_data$geography), "United States")))
+age_opts_conc <- yrbss_age_order[yrbss_age_order %in% unique(conc_data$age)]
+
+emit_json("IV_CONCUSSION", list(
+  title = "Sports/activity-related concussion, past 12 months", height = 460,
+  xTitle = "Year", yTitle = "Percent of students (%)", yUnit = "%", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_conc, default = "United States")
+  ),
+  compareBy = yrbss_compare_by(age_opts_conc),
+  lines = conc_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="iv-concussion"></div>
+<script>PH.renderLineChart('iv-concussion', window.IV_CONCUSSION);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of high school students reporting a sports- or activity-related concussion in the past 12 months. Choose a state and use Compare by to switch the legend between one line per age or one line per sex and toggle individual lines on/off below the chart. Race and Hispanic ethnicity are not broken out separately here. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+</details>
+```
+
+### Firearm injuries, deaths, and carrying behavior
+
+```{r iv-firearm-injury}
+#| results: asis
+fa_age_opts <- c("0-14 years", "15-24 years", "15-25 years")
+fa_age_labels <- c(
+  "0-14 years" = "0-14 years",
+  "15-24 years" = "15-24 years (WISQARS)",
+  "15-25 years" = "15-25 years (Epic Cosmos)"
+)
+
+fa_wisqars_labels <- c(
+  wisqars_rate_firearm_accident = "Unintentional firearm deaths (rate per 100k)",
+  wisqars_rate_firearm_homicide = "Firearm homicide deaths (rate per 100k)",
+  wisqars_rate_firearm_suicide = "Firearm suicide deaths (rate per 100k)",
+  wisqars_rate_firearm_intentional = "All intentional firearm deaths (rate per 100k)"
+)
+fa_base <- wisqars %>%
+  filter(measure %in% names(fa_wisqars_labels), race == "All", age %in% fa_age_opts,
+         sex == "All", ethnicity == "All") %>%
+  mutate(note = "")
+fa_wisqars_lines <- build_lines(fa_base, dim_cols = c("geography", "age"),
+                                 series_col = "measure", x_col = "year", y_col = "value", note_col = "note")
+
+fa_epic <- epic_injury_year %>%
+  filter(measure == "epic_rate_ed_firearm", age %in% fa_age_opts) %>%
+  mutate(note = "")
+fa_epic_lines <- build_lines(fa_epic, dim_cols = c("geography", "age"),
+                              series_col = "measure", x_col = "year", y_col = "value", note_col = "note")
+
+fa_lines <- c(fa_wisqars_lines, fa_epic_lines)
+fa_series_order <- c(names(fa_wisqars_labels), "epic_rate_ed_firearm")
+fa_series_meta <- c(fa_wisqars_labels,
+  epic_rate_ed_firearm = "Epic Cosmos firearm-related ED visits (rate per 100k)")
+state_opts_fa <- c("United States", sort(setdiff(unique(fa_base$geography), "United States")))
+
+emit_json("IV_FIREARM_INJURY", list(
+  title = "Firearm deaths and ED visits", height = 460, toggle = TRUE,
+  xTitle = "Year", yTitle = "Rate per 100,000 population", decimals = 2,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_fa, default = "United States"),
+    list(key = "age", label = "Age", options = lapply(fa_age_opts, function(a) list(value = a, label = fa_age_labels[[a]])), default = "15-24 years")
+  ),
+  seriesOrder = fa_series_order,
+  seriesMeta = setNames(lapply(fa_series_order, function(m) list(label = fa_series_meta[[m]])), fa_series_order),
+  defaultOn = c("wisqars_rate_firearm_accident"),
+  lines = fa_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="iv-firearm-injury"></div>
+<script>PH.renderLineChart('iv-firearm-injury', window.IV_FIREARM_INJURY);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Firearm-related death rates (CDC/WISQARS, by intent) and firearm-related ED visit rates (Epic Cosmos) by state and age. By default, unintentional firearm deaths and Epic Cosmos firearm ED visits are shown; toggle any series on/off via the legend chips. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/wisqars">CDC/WISQARS</a>, <a href="https://github.com/PopHIVE/Ingest/tree/main/data/epic_injury">Epic Cosmos</a>.</p>
+</details>
+```
+
+```{r iv-firearm-behavior}
+#| results: asis
+fb_measures <- c("pct_carried_weapon_school", "pct_carried_gun", "pct_threatened_weapon_school")
+fb_labels <- c(
+  pct_carried_weapon_school = "Carried a weapon on school property",
+  pct_carried_gun = "Carried a gun (not for hunting/sport)",
+  pct_threatened_weapon_school = "Threatened/injured with a weapon at school"
+)
+fb_data <- yrbss %>%
+  filter(measure %in% fb_measures, race == "All", ethnicity == "All", not_asked == 0, age %in% yrbss_age_order) %>%
+  mutate(note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
+fb_lines <- build_lines(fb_data, dim_cols = c("geography", "age", "sex", "measure"), series_col = "age",
+                         x_col = "year", y_col = "value", note_col = "note")
+state_opts_fb <- c("United States", sort(setdiff(unique(fb_data$geography), "United States")))
+age_opts_fb <- yrbss_age_order[yrbss_age_order %in% unique(fb_data$age)]
+
+emit_json("IV_FIREARM_BEHAVIOR", list(
+  title = "Weapon-carrying and threats at school", height = 420,
+  xTitle = "Year", yTitle = "Percent of students (%)", yUnit = "%", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_fb, default = "United States"),
+    list(key = "measure", label = "Measure", options = lapply(fb_measures, function(m) list(value = m, label = fb_labels[[m]])), default = "pct_carried_weapon_school")
+  ),
+  compareBy = yrbss_compare_by(age_opts_fb),
+  lines = fb_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="iv-firearm-behavior"></div>
+<script>PH.renderLineChart('iv-firearm-behavior', window.IV_FIREARM_BEHAVIOR);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Self-reported weapon-carrying and weapon-related threats (percent of students, past 12 months). Choose a state and measure. Use Compare by to switch the legend between one line per age or one line per sex; toggle individual lines on/off below the chart. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+</details>
+```
+
+## Mental Health
+
+```{r mh-shared}
+#| include: false
+mh_filter_lists <- function(df) {
+  list(
+    state = c("United States", sort(setdiff(unique(df$geography), "United States"))),
+    age = yrbss_age_order[yrbss_age_order %in% unique(df$age)],
+    race = c("All", sort(setdiff(unique(df$race), "All")))
+  )
+}
+```
+
+### Suicidal ideation and behavior
+
+```{r mh-suicide}
+#| results: asis
+# Every YRBSS time series uses the same "Compare by" pattern: the legend
+# toggles between one line per age (sex fixed at "All") or one line per sex
+# (age fixed at "Overall"). Race and Hispanic ethnicity are dropped entirely
+# (always filtered to "All") to keep this comparison focused.
+mh_suicide_measures <- c("pct_considered_suicide", "pct_planned_suicide", "pct_attempted_suicide", "pct_injurious_suicide_attempt")
+mh_suicide_labels <- c(
+  pct_considered_suicide = "Seriously considered suicide",
+  pct_planned_suicide = "Made a suicide plan",
+  pct_attempted_suicide = "Attempted suicide",
+  pct_injurious_suicide_attempt = "Suicide attempt requiring medical treatment"
+)
+mh_suicide_data <- yrbss %>%
+  filter(measure %in% mh_suicide_measures, race == "All", ethnicity == "All", not_asked == 0, age %in% yrbss_age_order) %>%
+  mutate(note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
+mh_suicide_lines <- build_lines(mh_suicide_data, dim_cols = c("geography", "age", "sex", "measure"),
+                                 series_col = "age", x_col = "year", y_col = "value", note_col = "note")
+state_opts_suicide <- c("United States", sort(setdiff(unique(mh_suicide_data$geography), "United States")))
+age_opts_suicide <- yrbss_age_order[yrbss_age_order %in% unique(mh_suicide_data$age)]
+
+emit_json("MH_SUICIDE", list(
+  title = "Suicidal ideation and behavior, past 12 months", height = 480,
+  xTitle = "Year", yTitle = "Percent of students (%)", yUnit = "%", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_suicide, default = "United States"),
+    list(key = "measure", label = "Measure", options = lapply(mh_suicide_measures, function(m) list(value = m, label = mh_suicide_labels[[m]])), default = "pct_considered_suicide")
+  ),
+  compareBy = yrbss_compare_by(age_opts_suicide),
+  lines = mh_suicide_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="mh-suicide"></div>
+<script>PH.renderLineChart('mh-suicide', window.MH_SUICIDE);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of high school students reporting suicidal ideation or behavior in the past 12 months. Choose a state and which suicide-related measure to view. Use Compare by to switch the legend between one line per age or one line per sex; toggle individual lines on/off below the chart. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+</details>
+```
+
+### Bullying
+
+```{r mh-bullying}
+#| results: asis
+mh_bully_measures <- c("pct_bullied_at_school", "pct_bullied_electronic")
+mh_bully_labels <- c(pct_bullied_at_school = "Bullied at school", pct_bullied_electronic = "Bullied electronically")
+mh_bully_data <- yrbss %>%
+  filter(measure %in% mh_bully_measures, race == "All", ethnicity == "All", not_asked == 0, age %in% yrbss_age_order) %>%
+  mutate(note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
+mh_bully_lines <- build_lines(mh_bully_data, dim_cols = c("geography", "age", "sex", "measure"),
+                               series_col = "age", x_col = "year", y_col = "value", note_col = "note")
+state_opts_bully <- c("United States", sort(setdiff(unique(mh_bully_data$geography), "United States")))
+age_opts_bully <- yrbss_age_order[yrbss_age_order %in% unique(mh_bully_data$age)]
+
+emit_json("MH_BULLYING", list(
+  title = "Bullying, past 12 months", height = 440,
+  xTitle = "Year", yTitle = "Percent of students (%)", yUnit = "%", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_bully, default = "United States"),
+    list(key = "measure", label = "Measure", options = lapply(mh_bully_measures, function(m) list(value = m, label = mh_bully_labels[[m]])), default = "pct_bullied_at_school")
+  ),
+  compareBy = yrbss_compare_by(age_opts_bully),
+  lines = mh_bully_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="mh-bullying"></div>
+<script>PH.renderLineChart('mh-bullying', window.MH_BULLYING);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of high school students bullied on school property or electronically in the past 12 months. Choose a state and which bullying-related measure to view. Use Compare by to switch the legend between one line per age or one line per sex; toggle individual lines on/off below the chart. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+</details>
+```
+
+### Other mental health and wellbeing indicators
+
+```{r mh-other}
+#| results: asis
+mh_other_measures <- c("pct_social_media_daily", "pct_poor_mental_health", "pct_insufficient_sleep", "pct_not_close_at_school")
+mh_other_labels <- c(
+  pct_social_media_daily = "Uses social media several times a day",
+  pct_poor_mental_health = "Frequent poor mental health (past 30 days)",
+  pct_insufficient_sleep = "Insufficient sleep on school nights",
+  pct_not_close_at_school = "Does not feel close to people at school"
+)
+mh_other_data <- yrbss %>%
+  filter(measure %in% mh_other_measures, race == "All", ethnicity == "All", not_asked == 0, age %in% yrbss_age_order) %>%
+  mutate(note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
+mh_other_lines <- build_lines(mh_other_data, dim_cols = c("geography", "age", "sex", "measure"),
+                               series_col = "age", x_col = "year", y_col = "value", note_col = "note")
+state_opts_other <- c("United States", sort(setdiff(unique(mh_other_data$geography), "United States")))
+age_opts_other <- yrbss_age_order[yrbss_age_order %in% unique(mh_other_data$age)]
+
+emit_json("MH_OTHER", list(
+  title = "Other mental health and wellbeing indicators", height = 460,
+  xTitle = "Year", yTitle = "Percent of students (%)", yUnit = "%", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_other, default = "United States"),
+    list(key = "measure", label = "Measure", options = lapply(mh_other_measures, function(m) list(value = m, label = mh_other_labels[[m]])), default = "pct_insufficient_sleep")
+  ),
+  compareBy = yrbss_compare_by(age_opts_other),
+  lines = mh_other_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="mh-other"></div>
+<script>PH.renderLineChart('mh-other', window.MH_OTHER);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Additional wellbeing indicators: daily social media use, frequent poor mental health, insufficient sleep, and not feeling close to people at school. Choose a state and which indicator to view. Use Compare by to switch the legend between one line per age or one line per sex; toggle individual lines on/off below the chart. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+</details>
+```
+
+### Disconnected youth by county
+
+```{r mh-disconnected}
+#| results: asis
+emit_json("MH_DISCONNECTED_MAP", list(height = 520, measures = list(chr_choropleth_measure("chr_disconnected_youth", "county"))))
+```
+
+```{=html}
+<div class="ph-card" id="mh-disconnected"></div>
+<script>PH.renderChoropleth('mh-disconnected', window.MH_DISCONNECTED_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of teens ages 16-19 who are neither enrolled in school nor working ("disconnected youth"), by county and year. Drag the slider to change year. County Health Rankings data are not stratified by age within this measure (it is defined for the 16-19 age range specifically) or by sex/race. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/chr">County Health Rankings & Roadmaps</a>.</p>
+</details>
+```
+
+## Chronic Disease
+
+```{r cd-shared}
+#| include: false
+epic_chronic_measure <- function(measure_id, label, level = c("state", "county")) {
+  level <- match.arg(level)
+  src <- if (level == "state") epic_chronic_state else epic_chronic_county
+  cov <- src %>% filter(measure == "n_patients_chronic") %>%
+    transmute(loc = if (level == "state") fips2abbr[fips] else fips, t = year, n_patients = value)
+  d <- src %>% filter(measure == measure_id) %>%
+    mutate(loc = if (level == "state") fips2abbr[fips] else fips, t = year) %>%
+    left_join(cov, by = c("loc", "t")) %>%
+    # Epic Cosmos reports a denominator of exactly 5 as a small-cell
+    # suppression placeholder (the true count, 1-9, is masked). Treat those
+    # cells as missing rather than plotting a rate computed on a masked
+    # denominator.
+    mutate(
+      suppressed = !is.na(n_patients) & round(n_patients) == 5,
+      value = if_else(suppressed, NA_real_, value),
+      note = if_else(suppressed, " (suppressed: denominator masked at n=5)", paste0(" (n=", format(round(n_patients), big.mark = ","), ")"))
+    ) %>%
+    select(loc, t, value, note)
+  build_measure_entry(d, id = measure_id, label = label, level = level, unit = "%", decimals = 2)
+}
+```
+
+### Obesity by county
+
+```{r cd-obesity}
+#| results: asis
+emit_json("CD_OBESITY_MAP", list(measureLabel = "Measure", height = 500, defaultMeasure = "obesity_bmi", measures = list(
+  epic_chronic_measure("obesity_bmi", "Obesity (BMI ≥95th percentile, ages 0-17)", "county"),
+  epic_chronic_measure("obesity_dx_ccw", "Obesity diagnosis (CCW chronic condition flag, ages 0-17)", "county")
+)))
+```
+
+```{=html}
+<div class="ph-card" id="cd-obesity"></div>
+<script>PH.renderChoropleth('cd-obesity', window.CD_OBESITY_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of pediatric patients (ages 0-17) with obesity by BMI or by CCW chronic-condition diagnosis, by county and year, from Epic Cosmos electronic health records. Hover any county to see the patient-count denominator for that estimate ("coverage") &mdash; counties with very few patients in Epic Cosmos should be interpreted cautiously. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/epic_chronic">Epic Cosmos</a>, 2023-2025 only.</p>
+</details>
+```
+
+### Diabetes by county
+
+```{r cd-diabetes}
+#| results: asis
+emit_json("CD_DIABETES_MAP", list(measureLabel = "Measure", height = 500, defaultMeasure = "diabetes_dx_ccw", measures = list(
+  epic_chronic_measure("diabetes_a1c_6_5", "Diabetes (A1c ≥6.5%, ages 0-17)", "county"),
+  epic_chronic_measure("diabetes_dx_ccw", "Diabetes diagnosis (CCW chronic condition flag, ages 0-17)", "county")
+)))
+```
+
+```{=html}
+<div class="ph-card" id="cd-diabetes"></div>
+<script>PH.renderChoropleth('cd-diabetes', window.CD_DIABETES_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of pediatric patients (ages 0-17) with diabetes by lab-based A1c threshold or by CCW chronic-condition diagnosis, by county and year, from Epic Cosmos. Hover any county for the patient-count coverage denominator. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/epic_chronic">Epic Cosmos</a>, 2023-2025 only.</p>
+</details>
+```
+
+### Asthma care
+
+```{r cd-asthma}
+#| results: asis
+asthma_labels <- c(medicaid_mma_ch_rate = "Medication management for asthma (MMA)", medicaid_amr_ch_rate = "Asthma medication ratio (AMR)")
+asthma_map_data <- medicaid %>% filter(measure %in% names(asthma_labels), payer == "Medicaid") %>%
+  mutate(loc = fips2abbr[fips], t = year)
+asthma_map_entries <- lapply(names(asthma_labels), function(mid) {
+  d <- asthma_map_data %>% filter(measure == mid) %>% select(loc, t, value)
+  build_measure_entry(d, id = mid, label = asthma_labels[[mid]], level = "state", unit = "%", decimals = 1)
+})
+emit_json("CD_ASTHMA_MAP", list(
+  measureLabel = "Measure", height = 480,
+  defaultMeasure = "medicaid_mma_ch_rate", measures = asthma_map_entries
+))
+```
+
+```{=html}
+<div class="ph-card" id="cd-asthma"></div>
+<script>PH.renderChoropleth('cd-asthma', window.CD_ASTHMA_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Medicaid/CHIP Child Core Set asthma quality measures: Medication Management for asthma (MMA, percent with a controller medication most of the year) and the Asthma Medication Ratio (AMR, percent with an appropriate ratio of controller-to-total asthma medications). Map shows the latest slider-selected year by state. Use the Measure dropdown to switch between MMA and AMR. Data are voluntarily self-reported by states, so not every state reports every year. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid">CMS Medicaid/CHIP Child Core Set</a>.</p>
+</details>
+```
+
+### Lead testing
+
+```{r cd-lead}
+#| results: asis
+lead_data <- medicaid %>% filter(measure == "medicaid_lsc_ch_rate") %>%
+  mutate(loc = fips2abbr[fips], t = year) %>%
+  # CHIP has very few reporting state-years (3, vs 44 for Medicaid) for this
+  # measure; pool both payers under one "Medicaid" label rather than a payer
+  # toggle. Average on the rare state-year where both happen to be reported.
+  group_by(loc, t) %>%
+  summarise(value = mean(value, na.rm = TRUE), .groups = "drop")
+lead_entries <- list(build_measure_entry(lead_data, id = "medicaid_lsc_ch_rate", label = "Lead screening in children (LSC) — Medicaid",
+  level = "state", unit = "%", decimals = 1))
+emit_json("CD_LEAD_MAP", list(height = 460, measures = lead_entries))
+```
+
+```{=html}
+<div class="ph-card" id="cd-lead"></div>
+<script>PH.renderChoropleth('cd-lead', window.CD_LEAD_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Percent of child Medicaid/CHIP beneficiaries screened for lead exposure (Lead Screening in Children, LSC), by state and year. Data are voluntarily self-reported by states, so not every state reports every year. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid">CMS Medicaid/CHIP Child Core Set</a>.</p>
+</details>
+```
+
+### Heat-related illness
+
+```{r cd-heat}
+#| results: asis
+heat_year <- epic_injury_year %>% filter(measure %in% c("epic_rate_ed_heat", "epic_n_ed_heat")) %>%
+  mutate(unit = if_else(grepl("^epic_rate", measure), "Rate", "Count"), resolution = "Annual", period = as.character(year)) %>%
+  transmute(geography, unit, resolution, series = age, period, value)
+heat_month <- epic_injury_month %>% filter(measure %in% c("epic_rate_ed_heat", "epic_n_ed_heat")) %>%
+  mutate(unit = if_else(grepl("^epic_rate", measure), "Rate", "Count"), resolution = "Monthly", period = format(time, "%Y-%m")) %>%
+  transmute(geography, unit, resolution, series = age, period, value)
+heat_all <- bind_rows(heat_year, heat_month)
+heat_lines <- build_lines(heat_all, dim_cols = c("geography", "unit", "resolution"), series_col = "series", x_col = "period", y_col = "value")
+state_opts_heat <- c("United States", sort(setdiff(unique(heat_all$geography), "United States")))
+heat_age_order <- sort(unique(heat_all$series))
+
+emit_json("CD_HEAT_TS", list(
+  title = "Heat-related ED visits, by age", height = 440, toggle = FALSE, xTitle = "Year",
+  unitFilterKey = "unit", yTitleMap = list(Rate = "Rate (per 100,000 population)", Count = "Number of ED visits"),
+  yUnitMap = list(Rate = " per 100k", Count = ""), decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_heat, default = "United States"),
+    list(key = "unit", label = "Metric", options = c("Rate", "Count"), default = "Rate"),
+    list(key = "resolution", label = "Time resolution", options = c("Annual", "Monthly"), default = "Annual")
+  ),
+  seriesOrder = heat_age_order,
+  seriesMeta = setNames(lapply(heat_age_order, function(a) list(label = a)), heat_age_order),
+  lines = heat_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="cd-heat"></div>
+<script>PH.renderLineChart('cd-heat', window.CD_HEAT_TS);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Heat-related emergency-department visit trends from Epic Cosmos, by state and age band, with toggles for rate vs. count and annual vs. monthly resolution. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/epic_injury">Epic Cosmos</a>.</p>
+</details>
+```
+
+### Environmental exposures by county
+
+```{r cd-env}
+#| results: asis
+noaa_latest_date <- noaa_county %>% filter(forecast_day == 0) %>% summarise(m = max(time)) %>% pull(m)
+noaa_snapshot_data <- noaa_county %>% filter(forecast_day == 0, time == noaa_latest_date) %>%
+  mutate(loc = fips, t = year,
+         note = if_else(!is.na(low_coverage_flag) & low_coverage_flag == 1, " (low forecast coverage for this county)", "")) %>%
+  select(loc, t, value, note)
+noaa_entry <- build_measure_entry(noaa_snapshot_data, id = "heat_risk", label = "NOAA/NWS HeatRisk index (most recent day available)",
+                                   level = "county", unit = "index (0-4)", decimals = 0)
+
+env_measures <- list(
+  chr_choropleth_measure("chr_air_pollution_particulate_matter", "county"),
+  chr_choropleth_measure("chr_air_pollution_ozone_days", "county"),
+  chr_choropleth_measure("chr_air_pollution_particulate_matter_days", "county"),
+  chr_choropleth_measure("chr_adverse_climate_events", "county"),
+  noaa_entry
+)
+emit_json("CD_ENV_MAP", list(measureLabel = "Environmental measure", height = 520,
+                              defaultMeasure = "chr_air_pollution_particulate_matter", measures = env_measures))
+```
+
+```{=html}
+<div class="ph-card" id="cd-env"></div>
+<script>PH.renderChoropleth('cd-env', window.CD_ENV_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>County-level environmental exposure measures: air pollution (annual average PM2.5 concentration, and days exceeding EPA ozone/PM standards), cumulative FEMA-declared adverse climate events, and NOAA/NWS's daily HeatRisk index (0 = none/minor to 4 = extreme; only the most recently available day is shown, and counties flagged as low-coverage in NOAA's forecast are noted on hover). County Health Rankings measures are annual (use the slider); HeatRisk is a single recent snapshot. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/chr">County Health Rankings</a>, <a href="https://github.com/PopHIVE/Ingest/tree/main/data/noaa_heat_risk">NOAA/NWS HeatRisk</a>.</p>
+</details>
+```
+
+## Preventative Health
+
+### Teen births by county
+
+```{r ph-teen-births}
+#| results: asis
+emit_json("PH_TEEN_BIRTHS_MAP", list(height = 520, measures = list(chr_choropleth_measure("chr_teen_births", "county"))))
+```
+
+```{=html}
+<div class="ph-card" id="ph-teen-births"></div>
+<script>PH.renderChoropleth('ph-teen-births', window.PH_TEEN_BIRTHS_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Teen birth rate (births per 1,000 female population ages 15-19) by county and year. Drag the slider to change year. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/chr">County Health Rankings & Roadmaps</a>.</p>
+</details>
+```
+
+### Family planning and postpartum care
+
+```{r ph-contraception}
+#| results: asis
+contra_labels <- c(medicaid_fpc_ch_rate = "Family planning services (FPC)", medicaid_ppc_ch_rate = "Postpartum care (PPC)")
+# Pool Medicaid + CHIP under one "Medicaid" label (as with lead testing):
+# average the rare state-year where both payers are reported.
+contra_map_data <- medicaid %>% filter(measure %in% names(contra_labels)) %>%
+  mutate(loc = fips2abbr[fips], t = year) %>%
+  group_by(measure, loc, t) %>% summarise(value = mean(value, na.rm = TRUE), .groups = "drop")
+contra_map_entries <- lapply(names(contra_labels), function(mid) {
+  d <- contra_map_data %>% filter(measure == mid) %>% select(loc, t, value)
+  build_measure_entry(d, id = mid, label = contra_labels[[mid]], level = "state", unit = "%", decimals = 1)
+})
+emit_json("PH_CONTRA_MAP", list(
+  measureLabel = "Measure", height = 480,
+  defaultMeasure = "medicaid_fpc_ch_rate", measures = contra_map_entries
+))
+```
+
+```{=html}
+<div class="ph-card" id="ph-contra-map"></div>
+<script>PH.renderChoropleth('ph-contra-map', window.PH_CONTRA_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Medicaid/CHIP Child Core Set measures for family planning services (FPC) and postpartum care (PPC). Data are voluntarily self-reported by states, so not every state reports every year. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid">CMS Medicaid/CHIP Child Core Set</a>.</p>
+</details>
+```
+
+### Preventive care visits and screening
+
+```{r ph-preventive}
+#| results: asis
+prev_measures <- c("medicaid_ima_ch_rate", "medicaid_w34_ch_rate", "medicaid_awc_ch_rate", "medicaid_w15_ch_rate",
+                    "medicaid_w30_ch_rate", "medicaid_oev_ch_rate", "medicaid_cap_ch_rate", "medicaid_dev_ch_rate")
+prev_labels <- c(
+  medicaid_ima_ch_rate = "Childhood immunization status (IMA)",
+  medicaid_w34_ch_rate = "Well-child visits, ages 3-6 (W34)",
+  medicaid_awc_ch_rate = "Adolescent well-care visits (AWC)",
+  medicaid_w15_ch_rate = "Well-child visits, first 15 months (W15)",
+  medicaid_w30_ch_rate = "Well-child visits, 15-30 months (W30)",
+  medicaid_oev_ch_rate = "Oral evaluation, dental services (OEV)",
+  medicaid_cap_ch_rate = "Children's access to primary care (CAP)",
+  medicaid_dev_ch_rate = "Developmental screening in first 3 years (DEV)"
+)
+prev_data <- medicaid %>% filter(measure %in% prev_measures) %>%
+  group_by(measure, geography, year) %>% summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+  transmute(geography, series = measure, year, value)
+prev_lines <- build_lines(prev_data, dim_cols = "geography", series_col = "series", x_col = "year", y_col = "value")
+state_opts_prev <- sort(unique(prev_data$geography))
+emit_json("PH_PREVENTIVE_TS", list(
+  title = "Preventive care over time", height = 480, toggle = TRUE,
+  xTitle = "Year", yTitle = "Percent (%)", yUnit = "%", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_prev, default = state_opts_prev[1])
+  ),
+  seriesOrder = prev_measures,
+  seriesMeta = setNames(lapply(prev_measures, function(m) list(label = prev_labels[[m]])), prev_measures),
+  defaultOn = c("medicaid_ima_ch_rate", "medicaid_cap_ch_rate"),
+  lines = prev_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="ph-preventive"></div>
+<script>PH.renderLineChart('ph-preventive', window.PH_PREVENTIVE_TS);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Eight Medicaid/CHIP Child Core Set preventive-care quality measures over time. Use the drop down to select a state. Click legend chips to add/remove measures. Data are voluntarily self-reported by states, so not every state reports every year. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid">CMS Medicaid/CHIP Child Core Set</a>.</p>
+</details>
+```
+
+### Physical activity
+
+```{r ph-activity}
+#| results: asis
+act_measures <- c("pct_inactive_60min_5days", "pct_no_pe_classes", "pct_no_sports_team", "pct_no_daily_pe", "pct_inactive_all_days")
+act_labels <- c(
+  pct_inactive_60min_5days = "Not active ≥60 min on ≥5 days",
+  pct_no_pe_classes = "Does not attend any PE classes",
+  pct_no_sports_team = "Did not play on a sports team",
+  pct_no_daily_pe = "Not in daily PE class",
+  pct_inactive_all_days = "No physical activity on any day"
+)
+act_data <- yrbss %>%
+  filter(measure %in% act_measures, race == "All", ethnicity == "All", not_asked == 0, age %in% yrbss_age_order) %>%
+  mutate(note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
+act_lines <- build_lines(act_data, dim_cols = c("geography", "age", "sex", "measure"),
+                          series_col = "age", x_col = "year", y_col = "value", note_col = "note")
+state_opts_act <- c("United States", sort(setdiff(unique(act_data$geography), "United States")))
+age_opts_act <- yrbss_age_order[yrbss_age_order %in% unique(act_data$age)]
+
+emit_json("PH_ACTIVITY_TS", list(
+  title = "Physical activity, past 7 days", height = 480,
+  xTitle = "Year", yTitle = "Percent of students (%)", yUnit = "%", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_act, default = "United States"),
+    list(key = "measure", label = "Measure", options = lapply(act_measures, function(m) list(value = m, label = act_labels[[m]])), default = "pct_inactive_all_days")
+  ),
+  compareBy = yrbss_compare_by(age_opts_act),
+  lines = act_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="ph-activity"></div>
+<script>PH.renderLineChart('ph-activity', window.PH_ACTIVITY_TS);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Physical activity and PE indicators. Choose a state and which indicator to view. Use Compare by to switch the legend between one line per age or one line per sex; toggle individual lines on/off below the chart. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+</details>
+```
+
+### Nutrition
+
+```{r ph-nutrition}
+#| results: asis
+nutr_yrbss_labels <- c(pct_no_breakfast = "Did not eat breakfast (yesterday)", pct_no_breakfast_7days = "Ate no breakfast, any of past 7 days",
+                        pct_no_fruit = "Ate no fruit (past 7 days)", pct_no_vegetables = "Ate no vegetables (past 7 days)")
+nutr_yrbss_data <- yrbss %>%
+  filter(measure %in% names(nutr_yrbss_labels), age == "Overall", sex == "All", race == "All", ethnicity == "All",
+         not_asked == 0, geography != "United States") %>%
+  mutate(loc = fips2abbr[fips], t = year, note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
+nutr_yrbss_entries <- lapply(names(nutr_yrbss_labels), function(mid) {
+  d <- nutr_yrbss_data %>% filter(measure == mid) %>% select(loc, t, value, note)
+  build_measure_entry(d, id = mid, label = paste0(nutr_yrbss_labels[[mid]], " (state, YRBSS)"), level = "state", unit = "%", decimals = 1)
+})
+
+nutr_medicaid_data <- medicaid %>% filter(measure == "medicaid_wcc_ch_rate") %>% mutate(loc = fips2abbr[fips], t = year)
+nutr_medicaid_entries <- lapply(c("Medicaid", "CHIP"), function(py) {
+  d <- nutr_medicaid_data %>% filter(payer == py) %>% select(loc, t, value)
+  build_measure_entry(d, id = paste0("medicaid_wcc_ch_rate|", py),
+    label = paste0("Weight assessment & nutrition counseling (WCC) — ", py, " (state, Medicaid)"), level = "state", unit = "%", decimals = 1)
+})
+
+nutr_chr_entries <- lapply(c("chr_limited_access_to_healthy_foods", "chr_food_environment_index"), function(mid) {
+  e <- chr_choropleth_measure(mid, "county")
+  e$label <- paste0(e$label, " (county, CHR)")
+  e
+})
+
+nutr_all <- c(nutr_yrbss_entries, nutr_medicaid_entries, nutr_chr_entries)
+emit_json("PH_NUTRITION_MAP", list(measureLabel = "Measure", height = 520,
+                                    defaultMeasure = "chr_limited_access_to_healthy_foods", measures = nutr_all))
+```
+
+```{=html}
+<div class="ph-card" id="ph-nutrition"></div>
+<script>PH.renderChoropleth('ph-nutrition', window.PH_NUTRITION_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Nutrition-related measures shown at the smallest geography each source reports. County Health Rankings' food-access measures are county-level. YRBSS breakfast/fruit/vegetable items and the Medicaid weight-assessment/nutrition-counseling rate (WCC) are only available at the state level. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/chr">County Health Rankings</a>, <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>, <a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid">CMS Medicaid/CHIP Child Core Set</a>.</p>
+</details>
+```
+
+## Social Determinants of Health
+
+```{r sdoh-map}
+#| results: asis
+sdoh_categories <- list(
+  "Schools" = c("chr_high_school_completion", "chr_school_segregation", "chr_school_funding_adequacy",
+                "chr_child_care_centers", "chr_high_school_graduation", "chr_math_scores", "chr_reading_scores"),
+  "Access to care" = c("chr_uninsured_children", "chr_primary_care_physicians", "chr_inadequate_social_support", "chr_other_primary_care_providers"),
+  "Poverty measures" = c("chr_children_in_poverty", "chr_income_inequality", "chr_food_insecurity"),
+  "Housing" = c("chr_single_parent_households", "chr_high_housing_costs", "chr_severe_housing_problems", "chr_severe_housing_cost_burden"),
+  "Surrounding community" = c("chr_access_to_recreational_facilities", "chr_limited_access_to_healthy_foods", "chr_access_to_parks",
+                               "chr_access_to_exercise_opportunities", "chr_food_environment_index", "chr_residential_segregation_black_white"),
+  "Crime/violence" = c("chr_violent_crime", "chr_juvenile_arrests", "chr_firearm_fatalities")
+)
+sdoh_measure_to_cat <- unlist(lapply(names(sdoh_categories), function(cat) setNames(rep(cat, length(sdoh_categories[[cat]])), sdoh_categories[[cat]])))
+
+sdoh_entries <- list()
+for (mid in names(sdoh_measure_to_cat)) {
+  cat_lbl <- sdoh_measure_to_cat[[mid]]
+  for (lvl in c("state", "county")) {
+    eid <- paste(mid, lvl, sep = "|")
+    sdoh_entries[[eid]] <- chr_choropleth_measure(mid, lvl, tags = list(category = cat_lbl, geo_level = lvl))
+  }
+}
+
+emit_json("SDOH_MAP", list(
+  measureLabel = "Measure", height = 560,
+  filters = list(
+    list(key = "geo_level", label = "Geography", options = list(list(value = "county", label = "County"), list(value = "state", label = "State")), default = "county"),
+    list(key = "category", label = "Category", options = names(sdoh_categories), default = "Schools")
+  ),
+  defaultMeasure = "chr_high_school_completion|county",
+  measures = unname(sdoh_entries)
+))
+```
+
+```{=html}
+<div class="ph-card" id="sdoh-map"></div>
+<script>PH.renderChoropleth('sdoh-map', window.SDOH_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>27 County Health Rankings & Roadmaps social-determinants-of-health measures, organized into six categories (Schools, Access to care, Poverty measures, Housing, Surrounding community, Crime/violence) and shown at county or state geography. Hover over any area for its exact value. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/chr">County Health Rankings & Roadmaps</a>.</p>
+</details>
+```
+
+### Correlation explorer
+
+```{r sdoh-scatter}
+#| results: asis
+# Values align to the shared geo_state_canon/geo_county_canon id order (like
+# build_measure_entry) -- only `values` travels per measure, not locs/labels.
+build_scatter_measures <- function(level) {
+  src <- if (level == "state") chr_state else chr_county
+  canon <- if (level == "state") geo_state_canon else geo_county_canon
+  measure_ids <- intersect(chr_measure_info$measure, unique(src$measure))
+  lapply(measure_ids, function(mid) {
+    dd <- src %>% filter(measure == mid)
+    latest_yr <- max(dd$year)
+    dd <- dd %>% filter(year == latest_yr) %>%
+      mutate(loc = if (level == "state") fips2abbr[fips] else fips, value = value * chr_scale[[mid]])
+    vals <- dd$value[match(canon$loc, dd$loc)]
+    list(id = mid, label = chr_label[[mid]], values = I(rnd(vals, 3)))
+  })
+}
+
+emit_json("SDOH_SCATTER", list(
+  height = 500, defaultLevel = "county", levelLabels = list(state = "State", county = "County"),
+  defaultX = "chr_children_in_poverty", defaultY = "chr_teen_births",
+  measuresByLevel = list(state = build_scatter_measures("state"), county = build_scatter_measures("county"))
+))
+```
+
+```{=html}
+<div class="ph-card" id="sdoh-scatter"></div>
+<script>PH.renderScatter('sdoh-scatter', window.SDOH_SCATTER);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Pick any two County Health Rankings measures (from the full set of measures available in this bundle, not only the six categories above) to plot against each other at the county or state level, using each measure's most recently available year. The Pearson correlation coefficient (<em>r</em>) and two-sided p-value are computed in your browser from the plotted points. This is an ecological (area-level) correlation, not an individual-level association &mdash; it does not establish causation, and results can be sensitive to outlier counties/states. Data are from the latest year available. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/chr">County Health Rankings & Roadmaps</a>.</p>
+</details>
+```
+
+:::
+
+```{=html}
+<div class="pophive-footer">
+  <strong>PopHIVE</strong> &mdash; Population Health Information & Visualization Explorer<br>
+  A project of the Yale School of Public Health, Data-Intensive Social Science Center.<br>
+  <a href="https://github.com/PopHIVE/Ingest">Data & code on GitHub</a> &middot;
+  <a href="https://pophive.github.io/processing-documentation/">Documentation</a>
+  <div class="disclaimer">Draft dashboard for internal review &mdash; not for public distribution. Some measures are suppressed or imputed at small sample sizes; see each chart's "About this chart" note.</div>
+</div>
+```
