@@ -4,29 +4,37 @@
   "licenses": [],
   "resources": [
     {
-      "bytes": 2389905,
+      "bytes": 3141441,
       "encoding": "windows-1252",
-      "md5": "5effe19fd0030ab3f807a1d94ba38a3f",
+      "md5": "ca0042722073a36e7193a91aca2ec609",
       "format": "csv",
       "name": "data_weekly.csv",
       "filename": "data_weekly.csv.gz",
       "versions": {
         "hash": [
+          "58fa82a996198b6f12b9d24c019dce3022482fbc",
+          "8afa8c622c5b72079b800b3cdf713c75ced46b9b",
           "1ca02b78662ccca1653108fb63086a3abb728e49",
           "300622854db46aa8b2d478bf904da1b66503ed0d",
           "8d513a9baf590e9bb6d407964a3473481f3709b4"
         ],
         "author": [
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
+          "anshap32 <73296024+anshap32@users.noreply.github.com>",
+          "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "danweinberger <daniel.weinberger@yale.edu>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>"
         ],
         "date": [
+          "Tue Aug 18 13:33:16 2026 -0400",
+          "Thu Aug 13 09:04:34 2026 -0400",
           "Fri Jul 31 08:30:39 2026 -0400",
           "Sat Jul 18 00:17:16 2026 -0400",
           "Fri Jul 17 10:05:40 2026 -0400"
         ],
         "message": [
+          "updated with vomiting measure",
+          "updated epic_diarrhea",
           "updated epic diarrhea via dcf_process",
           "refresh diarrhea data",
           "added diarrhea to ingest repo"
@@ -42,8 +50,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-08-06 17:03:18.445896",
-      "last_modified": "2026-08-13 09:03:11.291887",
+      "created": "2026-08-21 18:26:09.976568",
+      "last_modified": "2026-08-21 18:26:09.976568",
       "vintage": {},
       "row_count": 76398,
       "entity_count": 51,
@@ -392,6 +400,32 @@
             "max": 36115
           },
           {
+            "name": "epic_n_ed_vomiting",
+            "duplicates": 71675,
+            "info": {
+              "id": "epic_n_ed_vomiting",
+              "short_name": "Nausea and Vomiting ED Encounters (Weekly)",
+              "long_name": "Nausea and Vomiting Emergency Room (ER) Encounters (Weekly)",
+              "short_description": "Number of ED encounters with nausea and vomiting diagnoses, weekly.",
+              "long_description": "Number of emergency department encounters with a nausea and vomiting ICD-10-CM diagnosis (R11.*), weekly. Comes from the same Epic Cosmos ED crosstab as epic_n_ed_diarrhea and shares its denominator, epic_n_ed_encounters_weekly. The diarrhea (A00-A09, R19.7) and nausea/vomiting (R11.*) buckets are not mutually exclusive -- an encounter carrying both diagnoses is counted in both -- so the two measures must not be summed. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+              "measure_type": "Count",
+              "unit": "encounters",
+              "time_resolution": "Week",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
+            "time_range": [0, 213],
+            "type": "integer",
+            "missing": 0,
+            "mean": 656.320087,
+            "sd": 3574.142273,
+            "min": 5,
+            "max": 78493
+          },
+          {
             "name": "epic_n_ed_encounters_weekly",
             "duplicates": 54738,
             "info": {
@@ -444,6 +478,32 @@
             "max": 100
           },
           {
+            "name": "epic_pct_ed_vomiting",
+            "duplicates": 20750,
+            "info": {
+              "id": "epic_pct_ed_vomiting",
+              "short_name": "Nausea and Vomiting ED Encounters (%, Weekly)",
+              "long_name": "Nausea and Vomiting Emergency Room (ER) Encounters (%, Weekly)",
+              "short_description": "Percentage of ED encounters attributable to nausea and vomiting, weekly.",
+              "long_description": "Percentage of emergency department encounters attributable to a nausea and vomiting ICD-10-CM diagnosis (R11.*), calculated as epic_n_ed_vomiting divided by epic_n_ed_encounters_weekly for the same geography, age, and week. Where the denominator was itself suppressed (epic_suppressed_flag_ed_encounters_weekly == 1) it was imputed as 5, so the ratio is 100% by construction rather than by observation; this affects a small number of low-volume state/age/week cells and applies identically to epic_pct_ed_diarrhea. Because the diarrhea and nausea/vomiting buckets overlap, this percentage must not be added to epic_pct_ed_diarrhea.",
+              "measure_type": "Percent",
+              "unit": "%",
+              "time_resolution": "Week",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
+            "time_range": [0, 213],
+            "type": "float",
+            "missing": 0,
+            "mean": 5.728427,
+            "sd": 4.556865,
+            "min": 0.36523,
+            "max": 100
+          },
+          {
             "name": "epic_suppressed_flag_ed_diarrhea",
             "duplicates": 76396,
             "info": {
@@ -465,6 +525,31 @@
             "missing": 0,
             "mean": 0.176026,
             "sd": 0.380844,
+            "min": 0,
+            "max": 1
+          },
+          {
+            "name": "epic_suppressed_flag_ed_vomiting",
+            "duplicates": 76396,
+            "info": {
+              "id": "epic_suppressed_flag_ed_vomiting",
+              "short_name": "Nausea and Vomiting Count Suppressed? (Weekly)",
+              "long_name": "Suppression flag: fewer than 10 nausea and vomiting ED encounters in the strata (weekly)",
+              "short_description": "Binary indicator: 1 if the weekly nausea and vomiting ED encounter count was suppressed, 0 otherwise.",
+              "long_description": "Binary indicator: 1 if fewer than 10 nausea and vomiting emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_ed_vomiting) is imputed as 5 and epic_pct_ed_vomiting is computed from that imputed numerator.",
+              "measure_type": "binary",
+              "time_resolution": "Week",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ]
+            },
+            "time_range": [0, 213],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.089296,
+            "sd": 0.285172,
             "min": 0,
             "max": 1
           },
@@ -623,7 +708,7 @@
           }
         ]
       },
-      "sha512": "2a9fc75df46466593130b92f8398c2f7809296e7622fc4c2766ee62bfd3ccf83452d339c7177d36f0a5a8b31b58eddb536944d087349934cdaa739fd775aa4d8"
+      "sha512": "c03b84c28a696456c3ad7bdced31e35505ac2f7ce2231e74584c8804a7302e71d0474f540e94bc1fe7b28c4d5c279d253827fa16bc6448549166e73fce30365d"
     },
     {
       "bytes": 375440,
@@ -634,21 +719,25 @@
       "filename": "weekly_tests.csv.gz",
       "versions": {
         "hash": [
+          "8afa8c622c5b72079b800b3cdf713c75ced46b9b",
           "1ca02b78662ccca1653108fb63086a3abb728e49",
           "300622854db46aa8b2d478bf904da1b66503ed0d",
           "8d513a9baf590e9bb6d407964a3473481f3709b4"
         ],
         "author": [
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
+          "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "danweinberger <daniel.weinberger@yale.edu>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>"
         ],
         "date": [
+          "Thu Aug 13 09:04:34 2026 -0400",
           "Fri Jul 31 08:30:39 2026 -0400",
           "Sat Jul 18 00:17:16 2026 -0400",
           "Fri Jul 17 10:05:40 2026 -0400"
         ],
         "message": [
+          "updated epic_diarrhea",
           "updated epic diarrhea via dcf_process",
           "refresh diarrhea data",
           "added diarrhea to ingest repo"
@@ -664,8 +753,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-08-06 17:03:18.456894",
-      "last_modified": "2026-08-13 09:03:11.526653",
+      "created": "2026-08-21 18:26:10.086568",
+      "last_modified": "2026-08-21 18:26:10.086568",
       "vintage": {},
       "row_count": 10914,
       "entity_count": 51,
@@ -1289,6 +1378,36 @@
         }
       ]
     },
+    "epic_n_ed_vomiting": {
+      "id": "epic_n_ed_vomiting",
+      "short_name": "Nausea and Vomiting ED Encounters (Weekly)",
+      "long_name": "Nausea and Vomiting Emergency Room (ER) Encounters (Weekly)",
+      "short_description": "Number of ED encounters with nausea and vomiting diagnoses, weekly.",
+      "long_description": "Number of emergency department encounters with a nausea and vomiting ICD-10-CM diagnosis (R11.*), weekly. Comes from the same Epic Cosmos ED crosstab as epic_n_ed_diarrhea and shares its denominator, epic_n_ed_encounters_weekly. The diarrhea (A00-A09, R19.7) and nausea/vomiting (R11.*) buckets are not mutually exclusive -- an encounter carrying both diagnoses is counted in both -- so the two measures must not be summed. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts fewer than 10 are suppressed and imputed as 5.",
+      "measure_type": "Count",
+      "unit": "encounters",
+      "time_resolution": "Week",
+      "sources": [
+        {
+          "id": "epic_cosmos"
+        }
+      ]
+    },
+    "epic_pct_ed_vomiting": {
+      "id": "epic_pct_ed_vomiting",
+      "short_name": "Nausea and Vomiting ED Encounters (%, Weekly)",
+      "long_name": "Nausea and Vomiting Emergency Room (ER) Encounters (%, Weekly)",
+      "short_description": "Percentage of ED encounters attributable to nausea and vomiting, weekly.",
+      "long_description": "Percentage of emergency department encounters attributable to a nausea and vomiting ICD-10-CM diagnosis (R11.*), calculated as epic_n_ed_vomiting divided by epic_n_ed_encounters_weekly for the same geography, age, and week. Where the denominator was itself suppressed (epic_suppressed_flag_ed_encounters_weekly == 1) it was imputed as 5, so the ratio is 100% by construction rather than by observation; this affects a small number of low-volume state/age/week cells and applies identically to epic_pct_ed_diarrhea. Because the diarrhea and nausea/vomiting buckets overlap, this percentage must not be added to epic_pct_ed_diarrhea.",
+      "measure_type": "Percent",
+      "unit": "%",
+      "time_resolution": "Week",
+      "sources": [
+        {
+          "id": "epic_cosmos"
+        }
+      ]
+    },
     "epic_n_ed_encounters_weekly": {
       "id": "epic_n_ed_encounters_weekly",
       "short_name": "All-Cause ED Encounters (Weekly)",
@@ -1310,6 +1429,20 @@
       "long_name": "Suppression flag: fewer than 10 all-cause diarrhea ED encounters in the strata (weekly)",
       "short_description": "Binary indicator: 1 if the weekly diarrhea ED encounter count was suppressed, 0 otherwise.",
       "long_description": "Binary indicator: 1 if fewer than 10 all-cause diarrhea emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_ed_diarrhea) is imputed as 5.",
+      "measure_type": "binary",
+      "time_resolution": "Week",
+      "sources": [
+        {
+          "id": "epic_cosmos"
+        }
+      ]
+    },
+    "epic_suppressed_flag_ed_vomiting": {
+      "id": "epic_suppressed_flag_ed_vomiting",
+      "short_name": "Nausea and Vomiting Count Suppressed? (Weekly)",
+      "long_name": "Suppression flag: fewer than 10 nausea and vomiting ED encounters in the strata (weekly)",
+      "short_description": "Binary indicator: 1 if the weekly nausea and vomiting ED encounter count was suppressed, 0 otherwise.",
+      "long_description": "Binary indicator: 1 if fewer than 10 nausea and vomiting emergency department encounters in the strata, 0 otherwise. When suppressed, the corresponding count (epic_n_ed_vomiting) is imputed as 5 and epic_pct_ed_vomiting is computed from that imputed numerator.",
       "measure_type": "binary",
       "time_resolution": "Week",
       "sources": [
@@ -1525,12 +1658,15 @@
         "time": {
           "status": "present",
           "same_type": true,
-          "added_levels": ["2026-07-25", "2026-08-01"],
+          "added_levels": [],
           "dropped_levels": []
         },
         "epic_n_ed_diarrhea": {
           "status": "present",
           "same_type": true
+        },
+        "epic_n_ed_vomiting": {
+          "status": "added"
         },
         "epic_n_ed_encounters_weekly": {
           "status": "present",
@@ -1540,9 +1676,15 @@
           "status": "present",
           "same_type": true
         },
+        "epic_pct_ed_vomiting": {
+          "status": "added"
+        },
         "epic_suppressed_flag_ed_diarrhea": {
           "status": "present",
           "same_type": true
+        },
+        "epic_suppressed_flag_ed_vomiting": {
+          "status": "added"
         },
         "epic_suppressed_flag_ed_encounters_weekly": {
           "status": "present",
@@ -1571,65 +1713,7 @@
       }
     },
     "weekly_tests.csv.gz": {
-      "state": "changed",
-      "variables": {
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "time": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": ["2026-07-25", "2026-08-01"],
-          "dropped_levels": []
-        },
-        "epic_n_all_diarrhea": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_n_encounters_total_weekly": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_n_cyclospora_positive": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_n_cyclospora_tested": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_pct_cyclospora_positive": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_pct_cyclospora_tested": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_pct_all_diarrhea": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_suppressed_flag_all_diarrhea": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_suppressed_flag_encounters_total_weekly": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_suppressed_flag_cyclospora_positive": {
-          "status": "present",
-          "same_type": true
-        },
-        "epic_suppressed_flag_cyclospora_tested": {
-          "status": "present",
-          "same_type": true
-        }
-      }
+      "state": "unchanged"
     }
   }
 }

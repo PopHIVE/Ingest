@@ -717,100 +717,108 @@ if (!is.na(latest_pep_vintage) &&
 
   # AGE "0" = all ages, matched on the returned string rather than passed
   # as a query predicate (AGE="0" 404s as a predicate; AGE="0000" doesn't).
-  fetch_pep_race_alone <- function(popgroup_code) {
-    tryCatch({
+  #
+  # PEP's "charv" endpoint supports county, state, and national ("us:*")
+  # geography natively -- the whole fetch is parameterized by region_str/
+  # join_cols/build_geography and run three times rather than duplicated,
+  # then mixed into one file by geography length like every other
+  # multi-level source here. National rows come back with a "us" column
+  # instead of "state"/"county".
+  fetch_pep_level <- function(region_str, join_cols, build_geography) {
+    fetch_pep_race_alone <- function(popgroup_code) {
+      tryCatch({
+        censusapi::getCensus(
+          name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
+          region = region_str, POPGROUP = popgroup_code, key = api_key
+        ) %>%
+          latest_period() %>%
+          filter(AGE == "0") %>%
+          transmute(across(all_of(join_cols)), pop = as.numeric(POP))
+      }, error = function(e) {
+        message("  [WARN] PEP fetch failed (POPGROUP=", popgroup_code, ", region=", region_str, "): ", conditionMessage(e))
+        NULL
+      })
+    }
+
+    fetch_pep_race_not_hispanic <- function(popgroup_code) {
+      tryCatch({
+        censusapi::getCensus(
+          name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
+          region = region_str, POPGROUP = popgroup_code, HISP = "1", key = api_key
+        ) %>%
+          latest_period() %>%
+          filter(AGE == "0") %>%
+          transmute(across(all_of(join_cols)), pop = as.numeric(POP))
+      }, error = function(e) {
+        message("  [WARN] PEP fetch failed (POPGROUP=", popgroup_code, ", HISP=1, region=", region_str, "): ", conditionMessage(e))
+        NULL
+      })
+    }
+
+    pep_race <- Filter(Negate(is.null), c(
+      lapply(names(PEP_RACE_ALONE), function(nm) {
+        df <- fetch_pep_race_alone(PEP_RACE_ALONE[[nm]])
+        if (!is.null(df)) rename(df, !!nm := pop) else NULL
+      }),
+      lapply(names(PEP_RACE_NOT_HISPANIC), function(nm) {
+        df <- fetch_pep_race_not_hispanic(PEP_RACE_NOT_HISPANIC[[nm]])
+        if (!is.null(df)) rename(df, !!nm := pop) else NULL
+      })
+    ))
+
+    # Hispanic origin, any race: HISP=2. Omitting HISP (as below) defaults
+    # to its "Total" category, not a full breakdown.
+    pep_hispanic <- tryCatch({
       censusapi::getCensus(
         name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
-        region = "county:*", POPGROUP = popgroup_code, key = api_key
+        region = region_str, POPGROUP = "001", HISP = "2", key = api_key
       ) %>%
         latest_period() %>%
         filter(AGE == "0") %>%
-        transmute(state, county, pop = as.numeric(POP))
+        transmute(across(all_of(join_cols)), hispanic = as.numeric(POP))
     }, error = function(e) {
-      message("  [WARN] PEP fetch failed (POPGROUP=", popgroup_code, "): ", conditionMessage(e))
+      message("  [WARN] PEP Hispanic-origin fetch failed (region=", region_str, "): ", conditionMessage(e))
       NULL
     })
-  }
 
-  fetch_pep_race_not_hispanic <- function(popgroup_code) {
-    tryCatch({
+    # Total population and the 65+/18+ pre-aggregated age codes, all races
+    # and Hispanic origins combined. Under-18 = total - 18+.
+    pep_age <- tryCatch({
+      df <- censusapi::getCensus(
+        name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
+        region = region_str, POPGROUP = "001", key = api_key
+      ) %>% latest_period() %>% mutate(POP = as.numeric(POP))
+
+      df %>% filter(AGE == "0") %>% transmute(across(all_of(join_cols)), total = POP) %>%
+        left_join(df %>% filter(AGE == "6599") %>% transmute(across(all_of(join_cols)), age_65_plus = POP),
+                  by = join_cols) %>%
+        left_join(df %>% filter(AGE == "1899") %>% transmute(across(all_of(join_cols)), age_18_plus = POP),
+                  by = join_cols)
+    }, error = function(e) {
+      message("  [WARN] PEP age fetch failed (region=", region_str, "): ", conditionMessage(e))
+      NULL
+    })
+
+    # Female, all races/ages/Hispanic origins combined: SEX=2.
+    pep_female <- tryCatch({
       censusapi::getCensus(
         name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
-        region = "county:*", POPGROUP = popgroup_code, HISP = "1", key = api_key
+        region = region_str, POPGROUP = "001", SEX = "2", key = api_key
       ) %>%
         latest_period() %>%
         filter(AGE == "0") %>%
-        transmute(state, county, pop = as.numeric(POP))
+        transmute(across(all_of(join_cols)), female = as.numeric(POP))
     }, error = function(e) {
-      message("  [WARN] PEP fetch failed (POPGROUP=", popgroup_code, ", HISP=1): ", conditionMessage(e))
+      message("  [WARN] PEP female fetch failed (region=", region_str, "): ", conditionMessage(e))
       NULL
     })
-  }
 
-  pep_race <- Filter(Negate(is.null), c(
-    lapply(names(PEP_RACE_ALONE), function(nm) {
-      df <- fetch_pep_race_alone(PEP_RACE_ALONE[[nm]])
-      if (!is.null(df)) rename(df, !!nm := pop) else NULL
-    }),
-    lapply(names(PEP_RACE_NOT_HISPANIC), function(nm) {
-      df <- fetch_pep_race_not_hispanic(PEP_RACE_NOT_HISPANIC[[nm]])
-      if (!is.null(df)) rename(df, !!nm := pop) else NULL
-    })
-  ))
+    pep_blocks <- Filter(Negate(is.null), c(pep_race, list(pep_hispanic, pep_age, pep_female)))
+    if (length(pep_blocks) == 0) return(NULL)
 
-  # Hispanic origin, any race: HISP=2. Omitting HISP (as below) defaults
-  # to its "Total" category, not a full breakdown.
-  pep_hispanic <- tryCatch({
-    censusapi::getCensus(
-      name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
-      region = "county:*", POPGROUP = "001", HISP = "2", key = api_key
-    ) %>%
-      latest_period() %>%
-      filter(AGE == "0") %>%
-      transmute(state, county, hispanic = as.numeric(POP))
-  }, error = function(e) {
-    message("  [WARN] PEP Hispanic-origin fetch failed: ", conditionMessage(e))
-    NULL
-  })
-
-  # Total population and the 65+/18+ pre-aggregated age codes, all races
-  # and Hispanic origins combined. Under-18 = total - 18+.
-  pep_age <- tryCatch({
-    df <- censusapi::getCensus(
-      name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
-      region = "county:*", POPGROUP = "001", key = api_key
-    ) %>% latest_period() %>% mutate(POP = as.numeric(POP))
-
-    df %>% filter(AGE == "0") %>% transmute(state, county, total = POP) %>%
-      left_join(df %>% filter(AGE == "6599") %>% transmute(state, county, age_65_plus = POP),
-                by = c("state", "county")) %>%
-      left_join(df %>% filter(AGE == "1899") %>% transmute(state, county, age_18_plus = POP),
-                by = c("state", "county"))
-  }, error = function(e) {
-    message("  [WARN] PEP age fetch failed: ", conditionMessage(e))
-    NULL
-  })
-
-  # Female, all races/ages/Hispanic origins combined: SEX=2.
-  pep_female <- tryCatch({
-    censusapi::getCensus(
-      name = pep_dataset, vars = c("POP", "AGE", "YEAR", "MONTH"),
-      region = "county:*", POPGROUP = "001", SEX = "2", key = api_key
-    ) %>%
-      latest_period() %>%
-      filter(AGE == "0") %>%
-      transmute(state, county, female = as.numeric(POP))
-  }, error = function(e) {
-    message("  [WARN] PEP female fetch failed: ", conditionMessage(e))
-    NULL
-  })
-
-  pep_blocks <- Filter(Negate(is.null), c(pep_race, list(pep_hispanic, pep_age, pep_female)))
-
-  if (length(pep_blocks) > 0) {
-    pep_result <- Reduce(function(a, b) left_join(a, b, by = c("state", "county")), pep_blocks) %>%
+    Reduce(function(a, b) left_join(a, b, by = join_cols), pep_blocks) %>%
       mutate(
-        geography        = paste0(sprintf("%02d", as.integer(state)), sprintf("%03d", as.integer(county))),
+        geography        = build_geography(.),
         time             = paste0(latest_pep_vintage, "-12-31"),
         pep_population   = total,
         pep_pct_65_older = safe_div(age_65_plus, total),
@@ -824,11 +832,22 @@ if (!is.na(latest_pep_vintage) &&
         pep_pct_hispanic = safe_div(hispanic, total)
       ) %>%
       select(geography, time, starts_with("pep_"))
+  }
 
+  pep_result <- bind_rows(
+    fetch_pep_level(
+      "county:*", c("state", "county"),
+      function(df) paste0(sprintf("%02d", as.integer(df$state)), sprintf("%03d", as.integer(df$county)))
+    ),
+    fetch_pep_level("state:*", c("state"), function(df) sprintf("%02d", as.integer(df$state))),
+    fetch_pep_level("us:*", c("us"), function(df) "00")
+  )
+
+  if (!is.null(pep_result) && nrow(pep_result) > 0) {
     vroom::vroom_write(pep_result, "standard/data_pep.csv.gz", delim = ",")
     process$pep_vintage_year <- latest_pep_vintage
     dcf::dcf_process_record(updated = process)
-    message("PEP data written for vintage ", latest_pep_vintage)
+    message("PEP data written for vintage ", latest_pep_vintage, " (", nrow(pep_result), " rows, county+state+national)")
   }
 } else {
   message("PEP data is up to date (last vintage: ", process$pep_vintage_year, ")")
@@ -872,33 +891,45 @@ if (!is.na(latest_saipe_year) &&
 
   message("SAIPE latest year: ", latest_saipe_year)
 
-  saipe_raw <- tryCatch({
-    censusapi::getCensus(
-      name   = SAIPE_ENDPOINT,
-      vars   = c("SAEPOVRT0_17_PT", "SAEMHI_PT"),
-      region = "county:*",
-      time   = as.character(latest_saipe_year),
-      key    = api_key
-    )
-  }, error = function(e) {
-    message("  [WARN] SAIPE fetch failed: ", conditionMessage(e))
-    NULL
-  })
-
-  if (!is.null(saipe_raw) && nrow(saipe_raw) > 0) {
-    saipe_result <- saipe_raw %>%
-      mutate(
-        geography                      = paste0(sprintf("%02d", as.integer(state)), sprintf("%03d", as.integer(county))),
-        time                           = paste0(latest_saipe_year, "-12-31"),
-        saipe_pct_children_poverty    = as.numeric(SAEPOVRT0_17_PT) / 100,
-        saipe_median_household_income = as.numeric(SAEMHI_PT)
+  # SAIPE supports county, state, and national ("us:*") geography natively
+  # -- no aggregation needed, just three fetches mixed into one file by
+  # geography length, matching every other multi-level source in this
+  # pipeline. National rows come back with a "us" column instead of
+  # "state"/"county", so geography is built per level rather than from one
+  # shared column set.
+  fetch_saipe_level <- function(region_str, build_geography) {
+    tryCatch({
+      censusapi::getCensus(
+        name   = SAIPE_ENDPOINT,
+        vars   = c("SAEPOVRT0_17_PT", "SAEMHI_PT"),
+        region = region_str,
+        time   = as.character(latest_saipe_year),
+        key    = api_key
       ) %>%
-      select(geography, time, saipe_pct_children_poverty, saipe_median_household_income)
+        mutate(
+          geography                     = build_geography(.),
+          time                          = paste0(latest_saipe_year, "-12-31"),
+          saipe_pct_children_poverty    = as.numeric(SAEPOVRT0_17_PT) / 100,
+          saipe_median_household_income = as.numeric(SAEMHI_PT)
+        ) %>%
+        select(geography, time, saipe_pct_children_poverty, saipe_median_household_income)
+    }, error = function(e) {
+      message("  [WARN] SAIPE fetch failed (region=", region_str, "): ", conditionMessage(e))
+      NULL
+    })
+  }
 
+  saipe_result <- bind_rows(
+    fetch_saipe_level("county:*", function(df) paste0(sprintf("%02d", as.integer(df$state)), sprintf("%03d", as.integer(df$county)))),
+    fetch_saipe_level("state:*", function(df) sprintf("%02d", as.integer(df$state))),
+    fetch_saipe_level("us:*", function(df) "00")
+  )
+
+  if (!is.null(saipe_result) && nrow(saipe_result) > 0) {
     vroom::vroom_write(saipe_result, "standard/data_saipe.csv.gz", delim = ",")
     process$saipe_year <- latest_saipe_year
     dcf::dcf_process_record(updated = process)
-    message("SAIPE data written for year ", latest_saipe_year)
+    message("SAIPE data written for year ", latest_saipe_year, " (", nrow(saipe_result), " rows, county+state+national)")
   }
 } else {
   message("SAIPE data is up to date (last year: ", process$saipe_year, ")")
@@ -993,37 +1024,54 @@ if (!is.na(latest_sahie_year) &&
 
   message("SAHIE latest year: ", latest_sahie_year)
 
-  fetch_sahie_agecat <- function(agecat_code) {
-    tryCatch({
-      censusapi::getCensus(
-        name = SAHIE_ENDPOINT, vars = "PCTUI_PT",
-        region = "county:*", time = as.character(latest_sahie_year),
-        AGECAT = agecat_code, IPRCAT = "0", RACECAT = "0", SEXCAT = "0", key = api_key
-      ) %>%
-        transmute(state, county, value = as.numeric(PCTUI_PT) / 100)
-    }, error = function(e) {
-      message("  [WARN] SAHIE fetch failed (AGECAT=", agecat_code, "): ", conditionMessage(e))
-      NULL
-    })
-  }
+  # SAHIE supports county, state, and national ("us:*") geography natively.
+  # Each geography level is fetched and joined separately (join_cols/
+  # build_geography differ per level -- national rows come back with a "us"
+  # column, not "state"/"county"), then mixed into one file by geography
+  # length like every other multi-level source here.
+  fetch_sahie_level <- function(region_str, join_cols, build_geography) {
+    fetch_sahie_agecat <- function(agecat_code) {
+      tryCatch({
+        censusapi::getCensus(
+          name = SAHIE_ENDPOINT, vars = "PCTUI_PT",
+          region = region_str, time = as.character(latest_sahie_year),
+          AGECAT = agecat_code, IPRCAT = "0", RACECAT = "0", SEXCAT = "0", key = api_key
+        ) %>%
+          transmute(across(all_of(join_cols)), value = as.numeric(PCTUI_PT) / 100)
+      }, error = function(e) {
+        message("  [WARN] SAHIE fetch failed (AGECAT=", agecat_code, ", region=", region_str, "): ", conditionMessage(e))
+        NULL
+      })
+    }
 
-  sahie_blocks <- Filter(Negate(is.null), lapply(names(SAHIE_AGECATS), function(nm) {
-    df <- fetch_sahie_agecat(SAHIE_AGECATS[[nm]])
-    if (!is.null(df)) rename(df, !!nm := value) else NULL
-  }))
+    blocks <- Filter(Negate(is.null), lapply(names(SAHIE_AGECATS), function(nm) {
+      df <- fetch_sahie_agecat(SAHIE_AGECATS[[nm]])
+      if (!is.null(df)) rename(df, !!nm := value) else NULL
+    }))
+    if (length(blocks) == 0) return(NULL)
 
-  if (length(sahie_blocks) > 0) {
-    sahie_result <- Reduce(function(a, b) left_join(a, b, by = c("state", "county")), sahie_blocks) %>%
+    Reduce(function(a, b) left_join(a, b, by = join_cols), blocks) %>%
       mutate(
-        geography = paste0(sprintf("%02d", as.integer(state)), sprintf("%03d", as.integer(county))),
+        geography = build_geography(.),
         time      = paste0(latest_sahie_year, "-12-31")
       ) %>%
       select(geography, time, starts_with("sahie_"))
+  }
 
+  sahie_result <- bind_rows(
+    fetch_sahie_level(
+      "county:*", c("state", "county"),
+      function(df) paste0(sprintf("%02d", as.integer(df$state)), sprintf("%03d", as.integer(df$county)))
+    ),
+    fetch_sahie_level("state:*", c("state"), function(df) sprintf("%02d", as.integer(df$state))),
+    fetch_sahie_level("us:*", c("us"), function(df) "00")
+  )
+
+  if (!is.null(sahie_result) && nrow(sahie_result) > 0) {
     vroom::vroom_write(sahie_result, "standard/data_sahie.csv.gz", delim = ",")
     process$sahie_year <- latest_sahie_year
     dcf::dcf_process_record(updated = process)
-    message("SAHIE data written for year ", latest_sahie_year)
+    message("SAHIE data written for year ", latest_sahie_year, " (", nrow(sahie_result), " rows, county+state+national)")
   }
 } else {
   message("SAHIE data is up to date (last year: ", process$sahie_year, ")")
