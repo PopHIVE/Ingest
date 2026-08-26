@@ -74,6 +74,8 @@ if (!identical(process$raw_state, raw_state)) {
       week_end_date = as.Date(week_end, "%m/%d/%y"),
       time = format(week_end_date)
     ) %>%
+    # Drop implausible future-dated records (see county_standard below)
+    filter(week_end_date <= Sys.Date()) %>%
     # Ensure value is numeric and select standard columns
     mutate(value = as.numeric(value)) %>%
     select(geography, time, value) %>%
@@ -154,6 +156,11 @@ if (!identical(process$raw_state, raw_state)) {
       date_obj = as.Date(date),
       time = format(date_obj, "%Y-%m-%d")
     ) %>%
+    # Drop implausible future-dated records (e.g. upstream data-entry errors).
+    # tidyr::complete() below cross-joins every geography with every time
+    # value seen here, so a single bad future date would otherwise get
+    # fanned out as a zero-filled row across all counties/states.
+    filter(date_obj <= Sys.Date()) %>%
     # Ensure value is numeric
     mutate(value = as.numeric(value)) %>%
     # Select standard columns
