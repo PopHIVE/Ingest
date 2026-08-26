@@ -25,6 +25,9 @@ jobs:
       - name: Build documentation
         run: Rscript scripts/build_docs.R
 
+      - name: Build data table
+        run: Rscript scripts/build_data_table.R
+
       - name: Check for changes
         id: diff
         run: |
@@ -41,4 +44,15 @@ jobs:
           git config user.name "GitHub Actions"
           git add docs/ resources/data_manifest.json
           git commit -m "docs: rebuild documentation and data manifest"
-          git push
+          # Same non-fast-forward hazard as build.yaml: rebase onto anything that
+          # landed while this job ran rather than losing the rebuild.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected (attempt $attempt); rebasing onto origin/main"
+            git fetch origin
+            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+          done
+          echo "::error::could not push documentation rebuild after 3 attempts"
+          exit 1

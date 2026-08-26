@@ -4,14 +4,17 @@
   "resources": [
     {
       "bytes": 848917,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "d981be4e20932bc07480efa99196d903",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
       "versions": {
         "hash": [
+          "33bc5b75d89fa5d1fdfb306261a6d8df1750da1c",
+          "b17348ffc63e58e4fc7e67d94c0d24c3bf0515e4",
           "c8056a00bf36cf59de6abe61752a355181cc357e",
+          "8a1608905b65c579f63a08f7dc964c70dbd02e66",
           "2357ea1ae48e880443bfa5e9d4f98d213e1fc510",
           "728c75f50da6bc5ac4e6dc9875982323973a8f93",
           "432d7011a45303b5fefbfc806251462a2afbea4c",
@@ -22,10 +25,12 @@
           "125bf2a2af9202a2f18428bcee4ac8cc88be4cde",
           "8ed58697cb9bdec712065d00d609ce6cec252dff",
           "4e478f4fa3bbc7dfd9d1c55ae4dde168b6785801",
-          "7ff9082f466f19812d9d1261999f0f07ad4427ca",
-          "8a1608905b65c579f63a08f7dc964c70dbd02e66"
+          "7ff9082f466f19812d9d1261999f0f07ad4427ca"
         ],
         "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "danweinberger <daniel.weinberger@yale.edu>",
           "weinbergerlab <dweinber@gmail.com>",
@@ -37,11 +42,13 @@
           "GitHub Actions <actions@github.com>",
           "weinbergerlab <dweinber@gmail.com>",
           "Weinberger <daniel.weinberger@yale.edu>",
-          "weinbergerlab <dweinber@gmail.com>",
           "weinbergerlab <dweinber@gmail.com>"
         ],
         "date": [
+          "Tue Aug 18 16:09:37 2026 -0400",
+          "Fri May 29 20:20:58 2026 +0000",
           "Fri May 15 16:54:14 2026 -0400",
+          "Thu May 14 22:56:22 2026 -0400",
           "Wed May 13 22:47:32 2026 -0400",
           "Thu Apr 2 14:11:58 2026 -0400",
           "Mon Jan 12 11:24:48 2026 -0500",
@@ -52,11 +59,13 @@
           "Fri Nov 14 21:54:15 2025 +0000",
           "Fri Sep 5 11:37:02 2025 -0400",
           "Fri Jul 18 13:49:04 2025 -0400",
-          "Mon Jul 14 16:42:11 2025 -0400",
-          "Thu May 14 22:56:22 2026 -0400"
+          "Mon Jul 14 16:42:11 2025 -0400"
         ],
         "message": [
+          "Add bundle_strep (Group A + Group B Strep) and the ABCs Strep sources (#189)",
+          "scheduled data build",
           "update abcs data",
+          "add missing OR population data to ABCs; check all plots",
           "fixed denominators for incidence on ABCs standard file",
           "adds incidence to pneumococcal data, adds a master json with all of the sources listed",
           "fix bug on pneumococcal ingestion",
@@ -67,8 +76,7 @@
           "scheduled data build",
           "fill 0s on ABCs data",
           "update formatting to standardize dates etc",
-          "ingest ABCs data",
-          "add missing OR population data to ABCs; check all plots"
+          "ingest ABCs data"
         ]
       },
       "source": [],
@@ -81,8 +89,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-05-29 20:08:20.186115",
-      "last_modified": "2026-05-29 20:08:20.186115",
+      "created": "2026-08-21 18:23:51.145996",
+      "last_modified": "2026-08-21 18:23:51.145996",
       "vintage": {},
       "row_count": 104544,
       "entity_count": 11,
@@ -92,10 +100,7 @@
             "name": "geography",
             "duplicates": 104533,
             "info": [],
-            "time_range": [
-              0,
-              26
-            ],
+            "time_range": [0, 26],
             "type": "string",
             "missing": 0,
             "table": {
@@ -119,17 +124,18 @@
               "id": "age",
               "short_name": "Age group",
               "long_name": "Age group",
-              "category": "Respiratory diseases",
-              "measure_type": "Age group (years)",
-              "unit": "years",
+              "category": "demographic",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
               "sources": [
-                "abcs"
+                {
+                  "id": "abcs"
+                }
               ]
             },
-            "time_range": [
-              0,
-              26
-            ],
+            "time_range": [0, 26],
             "type": "string",
             "missing": 0,
             "table": {
@@ -147,16 +153,14 @@
               "short_name": "Serotype",
               "long_name": "Serotype",
               "category": "Respiratory diseases",
-              "short_description": "Pneumococcal serotype",
+              "short_description": "Which serotype the row describes.",
               "measure_type": "Category",
               "sources": [
                 "abcs"
-              ]
+              ],
+              "long_description": "Bacterial serotype the row describes: a pneumococcal serotype in data.csv.gz, a Group B capsular serotype in gbs_serotypes.csv.gz."
             },
-            "time_range": [
-              0,
-              26
-            ],
+            "time_range": [0, 26],
             "type": "string",
             "missing": 0,
             "table": {
@@ -254,10 +258,7 @@
             "name": "time",
             "duplicates": 104517,
             "info": [],
-            "time_range": [
-              0,
-              26
-            ],
+            "time_range": [0, 26],
             "type": "string",
             "missing": 0,
             "table": {
@@ -306,10 +307,7 @@
                 "abcs"
               ]
             },
-            "time_range": [
-              0,
-              26
-            ],
+            "time_range": [0, 26],
             "type": "integer",
             "missing": 0,
             "mean": 3.3191,
@@ -333,10 +331,7 @@
                 "abcs"
               ]
             },
-            "time_range": [
-              0,
-              26
-            ],
+            "time_range": [0, 26],
             "type": "float",
             "missing": 3168,
             "mean": 1.136364,
@@ -347,11 +342,23 @@
           {
             "name": "pop",
             "duplicates": 103411,
-            "info": [],
-            "time_range": [
-              0,
-              26
-            ],
+            "info": {
+              "id": "pop",
+              "short_name": "Surveillance population",
+              "long_name": "ABCs surveillance population",
+              "category": "infectious_disease",
+              "short_description": "Population of the ABCs catchment area.",
+              "long_description": "Census-derived population of the ABCs catchment area, the denominator for rate_IPD.",
+              "measure_type": "Count",
+              "unit": "People",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 26],
             "type": "float",
             "missing": 2816,
             "mean": 2556857.247405,
@@ -377,10 +384,7 @@
                 "abcs"
               ]
             },
-            "time_range": [
-              0,
-              26
-            ],
+            "time_range": [0, 26],
             "type": "float",
             "missing": 2816,
             "mean": 0.179259,
@@ -393,29 +397,2144 @@
       "sha512": "78adaa52a568277e9f2ff627c2315c1cecf5af0a47cc7d9aac39206ecc76ee62d544daf8d97867422391aa46e701d74c4acc870d36835d37de258b6f31770d90"
     },
     {
+      "bytes": 4140,
+      "encoding": "windows-1252",
+      "md5": "ca206390ea6189c603d37be76f3e6342",
+      "format": "csv",
+      "name": "gas_emm.csv",
+      "filename": "gas_emm.csv.gz",
+      "versions": {
+        "hash": [
+          "33bc5b75d89fa5d1fdfb306261a6d8df1750da1c",
+          "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa",
+          "8a138991268faefe54c15501ec57c322da5f803a"
+        ],
+        "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"
+        ],
+        "date": [
+          "Tue Aug 18 16:09:37 2026 -0400",
+          "Tue Aug 18 08:38:37 2026 -0400",
+          "Thu Aug 13 14:15:34 2026 -0400"
+        ],
+        "message": [
+          "Add bundle_strep (Group A + Group B Strep) and the ABCs Strep sources (#189)",
+          "manually update respiratory bundle",
+          "Leave unreported ABCs values blank instead of zero-filling"
+        ]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-21 18:23:56.626024",
+      "last_modified": "2026-08-21 18:23:56.626024",
+      "vintage": {},
+      "row_count": 588,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 587,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 588
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 560,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "1997-12-31": 21,
+              "1998-12-31": 21,
+              "1999-12-31": 21,
+              "2000-12-31": 21,
+              "2001-12-31": 21,
+              "2002-12-31": 21,
+              "2003-12-31": 21,
+              "2004-12-31": 21,
+              "2005-12-31": 21,
+              "2006-12-31": 21,
+              "2007-12-31": 21,
+              "2008-12-31": 21,
+              "2009-12-31": 21,
+              "2010-12-31": 21,
+              "2011-12-31": 21,
+              "2012-12-31": 21,
+              "2013-12-31": 21,
+              "2014-12-31": 21,
+              "2015-12-31": 21,
+              "2016-12-31": 21,
+              "2017-12-31": 21,
+              "2018-12-31": 21,
+              "2019-12-31": 21,
+              "2020-12-31": 21,
+              "2021-12-31": 21,
+              "2022-12-31": 21,
+              "2023-12-31": 21,
+              "2024-12-31": 21
+            }
+          },
+          {
+            "name": "pathogen",
+            "duplicates": 587,
+            "info": {
+              "id": "pathogen",
+              "short_name": "Pathogen",
+              "long_name": "Bacterial pathogen",
+              "category": "infectious_disease",
+              "short_description": "Group A or Group B Streptococcus.",
+              "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Group A Streptococcus": 588
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 587,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "demographic",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Total": 588
+            }
+          },
+          {
+            "name": "onset",
+            "duplicates": 587,
+            "info": {
+              "id": "onset",
+              "short_name": "Onset timing",
+              "long_name": "Infant disease onset timing",
+              "category": "demographic",
+              "short_description": "Early- or late-onset infant Group B disease.",
+              "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Total": 588
+            }
+          },
+          {
+            "name": "emm_type",
+            "duplicates": 567,
+            "info": {
+              "short_name": "emm type",
+              "long_name": "Group A emm type",
+              "short_description": "Which emm type the row describes.",
+              "long_description": "emm type of the Group A Streptococcus isolates, the M protein gene sequence type; \"other\" is CDC's residual category.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                }
+              ],
+              "id": "emm_type"
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "emm_1": 28,
+              "emm_11": 28,
+              "emm_12": 28,
+              "emm_2": 28,
+              "emm_28": 28,
+              "emm_3": 28,
+              "emm_4": 28,
+              "emm_43": 28,
+              "emm_49": 28,
+              "emm_59": 28,
+              "emm_6": 28,
+              "emm_60": 28,
+              "emm_75": 28,
+              "emm_77": 28,
+              "emm_81": 28,
+              "emm_82": 28,
+              "emm_83": 28,
+              "emm_89": 28,
+              "emm_91": 28,
+              "emm_92": 28,
+              "other": 28
+            }
+          },
+          {
+            "name": "abcs_gas_emm_n",
+            "duplicates": 402,
+            "info": {
+              "short_name": "emm type isolates",
+              "long_name": "Number of isolates by emm type",
+              "short_description": "Emm-typed Group A isolates of the type on the row.",
+              "long_description": "Number of emm-typed invasive Group A Streptococcus isolates of the emm type on the row.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                }
+              ],
+              "id": "abcs_gas_emm_n"
+            },
+            "time_range": [0, 27],
+            "type": "integer",
+            "missing": 38,
+            "mean": 71.387273,
+            "sd": 96.313757,
+            "min": 1,
+            "max": 935
+          },
+          {
+            "name": "abcs_gas_emm_pct",
+            "duplicates": 188,
+            "info": {
+              "short_name": "emm type (%)",
+              "long_name": "Percent of isolates by emm type",
+              "short_description": "Percent of emm-typed Group A isolates of the type on the row.",
+              "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates of the emm type on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                }
+              ],
+              "id": "abcs_gas_emm_pct"
+            },
+            "time_range": [0, 27],
+            "type": "float",
+            "missing": 38,
+            "mean": 5.091,
+            "sd": 5.677048,
+            "min": 0.06,
+            "max": 26.99
+          },
+          {
+            "name": "abcs_gas_emm_n_isolates_total",
+            "duplicates": 560,
+            "info": {
+              "id": "abcs_gas_emm_n_isolates_total",
+              "short_name": "emm-typed isolates",
+              "long_name": "Total emm-typed isolates",
+              "category": "infectious_disease",
+              "short_description": "Group A isolates assigned an emm type.",
+              "long_description": "Number of invasive Group A Streptococcus isolates assigned an emm type, the denominator for the emm percentages.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "integer",
+            "missing": 0,
+            "mean": 1402.25,
+            "sd": 881.265518,
+            "min": 440,
+            "max": 3930
+          }
+        ]
+      },
+      "sha512": "c208175ff7100e0a2633872131dd08531e31e635a2420ff6313aa83050237faf76dce47f77661a7847872d480293786f136afb85039b32774ee76a9017e74955"
+    },
+    {
+      "bytes": 854,
+      "encoding": "windows-1252",
+      "md5": "ee92d6389d44874226edabffeaaec400",
+      "format": "csv",
+      "name": "gas_syndromes.csv",
+      "filename": "gas_syndromes.csv.gz",
+      "versions": {
+        "hash": [
+          "33bc5b75d89fa5d1fdfb306261a6d8df1750da1c",
+          "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa",
+          "8a138991268faefe54c15501ec57c322da5f803a"
+        ],
+        "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"
+        ],
+        "date": [
+          "Tue Aug 18 16:09:37 2026 -0400",
+          "Tue Aug 18 08:38:37 2026 -0400",
+          "Thu Aug 13 14:15:34 2026 -0400"
+        ],
+        "message": [
+          "Add bundle_strep (Group A + Group B Strep) and the ABCs Strep sources (#189)",
+          "manually update respiratory bundle",
+          "Leave unreported ABCs values blank instead of zero-filling"
+        ]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-21 18:23:56.208021",
+      "last_modified": "2026-08-21 18:23:56.208021",
+      "vintage": {},
+      "row_count": 120,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 119,
+            "info": [],
+            "time_range": [0, 23],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 120
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 96,
+            "info": [],
+            "time_range": [0, 23],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2001-12-31": 5,
+              "2002-12-31": 5,
+              "2003-12-31": 5,
+              "2004-12-31": 5,
+              "2005-12-31": 5,
+              "2006-12-31": 5,
+              "2007-12-31": 5,
+              "2008-12-31": 5,
+              "2009-12-31": 5,
+              "2010-12-31": 5,
+              "2011-12-31": 5,
+              "2012-12-31": 5,
+              "2013-12-31": 5,
+              "2014-12-31": 5,
+              "2015-12-31": 5,
+              "2016-12-31": 5,
+              "2017-12-31": 5,
+              "2018-12-31": 5,
+              "2019-12-31": 5,
+              "2020-12-31": 5,
+              "2021-12-31": 5,
+              "2022-12-31": 5,
+              "2023-12-31": 5,
+              "2024-12-31": 5
+            }
+          },
+          {
+            "name": "pathogen",
+            "duplicates": 119,
+            "info": {
+              "id": "pathogen",
+              "short_name": "Pathogen",
+              "long_name": "Bacterial pathogen",
+              "category": "infectious_disease",
+              "short_description": "Group A or Group B Streptococcus.",
+              "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 23],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Group A Streptococcus": 120
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 119,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "demographic",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 23],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Total": 120
+            }
+          },
+          {
+            "name": "onset",
+            "duplicates": 119,
+            "info": {
+              "id": "onset",
+              "short_name": "Onset timing",
+              "long_name": "Infant disease onset timing",
+              "category": "demographic",
+              "short_description": "Early- or late-onset infant Group B disease.",
+              "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 23],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Total": 120
+            }
+          },
+          {
+            "name": "syndrome",
+            "duplicates": 115,
+            "info": {
+              "short_name": "Clinical syndrome",
+              "long_name": "Clinical syndrome",
+              "short_description": "Which clinical presentation the row describes.",
+              "long_description": "Clinical presentation of the invasive disease the row describes.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "syndrome"
+            },
+            "time_range": [0, 23],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "bacteremia_without_focus": 24,
+              "cellulitis": 24,
+              "necrotizing_fasciitis": 24,
+              "pneumonia": 24,
+              "strep_toxic_shock": 24
+            }
+          },
+          {
+            "name": "abcs_gas_rate_syndrome",
+            "duplicates": 36,
+            "info": {
+              "short_name": "Syndrome rate",
+              "long_name": "Rate of Group A cases by syndrome",
+              "short_description": "Group A cases presenting as the syndrome on the row, per 100,000.",
+              "long_description": "Rate of invasive Group A Streptococcus cases presenting as the syndrome on the row, per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                }
+              ],
+              "id": "abcs_gas_rate_syndrome"
+            },
+            "time_range": [0, 23],
+            "type": "float",
+            "missing": 13,
+            "mean": 1.124486,
+            "sd": 0.998531,
+            "min": 0.2,
+            "max": 6.01
+          }
+        ]
+      },
+      "sha512": "e43f9f5ae2e4b423142828e40d959c5a563971ed3b03c63c039fb0aaca1523b69501d3d66d75c899587f053701181f438bbfad935c1fdcadadf8cd05a4ad5d47"
+    },
+    {
+      "bytes": 1562,
+      "encoding": "windows-1252",
+      "md5": "fe26ff66bce92d1a2598e90fd01d5cda",
+      "format": "csv",
+      "name": "gbs_alph.csv",
+      "filename": "gbs_alph.csv.gz",
+      "versions": {
+        "hash": [
+          "33bc5b75d89fa5d1fdfb306261a6d8df1750da1c",
+          "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa",
+          "8a138991268faefe54c15501ec57c322da5f803a"
+        ],
+        "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"
+        ],
+        "date": [
+          "Tue Aug 18 16:09:37 2026 -0400",
+          "Tue Aug 18 08:38:37 2026 -0400",
+          "Thu Aug 13 14:15:34 2026 -0400"
+        ],
+        "message": [
+          "Add bundle_strep (Group A + Group B Strep) and the ABCs Strep sources (#189)",
+          "manually update respiratory bundle",
+          "Leave unreported ABCs values blank instead of zero-filling"
+        ]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-21 18:23:56.478023",
+      "last_modified": "2026-08-21 18:23:56.478023",
+      "vintage": {},
+      "row_count": 250,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 249,
+            "info": [],
+            "time_range": [0, 9],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 250
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 240,
+            "info": [],
+            "time_range": [0, 9],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2015-12-31": 25,
+              "2016-12-31": 25,
+              "2017-12-31": 25,
+              "2018-12-31": 25,
+              "2019-12-31": 25,
+              "2020-12-31": 25,
+              "2021-12-31": 25,
+              "2022-12-31": 25,
+              "2023-12-31": 25,
+              "2024-12-31": 25
+            }
+          },
+          {
+            "name": "pathogen",
+            "duplicates": 249,
+            "info": {
+              "id": "pathogen",
+              "short_name": "Pathogen",
+              "long_name": "Bacterial pathogen",
+              "category": "infectious_disease",
+              "short_description": "Group A or Group B Streptococcus.",
+              "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 9],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Group B Streptococcus": 250
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 246,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "demographic",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 9],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "<1": 100,
+              "18-64": 50,
+              "65+": 50,
+              "Total": 50
+            }
+          },
+          {
+            "name": "onset",
+            "duplicates": 247,
+            "info": {
+              "id": "onset",
+              "short_name": "Onset timing",
+              "long_name": "Infant disease onset timing",
+              "category": "demographic",
+              "short_description": "Early- or late-onset infant Group B disease.",
+              "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 9],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Early-onset": 50,
+              "Late-onset": 50,
+              "Total": 150
+            }
+          },
+          {
+            "name": "alph_type",
+            "duplicates": 245,
+            "info": {
+              "short_name": "ALPH type",
+              "long_name": "Group B ALPH gene type",
+              "short_description": "Which alpha-like protein gene the row describes.",
+              "long_description": "Alpha-like protein (ALPH) surface gene type of the Group B Streptococcus isolates.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "alph_type"
+            },
+            "time_range": [0, 9],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "alp1": 50,
+              "alp23": 50,
+              "alpha": 50,
+              "neg": 50,
+              "rib": 50
+            }
+          },
+          {
+            "name": "abcs_gbs_pct_alph",
+            "duplicates": 89,
+            "info": {
+              "short_name": "ALPH type (%)",
+              "long_name": "Percent of Group B isolates by ALPH type",
+              "short_description": "Percent of typed Group B isolates of the ALPH type on the row.",
+              "long_description": "Percent of typed invasive Group B Streptococcus isolates carrying the alpha-like protein gene on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "abcs_gbs_pct_alph"
+            },
+            "time_range": [0, 9],
+            "type": "float",
+            "missing": 14,
+            "mean": 21.184322,
+            "sd": 14.776017,
+            "min": 0.5,
+            "max": 73
+          },
+          {
+            "name": "abcs_gbs_n_isolates",
+            "duplicates": 202,
+            "info": {
+              "id": "abcs_gbs_n_isolates",
+              "short_name": "Isolates typed",
+              "long_name": "Number of isolates typed",
+              "category": "infectious_disease",
+              "short_description": "Typed Group B isolates in the population group on the row.",
+              "long_description": "Number of typed invasive Group B Streptococcus isolates in the population group on the row, the denominator for the serotype and ALPH percentages.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 9],
+            "type": "integer",
+            "missing": 0,
+            "mean": 859,
+            "sd": 771.243376,
+            "min": 37,
+            "max": 2362
+          }
+        ]
+      },
+      "sha512": "ff71f38ae91fc518043ca1361e414bb5e7e2ea8738b0eb02b32a7d45de1058566530ec7836507a54c85a5701d06bda25af30f2a0b78468dadbd6fb3269eea631"
+    },
+    {
+      "bytes": 6642,
+      "encoding": "windows-1252",
+      "md5": "008a7af5b6e24770614b1c389fa9f3ad",
+      "format": "csv",
+      "name": "gbs_serotypes.csv",
+      "filename": "gbs_serotypes.csv.gz",
+      "versions": {
+        "hash": [
+          "33bc5b75d89fa5d1fdfb306261a6d8df1750da1c",
+          "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa",
+          "8a138991268faefe54c15501ec57c322da5f803a"
+        ],
+        "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"
+        ],
+        "date": [
+          "Tue Aug 18 16:09:37 2026 -0400",
+          "Tue Aug 18 08:38:37 2026 -0400",
+          "Thu Aug 13 14:15:34 2026 -0400"
+        ],
+        "message": [
+          "Add bundle_strep (Group A + Group B Strep) and the ABCs Strep sources (#189)",
+          "manually update respiratory bundle",
+          "Leave unreported ABCs values blank instead of zero-filling"
+        ]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-21 18:23:56.420022",
+      "last_modified": "2026-08-21 18:23:56.420022",
+      "vintage": {},
+      "row_count": 1400,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 1399,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 1400
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 1372,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "1997-12-31": 50,
+              "1998-12-31": 50,
+              "1999-12-31": 50,
+              "2000-12-31": 50,
+              "2001-12-31": 50,
+              "2002-12-31": 50,
+              "2003-12-31": 50,
+              "2004-12-31": 50,
+              "2005-12-31": 50,
+              "2006-12-31": 50,
+              "2007-12-31": 50,
+              "2008-12-31": 50,
+              "2009-12-31": 50,
+              "2010-12-31": 50,
+              "2011-12-31": 50,
+              "2012-12-31": 50,
+              "2013-12-31": 50,
+              "2014-12-31": 50,
+              "2015-12-31": 50,
+              "2016-12-31": 50,
+              "2017-12-31": 50,
+              "2018-12-31": 50,
+              "2019-12-31": 50,
+              "2020-12-31": 50,
+              "2021-12-31": 50,
+              "2022-12-31": 50,
+              "2023-12-31": 50,
+              "2024-12-31": 50
+            }
+          },
+          {
+            "name": "pathogen",
+            "duplicates": 1399,
+            "info": {
+              "id": "pathogen",
+              "short_name": "Pathogen",
+              "long_name": "Bacterial pathogen",
+              "category": "infectious_disease",
+              "short_description": "Group A or Group B Streptococcus.",
+              "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Group B Streptococcus": 1400
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 1396,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "demographic",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "<1": 560,
+              "18-64": 280,
+              "65+": 280,
+              "Total": 280
+            }
+          },
+          {
+            "name": "onset",
+            "duplicates": 1397,
+            "info": {
+              "id": "onset",
+              "short_name": "Onset timing",
+              "long_name": "Infant disease onset timing",
+              "category": "demographic",
+              "short_description": "Early- or late-onset infant Group B disease.",
+              "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Early-onset": 280,
+              "Late-onset": 280,
+              "Total": 840
+            }
+          },
+          {
+            "name": "serotype",
+            "duplicates": 1390,
+            "info": {
+              "id": "serotype",
+              "short_name": "Serotype",
+              "long_name": "Serotype",
+              "category": "Respiratory diseases",
+              "short_description": "Which serotype the row describes.",
+              "measure_type": "Category",
+              "sources": [
+                "abcs"
+              ],
+              "long_description": "Bacterial serotype the row describes: a pneumococcal serotype in data.csv.gz, a Group B capsular serotype in gbs_serotypes.csv.gz."
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "ia": 140,
+              "ib": 140,
+              "ii": 140,
+              "iii": 140,
+              "iv": 140,
+              "non_typeable": 140,
+              "v": 140,
+              "vi": 140,
+              "vi_vii_viii_or_ix": 140,
+              "vi_viii": 140
+            }
+          },
+          {
+            "name": "abcs_gbs_pct_serotype",
+            "duplicates": 1091,
+            "info": {
+              "short_name": "Serotype (%)",
+              "long_name": "Percent of Group B isolates by serotype",
+              "short_description": "Percent of typed Group B isolates of the serotype on the row.",
+              "long_description": "Percent of typed invasive Group B Streptococcus isolates of the capsular serotype on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "abcs_gbs_pct_serotype"
+            },
+            "time_range": [0, 27],
+            "type": "float",
+            "missing": 280,
+            "mean": 11.606509,
+            "sd": 11.637422,
+            "min": 0,
+            "max": 71.6
+          },
+          {
+            "name": "abcs_gbs_n_isolates",
+            "duplicates": 1285,
+            "info": {
+              "id": "abcs_gbs_n_isolates",
+              "short_name": "Isolates typed",
+              "long_name": "Number of isolates typed",
+              "category": "infectious_disease",
+              "short_description": "Typed Group B isolates in the population group on the row.",
+              "long_description": "Number of typed invasive Group B Streptococcus isolates in the population group on the row, the denominator for the serotype and ALPH percentages.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "integer",
+            "missing": 0,
+            "mean": 584.042857,
+            "sd": 634.057944,
+            "min": 0,
+            "max": 2327
+          }
+        ]
+      },
+      "sha512": "d094e769d0bee1a3e3f3d13b89728e16b8e002ded82b9809de51cf88c9a384ef89c9cfc8a0c6e993d16c515a0c65c43df49c5f17001234a9e575cfd8d131b1f0"
+    },
+    {
+      "bytes": 1475,
+      "encoding": "windows-1250",
+      "md5": "7918c8a38b5e4c89ffea2676e39e7d44",
+      "format": "csv",
+      "name": "gbs_syndromes.csv",
+      "filename": "gbs_syndromes.csv.gz",
+      "versions": {
+        "hash": ["33bc5b75d89fa5d1fdfb306261a6d8df1750da1c", "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa"],
+        "author": ["Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>", "danweinberger <daniel.weinberger@yale.edu>"],
+        "date": ["Tue Aug 18 16:09:37 2026 -0400", "Tue Aug 18 08:38:37 2026 -0400"],
+        "message": ["Add bundle_strep (Group A + Group B Strep) and the ABCs Strep sources (#189)", "manually update respiratory bundle"]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-21 18:23:56.260022",
+      "last_modified": "2026-08-21 18:23:56.260022",
+      "vintage": {},
+      "row_count": 243,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 242,
+            "info": [],
+            "time_range": [0, 26],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 243
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 216,
+            "info": [],
+            "time_range": [0, 26],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "1998-12-31": 9,
+              "1999-12-31": 9,
+              "2000-12-31": 9,
+              "2001-12-31": 9,
+              "2002-12-31": 9,
+              "2003-12-31": 9,
+              "2004-12-31": 9,
+              "2005-12-31": 9,
+              "2006-12-31": 9,
+              "2007-12-31": 9,
+              "2008-12-31": 9,
+              "2009-12-31": 9,
+              "2010-12-31": 9,
+              "2011-12-31": 9,
+              "2012-12-31": 9,
+              "2013-12-31": 9,
+              "2014-12-31": 9,
+              "2015-12-31": 9,
+              "2016-12-31": 9,
+              "2017-12-31": 9,
+              "2018-12-31": 9,
+              "2019-12-31": 9,
+              "2020-12-31": 9,
+              "2021-12-31": 9,
+              "2022-12-31": 9,
+              "2023-12-31": 9,
+              "2024-12-31": 9
+            }
+          },
+          {
+            "name": "pathogen",
+            "duplicates": 242,
+            "info": {
+              "id": "pathogen",
+              "short_name": "Pathogen",
+              "long_name": "Bacterial pathogen",
+              "category": "infectious_disease",
+              "short_description": "Group A or Group B Streptococcus.",
+              "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 26],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Group B Streptococcus": 243
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 241,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "demographic",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 26],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "<1": 162,
+              "Total": 81
+            }
+          },
+          {
+            "name": "onset",
+            "duplicates": 240,
+            "info": {
+              "id": "onset",
+              "short_name": "Onset timing",
+              "long_name": "Infant disease onset timing",
+              "category": "demographic",
+              "short_description": "Early- or late-onset infant Group B disease.",
+              "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 26],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Early-onset": 81,
+              "Late-onset": 81,
+              "Total": 81
+            }
+          },
+          {
+            "name": "syndrome",
+            "duplicates": 240,
+            "info": {
+              "short_name": "Clinical syndrome",
+              "long_name": "Clinical syndrome",
+              "short_description": "Which clinical presentation the row describes.",
+              "long_description": "Clinical presentation of the invasive disease the row describes.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "syndrome"
+            },
+            "time_range": [0, 26],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "bacteremia_with_pneumonia": 81,
+              "bacteremia_without_focus": 81,
+              "meningitis": 81
+            }
+          },
+          {
+            "name": "abcs_gbs_pct_syndrome",
+            "duplicates": 62,
+            "info": {
+              "short_name": "Syndrome (%)",
+              "long_name": "Percent of Group B cases by syndrome",
+              "short_description": "Percent of Group B cases presenting as the syndrome on the row.",
+              "long_description": "Percent of invasive Group B Streptococcus cases presenting as the syndrome on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "abcs_gbs_pct_syndrome"
+            },
+            "time_range": [0, 26],
+            "type": "float",
+            "missing": 0,
+            "mean": 26.766667,
+            "sd": 26.543091,
+            "min": 0,
+            "max": 85.3
+          }
+        ]
+      },
+      "sha512": "c6c805f01a423f1159be07a91277428b79fa0b86e89851fee8928ad5e1e4879cc8ad5ec873883b74bb0e31b6e05fb0c651a7278c5c35325ae9d2512dbd54e52c"
+    },
+    {
+      "bytes": 1237,
+      "encoding": "windows-1252",
+      "md5": "e3ccd0f74b2f986f85a0776828ba5940",
+      "format": "csv",
+      "name": "strep_counts.csv",
+      "filename": "strep_counts.csv.gz",
+      "versions": {
+        "hash": [
+          "33bc5b75d89fa5d1fdfb306261a6d8df1750da1c",
+          "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa",
+          "8a138991268faefe54c15501ec57c322da5f803a"
+        ],
+        "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"
+        ],
+        "date": [
+          "Tue Aug 18 16:09:37 2026 -0400",
+          "Tue Aug 18 08:38:37 2026 -0400",
+          "Thu Aug 13 14:15:34 2026 -0400"
+        ],
+        "message": [
+          "Add bundle_strep (Group A + Group B Strep) and the ABCs Strep sources (#189)",
+          "manually update respiratory bundle",
+          "Leave unreported ABCs values blank instead of zero-filling"
+        ]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-21 18:23:56.02502",
+      "last_modified": "2026-08-21 18:23:56.02502",
+      "vintage": {},
+      "row_count": 140,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 139,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 140
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 112,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "1997-12-31": 5,
+              "1998-12-31": 5,
+              "1999-12-31": 5,
+              "2000-12-31": 5,
+              "2001-12-31": 5,
+              "2002-12-31": 5,
+              "2003-12-31": 5,
+              "2004-12-31": 5,
+              "2005-12-31": 5,
+              "2006-12-31": 5,
+              "2007-12-31": 5,
+              "2008-12-31": 5,
+              "2009-12-31": 5,
+              "2010-12-31": 5,
+              "2011-12-31": 5,
+              "2012-12-31": 5,
+              "2013-12-31": 5,
+              "2014-12-31": 5,
+              "2015-12-31": 5,
+              "2016-12-31": 5,
+              "2017-12-31": 5,
+              "2018-12-31": 5,
+              "2019-12-31": 5,
+              "2020-12-31": 5,
+              "2021-12-31": 5,
+              "2022-12-31": 5,
+              "2023-12-31": 5,
+              "2024-12-31": 5
+            }
+          },
+          {
+            "name": "pathogen",
+            "duplicates": 138,
+            "info": {
+              "id": "pathogen",
+              "short_name": "Pathogen",
+              "long_name": "Bacterial pathogen",
+              "category": "infectious_disease",
+              "short_description": "Group A or Group B Streptococcus.",
+              "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Group A Streptococcus": 28,
+              "Group B Streptococcus": 112
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 138,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "demographic",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "<1": 84,
+              "Total": 56
+            }
+          },
+          {
+            "name": "onset",
+            "duplicates": 137,
+            "info": {
+              "id": "onset",
+              "short_name": "Onset timing",
+              "long_name": "Infant disease onset timing",
+              "category": "demographic",
+              "short_description": "Early- or late-onset infant Group B disease.",
+              "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Early-onset": 28,
+              "Late-onset": 28,
+              "Total": 84
+            }
+          },
+          {
+            "name": "abcs_N_cases",
+            "duplicates": 24,
+            "info": {
+              "id": "abcs_N_cases",
+              "short_name": "Cases",
+              "long_name": "Estimated number of invasive cases",
+              "category": "infectious_disease",
+              "short_description": "Estimated annual invasive disease cases.",
+              "long_description": "Estimated number of invasive disease cases in the year.",
+              "measure_type": "Count",
+              "unit": "Cases",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "integer",
+            "missing": 0,
+            "mean": 9187.107143,
+            "sd": 10820.031933,
+            "min": 540,
+            "max": 43100
+          },
+          {
+            "name": "abcs_N_deaths",
+            "duplicates": 96,
+            "info": {
+              "id": "abcs_N_deaths",
+              "short_name": "Deaths",
+              "long_name": "Estimated number of deaths",
+              "category": "infectious_disease",
+              "short_description": "Estimated annual deaths from invasive disease.",
+              "long_description": "Estimated number of deaths from invasive disease in the year.",
+              "measure_type": "Count",
+              "unit": "Deaths",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "integer",
+            "missing": 84,
+            "mean": 1790.089286,
+            "sd": 552.883755,
+            "min": 1000,
+            "max": 4210
+          },
+          {
+            "name": "abcs_N_survivals",
+            "duplicates": 85,
+            "info": {
+              "id": "abcs_N_survivals",
+              "short_name": "Survivals",
+              "long_name": "Estimated number of survivals",
+              "category": "infectious_disease",
+              "short_description": "Estimated annual invasive disease cases who survived.",
+              "long_description": "Estimated number of people with invasive disease who survived, in the year.",
+              "measure_type": "Count",
+              "unit": "People",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "integer",
+            "missing": 84,
+            "mean": 18855,
+            "sd": 8085.829018,
+            "min": 7750,
+            "max": 38890
+          }
+        ]
+      },
+      "sha512": "2477c31affb21c5f75293a188f73429bbc14347c47f0bff4e488216a9542697df35f9e832836c2b277058409823b3eed8a7794b3c3aa04cb8713c6de6b3a5955"
+    },
+    {
+      "bytes": 6184,
+      "encoding": "windows-1252",
+      "md5": "cfe1d5a686d0440c5b8d5d1cf6603a9b",
+      "format": "csv",
+      "name": "strep_rates.csv",
+      "filename": "strep_rates.csv.gz",
+      "versions": {
+        "hash": [
+          "33bc5b75d89fa5d1fdfb306261a6d8df1750da1c",
+          "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa",
+          "8a138991268faefe54c15501ec57c322da5f803a"
+        ],
+        "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"
+        ],
+        "date": [
+          "Tue Aug 18 16:09:37 2026 -0400",
+          "Tue Aug 18 08:38:37 2026 -0400",
+          "Thu Aug 13 14:15:34 2026 -0400"
+        ],
+        "message": [
+          "Add bundle_strep (Group A + Group B Strep) and the ABCs Strep sources (#189)",
+          "manually update respiratory bundle",
+          "Leave unreported ABCs values blank instead of zero-filling"
+        ]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-21 18:23:55.97202",
+      "last_modified": "2026-08-21 18:23:55.97202",
+      "vintage": {},
+      "row_count": 952,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 951,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 952
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 924,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "1997-12-31": 34,
+              "1998-12-31": 34,
+              "1999-12-31": 34,
+              "2000-12-31": 34,
+              "2001-12-31": 34,
+              "2002-12-31": 34,
+              "2003-12-31": 34,
+              "2004-12-31": 34,
+              "2005-12-31": 34,
+              "2006-12-31": 34,
+              "2007-12-31": 34,
+              "2008-12-31": 34,
+              "2009-12-31": 34,
+              "2010-12-31": 34,
+              "2011-12-31": 34,
+              "2012-12-31": 34,
+              "2013-12-31": 34,
+              "2014-12-31": 34,
+              "2015-12-31": 34,
+              "2016-12-31": 34,
+              "2017-12-31": 34,
+              "2018-12-31": 34,
+              "2019-12-31": 34,
+              "2020-12-31": 34,
+              "2021-12-31": 34,
+              "2022-12-31": 34,
+              "2023-12-31": 34,
+              "2024-12-31": 34
+            }
+          },
+          {
+            "name": "pathogen",
+            "duplicates": 950,
+            "info": {
+              "id": "pathogen",
+              "short_name": "Pathogen",
+              "long_name": "Bacterial pathogen",
+              "category": "infectious_disease",
+              "short_description": "Group A or Group B Streptococcus.",
+              "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Group A Streptococcus": 392,
+              "Group B Streptococcus": 560
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 943,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "demographic",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "<1": 280,
+              "1": 56,
+              "18-34": 56,
+              "2-4": 56,
+              "35-49": 56,
+              "5-17": 56,
+              "50-64": 56,
+              "65+": 56,
+              "Total": 280
+            }
+          },
+          {
+            "name": "sex",
+            "duplicates": 949,
+            "info": {
+              "id": "sex",
+              "short_name": "Sex",
+              "long_name": "Sex",
+              "category": "demographic",
+              "short_description": "Sex; \"Total\" combines both.",
+              "long_description": "Sex of the cases the row describes, reported for Group A only.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Female": 28,
+              "Male": 28,
+              "Total": 896
+            }
+          },
+          {
+            "name": "race_ethnicity",
+            "duplicates": 948,
+            "info": {
+              "id": "race_ethnicity",
+              "short_name": "Race/Ethnicity",
+              "long_name": "Race and ethnicity",
+              "category": "demographic",
+              "short_description": "Race and ethnicity; \"Total\" combines all groups.",
+              "long_description": "Race and ethnicity of the cases the row describes, collapsed by ABCs to White, Black and Other.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Black": 112,
+              "Other": 112,
+              "Total": 616,
+              "White": 112
+            }
+          },
+          {
+            "name": "onset",
+            "duplicates": 949,
+            "info": {
+              "id": "onset",
+              "short_name": "Onset timing",
+              "long_name": "Infant disease onset timing",
+              "category": "demographic",
+              "short_description": "Early- or late-onset infant Group B disease.",
+              "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Early-onset": 112,
+              "Late-onset": 112,
+              "Total": 728
+            }
+          },
+          {
+            "name": "rate_denominator",
+            "duplicates": 950,
+            "info": {
+              "id": "rate_denominator",
+              "short_name": "Rate denominator",
+              "long_name": "Population the rate is relative to",
+              "category": "demographic",
+              "short_description": "Indicates if rate is per 100,000 of the row's stratum or of the whole population.",
+              "long_description": "Indicates if rate is per 100,000 of the row's stratum or of the whole population.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Population": 224,
+              "Stratum population": 728
+            }
+          },
+          {
+            "name": "abcs_rate_cases",
+            "duplicates": 706,
+            "info": {
+              "id": "abcs_rate_cases",
+              "short_name": "Case rate",
+              "long_name": "Invasive disease case rate",
+              "category": "infectious_disease",
+              "short_description": "Invasive disease cases per 100,000 population.",
+              "long_description": "Rate of invasive disease cases per 100,000 population.",
+              "statement": "In {location}, the invasive case rate was {value} per 100,000.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "float",
+            "missing": 0,
+            "mean": 6.425756,
+            "sd": 12.180152,
+            "min": 0,
+            "max": 115.7
+          },
+          {
+            "name": "abcs_rate_deaths",
+            "duplicates": 795,
+            "info": {
+              "id": "abcs_rate_deaths",
+              "short_name": "Death rate",
+              "long_name": "Invasive disease death rate",
+              "category": "infectious_disease",
+              "short_description": "Deaths from invasive disease per 100,000 population.",
+              "long_description": "Rate of deaths from invasive disease per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "float",
+            "missing": 448,
+            "mean": 0.696766,
+            "sd": 1.053664,
+            "min": 0,
+            "max": 5.66
+          }
+        ]
+      },
+      "sha512": "9ad4b0d1dffc69c518cc4c3440aed989b0f1a3b1df12243712ed3ccf54f619d45d81a1ca8a592664d10cdb7b92c6db2820859e00dba8b42a232b3d6788335ffd"
+    },
+    {
+      "bytes": 5027,
+      "encoding": "windows-1252",
+      "md5": "991269a1ec0db25a4bef734295c6cba4",
+      "format": "csv",
+      "name": "strep_resistance.csv",
+      "filename": "strep_resistance.csv.gz",
+      "versions": {
+        "hash": [
+          "33bc5b75d89fa5d1fdfb306261a6d8df1750da1c",
+          "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa",
+          "8a138991268faefe54c15501ec57c322da5f803a"
+        ],
+        "author": [
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"
+        ],
+        "date": [
+          "Tue Aug 18 16:09:37 2026 -0400",
+          "Tue Aug 18 08:38:37 2026 -0400",
+          "Thu Aug 13 14:15:34 2026 -0400"
+        ],
+        "message": [
+          "Add bundle_strep (Group A + Group B Strep) and the ABCs Strep sources (#189)",
+          "manually update respiratory bundle",
+          "Leave unreported ABCs values blank instead of zero-filling"
+        ]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-21 18:23:56.161021",
+      "last_modified": "2026-08-21 18:23:56.161021",
+      "vintage": {},
+      "row_count": 1176,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 1175,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 1176
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 1148,
+            "info": [],
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "1997-12-31": 42,
+              "1998-12-31": 42,
+              "1999-12-31": 42,
+              "2000-12-31": 42,
+              "2001-12-31": 42,
+              "2002-12-31": 42,
+              "2003-12-31": 42,
+              "2004-12-31": 42,
+              "2005-12-31": 42,
+              "2006-12-31": 42,
+              "2007-12-31": 42,
+              "2008-12-31": 42,
+              "2009-12-31": 42,
+              "2010-12-31": 42,
+              "2011-12-31": 42,
+              "2012-12-31": 42,
+              "2013-12-31": 42,
+              "2014-12-31": 42,
+              "2015-12-31": 42,
+              "2016-12-31": 42,
+              "2017-12-31": 42,
+              "2018-12-31": 42,
+              "2019-12-31": 42,
+              "2020-12-31": 42,
+              "2021-12-31": 42,
+              "2022-12-31": 42,
+              "2023-12-31": 42,
+              "2024-12-31": 42
+            }
+          },
+          {
+            "name": "pathogen",
+            "duplicates": 1174,
+            "info": {
+              "id": "pathogen",
+              "short_name": "Pathogen",
+              "long_name": "Bacterial pathogen",
+              "category": "infectious_disease",
+              "short_description": "Group A or Group B Streptococcus.",
+              "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Group A Streptococcus": 196,
+              "Group B Streptococcus": 980
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 1172,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "demographic",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "<1": 392,
+              "18-64": 196,
+              "65+": 196,
+              "Total": 392
+            }
+          },
+          {
+            "name": "onset",
+            "duplicates": 1173,
+            "info": {
+              "id": "onset",
+              "short_name": "Onset timing",
+              "long_name": "Infant disease onset timing",
+              "category": "demographic",
+              "short_description": "Early- or late-onset infant Group B disease.",
+              "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Early-onset": 196,
+              "Late-onset": 196,
+              "Total": 784
+            }
+          },
+          {
+            "name": "antibiotic",
+            "duplicates": 1169,
+            "info": {
+              "short_name": "Antibiotic",
+              "long_name": "Antibiotic tested",
+              "short_description": "Which drug the resistance percentage refers to.",
+              "long_description": "Antibiotic the isolates on the row were tested against.",
+              "measure_type": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "antibiotic"
+            },
+            "time_range": [0, 27],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "cefotaxime": 168,
+              "clindamycin": 168,
+              "erythromycin": 168,
+              "linezolid": 168,
+              "penicillin": 168,
+              "tetracycline": 168,
+              "vancomycin": 168
+            }
+          },
+          {
+            "name": "abcs_pct_resistant",
+            "duplicates": 946,
+            "info": {
+              "short_name": "Resistance (%)",
+              "long_name": "Percent of isolates non-susceptible",
+              "short_description": "Percent of tested isolates non-susceptible to the antibiotic on the row.",
+              "long_description": "Percent of invasive isolates non-susceptible to the antibiotic on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "abcs_pct_resistant"
+            },
+            "time_range": [0, 27],
+            "type": "float",
+            "missing": 289,
+            "mean": 11.817215,
+            "sd": 20.0521,
+            "min": 0,
+            "max": 81.1
+          },
+          {
+            "name": "abcs_n_isolates",
+            "duplicates": 1138,
+            "info": {
+              "id": "abcs_n_isolates",
+              "short_name": "Isolates tested",
+              "long_name": "Number of isolates tested",
+              "category": "infectious_disease",
+              "short_description": "Isolates characterised by CDC's reference laboratory.",
+              "long_description": "Number of isolates characterised by whole genome sequencing at CDC's reference laboratory, the denominator for the resistance percentages.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ]
+            },
+            "time_range": [9, 27],
+            "type": "integer",
+            "missing": 910,
+            "mean": 1773.552632,
+            "sd": 700.708837,
+            "min": 852,
+            "max": 3908
+          }
+        ]
+      },
+      "sha512": "acb104d89458411f0ecc025d871e90b1aafb187b6dd28f3b661cd73d75570831591e82a3f3335b734b2e522b5334adf0d94dd79ceb60584dfeec3e8f769bd885"
+    },
+    {
       "bytes": 160,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "345f174b35f74d44ab6072bdc5d60ec3",
       "format": "csv",
       "name": "uad.csv",
       "filename": "uad.csv.gz",
       "versions": {
         "hash": [
+          "b17348ffc63e58e4fc7e67d94c0d24c3bf0515e4",
           "fbc9c33deb26666c5177789e7741def6a40a2725",
           "125bf2a2af9202a2f18428bcee4ac8cc88be4cde",
           "33ae8dd1819760adf156f473edf254074f8295f2"
         ],
         "author": [
+          "GitHub Actions <actions@github.com>",
           "Weinberger <daniel.weinberger@yale.edu>",
           "GitHub Actions <actions@github.com>",
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Fri May 29 20:20:58 2026 +0000",
           "Fri Nov 21 10:22:22 2025 -0500",
           "Fri Nov 14 21:54:15 2025 +0000",
           "Fri Jul 18 22:58:42 2025 -0400"
         ],
         "message": [
+          "scheduled data build",
           "use new geography*time dataset",
           "scheduled data build",
           "complete set bundle"
@@ -431,8 +2550,8 @@
       "id_length": 11,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-05-29 20:08:20.227115",
-      "last_modified": "2026-05-29 20:08:20.227115",
+      "created": "2026-08-21 18:23:51.178996",
+      "last_modified": "2026-08-21 18:23:51.178996",
       "vintage": {},
       "row_count": 17,
       "entity_count": 1,
@@ -442,10 +2561,7 @@
             "name": "geography",
             "duplicates": 16,
             "info": [],
-            "time_range": [
-              0,
-              0
-            ],
+            "time_range": [0, 0],
             "type": "string",
             "missing": 0,
             "table": {
@@ -456,10 +2572,7 @@
             "name": "time",
             "duplicates": 16,
             "info": [],
-            "time_range": [
-              0,
-              0
-            ],
+            "time_range": [0, 0],
             "type": "string",
             "missing": 0,
             "table": {
@@ -474,16 +2587,14 @@
               "short_name": "Serotype",
               "long_name": "Serotype",
               "category": "Respiratory diseases",
-              "short_description": "Pneumococcal serotype",
+              "short_description": "Which serotype the row describes.",
               "measure_type": "Category",
               "sources": [
                 "abcs"
-              ]
+              ],
+              "long_description": "Bacterial serotype the row describes: a pneumococcal serotype in data.csv.gz, a Group B capsular serotype in gbs_serotypes.csv.gz."
             },
-            "time_range": [
-              0,
-              0
-            ],
+            "time_range": [0, 0],
             "type": "string",
             "missing": 0,
             "table": {
@@ -521,10 +2632,7 @@
                 "ssuad"
               ]
             },
-            "time_range": [
-              0,
-              0
-            ],
+            "time_range": [0, 0],
             "type": "integer",
             "missing": 0,
             "mean": 6.470588,
@@ -542,11 +2650,15 @@
       "id": "age",
       "short_name": "Age group",
       "long_name": "Age group",
-      "category": "Respiratory diseases",
-      "measure_type": "Age group (years)",
-      "unit": "years",
+      "category": "demographic",
+      "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+      "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+      "measure_type": "Category",
+      "time_resolution": "Year",
       "sources": [
-        "abcs"
+        {
+          "id": "abcs"
+        }
       ],
       "citations": []
     },
@@ -555,12 +2667,13 @@
       "short_name": "Serotype",
       "long_name": "Serotype",
       "category": "Respiratory diseases",
-      "short_description": "Pneumococcal serotype",
+      "short_description": "Which serotype the row describes.",
       "measure_type": "Category",
       "sources": [
         "abcs"
       ],
-      "citations": []
+      "citations": [],
+      "long_description": "Bacterial serotype the row describes: a pneumococcal serotype in data.csv.gz, a Group B capsular serotype in gbs_serotypes.csv.gz."
     },
     "N_SSUAD": {
       "id": "N_SSUAD",
@@ -635,6 +2748,428 @@
       ],
       "citations": []
     },
+    "sex": {
+      "id": "sex",
+      "short_name": "Sex",
+      "long_name": "Sex",
+      "category": "demographic",
+      "short_description": "Sex; \"Total\" combines both.",
+      "long_description": "Sex of the cases the row describes, reported for Group A only.",
+      "measure_type": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs"
+        }
+      ],
+      "citations": []
+    },
+    "race_ethnicity": {
+      "id": "race_ethnicity",
+      "short_name": "Race/Ethnicity",
+      "long_name": "Race and ethnicity",
+      "category": "demographic",
+      "short_description": "Race and ethnicity; \"Total\" combines all groups.",
+      "long_description": "Race and ethnicity of the cases the row describes, collapsed by ABCs to White, Black and Other.",
+      "measure_type": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs"
+        }
+      ],
+      "citations": []
+    },
+    "onset": {
+      "id": "onset",
+      "short_name": "Onset timing",
+      "long_name": "Infant disease onset timing",
+      "category": "demographic",
+      "short_description": "Early- or late-onset infant Group B disease.",
+      "long_description": "Specifies if infant's Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+      "measure_type": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "citations": []
+    },
+    "pathogen": {
+      "id": "pathogen",
+      "short_name": "Pathogen",
+      "long_name": "Bacterial pathogen",
+      "category": "infectious_disease",
+      "short_description": "Group A or Group B Streptococcus.",
+      "long_description": "Bacterial pathogen species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+      "measure_type": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs"
+        }
+      ],
+      "citations": []
+    },
+    "pop": {
+      "id": "pop",
+      "short_name": "Surveillance population",
+      "long_name": "ABCs surveillance population",
+      "category": "infectious_disease",
+      "short_description": "Population of the ABCs catchment area.",
+      "long_description": "Census-derived population of the ABCs catchment area, the denominator for rate_IPD.",
+      "measure_type": "Count",
+      "unit": "People",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs"
+        }
+      ],
+      "citations": []
+    },
+    "abcs_gas_emm_n_isolates_total": {
+      "id": "abcs_gas_emm_n_isolates_total",
+      "short_name": "emm-typed isolates",
+      "long_name": "Total emm-typed isolates",
+      "category": "infectious_disease",
+      "short_description": "Group A isolates assigned an emm type.",
+      "long_description": "Number of invasive Group A Streptococcus isolates assigned an emm type, the denominator for the emm percentages.",
+      "measure_type": "Count",
+      "unit": "Isolates",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        }
+      ],
+      "citations": []
+    },
+    "abcs_gbs_n_isolates": {
+      "id": "abcs_gbs_n_isolates",
+      "short_name": "Isolates typed",
+      "long_name": "Number of isolates typed",
+      "category": "infectious_disease",
+      "short_description": "Typed Group B isolates in the population group on the row.",
+      "long_description": "Number of typed invasive Group B Streptococcus isolates in the population group on the row, the denominator for the serotype and ALPH percentages.",
+      "measure_type": "Count",
+      "unit": "Isolates",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "citations": []
+    },
+    "abcs_N_cases": {
+      "id": "abcs_N_cases",
+      "short_name": "Cases",
+      "long_name": "Estimated number of invasive cases",
+      "category": "infectious_disease",
+      "short_description": "Estimated annual invasive disease cases.",
+      "long_description": "Estimated number of invasive disease cases in the year.",
+      "measure_type": "Count",
+      "unit": "Cases",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "citations": []
+    },
+    "abcs_N_deaths": {
+      "id": "abcs_N_deaths",
+      "short_name": "Deaths",
+      "long_name": "Estimated number of deaths",
+      "category": "infectious_disease",
+      "short_description": "Estimated annual deaths from invasive disease.",
+      "long_description": "Estimated number of deaths from invasive disease in the year.",
+      "measure_type": "Count",
+      "unit": "Deaths",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "citations": []
+    },
+    "abcs_N_survivals": {
+      "id": "abcs_N_survivals",
+      "short_name": "Survivals",
+      "long_name": "Estimated number of survivals",
+      "category": "infectious_disease",
+      "short_description": "Estimated annual invasive disease cases who survived.",
+      "long_description": "Estimated number of people with invasive disease who survived, in the year.",
+      "measure_type": "Count",
+      "unit": "People",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "citations": []
+    },
+    "abcs_rate_cases": {
+      "id": "abcs_rate_cases",
+      "short_name": "Case rate",
+      "long_name": "Invasive disease case rate",
+      "category": "infectious_disease",
+      "short_description": "Invasive disease cases per 100,000 population.",
+      "long_description": "Rate of invasive disease cases per 100,000 population.",
+      "statement": "In {location}, the invasive case rate was {value} per 100,000.",
+      "measure_type": "Rate",
+      "unit": "Cases per 100,000",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "citations": []
+    },
+    "abcs_rate_deaths": {
+      "id": "abcs_rate_deaths",
+      "short_name": "Death rate",
+      "long_name": "Invasive disease death rate",
+      "category": "infectious_disease",
+      "short_description": "Deaths from invasive disease per 100,000 population.",
+      "long_description": "Rate of deaths from invasive disease per 100,000 population.",
+      "measure_type": "Rate",
+      "unit": "Deaths per 100,000",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "citations": []
+    },
+    "abcs_n_isolates": {
+      "id": "abcs_n_isolates",
+      "short_name": "Isolates tested",
+      "long_name": "Number of isolates tested",
+      "category": "infectious_disease",
+      "short_description": "Isolates characterised by CDC's reference laboratory.",
+      "long_description": "Number of isolates characterised by whole genome sequencing at CDC's reference laboratory, the denominator for the resistance percentages.",
+      "measure_type": "Count",
+      "unit": "Isolates",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "citations": []
+    },
+    "rate_denominator": {
+      "id": "rate_denominator",
+      "short_name": "Rate denominator",
+      "long_name": "Population the rate is relative to",
+      "category": "demographic",
+      "short_description": "Indicates if rate is per 100,000 of the row's stratum or of the whole population.",
+      "long_description": "Indicates if rate is per 100,000 of the row's stratum or of the whole population.",
+      "measure_type": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs"
+        }
+      ],
+      "citations": []
+    },
+    "antibiotic": {
+      "short_name": "Antibiotic",
+      "long_name": "Antibiotic tested",
+      "short_description": "Which drug the resistance percentage refers to.",
+      "long_description": "Antibiotic the isolates on the row were tested against.",
+      "measure_type": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "antibiotic"
+    },
+    "syndrome": {
+      "short_name": "Clinical syndrome",
+      "long_name": "Clinical syndrome",
+      "short_description": "Which clinical presentation the row describes.",
+      "long_description": "Clinical presentation of the invasive disease the row describes.",
+      "measure_type": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "syndrome"
+    },
+    "emm_type": {
+      "short_name": "emm type",
+      "long_name": "Group A emm type",
+      "short_description": "Which emm type the row describes.",
+      "long_description": "emm type of the Group A Streptococcus isolates, the M protein gene sequence type; \"other\" is CDC's residual category.",
+      "measure_type": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        }
+      ],
+      "id": "emm_type"
+    },
+    "alph_type": {
+      "short_name": "ALPH type",
+      "long_name": "Group B ALPH gene type",
+      "short_description": "Which alpha-like protein gene the row describes.",
+      "long_description": "Alpha-like protein (ALPH) surface gene type of the Group B Streptococcus isolates.",
+      "measure_type": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "alph_type"
+    },
+    "abcs_pct_resistant": {
+      "short_name": "Resistance (%)",
+      "long_name": "Percent of isolates non-susceptible",
+      "short_description": "Percent of tested isolates non-susceptible to the antibiotic on the row.",
+      "long_description": "Percent of invasive isolates non-susceptible to the antibiotic on the row.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "abcs_pct_resistant"
+    },
+    "abcs_gas_rate_syndrome": {
+      "short_name": "Syndrome rate",
+      "long_name": "Rate of Group A cases by syndrome",
+      "short_description": "Group A cases presenting as the syndrome on the row, per 100,000.",
+      "long_description": "Rate of invasive Group A Streptococcus cases presenting as the syndrome on the row, per 100,000 population.",
+      "measure_type": "Rate",
+      "unit": "Cases per 100,000",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        }
+      ],
+      "id": "abcs_gas_rate_syndrome"
+    },
+    "abcs_gbs_pct_syndrome": {
+      "short_name": "Syndrome (%)",
+      "long_name": "Percent of Group B cases by syndrome",
+      "short_description": "Percent of Group B cases presenting as the syndrome on the row.",
+      "long_description": "Percent of invasive Group B Streptococcus cases presenting as the syndrome on the row.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "abcs_gbs_pct_syndrome"
+    },
+    "abcs_gbs_pct_serotype": {
+      "short_name": "Serotype (%)",
+      "long_name": "Percent of Group B isolates by serotype",
+      "short_description": "Percent of typed Group B isolates of the serotype on the row.",
+      "long_description": "Percent of typed invasive Group B Streptococcus isolates of the capsular serotype on the row.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "abcs_gbs_pct_serotype"
+    },
+    "abcs_gbs_pct_alph": {
+      "short_name": "ALPH type (%)",
+      "long_name": "Percent of Group B isolates by ALPH type",
+      "short_description": "Percent of typed Group B isolates of the ALPH type on the row.",
+      "long_description": "Percent of typed invasive Group B Streptococcus isolates carrying the alpha-like protein gene on the row.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "abcs_gbs_pct_alph"
+    },
+    "abcs_gas_emm_pct": {
+      "short_name": "emm type (%)",
+      "long_name": "Percent of isolates by emm type",
+      "short_description": "Percent of emm-typed Group A isolates of the type on the row.",
+      "long_description": "Percent of emm-typed invasive Group A Streptococcus isolates of the emm type on the row.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        }
+      ],
+      "id": "abcs_gas_emm_pct"
+    },
+    "abcs_gas_emm_n": {
+      "short_name": "emm type isolates",
+      "long_name": "Number of isolates by emm type",
+      "short_description": "Emm-typed Group A isolates of the type on the row.",
+      "long_description": "Number of emm-typed invasive Group A Streptococcus isolates of the emm type on the row.",
+      "measure_type": "Count",
+      "unit": "Isolates",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        }
+      ],
+      "id": "abcs_gas_emm_n"
+    },
     "_sources": {
       "abcs": {
         "name": "Active Bacterial Core surveillance (ABCs)",
@@ -658,6 +3193,28 @@
         "description": "The CAAP (Community-Acquired Acute Pneumonia) study by Ramirez et al. (2025) used serotype-specific urinary antigen detection (SSUAD) to identify pneumococcal serotypes causing non-invasive pneumonia in Louisville, Kentucky. This methodology allows identification of pneumococcal serotypes in patients with pneumonia who do not have positive blood cultures, providing insight into the full spectrum of pneumococcal disease burden. The study demonstrates that serotypes causing invasive disease also commonly cause non-invasive pneumonia, validating the use of IPD surveillance data for understanding overall pneumococcal disease patterns.",
         "restrictions": "Attribution required. Cite Ramirez et al. Open Forum for Infectious Diseases. 2025."
       },
+      "abcs_gas": {
+        "name": "Active Bacterial Core surveillance (ABCs) Group A Streptococcus",
+        "url": "https://data.cdc.gov/d/9y49-tura",
+        "organization": "Centers for Disease Control and Prevention",
+        "organization_url": "https://www.cdc.gov/abcs/",
+        "location": "CDC ABCs surveillance reports",
+        "location_url": "https://www.cdc.gov/abcs/reports/",
+        "date_accessed": 2026,
+        "description": "Active Bacterial Core surveillance (ABCs) is a collaboration between CDC, state health departments and universities running active, population-based, laboratory-confirmed surveillance for invasive bacterial disease since 1997. CDC publishes one dataset per pathogen; this is the Group A Streptococcus. ABCs covers a catchment of selected US counties, roughly 35 million people, not the whole country. Rates are observed within that catchment and counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown. Invasive isolates are sent to CDC's reference laboratory and characterized by whole genome sequencing, which yields both the emm type and the predicted minimum inhibitory concentrations behind the resistance percentages. The published isolate counts start in 2006. Note CDC's own figures for 2023 disagree slightly: the surveillance report cites 3,908 isolates while the per-type counts in this dataset sum to 3,930, so the resistance and typing denominators are kept as separate columns here. A blank value is a cell CDC did not publish for that row, so a 0 is always a measured zero. CDC's case definition: invasive disease is isolation of group A Streptococcus from a normally sterile site, or from a wound culture accompanied by necrotizing fasciitis or streptococcal toxic shock syndrome, in a resident of a surveillance area.",
+        "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+      },
+      "abcs_gbs": {
+        "name": "Active Bacterial Core surveillance (ABCs) Group B Streptococcus",
+        "url": "https://data.cdc.gov/d/95m5-agj4",
+        "organization": "Centers for Disease Control and Prevention",
+        "organization_url": "https://www.cdc.gov/abcs/",
+        "location": "CDC ABCs surveillance reports",
+        "location_url": "https://www.cdc.gov/abcs/reports/",
+        "date_accessed": 2026,
+        "description": "Active Bacterial Core surveillance (ABCs) is a collaboration between CDC, state health departments and universities running active, population-based, laboratory-confirmed surveillance for invasive bacterial disease since 1997. CDC publishes one dataset per pathogen; this is the Group B Streptococcus. ABCs covers a catchment of selected US counties, roughly 35 million people, not the whole country. Rates are observed within that catchment and counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown. Invasive isolates are characterized at CDC's reference laboratory. Serotype and ALPH percentages carry a per-population-group isolate count; the resistance percentages have a single overall count published from 2006 on, and none for the individual population groups. A blank value is a cell CDC did not publish for that row, so a 0 is always a measured zero. CDC's case definition: invasive disease is isolation of group B Streptococcus from a normally sterile site in a resident of a surveillance area.",
+        "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+      },
       "id": "_sources"
     }
   },
@@ -667,9 +3224,8 @@
       "variables": {
         "geography": {
           "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
+          "same_type": false,
+          "added_levels": ["00", "06", "08", "09", "13", "24", "27", "35", "36", "41", "47"]
         },
         "age": {
           "status": "present",
@@ -686,7 +3242,7 @@
         "time": {
           "status": "present",
           "same_type": true,
-          "added_levels": "2024-01-01",
+          "added_levels": [],
           "dropped_levels": []
         },
         "N_IPD": {
@@ -707,14 +3263,16 @@
         }
       }
     },
-    "uad.csv.gz": {
+    "gas_emm.csv.gz": {
+      "state": "unchanged"
+    },
+    "gas_syndromes.csv.gz": {
       "state": "changed",
       "variables": {
         "geography": {
           "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
+          "same_type": false,
+          "added_levels": "00"
         },
         "time": {
           "status": "present",
@@ -722,17 +3280,113 @@
           "added_levels": [],
           "dropped_levels": []
         },
-        "serotype": {
+        "pathogen": {
           "status": "present",
           "same_type": true,
           "added_levels": [],
           "dropped_levels": []
         },
-        "N_SSUAD": {
+        "age": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "onset": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "syndrome": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "abcs_gas_rate_syndrome": {
           "status": "present",
           "same_type": true
         }
       }
+    },
+    "gbs_alph.csv.gz": {
+      "state": "unchanged"
+    },
+    "gbs_serotypes.csv.gz": {
+      "state": "unchanged"
+    },
+    "gbs_syndromes.csv.gz": {
+      "state": "unchanged"
+    },
+    "strep_counts.csv.gz": {
+      "state": "unchanged"
+    },
+    "strep_rates.csv.gz": {
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": false,
+          "added_levels": "00"
+        },
+        "time": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "pathogen": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "age": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "sex": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "race_ethnicity": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "onset": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "rate_denominator": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "abcs_rate_cases": {
+          "status": "present",
+          "same_type": true
+        },
+        "abcs_rate_deaths": {
+          "status": "present",
+          "same_type": true
+        }
+      }
+    },
+    "strep_resistance.csv.gz": {
+      "state": "unchanged"
+    },
+    "uad.csv.gz": {
+      "state": "unchanged"
     }
   }
 }
