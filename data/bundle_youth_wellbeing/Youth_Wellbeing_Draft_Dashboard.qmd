@@ -254,9 +254,24 @@ window.PH = (function () {
       // shown as a dropdown. This is how one chart lets a single legend
       // compare either by age or by sex without two toggle dimensions at
       // once, which the data model doesn't otherwise support.
+      //
+      // A group can instead carry `bySource: {sourceValue: {fixed,
+      // seriesOrder, seriesMeta}}` when cfg.compareBy.sourceKey names a
+      // filter (e.g. "source") whose current value should pick which
+      // fixed/seriesOrder/seriesMeta to use -- needed when two merged
+      // datasets share a "Compare by Age/Sex" toggle but have different age
+      // bands or sex codings (e.g. YRBSS high-school ages vs. Epic Cosmos's
+      // full age range). Groups without `bySource` are unaffected.
       var cmp = cfg.compareBy;
       if (cmp) state.cmpBy = cmp.default;
-      function activeGroup() { return cmp ? cmp.groups[state.cmpBy] : null; }
+      function activeGroup() {
+        if (!cmp) return null;
+        var g = cmp.groups[state.cmpBy];
+        if (cmp.sourceKey && g.bySource) {
+          return g.bySource[state.filters[cmp.sourceKey]] || { fixed: {}, seriesOrder: [], seriesMeta: {} };
+        }
+        return g;
+      }
       function curSeriesOrder() { return cmp ? activeGroup().seriesOrder : (cfg.seriesOrder || []); }
       function curSeriesMeta() { return cmp ? activeGroup().seriesMeta : cfg.seriesMeta; }
       function curDefaultOn() { return cmp ? activeGroup().seriesOrder : (cfg.defaultOn || cfg.seriesOrder); }
@@ -271,7 +286,7 @@ window.PH = (function () {
 
       var controlsHtml = '<div class="ph-controls">';
       filters.forEach(function (f) {
-        controlsHtml += '<span class="ph-control">' + esc(f.label) + ':' +
+        controlsHtml += '<span class="ph-control" id="' + root + '-fw-' + f.key + '">' + esc(f.label) + ':' +
           '<select id="' + root + '-f-' + f.key + '">' +
           f.options.map(function (o) {
             var val = (typeof o === 'object') ? o.value : o;
@@ -308,13 +323,43 @@ window.PH = (function () {
       }
       renderLegend();
 
+      // A group's `fixed` value can be a literal ("Overall") or, when the
+      // fixed dimension should itself be user-selectable (e.g. picking which
+      // age band to hold fixed while comparing by sex), an object
+      // {fromFilter: "filterKey"} that reads the current value of a filter
+      // dropdown instead.
+      function resolveFixed(v) {
+        return (v && typeof v === 'object' && v.fromFilter) ? state.filters[v.fromFilter] : v;
+      }
       function matches(l) {
-        for (var k in state.filters) { if (l.dims[k] !== state.filters[k]) return false; }
+        // Only check filter keys that are actually dimensions on this line --
+        // a filter can exist purely to feed a compareBy group's fromFilter
+        // (see resolveFixed) without being one of dim_cols itself.
+        for (var k in state.filters) { if (l.dims.hasOwnProperty(k) && l.dims[k] !== state.filters[k]) return false; }
         if (cmp) {
           var fixed = activeGroup().fixed || {};
-          for (var k2 in fixed) { if (l.dims[k2] !== fixed[k2]) return false; }
+          for (var k2 in fixed) { if (l.dims[k2] !== resolveFixed(fixed[k2])) return false; }
         }
         return true;
+      }
+
+      // Filters can declare `showWhen: {cmpBy, otherFilterEq}` to stay hidden
+      // except when relevant (e.g. an age-picker that only matters while
+      // "Compare by Sex" is active for a specific data source).
+      function updateFilterVisibility() {
+        filters.forEach(function (f) {
+          var show = true;
+          if (f.showWhen) {
+            if (f.showWhen.cmpBy && (!cmp || state.cmpBy !== f.showWhen.cmpBy)) show = false;
+            if (show && f.showWhen.otherFilterEq) {
+              for (var k3 in f.showWhen.otherFilterEq) {
+                if (state.filters[k3] !== f.showWhen.otherFilterEq[k3]) show = false;
+              }
+            }
+          }
+          var wEl = el(root + '-fw-' + f.key);
+          if (wEl) wEl.style.display = show ? '' : 'none';
+        });
       }
 
       function currentYTitle() {
@@ -324,6 +369,17 @@ window.PH = (function () {
       function currentYUnit() {
         if (cfg.unitFilterKey && cfg.yUnitMap) return cfg.yUnitMap[state.filters[cfg.unitFilterKey]] || '';
         return cfg.yUnit || '';
+      }
+      function currentXTitle() {
+        if (cfg.unitFilterKey && cfg.xTitleMap) return cfg.xTitleMap[state.filters[cfg.unitFilterKey]] || cfg.xTitle || '';
+        return cfg.xTitle || '';
+      }
+      function currentDecimals() {
+        if (cfg.unitFilterKey && cfg.decimalsMap) {
+          var d = cfg.decimalsMap[state.filters[cfg.unitFilterKey]];
+          if (d !== undefined) return d;
+        }
+        return cfg.decimals === undefined ? 1 : cfg.decimals;
       }
 
       function render() {
@@ -344,13 +400,13 @@ window.PH = (function () {
               name: label, legendgroup: sid,
               line: { color: colorFor(idx), dash: dashFor(idx), width: 2.25 },
               marker: { color: colorFor(idx), size: 6 },
-              hovertemplate: '<b>' + esc(label) + '</b><br>%{x}: %{y:.' + (cfg.decimals === undefined ? 1 : cfg.decimals) + 'f}' + unit + '%{customdata}<extra></extra>'
+              hovertemplate: '<b>' + esc(label) + '</b><br>%{x}: %{y:.' + currentDecimals() + 'f}' + unit + '%{customdata}<extra></extra>'
             };
           });
         var layout = {
           margin: { t: 10, b: 45, l: 60, r: 20 }, paper_bgcolor: 'white', plot_bgcolor: 'white',
           font: { family: 'Rubik, sans-serif', color: '#00356b', size: 11 }, hovermode: 'closest',
-          xaxis: { title: cfg.xTitle || '', gridcolor: 'white', zeroline: false, type: 'category', categoryorder: 'category ascending' },
+          xaxis: { title: currentXTitle(), gridcolor: 'white', zeroline: false, type: 'category', categoryorder: 'category ascending' },
           yaxis: { title: currentYTitle(), gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false, rangemode: 'tozero' },
           showlegend: !useToggle,
           legend: { orientation: 'h', x: 0.01, y: 1.12, yanchor: 'bottom' }
@@ -360,12 +416,15 @@ window.PH = (function () {
 
       filters.forEach(function (f) {
         el(root + '-f-' + f.key).addEventListener('change', function (e) {
-          state.filters[f.key] = e.target.value; render();
+          state.filters[f.key] = e.target.value;
+          if (cmp && cmp.sourceKey === f.key) { resetVisible(); renderLegend(); }
+          updateFilterVisibility();
+          render();
         });
       });
       if (cmp) {
         el(root + '-cmpby').addEventListener('change', function (e) {
-          state.cmpBy = e.target.value; resetVisible(); renderLegend(); render();
+          state.cmpBy = e.target.value; resetVisible(); renderLegend(); updateFilterVisibility(); render();
         });
       }
       var legendEl = el(root + '-legend');
@@ -377,6 +436,7 @@ window.PH = (function () {
         item.classList.toggle('off', !state.visible[s]);
         render();
       });
+      updateFilterVisibility();
       render();
     });
   }
@@ -1065,21 +1125,81 @@ emit_json("IV_DRIVING", list(
 
 ```{r iv-concussion}
 #| results: asis
-conc_data <- yrbss %>%
+conc_yrbss <- yrbss %>%
   filter(measure == "pct_sports_concussion", race == "All", ethnicity == "All", not_asked == 0, age %in% yrbss_age_order) %>%
-  mutate(note = if_else(suppressed == 1, " (suppressed - imputed)", ""))
-conc_lines <- build_lines(conc_data, dim_cols = c("geography", "age", "sex"), series_col = "age",
-                           x_col = "year", y_col = "value", note_col = "note")
-state_opts_conc <- c("United States", sort(setdiff(unique(conc_data$geography), "United States")))
-age_opts_conc <- yrbss_age_order[yrbss_age_order %in% unique(conc_data$age)]
+  mutate(source = "yrbss", note = if_else(suppressed == 1, " (suppressed - imputed)", "")) %>%
+  transmute(source, geography, age, sex, period = as.character(year), value, note)
+
+# Epic Cosmos's sex column uses "Overall" for the total where YRBSS (and
+# yrbss_compare_by's "age" group, which fixes sex at "All") uses "All" --
+# recode so both sources share one sex vocabulary for the shared compareBy
+# fixed-value matching.
+#
+# Suppressed/imputed Epic rows are dropped entirely rather than plotted with
+# a note (unlike every other chart's suppressed-but-shown convention) --
+# most Epic state/age/sex strata are small-count and imputed, and imputed
+# values would otherwise dominate a boys-vs-girls comparison at a single
+# age band like 10-13 years.
+conc_epic <- epic_concussion %>%
+  filter(epic_n_concussion_suppressed_flag == 0) %>%
+  transmute(
+    source = "epic", geography = geography_name,
+    age, sex = if_else(sex == "Overall", "All", sex),
+    period = as.character(time), value = epic_pct_concussion
+  )
+
+conc_all <- bind_rows(conc_yrbss, conc_epic)
+conc_lines <- build_lines(conc_all, dim_cols = c("source", "geography", "age", "sex"),
+                           series_col = "age", x_col = "period", y_col = "value", note_col = "note")
+
+state_opts_conc <- c("United States", sort(setdiff(unique(conc_all$geography), "United States")))
+age_opts_conc_yrbss <- yrbss_age_order[yrbss_age_order %in% unique(conc_yrbss$age)]
+age_opts_conc_epic <- c("<1 Years", "1-4 Years", "5-9 Years", "10-13 Years", "14-17 Years",
+                         "18-29 Years", "30-44 Years", "45-64 Years", "65+ Years", "Overall")
+age_opts_conc_epic <- age_opts_conc_epic[age_opts_conc_epic %in% unique(conc_epic$age)]
+
+conc_sex_group_yrbss <- list(fixed = list(age = "Overall"), seriesOrder = c("All", "Female", "Male"),
+                              seriesMeta = list(All = list(label = "Overall"), Female = list(label = "Female"), Male = list(label = "Male")))
+# Unlike YRBSS (which only ever reports sex OR age, never both together --
+# see yrbss_compare_by's note), Epic Cosmos has a genuine age x sex cross-tab,
+# so its sex-comparison line can hold any single age band fixed instead of
+# always "Overall". Which age is held fixed comes from the "concAge" filter
+# below (default "10-13 Years") rather than a hardcoded value.
+conc_sex_group_epic <- list(fixed = list(age = list(fromFilter = "concAge")), seriesOrder = c("All", "Female", "Male"),
+                             seriesMeta = list(All = list(label = "Overall"), Female = list(label = "Female"), Male = list(label = "Male")))
 
 emit_json("IV_CONCUSSION", list(
-  title = "Sports/activity-related concussion, past 12 months", height = 460,
+  title = "Sports/activity-related concussion", height = 460,
   xTitle = "Year", yTitle = "Percent of students (%)", yUnit = "%", decimals = 1,
+  unitFilterKey = "source",
+  xTitleMap = list(yrbss = "Year", epic = "Month"),
+  yTitleMap = list(yrbss = "Percent of students (%)", epic = "Percent of ED encounters (%)"),
+  yUnitMap = list(yrbss = "%", epic = "%"),
+  decimalsMap = list(yrbss = 1, epic = 3),
   filters = list(
-    list(key = "geography", label = "State", options = state_opts_conc, default = "United States")
+    list(key = "source", label = "Data source", options = list(
+      list(value = "epic", label = "Epic Cosmos (ED visits, all ages)"),
+      list(value = "yrbss", label = "CDC YRBSS (self-report, high school)")
+    ), default = "epic"),
+    list(key = "geography", label = "State", options = state_opts_conc, default = "United States"),
+    # Only shown while "Compare by Sex" is active on the Epic source -- picks
+    # which age band the boys-vs-girls comparison holds fixed (see
+    # conc_sex_group_epic's fromFilter). Defaults to 10-13 years.
+    list(key = "concAge", label = "Age (boys vs. girls)", options = age_opts_conc_epic, default = "10-13 Years",
+         showWhen = list(cmpBy = "sex", otherFilterEq = list(source = "epic")))
   ),
-  compareBy = yrbss_compare_by(age_opts_conc),
+  compareBy = list(
+    label = "Compare by", default = "age", sourceKey = "source",
+    groups = list(
+      age = list(label = "Age", bySource = list(
+        yrbss = list(fixed = list(sex = "All"), seriesOrder = age_opts_conc_yrbss,
+                     seriesMeta = setNames(lapply(age_opts_conc_yrbss, function(a) list(label = a)), age_opts_conc_yrbss)),
+        epic  = list(fixed = list(sex = "All"), seriesOrder = age_opts_conc_epic,
+                     seriesMeta = setNames(lapply(age_opts_conc_epic, function(a) list(label = a)), age_opts_conc_epic))
+      )),
+      sex = list(label = "Sex", bySource = list(yrbss = conc_sex_group_yrbss, epic = conc_sex_group_epic))
+    )
+  ),
   lines = conc_lines
 ))
 ```
@@ -1089,7 +1209,7 @@ emit_json("IV_CONCUSSION", list(
 <script>PH.renderLineChart('iv-concussion', window.IV_CONCUSSION);</script>
 <details class="chart-info">
 <summary>About this chart</summary>
-<p>Percent of high school students reporting a sports- or activity-related concussion in the past 12 months. Choose a state and use Compare by to switch the legend between one line per age or one line per sex and toggle individual lines on/off below the chart. Race and Hispanic ethnicity are not broken out separately here. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+<p>Concussion trends from two sources, switchable via the Data source dropdown. <b>Epic Cosmos</b> (default) shows the percent of emergency-department encounters with a concussion diagnosis, monthly, for every age band and split by sex. Unlike other charts in this dashboard, months where the underlying count was suppressed (small sample, imputed value) are dropped from the Epic line entirely rather than shown -- most state/age/sex strata have small counts, so national/broad-age views are the most reliable and complete. <b>CDC YRBSS</b> shows the percent of high school students self-reporting a sports- or activity-related concussion in the past 12 months, biennially (suppressed/imputed points are shown here, flagged in the hover text, per the usual PopHIVE convention). Choose a state and use Compare by to switch the legend between one line per age or one line per sex; toggle individual lines on/off below the chart. When comparing Epic Cosmos by sex, an "Age (boys vs. girls)" dropdown appears to pick which age band (default 10-13 years) the boys/girls comparison holds fixed, since Epic is the only source here with a joint age-by-sex breakdown. Race and Hispanic ethnicity are not broken out separately for either source. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>, Epic Cosmos.</p>
 </details>
 ```
 
