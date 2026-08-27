@@ -65,6 +65,15 @@ noaa_state   <- read_parquet("dist/noaa_heat_risk_state.parquet")
 wisqars      <- read_parquet("dist/wisqars_state_age_demographics.parquet")
 yrbss        <- read_parquet("dist/yrbss_state_age_demographics.parquet")
 
+# Epic Cosmos concussion ED-visit data. This lives in a separate
+# epic_preprocessing pipeline that hasn't yet been formally ingested into
+# PopHIVE/Ingest as its own data/{source} folder, so for now it's read
+# directly from its absolute path on this machine rather than from dist/.
+epic_concussion_path <- "C:/Users/as5325/Desktop/epic_preprocessing/data/cosmos_concussions/standard/data.csv.gz"
+epic_concussion <- vroom::vroom(epic_concussion_path, show_col_types = FALSE) %>%
+  mutate(geography_name = if_else(geography == "00", "United States", fips2name[geography])) %>%
+  filter(!is.na(geography_name))
+
 # ---------------------------------------------------------------------------
 # JSON helpers
 # ---------------------------------------------------------------------------
