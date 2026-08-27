@@ -625,9 +625,13 @@ if (!map_ok) {
   if (length(map_measures) > params$n_map_measures)
     map_measures <- sort(sample(map_measures, params$n_map_measures))
 
-  # choose up to 4 random years (shared across measures for comparability)
+  # choose up to 4 random years (shared across measures for comparability);
+  # one representative time per year, so year labels used for faceting are
+  # never duplicated even for sub-annual (e.g. monthly/weekly) data
   all_times <- sort(unique(dat$time))
-  map_times <- sort(sample(all_times, min(4, length(all_times))))
+  all_years <- substr(all_times, 1, 4)
+  chosen_years <- sample(unique(all_years), min(4, length(unique(all_years))))
+  map_times <- sort(vapply(chosen_years, function(y) sample(all_times[all_years == y], 1), character(1)))
 
   base <- dat %>% filter(time %in% map_times) %>% hold_overall(demo_cols)
 
