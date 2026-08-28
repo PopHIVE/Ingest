@@ -194,6 +194,9 @@
                 <a class="nav-link" href="#bundle-cancer-screening">Bundle: Cancer Screening</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="#bundle-census">Bundle: Census</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="#bundle-childhood-immunizations">Bundle: Childhood Immunizations</a>
               </li>
               <li class="nav-item">
@@ -204,9 +207,6 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#bundle-county-chronic">Bundle: County Chronic</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#bundle-demographics">Bundle: Demographics</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#bundle-enteric-diseases">Bundle: Enteric Diseases</a>
@@ -31145,6 +31145,403 @@ VAERS data have important limitations: the number of reports alone cannot establ
                 </table>
               </div>
             </section>
+            <section id="bundle-census" class="mb-5">
+              <h2 class="border-bottom pb-2">Bundle: Census</h2>
+              <p class="text-muted">
+                <em>Combined output bundle. Dist files: 2 parquet file(s).</em>
+              </p>
+              <p class="mb-3">
+                <strong>Data sources: </strong>
+                <a href="#census" class="bundle-source-link">Census</a>
+              </p>
+              <h4 class="mt-4">Output Files (dist/)</h4>
+              <h5 class="mt-3">
+                <code>census_county.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_county.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_county.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_pep.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_pep.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_saipe.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_saipe.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_sahie.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_sahie.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_oqm.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_oqm.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>FIPS code</td>
+                      <td>Geographic FIPS code as a string: 5-digit county code in census_county.parquet; 2-digit state code or '00' (national) in census_state.parquet. Includes Puerto Rico (72) and its municipios.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Date</td>
+                      <td>Year-end date (YYYY-12-31) of the data vintage. Each Census program has its own: ACS 5-year 2019-2024 (each year is the end of a 5-year window), PEP 2023, SAIPE and SAHIE 2024, urban/rural allocation and OQM 2020.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Census measure</td>
+                      <td>
+                        Identifier of the measure in this row; the name matches the source column in the census standard file. All 90 census measures are present -- this bundle carries no allow-list.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_AGE</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_BDB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_BTH</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DCY</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DEP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DIS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_EDB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_EDC</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_GNI</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_GRP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HBS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HBU</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HTA</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HTJ</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HUF</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HUG</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HUN</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HUO</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INC</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INL</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INM</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INN</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INO</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INQ</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_LEQ</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_MCD</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_MCR</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_OWS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCI</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_A</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_B</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_F</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_H</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_I</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_J</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_M</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_O</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_P</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_P1</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_Q</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_S</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_W</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_Y</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_A</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_B</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_F</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_H</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_I</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_J</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_M</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_O</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_P</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_P1</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_Q</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_S</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_W</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_Y</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POV</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PUB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PVA</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PVB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PVC</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_REX</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_SNP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_UMP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_UNS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_VAL</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_WWN</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">census_ur_pct_urban_hu</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">census_ur_pct_urban_land</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">census_ur_pct_urban_pop</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_65_older</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_aian</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_asian</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_female</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_hispanic</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nh_black</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nh_white</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nhpi</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_under_18</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_population</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">saipe_median_household_income</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">saipe_pct_children_poverty</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">sahie_pct_uninsured</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">sahie_pct_uninsured_adults</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">sahie_pct_uninsured_children</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">oqm_self_response_rate</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value for the measure identified by the `measure` column, taken unchanged from the census standard file. Units vary by measure; see the corresponding level.</td>
+                      <td>Mixed</td>
+                      <td>Varies by measure</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Census program</td>
+                      <td>
+                        Which Census program the row's value came from. Programs measure overlapping concepts with different methodologies and are reported side by side rather than reconciled.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census ACS 5-Year</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census Urban Areas</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census PEP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census SAIPE</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census SAHIE</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census OQM</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>census_state.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_state.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_state.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_pep.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_pep.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_saipe.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_saipe.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_sahie.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_sahie.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_oqm.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>census/standard/data_oqm.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>FIPS code</td>
+                      <td>Geographic FIPS code as a string: 5-digit county code in census_county.parquet; 2-digit state code or '00' (national) in census_state.parquet. Includes Puerto Rico (72) and its municipios.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Date</td>
+                      <td>Year-end date (YYYY-12-31) of the data vintage. Each Census program has its own: ACS 5-year 2019-2024 (each year is the end of a 5-year window), PEP 2023, SAIPE and SAHIE 2024, urban/rural allocation and OQM 2020.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Census measure</td>
+                      <td>
+                        Identifier of the measure in this row; the name matches the source column in the census standard file. All 90 census measures are present -- this bundle carries no allow-list.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_AGE</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_BDB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_BTH</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DCY</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DEP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DIS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_EDB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_EDC</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_GNI</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_GRP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HBS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HBU</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HTA</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HTJ</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HUF</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HUG</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HUN</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_HUO</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INC</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INL</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INM</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INN</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INO</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_INQ</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_LEQ</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_MCD</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_MCR</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_OWS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCI</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_A</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_B</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_F</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_H</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_I</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_J</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_M</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_O</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_P</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_P1</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_Q</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_S</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_W</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_Y</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_A</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_B</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_F</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_H</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_I</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_J</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_M</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_O</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_P</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_P1</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_Q</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_S</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_W</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_Y</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POV</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PUB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PVA</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PVB</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PVC</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_REX</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_SNP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_UMP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_UNS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_VAL</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_WWN</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">census_ur_pct_urban_hu</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">census_ur_pct_urban_land</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">census_ur_pct_urban_pop</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_65_older</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_aian</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_asian</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_female</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_hispanic</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nh_black</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nh_white</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nhpi</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_under_18</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_population</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">saipe_median_household_income</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">saipe_pct_children_poverty</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">sahie_pct_uninsured</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">sahie_pct_uninsured_adults</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">sahie_pct_uninsured_children</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">oqm_self_response_rate</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value for the measure identified by the `measure` column, taken unchanged from the census standard file. Units vary by measure; see the corresponding level.</td>
+                      <td>Mixed</td>
+                      <td>Varies by measure</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Census program</td>
+                      <td>
+                        Which Census program the row's value came from. Programs measure overlapping concepts with different methodologies and are reported side by side rather than reconciled.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census ACS 5-Year</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census Urban Areas</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census PEP</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census SAIPE</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census SAHIE</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census OQM</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
             <section id="bundle-childhood-immunizations" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: Childhood Immunizations</h2>
               <p class="text-muted">
@@ -33218,285 +33615,6 @@ VAERS data have important limitations: the number of reports alone cannot establ
                       <td>Value of the chronic-condition measure identified in the outcome_name column. Units and measure type vary by outcome_name (percent, rate per 100,000 population, days per month, or years).</td>
                       <td>Mixed</td>
                       <td>Varies by measure</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
-            <section id="bundle-demographics" class="mb-5">
-              <h2 class="border-bottom pb-2">Bundle: Demographics</h2>
-              <p class="text-muted">
-                <em>Combined output bundle. Dist files: 2 parquet file(s).</em>
-              </p>
-              <p class="mb-3">
-                <strong>Data sources: </strong>
-                <a href="#census" class="bundle-source-link">Census</a>
-              </p>
-              <h4 class="mt-4">Output Files (dist/)</h4>
-              <h5 class="mt-3">
-                <code>demographics_county.parquet</code>
-              </h5>
-              <div class="mb-2 small">
-                <span class="text-muted">
-                  <em>Source files: </em>
-                </span>
-                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_county.csv.gz" target="_blank" class="me-2 text-decoration-none">
-                  <code>census/standard/data_county.csv.gz</code>
-                </a>
-                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_pep.csv.gz" target="_blank" class="me-2 text-decoration-none">
-                  <code>census/standard/data_pep.csv.gz</code>
-                </a>
-              </div>
-              <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                  <thead>
-                    <tr>
-                      <th>Variable</th>
-                      <th>Short Name</th>
-                      <th>Description</th>
-                      <th>Type</th>
-                      <th>Unit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <code>geography</code>
-                      </td>
-                      <td>FIPS code</td>
-                      <td>Geographic FIPS code as a string: 5-digit county code in demographics_county.parquet; 2-digit state code or '00' (national) in demographics_state.parquet. Includes Puerto Rico (72) and its municipios.</td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>time</code>
-                      </td>
-                      <td>Date</td>
-                      <td>Year-end date (YYYY-12-31) of the data vintage. ACS 5-year measures cover 2019-2024, where each year is the end year of a 5-year estimation window; PEP measures are a single 2023 vintage.</td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>measure</code>
-                      </td>
-                      <td>Demographic measure</td>
-                      <td>
-                        Identifier of the measure in this row; the name matches the source column in the census standard file.
-                        <div class="mt-1">
-                          <small class="text-muted">
-                            <em>Values: </em>
-                          </small>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_AGE</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DEP</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DIS</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_REX</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_VAL</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_M</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_F</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_I</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_J</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_Y</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_O</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_S</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_W</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_B</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_A</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_H</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_P</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_P1</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_Q</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_M</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_F</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_I</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_J</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_Y</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_O</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_S</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_W</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_B</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_A</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_H</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_P</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_P1</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_Q</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_population</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_65_older</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_under_18</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_female</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_aian</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_asian</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nhpi</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nh_black</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nh_white</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_hispanic</span>
-                        </div>
-                      </td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>value</code>
-                      </td>
-                      <td>Value</td>
-                      <td>Value for the measure identified by the `measure` column. Units differ by measure: `acs_POP*` and `pep_population` are person counts, `acs_PCT_*` and `pep_pct_*` are proportions (0-1), `acs_AGE` is years, `acs_VAL` is dollars, and `acs_DEP`/`acs_REX` are ratios/index values.</td>
-                      <td>Mixed</td>
-                      <td>Varies by measure</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>source</code>
-                      </td>
-                      <td>Data source</td>
-                      <td>
-                        Census program the row's value came from. ACS 5-Year and PEP measure overlapping concepts with different methodologies and are reported side by side rather than reconciled.
-                        <div class="mt-1">
-                          <small class="text-muted">
-                            <em>Values: </em>
-                          </small>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census ACS 5-Year</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census PEP</span>
-                        </div>
-                      </td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <h5 class="mt-3">
-                <code>demographics_state.parquet</code>
-              </h5>
-              <div class="mb-2 small">
-                <span class="text-muted">
-                  <em>Source files: </em>
-                </span>
-                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_state.csv.gz" target="_blank" class="me-2 text-decoration-none">
-                  <code>census/standard/data_state.csv.gz</code>
-                </a>
-                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/census/standard/data_pep.csv.gz" target="_blank" class="me-2 text-decoration-none">
-                  <code>census/standard/data_pep.csv.gz</code>
-                </a>
-              </div>
-              <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                  <thead>
-                    <tr>
-                      <th>Variable</th>
-                      <th>Short Name</th>
-                      <th>Description</th>
-                      <th>Type</th>
-                      <th>Unit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <code>geography</code>
-                      </td>
-                      <td>FIPS code</td>
-                      <td>Geographic FIPS code as a string: 5-digit county code in demographics_county.parquet; 2-digit state code or '00' (national) in demographics_state.parquet. Includes Puerto Rico (72) and its municipios.</td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>time</code>
-                      </td>
-                      <td>Date</td>
-                      <td>Year-end date (YYYY-12-31) of the data vintage. ACS 5-year measures cover 2019-2024, where each year is the end year of a 5-year estimation window; PEP measures are a single 2023 vintage.</td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>measure</code>
-                      </td>
-                      <td>Demographic measure</td>
-                      <td>
-                        Identifier of the measure in this row; the name matches the source column in the census standard file.
-                        <div class="mt-1">
-                          <small class="text-muted">
-                            <em>Values: </em>
-                          </small>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_AGE</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DEP</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_DIS</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_REX</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_VAL</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_M</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_F</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_I</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_J</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_Y</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_O</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_S</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_W</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_B</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_A</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_H</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_P</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_P1</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_POP_Q</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_M</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_F</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_I</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_J</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_Y</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_O</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_S</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_W</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_B</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_A</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_H</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_P</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_P1</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">acs_PCT_Q</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_population</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_65_older</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_under_18</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_female</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_aian</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_asian</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nhpi</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nh_black</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_nh_white</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pep_pct_hispanic</span>
-                        </div>
-                      </td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>value</code>
-                      </td>
-                      <td>Value</td>
-                      <td>Value for the measure identified by the `measure` column. Units differ by measure: `acs_POP*` and `pep_population` are person counts, `acs_PCT_*` and `pep_pct_*` are proportions (0-1), `acs_AGE` is years, `acs_VAL` is dollars, and `acs_DEP`/`acs_REX` are ratios/index values.</td>
-                      <td>Mixed</td>
-                      <td>Varies by measure</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>source</code>
-                      </td>
-                      <td>Data source</td>
-                      <td>
-                        Census program the row's value came from. ACS 5-Year and PEP measure overlapping concepts with different methodologies and are reported side by side rather than reconciled.
-                        <div class="mt-1">
-                          <small class="text-muted">
-                            <em>Values: </em>
-                          </small>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census ACS 5-Year</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Census PEP</span>
-                        </div>
-                      </td>
-                      <td></td>
-                      <td></td>
                     </tr>
                   </tbody>
                 </table>
