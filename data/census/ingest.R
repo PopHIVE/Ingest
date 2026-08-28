@@ -2,7 +2,6 @@
 # Census ACS 5-Year SDOH Data Ingestion
 # Source: U.S. Census Bureau American Community Survey 5-Year Estimates
 # Indicators adapted from the Metopio SDOH framework, with code courtesy of Heather Blonsky
-#Due to the large size of the ZCTA-level data, it is split across several files by vintage year (see Outputs below).
 #
 # Outputs:
 #   standard/data_state.csv.gz        -- 2-digit FIPS, vintage years 2019 to latest available.
@@ -10,7 +9,12 @@
 #                                         (Census ACS5 "us" geography level), same convention
 #                                         as county_health_rankings and bls_laus.
 #   standard/data_county.csv.gz       -- 5-digit FIPS, vintage years 2019 to latest available
-#   standard/data_zcta_YYYY_YYYY.csv.gz -- 5-digit ZCTA, split into pairs of years
+#
+# ZCTA-level output was removed deliberately: no bundle or downstream consumer
+# read it, and the three ~23 MB chunk files it produced were committed as plain
+# git blobs (the .gitattributes LFS rule matched only the older, unsplit
+# data_zcta.csv.gz filename). Re-add only alongside a real consumer, and wire
+# the filenames into .gitattributes for LFS if you do.
 #
 # Variable legend (all computed variables carry a "acs_" prefix)
 #   Race/Ethnicity: W=Non-Hispanic White, B=Non-Hispanic Black, A=Asian,
@@ -44,6 +48,37 @@ api_key <- Sys.getenv("CENSUS_API_KEY")
 # -----------------------------------------------------------------------------
 # process.json is created by dcf::dcf_add_source()
 process <- dcf::dcf_process_record()
+
+# -----------------------------------------------------------------------------
+# Forced rebuilds
+# -----------------------------------------------------------------------------
+# Each block below is guarded on the upstream vintage, so nothing re-downloads
+# while the Census Bureau's latest release is one this repo already has. That
+# is the right default for scheduled runs, but it also means a change to a
+# *derivation* in this script (a corrected formula or unit rescale) would not
+# propagate: the vintage is unchanged, so the block is skipped.
+#
+# dcf::dcf_process(force = TRUE) does not help — its `force` only decides
+# whether this script runs, not what the script does once running. Set
+# CENSUS_FORCE_REBUILD instead, to "all" or a comma-separated subset of the
+# block names below, to bypass those vintage guards for one run:
+#
+#   CENSUS_FORCE_REBUILD=sdoh Rscript -e 'dcf::dcf_process("census", ".", force = TRUE)'
+#
+# Blocks: sdoh (ACS state/county), ur (urban-rural), pep, saipe, oqm, sahie
+FORCE_BLOCKS <- trimws(strsplit(
+  tolower(Sys.getenv("CENSUS_FORCE_REBUILD", "")), ",", fixed = TRUE
+)[[1]])
+
+force_block <- function(name) {
+  forced <- "all" %in% FORCE_BLOCKS || name %in% FORCE_BLOCKS
+  if (forced) message("[FORCE] rebuilding block: ", name)
+  forced
+}
+
+if (length(FORCE_BLOCKS) && any(nzchar(FORCE_BLOCKS))) {
+  message("CENSUS_FORCE_REBUILD=", paste(FORCE_BLOCKS, collapse = ","))
+}
 
 # -----------------------------------------------------------------------------
 # Configuration
@@ -87,20 +122,15 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   region <- switch(geo_level,
     "state"    = "state:*",
     "county"   = "county:*",
-    "zcta"     = "zip code tabulation area:*",
     "national" = "us:*"
   )
   id_cols <- switch(geo_level,
     "state"    = "state",
     "county"   = c("state", "county"),
-    "zcta"     = "zcta",       # normalised name; Census returns "zip code tabulation area"
     "national" = "us"
   )
 
   # Helper: call Census API, return NULL on error.
-  # For ZCTA, immediately renames "zip code tabulation area" -> "zcta" so that
-  # column names with spaces never reach dplyr join operations (which would
-  # silently produce a cross-join when intersect() fails to match them).
   safe_fetch <- function(endpoint, vars) {
     df <- tryCatch(
       censusapi::getCensus(
@@ -115,15 +145,6 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
         NULL
       }
     )
-    if (!is.null(df) && geo_level == "zcta") {
-      # censusapi 0.9.0 returns "zip_code_tabulation_area" (underscores);
-      # older versions may use spaces or dots.
-      zcta_variants <- c("zip_code_tabulation_area",
-                         "zip code tabulation area",
-                         "zip.code.tabulation.area")
-      hit <- zcta_variants[zcta_variants %in% names(df)]
-      if (length(hit) > 0) names(df)[names(df) == hit[1]] <- "zcta"
-    }
     if (!is.null(df)) {
       value_cols <- intersect(vars, names(df))
       df[value_cols] <- lapply(df[value_cols], function(x) {
@@ -361,12 +382,18 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
         acs_INB = B20017_001E,
         acs_INC = B19013_001E,
         acs_PCI = B19301_001E,
-        acs_INL = B19082_001E,
-        acs_INM = B19082_002E,
-        acs_INN = B19082_003E,
-        acs_INO = B19082_004E,
-        acs_INP = B19082_005E,
-        acs_INQ = B19082_006E,
+        # B19082 reports the aggregate income share held by each household
+        # quintile as a percentage (0-100), unlike every other rate in this
+        # script, which safe_div() leaves as a 0-1 proportion. Rescale to the
+        # 0-1 convention PopHIVE uses for all Percent measures (and which these
+        # measures' `unit` in measure_info.json already declares), so the five
+        # quintile shares sum to 1 rather than 100.
+        acs_INL = B19082_001E / 100,
+        acs_INM = B19082_002E / 100,
+        acs_INN = B19082_003E / 100,
+        acs_INO = B19082_004E / 100,
+        acs_INP = B19082_005E / 100,
+        acs_INQ = B19082_006E / 100,
         acs_OWS = safe_div(B19081_005E, B19081_001E)
       ) %>%
       keep_cols(c("acs_HTA", "acs_HTJ", "acs_HUF", "acs_HUG", "acs_HUN", "acs_HUO", "acs_POV", "acs_PUB",
@@ -482,7 +509,7 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
 
   # ---------------------------------------------------------------------------
   # Block 9: Disability (DIS), Medicaid (MCD), Medicare (MCR)
-  #   Subject table — may be unavailable for ZCTA or early years; fails silently
+  #   Subject table — may be unavailable for early years; fails silently
   # ---------------------------------------------------------------------------
   raw9 <- safe_fetch(ACS5_SUBJECT, c(
     "S1810_C01_001E", "S1810_C02_001E",      # disability
@@ -514,7 +541,7 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
   )
 
   # ---------------------------------------------------------------------------
-  # Standardize geography column to FIPS / ZCTA code
+  # Standardize geography column to FIPS code
   # ---------------------------------------------------------------------------
   if (geo_level == "state") {
     result <- result %>%
@@ -527,10 +554,6 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
         sprintf("%03d", as.integer(county))
       )) %>%
       select(-state, -county)
-  } else if (geo_level == "zcta") {
-    result <- result %>%
-      rename(geography = zcta) %>%
-      select(-any_of("state"))
   } else if (geo_level == "national") {
     result <- result %>%
       mutate(geography = "00") %>%
@@ -545,7 +568,7 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
 
 # =============================================================================
 # Fetch all vintage years for one geography level
-# Adds a geo_level column ("state", "county", or "zcta") to each row.
+# Adds a geo_level column ("state", "county", or "national") to each row.
 # =============================================================================
 fetch_all_years <- function(geo_level, api_key, years = YEARS) {
   message("=== ", toupper(geo_level), " ===")
@@ -558,31 +581,23 @@ fetch_all_years <- function(geo_level, api_key, years = YEARS) {
 # =============================================================================
 # Run ingest when output files are absent or a new vintage year is available
 # =============================================================================
-# Determine the expected filename for the most recent ZCTA chunk.
-# Years are paired consecutively from FIRST_YEAR: (2019,2020), (2021,2022), ...
-.lps           <- FIRST_YEAR + 2L * ((latest_vintage - FIRST_YEAR) %/% 2L)
-last_zcta_file <- sprintf("standard/data_zcta_%d_%d.csv.gz", .lps, min(.lps + 1L, latest_vintage))
-rm(.lps)
-
 output_files  <- c("standard/data_state.csv.gz",
-                   "standard/data_county.csv.gz",
-                   last_zcta_file)
+                   "standard/data_county.csv.gz")
 output_exists <- all(file.exists(output_files))
 last_vintage  <- process$last_vintage_year
 
-if (!output_exists || is.null(last_vintage) || last_vintage < latest_vintage) {
+if (force_block("sdoh") || !output_exists || is.null(last_vintage) ||
+    last_vintage < latest_vintage) {
 
   # Fetch all geographies and combine into a single data frame
   data_all <- bind_rows(
     fetch_all_years("state",    api_key),
     fetch_all_years("national", api_key),
-    fetch_all_years("county",   api_key),
-    fetch_all_years("zcta",     api_key)
+    fetch_all_years("county",   api_key)
   )
 
   if (nrow(data_all) > 0) {
-    # Write combined file
-    # Split combined file by geo_level into three separate files.
+    # Split combined file by geo_level into two separate files.
     # "national" rows (single geography "00") are folded into the state
     # file, not written separately -- same convention as
     # county_health_rankings and bls_laus's data_state.csv.gz.
@@ -593,25 +608,6 @@ if (!output_exists || is.null(last_vintage) || last_vintage < latest_vintage) {
     data_county <- data_all %>%
                     filter(geo_level == "county") %>%
                     select(-geo_level)
-
-    data_zcta  <- data_all %>%
-                    filter(geo_level == "zcta") %>%
-                    select(-geo_level) %>%
-                    rename(geography_zcta=geography)
-
-   # Write ZCTA data in consecutive pairs of years for manageability.
-   # If an odd number of years is available the last file covers a single year
-   # and will be extended (overwritten) when the next vintage is released.
-   .zcta_years       <- sort(unique(as.integer(substr(data_zcta$time, 1, 4))))
-   .zcta_pair_starts <- .zcta_years[seq(1, length(.zcta_years), by = 2)]
-   for (.s in .zcta_pair_starts) {
-     .e     <- min(.s + 1L, max(.zcta_years))
-     .times <- paste0(.s:.e, "-12-31")
-     .chunk <- data_zcta %>% filter(time %in% .times)
-     if (nrow(.chunk) > 0)
-       vroom::vroom_write(.chunk, sprintf("./standard/data_zcta_%d_%d.csv.gz", .s, .e), delim = ",")
-   }
-   rm(.s, .e, .times, .chunk, .zcta_years, .zcta_pair_starts)
 
    if (nrow(data_state) > 0) vroom::vroom_write(data_state, "standard/data_state.csv.gz", delim = ",")
    if (nrow(data_county) > 0) vroom::vroom_write(data_county, "standard/data_county.csv.gz", delim = ",")
@@ -644,7 +640,8 @@ ur_cols_present <- file.exists(county_file) &&
     vroom::vroom(county_file, n_max = 1, show_col_types = FALSE)
   )
 
-if (!identical(process$ur_state, list(hash = ur_hash)) || !ur_cols_present) {
+if (force_block("ur") || !identical(process$ur_state, list(hash = ur_hash)) ||
+    !ur_cols_present) {
   ur_raw <- readxl::read_excel(ur_raw_path)
 
   # One row per county; STATE + COUNTY give the 5-digit FIPS. Values are
@@ -700,7 +697,8 @@ latest_pep_vintage <- tryCatch({
 })
 
 if (!is.na(latest_pep_vintage) &&
-    (is.null(process$pep_vintage_year) || process$pep_vintage_year < latest_pep_vintage)) {
+    (force_block("pep") || is.null(process$pep_vintage_year) ||
+     process$pep_vintage_year < latest_pep_vintage)) {
 
   message("PEP latest vintage year: ", latest_pep_vintage)
   pep_dataset <- paste0(latest_pep_vintage, "/", PEP_ENDPOINT)
@@ -887,7 +885,8 @@ latest_saipe_year <- tryCatch({
 })
 
 if (!is.na(latest_saipe_year) &&
-    (is.null(process$saipe_year) || process$saipe_year < latest_saipe_year)) {
+    (force_block("saipe") || is.null(process$saipe_year) ||
+     process$saipe_year < latest_saipe_year)) {
 
   message("SAIPE latest year: ", latest_saipe_year)
 
@@ -956,7 +955,8 @@ if (!file.exists(oqm_raw_path)) {
 }
 oqm_hash <- unname(tools::md5sum(oqm_raw_path))
 
-if (!identical(process$oqm_state, list(hash = oqm_hash)) || !file.exists("standard/data_oqm.csv.gz")) {
+if (force_block("oqm") || !identical(process$oqm_state, list(hash = oqm_hash)) ||
+    !file.exists("standard/data_oqm.csv.gz")) {
 
   oqm_raw <- readxl::read_excel(oqm_raw_path, sheet = "County Metrics", skip = 1)
 
@@ -1020,7 +1020,8 @@ latest_sahie_year <- tryCatch({
 })
 
 if (!is.na(latest_sahie_year) &&
-    (is.null(process$sahie_year) || process$sahie_year < latest_sahie_year)) {
+    (force_block("sahie") || is.null(process$sahie_year) ||
+     process$sahie_year < latest_sahie_year)) {
 
   message("SAHIE latest year: ", latest_sahie_year)
 

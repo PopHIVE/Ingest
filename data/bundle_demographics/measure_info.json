@@ -1,0 +1,119 @@
+{
+  "{category}geography": {
+    "short_name": "FIPS code",
+    "short_description": "Geographic FIPS code as a string: 5-digit county code in demographics_county.parquet; 2-digit state code or '00' (national) in demographics_state.parquet. Includes Puerto Rico (72) and its municipios.",
+    "categories": {
+      "bundle_demographics/dist/demographics_county.parquet|": {},
+      "bundle_demographics/dist/demographics_state.parquet|": {}
+    }
+  },
+  "{category}time": {
+    "short_name": "Date",
+    "short_description": "Year-end date (YYYY-12-31) of the data vintage. ACS 5-year measures cover 2019-2024, where each year is the end year of a 5-year estimation window; PEP measures are a single 2023 vintage.",
+    "categories": {
+      "bundle_demographics/dist/demographics_county.parquet|": {},
+      "bundle_demographics/dist/demographics_state.parquet|": {}
+    }
+  },
+  "{category}source": {
+    "short_name": "Data source",
+    "short_description": "Census program the row's value came from. ACS 5-Year and PEP measure overlapping concepts with different methodologies and are reported side by side rather than reconciled.",
+    "levels": {
+      "Census ACS 5-Year": {},
+      "Census PEP": {}
+    },
+    "categories": {
+      "bundle_demographics/dist/demographics_county.parquet|": {},
+      "bundle_demographics/dist/demographics_state.parquet|": {}
+    }
+  },
+  "{category}measure": {
+    "short_name": "Demographic measure",
+    "short_description": "Identifier of the measure in this row; the name matches the source column in the census standard file.",
+    "levels": {
+      "acs_POP": { "source_id": "acs_POP" },
+      "acs_AGE": { "source_id": "acs_AGE" },
+      "acs_DEP": { "source_id": "acs_DEP" },
+      "acs_DIS": { "source_id": "acs_DIS" },
+      "acs_REX": { "source_id": "acs_REX" },
+      "acs_VAL": { "source_id": "acs_VAL" },
+      "acs_POP_M": { "source_id": "acs_POP_M" },
+      "acs_POP_F": { "source_id": "acs_POP_F" },
+      "acs_POP_I": { "source_id": "acs_POP_I" },
+      "acs_POP_J": { "source_id": "acs_POP_J" },
+      "acs_POP_Y": { "source_id": "acs_POP_Y" },
+      "acs_POP_O": { "source_id": "acs_POP_O" },
+      "acs_POP_S": { "source_id": "acs_POP_S" },
+      "acs_POP_W": { "source_id": "acs_POP_W" },
+      "acs_POP_B": { "source_id": "acs_POP_B" },
+      "acs_POP_A": { "source_id": "acs_POP_A" },
+      "acs_POP_H": { "source_id": "acs_POP_H" },
+      "acs_POP_P": { "source_id": "acs_POP_P" },
+      "acs_POP_P1": { "source_id": "acs_POP_P1" },
+      "acs_POP_Q": { "source_id": "acs_POP_Q" },
+      "acs_PCT_M": { "source_id": "acs_PCT_M" },
+      "acs_PCT_F": { "source_id": "acs_PCT_F" },
+      "acs_PCT_I": { "source_id": "acs_PCT_I" },
+      "acs_PCT_J": { "source_id": "acs_PCT_J" },
+      "acs_PCT_Y": { "source_id": "acs_PCT_Y" },
+      "acs_PCT_O": { "source_id": "acs_PCT_O" },
+      "acs_PCT_S": { "source_id": "acs_PCT_S" },
+      "acs_PCT_W": { "source_id": "acs_PCT_W" },
+      "acs_PCT_B": { "source_id": "acs_PCT_B" },
+      "acs_PCT_A": { "source_id": "acs_PCT_A" },
+      "acs_PCT_H": { "source_id": "acs_PCT_H" },
+      "acs_PCT_P": { "source_id": "acs_PCT_P" },
+      "acs_PCT_P1": { "source_id": "acs_PCT_P1" },
+      "acs_PCT_Q": { "source_id": "acs_PCT_Q" },
+      "pep_population": { "source_id": "pep_population" },
+      "pep_pct_65_older": { "source_id": "pep_pct_65_older" },
+      "pep_pct_under_18": { "source_id": "pep_pct_under_18" },
+      "pep_pct_female": { "source_id": "pep_pct_female" },
+      "pep_pct_aian": { "source_id": "pep_pct_aian" },
+      "pep_pct_asian": { "source_id": "pep_pct_asian" },
+      "pep_pct_nhpi": { "source_id": "pep_pct_nhpi" },
+      "pep_pct_nh_black": { "source_id": "pep_pct_nh_black" },
+      "pep_pct_nh_white": { "source_id": "pep_pct_nh_white" },
+      "pep_pct_hispanic": { "source_id": "pep_pct_hispanic" }
+    },
+    "categories": {
+      "bundle_demographics/dist/demographics_county.parquet|": {},
+      "bundle_demographics/dist/demographics_state.parquet|": {}
+    }
+  },
+  "{category}value": {
+    "measure_column": "{category}measure",
+    "short_name": "Value",
+    "long_name": "Value of the demographic measure identified by measure",
+    "short_description": "Value for the measure identified by the `measure` column. Units differ by measure: `acs_POP*` and `pep_population` are person counts, `acs_PCT_*` and `pep_pct_*` are proportions (0-1), `acs_AGE` is years, `acs_VAL` is dollars, and `acs_DEP`/`acs_REX` are ratios/index values.",
+    "long_description": "Value for the measure identified by the `measure` column, taken unchanged from the census standard file (see each level's source documentation for definition and unit). Rows with missing values are dropped, so counties where a small-population estimate could not be computed have fewer rows than the full geography x year grid. Note that `acs_VAL` (median home value) is nominal dollars and not inflation-adjusted. The `acs_PCT_*` sex shares and age-band shares each sum to exactly 1 within a geography-year, but the seven race/ethnicity shares sum to slightly less (median 0.999, as low as 0.88) because non-Hispanic 'some other race alone' has no category of its own — do not treat the race shares as a complete partition. ACS and PEP shares are not interchangeable either: the two programs use different methodologies and race/ethnicity classifications, which is why `source` distinguishes them rather than the two being reconciled.",
+    "measure_type": "Mixed",
+    "unit": "Varies by measure",
+    "time_resolution": "Year",
+    "categories": {
+      "bundle_demographics/dist/demographics_county.parquet|": {},
+      "bundle_demographics/dist/demographics_state.parquet|": {}
+    }
+  },
+
+  "_bundle": {
+    "name": "bundle_demographics",
+    "sources": ["census"],
+    "dist_files": {
+      "demographics_county.parquet": {
+        "sources": ["census"],
+        "source_files": [
+          "census/standard/data_county.csv.gz",
+          "census/standard/data_pep.csv.gz"
+        ]
+      },
+      "demographics_state.parquet": {
+        "sources": ["census"],
+        "source_files": [
+          "census/standard/data_state.csv.gz",
+          "census/standard/data_pep.csv.gz"
+        ]
+      }
+    }
+  }
+}

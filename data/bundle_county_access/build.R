@@ -132,7 +132,8 @@ message(
 # -----------------------------------------------------------------------------
 # 5. County and state social/economic/health-resource determinants
 #    (moved here from the former bundle_rural_health)
-#    Sources: hud_chas, area_health_resource_file, bls_laus, usda_food_access
+#    Sources: hud_chas, area_health_resource_file, bls_laus, usda_food_access,
+#             census (ACS 5-year SDOH, SAHIE, SAIPE, urban/rural, OQM)
 #    Outputs: dist/county_determinants.parquet, dist/state_determinants.parquet
 #    Same long format as county_access.parquet, plus a `source` column.
 # -----------------------------------------------------------------------------
@@ -143,7 +144,12 @@ det_paths <- c(
   ahrf        = "../area_health_resource_file/standard/data.csv.gz",
   bls_county  = "../bls_laus/standard/data_county.csv.gz",
   bls_state   = "../bls_laus/standard/data_state.csv.gz",
-  usda_county = "../usda_food_access/standard/data_county.csv.gz"
+  usda_county = "../usda_food_access/standard/data_county.csv.gz",
+  acs_state   = "../census/standard/data_state.csv.gz",
+  acs_county  = "../census/standard/data_county.csv.gz",
+  sahie       = "../census/standard/data_sahie.csv.gz",
+  saipe       = "../census/standard/data_saipe.csv.gz",
+  oqm         = "../census/standard/data_oqm.csv.gz"
 )
 
 det_missing <- det_paths[!file.exists(det_paths)]
@@ -176,6 +182,79 @@ read_det_source <- function(path, source_label) {
     mutate(source = source_label)
 }
 
+# Same long format as read_det_source(), but for standard files whose columns
+# are split across bundles: only `measures` are kept, and rows are restricted to
+# one geography level. The level filter is needed because the census SAHIE,
+# SAIPE and OQM files each carry national ("00"), state and county rows in a
+# single file. Census geography codes are already zero-padded, so no reformat.
+read_det_census <- function(path, measures, source_label, geo_nchar) {
+  raw <- vroom(path, show_col_types = FALSE,
+               col_types = cols(geography = col_character(), .default = col_guess()))
+
+  present <- intersect(measures, colnames(raw))
+  absent <- setdiff(measures, colnames(raw))
+  if (length(absent) > 0) {
+    warning(
+      "Expected census measures not found in ", basename(path), " (skipped):\n",
+      paste(" -", absent, collapse = "\n")
+    )
+  }
+  if (length(present) == 0) {
+    return(NULL)
+  }
+
+  raw %>%
+    filter(!is.na(geography), nchar(geography) == geo_nchar) %>%
+    select(geography, time, all_of(present)) %>%
+    mutate(time = as.Date(time)) %>%
+    pivot_longer(
+      cols = all_of(present),
+      names_to = "outcome_name",
+      values_to = "value",
+      values_transform = as.numeric
+    ) %>%
+    filter(!is.na(value)) %>%
+    mutate(source = source_label)
+}
+
+# Census ACS 5-year social determinants. Population-structure measures from the
+# same standard files (acs_POP*, acs_PCT*, acs_AGE, acs_DEP, acs_DIS, acs_REX,
+# acs_VAL) belong to bundle_demographics, and acs_BTH to bundle_maternal_health,
+# so this is an explicit allow-list rather than "every column".
+ACS_SDOH_MEASURES <- c(
+  # Economic stability — income, poverty, housing cost, employment
+  "acs_INB", "acs_INC", "acs_PCI",
+  "acs_INL", "acs_INM", "acs_INN", "acs_INO", "acs_INP", "acs_INQ",
+  "acs_GNI", "acs_OWS",
+  "acs_POV", "acs_PVA", "acs_PVB", "acs_PVC",
+  "acs_HBU", "acs_HBS",
+  "acs_UMP",
+  # Education access and quality
+  "acs_EDB", "acs_EDC", "acs_DCY", "acs_LEQ",
+  # Health care access and quality — insurance coverage
+  "acs_UNS", "acs_MCD", "acs_MCR",
+  # Neighborhood and built environment — housing quality, utilities, transit
+  "acs_HUO", "acs_HUN", "acs_HTJ", "acs_HUF", "acs_HUG", "acs_GRP",
+  "acs_BDB", "acs_WWN", "acs_PUB",
+  # Social and community context
+  "acs_HTA",
+  # Food access — grouped with USDA Food Access Research Atlas below rather
+  # than with the clinical measures of bundle_preventative_services.
+  "acs_SNP"
+)
+
+# Urban/rural allocation. County-level only, and shipped inside the ACS county
+# standard file rather than a file of its own.
+CENSUS_URBAN_MEASURES <- c(
+  "census_ur_pct_urban_pop", "census_ur_pct_urban_land", "census_ur_pct_urban_hu"
+)
+
+SAHIE_MEASURES <- c(
+  "sahie_pct_uninsured", "sahie_pct_uninsured_adults", "sahie_pct_uninsured_children"
+)
+SAIPE_MEASURES <- c("saipe_pct_children_poverty", "saipe_median_household_income")
+OQM_MEASURES <- c("oqm_self_response_rate")
+
 det_hud_county  <- read_det_source(det_paths[["hud_county"]],  "HUD CHAS")
 det_hud_state   <- read_det_source(det_paths[["hud_state"]],   "HUD CHAS")
 det_ahrf        <- read_det_source(det_paths[["ahrf"]],        "HRSA AHRF")
@@ -183,11 +262,30 @@ det_bls_county  <- read_det_source(det_paths[["bls_county"]],  "BLS LAUS")
 det_bls_state   <- read_det_source(det_paths[["bls_state"]],   "BLS LAUS")
 det_usda_county <- read_det_source(det_paths[["usda_county"]], "USDA Food Access Research Atlas")
 
+det_census_county <- bind_rows(
+  read_det_census(det_paths[["acs_county"]], ACS_SDOH_MEASURES, "Census ACS 5-Year", 5),
+  read_det_census(det_paths[["acs_county"]], CENSUS_URBAN_MEASURES, "Census Urban Areas", 5),
+  read_det_census(det_paths[["sahie"]], SAHIE_MEASURES, "Census SAHIE", 5),
+  read_det_census(det_paths[["saipe"]], SAIPE_MEASURES, "Census SAIPE", 5),
+  read_det_census(det_paths[["oqm"]], OQM_MEASURES, "Census OQM", 5)
+)
+
+# The ACS state file carries the national total as geography "00", the same
+# convention state_determinants.parquet already uses; census_ur_* has no
+# state-level equivalent.
+det_census_state <- bind_rows(
+  read_det_census(det_paths[["acs_state"]], ACS_SDOH_MEASURES, "Census ACS 5-Year", 2),
+  read_det_census(det_paths[["sahie"]], SAHIE_MEASURES, "Census SAHIE", 2),
+  read_det_census(det_paths[["saipe"]], SAIPE_MEASURES, "Census SAIPE", 2),
+  read_det_census(det_paths[["oqm"]], OQM_MEASURES, "Census OQM", 2)
+)
+
 county_determinants <- bind_rows(
   det_hud_county,
   det_ahrf %>% filter(nchar(geography) == 5),
   det_bls_county,
-  det_usda_county
+  det_usda_county,
+  det_census_county
 ) %>%
   filter(nchar(geography) == 5) %>%
   select(geography, time, outcome_name, value, source) %>%
@@ -196,7 +294,8 @@ county_determinants <- bind_rows(
 state_determinants <- bind_rows(
   det_hud_state,
   det_ahrf %>% filter(nchar(geography) == 2),
-  det_bls_state
+  det_bls_state,
+  det_census_state
 ) %>%
   filter(nchar(geography) == 2) %>%
   select(geography, time, outcome_name, value, source) %>%
