@@ -10,7 +10,15 @@ This is a Data Collection Framework data bundle project, initialized with `dcf::
 
 Census population-structure measures (`acs_POP*`, `acs_PCT_*`, `pep_*`, median
 age, dependency ratio, disability, diversity index, median home value) are *not*
-here — they live in `bundle_demographics`.
+here — this bundle carries only the census measures that have cross-source
+counterparts to sit beside.
+
+The full census dataset, including the measures here, is also published as a
+source-complete mirror in `bundle_census`. **This bundle is canonical for
+analysis** — its measures are curated to be comparable across sources
+(`acs_UMP` beside `bls_pct_unemployment`, `acs_UNS` beside `chr_uninsured`,
+`acs_SNP` beside `usda_pct_limited_access_low_income`). Do not union the two
+bundles; you will double-count.
 
 You can us the `dcf` package to rebuild the bundle:
 

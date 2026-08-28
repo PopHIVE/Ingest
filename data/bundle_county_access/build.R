@@ -219,7 +219,7 @@ read_det_census <- function(path, measures, source_label, geo_nchar) {
 
 # Census ACS 5-year social determinants. Population-structure measures from the
 # same standard files (acs_POP*, acs_PCT*, acs_AGE, acs_DEP, acs_DIS, acs_REX,
-# acs_VAL) belong to bundle_demographics, and acs_BTH to bundle_maternal_health,
+# acs_VAL) are not here, and acs_BTH belongs to bundle_maternal_health,
 # so this is an explicit allow-list rather than "every column".
 ACS_SDOH_MEASURES <- c(
   # Economic stability — income, poverty, housing cost, employment
