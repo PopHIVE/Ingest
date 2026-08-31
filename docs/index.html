@@ -26,7 +26,7 @@
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
         <div class="d-flex align-items-center">
           <a class="btn btn-outline-light btn-sm me-3" href="data-table.html">Data Table →</a>
-          <span class="navbar-text text-light">Last updated: August 21, 2026</span>
+          <span class="navbar-text text-light">Last updated: August 31, 2026</span>
         </div>
       </div>
     </nav>
@@ -38,6 +38,9 @@
             <ul class="nav flex-column nav-pills">
               <li class="nav-item">
                 <a class="nav-link" href="#abcs">Abcs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#arbonet">Arbonet</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#area-health-resource-file">Area Health Resource File</a>
@@ -225,6 +228,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#bundle-strep">Bundle: Strep</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#bundle-vector-borne">Bundle: Vector Borne</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#bundle-youth-wellbeing">Bundle: Youth Wellbeing</a>
@@ -1178,6 +1184,421 @@
                       <td>Pneumococcal serotype</td>
                       <td>count</td>
                       <td>Number</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="arbonet" class="mb-5">
+              <h2 class="border-bottom pb-2">Arbonet</h2>
+              <p class="lead">ArboNET is the national arboviral surveillance system managed by CDC together with state and territorial health departments. In addition to human disease, ArboNET maintains data on arboviral infections among presumptive viremic blood donors, veterinary disease cases, mosquitoes, dead birds, and sentinel animals. Human cases are reported by county of residence rather than location of exposure, which is not necessarily the county or state where exposure occurred, and are assigned to the year of illness onset. Several caveats apply: under-reporting is inherent to any surveillance system that depends on clinicians suspecting the disease, ordering the appropriate test, and reporting confirmed results; non-neuroinvasive cases are substantially more under-reported than neuroinvasive cases, so total case counts should not be used to compare disease activity between locations or over time; and there is a lag in reporting to CDC. Values are the counts CDC publishes for public use and are not suppressed or imputed here. Connecticut reported by county through 2022 and by planning region from 2023 onward, so its geography codes change mid-series. Records that CDC assigns to an unallocated placeholder geography (state FIPS plus '999') because the county of residence is unknown are excluded from the county file but retained in the state and national totals. Reporting years differ by disease and the most recent year is preliminary and subject to change. Data that were not collected in a given year are coded as NA, so cells with count 0 indicate that disease was tested for but not reported.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.cdc.gov/mosquitoes/php/arbonet/index.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncezid/dvbd/index.html" target="_blank">Centers for Disease Control and Prevention, Division of Vector-Borne Diseases</a>
+                   | 
+                  <a href="https://www.cdc.gov/west-nile-virus/data-maps/historic-data.html" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Public domain. CDC data is generally not subject to copyright restrictions.
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data_county.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_eee_cases</code>
+                      </td>
+                      <td>Eastern equine encephalitis virus</td>
+                      <td>Human Eastern equine encephalitis virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_eee_neuro_cases</code>
+                      </td>
+                      <td>Eastern equine encephalitis virus</td>
+                      <td>Human Eastern equine encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_eee_nonhuman_activity</code>
+                      </td>
+                      <td>Eastern equine encephalitis virus</td>
+                      <td>Indicator of whether any non-human Eastern equine encephalitis virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_jcv_cases</code>
+                      </td>
+                      <td>Jamestown Canyon virus</td>
+                      <td>Human Jamestown Canyon virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_jcv_neuro_cases</code>
+                      </td>
+                      <td>Jamestown Canyon virus</td>
+                      <td>Human Jamestown Canyon virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_jcv_nonhuman_activity</code>
+                      </td>
+                      <td>Jamestown Canyon virus</td>
+                      <td>Indicator of whether any non-human Jamestown Canyon virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_lac_cases</code>
+                      </td>
+                      <td>La Crosse virus</td>
+                      <td>Human La Crosse virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_lac_neuro_cases</code>
+                      </td>
+                      <td>La Crosse virus</td>
+                      <td>Human La Crosse virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_lac_nonhuman_activity</code>
+                      </td>
+                      <td>La Crosse virus</td>
+                      <td>Indicator of whether any non-human La Crosse virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_pow_cases</code>
+                      </td>
+                      <td>Powassan virus</td>
+                      <td>Human Powassan virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_pow_neuro_cases</code>
+                      </td>
+                      <td>Powassan virus</td>
+                      <td>Human Powassan virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_sle_cases</code>
+                      </td>
+                      <td>St. Louis encephalitis virus</td>
+                      <td>Human St. Louis encephalitis virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_sle_neuro_cases</code>
+                      </td>
+                      <td>St. Louis encephalitis virus</td>
+                      <td>Human St. Louis encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_sle_nonhuman_activity</code>
+                      </td>
+                      <td>St. Louis encephalitis virus</td>
+                      <td>Indicator of whether any non-human St. Louis encephalitis virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_wnv_blood_donors</code>
+                      </td>
+                      <td>West Nile virus presumptive viremic blood donors</td>
+                      <td>Presumptive viremic blood donors identified through West Nile virus blood donor screening.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_wnv_cases</code>
+                      </td>
+                      <td>West Nile virus</td>
+                      <td>Human West Nile virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_wnv_neuro_cases</code>
+                      </td>
+                      <td>West Nile virus</td>
+                      <td>Human West Nile virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_wnv_nonhuman_activity</code>
+                      </td>
+                      <td>West Nile virus</td>
+                      <td>Indicator of whether any non-human West Nile virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_state.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_eee_cases</code>
+                      </td>
+                      <td>Eastern equine encephalitis virus</td>
+                      <td>Human Eastern equine encephalitis virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_eee_neuro_cases</code>
+                      </td>
+                      <td>Eastern equine encephalitis virus</td>
+                      <td>Human Eastern equine encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_eee_nonhuman_activity</code>
+                      </td>
+                      <td>Eastern equine encephalitis virus</td>
+                      <td>Indicator of whether any non-human Eastern equine encephalitis virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_jcv_cases</code>
+                      </td>
+                      <td>Jamestown Canyon virus</td>
+                      <td>Human Jamestown Canyon virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_jcv_neuro_cases</code>
+                      </td>
+                      <td>Jamestown Canyon virus</td>
+                      <td>Human Jamestown Canyon virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_jcv_nonhuman_activity</code>
+                      </td>
+                      <td>Jamestown Canyon virus</td>
+                      <td>Indicator of whether any non-human Jamestown Canyon virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_lac_cases</code>
+                      </td>
+                      <td>La Crosse virus</td>
+                      <td>Human La Crosse virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_lac_neuro_cases</code>
+                      </td>
+                      <td>La Crosse virus</td>
+                      <td>Human La Crosse virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_lac_nonhuman_activity</code>
+                      </td>
+                      <td>La Crosse virus</td>
+                      <td>Indicator of whether any non-human La Crosse virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_pow_cases</code>
+                      </td>
+                      <td>Powassan virus</td>
+                      <td>Human Powassan virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_pow_neuro_cases</code>
+                      </td>
+                      <td>Powassan virus</td>
+                      <td>Human Powassan virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_sle_cases</code>
+                      </td>
+                      <td>St. Louis encephalitis virus</td>
+                      <td>Human St. Louis encephalitis virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_sle_neuro_cases</code>
+                      </td>
+                      <td>St. Louis encephalitis virus</td>
+                      <td>Human St. Louis encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_sle_nonhuman_activity</code>
+                      </td>
+                      <td>St. Louis encephalitis virus</td>
+                      <td>Indicator of whether any non-human St. Louis encephalitis virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_wnv_blood_donors</code>
+                      </td>
+                      <td>West Nile virus presumptive viremic blood donors</td>
+                      <td>Presumptive viremic blood donors identified through West Nile virus blood donor screening.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_wnv_cases</code>
+                      </td>
+                      <td>West Nile virus</td>
+                      <td>Human West Nile virus disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_wnv_neuro_cases</code>
+                      </td>
+                      <td>West Nile virus</td>
+                      <td>Human West Nile virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>arbonet_wnv_nonhuman_activity</code>
+                      </td>
+                      <td>West Nile virus</td>
+                      <td>Indicator of whether any non-human West Nile virus activity was reported to CDC for the geography and year.</td>
+                      <td>Indicator</td>
+                      <td>1 = activity reported, 0 = no activity reported</td>
                     </tr>
                   </tbody>
                 </table>
@@ -10702,11 +11123,11 @@
             </section>
             <section id="delphi-doctors-claims" class="mb-5">
               <h2 class="border-bottom pb-2">Delphi Doctors Claims</h2>
-              <p class="lead">The Delphi Doctor Visits signal estimates the percentage of outpatient doctor visits with COVID-related diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal is calculated as the percentage of outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). Data are smoothed using a Gaussian linear smoother to reduce day-to-day noise. This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are available at state and county levels with approximately 3-4 day lag from the date of service.</p>
+              <p class="lead">The Delphi outpatient claims signal estimates the percentage of outpatient doctor visits with COVID-19 diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal tracks outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of service. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile and a lag-1 autocorrelation of 0.998), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. This signal replaces the retired COVIDcast doctor-visits signal (smoothed_cli), which was smoothed with a Gaussian linear smoother.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
-                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/doctor-visits.html" target="_blank">Data Source</a>
+                  <a href="https://delphi.cmu.edu/epidata/v5/" target="_blank">Data Source</a>
                    | 
                   <a href="https://delphi.cmu.edu/" target="_blank">Carnegie Mellon University Delphi Research Group</a>
                    | 
@@ -10756,9 +11177,9 @@
                         <code>delphi_doc_covid_smooth</code>
                       </td>
                       <td>COVID Doctor Visits</td>
-                      <td>Estimated percentage of outpatient doctor visits primarily about COVID-related symptoms, based on data from health system partners, smoothed in time using a Gaussian linear smoother</td>
+                      <td>Estimated percentage of outpatient doctor visits with COVID-associated diagnoses, based on claims data from health system partners, as of the week-ending Saturday</td>
                       <td>percent</td>
-                      <td>Percent of doctor's visits, smoothed</td>
+                      <td>Percent of outpatient visits, 7-day average ending Saturday</td>
                     </tr>
                   </tbody>
                 </table>
@@ -10766,11 +11187,11 @@
             </section>
             <section id="delphi-hospital-claims" class="mb-5">
               <h2 class="border-bottom pb-2">Delphi Hospital Claims</h2>
-              <p class="lead">The Delphi Hospital Admissions signal estimates the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. Data are smoothed using a Gaussian linear smoother to reduce day-to-day variation. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are available at state and county levels with approximately 3-4 day lag from the date of admission.</p>
+              <p class="lead">The Delphi inpatient claims signals estimate the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of admission. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile, and runs of non-zero days bottom out at exactly seven), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. Geography-weeks with no Saturday observation are therefore absent, which affects about 11% of county-weeks. These signals replace the retired COVIDcast hospital-admissions signals (smoothed_covid19_from_claims and smoothed_flu_from_claims), which were smoothed with a Gaussian linear smoother.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
-                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/hospital-admissions.html" target="_blank">Data Source</a>
+                  <a href="https://delphi.cmu.edu/epidata/v5/" target="_blank">Data Source</a>
                    | 
                   <a href="https://delphi.cmu.edu/" target="_blank">Carnegie Mellon University Delphi Research Group</a>
                    | 
@@ -10820,18 +11241,18 @@
                         <code>delphi_hospital_covid_smooth</code>
                       </td>
                       <td>delphi_hospital_covid_smooth</td>
-                      <td>Estimated percentage of new hospital admissions with COVID-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother</td>
-                      <td></td>
-                      <td>Percent of new hospital admissions, smoothed</td>
+                      <td>Estimated percentage of new hospital admissions with COVID-associated diagnoses, based on claims data from health system partners, as of the week-ending Saturday</td>
+                      <td>percent</td>
+                      <td>Percent of new hospital admissions, 7-day average ending Saturday</td>
                     </tr>
                     <tr>
                       <td>
                         <code>delphi_hospital_flu_smooth</code>
                       </td>
                       <td>Influenza Hospital Admissions</td>
-                      <td>Estimated percentage of new hospital admissions with influenza-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother</td>
+                      <td>Estimated percentage of new hospital admissions with influenza-associated diagnoses, based on claims data from health system partners, as of the week-ending Saturday</td>
                       <td>percent</td>
-                      <td>Percent of new hospital admissions, smoothed</td>
+                      <td>Percent of new hospital admissions, 7-day average ending Saturday</td>
                     </tr>
                   </tbody>
                 </table>
@@ -32412,13 +32833,15 @@ VAERS data have important limitations: the number of reports alone cannot establ
             <section id="bundle-cancer-screening" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: Cancer Screening</h2>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 5 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 6 parquet file(s).</em>
               </p>
               <p class="mb-3">
                 <strong>Data sources: </strong>
                 <a href="#cms-mmd" class="bundle-source-link">CMS Mmd</a>
                 ; 
                 <a href="#medicaid-quality" class="bundle-source-link">Medicaid Quality</a>
+                ; 
+                <a href="#nccr" class="bundle-source-link">Nccr</a>
               </p>
               <h4 class="mt-4">Output Files (dist/)</h4>
               <h5 class="mt-3">
@@ -32987,6 +33410,179 @@ VAERS data have important limitations: the number of reports alone cannot establ
                       <td>Percentage of Medicaid and CHIP beneficiaries who received cancer screening.</td>
                       <td>Percent</td>
                       <td>%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>nccr_incidence.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nccr/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nccr/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Always 'United States'; NCCR*Explorer reports national-level statistics only. The paired `fips` column holds '00'.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fips</code>
+                      </td>
+                      <td>FIPS code</td>
+                      <td>Geographic FIPS code ('00' = national).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>year</code>
+                      </td>
+                      <td>Year</td>
+                      <td>Calendar year of diagnosis (2001 onward).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group at diagnosis in years. Groups overlap: '&lt;1', '1-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-39' are disjoint; '0-19', '15-39', '20-39', and '0-39' are aggregates.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Sex (Overall, Male, Female).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race_ethnicity</code>
+                      </td>
+                      <td>Race/ethnicity</td>
+                      <td>Race/ethnicity category (Overall, White, Black, Asian/Pacific Islander, American Indian/Alaska Native, Hispanic).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>outcome_name</code>
+                      </td>
+                      <td>Cancer site (ICCC)</td>
+                      <td>
+                        International Classification of Childhood Cancer (ICCC) diagnostic group the rate refers to.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">All ICCC Sites Combined</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">I. Leukemias</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">II. Lymphomas</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">III. CNS Neoplasms (Malignant)</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">III. CNS Neoplasms (Non-Malignant)</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">IV. Neuroblastoma and Peripheral Nervous Cell Tumors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">V. Retinoblastoma</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">VI. Renal Tumors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">VII. Hepatic Tumors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">VIII. Bone Tumors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">IX. Soft Tissue Sarcomas</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">X. Germ Cell Tumors (Malignant)</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">X. Germ Cell Tumors (Non-Malignant)</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">XI. Epithelial Neoplasms and Melanomas</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">XII. Other and Unspecified Neoplasms</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Data source</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">NCI NCCR*Explorer</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Childhood/AYA cancer incidence rate</td>
+                      <td>Age-adjusted annual incidence rate per 1,000,000 of the ICCC cancer site named in `outcome_name`, among ages 0-39, national level.</td>
+                      <td>Incidence</td>
+                      <td>Cases per 1,000,000</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value_lcl</code>
+                      </td>
+                      <td>Incidence rate, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for `value`.</td>
+                      <td>Incidence</td>
+                      <td>Cases per 1,000,000</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value_ucl</code>
+                      </td>
+                      <td>Incidence rate, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for `value`.</td>
+                      <td>Incidence</td>
+                      <td>Cases per 1,000,000</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed?</td>
+                      <td>Binary indicator: 1 if NCCR*Explorer suppressed the rate for this cell (fewer than 16 cases), in which case `value` is 0; 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>not_collected_flag</code>
+                      </td>
+                      <td>Not collected?</td>
+                      <td>Binary indicator: 1 if the statistic was not collected/not available for this cell, in which case `value` is 0; 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
                     </tr>
                   </tbody>
                 </table>
@@ -34533,11 +35129,19 @@ VAERS data have important limitations: the number of reports alone cannot establ
             <section id="bundle-county-access" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: County Access</h2>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 1 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 3 parquet file(s).</em>
               </p>
               <p class="mb-3">
                 <strong>Data sources: </strong>
                 <a href="#county-health-rankings" class="bundle-source-link">County Health Rankings</a>
+                ; 
+                <a href="#area-health-resource-file" class="bundle-source-link">Area Health Resource File</a>
+                ; 
+                <a href="#bls-laus" class="bundle-source-link">Bls Laus</a>
+                ; 
+                <a href="#hud-chas" class="bundle-source-link">Hud Chas</a>
+                ; 
+                <a href="#usda-food-access" class="bundle-source-link">Usda Food Access</a>
               </p>
               <h4 class="mt-4">Output Files (dist/)</h4>
               <h5 class="mt-3">
@@ -34615,6 +35219,236 @@ VAERS data have important limitations: the number of reports alone cannot establ
                       <td>Value of the healthcare access measure named in outcome_name.</td>
                       <td>Rate</td>
                       <td>Varies by measure (population per provider or percent)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>county_determinants.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/hud_chas/standard/data_county.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>hud_chas/standard/data_county.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/area_health_resource_file/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>area_health_resource_file/standard/data.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bls_laus/standard/data_county.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>bls_laus/standard/data_county.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/usda_food_access/standard/data_county.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>usda_food_access/standard/data_county.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>FIPS code</td>
+                      <td>Geographic FIPS code as a string: 5-digit county code in county_determinants.parquet; 2-digit state code or '00' (national) in state_determinants.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Date</td>
+                      <td>Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>outcome_name</code>
+                      </td>
+                      <td>Determinant measure</td>
+                      <td>
+                        Identifier of the measure in this row; the name matches the source column in the contributing source's standard file.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">hud_pct_severe_housing_problems</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_hpsa_prim_care</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_hpsa_dental</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_hpsa_mental_health</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_rural_urban_code</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_pcp</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_md_all</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_psych</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_dentists</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_hospitals</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_critical_access_hosp</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_population</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_good_air_pct</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_pm25</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_pop_density</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_medicare_per_capita</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_ed_per_1k_medicare</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">bls_pct_unemployment</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">usda_pct_limited_access_low_income</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.</td>
+                      <td>Mixed</td>
+                      <td>Varies by measure</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Data source</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">HUD CHAS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">HRSA AHRF</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">BLS LAUS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">USDA Food Access Research Atlas</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>state_determinants.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/hud_chas/standard/data_state.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>hud_chas/standard/data_state.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/area_health_resource_file/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>area_health_resource_file/standard/data.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bls_laus/standard/data_state.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>bls_laus/standard/data_state.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>FIPS code</td>
+                      <td>Geographic FIPS code as a string: 5-digit county code in county_determinants.parquet; 2-digit state code or '00' (national) in state_determinants.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Date</td>
+                      <td>Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>outcome_name</code>
+                      </td>
+                      <td>Determinant measure</td>
+                      <td>
+                        Identifier of the measure in this row; the name matches the source column in the contributing source's standard file. USDA food access is county-only and does not appear in this file.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">hud_pct_severe_housing_problems</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_hpsa_prim_care</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_hpsa_dental</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_hpsa_mental_health</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_rural_urban_code</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_pcp</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_md_all</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_psych</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_dentists</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_hospitals</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_critical_access_hosp</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_population</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_good_air_pct</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_pm25</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_pop_density</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_medicare_per_capita</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ahrf_ed_per_1k_medicare</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">bls_pct_unemployment</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.</td>
+                      <td>Mixed</td>
+                      <td>Varies by measure</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Data source</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">HUD CHAS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">HRSA AHRF</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">BLS LAUS</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">USDA Food Access Research Atlas</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
                     </tr>
                   </tbody>
                 </table>
@@ -34712,7 +35546,7 @@ VAERS data have important limitations: the number of reports alone cannot establ
             <section id="bundle-enteric-diseases" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: Enteric Diseases</h2>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 4 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 5 parquet file(s).</em>
               </p>
               <p class="mb-3">
                 <strong>Data sources: </strong>
@@ -34723,6 +35557,8 @@ VAERS data have important limitations: the number of reports alone cannot establ
                 <a href="#narms" class="bundle-source-link">Narms</a>
                 ; 
                 <a href="#epic-diarrhea" class="bundle-source-link">Epic Diarrhea</a>
+                ; 
+                <a href="#epic-health-alerts" class="bundle-source-link">Epic Health Alerts</a>
               </p>
               <h4 class="mt-4">Output Files (dist/)</h4>
               <h5 class="mt-3">
@@ -34928,6 +35764,163 @@ VAERS data have important limitations: the number of reports alone cannot establ
                       <td>Source</td>
                       <td>Data source identifier for tall-format files</td>
                       <td>category</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>epic_health_alerts.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_health_alerts/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>epic_health_alerts/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>State or county name (e.g., 'Iowa', 'Los Angeles County'); the paired `fips` column holds the FIPS code and `geography_level` says which level the row is.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fips</code>
+                      </td>
+                      <td>FIPS code</td>
+                      <td>Geographic FIPS code (2-digit = state, 5-digit = county).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_level</code>
+                      </td>
+                      <td>Geography level</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">state</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">county</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date</code>
+                      </td>
+                      <td>Week ending date</td>
+                      <td>Week-ending (Saturday) date of the snapshot in which the alert was active (ISO date).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>condition</code>
+                      </td>
+                      <td>Alerted condition</td>
+                      <td>
+                        The condition for which Epic Research flagged the geography with an active health alert. All conditions published on the page are kept, not only enteric ones.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Acute Pharyngitis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Campylobacteriosis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Cyclosporiasis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Hand, Foot, and Mouth Disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Heat Illness</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Salmonellosis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Toxic Effect of Smoke</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Viral Gastroenteritis</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>estimated_onset</code>
+                      </td>
+                      <td>Estimated onset date</td>
+                      <td>Epic Research's estimated onset date of the elevated activity for this geography and condition (ISO date).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Health alert rate (cases per 100k)</td>
+                      <td>Latest-week case rate per 100,000 for a state or county flagged with an active Epic Research health alert; the alerted condition is given in the `condition` column.</td>
+                      <td>Rate</td>
+                      <td>cases per 100,000</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>partial_week_flag</code>
+                      </td>
+                      <td>Partial week?</td>
+                      <td>Binary indicator: 1 if the rate reflects a partial (incomplete) reporting week and may rise as more data arrives, 0 otherwise.</td>
+                      <td>binary</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date_scraped</code>
+                      </td>
+                      <td>Date scraped</td>
+                      <td>Date on which the ingestion script downloaded the Epic Research health-alerts page and recorded this row (ISO date).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date_epic_updated</code>
+                      </td>
+                      <td>Date Epic updated</td>
+                      <td>The page-wide 'Last updated' date shown on the Epic Research health-alerts page at scrape time (ISO date).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Data source</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">Epic Research Health Alerts</span>
+                        </div>
+                      </td>
+                      <td></td>
                       <td></td>
                     </tr>
                   </tbody>
@@ -40178,6 +41171,157 @@ VAERS data have important limitations: the number of reports alone cannot establ
                       <td>1 where Epic withheld the underlying cell; blank on NNDSS rows.</td>
                       <td>Binary</td>
                       <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="bundle-vector-borne" class="mb-5">
+              <h2 class="border-bottom pb-2">Bundle: Vector Borne</h2>
+              <p class="text-muted">
+                <em>Combined output bundle. Dist files: 1 parquet file(s).</em>
+              </p>
+              <p class="mb-3">
+                <strong>Data sources: </strong>
+                <a href="#arbonet" class="bundle-source-link">Arbonet</a>
+                ; 
+                <a href="#nnds" class="bundle-source-link">NNDS</a>
+              </p>
+              <h4 class="mt-4">Output Files (dist/)</h4>
+              <h5 class="mt-3">
+                <code>vector_borne.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/arbonet/standard/data_state.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>arbonet/standard/data_state.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/arbonet/standard/data_county.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>arbonet/standard/data_county.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nnds/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nnds/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>fips</code>
+                      </td>
+                      <td>FIPS code</td>
+                      <td>FIPS code identifier for the row: '00' for national rows, 2-digit state/territory FIPS for state rows, and 5-digit county FIPS for county rows.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_level</code>
+                      </td>
+                      <td>geography_level</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date</code>
+                      </td>
+                      <td>Date</td>
+                      <td>Date (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>measure</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_eee_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_eee_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_eee_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_jcv_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_jcv_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_jcv_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_lac_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_lac_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_lac_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_pow_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_pow_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_sle_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_sle_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_sle_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_wnv_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_wnv_neuro_cases</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_wnv_nonhuman_activity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arbonet_wnv_blood_donors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_chikungunya_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_eastern_equine_encephalitis_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_jamestown_canyon_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_la_crosse_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_powassan_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_st_louis_encephalitis_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_west_nile_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">arboviral_diseases_western_equine_encephalitis_virus_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">babesiosis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">dengue_virus_infections_dengue</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">dengue_virus_infections_dengue_like_illness</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">dengue_virus_infections_severe_dengue</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ehrlichiosis_and_anaplasmosis_anaplasma_phagocytophilum_infection</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ehrlichiosis_and_anaplasmosis_ehrlichia_chaffeensis_infection</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ehrlichiosis_and_anaplasmosis_ehrlichia_ewingii_infection</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ehrlichiosis_and_anaplasmosis_undetermined_ehrlichiosis_anaplasmosis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">malaria</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">zika_virus_disease_non_congenital</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), or weekly case counts for the NNDSS measures (national and state only). NNDSS publishes cumulative year-to-date counts; this bundle de-cumulates them into weekly incident counts by differencing consecutive weeks within each MMWR year, so occasional negative values reflect downward revisions to the source's cumulative totals.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Data source</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">CDC ArboNET</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">CDC NNDSS</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
                     </tr>
                   </tbody>
                 </table>

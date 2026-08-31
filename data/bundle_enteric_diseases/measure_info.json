@@ -68,6 +68,77 @@
     "time_resolution": "Week"
   },
 
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name (e.g., 'Iowa', 'Los Angeles County'); the paired `fips` column holds the FIPS code and `geography_level` says which level the row is."
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geographic FIPS code (2-digit = state, 5-digit = county)."
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|geography_level": {
+    "short_name": "Geography level",
+    "levels": {
+      "state": {},
+      "county": {}
+    }
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|date": {
+    "short_name": "Week ending date",
+    "short_description": "Week-ending (Saturday) date of the snapshot in which the alert was active (ISO date)."
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|condition": {
+    "short_name": "Alerted condition",
+    "short_description": "The condition for which Epic Research flagged the geography with an active health alert. All conditions published on the page are kept, not only enteric ones.",
+    "levels": {
+      "Acute Pharyngitis": {},
+      "Campylobacteriosis": {},
+      "Cyclosporiasis": {},
+      "Hand, Foot, and Mouth Disease": {},
+      "Heat Illness": {},
+      "Salmonellosis": {},
+      "Toxic Effect of Smoke": {},
+      "Viral Gastroenteritis": {}
+    }
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|estimated_onset": {
+    "short_name": "Estimated onset date",
+    "short_description": "Epic Research's estimated onset date of the elevated activity for this geography and condition (ISO date)."
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|value": {
+    "short_name": "Health alert rate (cases per 100k)",
+    "long_name": "Epic Research Health Alert Rate, Cases per 100,000 (Latest Week)",
+    "category": "respiratory",
+    "short_description": "Latest-week case rate per 100,000 for a state or county flagged with an active Epic Research health alert; the alerted condition is given in the `condition` column.",
+    "long_description": "Case rate per 100,000 people for the most recent week, for a state or county currently flagged with an active Epic Research Health Alert. Alerts are derived from Epic Cosmos electronic health record data and are published only while active, so the source dataset accumulates one weekly snapshot per ingestion run. Rates marked as a partial (incomplete) reporting week on the source page are flagged in `partial_week_flag`.",
+    "measure_type": "Rate",
+    "unit": "cases per 100,000",
+    "time_resolution": "Week",
+    "sources": [{ "id": "epic_health_alerts" }]
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|partial_week_flag": {
+    "short_name": "Partial week?",
+    "long_name": "Partial (incomplete) reporting week flag",
+    "short_description": "Binary indicator: 1 if the rate reflects a partial (incomplete) reporting week and may rise as more data arrives, 0 otherwise.",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|date_scraped": {
+    "short_name": "Date scraped",
+    "short_description": "Date on which the ingestion script downloaded the Epic Research health-alerts page and recorded this row (ISO date)."
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|date_epic_updated": {
+    "short_name": "Date Epic updated",
+    "short_description": "The page-wide 'Last updated' date shown on the Epic Research health-alerts page at scrape time (ISO date)."
+  },
+  "bundle_enteric_diseases/dist/epic_health_alerts.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "Epic Research Health Alerts": {}
+    }
+  },
+
   "bundle_enteric_diseases/dist/resistance_by_agent.parquet|source": {
     "levels": {
       "NARMS Now (Human Clinical)": {},
@@ -141,7 +212,7 @@
 
   "_bundle": {
     "name": "bundle_enteric_diseases",
-    "sources": ["nnds", "beam", "narms", "epic_diarrhea"],
+    "sources": ["nnds", "beam", "narms", "epic_diarrhea", "epic_health_alerts"],
     "dist_files": {
       "enteric_diseases.parquet": {
         "sources": ["nnds", "beam"],
@@ -169,6 +240,12 @@
         "sources": ["epic_diarrhea"],
         "source_files": [
           "epic_diarrhea/standard/data_weekly.csv.gz"
+        ]
+      },
+      "epic_health_alerts.parquet": {
+        "sources": ["epic_health_alerts"],
+        "source_files": [
+          "epic_health_alerts/standard/data.csv.gz"
         ]
       }
     }
@@ -228,6 +305,15 @@
       "organization": "Epic Systems",
       "organization_url": "https://www.epic.com/",
       "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. Weekly counts of encounters with all-cause diarrhea ICD-10-CM codes (A00-A09, R19.7) are reported by state and age, both for emergency department encounters and for encounters of any type, alongside all-cause encounter denominators. Due to privacy protections, counts fewer than 10 are suppressed and imputed as 5.",
+      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
+      "date_accessed": 2026
+    },
+    "epic_health_alerts": {
+      "name": "Epic Research Health Alerts",
+      "url": "https://www.epicresearch.org/health-alerts/",
+      "organization": "Epic Research",
+      "organization_url": "https://www.epicresearch.org/",
+      "description": "Epic Research Health Alerts flag U.S. states and counties experiencing an unusual rise in specific conditions, derived from Epic Cosmos de-identified electronic health record data covering over 300 million patients across more than 1,600 hospitals and health systems. Each alert reports the latest-week case rate per 100,000 and an estimated onset date. The page is a live snapshot showing only currently active alerts rather than a historical archive, so the source dataset accumulates one weekly snapshot per ingestion run to construct a time series.",
       "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
       "date_accessed": 2026
     }

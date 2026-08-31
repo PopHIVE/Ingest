@@ -235,9 +235,108 @@
     "time_resolution": "Year",
     "sources": [{ "id": "medicaid_quality" }]
   },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "Always 'United States'; NCCR*Explorer reports national-level statistics only. The paired `fips` column holds '00'."
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geographic FIPS code ('00' = national)."
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of diagnosis (2001 onward)."
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age group at diagnosis in years. Groups overlap: '<1', '1-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-39' are disjoint; '0-19', '15-39', '20-39', and '0-39' are aggregates."
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "Sex (Overall, Male, Female)."
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|race_ethnicity": {
+    "short_name": "Race/ethnicity",
+    "short_description": "Race/ethnicity category (Overall, White, Black, Asian/Pacific Islander, American Indian/Alaska Native, Hispanic)."
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|outcome_name": {
+    "short_name": "Cancer site (ICCC)",
+    "short_description": "International Classification of Childhood Cancer (ICCC) diagnostic group the rate refers to.",
+    "levels": {
+      "All ICCC Sites Combined": { "source_id": "nccr_all_iccc_sites" },
+      "I. Leukemias": { "source_id": "nccr_leukemias" },
+      "II. Lymphomas": { "source_id": "nccr_lymphomas" },
+      "III. CNS Neoplasms (Malignant)": { "source_id": "nccr_cns_neoplasms_malignant" },
+      "III. CNS Neoplasms (Non-Malignant)": { "source_id": "nccr_cns_neoplasms_non_malignant" },
+      "IV. Neuroblastoma and Peripheral Nervous Cell Tumors": { "source_id": "nccr_neuroblastoma_and_pns_tumors" },
+      "V. Retinoblastoma": { "source_id": "nccr_retinoblastoma" },
+      "VI. Renal Tumors": { "source_id": "nccr_renal_tumors" },
+      "VII. Hepatic Tumors": { "source_id": "nccr_hepatic_tumors" },
+      "VIII. Bone Tumors": { "source_id": "nccr_bone_tumors" },
+      "IX. Soft Tissue Sarcomas": { "source_id": "nccr_soft_tissue_sarcomas" },
+      "X. Germ Cell Tumors (Malignant)": { "source_id": "nccr_germ_cell_tumors_malignant" },
+      "X. Germ Cell Tumors (Non-Malignant)": { "source_id": "nccr_germ_cell_tumors_non_malignant" },
+      "XI. Epithelial Neoplasms and Melanomas": { "source_id": "nccr_epithelial_neoplasms_and_melanomas" },
+      "XII. Other and Unspecified Neoplasms": { "source_id": "nccr_neoplasms_other_and_nos" }
+    }
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "NCI NCCR*Explorer": {}
+    }
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|value": {
+    "id": "bundle_cancer_screening/dist/nccr_incidence.parquet|value",
+    "short_name": "Childhood/AYA cancer incidence rate",
+    "long_name": "Age-Adjusted Childhood, Adolescent and Young Adult Cancer Incidence Rate by ICCC Site",
+    "category": "chronic",
+    "short_description": "Age-adjusted annual incidence rate per 1,000,000 of the ICCC cancer site named in `outcome_name`, among ages 0-39, national level.",
+    "long_description": "Age-adjusted annual incidence rate per 1,000,000 population for the ICCC diagnostic group in `outcome_name`, among children, adolescents, and young adults (ages 0-39), from the National Childhood Cancer Registry (NCCR*Explorer). Rates are pooled across ~29 U.S. cancer registries covering ~76% of the U.S. population and are age-adjusted to the 2000 U.S. standard population. Stratified by sex, race/ethnicity, and age group. A value of 0 is only meaningful when both `suppressed_flag` and `not_collected_flag` are 0; suppressed or not-collected cells were set to 0 in the source.",
+    "measure_type": "Incidence",
+    "unit": "Cases per 1,000,000",
+    "time_resolution": "Year",
+    "sources": [{ "id": "nccr" }]
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|value_lcl": {
+    "short_name": "Incidence rate, lower 95% CI",
+    "long_name": "Lower 95% confidence limit of the incidence rate",
+    "category": "chronic",
+    "short_description": "Lower bound of the 95% confidence interval for `value`.",
+    "measure_type": "Incidence",
+    "unit": "Cases per 1,000,000",
+    "time_resolution": "Year",
+    "sources": [{ "id": "nccr" }]
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|value_ucl": {
+    "short_name": "Incidence rate, upper 95% CI",
+    "long_name": "Upper 95% confidence limit of the incidence rate",
+    "category": "chronic",
+    "short_description": "Upper bound of the 95% confidence interval for `value`.",
+    "measure_type": "Incidence",
+    "unit": "Cases per 1,000,000",
+    "time_resolution": "Year",
+    "sources": [{ "id": "nccr" }]
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|suppressed_flag": {
+    "short_name": "Suppressed?",
+    "long_name": "Suppression flag for the rate in this row",
+    "short_description": "Binary indicator: 1 if NCCR*Explorer suppressed the rate for this cell (fewer than 16 cases), in which case `value` is 0; 0 otherwise.",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Year"
+  },
+  "bundle_cancer_screening/dist/nccr_incidence.parquet|not_collected_flag": {
+    "short_name": "Not collected?",
+    "long_name": "Not-collected flag for the rate in this row",
+    "short_description": "Binary indicator: 1 if the statistic was not collected/not available for this cell, in which case `value` is 0; 0 otherwise.",
+    "measure_type": "binary",
+    "unit": "",
+    "time_resolution": "Year"
+  },
   "_bundle": {
     "name": "bundle_cancer_screening",
-    "sources": ["cms_mmd", "medicaid_quality"],
+    "sources": ["cms_mmd", "medicaid_quality", "nccr"],
     "dist_files": {
       "medicaid_cancer_screening.parquet": {
         "sources": ["medicaid_quality"],
@@ -261,7 +360,24 @@
           "cms_mmd/standard/data_state_county_age.csv.gz",
           "medicaid_quality/standard/data.csv.gz"
         ]
+      },
+      "nccr_incidence.parquet": {
+        "sources": ["nccr"],
+        "source_files": ["nccr/standard/data.csv.gz"]
       }
+    }
+  },
+  "_sources": {
+    "nccr": {
+      "name": "National Childhood Cancer Registry Explorer (NCCR*Explorer)",
+      "url": "https://nccrexplorer.ccdi.cancer.gov/",
+      "organization": "National Cancer Institute (NCI), Childhood Cancer Data Initiative",
+      "organization_url": "https://www.cancer.gov/",
+      "location": "NCCR*Explorer: An interactive website for NCCR cancer statistics",
+      "location_url": "https://nccrexplorer.ccdi.cancer.gov/application.html",
+      "description": "The National Childhood Cancer Registry (NCCR) is a federated data resource maintained by the National Cancer Institute (NCI) as part of the Childhood Cancer Data Initiative (CCDI). NCCR*Explorer provides precalculated incidence statistics for cancers among children, adolescents, and young adults (ages 0-39) diagnosed from 2001 forward, pooled from up to 29 U.S. cancer registries representing approximately 76% of the U.S. population ages 0-39. Cancers are classified using the International Classification of Childhood Cancer (ICCC). Rates are age-adjusted to the 2000 U.S. standard population and reported at the national level only.",
+      "restrictions": "Public domain. Data from the National Childhood Cancer Registry, produced by the National Cancer Institute, is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
     }
   }
 }
