@@ -243,7 +243,7 @@ window.PH = (function () {
     onReady(function () {
       var wrap = el(root);
       var filters = cfg.filters || [];
-      var state = { filters: {}, visible: {} };
+      var state = { filters: {}, visible: {}, showRange: !!(cfg.errorBand && cfg.errorBand.default) };
       filters.forEach(function (f) { state.filters[f.key] = f.default; });
 
       // Optional "Compare by" mode: cfg.compareBy.groups is a map of
@@ -300,6 +300,11 @@ window.PH = (function () {
           Object.keys(cmp.groups).map(function (k) {
             return '<option value="' + esc(k) + '"' + (k === cmp.default ? ' selected' : '') + '>' + esc(cmp.groups[k].label) + '</option>';
           }).join('') + '</select></span>';
+      }
+      if (cfg.errorBand) {
+        controlsHtml += '<span class="ph-control"><label style="display:inline-flex;align-items:center;gap:.35rem;cursor:pointer;">' +
+          '<input type="checkbox" id="' + root + '-errband"' + (state.showRange ? ' checked' : '') + '> ' +
+          esc(cfg.errorBand.label || 'Show range') + '</label></span>';
       }
       controlsHtml += '</div>';
 
@@ -395,13 +400,30 @@ window.PH = (function () {
             var m = (meta && meta[sid]) || {};
             var label = m.label || sid;
             var notes = l.note || l.x.map(function () { return ''; });
-            return {
-              x: l.x, y: l.y, customdata: notes, type: 'scatter', mode: 'lines+markers',
+            // The IQR line is shown in the hover text whenever the line
+            // carries Q1/Q3 offsets, independent of whether the visual
+            // error-bar toggle (cfg.errorBand) is on -- the toggle only
+            // controls the on-chart whiskers, not the hover detail.
+            var hasRange = !!(l.errUp && l.errDown);
+            var rangeText = hasRange ? l.y.map(function (yv, i) {
+              var down = l.errDown[i], up = l.errUp[i];
+              if (yv === null || yv === undefined || (!down && !up)) return '';
+              var lo = (yv - down).toFixed(currentDecimals());
+              var hi = (yv + up).toFixed(currentDecimals());
+              return '<br>IQR: ' + lo + '–' + hi + unit;
+            }) : notes.map(function () { return ''; });
+            var customdata = notes.map(function (n, i) { return [n, rangeText[i]]; });
+            var trace = {
+              x: l.x, y: l.y, customdata: customdata, type: 'scatter', mode: 'lines+markers',
               name: label, legendgroup: sid,
               line: { color: colorFor(idx), dash: dashFor(idx), width: 2.25 },
               marker: { color: colorFor(idx), size: 6 },
-              hovertemplate: '<b>' + esc(label) + '</b><br>%{x}: %{y:.' + currentDecimals() + 'f}' + unit + '%{customdata}<extra></extra>'
+              hovertemplate: '<b>' + esc(label) + '</b><br>%{x}: %{y:.' + currentDecimals() + 'f}' + unit + '%{customdata[0]}%{customdata[1]}<extra></extra>'
             };
+            if (cfg.errorBand && state.showRange && hasRange) {
+              trace.error_y = { type: 'data', symmetric: false, array: l.errUp, arrayminus: l.errDown, thickness: 1.25, width: 3, color: colorFor(idx) };
+            }
+            return trace;
           });
         var layout = {
           margin: { t: 10, b: 45, l: 60, r: 20 }, paper_bgcolor: 'white', plot_bgcolor: 'white',
@@ -425,6 +447,11 @@ window.PH = (function () {
       if (cmp) {
         el(root + '-cmpby').addEventListener('change', function (e) {
           state.cmpBy = e.target.value; resetVisible(); renderLegend(); updateFilterVisibility(); render();
+        });
+      }
+      if (cfg.errorBand) {
+        el(root + '-errband').addEventListener('change', function (e) {
+          state.showRange = e.target.checked; render();
         });
       }
       var legendEl = el(root + '-legend');
@@ -1363,6 +1390,91 @@ emit_json("MH_SUICIDE", list(
 <details class="chart-info">
 <summary>About this chart</summary>
 <p>Percent of high school students reporting suicidal ideation or behavior in the past 12 months. Choose a state and which suicide-related measure to view. Use Compare by to switch the legend between one line per age or one line per sex; toggle individual lines on/off below the chart. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss">CDC YRBSS</a>.</p>
+</details>
+```
+
+### Emergency department visits for suicidal behavior
+
+```{r mh-ed-los}
+#| results: asis
+mh_ed_age_order <- c("<5 Years", "5-9 Years", "10-14 Years", "15-19 Years", "20-24 Years",
+                      "25-44 Years", "45-64 Years", "65-84 Years", "85+ Years", "Overall")
+
+# ---- Map: median ED length of stay vs. share of suicidal-behavior visits,
+# by state, age (dropdown), and month (slider) ----
+mh_ed_map_base <- epic_mh_suicidal %>%
+  filter(geography != "00") %>%
+  mutate(loc = fips2abbr[geography], t = time)
+
+mh_ed_metrics <- list(
+  median = list(col = "median_los", label = "Median ED length of stay (minutes)",
+                unit = "min", decimals = 0,
+                sub = "Suicidal-behavior-diagnosed ED visits (Epic Cosmos)"),
+  pct = list(col = "pct_share", label = "Share of suicidal-behavior ED visits (%)",
+             unit = "%", decimals = 2,
+             sub = "Compositional share of this diagnosis's own visits across state/age -- not a rate or a visit count")
+)
+
+mh_ed_measures <- list()
+for (ag in mh_ed_age_order) {
+  for (mkey in names(mh_ed_metrics)) {
+    m <- mh_ed_metrics[[mkey]]
+    d <- mh_ed_map_base %>%
+      filter(age == ag) %>%
+      transmute(loc, t, value = .data[[m$col]])
+    mh_ed_measures[[length(mh_ed_measures) + 1]] <- build_measure_entry(
+      d, id = paste(mkey, ag, sep = "__"), label = m$label, level = "state",
+      unit = m$unit, decimals = m$decimals, sub = m$sub, tags = list(age = ag)
+    )
+  }
+}
+
+emit_json("MH_ED_MAP", list(
+  measureLabel = "Metric", height = 520, defaultMeasure = "median__Overall",
+  filters = list(list(key = "age", label = "Age", options = mh_ed_age_order, default = "Overall")),
+  measures = mh_ed_measures
+))
+
+# ---- Time series: median ED length of stay, state dropdown, age legend
+# toggle, optional Q1-Q3 error bars ----
+mh_ed_ts_data <- epic_mh_suicidal %>%
+  filter(!is.na(median_los)) %>%
+  transmute(geography = geography_name, age, period = as.character(time),
+            median_los, q1_los, q3_los)
+
+mh_ed_ts_lines <- build_lines(mh_ed_ts_data, dim_cols = c("geography"), series_col = "age",
+                               x_col = "period", y_col = "median_los",
+                               lower_col = "q1_los", upper_col = "q3_los")
+state_opts_mh_ed <- c("United States", sort(setdiff(unique(mh_ed_ts_data$geography), "United States")))
+age_opts_mh_ed <- mh_ed_age_order[mh_ed_age_order %in% unique(mh_ed_ts_data$age)]
+
+emit_json("MH_ED_TS", list(
+  title = "Emergency department length of stay, suicidal behavior", height = 460, toggle = TRUE,
+  xTitle = "Month", yTitle = "Median ED length of stay (minutes)", yUnit = " min", decimals = 0,
+  filters = list(list(key = "geography", label = "State", options = state_opts_mh_ed, default = "United States")),
+  seriesOrder = age_opts_mh_ed,
+  seriesMeta = setNames(lapply(age_opts_mh_ed, function(a) list(label = a)), age_opts_mh_ed),
+  defaultOn = c("Overall"),
+  errorBand = list(key = "q1q3", label = "Show interquartile range (Q1-Q3)", default = FALSE),
+  lines = mh_ed_ts_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="mh-ed-los-map"></div>
+<script>PH.renderChoropleth('mh-ed-los-map', window.MH_ED_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Emergency department visits diagnosed with suicidal behavior, by state, age at time of visit, and month (Epic Cosmos). Use the Metric dropdown to switch between median ED length of stay (minutes) and each state/age slice's share of all suicidal-behavior-diagnosed ED visits nationally that month. <b>The share metric is a composition, not a rate</b> -- it is not adjusted for population and does not indicate how common suicidal-behavior ED visits are relative to all ED visits in that state, so it should not be used to compare risk across geographies. No visit-count/volume measure is available from the current data export. Use the Age dropdown and the slider to change age group and month; suppressed cells (too few visits for a reliable estimate) show as no data. Data: Epic Cosmos, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
+</details>
+```
+
+```{=html}
+<div class="ph-card" id="mh-ed-los-ts"></div>
+<script>PH.renderLineChart('mh-ed-los-ts', window.MH_ED_TS);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Median emergency department length of stay (minutes) for visits diagnosed with suicidal behavior, by state, age at time of visit, and month (Epic Cosmos). Defaults to the national total; choose a state from the dropdown. Toggle age-band lines on/off via the legend below the chart. Hovering any point always shows its interquartile range (Q1-Q3) in the tooltip; check "Show interquartile range (Q1-Q3)" to also draw it as whiskers on the chart itself. Data: Epic Cosmos, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
 </details>
 ```
 

@@ -74,6 +74,29 @@ epic_concussion <- vroom::vroom(epic_concussion_path, show_col_types = FALSE) %>
   mutate(geography_name = if_else(geography == "00", "United States", fips2name[geography])) %>%
   filter(!is.na(geography_name))
 
+# Epic Cosmos mental-health ED length-of-stay data (Suicidal behavior
+# diagnosis only -- the Mood diagnosis bucket in the same file is out of
+# scope for now). Same stopgap as epic_concussion above: this lives on the
+# epic_preprocessing repo's `ingest-mh` branch and hasn't yet been merged /
+# formally ingested into PopHIVE/Ingest as its own data/{source} folder.
+# Median/Q1/Q3 ED length-of-stay cells are suppressed-to-NA at source (no
+# imputation, unlike count-based Epic measures), so no suppressed_flag
+# handling is needed downstream for those three. `pct_share` is a
+# compositional share of THIS diagnosis's own encounters across state/age --
+# not a rate or a visit count -- see the chart's "About this chart" caveat.
+epic_mh_path <- "C:/Users/as5325/Desktop/epic_preprocessing/data/cosmos_mental_health/standard/data.csv.gz"
+epic_mh_suicidal <- vroom::vroom(epic_mh_path, show_col_types = FALSE) %>%
+  transmute(
+    geography, time, age,
+    geography_name = if_else(geography == "00", "United States", fips2name[geography]),
+    median_los = epic_median_ed_los_suicidal_behavior,
+    q1_los = epic_q1_ed_los_suicidal_behavior,
+    q3_los = epic_q3_ed_los_suicidal_behavior,
+    pct_share = epic_pct_sliced_population_suicidal_behavior,
+    pct_share_suppressed = epic_pct_sliced_population_suicidal_behavior_suppressed_flag
+  ) %>%
+  filter(!is.na(geography_name))
+
 # ---------------------------------------------------------------------------
 # JSON helpers
 # ---------------------------------------------------------------------------
@@ -91,7 +114,7 @@ rnd <- function(x, digits = 2) {
 # `.forEach()`/`.length` calls in JS. Recursively force known always-array
 # keys to stay arrays regardless of length, so this can't regress silently
 # as new charts/data combinations are added.
-force_arrays <- function(x, keys = c("options", "seriesOrder", "defaultOn", "times", "locs", "labels", "x", "y", "note", "values")) {
+force_arrays <- function(x, keys = c("options", "seriesOrder", "defaultOn", "times", "locs", "labels", "x", "y", "note", "values", "errUp", "errDown")) {
   if (is.list(x)) {
     nms <- names(x)
     for (i in seq_along(x)) {
@@ -201,12 +224,27 @@ yrbss_compare_by <- function(ages = yrbss_age_order, default = "age") {
 # are the dimensions driven by dropdown filters (must match `filters[].key`
 # in the chart config); `series_col` identifies which column distinguishes
 # separate lines/legend entries (e.g. a measure name or an age group).
-build_lines <- function(df, dim_cols, series_col, x_col, y_col, note_col = NULL) {
+#
+# `lower_col`/`upper_col` are optional companion columns (e.g. Q1/Q3) that,
+# when both given, emit `errUp`/`errDown` -- offsets from `y_col`, as
+# Plotly's asymmetric `error_y` wants, not the raw bounds. A row whose
+# companion is NA (present in one bound but not the other) gets an offset of
+# 0 rather than NA, so the point still renders with no visible whisker
+# instead of breaking the chart's error_y array.
+build_lines <- function(df, dim_cols, series_col, x_col, y_col, note_col = NULL,
+                         lower_col = NULL, upper_col = NULL) {
   d <- df
   d$.x <- d[[x_col]]
   d$.y <- rnd(d[[y_col]], 3)
   has_note <- !is.null(note_col)
   if (has_note) { n <- d[[note_col]]; d$.note <- ifelse(is.na(n), "", n) }
+  has_range <- !is.null(lower_col) && !is.null(upper_col)
+  if (has_range) {
+    err_down <- d[[y_col]] - d[[lower_col]]
+    err_up   <- d[[upper_col]] - d[[y_col]]
+    d$.errDown <- ifelse(is.na(err_down), 0, rnd(err_down, 3))
+    d$.errUp   <- ifelse(is.na(err_up), 0, rnd(err_up, 3))
+  }
   d$.series <- as.character(d[[series_col]])
   key_cols <- c(dim_cols, ".series")
   d <- d %>% arrange(across(all_of(key_cols)), .x)
@@ -217,6 +255,7 @@ build_lines <- function(df, dim_cols, series_col, x_col, y_col, note_col = NULL)
     dims <- as.list(sub[1, dim_cols, drop = FALSE])
     out <- list(dims = dims, series = sub$.series[1], x = I(sub$.x), y = I(sub$.y))
     if (has_note && any(nzchar(sub$.note))) out$note <- I(sub$.note)
+    if (has_range) { out$errUp <- I(sub$.errUp); out$errDown <- I(sub$.errDown) }
     out
   }) %>% unname()
 }
