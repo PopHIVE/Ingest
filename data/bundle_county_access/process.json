@@ -5,11 +5,18 @@
     {
       "path": "build.R",
       "manual": false,
-      "last_run": "2026-07-31 20:44:15",
+      "last_run": "2026-08-25 18:49:57",
       "frequency": 0,
-      "run_time": 3.471,
+      "run_time": 12.69,
       "last_status": {
-        "log": ["bundle_county_access: wrote 356788 rows x 4 columns to dist/county_access.parquet", "  Counties: 3159", "  Years:    2010 to 2025", "  Measures: chr_primary_care_physicians, chr_other_primary_care_providers, chr_mental_health_providers, chr_dentists, chr_uninsured, chr_uninsured_adults, chr_uninsured_children, chr_could_not_see_doctor_due_to_cost, chr_did_not_get_needed_health_care, chr_mammography_screening"],
+        "log": [
+          "bundle_county_access: wrote 356788 rows x 4 columns to dist/county_access.parquet",
+          "  Counties: 3159",
+          "  Years:    2010 to 2025",
+          "  Measures: chr_primary_care_physicians, chr_other_primary_care_providers, chr_mental_health_providers, chr_dentists, chr_uninsured, chr_uninsured_adults, chr_uninsured_children, chr_could_not_see_doctor_due_to_cost, chr_did_not_get_needed_health_care, chr_mammography_screening",
+          "Wrote 972901 rows to dist/county_determinants.parquet (3250 counties, 19 measures, 1999 to 2025)",
+          "Wrote 11494 rows to dist/state_determinants.parquet (55 states, 14 measures, 1999 to 2025)"
+        ],
         "success": true
       }
     }
@@ -17,17 +24,59 @@
   "source_files": {
     "county_health_rankings/standard/data_county.csv.gz": [
       "county_access.parquet"
+    ],
+    "hud_chas/standard/data_county.csv.gz": [
+      "county_determinants.parquet"
+    ],
+    "hud_chas/standard/data_state.csv.gz": [
+      "state_determinants.parquet"
+    ],
+    "area_health_resource_file/standard/data.csv.gz": [
+      "county_determinants.parquet",
+      "state_determinants.parquet"
+    ],
+    "bls_laus/standard/data_county.csv.gz": [
+      "county_determinants.parquet"
+    ],
+    "bls_laus/standard/data_state.csv.gz": [
+      "state_determinants.parquet"
+    ],
+    "usda_food_access/standard/data_county.csv.gz": [
+      "county_determinants.parquet"
     ]
+  },
+  "checked": "2026-08-25 18:53:01",
+  "check_results": {
+    "data/bundle_county_access/dist/county_access.parquet": [],
+    "data/bundle_county_access/dist/county_determinants.parquet": [],
+    "data/bundle_county_access/dist/state_determinants.parquet": []
   },
   "dist_state": {
     "./data/bundle_county_access/dist/county_access.parquet": "3231af368dd04b035049e4c6f6e4409c",
-    "./data/county_health_rankings/standard/datapackage.json": "2fa35b1bc5b104728ed91616d8a2c946"
+    "./data/bundle_county_access/dist/county_determinants.parquet": "4b491f0534ecd85e9263e0f5199f515f",
+    "./data/bundle_county_access/dist/state_determinants.parquet": "a036a02344b182cb818f757c138fdf52",
+    "./data/county_health_rankings/standard/datapackage.json": "2fa35b1bc5b104728ed91616d8a2c946",
+    "./data/hud_chas/standard/datapackage.json": "3e45603625c830aed06158be97460a91",
+    "./data/area_health_resource_file/standard/datapackage.json": "e732009cd9e2bdaea8d0fdd01f8d6405",
+    "./data/bls_laus/standard/datapackage.json": "eb2cc9327de430640e6bac3d756e62b0",
+    "./data/usda_food_access/standard/datapackage.json": "a13c59fd078c55f1d51d72195fd14ce8"
   },
-  "checked": "2026-07-13 13:19:43",
-  "check_results": {
-    "data/bundle_county_access/dist/county_access.parquet": []
+  "standard_state": {
+    "./data/county_health_rankings/standard/data_county.csv.gz": "2d9c453be1f44dc9e58c6d9ddff484b9",
+    "./data/hud_chas/standard/data_county.csv.gz": "579158600e0bbf97c9c34f0b733ebe4e",
+    "./data/hud_chas/standard/data_state.csv.gz": "8ab78fd80194caf92f5e7da2421c4641",
+    "./data/area_health_resource_file/standard/data.csv.gz": "96eed9294494d7a939a23c7c8a7d1703",
+    "./data/bls_laus/standard/data_county.csv.gz": "cf472540288add070b60d74515163dc5",
+    "./data/bls_laus/standard/data_state.csv.gz": "0de08685624ddb78c05bbb9a90cb593c",
+    "./data/usda_food_access/standard/data_county.csv.gz": "7c2a8fe2b51e559b144d18c7902ba4f3"
   },
   "source_state": {
-    "./data/county_health_rankings/standard/data_county.csv.gz": "2d9c453be1f44dc9e58c6d9ddff484b9"
+    "./data/county_health_rankings/standard/data_county.csv.gz": "2d9c453be1f44dc9e58c6d9ddff484b9",
+    "./data/hud_chas/standard/data_county.csv.gz": "579158600e0bbf97c9c34f0b733ebe4e",
+    "./data/hud_chas/standard/data_state.csv.gz": "8ab78fd80194caf92f5e7da2421c4641",
+    "./data/area_health_resource_file/standard/data.csv.gz": "f044b49dd821df905a6cbe8d48b4846a",
+    "./data/bls_laus/standard/data_county.csv.gz": "cf472540288add070b60d74515163dc5",
+    "./data/bls_laus/standard/data_state.csv.gz": "0de08685624ddb78c05bbb9a90cb593c",
+    "./data/usda_food_access/standard/data_county.csv.gz": "7c2a8fe2b51e559b144d18c7902ba4f3"
   }
 }
