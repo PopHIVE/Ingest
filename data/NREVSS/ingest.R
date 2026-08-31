@@ -15,16 +15,27 @@ raw_state <- dcf::dcf_download_cdc(
 #
 
 if (!identical(process$raw_state, raw_state)) {
+  # CDC's export has switched between at least two date-time formats for
+  # `posted`/`mmwrweek_end` (e.g. "07/16/2026 10:14:39 AM" and
+  # "2026 Jul 16 10:14:39 AM"), so parse with lubridate rather than a single
+  # hardcoded as.Date() format -- a format mismatch silently produces NA dates,
+  # which then break MMWRweek::MMWRweek()'s internal year arithmetic.
+  parse_cdc_date <- function(x) {
+    as.Date(lubridate::parse_date_time(
+      x, orders = c("mdY IMS p", "Ymd IMS p", "mdY", "Ymd"), quiet = TRUE
+    ))
+  }
+
   data <- vroom::vroom("raw/3cxc-4k8q.csv.xz", show_col_types = FALSE) %>%
     dplyr::select(level, pcr_detections, pcr_tests,mmwrweek_end, posted)
 
-  data$posted <- as.Date(data$posted, "%m/%d/%Y")
-  data <- data[data$level != "National" & data$posted == max(data$posted), ]
+  data$posted <- parse_cdc_date(data$posted)
+  data <- data[data$level != "National" & data$posted == max(data$posted, na.rm = TRUE), ]
   data$geography <- sub("Region ", "hhs_", data$level, fixed = TRUE)
-  data$time <- as.Date(data$mmwrweek_end, "%m/%d/%Y")
+  data$time <- parse_cdc_date(data$mmwrweek_end)
   data$nrevss <- data$pcr_detections
 
-  report_time <- MMWRweek::MMWRweek(as.Date(data$mmwrweek_end, "%m/%d/%Y"))
+  report_time <- MMWRweek::MMWRweek(parse_cdc_date(data$mmwrweek_end))
   data$nrevss_week <- report_time$MMWRweek
   data$nrevss_year <- report_time$MMWRyear
   
