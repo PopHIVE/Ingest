@@ -81,7 +81,8 @@ vaxview2 <- vroom::vroom('../schoolvaxview/standard/data.csv.gz') %>%
   ) %>%
   rename(sample_size = N) %>%
   dplyr::select(year, geography, age, vaccine, value, sample_size, percent_surveyed, survey_type) %>%
-  mutate(source = 'CDC SchoolVaxView') %>%
+  mutate(source = 'CDC SchoolVaxView',
+  sample_size = as.numeric(sample_size)) %>%
   filter(year>=2016 & !is.na(vaccine) & !grepl('Exempt',vaccine) )%>%
   distinct() 
 

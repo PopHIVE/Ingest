@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-11T08:11:44Z",
+  "generated": "2026-08-31T14:47:38Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -646,6 +646,165 @@
               "description": "Percentage of Medicaid and CHIP beneficiaries who received cancer screening.",
               "measure_type": "Percent",
               "unit": "%",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "nccr_incidence.parquet",
+          "path": "data/bundle_cancer_screening/dist/nccr_incidence.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_cancer_screening/dist/nccr_incidence.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "Always 'United States'; NCCR*Explorer reports national-level statistics only. The paired `fips` column holds '00'.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "fips",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code ('00' = national).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year of diagnosis (2001 onward).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group at diagnosis in years. Groups overlap: '<1', '1-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-39' are disjoint; '0-19', '15-39', '20-39', and '0-39' are aggregates.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex (Overall, Male, Female).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/ethnicity",
+              "description": "Race/ethnicity category (Overall, White, Black, Asian/Pacific Islander, American Indian/Alaska Native, Hispanic).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "outcome_name",
+              "short_name": "Cancer site (ICCC)",
+              "description": "International Classification of Childhood Cancer (ICCC) diagnostic group the rate refers to.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "All ICCC Sites Combined": {
+                  "source_id": "nccr_all_iccc_sites"
+                },
+                "I. Leukemias": {
+                  "source_id": "nccr_leukemias"
+                },
+                "II. Lymphomas": {
+                  "source_id": "nccr_lymphomas"
+                },
+                "III. CNS Neoplasms (Malignant)": {
+                  "source_id": "nccr_cns_neoplasms_malignant"
+                },
+                "III. CNS Neoplasms (Non-Malignant)": {
+                  "source_id": "nccr_cns_neoplasms_non_malignant"
+                },
+                "IV. Neuroblastoma and Peripheral Nervous Cell Tumors": {
+                  "source_id": "nccr_neuroblastoma_and_pns_tumors"
+                },
+                "V. Retinoblastoma": {
+                  "source_id": "nccr_retinoblastoma"
+                },
+                "VI. Renal Tumors": {
+                  "source_id": "nccr_renal_tumors"
+                },
+                "VII. Hepatic Tumors": {
+                  "source_id": "nccr_hepatic_tumors"
+                },
+                "VIII. Bone Tumors": {
+                  "source_id": "nccr_bone_tumors"
+                },
+                "IX. Soft Tissue Sarcomas": {
+                  "source_id": "nccr_soft_tissue_sarcomas"
+                },
+                "X. Germ Cell Tumors (Malignant)": {
+                  "source_id": "nccr_germ_cell_tumors_malignant"
+                },
+                "X. Germ Cell Tumors (Non-Malignant)": {
+                  "source_id": "nccr_germ_cell_tumors_non_malignant"
+                },
+                "XI. Epithelial Neoplasms and Melanomas": {
+                  "source_id": "nccr_epithelial_neoplasms_and_melanomas"
+                },
+                "XII. Other and Unspecified Neoplasms": {
+                  "source_id": "nccr_neoplasms_other_and_nos"
+                }
+              }
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "NCI NCCR*Explorer": {}
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Childhood/AYA cancer incidence rate",
+              "description": "Age-adjusted annual incidence rate per 1,000,000 of the ICCC cancer site named in `outcome_name`, among ages 0-39, national level.",
+              "measure_type": "Incidence",
+              "unit": "Cases per 1,000,000",
+              "levels": {}
+            },
+            {
+              "name": "value_lcl",
+              "short_name": "Incidence rate, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for `value`.",
+              "measure_type": "Incidence",
+              "unit": "Cases per 1,000,000",
+              "levels": {}
+            },
+            {
+              "name": "value_ucl",
+              "short_name": "Incidence rate, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for `value`.",
+              "measure_type": "Incidence",
+              "unit": "Cases per 1,000,000",
+              "levels": {}
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed?",
+              "description": "Binary indicator: 1 if NCCR*Explorer suppressed the rate for this cell (fewer than 16 cases), in which case `value` is 0; 0 otherwise.",
+              "measure_type": "binary",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "not_collected_flag",
+              "short_name": "Not collected?",
+              "description": "Binary indicator: 1 if the statistic was not collected/not available for this cell, in which case `value` is 0; 0 otherwise.",
+              "measure_type": "binary",
+              "unit": "",
               "levels": {}
             }
           ]
@@ -1867,6 +2026,223 @@
               "levels": {}
             }
           ]
+        },
+        {
+          "filename": "county_determinants.parquet",
+          "path": "data/bundle_county_access/dist/county_determinants.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_county_access/dist/county_determinants.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code as a string: 5-digit county code in county_determinants.parquet; 2-digit state code or '00' (national) in state_determinants.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Date",
+              "description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "outcome_name",
+              "short_name": "Determinant measure",
+              "description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "hud_pct_severe_housing_problems": {
+                  "source_id": "hud_pct_severe_housing_problems"
+                },
+                "ahrf_hpsa_prim_care": {
+                  "source_id": "ahrf_hpsa_prim_care"
+                },
+                "ahrf_hpsa_dental": {
+                  "source_id": "ahrf_hpsa_dental"
+                },
+                "ahrf_hpsa_mental_health": {
+                  "source_id": "ahrf_hpsa_mental_health"
+                },
+                "ahrf_rural_urban_code": {
+                  "source_id": "ahrf_rural_urban_code"
+                },
+                "ahrf_pcp": {
+                  "source_id": "ahrf_pcp"
+                },
+                "ahrf_md_all": {
+                  "source_id": "ahrf_md_all"
+                },
+                "ahrf_psych": {
+                  "source_id": "ahrf_psych"
+                },
+                "ahrf_dentists": {
+                  "source_id": "ahrf_dentists"
+                },
+                "ahrf_hospitals": {
+                  "source_id": "ahrf_hospitals"
+                },
+                "ahrf_critical_access_hosp": {
+                  "source_id": "ahrf_critical_access_hosp"
+                },
+                "ahrf_population": {
+                  "source_id": "ahrf_population"
+                },
+                "ahrf_good_air_pct": {
+                  "source_id": "ahrf_good_air_pct"
+                },
+                "ahrf_pm25": {
+                  "source_id": "ahrf_pm25"
+                },
+                "ahrf_pop_density": {
+                  "source_id": "ahrf_pop_density"
+                },
+                "ahrf_medicare_per_capita": {
+                  "source_id": "ahrf_medicare_per_capita"
+                },
+                "ahrf_ed_per_1k_medicare": {
+                  "source_id": "ahrf_ed_per_1k_medicare"
+                },
+                "bls_pct_unemployment": {
+                  "source_id": "bls_pct_unemployment"
+                },
+                "usda_pct_limited_access_low_income": {
+                  "source_id": "usda_pct_limited_access_low_income"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
+              "measure_type": "Mixed",
+              "unit": "Varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "HUD CHAS": {},
+                "HRSA AHRF": {},
+                "BLS LAUS": {},
+                "USDA Food Access Research Atlas": {}
+              }
+            }
+          ]
+        },
+        {
+          "filename": "state_determinants.parquet",
+          "path": "data/bundle_county_access/dist/state_determinants.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_county_access/dist/state_determinants.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code as a string: 5-digit county code in county_determinants.parquet; 2-digit state code or '00' (national) in state_determinants.parquet. Includes Puerto Rico (72) and, for AHRF only, Guam (66) and the U.S. Virgin Islands (78) where the source reports them.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Date",
+              "description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "outcome_name",
+              "short_name": "Determinant measure",
+              "description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file. USDA food access is county-only and does not appear in this file.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "hud_pct_severe_housing_problems": {
+                  "source_id": "hud_pct_severe_housing_problems"
+                },
+                "ahrf_hpsa_prim_care": {
+                  "source_id": "ahrf_hpsa_prim_care"
+                },
+                "ahrf_hpsa_dental": {
+                  "source_id": "ahrf_hpsa_dental"
+                },
+                "ahrf_hpsa_mental_health": {
+                  "source_id": "ahrf_hpsa_mental_health"
+                },
+                "ahrf_rural_urban_code": {
+                  "source_id": "ahrf_rural_urban_code"
+                },
+                "ahrf_pcp": {
+                  "source_id": "ahrf_pcp"
+                },
+                "ahrf_md_all": {
+                  "source_id": "ahrf_md_all"
+                },
+                "ahrf_psych": {
+                  "source_id": "ahrf_psych"
+                },
+                "ahrf_dentists": {
+                  "source_id": "ahrf_dentists"
+                },
+                "ahrf_hospitals": {
+                  "source_id": "ahrf_hospitals"
+                },
+                "ahrf_critical_access_hosp": {
+                  "source_id": "ahrf_critical_access_hosp"
+                },
+                "ahrf_population": {
+                  "source_id": "ahrf_population"
+                },
+                "ahrf_good_air_pct": {
+                  "source_id": "ahrf_good_air_pct"
+                },
+                "ahrf_pm25": {
+                  "source_id": "ahrf_pm25"
+                },
+                "ahrf_pop_density": {
+                  "source_id": "ahrf_pop_density"
+                },
+                "ahrf_medicare_per_capita": {
+                  "source_id": "ahrf_medicare_per_capita"
+                },
+                "ahrf_ed_per_1k_medicare": {
+                  "source_id": "ahrf_ed_per_1k_medicare"
+                },
+                "bls_pct_unemployment": {
+                  "source_id": "bls_pct_unemployment"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
+              "measure_type": "Mixed",
+              "unit": "Varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "HUD CHAS": {},
+                "HRSA AHRF": {},
+                "BLS LAUS": {},
+                "USDA Food Access Research Atlas": {}
+              }
+            }
+          ]
         }
       ]
     },
@@ -2087,6 +2463,115 @@
               "measure_type": "category",
               "unit": "",
               "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "epic_health_alerts.parquet",
+          "path": "data/bundle_enteric_diseases/dist/epic_health_alerts.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_enteric_diseases/dist/epic_health_alerts.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State or county name (e.g., 'Iowa', 'Los Angeles County'); the paired `fips` column holds the FIPS code and `geography_level` says which level the row is.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "fips",
+              "short_name": "FIPS code",
+              "description": "Geographic FIPS code (2-digit = state, 5-digit = county).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "geography_level",
+              "short_name": "Geography level",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "state": {},
+                "county": {}
+              }
+            },
+            {
+              "name": "date",
+              "short_name": "Week ending date",
+              "description": "Week-ending (Saturday) date of the snapshot in which the alert was active (ISO date).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "condition",
+              "short_name": "Alerted condition",
+              "description": "The condition for which Epic Research flagged the geography with an active health alert. All conditions published on the page are kept, not only enteric ones.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "Acute Pharyngitis": {},
+                "Campylobacteriosis": {},
+                "Cyclosporiasis": {},
+                "Hand, Foot, and Mouth Disease": {},
+                "Heat Illness": {},
+                "Salmonellosis": {},
+                "Toxic Effect of Smoke": {},
+                "Viral Gastroenteritis": {}
+              }
+            },
+            {
+              "name": "estimated_onset",
+              "short_name": "Estimated onset date",
+              "description": "Epic Research's estimated onset date of the elevated activity for this geography and condition (ISO date).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "value",
+              "short_name": "Health alert rate (cases per 100k)",
+              "description": "Latest-week case rate per 100,000 for a state or county flagged with an active Epic Research health alert; the alerted condition is given in the `condition` column.",
+              "measure_type": "Rate",
+              "unit": "cases per 100,000",
+              "levels": {}
+            },
+            {
+              "name": "partial_week_flag",
+              "short_name": "Partial week?",
+              "description": "Binary indicator: 1 if the rate reflects a partial (incomplete) reporting week and may rise as more data arrives, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "date_scraped",
+              "short_name": "Date scraped",
+              "description": "Date on which the ingestion script downloaded the Epic Research health-alerts page and recorded this row (ISO date).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "date_epic_updated",
+              "short_name": "Date Epic updated",
+              "description": "The page-wide 'Last updated' date shown on the Epic Research health-alerts page at scrape time (ISO date).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "Epic Research Health Alerts": {}
+              }
             }
           ]
         },
@@ -5846,6 +6331,735 @@
         }
       ]
     },
+    "bundle_strep": {
+      "name": "bundle_strep",
+      "display_name": "Bundle: Strep",
+      "dist_files": [
+        {
+          "filename": "abcs_strep.parquet",
+          "path": "data/bundle_strep/dist/abcs_strep.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_strep/dist/abcs_strep.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State name, or \"United States\" for the national total.",
+              "measure_type": "identifier",
+              "unit": "state name",
+              "levels": {}
+            },
+            {
+              "name": "geography_fips",
+              "short_name": "Geography FIPS",
+              "description": "FIPS code for the geography; \"00\" is national.",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "date",
+              "short_name": "Date",
+              "description": "End date of the reporting period, in YYYY-mm-dd format.",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Year of the reporting period.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex; \"Total\" combines both.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/Ethnicity",
+              "description": "Race and ethnicity; \"Total\" combines all groups.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "rate_denominator",
+              "short_name": "Rate denominator",
+              "description": "Whether a rate is per 100,000 of the row's stratum or of the whole population.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Clinical presentation the row describes; \"Total\" where not syndrome-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "antibiotic",
+              "short_name": "Antibiotic",
+              "description": "Drug the resistance percentage refers to; \"Total\" where not drug-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "emm_type",
+              "short_name": "emm type",
+              "description": "emm type the row describes; \"Total\" where not type-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "serotype",
+              "short_name": "Serotype",
+              "description": "Capsular serotype the row describes; \"Total\" where not serotype-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "alph_type",
+              "short_name": "ALPH type",
+              "description": "Alpha-like protein gene the row describes; \"Total\" where not type-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "rate_cases": {
+                  "source_id": "abcs_rate_cases"
+                },
+                "rate_deaths": {
+                  "source_id": "abcs_rate_deaths"
+                },
+                "n_cases": {
+                  "source_id": "abcs_N_cases"
+                },
+                "n_deaths": {
+                  "source_id": "abcs_N_deaths"
+                },
+                "n_survivals": {
+                  "source_id": "abcs_N_survivals"
+                },
+                "pct_resistant": {
+                  "source_id": "abcs_pct_resistant_penicillin"
+                },
+                "rate_syndrome": {
+                  "source_id": "abcs_gas_rate_syndrome_cellulitis"
+                },
+                "pct_syndrome": {
+                  "source_id": "abcs_gbs_pct_syndrome_meningitis"
+                },
+                "pct_emm_type": {
+                  "source_id": "abcs_gas_emm_pct_emm_1"
+                },
+                "pct_serotype": {
+                  "source_id": "abcs_gbs_pct_serotype_ia"
+                },
+                "pct_alph_type": {
+                  "source_id": "abcs_gbs_pct_alph_alp1"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value of the measure named in the measure column.",
+              "measure_type": "Mixed",
+              "unit": "varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "n_type",
+              "short_name": "Isolates of this type",
+              "description": "Isolates of the emm type on this row.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "n_type_status",
+              "short_name": "Type count status",
+              "description": "Whether n_type is published, unpublished, or not applicable.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "reported": {
+                  "short_name": "Reported",
+                  "short_description": "n_type holds CDC's published per-type count."
+                },
+                "not_reported": {
+                  "short_name": "Not reported",
+                  "short_description": "An emm type CDC did not itemise that year."
+                },
+                "not_applicable": {
+                  "short_name": "Not applicable",
+                  "short_description": "Any measure other than pct_emm_type."
+                }
+              }
+            },
+            {
+              "name": "n_isolates",
+              "short_name": "Isolates",
+              "description": "Isolate count behind the percentage on this row.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "n_isolates_status",
+              "short_name": "Isolate count status",
+              "description": "Whether n_isolates is published, unpublished, or not applicable.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "reported": {
+                  "short_name": "Reported",
+                  "short_description": "n_isolates holds CDC's published count."
+                },
+                "not_reported": {
+                  "short_name": "Not reported",
+                  "short_description": "The measure has an isolate denominator but CDC published none for this row."
+                },
+                "not_applicable": {
+                  "short_name": "Not applicable",
+                  "short_description": "The measure has no isolate denominator."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "filename": "gas_state.parquet",
+          "path": "data/bundle_strep/dist/gas_state.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_strep/dist/gas_state.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State name, or \"United States\" for the national total.",
+              "measure_type": "identifier",
+              "unit": "state name",
+              "levels": {}
+            },
+            {
+              "name": "geography_fips",
+              "short_name": "Geography FIPS",
+              "description": "FIPS code for the geography; \"00\" is national.",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "date",
+              "short_name": "Date",
+              "description": "End date of the reporting period, in YYYY-mm-dd format.",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Year of the reporting period.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Source",
+              "description": "Which surveillance system reported the row.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "Epic Cosmos": {
+                  "short_name": "Epic Cosmos",
+                  "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age."
+                },
+                "NNDSS": {
+                  "short_name": "NNDSS",
+                  "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state."
+                }
+              }
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "n_strep_throat": {
+                  "source_id": "epic_n_strep_throat"
+                },
+                "pct_strep_throat": {
+                  "source_id": "epic_pct_strep_throat"
+                },
+                "n_patients": {
+                  "source_id": "epic_n_patients"
+                },
+                "stss_cases_weekly": {
+                  "short_name": "Strep TSS cases (weekly)",
+                  "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
+                  "short_description": "Newly reported STSS cases in the MMWR week.",
+                  "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "stss_cases_cumulative": {
+                  "source_id": "streptococcal_toxic_shock_syndrome",
+                  "short_description": "Year-to-date STSS cases as published by NNDSS.",
+                  "long_description": "Cumulative streptococcal toxic shock syndrome cases reported since the start of the MMWR year."
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value of the measure named in the measure column.",
+              "measure_type": "Mixed",
+              "unit": "varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "suppressed",
+              "short_name": "Suppressed",
+              "description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "levels": {}
+            }
+          ]
+        }
+      ]
+    },
+    "bundle_vector_borne": {
+      "name": "bundle_vector_borne",
+      "display_name": "Bundle: Vector Borne",
+      "dist_files": [
+        {
+          "filename": "vector_borne.parquet",
+          "path": "data/bundle_vector_borne/dist/vector_borne.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_vector_borne/dist/vector_borne.parquet",
+          "columns": [
+            {
+              "name": "fips",
+              "short_name": "FIPS code",
+              "description": "FIPS code identifier for the row: '00' for national rows, 2-digit state/territory FIPS for state rows, and 5-digit county FIPS for county rows.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "geography_level",
+              "short_name": "geography_level",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "date",
+              "short_name": "Date",
+              "description": "Date (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "arbonet_eee_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_eee_cases",
+                  "short_name": "EEE disease cases",
+                  "long_name": "Eastern equine encephalitis virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Eastern equine encephalitis virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of Eastern equine encephalitis (EEE) virus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_eee_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_eee_neuro_cases",
+                  "short_name": "EEE neuroinvasive cases",
+                  "long_name": "Eastern equine encephalitis virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Eastern equine encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of Eastern equine encephalitis (EEE) virus neuroinvasive disease (meningitis, encephalitis, or acute flaccid paralysis), as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_eee_cases. Because severe neuroinvasive illness is far more likely to be diagnosed and reported than milder non-neuroinvasive illness, CDC considers neuroinvasive counts the more reliable basis for comparing disease activity across locations and over time. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_eee_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_eee_nonhuman_activity",
+                  "short_name": "EEE non-human activity",
+                  "long_name": "Eastern equine encephalitis virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human Eastern equine encephalitis virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_jcv_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_jcv_cases",
+                  "short_name": "Jamestown Canyon disease cases",
+                  "long_name": "Jamestown Canyon virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Jamestown Canyon virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of Jamestown Canyon virus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2011.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_jcv_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_jcv_neuro_cases",
+                  "short_name": "Jamestown Canyon neuroinvasive cases",
+                  "long_name": "Jamestown Canyon virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Jamestown Canyon virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of Jamestown Canyon virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_jcv_cases. Coverage begins in 2011.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_jcv_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_jcv_nonhuman_activity",
+                  "short_name": "Jamestown Canyon non-human activity",
+                  "long_name": "Jamestown Canyon virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human Jamestown Canyon virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_lac_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_lac_cases",
+                  "short_name": "La Crosse disease cases",
+                  "long_name": "La Crosse virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human La Crosse virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of La Crosse virus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_lac_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_lac_neuro_cases",
+                  "short_name": "La Crosse neuroinvasive cases",
+                  "long_name": "La Crosse virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human La Crosse virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of La Crosse virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_lac_cases. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_lac_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_lac_nonhuman_activity",
+                  "short_name": "La Crosse non-human activity",
+                  "long_name": "La Crosse virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human La Crosse virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_pow_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_pow_cases",
+                  "short_name": "Powassan disease cases",
+                  "long_name": "Powassan virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Powassan virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of Powassan virus, a tick-borne arbovirus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2004. A non-human activity measure is not produced for Powassan virus, whose dashboard reports human disease cases only.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_pow_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_pow_neuro_cases",
+                  "short_name": "Powassan neuroinvasive cases",
+                  "long_name": "Powassan virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human Powassan virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of Powassan virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_pow_cases. Coverage begins in 2004.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_sle_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_sle_cases",
+                  "short_name": "SLE disease cases",
+                  "long_name": "St. Louis encephalitis virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human St. Louis encephalitis virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of St. Louis encephalitis (SLE) virus, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_sle_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_sle_neuro_cases",
+                  "short_name": "SLE neuroinvasive cases",
+                  "long_name": "St. Louis encephalitis virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human St. Louis encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of St. Louis encephalitis (SLE) virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_sle_cases. Coverage begins in 2003.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_sle_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_sle_nonhuman_activity",
+                  "short_name": "SLE non-human activity",
+                  "long_name": "St. Louis encephalitis virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human St. Louis encephalitis virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_wnv_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_wnv_cases",
+                  "short_name": "West Nile disease cases",
+                  "long_name": "West Nile virus human disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human West Nile virus disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Total reported human disease cases of West Nile virus, the most common arboviral disease in the US, including both neuroinvasive and non-neuroinvasive presentations, as reported to CDC's ArboNET national arboviral surveillance system by state and local health departments. Coverage begins in 1999.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_wnv_neuro_cases": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_wnv_neuro_cases",
+                  "short_name": "West Nile neuroinvasive cases",
+                  "long_name": "West Nile virus human neuroinvasive disease cases reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Human West Nile virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+                  "long_description": "Reported human cases of West Nile virus neuroinvasive disease, as reported to CDC's ArboNET national arboviral surveillance system. This is a subset of arbonet_wnv_cases. Because severe neuroinvasive illness is far more likely to be diagnosed and reported than milder non-neuroinvasive illness, CDC considers neuroinvasive counts the more reliable basis for comparing disease activity across locations and over time. Coverage begins in 1999.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_wnv_nonhuman_activity": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_wnv_nonhuman_activity",
+                  "short_name": "West Nile non-human activity",
+                  "long_name": "West Nile virus non-human activity reported to ArboNET",
+                  "category": "vector_borne",
+                  "short_description": "Indicator of whether any non-human West Nile virus activity was reported to CDC for the geography and year.",
+                  "long_description": "Binary indicator that equals 1 when veterinary disease cases, or infections in mosquitoes, birds, or sentinel animals, were reported to CDC's ArboNET system for the geography and year, and 0 when no such activity was reported.",
+                  "measure_type": "Indicator",
+                  "unit": "1 = activity reported, 0 = no activity reported",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arbonet_wnv_blood_donors": {
+                  "id": "bundle_vector_borne/dist/vector_borne.parquet|measure=arbonet_wnv_blood_donors",
+                  "short_name": "West Nile presumptive viremic blood donors",
+                  "long_name": "West Nile virus presumptive viremic blood donors identified by blood donor screening",
+                  "category": "vector_borne",
+                  "short_description": "Presumptive viremic blood donors identified through West Nile virus blood donor screening.",
+                  "long_description": "Count of presumptive viremic blood donors, defined by CDC as people who had no symptoms at the time of donating blood but whose blood tested positive when screened for West Nile virus. Identified through blood supply screening rather than clinical care, so counted separately from reported human disease cases. Reported for West Nile virus only, as it is the only one of ArboNET's arboviruses with routine blood donor screening.",
+                  "measure_type": "Count",
+                  "unit": "Count",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "arbonet"
+                    }
+                  ]
+                },
+                "arboviral_diseases_chikungunya_virus_disease": {},
+                "arboviral_diseases_eastern_equine_encephalitis_virus_disease": {},
+                "arboviral_diseases_jamestown_canyon_virus_disease": {},
+                "arboviral_diseases_la_crosse_virus_disease": {},
+                "arboviral_diseases_powassan_virus_disease": {},
+                "arboviral_diseases_st_louis_encephalitis_virus_disease": {},
+                "arboviral_diseases_west_nile_virus_disease": {},
+                "arboviral_diseases_western_equine_encephalitis_virus_disease": {},
+                "babesiosis": {},
+                "dengue_virus_infections_dengue": {},
+                "dengue_virus_infections_dengue_like_illness": {},
+                "dengue_virus_infections_severe_dengue": {},
+                "ehrlichiosis_and_anaplasmosis_anaplasma_phagocytophilum_infection": {},
+                "ehrlichiosis_and_anaplasmosis_ehrlichia_chaffeensis_infection": {},
+                "ehrlichiosis_and_anaplasmosis_ehrlichia_ewingii_infection": {},
+                "ehrlichiosis_and_anaplasmosis_undetermined_ehrlichiosis_anaplasmosis": {},
+                "malaria": {},
+                "zika_virus_disease_non_congenital": {}
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), or weekly case counts for the NNDSS measures (national and state only). NNDSS publishes cumulative year-to-date counts; this bundle de-cumulates them into weekly incident counts by differencing consecutive weeks within each MMWR year, so occasional negative values reflect downward revisions to the source's cumulative totals.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "CDC ArboNET": {},
+                "CDC NNDSS": {}
+              }
+            }
+          ]
+        }
+      ]
+    },
     "bundle_youth_wellbeing": {
       "name": "bundle_youth_wellbeing",
       "display_name": "Bundle: Youth Wellbeing",
@@ -9077,14 +10291,14 @@
             {
               "name": "age",
               "short_name": "Age group",
-              "description": "",
-              "measure_type": "Age group (years)",
-              "unit": "years"
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
             },
             {
               "name": "serotype",
               "short_name": "Serotype",
-              "description": "Pneumococcal serotype",
+              "description": "Which serotype the row describes.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -9111,10 +10325,10 @@
             },
             {
               "name": "pop",
-              "short_name": "pop",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Surveillance population",
+              "description": "Population of the ABCs catchment area.",
+              "measure_type": "Count",
+              "unit": "People"
             },
             {
               "name": "rate_IPD",
@@ -9122,6 +10336,501 @@
               "description": "Annual rate of invasive pneumococcal disease cases per 100,000 persons in the ABCs catchment area",
               "measure_type": "Rate",
               "unit": "Cases per 100,000"
+            }
+          ]
+        },
+        {
+          "filename": "gas_emm.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "emm_type",
+              "short_name": "emm type",
+              "description": "Which emm type the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gas_emm_n",
+              "short_name": "emm type isolates",
+              "description": "Emm-typed Group A isolates of the type on the row.",
+              "measure_type": "Count",
+              "unit": "Isolates"
+            },
+            {
+              "name": "abcs_gas_emm_pct",
+              "short_name": "emm type (%)",
+              "description": "Percent of emm-typed Group A isolates of the type on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "abcs_gas_emm_n_isolates_total",
+              "short_name": "emm-typed isolates",
+              "description": "Group A isolates assigned an emm type.",
+              "measure_type": "Count",
+              "unit": "Isolates"
+            }
+          ]
+        },
+        {
+          "filename": "gas_syndromes.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Which clinical presentation the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gas_rate_syndrome",
+              "short_name": "Syndrome rate",
+              "description": "Group A cases presenting as the syndrome on the row, per 100,000.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000"
+            }
+          ]
+        },
+        {
+          "filename": "gbs_alph.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "alph_type",
+              "short_name": "ALPH type",
+              "description": "Which alpha-like protein gene the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gbs_pct_alph",
+              "short_name": "ALPH type (%)",
+              "description": "Percent of typed Group B isolates of the ALPH type on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "abcs_gbs_n_isolates",
+              "short_name": "Isolates typed",
+              "description": "Typed Group B isolates in the population group on the row.",
+              "measure_type": "Count",
+              "unit": "Isolates"
+            }
+          ]
+        },
+        {
+          "filename": "gbs_serotypes.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "serotype",
+              "short_name": "Serotype",
+              "description": "Which serotype the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gbs_pct_serotype",
+              "short_name": "Serotype (%)",
+              "description": "Percent of typed Group B isolates of the serotype on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "abcs_gbs_n_isolates",
+              "short_name": "Isolates typed",
+              "description": "Typed Group B isolates in the population group on the row.",
+              "measure_type": "Count",
+              "unit": "Isolates"
+            }
+          ]
+        },
+        {
+          "filename": "gbs_syndromes.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Which clinical presentation the row describes.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_gbs_pct_syndrome",
+              "short_name": "Syndrome (%)",
+              "description": "Percent of Group B cases presenting as the syndrome on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            }
+          ]
+        },
+        {
+          "filename": "strep_counts.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_N_cases",
+              "short_name": "Cases",
+              "description": "Estimated annual invasive disease cases.",
+              "measure_type": "Count",
+              "unit": "Cases"
+            },
+            {
+              "name": "abcs_N_deaths",
+              "short_name": "Deaths",
+              "description": "Estimated annual deaths from invasive disease.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "abcs_N_survivals",
+              "short_name": "Survivals",
+              "description": "Estimated annual invasive disease cases who survived.",
+              "measure_type": "Count",
+              "unit": "People"
+            }
+          ]
+        },
+        {
+          "filename": "strep_rates.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex; \"Total\" combines both.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/Ethnicity",
+              "description": "Race and ethnicity; \"Total\" combines all groups.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "rate_denominator",
+              "short_name": "Rate denominator",
+              "description": "Indicates if rate is per 100,000 of the row's stratum or of the whole population.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_rate_cases",
+              "short_name": "Case rate",
+              "description": "Invasive disease cases per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000"
+            },
+            {
+              "name": "abcs_rate_deaths",
+              "short_name": "Death rate",
+              "description": "Deaths from invasive disease per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000"
+            }
+          ]
+        },
+        {
+          "filename": "strep_resistance.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "antibiotic",
+              "short_name": "Antibiotic",
+              "description": "Which drug the resistance percentage refers to.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "abcs_pct_resistant",
+              "short_name": "Resistance (%)",
+              "description": "Percent of tested isolates non-susceptible to the antibiotic on the row.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "abcs_n_isolates",
+              "short_name": "Isolates tested",
+              "description": "Isolates characterised by CDC's reference laboratory.",
+              "measure_type": "Count",
+              "unit": "Isolates"
             }
           ]
         },
@@ -9145,7 +10854,7 @@
             {
               "name": "serotype",
               "short_name": "Serotype",
-              "description": "Pneumococcal serotype",
+              "description": "Which serotype the row describes.",
               "measure_type": "Category",
               "unit": ""
             },
@@ -9155,6 +10864,303 @@
               "description": "Pneumococcal serotype",
               "measure_type": "count",
               "unit": "Number"
+            }
+          ]
+        }
+      ]
+    },
+    "arbonet": {
+      "name": "arbonet",
+      "display_name": "Arbonet",
+      "description": "ArboNET is the national arboviral surveillance system managed by CDC together with state and territorial health departments. In addition to human disease, ArboNET maintains data on arboviral infections among presumptive viremic blood donors, veterinary disease cases, mosquitoes, dead birds, and sentinel animals. Human cases are reported by county of residence rather than location of exposure, which is not necessarily the county or state where exposure occurred, and are assigned to the year of illness onset. Several caveats apply: under-reporting is inherent to any surveillance system that depends on clinicians suspecting the disease, ordering the appropriate test, and reporting confirmed results; non-neuroinvasive cases are substantially more under-reported than neuroinvasive cases, so total case counts should not be used to compare disease activity between locations or over time; and there is a lag in reporting to CDC. Values are the counts CDC publishes for public use and are not suppressed or imputed here. Connecticut reported by county through 2022 and by planning region from 2023 onward, so its geography codes change mid-series. Records that CDC assigns to an unallocated placeholder geography (state FIPS plus '999') because the county of residence is unknown are excluded from the county file but retained in the state and national totals. Reporting years differ by disease and the most recent year is preliminary and subject to change. Data that were not collected in a given year are coded as NA, so cells with count 0 indicate that disease was tested for but not reported.",
+      "standard_files": [
+        {
+          "filename": "data_county.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "arbonet_eee_cases",
+              "short_name": "Eastern equine encephalitis virus",
+              "description": "Human Eastern equine encephalitis virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_eee_neuro_cases",
+              "short_name": "Eastern equine encephalitis virus",
+              "description": "Human Eastern equine encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_eee_nonhuman_activity",
+              "short_name": "Eastern equine encephalitis virus",
+              "description": "Indicator of whether any non-human Eastern equine encephalitis virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
+            },
+            {
+              "name": "arbonet_jcv_cases",
+              "short_name": "Jamestown Canyon virus",
+              "description": "Human Jamestown Canyon virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_jcv_neuro_cases",
+              "short_name": "Jamestown Canyon virus",
+              "description": "Human Jamestown Canyon virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_jcv_nonhuman_activity",
+              "short_name": "Jamestown Canyon virus",
+              "description": "Indicator of whether any non-human Jamestown Canyon virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
+            },
+            {
+              "name": "arbonet_lac_cases",
+              "short_name": "La Crosse virus",
+              "description": "Human La Crosse virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_lac_neuro_cases",
+              "short_name": "La Crosse virus",
+              "description": "Human La Crosse virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_lac_nonhuman_activity",
+              "short_name": "La Crosse virus",
+              "description": "Indicator of whether any non-human La Crosse virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
+            },
+            {
+              "name": "arbonet_pow_cases",
+              "short_name": "Powassan virus",
+              "description": "Human Powassan virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_pow_neuro_cases",
+              "short_name": "Powassan virus",
+              "description": "Human Powassan virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_sle_cases",
+              "short_name": "St. Louis encephalitis virus",
+              "description": "Human St. Louis encephalitis virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_sle_neuro_cases",
+              "short_name": "St. Louis encephalitis virus",
+              "description": "Human St. Louis encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_sle_nonhuman_activity",
+              "short_name": "St. Louis encephalitis virus",
+              "description": "Indicator of whether any non-human St. Louis encephalitis virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
+            },
+            {
+              "name": "arbonet_wnv_blood_donors",
+              "short_name": "West Nile virus presumptive viremic blood donors",
+              "description": "Presumptive viremic blood donors identified through West Nile virus blood donor screening.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_wnv_cases",
+              "short_name": "West Nile virus",
+              "description": "Human West Nile virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_wnv_neuro_cases",
+              "short_name": "West Nile virus",
+              "description": "Human West Nile virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_wnv_nonhuman_activity",
+              "short_name": "West Nile virus",
+              "description": "Indicator of whether any non-human West Nile virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
+            }
+          ]
+        },
+        {
+          "filename": "data_state.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "arbonet_eee_cases",
+              "short_name": "Eastern equine encephalitis virus",
+              "description": "Human Eastern equine encephalitis virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_eee_neuro_cases",
+              "short_name": "Eastern equine encephalitis virus",
+              "description": "Human Eastern equine encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_eee_nonhuman_activity",
+              "short_name": "Eastern equine encephalitis virus",
+              "description": "Indicator of whether any non-human Eastern equine encephalitis virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
+            },
+            {
+              "name": "arbonet_jcv_cases",
+              "short_name": "Jamestown Canyon virus",
+              "description": "Human Jamestown Canyon virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_jcv_neuro_cases",
+              "short_name": "Jamestown Canyon virus",
+              "description": "Human Jamestown Canyon virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_jcv_nonhuman_activity",
+              "short_name": "Jamestown Canyon virus",
+              "description": "Indicator of whether any non-human Jamestown Canyon virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
+            },
+            {
+              "name": "arbonet_lac_cases",
+              "short_name": "La Crosse virus",
+              "description": "Human La Crosse virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_lac_neuro_cases",
+              "short_name": "La Crosse virus",
+              "description": "Human La Crosse virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_lac_nonhuman_activity",
+              "short_name": "La Crosse virus",
+              "description": "Indicator of whether any non-human La Crosse virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
+            },
+            {
+              "name": "arbonet_pow_cases",
+              "short_name": "Powassan virus",
+              "description": "Human Powassan virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_pow_neuro_cases",
+              "short_name": "Powassan virus",
+              "description": "Human Powassan virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_sle_cases",
+              "short_name": "St. Louis encephalitis virus",
+              "description": "Human St. Louis encephalitis virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_sle_neuro_cases",
+              "short_name": "St. Louis encephalitis virus",
+              "description": "Human St. Louis encephalitis virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_sle_nonhuman_activity",
+              "short_name": "St. Louis encephalitis virus",
+              "description": "Indicator of whether any non-human St. Louis encephalitis virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
+            },
+            {
+              "name": "arbonet_wnv_blood_donors",
+              "short_name": "West Nile virus presumptive viremic blood donors",
+              "description": "Presumptive viremic blood donors identified through West Nile virus blood donor screening.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_wnv_cases",
+              "short_name": "West Nile virus",
+              "description": "Human West Nile virus disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_wnv_neuro_cases",
+              "short_name": "West Nile virus",
+              "description": "Human West Nile virus neuroinvasive disease cases reported to CDC's ArboNET surveillance system.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "arbonet_wnv_nonhuman_activity",
+              "short_name": "West Nile virus",
+              "description": "Indicator of whether any non-human West Nile virus activity was reported to CDC for the geography and year.",
+              "measure_type": "Indicator",
+              "unit": "1 = activity reported, 0 = no activity reported"
             }
           ]
         }
@@ -9424,6 +11430,65 @@
               "description": "Monthly count of Vibrio isolates linked to a recognized outbreak.",
               "measure_type": "Count",
               "unit": "Number of isolates"
+            }
+          ]
+        }
+      ]
+    },
+    "bls_laus": {
+      "name": "bls_laus",
+      "display_name": "Bls Laus",
+      "description": "LAUS produces monthly and annual employment, unemployment, and labor force estimates for states, counties, metropolitan areas, and cities by place of residence. County-level estimates are model-based, combining Current Population Survey, Current Employment Statistics, and Unemployment Insurance data, and are not seasonally adjusted. Used here as the direct source for county annual-average unemployment rate.",
+      "standard_files": [
+        {
+          "filename": "data_county.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "bls_pct_unemployment",
+              "short_name": "Unemployment rate",
+              "description": "Share of the civilian labor force ages 16+ that is unemployed but seeking work.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            }
+          ]
+        },
+        {
+          "filename": "data_state.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "bls_pct_unemployment",
+              "short_name": "Unemployment rate",
+              "description": "Share of the civilian labor force ages 16+ that is unemployed but seeking work.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
             }
           ]
         }
@@ -10387,6 +12452,194 @@
               "description": "Share of county housing units located in Census-defined urban areas.",
               "measure_type": "Percent",
               "unit": "Proportion (0–1)"
+            }
+          ]
+        },
+        {
+          "filename": "data_oqm.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "oqm_self_response_rate",
+              "short_name": "2020 Census self-response rate",
+              "description": "Share of addresses that self-responded to the 2020 Census, among all addresses (not just those invited to self-respond).",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            }
+          ]
+        },
+        {
+          "filename": "data_pep.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "pep_population",
+              "short_name": "Total population",
+              "description": "Total county resident population from the Census Bureau's Population Estimates Program.",
+              "measure_type": "Count",
+              "unit": "People"
+            },
+            {
+              "name": "pep_pct_65_older",
+              "short_name": "Percent 65 and older",
+              "description": "Share of county population age 65 or older.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "pep_pct_under_18",
+              "short_name": "Percent under 18",
+              "description": "Share of county population under age 18.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "pep_pct_female",
+              "short_name": "Percent female",
+              "description": "Share of county population identified as female.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "pep_pct_aian",
+              "short_name": "Percent American Indian/Alaska Native",
+              "description": "Share of county population identifying as American Indian or Alaska Native alone, of any Hispanic origin.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "pep_pct_asian",
+              "short_name": "Percent Asian",
+              "description": "Share of county population identifying as Asian alone, of any Hispanic origin.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "pep_pct_nhpi",
+              "short_name": "Percent Native Hawaiian/Pacific Islander",
+              "description": "Share of county population identifying as Native Hawaiian or Other Pacific Islander alone, of any Hispanic origin.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "pep_pct_nh_black",
+              "short_name": "Percent non-Hispanic Black",
+              "description": "Share of county population identifying as Black or African American alone and not Hispanic or Latino.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "pep_pct_nh_white",
+              "short_name": "Percent non-Hispanic White",
+              "description": "Share of county population identifying as White alone and not Hispanic or Latino.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "pep_pct_hispanic",
+              "short_name": "Percent Hispanic",
+              "description": "Share of county population identifying as Hispanic or Latino, regardless of race.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            }
+          ]
+        },
+        {
+          "filename": "data_sahie.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "sahie_pct_uninsured",
+              "short_name": "Percent uninsured, under 65",
+              "description": "Share of county population under age 65 without health insurance.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "sahie_pct_uninsured_adults",
+              "short_name": "Percent uninsured, adults 18-64",
+              "description": "Share of county residents ages 18-64 without health insurance.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "sahie_pct_uninsured_children",
+              "short_name": "Percent uninsured, under 19",
+              "description": "Share of county residents under age 19 without health insurance.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            }
+          ]
+        },
+        {
+          "filename": "data_saipe.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "saipe_pct_children_poverty",
+              "short_name": "Percent children in poverty",
+              "description": "Share of county residents under age 18 living below the poverty line.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            },
+            {
+              "name": "saipe_median_household_income",
+              "short_name": "Median household income",
+              "description": "Estimated median household income for the county.",
+              "measure_type": "Median",
+              "unit": "US Dollars"
             }
           ]
         },
@@ -15991,7 +18244,7 @@
     "delphi_doctors_claims": {
       "name": "delphi_doctors_claims",
       "display_name": "Delphi Doctors Claims",
-      "description": "The Delphi Doctor Visits signal estimates the percentage of outpatient doctor visits with COVID-related diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal is calculated as the percentage of outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). Data are smoothed using a Gaussian linear smoother to reduce day-to-day noise. This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are available at state and county levels with approximately 3-4 day lag from the date of service.",
+      "description": "The Delphi outpatient claims signal estimates the percentage of outpatient doctor visits with COVID-19 diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal tracks outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of service. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile and a lag-1 autocorrelation of 0.998), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. This signal replaces the retired COVIDcast doctor-visits signal (smoothed_cli), which was smoothed with a Gaussian linear smoother.",
       "standard_files": [
         {
           "filename": "data.csv.gz",
@@ -16013,9 +18266,9 @@
             {
               "name": "delphi_doc_covid_smooth",
               "short_name": "COVID Doctor Visits",
-              "description": "Estimated percentage of outpatient doctor visits primarily about COVID-related symptoms, based on data from health system partners, smoothed in time using a Gaussian linear smoother",
+              "description": "Estimated percentage of outpatient doctor visits with COVID-associated diagnoses, based on claims data from health system partners, as of the week-ending Saturday",
               "measure_type": "percent",
-              "unit": "Percent of doctor's visits, smoothed"
+              "unit": "Percent of outpatient visits, 7-day average ending Saturday"
             }
           ]
         }
@@ -16024,7 +18277,7 @@
     "delphi_hospital_claims": {
       "name": "delphi_hospital_claims",
       "display_name": "Delphi Hospital Claims",
-      "description": "The Delphi Hospital Admissions signal estimates the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. Data are smoothed using a Gaussian linear smoother to reduce day-to-day variation. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are available at state and county levels with approximately 3-4 day lag from the date of admission.",
+      "description": "The Delphi inpatient claims signals estimate the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of admission. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile, and runs of non-zero days bottom out at exactly seven), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. Geography-weeks with no Saturday observation are therefore absent, which affects about 11% of county-weeks. These signals replace the retired COVIDcast hospital-admissions signals (smoothed_covid19_from_claims and smoothed_flu_from_claims), which were smoothed with a Gaussian linear smoother.",
       "standard_files": [
         {
           "filename": "data.csv.gz",
@@ -16046,16 +18299,16 @@
             {
               "name": "delphi_hospital_covid_smooth",
               "short_name": "delphi_hospital_covid_smooth",
-              "description": "Estimated percentage of new hospital admissions with COVID-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother",
-              "measure_type": "",
-              "unit": "Percent of new hospital admissions, smoothed"
+              "description": "Estimated percentage of new hospital admissions with COVID-associated diagnoses, based on claims data from health system partners, as of the week-ending Saturday",
+              "measure_type": "percent",
+              "unit": "Percent of new hospital admissions, 7-day average ending Saturday"
             },
             {
               "name": "delphi_hospital_flu_smooth",
               "short_name": "Influenza Hospital Admissions",
-              "description": "Estimated percentage of new hospital admissions with influenza-associated diagnoses, based on claims data from health system partners, smoothed in time using a Gaussian linear smoother",
+              "description": "Estimated percentage of new hospital admissions with influenza-associated diagnoses, based on claims data from health system partners, as of the week-ending Saturday",
               "measure_type": "percent",
-              "unit": "Percent of new hospital admissions, smoothed"
+              "unit": "Percent of new hospital admissions, 7-day average ending Saturday"
             }
           ]
         }
@@ -16541,6 +18794,13 @@
               "unit": "encounters"
             },
             {
+              "name": "epic_n_ed_vomiting",
+              "short_name": "Nausea and Vomiting ED Encounters (Weekly)",
+              "description": "Number of ED encounters with nausea and vomiting diagnoses, weekly.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
               "name": "epic_n_ed_encounters_weekly",
               "short_name": "All-Cause ED Encounters (Weekly)",
               "description": "Total number of weekly emergency department encounters for any cause.",
@@ -16555,9 +18815,23 @@
               "unit": "%"
             },
             {
+              "name": "epic_pct_ed_vomiting",
+              "short_name": "Nausea and Vomiting ED Encounters (%, Weekly)",
+              "description": "Percentage of ED encounters attributable to nausea and vomiting, weekly.",
+              "measure_type": "Percent",
+              "unit": "%"
+            },
+            {
               "name": "epic_suppressed_flag_ed_diarrhea",
               "short_name": "Diarrhea Count Suppressed? (Weekly)",
               "description": "Binary indicator: 1 if the weekly diarrhea ED encounter count was suppressed, 0 otherwise.",
+              "measure_type": "binary",
+              "unit": ""
+            },
+            {
+              "name": "epic_suppressed_flag_ed_vomiting",
+              "short_name": "Nausea and Vomiting Count Suppressed? (Weekly)",
+              "description": "Binary indicator: 1 if the weekly nausea and vomiting ED encounter count was suppressed, 0 otherwise.",
               "measure_type": "binary",
               "unit": ""
             },
@@ -17117,53 +19391,6 @@
           ]
         },
         {
-          "filename": "no_geo.csv.gz",
-          "columns": [
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
-              "measure_type": "date",
-              "unit": "date"
-            },
-            {
-              "name": "age",
-              "short_name": "Age",
-              "description": "Age group.",
-              "measure_type": "integer",
-              "unit": "years"
-            },
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
-              "measure_type": "identifier",
-              "unit": "FIPS code"
-            },
-            {
-              "name": "positive_rsv_tests_(%)",
-              "short_name": "RSV Positive Test Rate (%) [raw]",
-              "description": "Raw export column: percent of RSV tests positive among J12-J18 pneumonia admissions.",
-              "measure_type": "percent",
-              "unit": "%"
-            },
-            {
-              "name": "rsv_tests",
-              "short_name": "RSV Test Rate (%) [raw]",
-              "description": "Raw export column: percent of J12-J18 pneumonia admissions receiving an RSV test.",
-              "measure_type": "percent",
-              "unit": "%"
-            },
-            {
-              "name": "n_rsv_tests",
-              "short_name": "RSV Tests: Positive",
-              "description": "Number of ER encounters with positive RSV tests.",
-              "measure_type": "integer",
-              "unit": "encounter"
-            }
-          ]
-        },
-        {
           "filename": "quarterly_gas.csv.gz",
           "columns": [
             {
@@ -17701,6 +19928,65 @@
               "description": "Google search volume of the term rsv_adjusted.",
               "measure_type": "probability",
               "unit": "probability * 10M"
+            }
+          ]
+        }
+      ]
+    },
+    "hud_chas": {
+      "name": "hud_chas",
+      "display_name": "Hud Chas",
+      "description": "CHAS data is a custom tabulation of American Community Survey data produced for HUD, providing detailed cross-tabulations of housing problems (cost burden, overcrowding, and facilities adequacy) by income, tenure, and race, at multiple geographic levels including county. Used here as the direct source for the county-level severe housing problems rate.",
+      "standard_files": [
+        {
+          "filename": "data_county.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "hud_pct_severe_housing_problems",
+              "short_name": "Severe housing problems",
+              "description": "Share of occupied housing units with at least 1 of 4 severe housing problems.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
+            }
+          ]
+        },
+        {
+          "filename": "data_state.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "hud_pct_severe_housing_problems",
+              "short_name": "Severe housing problems",
+              "description": "Share of occupied housing units with at least 1 of 4 severe housing problems.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
             }
           ]
         }
@@ -24682,6 +26968,13 @@
               "unit": "Cumulative cases"
             },
             {
+              "name": "cronobacter_invasive_infection_infants_confirmed",
+              "short_name": "cronobacter_invasive_infection_infants_confirmed",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
+            },
+            {
               "name": "hepatitis_b_acute_confirmed",
               "short_name": "Hep B acute confirmed",
               "description": "Cumulative year-to-date count of confirmed acute hepatitis B cases.",
@@ -25327,6 +27620,39 @@
               "description": "Type of survey used to collect the data",
               "measure_type": "",
               "unit": ""
+            }
+          ]
+        }
+      ]
+    },
+    "usda_food_access": {
+      "name": "usda_food_access",
+      "display_name": "Usda Food Access",
+      "description": "The Food Environment Atlas assembles county-level statistics on food environment indicators, including store/restaurant availability, food and nutrition assistance programs, food insecurity, and food access. Its ACCESS sheet includes USDA's own county-level aggregation of the tract-level Food Access Research Atlas, including the percent of the population that is low-income and has limited access to a grocery store. Used here as the direct source for county-level limited healthy food access.",
+      "standard_files": [
+        {
+          "filename": "data_county.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "usda_pct_limited_access_low_income",
+              "short_name": "Limited access to healthy foods",
+              "description": "Share of county population that is low-income and lives more than 1 mile (urban) or 10 miles (rural) from a grocery store.",
+              "measure_type": "Percent",
+              "unit": "Proportion (0–1)"
             }
           ]
         }

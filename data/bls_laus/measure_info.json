@@ -1,0 +1,32 @@
+{
+  "bls_pct_unemployment": {
+    "id": "bls_pct_unemployment",
+    "short_name": "Unemployment rate",
+    "long_name": "Unemployment Rate, Ages 16 and Older (BLS LAUS)",
+    "category": "demographic",
+    "short_description": "Share of the civilian labor force ages 16+ that is unemployed but seeking work.",
+    "long_description": "Annual average county, state, and national unemployment rate. County and state estimates come from the Bureau of Labor Statistics' Local Area Unemployment Statistics (LAUS) program, series measure code 03 (not seasonally adjusted; LAUS county and state series are never seasonally adjusted); the national estimate comes from BLS's standard CPS-based unemployment rate series (LNU04000000), since LAUS itself publishes no national series. LAUS estimates are model-based (signal-plus-noise time-series model for states, Handbook procedures for labor market areas, disaggregation for counties) and are re-benchmarked in later years against updated QCEW/population controls, so a live pull will not always exactly match a value captured at an earlier point in time for the same reference year. LAUS's state-equivalent coverage includes the 50 states, DC, and Puerto Rico, but not American Samoa, Guam, the Northern Mariana Islands, the U.S. Virgin Islands, or the Minor Outlying Islands. Intended as the direct-source input behind PopHIVE/us-rates' chr_unemployment measure, which uses the same LAUS rate series with no further CHR&R-side adjustment.",
+    "statement": "In {location}, {value} of the labor force is unemployed.",
+    "measure_type": "Percent",
+    "unit": "Proportion (0–1)",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "bls_laus"
+      }
+    ]
+  },
+  "_sources": {
+    "bls_laus": {
+      "name": "Local Area Unemployment Statistics (LAUS)",
+      "url": "https://www.bls.gov/lau/",
+      "organization": "U.S. Bureau of Labor Statistics",
+      "organization_url": "https://www.bls.gov",
+      "location": "BLS API v2 — api.bls.gov/publicAPI/v2/timeseries/data/",
+      "location_url": "https://www.bls.gov/developers/api_signature_v2.htm",
+      "description": "LAUS produces monthly and annual employment, unemployment, and labor force estimates for states, counties, metropolitan areas, and cities by place of residence. County-level estimates are model-based, combining Current Population Survey, Current Employment Statistics, and Unemployment Insurance data, and are not seasonally adjusted. Used here as the direct source for county annual-average unemployment rate.",
+      "restrictions": "Public domain. U.S. Bureau of Labor Statistics data are generally not subject to copyright restrictions. A registered API key (free, instant signup at https://data.bls.gov/registrationEngine/) is required to request annual-average data and to stay within reasonable daily query limits for a full county-level pull.",
+      "date_accessed": 2026
+    }
+  }
+}
