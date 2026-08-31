@@ -85,12 +85,6 @@ sites <- c(
 # Helper Functions
 # =============================================================================
 
-#' Convert a label into a column-name-safe slug
-#' e.g. "Salmonella I 4,[5],12:i:-" -> "salmonella_i_4_5_12_i"
-clean_name <- function(x) {
-  gsub("_$", "", tolower(gsub("[^A-Za-z0-9]+", "_", x)))
-}
-
 #' Join organism name parts, dropping any that are missing
 #' paste() would render a missing serotype as the literal string "NA"
 #' ("Enterococcus faecalis NA"), so drop absent parts instead of pasting them.
@@ -102,71 +96,6 @@ combine_organism <- function(...) {
   })
   out <- do.call(paste, c(parts, sep = " "))
   trimws(gsub(" +", " ", out))
-}
-
-#' Make every organism x measure combination explicit, and flag why it is empty
-#'
-#' Pivoting wide forces a cell to exist for every row and measure, so pairs that
-#' had no long-format row surface as NA. Two different things hide in those NAs:
-#'   not_on_panel - the organism/measure pair appears nowhere in the file, so it
-#'                  is not a gap but a combination that does not exist. Permanent.
-#'   not_tested   - the pair appears elsewhere but not for this row. May fill in.
-#' Where MIC columns are supplied, a row that has a real denominator but no MIC
-#' is flagged tested_no_mic. FDA publishes a susceptibility interpretation for
-#' some drugs (notably streptomycin) without publishing the concentration, so
-#' the counts are usable even though the MIC was never measured.
-#' Missing values stay NA rather than being filled with a sentinel: 0 is a real
-#' measurement for pct_resistant and is not a value MIC can take, so either
-#' would be indistinguishable from a genuine result. The flag says why a cell
-#' is empty; the value column says nothing was measured.
-#'
-#' @param data long data, one row per row_key x measure
-#' @param row_keys columns identifying a row (must include organism_col)
-#' @param measure_col column holding measure names (antimicrobial or pattern)
-#' @param organism_col column defining panel membership
-#' @param value_cols measure value columns, left as NA where absent
-#' @param mic_cols subset of value_cols that are MIC concentrations
-#' @param flag_col existing flag column for rows present in the source
-add_panel_flags <- function(data, row_keys, measure_col, organism_col,
-                            value_cols, mic_cols = character(),
-                            flag_col = NULL) {
-  panel <- data %>%
-    distinct(across(all_of(c(organism_col, measure_col)))) %>%
-    mutate(.on_panel = TRUE)
-
-  grid <- tidyr::crossing(
-    distinct(data[row_keys]),
-    tibble::tibble(!!measure_col := unique(data[[measure_col]]))
-  )
-
-  # A row is "present" in the source if it carried a flag (human files) or a
-  # value (FDA files, which have no flag until now).
-  present_col <- if (is.null(flag_col)) value_cols[1] else flag_col
-
-  out <- grid %>%
-    left_join(data, by = c(row_keys, measure_col)) %>%
-    left_join(panel, by = c(organism_col, measure_col))
-
-  base <- if (is.null(flag_col)) {
-    ifelse(!is.na(out[[present_col]]), "tested", NA_character_)
-  } else {
-    as.character(out[[flag_col]])
-  }
-
-  out$narms_flag <- dplyr::case_when(
-    !is.na(base)        ~ base,
-    is.na(out$.on_panel) ~ "not_on_panel",
-    TRUE                 ~ "not_tested"
-  )
-
-  # A real denominator with no concentration recorded is still a real result
-  if (length(mic_cols) > 0) {
-    no_mic <- out$narms_flag == "tested" & is.na(out[[mic_cols[1]]])
-    out$narms_flag[no_mic] <- "tested_no_mic"
-  }
-
-  out %>%
-    select(-.on_panel, -any_of(setdiff(flag_col, "narms_flag")))
 }
 
 #' Build a site filter Where clause for Power BI queries
@@ -1231,7 +1160,7 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
         TRUE ~ "tested"
       ),
       genus_species_serotype = combine_organism(genus, species_serotype),
-      antimicrobial = clean_name(antimicrobial_agent)
+      antimicrobial = antimicrobial_agent
     ) %>%
     select(geography, time, genus_species_serotype,
            test_method, antimicrobial,
@@ -1250,20 +1179,12 @@ if (file.exists("raw/narms_now_agent.csv.gz")) {
   }
 
   agent_standard <- agent_long %>%
-    add_panel_flags(
-      row_keys    = c("geography", "time", "genus_species_serotype", "test_method"),
-      measure_col = "antimicrobial",
-      organism_col = "genus_species_serotype",
-      value_cols  = c("pct_resistant", "n_resistant", "n_tested"),
-      flag_col    = "narms_flag"
+    rename(
+      narms_pct_resistant = pct_resistant,
+      narms_n_resistant   = n_resistant,
+      narms_n_tested      = n_tested
     ) %>%
-    pivot_wider(
-      id_cols = c(geography, time, genus_species_serotype, test_method),
-      names_from = antimicrobial,
-      values_from = c(pct_resistant, n_resistant, n_tested, narms_flag),
-      names_glue = "narms_{.value}_{antimicrobial}"
-    ) %>%
-    rename_with(~ gsub("narms_narms_flag", "narms_flag", .x))
+    arrange(geography, time, genus_species_serotype, test_method, antimicrobial)
 
   vroom::vroom_write(agent_standard, "standard/data_resistance_agent.csv.gz", delim = ",")
   message(sprintf("Wrote %d rows to standard/data_resistance_agent.csv.gz", nrow(agent_standard)))
@@ -1295,10 +1216,9 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
         TRUE ~ "tested"
       ),
       genus_species_serotype = combine_organism(genus, species_serotype),
-      pattern_name = clean_name(pattern)
     ) %>%
     select(geography, time, genus_species_serotype,
-           test_method, pattern_name,
+           test_method, pattern,
            pct_resistant, n_resistant, n_tested, narms_flag) %>%
     distinct()
 
@@ -1307,26 +1227,18 @@ if (file.exists("raw/narms_now_pattern.csv.gz")) {
     warning(sprintf(
       "%d pattern rows have pct_resistant > 100%%. Top offenders: %s",
       nrow(bad_rows),
-      paste(unique(bad_rows$pattern_name)[1:min(5, length(unique(bad_rows$pattern_name)))],
+      paste(unique(bad_rows$pattern)[1:min(5, length(unique(bad_rows$pattern)))],
             collapse = ", ")
     ))
   }
 
   pattern_standard <- pattern_long %>%
-    add_panel_flags(
-      row_keys    = c("geography", "time", "genus_species_serotype", "test_method"),
-      measure_col = "pattern_name",
-      organism_col = "genus_species_serotype",
-      value_cols  = c("pct_resistant", "n_resistant", "n_tested"),
-      flag_col    = "narms_flag"
+    rename(
+      narms_pct_resistant = pct_resistant,
+      narms_n_resistant   = n_resistant,
+      narms_n_tested      = n_tested
     ) %>%
-    pivot_wider(
-      id_cols = c(geography, time, genus_species_serotype, test_method),
-      names_from = pattern_name,
-      values_from = c(pct_resistant, n_resistant, n_tested, narms_flag),
-      names_glue = "narms_{.value}_{pattern_name}"
-    ) %>%
-    rename_with(~ gsub("narms_narms_flag", "narms_flag", .x))
+    arrange(geography, time, genus_species_serotype, test_method, pattern)
 
   vroom::vroom_write(pattern_standard, "standard/data_resistance_pattern.csv.gz", delim = ",")
   message(sprintf("Wrote %d rows to standard/data_resistance_pattern.csv.gz", nrow(pattern_standard)))
@@ -1513,8 +1425,6 @@ retail_agg <- retail_long %>%
     pct_resistant = n_resistant / n_tested * 100,
     time  = paste0(YEAR, "-12-31"),
     genus_species_serotype = combine_organism(GENUS_NAME, SPECIES, SEROTYPE),
-    antimicrobial = tolower(gsub("[^A-Za-z0-9]+", "_", antimicrobial)),
-    antimicrobial = gsub("_$", "", antimicrobial)
   ) %>%
   rename(meat_source = SOURCE) %>%
   select(
@@ -1523,20 +1433,15 @@ retail_agg <- retail_long %>%
   )
 
 retail_standard <- retail_agg %>%
-  add_panel_flags(
-    row_keys = c("geography", "time", "genus_species_serotype", "meat_source"),
-    measure_col = "antimicrobial",
-    organism_col = "genus_species_serotype",
-    value_cols = c("pct_resistant", "n_resistant", "n_tested", "mic50", "mic90"),
-    mic_cols = c("mic50", "mic90")
+  mutate(narms_flag = if_else(is.na(mic50), "tested_no_mic", "tested")) %>%
+  rename(
+    narms_pct_resistant = pct_resistant,
+    narms_n_resistant   = n_resistant,
+    narms_n_tested      = n_tested,
+    narms_mic50         = mic50,
+    narms_mic90         = mic90
   ) %>%
-  pivot_wider(
-    id_cols = c(geography, time, genus_species_serotype, meat_source),
-    names_from = antimicrobial,
-    values_from = c(pct_resistant, n_resistant, n_tested, mic50, mic90, narms_flag),
-    names_glue = "narms_{.value}_{antimicrobial}"
-  ) %>%
-  rename_with(~ gsub("narms_narms_flag", "narms_flag", .x))
+  arrange(geography, time, genus_species_serotype, meat_source, antimicrobial)
 
 vroom::vroom_write(
   retail_standard,
@@ -1608,8 +1513,7 @@ animal_agg <- animal_raw %>%
   mutate(
     pct_resistant = n_resistant / n_tested * 100,
     time          = paste0(Year, "-12-31"),
-    antimicrobial = tolower(gsub("[^A-Za-z0-9]+", "_", `Drug Name`)),
-    antimicrobial = gsub("_$", "", antimicrobial)
+    antimicrobial = `Drug Name`
   ) %>%
   rename(
     genus             = Genus,
@@ -1622,20 +1526,15 @@ animal_agg <- animal_raw %>%
   )
 
 animal_standard <- animal_agg %>%
-  add_panel_flags(
-    row_keys = c("geography", "time", "genus", "host_species", "collection_source"),
-    measure_col = "antimicrobial",
-    organism_col = "genus",
-    value_cols = c("pct_resistant", "n_resistant", "n_tested", "mic50", "mic90"),
-    mic_cols = c("mic50", "mic90")
+  mutate(narms_flag = if_else(is.na(mic50), "tested_no_mic", "tested")) %>%
+  rename(
+    narms_pct_resistant = pct_resistant,
+    narms_n_resistant   = n_resistant,
+    narms_n_tested      = n_tested,
+    narms_mic50         = mic50,
+    narms_mic90         = mic90
   ) %>%
-  pivot_wider(
-    id_cols = c(geography, time, genus, host_species, collection_source),
-    names_from = antimicrobial,
-    values_from = c(pct_resistant, n_resistant, n_tested, mic50, mic90, narms_flag),
-    names_glue = "narms_{.value}_{antimicrobial}"
-  ) %>%
-  rename_with(~ gsub("narms_narms_flag", "narms_flag", .x))
+  arrange(geography, time, genus, host_species, collection_source, antimicrobial)
 
 vroom::vroom_write(
   animal_standard,
@@ -1844,8 +1743,6 @@ food_animal_agg <- all_food_long %>%
     geography     = "00",
     time          = paste0(YEAR, "-12-31"),
     genus_species_serotype = combine_organism(GENUS_NAME, SPECIES, SEROTYPE),
-    antimicrobial = tolower(gsub("[^A-Za-z0-9]+", "_", antimicrobial)),
-    antimicrobial = gsub("_$", "", antimicrobial)
   ) %>%
   rename(
     host_species = HOST_SPECIES,
@@ -1858,22 +1755,15 @@ food_animal_agg <- all_food_long %>%
   )
 
 food_animal_standard <- food_animal_agg %>%
-  add_panel_flags(
-    row_keys = c("geography", "time", "genus_species_serotype",
-                 "source_type", "host_species"),
-    measure_col = "antimicrobial",
-    organism_col = "genus_species_serotype",
-    value_cols = c("pct_resistant", "n_resistant", "n_tested", "mic50", "mic90"),
-    mic_cols = c("mic50", "mic90")
+  mutate(narms_flag = if_else(is.na(mic50), "tested_no_mic", "tested")) %>%
+  rename(
+    narms_pct_resistant = pct_resistant,
+    narms_n_resistant   = n_resistant,
+    narms_n_tested      = n_tested,
+    narms_mic50         = mic50,
+    narms_mic90         = mic90
   ) %>%
-  pivot_wider(
-    id_cols = c(geography, time, genus_species_serotype,
-                source_type, host_species),
-    names_from = antimicrobial,
-    values_from = c(pct_resistant, n_resistant, n_tested, mic50, mic90, narms_flag),
-    names_glue = "narms_{.value}_{antimicrobial}"
-  ) %>%
-  rename_with(~ gsub("narms_narms_flag", "narms_flag", .x))
+  arrange(geography, time, genus_species_serotype, source_type, host_species, antimicrobial)
 
 vroom::vroom_write(
   food_animal_standard,
