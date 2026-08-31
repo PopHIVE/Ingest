@@ -643,7 +643,7 @@ dataset_row <- function(s) {
         sprintf("⚠ +%dd", s$issue_lead))
     )
   } else tagList(s$latest_issue, basis_marker)
-  tags$tr(
+  tags$tr(id = paste0("row-", s$folder),
     tags$td(dataset_cell),
     tags$td(class = "title-cell", s$title),
     tags$td(class = "desc-cell", s$description),
@@ -756,6 +756,7 @@ cat(sprintf("Latest Issue basis: %d publisher timestamp, %d raw-file commit (est
             basis_count("metadata"), basis_count("files"), basis_count("none")))
 
 stale_sources <- Filter(is_stale, source_summaries)
+stale_sources <- stale_sources[order(-vapply(stale_sources, `[[`, integer(1), "issue_lead"))]
 if (length(stale_sources)) {
   cat(sprintf(
     "WARNING: %d dataset(s) have a Latest Issue more than %d days after their Last Refreshed (new raw data not yet standardized): %s\n",
@@ -765,6 +766,33 @@ if (length(stale_sources)) {
 } else {
   cat(sprintf("No datasets flagged stale (Latest Issue within %d days of Last Refreshed).\n",
               STALE_THRESHOLD_DAYS))
+}
+
+# Prominent, page-top summary of flagged (stale) datasets, so a visitor sees
+# what needs attention before scrolling through the full table. Links jump to
+# the dataset's row in the (default-visible) Datasets tab.
+flagged_block <- if (length(stale_sources)) {
+  tags$div(class = "flagged-datasets",
+    tags$strong(HTML("&#9888; "), sprintf("%d dataset%s flagged as stale",
+                                          length(stale_sources),
+                                          if (length(stale_sources) == 1) "" else "s")),
+    sprintf(" — Latest Issue is more than %d days after Last Refreshed:", STALE_THRESHOLD_DAYS),
+    tags$ul(
+      lapply(stale_sources, function(s) {
+        tags$li(
+          tags$a(href = paste0("#row-", s$folder), tags$code(s$folder)),
+          sprintf(" (%s): Latest Issue %s is ", s$title, s$latest_issue),
+          tags$strong(sprintf("%d day%s", s$issue_lead, if (s$issue_lead == 1) "" else "s")),
+          sprintf(" after Last Refreshed %s.", s$last_updated)
+        )
+      })
+    )
+  )
+} else {
+  tags$div(class = "flagged-datasets flagged-none",
+    HTML("&#9989; "),
+    sprintf("No datasets currently flagged as stale (Latest Issue within %d days of Last Refreshed).",
+            STALE_THRESHOLD_DAYS))
 }
 
 # "How to read this table": the date columns are easy to misread -- two of them
@@ -903,6 +931,16 @@ page <- tags$html(lang = "en",
         background: #f8d7da; border: 1px solid #f1aeb5; border-radius: .5rem;
         padding: .6rem .9rem; margin-bottom: 1rem; font-size: .85rem; color: #58151c;
       }
+      .flagged-datasets {
+        background: #fff3cd; border: 1px solid #ffe69c; border-radius: .5rem;
+        padding: .75rem 1rem; margin-bottom: 1.25rem; font-size: .85rem; color: #664d03;
+      }
+      .flagged-datasets ul { margin: .5rem 0 0; padding-left: 1.25rem; }
+      .flagged-datasets li { margin-bottom: .25rem; }
+      .flagged-datasets code { font-size: .8rem; }
+      .flagged-datasets.flagged-none {
+        background: #d1e7dd; border-color: #a3cfbb; color: #0a3622;
+      }
     "))
   ),
   tags$body(
@@ -915,6 +953,7 @@ page <- tags$html(lang = "en",
       tags$a(href = "index.html", "View full data documentation →")),
 
     branch_banner,
+    flagged_block,
     notes_block,
 
     tags$ul(class = "nav nav-tabs", id = "mainTabs", role = "tablist",
