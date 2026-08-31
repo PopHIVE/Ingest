@@ -93,13 +93,22 @@ From the repo root, list source folders (everything in `data/` that is not
 Default when a new dataset is added: only fill what's missing/placeholder; leave
 good existing text alone. If the user asks to refresh a dataset, rewrite it.
 
-### 2. Write the summary (1-2 sentences)
+### 2. Write the summary (1-2 easy-to-read sentences)
 
 Read `data/<dataset>/measure_info.json` and use the `_sources` `description`
 field(s) — consider all entries under `_sources`, since multi-source datasets
 (e.g. `nchs_mortality`) cover several distinct things. Write **one to two
-plain-English sentences** describing what the dataset contains, suitable for a
-data catalog: no preamble, no quotes, no markdown.
+sentences** describing what the dataset contains, suitable for a data catalog:
+no preamble, no quotes, no markdown.
+
+Write at roughly a **15-year-old reading level** — short sentences, everyday
+words, and one idea per sentence. Spell out or briefly explain jargon and
+acronyms the first time they appear (e.g. "ED (emergency department) visits"
+rather than bare "ED visits"; "de-identified (no names or personal details)"
+rather than bare "de-identified"). Cut methodology detail that doesn't help a
+general reader decide whether the dataset is useful to them (exact model
+names, internal program acronyms, survey-instrument citations) — save that
+level of detail for `measure_info.json`, not the catalog summary.
 
 Put it **directly in `docs/data_sources_index.json`** as that dataset's
 `summary` value. It is preserved on rebuild.
@@ -112,7 +121,9 @@ stratified **beyond time and geography**. Infer it from the file name and the
 column headers — the non-`time`/non-`geography`/non-value columns (e.g. `age`,
 `sex`, `race_ethnicity`, `serotype`, `vaccine`, `virus`, `grade`) are exactly the
 stratification; the measure columns say what is measured. Read a file's header
-with `vroom::vroom(path, n_max = 0)`. Keep each blurb to one short sentence.
+with `vroom::vroom(path, n_max = 0)`. Keep each blurb to **one brief sentence**
+(aim for well under 20 words) — name the stratifying dimensions plainly, skip
+qualifiers and background that belong in the dataset `summary` instead.
 
 - **Multi-file datasets:** describe what distinguishes each file.
 - **Single-file datasets:** replace the `"Overall; no stratification beyond time
