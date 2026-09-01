@@ -1,29 +1,18 @@
 # =============================================================================
-# Census ACS 5-Year SDOH Data Ingestion
-# Source: U.S. Census Bureau American Community Survey 5-Year Estimates
-# Indicators adapted from the Metopio SDOH framework, with code courtesy of Heather Blonsky
+# U.S. Census Bureau Data Ingestion
+# Source: https://www.census.gov (ACS 5-year, PEP, SAIPE, SAHIE, 2020 Decennial)
+# Ingests five Census programs through a single ingest.R, each with its own key
+# in the process record. See README.md for the program table and conventions.
+# ACS indicators adapted from the Metopio SDOH framework, code courtesy of
+# Heather Blonsky.
 #
-# Outputs:
-#   standard/data_state.csv.gz        -- 2-digit FIPS, vintage years 2019 to latest available.
-#                                         Also carries the national total as geography "00"
-#                                         (Census ACS5 "us" geography level), same convention
-#                                         as county_health_rankings and bls_laus.
-#   standard/data_county.csv.gz       -- 5-digit FIPS, vintage years 2019 to latest available
-#
-# ZCTA-level output was removed deliberately: no bundle or downstream consumer
-# read it, and the three ~23 MB chunk files it produced were committed as plain
-# git blobs (the .gitattributes LFS rule matched only the older, unsplit
-# data_zcta.csv.gz filename). Re-add only alongside a real consumer, and wire
-# the filenames into .gitattributes for LFS if you do.
-#
-# Variable legend (all computed variables carry a "acs_" prefix)
+# Variable legend (ACS computed variables, all carrying an "acs_" prefix)
 #   Race/Ethnicity: W=Non-Hispanic White, B=Non-Hispanic Black, A=Asian,
 #                   H=Hispanic/Latino, P1=Pacific Islander/Native Hawaiian,
 #                   P=Native American, Q=Two or more races
 #   Sex:            F=Female, M=Male
 #   Age:            I=Infants 0-4, J=Juveniles 5-17, Y=Young Adults 18-39,
 #                   O=Middle-Aged 40-64, S=Seniors 65+
-#   Example:        acs_POP, acs_PCT_W, acs_AGE, acs_REX, etc.
 # =============================================================================
 
 #to edit API key:
@@ -52,20 +41,10 @@ process <- dcf::dcf_process_record()
 # -----------------------------------------------------------------------------
 # Forced rebuilds
 # -----------------------------------------------------------------------------
-# Each block below is guarded on the upstream vintage, so nothing re-downloads
-# while the Census Bureau's latest release is one this repo already has. That
-# is the right default for scheduled runs, but it also means a change to a
-# *derivation* in this script (a corrected formula or unit rescale) would not
-# propagate: the vintage is unchanged, so the block is skipped.
-#
-# dcf::dcf_process(force = TRUE) does not help — its `force` only decides
-# whether this script runs, not what the script does once running. Set
-# CENSUS_FORCE_REBUILD instead, to "all" or a comma-separated subset of the
-# block names below, to bypass those vintage guards for one run:
-#
-#   CENSUS_FORCE_REBUILD=sdoh Rscript -e 'dcf::dcf_process("census", ".", force = TRUE)'
-#
-# Blocks: sdoh (ACS state/county), ur (urban-rural), pep, saipe, oqm, sahie
+# Each block is guarded on its upstream vintage, so a changed *derivation* in
+# this script won't propagate on its own. dcf's `force` only decides whether
+# this script runs, not what it does once running. Set CENSUS_FORCE_REBUILD to
+# "all" or any of sdoh,ur,pep,saipe,oqm,sahie to bypass those guards for one run.
 FORCE_BLOCKS <- trimws(strsplit(
   tolower(Sys.getenv("CENSUS_FORCE_REBUILD", "")), ",", fixed = TRUE
 )[[1]])
@@ -155,8 +134,13 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
     df
   }
 
-  # Helper: safe division — returns NA instead of Inf/NaN when denominator is 0
-  safe_div <- function(num, denom) if_else(denom == 0, NA_real_, num / denom)
+  # Helper: safe division — returns NA instead of Inf/NaN when the denominator
+  # is non-positive. Most denominators here are counts, where <0 is impossible,
+  # but acs_OWS divides by B19081_001E (mean income of the lowest quintile),
+  # which the ACS can report as negative where business losses dominate. A
+  # negative denominator there yields a negative "inequality ratio", which is
+  # meaningless, so it must be NA rather than a plausible-looking number.
+  safe_div <- function(num, denom) if_else(denom <= 0, NA_real_, num / denom)
 
   # Helper: keep id columns + requested computed columns, drop NAME if present
   keep_cols <- function(df, computed) {
@@ -702,7 +686,7 @@ if (!is.na(latest_pep_vintage) &&
 
   message("PEP latest vintage year: ", latest_pep_vintage)
   pep_dataset <- paste0(latest_pep_vintage, "/", PEP_ENDPOINT)
-  safe_div <- function(num, denom) if_else(denom == 0, NA_real_, num / denom)
+  safe_div <- function(num, denom) if_else(denom <= 0, NA_real_, num / denom)
 
   # Each vintage bundles several reference dates (April 2020 Census Day,
   # then a July estimate per year); keep only the most recent one.
