@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-31T14:47:38Z",
+  "generated": "2026-09-01T12:22:14Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -114,6 +114,22 @@
               "description": "",
               "measure_type": "Count",
               "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "flag_not_tested",
+              "short_name": "flag_not_tested",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "flag_no_isolates_tested",
+              "short_name": "flag_no_isolates_tested",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
               "levels": {}
             },
             {
@@ -260,6 +276,22 @@
               "description": "",
               "measure_type": "Count",
               "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "flag_not_tested",
+              "short_name": "flag_not_tested",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "flag_no_isolates_tested",
+              "short_name": "flag_no_isolates_tested",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
               "levels": {}
             }
           ]
@@ -18760,7 +18792,7 @@
     "epic_concussions": {
       "name": "epic_concussions",
       "display_name": "Epic Concussions",
-      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Generated using data model ED Encounters, population base All ED Encounters, criteria Country of Residence = United States of America - the denominator (epic_n_ed_encounters) is all ED encounters regardless of diagnosis.",
       "standard_files": [
         {
           "filename": "data.csv.gz",
@@ -22283,7 +22315,7 @@
     "narms": {
       "name": "narms",
       "display_name": "Narms",
-      "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella). Both AST (phenotypic) and WGS (genotypic) test method results are available. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
+      "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella), tested against 22 antimicrobial agents and summarised into 29 resistance patterns. Both AST (phenotypic) and WGS (genotypic) test method results are available; WGS coverage begins in 2016. Data span 1999-2025. Records from years after 2021 are preliminary, since isolate collection and testing are still in progress, and a substantially higher share of those cells is flagged 'not_tested' as a result. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
       "standard_files": [
         {
           "filename": "data_animal_pathogen.csv.gz",
@@ -22304,66 +22336,73 @@
             },
             {
               "name": "genus",
-              "short_name": "genus",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Genus",
+              "description": "Bacterial genus the measurements describe.",
+              "measure_type": "Category",
+              "unit": "Genus"
             },
             {
               "name": "host_species",
-              "short_name": "host_species",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Host species",
+              "description": "Animal the isolate was recovered from.",
+              "measure_type": "Category",
+              "unit": "Species"
             },
             {
               "name": "collection_source",
-              "short_name": "collection_source",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Collection source",
+              "description": "Clinical site the diagnostic isolate came from.",
+              "measure_type": "Category",
+              "unit": "Site"
             },
             {
               "name": "antimicrobial",
-              "short_name": "antimicrobial",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Antimicrobial",
+              "description": "Antimicrobial agent the isolates were tested against.",
+              "measure_type": "Category",
+              "unit": "Agent"
             },
             {
-              "name": "pct_resistant",
-              "short_name": "Percent resistant to antimicrobial",
-              "description": "Percentage of isolates showing resistance to a specific antimicrobial agent",
+              "name": "narms_pct_resistant",
+              "short_name": "Percent resistant",
+              "description": "Percentage of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Percent",
               "unit": "Percent"
             },
             {
-              "name": "n_resistant",
-              "short_name": "Number of resistant isolates",
-              "description": "Count of isolates showing resistance to a specific antimicrobial agent",
+              "name": "narms_n_resistant",
+              "short_name": "Resistant isolates",
+              "description": "Count of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
             },
             {
-              "name": "n_tested",
-              "short_name": "Number of isolates tested",
-              "description": "Total number of isolates tested for resistance to a specific antimicrobial agent",
+              "name": "narms_n_tested",
+              "short_name": "Isolates tested",
+              "description": "Total isolates tested against the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
             },
             {
-              "name": "mic50",
+              "name": "narms_mic50",
               "short_name": "MIC50",
-              "description": "Median MIC value across isolates tested for a specific antimicrobial",
+              "description": "Median MIC across isolates tested against the antimicrobial on this row.",
               "measure_type": "Concentration",
               "unit": "µg/mL"
             },
             {
-              "name": "mic90",
+              "name": "narms_mic90",
               "short_name": "MIC90",
-              "description": "90th percentile MIC value across isolates tested for a specific antimicrobial",
+              "description": "90th percentile MIC across isolates tested against the antimicrobial on this row.",
               "measure_type": "Concentration",
               "unit": "µg/mL"
+            },
+            {
+              "name": "narms_flag",
+              "short_name": "Measurement status",
+              "description": "Categorical flag explaining whether the values on this row are real measurements.",
+              "measure_type": "Category",
+              "unit": ""
             }
           ]
         },
@@ -22385,88 +22424,74 @@
               "unit": "date"
             },
             {
-              "name": "source_program",
-              "short_name": "source_program",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "name": "genus_species_serotype",
+              "short_name": "Organism",
+              "description": "Organism the measurements describe.",
+              "measure_type": "Category",
+              "unit": "Organism"
             },
             {
               "name": "source_type",
-              "short_name": "source_type",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "genus",
-              "short_name": "genus",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "species",
-              "short_name": "species",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "serotype",
-              "short_name": "Serotype",
-              "description": "Disease serotype/variant",
-              "measure_type": "category",
-              "unit": ""
+              "short_name": "Source type",
+              "description": "Sampling programme the isolate was collected under.",
+              "measure_type": "Category",
+              "unit": "Programme"
             },
             {
               "name": "host_species",
-              "short_name": "host_species",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Host species",
+              "description": "Animal the isolate was recovered from.",
+              "measure_type": "Category",
+              "unit": "Species"
             },
             {
               "name": "antimicrobial",
-              "short_name": "antimicrobial",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Antimicrobial",
+              "description": "Antimicrobial agent the isolates were tested against.",
+              "measure_type": "Category",
+              "unit": "Agent"
             },
             {
-              "name": "pct_resistant",
-              "short_name": "Percent resistant to antimicrobial",
-              "description": "Percentage of isolates showing resistance to a specific antimicrobial agent",
+              "name": "narms_pct_resistant",
+              "short_name": "Percent resistant",
+              "description": "Percentage of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Percent",
               "unit": "Percent"
             },
             {
-              "name": "n_resistant",
-              "short_name": "Number of resistant isolates",
-              "description": "Count of isolates showing resistance to a specific antimicrobial agent",
+              "name": "narms_n_resistant",
+              "short_name": "Resistant isolates",
+              "description": "Count of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
             },
             {
-              "name": "n_tested",
-              "short_name": "Number of isolates tested",
-              "description": "Total number of isolates tested for resistance to a specific antimicrobial agent",
+              "name": "narms_n_tested",
+              "short_name": "Isolates tested",
+              "description": "Total isolates tested against the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
             },
             {
-              "name": "mic50",
+              "name": "narms_mic50",
               "short_name": "MIC50",
-              "description": "Median MIC value across isolates tested for a specific antimicrobial",
+              "description": "Median MIC across isolates tested against the antimicrobial on this row.",
               "measure_type": "Concentration",
               "unit": "µg/mL"
             },
             {
-              "name": "mic90",
+              "name": "narms_mic90",
               "short_name": "MIC90",
-              "description": "90th percentile MIC value across isolates tested for a specific antimicrobial",
+              "description": "90th percentile MIC across isolates tested against the antimicrobial on this row.",
               "measure_type": "Concentration",
               "unit": "µg/mL"
+            },
+            {
+              "name": "narms_flag",
+              "short_name": "Measurement status",
+              "description": "Categorical flag explaining whether the values on this row are real measurements.",
+              "measure_type": "Category",
+              "unit": ""
             }
           ]
         },
@@ -22488,60 +22513,53 @@
               "unit": "date"
             },
             {
-              "name": "genus",
-              "short_name": "genus",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "species_serotype",
-              "short_name": "species_serotype",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "antimicrobial_class",
-              "short_name": "antimicrobial_class",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "antimicrobial_agent",
-              "short_name": "antimicrobial_agent",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "name": "genus_species_serotype",
+              "short_name": "Organism",
+              "description": "Organism the measurements describe.",
+              "measure_type": "Category",
+              "unit": "Organism"
             },
             {
               "name": "test_method",
-              "short_name": "test_method",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Test method",
+              "description": "Whether results come from phenotypic or genotypic testing.",
+              "measure_type": "Category",
+              "unit": "Method"
             },
             {
-              "name": "pct_resistant",
-              "short_name": "Percent resistant to antimicrobial",
-              "description": "Percentage of isolates showing resistance to a specific antimicrobial agent",
+              "name": "antimicrobial",
+              "short_name": "Antimicrobial",
+              "description": "Antimicrobial agent the isolates were tested against.",
+              "measure_type": "Category",
+              "unit": "Agent"
+            },
+            {
+              "name": "narms_pct_resistant",
+              "short_name": "Percent resistant",
+              "description": "Percentage of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Percent",
               "unit": "Percent"
             },
             {
-              "name": "n_resistant",
-              "short_name": "Number of resistant isolates",
-              "description": "Count of isolates showing resistance to a specific antimicrobial agent",
+              "name": "narms_n_resistant",
+              "short_name": "Resistant isolates",
+              "description": "Count of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
             },
             {
-              "name": "n_tested",
-              "short_name": "Number of isolates tested",
-              "description": "Total number of isolates tested for resistance to a specific antimicrobial agent",
+              "name": "narms_n_tested",
+              "short_name": "Isolates tested",
+              "description": "Total isolates tested against the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
+            },
+            {
+              "name": "narms_flag",
+              "short_name": "Measurement status",
+              "description": "Categorical flag explaining whether the values on this row are real measurements.",
+              "measure_type": "Category",
+              "unit": ""
             }
           ]
         },
@@ -22563,53 +22581,53 @@
               "unit": "date"
             },
             {
-              "name": "genus",
-              "short_name": "genus",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "species_serotype",
-              "short_name": "species_serotype",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "pattern",
-              "short_name": "pattern",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "name": "genus_species_serotype",
+              "short_name": "Organism",
+              "description": "Organism the measurements describe.",
+              "measure_type": "Category",
+              "unit": "Organism"
             },
             {
               "name": "test_method",
-              "short_name": "test_method",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Test method",
+              "description": "Whether results come from phenotypic or genotypic testing.",
+              "measure_type": "Category",
+              "unit": "Method"
             },
             {
-              "name": "pct_resistant",
-              "short_name": "Percent resistant to antimicrobial",
-              "description": "Percentage of isolates showing resistance to a specific antimicrobial agent",
+              "name": "pattern",
+              "short_name": "Resistance pattern",
+              "description": "Combination or threshold of resistance the isolates were assessed against.",
+              "measure_type": "Category",
+              "unit": "Pattern"
+            },
+            {
+              "name": "narms_pct_resistant",
+              "short_name": "Percent resistant",
+              "description": "Percentage of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Percent",
               "unit": "Percent"
             },
             {
-              "name": "n_resistant",
-              "short_name": "Number of resistant isolates",
-              "description": "Count of isolates showing resistance to a specific antimicrobial agent",
+              "name": "narms_n_resistant",
+              "short_name": "Resistant isolates",
+              "description": "Count of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
             },
             {
-              "name": "n_tested",
-              "short_name": "Number of isolates tested",
-              "description": "Total number of isolates tested for resistance to a specific antimicrobial agent",
+              "name": "narms_n_tested",
+              "short_name": "Isolates tested",
+              "description": "Total isolates tested against the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
+            },
+            {
+              "name": "narms_flag",
+              "short_name": "Measurement status",
+              "description": "Categorical flag explaining whether the values on this row are real measurements.",
+              "measure_type": "Category",
+              "unit": ""
             }
           ]
         },
@@ -22631,74 +22649,67 @@
               "unit": "date"
             },
             {
-              "name": "genus",
-              "short_name": "genus",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "species",
-              "short_name": "species",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "serotype",
-              "short_name": "Serotype",
-              "description": "Disease serotype/variant",
-              "measure_type": "category",
-              "unit": ""
+              "name": "genus_species_serotype",
+              "short_name": "Organism",
+              "description": "Organism the measurements describe.",
+              "measure_type": "Category",
+              "unit": "Organism"
             },
             {
               "name": "meat_source",
-              "short_name": "meat_source",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Meat source",
+              "description": "Retail meat product the isolate was recovered from.",
+              "measure_type": "Category",
+              "unit": "Product"
             },
             {
               "name": "antimicrobial",
-              "short_name": "antimicrobial",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
+              "short_name": "Antimicrobial",
+              "description": "Antimicrobial agent the isolates were tested against.",
+              "measure_type": "Category",
+              "unit": "Agent"
             },
             {
-              "name": "pct_resistant",
-              "short_name": "Percent resistant to antimicrobial",
-              "description": "Percentage of isolates showing resistance to a specific antimicrobial agent",
+              "name": "narms_pct_resistant",
+              "short_name": "Percent resistant",
+              "description": "Percentage of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Percent",
               "unit": "Percent"
             },
             {
-              "name": "n_resistant",
-              "short_name": "Number of resistant isolates",
-              "description": "Count of isolates showing resistance to a specific antimicrobial agent",
+              "name": "narms_n_resistant",
+              "short_name": "Resistant isolates",
+              "description": "Count of isolates showing resistance to the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
             },
             {
-              "name": "n_tested",
-              "short_name": "Number of isolates tested",
-              "description": "Total number of isolates tested for resistance to a specific antimicrobial agent",
+              "name": "narms_n_tested",
+              "short_name": "Isolates tested",
+              "description": "Total isolates tested against the antimicrobial on this row.",
               "measure_type": "Count",
               "unit": "Isolates"
             },
             {
-              "name": "mic50",
+              "name": "narms_mic50",
               "short_name": "MIC50",
-              "description": "Median MIC value across isolates tested for a specific antimicrobial",
+              "description": "Median MIC across isolates tested against the antimicrobial on this row.",
               "measure_type": "Concentration",
               "unit": "µg/mL"
             },
             {
-              "name": "mic90",
+              "name": "narms_mic90",
               "short_name": "MIC90",
-              "description": "90th percentile MIC value across isolates tested for a specific antimicrobial",
+              "description": "90th percentile MIC across isolates tested against the antimicrobial on this row.",
               "measure_type": "Concentration",
               "unit": "µg/mL"
+            },
+            {
+              "name": "narms_flag",
+              "short_name": "Measurement status",
+              "description": "Categorical flag explaining whether the values on this row are real measurements.",
+              "measure_type": "Category",
+              "unit": ""
             }
           ]
         }
