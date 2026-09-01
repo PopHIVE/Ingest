@@ -45,6 +45,27 @@ url <- "https://www.epicresearch.org/health-alerts/"
 download.file(url, "raw/health-alerts.html", mode = "wb", quiet = TRUE)
 raw_state <- list(hash = unname(tools::md5sum("raw/health-alerts.html")))
 
+# Publisher-timestamp sidecar (see latest_issue_from_metadata() in
+# scripts/build_data_table.R). raw_state above hashes the ENTIRE scraped page,
+# which can change for reasons unrelated to real content (ads, build ids,
+# unrelated sections) -- without this, the data-table page's "Latest Issue"
+# column would fall back to the git-commit date of raw/health-alerts.html and
+# track our scrape cadence rather than Epic's own publication cadence (the
+# same false-staleness bug found and fixed in measles_age_cdc2). Extracted
+# unconditionally (cheap) so it stays current even on runs where the page
+# hash is unchanged.
+tryCatch({
+  page_for_date <- xml2::read_html("raw/health-alerts.html")
+  last_updated_node <- rvest::html_element(page_for_date, xpath = "//p[contains(text(), 'Last updated')]")
+  epic_updated_date <- as.Date(
+    trimws(sub("Last updated:\\s*", "", rvest::html_text2(last_updated_node))), "%B %d, %Y"
+  )
+  writeLines(
+    jsonlite::toJSON(list(rowsUpdatedAt = format(epic_updated_date, "%Y-%m-%d")), auto_unbox = TRUE),
+    "raw/latest_update.json"
+  )
+}, error = function(e) message("Warning: could not write latest_update.json: ", e$message))
+
 # Only process if the page has changed since the last run
 if (!identical(process$raw_state, raw_state)) {
 

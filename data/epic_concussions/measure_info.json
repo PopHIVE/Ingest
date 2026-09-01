@@ -1,0 +1,103 @@
+{
+  "epic_n_concussion": {
+    "id": "epic_n_concussion",
+    "short_name": "Concussion ED Encounters",
+    "long_name": "ED Encounters with a Concussion Diagnosis",
+    "category": "injury",
+    "short_description": "Monthly count of ED encounters with a concussion diagnosis (ICD-10-CA S06.0).",
+    "long_description": "Monthly count of emergency department encounters with a concussion diagnosis using \"Concussion( ICD-10-CA: S06.0 )\" ED Diagnoses. Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_n_concussion_suppressed_flag.",
+    "statement": "In {location}, {value} ED encounters had a concussion diagnosis.",
+    "measure_type": "Count",
+    "unit": "encounters",
+    "time_resolution": "Month",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_n_concussion_suppressed_flag": {
+    "id": "epic_n_concussion_suppressed_flag",
+    "short_name": "Suppressed flag: concussion",
+    "long_name": "Suppression flag for the concussion numerator (count and percent)",
+    "category": "injury",
+    "short_description": "Indicates whether the concussion numerator was suppressed and imputed; applies to both epic_n_concussion and epic_pct_concussion.",
+    "long_description": "1 when Epic Cosmos suppressed the concussion cell (a count of 10 or fewer, reported as \"10 or fewer\" or left blank) and epic_n_concussion was imputed as 5; 0 otherwise. Suppression of the denominator is tracked separately by epic_n_ed_encounters_suppressed_flag; a reader wanting to know whether the percentage was affected by suppression at all takes the OR of the two flags.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Month",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_pct_concussion": {
+    "id": "epic_pct_concussion",
+    "short_name": "Concussion Percentage",
+    "long_name": "Percent of ED Encounters with a Concussion Diagnosis",
+    "category": "injury",
+    "short_description": "Monthly percent of ED encounters with a concussion diagnosis (ICD-10-CA S06.0).",
+    "long_description": "Monthly percentage of ED encounters with a concussion diagnosis, computed as epic_n_concussion / epic_n_ed_encounters * 100. This is a percent of all ED encounters, NOT a rate per population. Where the numerator was suppressed it is imputed as 5 before the percentage is computed.",
+    "statement": "In {location}, {value}% of ED encounters had a concussion diagnosis.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Month",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_n_ed_encounters": {
+    "id": "epic_n_ed_encounters",
+    "short_name": "Total ED Encounters",
+    "long_name": "Total ED Encounters (Denominator)",
+    "category": "injury",
+    "short_description": "Monthly total ED encounter count (any diagnosis), used as the denominator for the concussion percentage.",
+    "long_description": "Monthly total count of ED encounters, regardless of diagnosis, used as the denominator for epic_pct_concussion. Data from Epic Cosmos SlicerDicer session 2852165 (ED Diagnoses = \"Total\" bucket). Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_n_ed_encounters_suppressed_flag. Population base: All ED Encounters, Country of Residence = United States of America.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "encounters",
+    "time_resolution": "Month",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_n_ed_encounters_suppressed_flag": {
+    "id": "epic_n_ed_encounters_suppressed_flag",
+    "short_name": "Suppressed flag: total ED encounters",
+    "long_name": "Suppression flag for the total ED encounter count",
+    "category": "injury",
+    "short_description": "Indicates whether the total ED encounter count was suppressed and imputed.",
+    "long_description": "1 when Epic Cosmos suppressed the denominator cell (a count of 10 or fewer, reported as \"10 or fewer\" or left blank) and epic_n_ed_encounters was imputed as 5; 0 otherwise. Where this flag is 1, epic_pct_concussion is left missing rather than computed from an imputed denominator.",
+    "statement": "",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Month",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "_sources": {
+    "epic_cosmos": {
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/",
+      "date_accessed": 2026,
+      "organization": "Epic Systems",
+      "organization_url": "https://www.epic.com/",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Generated using data model ED Encounters, population base All ED Encounters, criteria Country of Residence = United States of America - the denominator (epic_n_ed_encounters) is all ED encounters regardless of diagnosis.",
+      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+    }
+  }
+}

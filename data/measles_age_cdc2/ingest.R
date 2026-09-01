@@ -43,6 +43,26 @@ for (f in raw_files) {
 
 cum_file  <- "raw/measles_structured.csv"
 
+# Publisher-timestamp sidecar, mirroring the `rowsUpdatedAt` convention that
+# dcf_download_cdc() saves for Socrata sources (see scripts/build_data_table.R).
+# Without this, the data-table page's "Latest Issue" falls back to the git
+# commit date of raw/measles_structured.csv -- but the upstream scraper
+# appends a new snapshot row every week even when CDC's own figures haven't
+# changed, so that fallback moves every week regardless of whether there is
+# new data, and falsely flags this source as stale. Writing CDC's own
+# `update_date` here instead gives a real publisher claim: the date only
+# moves when CDC actually publishes something new.
+tryCatch({
+  latest_source_date <- vroom::vroom(cum_file, col_select = "update_date", show_col_types = FALSE) %>%
+    dplyr::pull(update_date) %>%
+    as.Date(format = "%B %d, %Y") %>%
+    max(na.rm = TRUE)
+  writeLines(
+    jsonlite::toJSON(list(rowsUpdatedAt = format(latest_source_date, "%Y-%m-%d")), auto_unbox = TRUE),
+    "raw/latest_update.json"
+  )
+}, error = function(e) message("Warning: could not write latest_update.json: ", e$message))
+
 # Change detection based on file hashes
 raw_state <- list(
   cum_hash = tools::md5sum(cum_file)
