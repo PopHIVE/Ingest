@@ -47,6 +47,18 @@
     "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
     "data_source": "abcs"
   },
+  "arbonet": {
+    "name": "ArboNET Arboviral Disease Surveillance System",
+    "url": "https://www.cdc.gov/mosquitoes/php/arbonet/index.html",
+    "organization": "Centers for Disease Control and Prevention, Division of Vector-Borne Diseases",
+    "organization_url": "https://www.cdc.gov/ncezid/dvbd/index.html",
+    "location": "CDC arboviral historic data dashboards",
+    "location_url": "https://www.cdc.gov/west-nile-virus/data-maps/historic-data.html",
+    "description": "ArboNET is the national arboviral surveillance system managed by CDC together with state and territorial health departments. In addition to human disease, ArboNET maintains data on arboviral infections among presumptive viremic blood donors, veterinary disease cases, mosquitoes, dead birds, and sentinel animals. Human cases are reported by county of residence rather than location of exposure, which is not necessarily the county or state where exposure occurred, and are assigned to the year of illness onset. Several caveats apply: under-reporting is inherent to any surveillance system that depends on clinicians suspecting the disease, ordering the appropriate test, and reporting confirmed results; non-neuroinvasive cases are substantially more under-reported than neuroinvasive cases, so total case counts should not be used to compare disease activity between locations or over time; and there is a lag in reporting to CDC. Values are the counts CDC publishes for public use and are not suppressed or imputed here. Connecticut reported by county through 2022 and by planning region from 2023 onward, so its geography codes change mid-series. Records that CDC assigns to an unallocated placeholder geography (state FIPS plus '999') because the county of residence is unknown are excluded from the county file but retained in the state and national totals. Reporting years differ by disease and the most recent year is preliminary and subject to change. Data that were not collected in a given year are coded as NA, so cells with count 0 indicate that disease was tested for but not reported.",
+    "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+    "date_accessed": 2026,
+    "data_source": ["arbonet", "bundle_vector_borne"]
+  },
   "ahrf": {
     "name": "Area Health Resource File (AHRF)",
     "url": "https://data.hrsa.gov/topics/health-workforce/ahrf",
@@ -260,7 +272,7 @@
     "organization_url": "https://www.epic.com/",
     "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
     "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
-    "data_source": ["epic_chronic", "epic_diarrhea", "epic_hepb_vax", "epic_injury", "epic_resp_infections", "bundle_enteric_diseases", "bundle_youth_wellbeing"]
+    "data_source": ["epic_chronic", "epic_concussions", "epic_diarrhea", "epic_hepb_vax", "epic_injury", "epic_resp_infections", "bundle_enteric_diseases", "bundle_youth_wellbeing"]
   },
   "epic_health_alerts": {
     "name": "Epic Research Health Alerts",
@@ -362,7 +374,7 @@
     "location_url": "https://app.powerbigov.us/view?r=eyJrIjoiZmU5ZjA2ZDItNTU0MS00M2EzLWEyZmQtZmY3Y2RlZjdjYTdjIiwidCI6IjljZTcwODY5LTYwZGItNDRmZC1hYmU4LWQyNzY3MDc3ZmM4ZiJ9",
     "organization": "Centers for Disease Control and Prevention",
     "organization_url": "https://www.cdc.gov",
-    "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella). Both AST (phenotypic) and WGS (genotypic) test method results are available. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
+    "description": "Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella), tested against 22 antimicrobial agents and summarised into 29 resistance patterns. Both AST (phenotypic) and WGS (genotypic) test method results are available; WGS coverage begins in 2016. Data span 1999-2025. Records from years after 2021 are preliminary, since isolate collection and testing are still in progress, and a substantially higher share of those cells is flagged 'not_tested' as a result. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.",
     "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
     "date_accessed": 2026,
     "data_source": ["narms", "bundle_antimicrobial_resistance", "bundle_enteric_diseases"]
@@ -372,7 +384,7 @@
     "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
     "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
     "organization_url": "https://www.fda.gov/animal-veterinary",
-    "description": "Isolate-level antimicrobial susceptibility data from the FDA NARMS retail meats program. Samples collected from retail stores in participating states. Organisms tested include Campylobacter (coli, jejuni), Enterococcus (faecalis, faecium), Escherichia coli, and Salmonella (multiple serotypes). Meat sources include retail chicken, ground beef, ground turkey, pork chops, and veal. SIR (Susceptible/Intermediate/Resistant) calls based on CLSI breakpoints. Data span 2002-2021.",
+    "description": "Isolate-level antimicrobial susceptibility data from the FDA NARMS retail meats program. Samples collected from retail stores in participating states. Organisms tested include Campylobacter (coli, jejuni), Enterococcus (faecalis, faecium), Escherichia coli, and Salmonella (multiple serotypes), giving 221 distinct genus/species/serotype combinations tested against 31 antimicrobials. Meat sources include retail chicken, ground beef, ground turkey, pork chops, and veal. SIR (Susceptible/Intermediate/Resistant) calls based on CLSI breakpoints. Data span 2002-2021. Because this file is built by aggregating isolate-level records, a group with no isolates produces no row rather than a zero, so the 'no_isolates_tested' flag value does not occur here.",
     "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
     "date_accessed": 2025,
     "data_source": ["narms", "bundle_antimicrobial_resistance", "bundle_enteric_diseases"]
@@ -382,7 +394,7 @@
     "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
     "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
     "organization_url": "https://www.fda.gov/animal-veterinary",
-    "description": "Antimicrobial susceptibility data from the FDA NARMS animal diagnostic pathogen surveillance program. Isolates submitted by veterinary diagnostic laboratories across the United States. Organisms tested include Campylobacter, E. coli, Enterococcus, and Salmonella from various host species (cattle, swine, poultry, etc.). SIR calls based on CLSI breakpoints. Data available at state level.",
+    "description": "Antimicrobial susceptibility data from the FDA NARMS animal diagnostic pathogen surveillance program. Isolates submitted by veterinary diagnostic laboratories across the United States, covering 4 genera (E. coli, Klebsiella spp, S. pseudintermedius, Salmonella) tested against 74 antimicrobials. SIR calls based on CLSI breakpoints. Data available at state level and span 2017-2024. Because testing is driven by what a veterinarian ordered for a specific clinical case rather than by a fixed sampling panel, roughly half of the 'not_tested' cells in this file fall in years where the same organism and antimicrobial pairing was tested in a different host species or collection source. The 'no_isolates_tested' flag value does not occur here, since the file is built by aggregating isolate-level records.",
     "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
     "date_accessed": 2026,
     "data_source": ["narms", "bundle_antimicrobial_resistance", "bundle_enteric_diseases"]
@@ -392,7 +404,7 @@
     "url": "https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries",
     "organization": "U.S. Food and Drug Administration, Center for Veterinary Medicine",
     "organization_url": "https://www.fda.gov/animal-veterinary",
-    "description": "Isolate-level antimicrobial susceptibility data from four FDA NARMS food-producing animal surveillance programs: (1) HACCP slaughter surveillance (1997-present), covering federally inspected slaughter and processing plants; (2) Cecal sampling at slaughter (2013-present), testing cecal contents from food animals; (3) Minor Species (2020-2022), covering less common food animal species. Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella. SIR calls based on CLSI breakpoints. National-level data only (no state breakdown). Data span 1997-2023.",
+    "description": "Isolate-level antimicrobial susceptibility data from four FDA NARMS food-producing animal surveillance programs: (1) HACCP slaughter surveillance (1997-present), covering federally inspected slaughter and processing plants; (2) Cecal sampling at slaughter (2013-present), testing cecal contents from food animals; (3) Minor Species (2020-2022), covering less common food animal species. Organisms include Campylobacter, E. coli, Enterococcus, and Salmonella, giving 638 distinct genus/species/serotype combinations, of which 628 are Salmonella serotypes, tested against 35 antimicrobials. SIR calls based on CLSI breakpoints. National-level data only (no state breakdown). Data span 1997-2023. This is the only file in which the 'tested_no_mic' flag value occurs, almost entirely for streptomycin: three of the four source spreadsheets publish an 'STR SIR' interpretation column without a corresponding 'STR' concentration column, so resistance counts are available while MIC values are not. Because the file is built by aggregating isolate-level records, the 'no_isolates_tested' flag value does not occur here.",
     "restrictions": "Public domain. FDA data is generally not subject to copyright restrictions.",
     "date_accessed": 2026,
     "data_source": ["narms", "bundle_antimicrobial_resistance", "bundle_enteric_diseases"]
@@ -479,7 +491,7 @@
     "organization_url": "https://www.cdc.gov/",
     "description": "The National Notifiable Diseases Surveillance System (NNDSS) is a nationwide collaboration that enables all levels of public health to share notifiable disease related health information. Public health uses this information to monitor, control, and prevent the occurrence and spread of state-reportable and nationally notifiable infectious and some non-infectious diseases and conditions.",
     "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
-    "data_source": "nnds"
+    "data_source": ["nnds", "bundle_vector_borne"]
   },
   "noaa_wpc_heatrisk": {
     "name": "NOAA WPC HeatRisk",
