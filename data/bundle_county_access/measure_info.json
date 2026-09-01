@@ -44,7 +44,7 @@
   },
   "{category}time": {
     "short_name": "Date",
-    "short_description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019.",
+    "short_description": "Year-end date (YYYY-12-31) of the data vintage. Each source has its own vintage(s): HUD CHAS 2022 (ACS 5-year), AHRF 1999-2025, BLS LAUS 2025, USDA Food Access Research Atlas 2019, Census ACS 5-year 2019-2024, Census SAHIE and SAIPE 2024, Census urban/rural allocation 2020 (2020 Decennial), Census OQM 2020.",
     "categories": {
       "bundle_county_access/dist/county_determinants.parquet|": {},
       "bundle_county_access/dist/state_determinants.parquet|": {}
@@ -56,7 +56,12 @@
       "HUD CHAS": {},
       "HRSA AHRF": {},
       "BLS LAUS": {},
-      "USDA Food Access Research Atlas": {}
+      "USDA Food Access Research Atlas": {},
+      "Census ACS 5-Year": {},
+      "Census SAHIE": {},
+      "Census SAIPE": {},
+      "Census Urban Areas": {},
+      "Census OQM": {}
     },
     "categories": {
       "bundle_county_access/dist/county_determinants.parquet|": {},
@@ -85,12 +90,57 @@
       "ahrf_medicare_per_capita": { "source_id": "ahrf_medicare_per_capita" },
       "ahrf_ed_per_1k_medicare": { "source_id": "ahrf_ed_per_1k_medicare" },
       "bls_pct_unemployment": { "source_id": "bls_pct_unemployment" },
-      "usda_pct_limited_access_low_income": { "source_id": "usda_pct_limited_access_low_income" }
+      "usda_pct_limited_access_low_income": { "source_id": "usda_pct_limited_access_low_income" },
+      "acs_INB": { "source_id": "acs_INB" },
+      "acs_INC": { "source_id": "acs_INC" },
+      "acs_PCI": { "source_id": "acs_PCI" },
+      "acs_INL": { "source_id": "acs_INL" },
+      "acs_INM": { "source_id": "acs_INM" },
+      "acs_INN": { "source_id": "acs_INN" },
+      "acs_INO": { "source_id": "acs_INO" },
+      "acs_INP": { "source_id": "acs_INP" },
+      "acs_INQ": { "source_id": "acs_INQ" },
+      "acs_GNI": { "source_id": "acs_GNI" },
+      "acs_OWS": { "source_id": "acs_OWS" },
+      "acs_POV": { "source_id": "acs_POV" },
+      "acs_PVA": { "source_id": "acs_PVA" },
+      "acs_PVB": { "source_id": "acs_PVB" },
+      "acs_PVC": { "source_id": "acs_PVC" },
+      "acs_HBU": { "source_id": "acs_HBU" },
+      "acs_HBS": { "source_id": "acs_HBS" },
+      "acs_UMP": { "source_id": "acs_UMP" },
+      "acs_EDB": { "source_id": "acs_EDB" },
+      "acs_EDC": { "source_id": "acs_EDC" },
+      "acs_DCY": { "source_id": "acs_DCY" },
+      "acs_LEQ": { "source_id": "acs_LEQ" },
+      "acs_UNS": { "source_id": "acs_UNS" },
+      "acs_MCD": { "source_id": "acs_MCD" },
+      "acs_MCR": { "source_id": "acs_MCR" },
+      "acs_HUO": { "source_id": "acs_HUO" },
+      "acs_HUN": { "source_id": "acs_HUN" },
+      "acs_HTJ": { "source_id": "acs_HTJ" },
+      "acs_HUF": { "source_id": "acs_HUF" },
+      "acs_HUG": { "source_id": "acs_HUG" },
+      "acs_GRP": { "source_id": "acs_GRP" },
+      "acs_BDB": { "source_id": "acs_BDB" },
+      "acs_WWN": { "source_id": "acs_WWN" },
+      "acs_PUB": { "source_id": "acs_PUB" },
+      "acs_HTA": { "source_id": "acs_HTA" },
+      "acs_SNP": { "source_id": "acs_SNP" },
+      "census_ur_pct_urban_pop": { "source_id": "census_ur_pct_urban_pop" },
+      "census_ur_pct_urban_land": { "source_id": "census_ur_pct_urban_land" },
+      "census_ur_pct_urban_hu": { "source_id": "census_ur_pct_urban_hu" },
+      "sahie_pct_uninsured": { "source_id": "sahie_pct_uninsured" },
+      "sahie_pct_uninsured_adults": { "source_id": "sahie_pct_uninsured_adults" },
+      "sahie_pct_uninsured_children": { "source_id": "sahie_pct_uninsured_children" },
+      "saipe_pct_children_poverty": { "source_id": "saipe_pct_children_poverty" },
+      "saipe_median_household_income": { "source_id": "saipe_median_household_income" },
+      "oqm_self_response_rate": { "source_id": "oqm_self_response_rate" }
     }
   },
   "bundle_county_access/dist/state_determinants.parquet|outcome_name": {
     "short_name": "Determinant measure",
-    "short_description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file. USDA food access is county-only and does not appear in this file.",
+    "short_description": "Identifier of the measure in this row; the name matches the source column in the contributing source's standard file. USDA food access and the Census urban/rural allocation (census_ur_*) are county-only and do not appear in this file.",
     "levels": {
       "hud_pct_severe_housing_problems": { "source_id": "hud_pct_severe_housing_problems" },
       "ahrf_hpsa_prim_care": { "source_id": "ahrf_hpsa_prim_care" },
@@ -109,15 +159,57 @@
       "ahrf_pop_density": { "source_id": "ahrf_pop_density" },
       "ahrf_medicare_per_capita": { "source_id": "ahrf_medicare_per_capita" },
       "ahrf_ed_per_1k_medicare": { "source_id": "ahrf_ed_per_1k_medicare" },
-      "bls_pct_unemployment": { "source_id": "bls_pct_unemployment" }
+      "bls_pct_unemployment": { "source_id": "bls_pct_unemployment" },
+      "acs_INB": { "source_id": "acs_INB" },
+      "acs_INC": { "source_id": "acs_INC" },
+      "acs_PCI": { "source_id": "acs_PCI" },
+      "acs_INL": { "source_id": "acs_INL" },
+      "acs_INM": { "source_id": "acs_INM" },
+      "acs_INN": { "source_id": "acs_INN" },
+      "acs_INO": { "source_id": "acs_INO" },
+      "acs_INP": { "source_id": "acs_INP" },
+      "acs_INQ": { "source_id": "acs_INQ" },
+      "acs_GNI": { "source_id": "acs_GNI" },
+      "acs_OWS": { "source_id": "acs_OWS" },
+      "acs_POV": { "source_id": "acs_POV" },
+      "acs_PVA": { "source_id": "acs_PVA" },
+      "acs_PVB": { "source_id": "acs_PVB" },
+      "acs_PVC": { "source_id": "acs_PVC" },
+      "acs_HBU": { "source_id": "acs_HBU" },
+      "acs_HBS": { "source_id": "acs_HBS" },
+      "acs_UMP": { "source_id": "acs_UMP" },
+      "acs_EDB": { "source_id": "acs_EDB" },
+      "acs_EDC": { "source_id": "acs_EDC" },
+      "acs_DCY": { "source_id": "acs_DCY" },
+      "acs_LEQ": { "source_id": "acs_LEQ" },
+      "acs_UNS": { "source_id": "acs_UNS" },
+      "acs_MCD": { "source_id": "acs_MCD" },
+      "acs_MCR": { "source_id": "acs_MCR" },
+      "acs_HUO": { "source_id": "acs_HUO" },
+      "acs_HUN": { "source_id": "acs_HUN" },
+      "acs_HTJ": { "source_id": "acs_HTJ" },
+      "acs_HUF": { "source_id": "acs_HUF" },
+      "acs_HUG": { "source_id": "acs_HUG" },
+      "acs_GRP": { "source_id": "acs_GRP" },
+      "acs_BDB": { "source_id": "acs_BDB" },
+      "acs_WWN": { "source_id": "acs_WWN" },
+      "acs_PUB": { "source_id": "acs_PUB" },
+      "acs_HTA": { "source_id": "acs_HTA" },
+      "acs_SNP": { "source_id": "acs_SNP" },
+      "sahie_pct_uninsured": { "source_id": "sahie_pct_uninsured" },
+      "sahie_pct_uninsured_adults": { "source_id": "sahie_pct_uninsured_adults" },
+      "sahie_pct_uninsured_children": { "source_id": "sahie_pct_uninsured_children" },
+      "saipe_pct_children_poverty": { "source_id": "saipe_pct_children_poverty" },
+      "saipe_median_household_income": { "source_id": "saipe_median_household_income" },
+      "oqm_self_response_rate": { "source_id": "oqm_self_response_rate" }
     }
   },
   "{category}value": {
     "measure_column": "{category}outcome_name",
     "short_name": "Value",
     "long_name": "Value of the determinant measure identified by outcome_name",
-    "short_description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS and USDA measures are proportions (0-1); AHRF measures are counts, rates, codes, or percentages as documented for each source variable.",
-    "long_description": "Value for the measure identified by the `outcome_name` column, taken unchanged from the contributing source's standard file (see each level's source documentation for definition and unit). Rows with missing values are dropped, so sparse AHRF measures have fewer rows than the full county x year grid. Note that `ahrf_rural_urban_code` is a categorical USDA Rural-Urban Continuum Code (1-9) stored numerically.",
+    "short_description": "Value for the measure identified by the `outcome_name` column. Units differ by measure: HUD, BLS, USDA and every Census rate or share are proportions (0-1); AHRF measures are counts, rates, codes, or percentages; the remaining Census measures are dollars, ratios or index values as documented for each source variable.",
+    "long_description": "Value for the measure identified by the `outcome_name` column, taken unchanged from the contributing source's standard file (see each level's source documentation for definition and unit). Rows with missing values are dropped, so sparse AHRF measures have fewer rows than the full county x year grid. Note that `ahrf_rural_urban_code` is a categorical USDA Rural-Urban Continuum Code (1-9) stored numerically. Every Census rate and share in this file is a proportion on the same 0-1 scale as the HUD, BLS and USDA measures, so they are directly comparable; this includes the income-quintile shares (`acs_INL`, `acs_INM`, `acs_INN`, `acs_INO`, `acs_INP`), which sum to 1 within a geography-year, while `acs_INQ` is the top-5% share and is a subset of the highest quintile rather than a sixth additive category. Three Census groups are not proportions: `acs_OWS` is an unbounded S80/S20 ratio, `acs_GNI` is a 0-1 Gini index, and `acs_INB`, `acs_INC`, `acs_PCI` and `saipe_median_household_income` are nominal dollars, not inflation-adjusted, so they are not comparable across vintages without deflating.",
     "measure_type": "Mixed",
     "unit": "Varies by measure",
     "time_resolution": "Year",
@@ -129,27 +221,35 @@
 
   "_bundle": {
     "name": "bundle_county_access",
-    "sources": ["county_health_rankings", "area_health_resource_file", "bls_laus", "hud_chas", "usda_food_access"],
+    "sources": ["county_health_rankings", "area_health_resource_file", "bls_laus", "hud_chas", "usda_food_access", "census"],
     "dist_files": {
       "county_access.parquet": {
         "sources": ["county_health_rankings"],
         "source_files": ["county_health_rankings/standard/data_county.csv.gz"]
       },
       "county_determinants.parquet": {
-        "sources": ["area_health_resource_file", "bls_laus", "hud_chas", "usda_food_access"],
+        "sources": ["area_health_resource_file", "bls_laus", "hud_chas", "usda_food_access", "census"],
         "source_files": [
           "hud_chas/standard/data_county.csv.gz",
           "area_health_resource_file/standard/data.csv.gz",
           "bls_laus/standard/data_county.csv.gz",
-          "usda_food_access/standard/data_county.csv.gz"
+          "usda_food_access/standard/data_county.csv.gz",
+          "census/standard/data_county.csv.gz",
+          "census/standard/data_sahie.csv.gz",
+          "census/standard/data_saipe.csv.gz",
+          "census/standard/data_oqm.csv.gz"
         ]
       },
       "state_determinants.parquet": {
-        "sources": ["area_health_resource_file", "bls_laus", "hud_chas"],
+        "sources": ["area_health_resource_file", "bls_laus", "hud_chas", "census"],
         "source_files": [
           "hud_chas/standard/data_state.csv.gz",
           "area_health_resource_file/standard/data.csv.gz",
-          "bls_laus/standard/data_state.csv.gz"
+          "bls_laus/standard/data_state.csv.gz",
+          "census/standard/data_state.csv.gz",
+          "census/standard/data_sahie.csv.gz",
+          "census/standard/data_saipe.csv.gz",
+          "census/standard/data_oqm.csv.gz"
         ]
       }
     }
