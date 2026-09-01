@@ -44,7 +44,8 @@ human_long <- human_agent %>%
   select(
     geography, time, source, genus,
     species_serotype, antimicrobial_class, antimicrobial,
-    test_method, pct_resistant, n_resistant, n_tested
+    test_method, pct_resistant, n_resistant, n_tested,
+    flag_not_tested, flag_no_isolates_tested
   )
 
 # -----------------------------------------------------------------------------
@@ -106,6 +107,10 @@ resistance_agent <- bind_rows(
   animal_long,
   food_long
 ) %>%
+  mutate(
+    flag_not_tested = replace(flag_not_tested, is.na(flag_not_tested), 0L),
+    flag_no_isolates_tested = replace(flag_no_isolates_tested, is.na(flag_no_isolates_tested), 0L)
+  ) %>%
   # Convert geography FIPS to state names for display
   left_join(state_fips_lookup, by = c("geography" = "fips")) %>%
   mutate(
@@ -142,7 +147,8 @@ resistance_pattern <- human_pattern %>%
   select(-geography_name) %>%
   select(
     geography, time, source, genus, species_serotype,
-    pattern, test_method, pct_resistant, n_resistant, n_tested
+    pattern, test_method, pct_resistant, n_resistant, n_tested,
+    flag_not_tested, flag_no_isolates_tested
   ) %>%
   arrange(geography, time, genus, pattern)
 
