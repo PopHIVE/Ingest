@@ -5,7 +5,8 @@
 #
 # Columns are derived automatically from the repository:
 #   - docs/data_sources_index.json (the curated per-dataset "summary", reused
-#     verbatim as the Brief Description column)
+#     verbatim as the Brief Description column; build_docs.R generates it from
+#     the "_catalog" block of each source's measure_info.json)
 #   - measure_info.json "_sources" (title, organization, url, restrictions,
 #     time_resolution, and a fallback description)
 #   - standard/*.csv.gz data files (spatial / age / sex / other resolutions,
@@ -130,10 +131,12 @@ short_summary <- function(x, max_chars = 300) {
 # Curated metadata (docs/data_sources_index.json)
 # -----------------------------------------------------------------------------
 # The Brief Description and Search Terms columns reuse the hand-written
-# `summary` and `search_terms` each dataset carries in
+# `summary` and `search_terms` each dataset carries in the generated
 # docs/data_sources_index.json, so this table and the website data page never
-# drift apart. build_docs.R writes that file and runs before this script in
-# both CI workflows, so the values read here are always current.
+# drift apart. build_docs.R writes that file (from the `_catalog` block of each
+# source's measure_info.json, which is where the text is actually edited) and
+# runs before this script in both CI workflows, so the values read here are
+# always current.
 load_index_entries <- function(path = "docs/data_sources_index.json") {
   if (!file.exists(path)) {
     cat(sprintf("NOTE: %s not found -- deriving brief descriptions, no search terms\n", path))
@@ -722,7 +725,7 @@ no_summary <- vapply(source_summaries, function(s) {
 }, logical(1))
 if (any(no_summary)) {
   cat(sprintf(
-    "WARNING: %d source(s) have no curated summary in docs/data_sources_index.json -- using an auto-derived fallback: %s\n",
+    "WARNING: %d source(s) have no curated summary in measure_info.json _catalog -- using an auto-derived fallback: %s\n",
     sum(no_summary), paste(vapply(source_summaries[no_summary], `[[`, character(1), "folder"), collapse = ", ")))
 }
 
