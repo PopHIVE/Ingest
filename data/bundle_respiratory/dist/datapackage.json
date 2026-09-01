@@ -3,14 +3,837 @@
   "title": "Bundle Respiratory",
   "resources": [
     {
-      "bytes": 1752764,
+      "bytes": 26698,
       "encoding": "windows-1252",
-      "md5": "bc9cec321970cab6839e24408b674f62",
+      "md5": "dd533bebccf477fc7ba437fc847d0468",
+      "format": "parquet",
+      "name": "abcs_strep",
+      "filename": "abcs_strep.parquet",
+      "versions": {
+        "hash": ["b0210b83f349ba8352b5d9b20a71a0afcb12a02c"],
+        "author": ["scratch <scratch@local>"],
+        "date": ["Tue Sep 1 11:23:28 2026 -0400"],
+        "message": ["update measure_infos with data catalogue fields; combine strep and respiratory bundles"]
+      },
+      "source": [],
+      "data_format": "tall",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 13,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-20 12:57:37.356079",
+      "last_modified": "2026-09-01 11:50:04.015635",
+      "vintage": {},
+      "row_count": 6101,
+      "entity_count": 1,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 6100,
+            "info": {
+              "short_name": "Geography",
+              "long_name": "Geography name",
+              "short_description": "State name, or \"United States\" for the national total.",
+              "long_description": "Geographic area the row describes, as a state name or \"United States\" for the national total.",
+              "measure_type": "identifier",
+              "unit": "state name",
+              "id": "geography"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "United States": 6101
+            }
+          },
+          {
+            "name": "geography_fips",
+            "duplicates": 6100,
+            "info": {
+              "short_name": "Geography FIPS",
+              "long_name": "Geography FIPS code",
+              "short_description": "FIPS code for the geography; \"00\" is national.",
+              "long_description": "FIPS code for the row's geography, with \"00\" for the national total and 2-digit codes for states.",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "id": "geography_fips"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 6101
+            }
+          },
+          {
+            "name": "date",
+            "duplicates": 6073,
+            "info": {
+              "short_name": "Date",
+              "long_name": "Period end date",
+              "short_description": "End date of the reporting period, in YYYY-mm-dd format.",
+              "long_description": "End date of the reporting period the row covers.",
+              "measure_type": "date",
+              "unit": "date",
+              "id": "date"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "1997-12-31": 196,
+              "1998-12-31": 205,
+              "1999-12-31": 205,
+              "2000-12-31": 205,
+              "2001-12-31": 210,
+              "2002-12-31": 210,
+              "2003-12-31": 210,
+              "2004-12-31": 210,
+              "2005-12-31": 210,
+              "2006-12-31": 210,
+              "2007-12-31": 210,
+              "2008-12-31": 210,
+              "2009-12-31": 210,
+              "2010-12-31": 210,
+              "2011-12-31": 210,
+              "2012-12-31": 210,
+              "2013-12-31": 210,
+              "2014-12-31": 210,
+              "2015-12-31": 235,
+              "2016-12-31": 235,
+              "2017-12-31": 235,
+              "2018-12-31": 235,
+              "2019-12-31": 235,
+              "2020-12-31": 235,
+              "2021-12-31": 235,
+              "2022-12-31": 235,
+              "2023-12-31": 235,
+              "2024-12-31": 235
+            }
+          },
+          {
+            "name": "year",
+            "duplicates": 6073,
+            "info": {
+              "short_name": "Year",
+              "long_name": "Year",
+              "short_description": "Year of the reporting period.",
+              "long_description": "Year of the reporting period, the MMWR year for the weekly NNDSS series.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "id": "year"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 0,
+            "mean": 2010.928045,
+            "sd": 8.100996,
+            "min": 1997,
+            "max": 2024
+          },
+          {
+            "name": "pathogen",
+            "duplicates": 6099,
+            "info": {
+              "short_name": "Pathogen",
+              "long_name": "Bacterial pathogen",
+              "short_description": "Group A or Group B Streptococcus.",
+              "long_description": "Bacterial species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+              "measure_type": "category",
+              "id": "pathogen"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Group A Streptococcus": 1772,
+              "Group B Streptococcus": 4329
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 6091,
+            "info": {
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+              "measure_type": "category",
+              "id": "age"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "<1": 2026,
+              "1": 112,
+              "18-34": 112,
+              "18-64": 526,
+              "2-4": 112,
+              "35-49": 112,
+              "5-17": 112,
+              "50-64": 112,
+              "65+": 638,
+              "Total": 2239
+            }
+          },
+          {
+            "name": "sex",
+            "duplicates": 6098,
+            "info": {
+              "short_name": "Sex",
+              "long_name": "Sex",
+              "short_description": "Sex; \"Total\" combines both.",
+              "long_description": "Sex of the cases the row describes, reported for Group A only.",
+              "measure_type": "category",
+              "id": "sex"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Female": 56,
+              "Male": 56,
+              "Total": 5989
+            }
+          },
+          {
+            "name": "race_ethnicity",
+            "duplicates": 6097,
+            "info": {
+              "short_name": "Race/Ethnicity",
+              "long_name": "Race and ethnicity",
+              "short_description": "Race and ethnicity; \"Total\" combines all groups.",
+              "long_description": "Race and ethnicity of the cases the row describes, collapsed by ABCs to White, Black and Other.",
+              "measure_type": "category",
+              "id": "race_ethnicity"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Black": 224,
+              "Other": 224,
+              "Total": 5429,
+              "White": 224
+            }
+          },
+          {
+            "name": "onset",
+            "duplicates": 6098,
+            "info": {
+              "short_name": "Onset timing",
+              "long_name": "Infant disease onset timing",
+              "short_description": "Early- or late-onset infant Group B disease.",
+              "long_description": "Whether infant Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+              "measure_type": "category",
+              "id": "onset"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Early-onset": 915,
+              "Late-onset": 915,
+              "Total": 4271
+            }
+          },
+          {
+            "name": "rate_denominator",
+            "duplicates": 6098,
+            "info": {
+              "short_name": "Rate denominator",
+              "long_name": "Population the rate is relative to",
+              "short_description": "Whether a rate is per 100,000 of the row's stratum or of the whole population.",
+              "long_description": "Which population a per-100,000 rate is relative to, either the stratum the row describes or the whole population.",
+              "measure_type": "category",
+              "id": "rate_denominator"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Population": 448,
+              "Stratum population": 1456,
+              "Total": 4197
+            }
+          },
+          {
+            "name": "syndrome",
+            "duplicates": 6093,
+            "info": {
+              "short_name": "Clinical syndrome",
+              "long_name": "Clinical syndrome",
+              "short_description": "Clinical presentation the row describes; \"Total\" where not syndrome-specific.",
+              "long_description": "Clinical presentation the row reports, for the syndrome measures.",
+              "measure_type": "category",
+              "id": "syndrome"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "bacteremia_with_pneumonia": 81,
+              "bacteremia_without_focus": 105,
+              "cellulitis": 24,
+              "meningitis": 81,
+              "necrotizing_fasciitis": 24,
+              "pneumonia": 24,
+              "strep_toxic_shock": 24,
+              "Total": 5738
+            }
+          },
+          {
+            "name": "antibiotic",
+            "duplicates": 6093,
+            "info": {
+              "short_name": "Antibiotic",
+              "long_name": "Antibiotic tested",
+              "short_description": "Drug the resistance percentage refers to; \"Total\" where not drug-specific.",
+              "long_description": "Antibiotic a pct_resistant row refers to.",
+              "measure_type": "category",
+              "id": "antibiotic"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "cefotaxime": 168,
+              "clindamycin": 168,
+              "erythromycin": 168,
+              "linezolid": 168,
+              "penicillin": 168,
+              "tetracycline": 168,
+              "Total": 4925,
+              "vancomycin": 168
+            }
+          },
+          {
+            "name": "emm_type",
+            "duplicates": 6079,
+            "info": {
+              "short_name": "emm type",
+              "long_name": "Group A emm type",
+              "short_description": "emm type the row describes; \"Total\" where not type-specific.",
+              "long_description": "emm type of the Group A Streptococcus isolates, the M protein gene sequence type.",
+              "measure_type": "category",
+              "id": "emm_type"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "emm_1": 28,
+              "emm_11": 28,
+              "emm_12": 28,
+              "emm_2": 28,
+              "emm_28": 28,
+              "emm_3": 28,
+              "emm_4": 28,
+              "emm_43": 28,
+              "emm_49": 28,
+              "emm_59": 28,
+              "emm_6": 28,
+              "emm_60": 28,
+              "emm_75": 28,
+              "emm_77": 28,
+              "emm_81": 28,
+              "emm_82": 28,
+              "emm_83": 28,
+              "emm_89": 28,
+              "emm_91": 28,
+              "emm_92": 28,
+              "other": 28,
+              "Total": 5513
+            }
+          },
+          {
+            "name": "serotype",
+            "duplicates": 6090,
+            "info": {
+              "short_name": "Serotype",
+              "long_name": "Group B capsular serotype",
+              "short_description": "Capsular serotype the row describes; \"Total\" where not serotype-specific.",
+              "long_description": "Capsular serotype of the Group B Streptococcus isolates.",
+              "measure_type": "category",
+              "id": "serotype"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "ia": 140,
+              "ib": 140,
+              "ii": 140,
+              "iii": 140,
+              "iv": 140,
+              "non_typeable": 140,
+              "Total": 4701,
+              "v": 140,
+              "vi": 140,
+              "vi_vii_viii_or_ix": 140,
+              "vi_viii": 140
+            }
+          },
+          {
+            "name": "alph_type",
+            "duplicates": 6095,
+            "info": {
+              "short_name": "ALPH type",
+              "long_name": "Group B ALPH gene type",
+              "short_description": "Alpha-like protein gene the row describes; \"Total\" where not type-specific.",
+              "long_description": "Alpha-like protein (ALPH) surface gene type of the Group B Streptococcus isolates.",
+              "measure_type": "category",
+              "id": "alph_type"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "alp1": 50,
+              "alp23": 50,
+              "alpha": 50,
+              "neg": 50,
+              "rib": 50,
+              "Total": 5851
+            }
+          },
+          {
+            "name": "measure",
+            "duplicates": 6090,
+            "info": {
+              "short_name": "Measure",
+              "levels": {
+                "rate_cases": {
+                  "source_id": "abcs_rate_cases",
+                  "id": "rate_cases",
+                  "name": "abcs_rate_cases",
+                  "duplicates": 706,
+                  "info": {
+                    "id": "abcs_rate_cases",
+                    "short_name": "Case rate",
+                    "long_name": "Invasive disease case rate",
+                    "category": "infectious_disease",
+                    "short_description": "Invasive disease cases per 100,000 population.",
+                    "long_description": "Rate of invasive disease cases per 100,000 population.",
+                    "statement": "In {location}, the invasive case rate was {value} per 100,000.",
+                    "measure_type": "Rate",
+                    "unit": "Cases per 100,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "abcs_gas"
+                      },
+                      {
+                        "id": "abcs_gbs"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "abcs",
+                      "data_dir": "/data/abcs/standard",
+                      "file": "strep_rates.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    27
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 6.425756,
+                  "sd": 12.180152,
+                  "min": 0,
+                  "max": 115.7
+                },
+                "rate_deaths": {
+                  "source_id": "abcs_rate_deaths",
+                  "id": "rate_deaths",
+                  "name": "abcs_rate_deaths",
+                  "duplicates": 795,
+                  "info": {
+                    "id": "abcs_rate_deaths",
+                    "short_name": "Death rate",
+                    "long_name": "Invasive disease death rate",
+                    "category": "infectious_disease",
+                    "short_description": "Deaths from invasive disease per 100,000 population.",
+                    "long_description": "Rate of deaths from invasive disease per 100,000 population.",
+                    "measure_type": "Rate",
+                    "unit": "Deaths per 100,000",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "abcs_gas"
+                      },
+                      {
+                        "id": "abcs_gbs"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "abcs",
+                      "data_dir": "/data/abcs/standard",
+                      "file": "strep_rates.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    27
+                  ],
+                  "type": "float",
+                  "missing": 448,
+                  "mean": 0.696766,
+                  "sd": 1.053664,
+                  "min": 0,
+                  "max": 5.66
+                },
+                "n_cases": {
+                  "source_id": "abcs_N_cases",
+                  "id": "n_cases",
+                  "name": "abcs_N_cases",
+                  "duplicates": 24,
+                  "info": {
+                    "id": "abcs_N_cases",
+                    "short_name": "Cases",
+                    "long_name": "Estimated number of invasive cases",
+                    "category": "infectious_disease",
+                    "short_description": "Estimated annual invasive disease cases.",
+                    "long_description": "Estimated number of invasive disease cases in the year.",
+                    "measure_type": "Count",
+                    "unit": "Cases",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "abcs_gas"
+                      },
+                      {
+                        "id": "abcs_gbs"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "abcs",
+                      "data_dir": "/data/abcs/standard",
+                      "file": "strep_counts.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    27
+                  ],
+                  "type": "integer",
+                  "missing": 0,
+                  "mean": 9187.107143,
+                  "sd": 10820.031933,
+                  "min": 540,
+                  "max": 43100
+                },
+                "n_deaths": {
+                  "source_id": "abcs_N_deaths",
+                  "id": "n_deaths",
+                  "name": "abcs_N_deaths",
+                  "duplicates": 96,
+                  "info": {
+                    "id": "abcs_N_deaths",
+                    "short_name": "Deaths",
+                    "long_name": "Estimated number of deaths",
+                    "category": "infectious_disease",
+                    "short_description": "Estimated annual deaths from invasive disease.",
+                    "long_description": "Estimated number of deaths from invasive disease in the year.",
+                    "measure_type": "Count",
+                    "unit": "Deaths",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "abcs_gas"
+                      },
+                      {
+                        "id": "abcs_gbs"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "abcs",
+                      "data_dir": "/data/abcs/standard",
+                      "file": "strep_counts.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    27
+                  ],
+                  "type": "integer",
+                  "missing": 84,
+                  "mean": 1790.089286,
+                  "sd": 552.883755,
+                  "min": 1000,
+                  "max": 4210
+                },
+                "n_survivals": {
+                  "source_id": "abcs_N_survivals",
+                  "id": "n_survivals",
+                  "name": "abcs_N_survivals",
+                  "duplicates": 85,
+                  "info": {
+                    "id": "abcs_N_survivals",
+                    "short_name": "Survivals",
+                    "long_name": "Estimated number of survivals",
+                    "category": "infectious_disease",
+                    "short_description": "Estimated annual invasive disease cases who survived.",
+                    "long_description": "Estimated number of people with invasive disease who survived, in the year.",
+                    "measure_type": "Count",
+                    "unit": "People",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "abcs_gas"
+                      },
+                      {
+                        "id": "abcs_gbs"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "abcs",
+                      "data_dir": "/data/abcs/standard",
+                      "file": "strep_counts.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    27
+                  ],
+                  "type": "integer",
+                  "missing": 84,
+                  "mean": 18855,
+                  "sd": 8085.829018,
+                  "min": 7750,
+                  "max": 38890
+                },
+                "pct_resistant": {
+                  "source_id": "abcs_pct_resistant_penicillin",
+                  "id": "pct_resistant"
+                },
+                "rate_syndrome": {
+                  "source_id": "abcs_gas_rate_syndrome_cellulitis",
+                  "id": "rate_syndrome"
+                },
+                "pct_syndrome": {
+                  "source_id": "abcs_gbs_pct_syndrome_meningitis",
+                  "id": "pct_syndrome"
+                },
+                "pct_emm_type": {
+                  "source_id": "abcs_gas_emm_pct_emm_1",
+                  "id": "pct_emm_type"
+                },
+                "pct_serotype": {
+                  "source_id": "abcs_gbs_pct_serotype_ia",
+                  "id": "pct_serotype"
+                },
+                "pct_alph_type": {
+                  "source_id": "abcs_gbs_pct_alph_alp1",
+                  "id": "pct_alph_type"
+                }
+              },
+              "id": "measure"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "n_cases": 140,
+              "n_deaths": 140,
+              "n_survivals": 140,
+              "pct_alph_type": 250,
+              "pct_emm_type": 588,
+              "pct_resistant": 1176,
+              "pct_serotype": 1400,
+              "pct_syndrome": 243,
+              "rate_cases": 952,
+              "rate_deaths": 952,
+              "rate_syndrome": 120
+            }
+          },
+          {
+            "name": "value",
+            "duplicates": 4872,
+            "info": {
+              "short_name": "Value",
+              "long_name": "Measure value",
+              "short_description": "Value of the measure named in the measure column.",
+              "long_description": "Value of the measure named in the measure column, whose units differ by measure; blank where CDC published nothing, so a 0 is always a measured zero.",
+              "measure_type": "Mixed",
+              "unit": "varies by measure",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "value"
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 1250,
+            "mean": 512.614682,
+            "sd": 3227.368943,
+            "min": 0,
+            "max": 43100
+          },
+          {
+            "name": "n_type",
+            "duplicates": 5915,
+            "info": {
+              "short_name": "Isolates of this type",
+              "long_name": "Number of isolates of this type",
+              "short_description": "Isolates of the emm type on this row.",
+              "long_description": "Number of isolates of the emm type on this row, the numerator behind pct_emm_type.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "n_type"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 5551,
+            "mean": 71.387273,
+            "sd": 96.313757,
+            "min": 1,
+            "max": 935
+          },
+          {
+            "name": "n_type_status",
+            "duplicates": 6098,
+            "info": {
+              "short_name": "Type count status",
+              "long_name": "Availability of n_type",
+              "short_description": "Whether n_type is published, unpublished, or not applicable.",
+              "long_description": "Whether n_type is published, applies but was not published, or does not apply to the measure.",
+              "measure_type": "category",
+              "levels": {
+                "reported": {
+                  "short_name": "Reported",
+                  "short_description": "n_type holds CDC's published per-type count.",
+                  "id": "reported"
+                },
+                "not_reported": {
+                  "short_name": "Not reported",
+                  "short_description": "An emm type CDC did not itemise that year.",
+                  "id": "not_reported"
+                },
+                "not_applicable": {
+                  "short_name": "Not applicable",
+                  "short_description": "Any measure other than pct_emm_type.",
+                  "id": "not_applicable"
+                }
+              },
+              "id": "n_type_status"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "not_applicable": 5513,
+              "not_reported": 38,
+              "reported": 550
+            }
+          },
+          {
+            "name": "n_isolates",
+            "duplicates": 5900,
+            "info": {
+              "short_name": "Isolates",
+              "long_name": "Number of isolates",
+              "short_description": "Isolate count behind the percentage on this row.",
+              "long_description": "Number of isolates the percentage on this row is calculated over.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "abcs_gas"
+                },
+                {
+                  "id": "abcs_gbs"
+                }
+              ],
+              "id": "n_isolates"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 3597,
+            "mean": 929.991214,
+            "sd": 844.663225,
+            "min": 0,
+            "max": 3930
+          },
+          {
+            "name": "n_isolates_status",
+            "duplicates": 6098,
+            "info": {
+              "short_name": "Isolate count status",
+              "long_name": "Availability of n_isolates",
+              "short_description": "Whether n_isolates is published, unpublished, or not applicable.",
+              "long_description": "Whether n_isolates is published, applies but was not published, or does not apply to the measure.",
+              "measure_type": "category",
+              "levels": {
+                "reported": {
+                  "short_name": "Reported",
+                  "short_description": "n_isolates holds CDC's published count.",
+                  "id": "reported"
+                },
+                "not_reported": {
+                  "short_name": "Not reported",
+                  "short_description": "The measure has an isolate denominator but CDC published none for this row.",
+                  "id": "not_reported"
+                },
+                "not_applicable": {
+                  "short_name": "Not applicable",
+                  "short_description": "The measure has no isolate denominator.",
+                  "id": "not_applicable"
+                }
+              },
+              "id": "n_isolates_status"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "not_applicable": 2687,
+              "not_reported": 910,
+              "reported": 2504
+            }
+          }
+        ]
+      },
+      "sha512": "32a82e4e42f083d3c6dfd0d43e78580c3d00e41ef080ca6c3b912f690ed9d6a0ee730571b9b29e98a9a25c3b725127ee439f59deb6a901cc659c8f80839dab2b"
+    },
+    {
+      "bytes": 1752871,
+      "encoding": "windows-1252",
+      "md5": "ba1b34d709eff237ccd108f0657378a9",
       "format": "parquet",
       "name": "covid_ed_visits_by_county",
       "filename": "covid_ed_visits_by_county.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -139,6 +962,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -267,6 +1091,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -395,6 +1220,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -533,8 +1359,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:54.410362",
-      "last_modified": "2026-09-01 12:21:54.410362",
+      "created": "2026-08-14 11:08:34.390465",
+      "last_modified": "2026-09-01 11:49:58.564901",
       "vintage": {},
       "row_count": 640764,
       "entity_count": 0,
@@ -891,17 +1717,18 @@
           }
         ]
       },
-      "sha512": "f81ab4db0d73fb04a8f5a2d6fe591a44babc669cc3d3b191c05f296fcd8185a5399e5d973929ed875dcdce48b1d5f4ea9429506512a5fa9d7c6cf71cfae6aca8"
+      "sha512": "0ae80e6ad78bea64621afef2f23826ca297c30adb8c14fd7c1e3ab34447d335cdaa540eaa4c285fad7be8b370b75567e0178f2b8c768cd34bc0353f47a7818c7"
     },
     {
-      "bytes": 992887,
+      "bytes": 992527,
       "encoding": "windows-1252",
-      "md5": "5987f846eb764825e93234c46d25c73f",
+      "md5": "4cac0ea40bd17d10aa88964ece92d0aa",
       "format": "parquet",
       "name": "covid_overall_trends",
       "filename": "covid_overall_trends.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -1099,6 +1926,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -1296,6 +2124,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -1493,6 +2322,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -1700,8 +2530,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:53.303362",
-      "last_modified": "2026-09-01 12:21:53.303362",
+      "created": "2026-08-14 11:08:34.403715",
+      "last_modified": "2026-09-01 11:49:57.365032",
       "vintage": {},
       "row_count": 33197,
       "entity_count": 52,
@@ -2262,17 +3092,18 @@
           }
         ]
       },
-      "sha512": "a4504ccac5f24b306c8a2c724501b7c3c27c447b510d50e857e121d9bfed2889df093d996fdf6866c7d1f34735ce681f3d7af900d53ff28f295e5dc1de681701"
+      "sha512": "eeb9c67e5fe05089e08683643c7f10a2218688788150bf8d0134174d93efaa6ea6695662c582981d0ce1596a224eca6f4c620e162756ca1555b5db1ccedf8286"
     },
     {
-      "bytes": 1417759,
+      "bytes": 1417736,
       "encoding": "UTF-16BE",
-      "md5": "5453b696e3af64157369efcdc7993e3a",
+      "md5": "ade1f2f38c803f36f90d5c01ab9a1cfd",
       "format": "parquet",
       "name": "covid_trends_by_age",
       "filename": "covid_trends_by_age.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -2410,6 +3241,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -2547,6 +3379,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -2684,6 +3517,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -2831,8 +3665,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:57.307552",
-      "last_modified": "2026-09-01 12:21:57.307552",
+      "created": "2026-08-14 11:08:34.417767",
+      "last_modified": "2026-09-01 11:50:01.598791",
       "vintage": {},
       "row_count": 47779,
       "entity_count": 52,
@@ -3213,17 +4047,18 @@
           }
         ]
       },
-      "sha512": "29f2377736f9db7486ddd67f6397c6af1d2190695a5879ec0e355cc5a5272bac9fdf27be8765bff5904cb5234464bdba35e1114c9fec8e6e06aee76144bc7de4"
+      "sha512": "e858c5c109310c6dd615adcdd85ad3658959dcdab0fe235ac5d0f7538e355204790d39e521336df87b999f1b5cf62bd783bd90194d4fac9e4bd714f4f4d09833"
     },
     {
-      "bytes": 1795979,
+      "bytes": 1796445,
       "encoding": "windows-1252",
-      "md5": "adbc7efd35c5cb4140a5068034fe99bf",
+      "md5": "e63d88415bfe6d16f7b4f63809866a5e",
       "format": "parquet",
       "name": "flu_ed_visits_by_county",
       "filename": "flu_ed_visits_by_county.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -3352,6 +4187,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -3480,6 +4316,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -3608,6 +4445,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -3746,8 +4584,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:54.187347",
-      "last_modified": "2026-09-01 12:21:54.187347",
+      "created": "2026-08-14 11:08:34.430246",
+      "last_modified": "2026-09-01 11:49:58.378778",
       "vintage": {},
       "row_count": 640764,
       "entity_count": 0,
@@ -4104,17 +4942,18 @@
           }
         ]
       },
-      "sha512": "40d99ce49a682e808493b56ffbbbf0107250687fce54a860492f729813d10d7e2395b1d78fbdb5ff7e3644012b7929bfa6cb1217bb64fe96c749704eac951524"
+      "sha512": "08c5cbd5b654e208fbccffba228ff52e53f917a66450942b0330729a796c5d30b8c54c5c2d7af451720870096f479fe2dd021cd187446c57fd80732bb1e67ea9"
     },
     {
-      "bytes": 920096,
+      "bytes": 920191,
       "encoding": "windows-1252",
-      "md5": "fbfea9d4b6cf4460a7014fc13fadb980",
+      "md5": "be0b71a15ee81a7d214ee84cea73967d",
       "format": "parquet",
       "name": "flu_overall_trends",
       "filename": "flu_overall_trends.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "3d84b1617732dbe5c5eb680ad813162c225d21e7",
           "262974e81bcddcd9849cc3f228c565cd8fb0691b",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
@@ -4342,6 +5181,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -4569,6 +5409,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Mon Aug 31 14:49:42 2026 +0000",
           "Sun Aug 30 12:41:50 2026 +0000",
           "Sat Aug 29 13:01:46 2026 +0000",
@@ -4796,6 +5637,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled daily data update",
           "scheduled daily data update",
@@ -5033,8 +5875,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:53.230364",
-      "last_modified": "2026-09-01 12:21:53.230364",
+      "created": "2026-08-14 11:08:34.452116",
+      "last_modified": "2026-09-01 11:49:57.228012",
       "vintage": {},
       "row_count": 33023,
       "entity_count": 52,
@@ -6272,17 +7114,18 @@
           }
         ]
       },
-      "sha512": "fdc7a7f3f63784dc37bea173a39237b3d7a3b618b7a41314d78e66838369245a4a804b3359e79b9486afdbe0ba8f6781c5976bd3082dae0ead8a3b36f0e09f45"
+      "sha512": "0f0cb49c8d970adca6f8ba1104ffec31e528a39cc9d4f73391702955520f3e083697f78b9a983e470368a7a8a6440858898af6dbc1c02f62ae809d4f89f4938f"
     },
     {
-      "bytes": 1331473,
+      "bytes": 1331634,
       "encoding": "UTF-16BE",
-      "md5": "79181cc693715c67d7e3daeb88b074ab",
+      "md5": "4857cf911fe52ff3e1a80c6a53d40efb",
       "format": "parquet",
       "name": "flu_trends_by_age",
       "filename": "flu_trends_by_age.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -6420,6 +7263,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -6557,6 +7401,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -6694,6 +7539,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -6841,8 +7687,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:57.263549",
-      "last_modified": "2026-09-01 12:21:57.263549",
+      "created": "2026-08-14 11:08:34.459938",
+      "last_modified": "2026-09-01 11:50:01.546207",
       "vintage": {},
       "row_count": 38677,
       "entity_count": 52,
@@ -7223,17 +8069,795 @@
           }
         ]
       },
-      "sha512": "4ac0f6c70252aefa7908d6d03c83419910962a2236710f33ed3cd4d6565d7d93d99c59d9b742b101d572592784f14a7fc53414d424b7f78499d056de3c865460"
+      "sha512": "14356f430c2754bd6293964fa1527ced461af623806f8e3d7846f3541033558d69803330a1db19b4add3b1d9b842a2e051e6608dd05bda72d1a2e34d1fd0435f"
     },
     {
-      "bytes": 92465,
+      "bytes": 303381,
+      "encoding": "windows-1252",
+      "md5": "d2b30310dd7f73acbc3d65e16d128649",
+      "format": "parquet",
+      "name": "gas_state",
+      "filename": "gas_state.parquet",
+      "versions": {
+        "hash": ["b0210b83f349ba8352b5d9b20a71a0afcb12a02c"],
+        "author": ["scratch <scratch@local>"],
+        "date": ["Tue Sep 1 11:23:28 2026 -0400"],
+        "message": ["update measure_infos with data catalogue fields; combine strep and respiratory bundles"]
+      },
+      "source": [],
+      "data_format": "tall",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-20 12:57:37.360081",
+      "last_modified": "2026-09-01 11:50:04.365564",
+      "vintage": {},
+      "row_count": 64480,
+      "entity_count": 52,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 64428,
+            "info": {
+              "short_name": "Geography",
+              "long_name": "Geography name",
+              "short_description": "State name, or \"United States\" for the national total.",
+              "long_description": "Geographic area the row describes, as a state name or \"United States\" for the national total.",
+              "measure_type": "identifier",
+              "unit": "state name",
+              "id": "geography"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Alabama": 1240,
+              "Alaska": 1240,
+              "Arizona": 1240,
+              "Arkansas": 1240,
+              "California": 1240,
+              "Colorado": 1240,
+              "Connecticut": 1240,
+              "Delaware": 1240,
+              "District of Columbia": 1240,
+              "Florida": 1240,
+              "Georgia": 1240,
+              "Hawaii": 1240,
+              "Idaho": 1240,
+              "Illinois": 1240,
+              "Indiana": 1240,
+              "Iowa": 1240,
+              "Kansas": 1240,
+              "Kentucky": 1240,
+              "Louisiana": 1240,
+              "Maine": 1240,
+              "Maryland": 1240,
+              "Massachusetts": 1240,
+              "Michigan": 1240,
+              "Minnesota": 1240,
+              "Mississippi": 1240,
+              "Missouri": 1240,
+              "Montana": 1240,
+              "Nebraska": 1240,
+              "Nevada": 1240,
+              "New Hampshire": 1240,
+              "New Jersey": 1240,
+              "New Mexico": 1240,
+              "New York": 1240,
+              "North Carolina": 1240,
+              "North Dakota": 1240,
+              "Ohio": 1240,
+              "Oklahoma": 1240,
+              "Oregon": 1240,
+              "Pennsylvania": 1240,
+              "Rhode Island": 1240,
+              "South Carolina": 1240,
+              "South Dakota": 1240,
+              "Tennessee": 1240,
+              "Texas": 1240,
+              "United States": 1240,
+              "Utah": 1240,
+              "Vermont": 1240,
+              "Virginia": 1240,
+              "Washington": 1240,
+              "West Virginia": 1240,
+              "Wisconsin": 1240,
+              "Wyoming": 1240
+            }
+          },
+          {
+            "name": "geography_fips",
+            "duplicates": 64428,
+            "info": {
+              "short_name": "Geography FIPS",
+              "long_name": "Geography FIPS code",
+              "short_description": "FIPS code for the geography; \"00\" is national.",
+              "long_description": "FIPS code for the row's geography, with \"00\" for the national total and 2-digit codes for states.",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "id": "geography_fips"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 1240,
+              "01": 1240,
+              "02": 1240,
+              "04": 1240,
+              "05": 1240,
+              "06": 1240,
+              "08": 1240,
+              "09": 1240,
+              "10": 1240,
+              "11": 1240,
+              "12": 1240,
+              "13": 1240,
+              "15": 1240,
+              "16": 1240,
+              "17": 1240,
+              "18": 1240,
+              "19": 1240,
+              "20": 1240,
+              "21": 1240,
+              "22": 1240,
+              "23": 1240,
+              "24": 1240,
+              "25": 1240,
+              "26": 1240,
+              "27": 1240,
+              "28": 1240,
+              "29": 1240,
+              "30": 1240,
+              "31": 1240,
+              "32": 1240,
+              "33": 1240,
+              "34": 1240,
+              "35": 1240,
+              "36": 1240,
+              "37": 1240,
+              "38": 1240,
+              "39": 1240,
+              "40": 1240,
+              "41": 1240,
+              "42": 1240,
+              "44": 1240,
+              "45": 1240,
+              "46": 1240,
+              "47": 1240,
+              "48": 1240,
+              "49": 1240,
+              "50": 1240,
+              "51": 1240,
+              "53": 1240,
+              "54": 1240,
+              "55": 1240,
+              "56": 1240
+            }
+          },
+          {
+            "name": "date",
+            "duplicates": 64204,
+            "info": {
+              "short_name": "Date",
+              "long_name": "Period end date",
+              "short_description": "End date of the reporting period, in YYYY-mm-dd format.",
+              "long_description": "End date of the reporting period the row covers.",
+              "measure_type": "date",
+              "unit": "date",
+              "id": "date"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2017-03-31": 1092,
+              "2017-06-30": 1092,
+              "2017-09-30": 1092,
+              "2017-12-31": 1092,
+              "2018-03-31": 1092,
+              "2018-06-30": 1092,
+              "2018-09-30": 1092,
+              "2018-12-31": 1092,
+              "2019-03-31": 1092,
+              "2019-06-30": 1092,
+              "2019-09-30": 1092,
+              "2019-12-31": 1092,
+              "2020-03-31": 1092,
+              "2020-06-30": 1092,
+              "2020-09-30": 1092,
+              "2020-12-31": 1092,
+              "2021-03-31": 1092,
+              "2021-06-30": 1092,
+              "2021-09-30": 1092,
+              "2021-12-31": 1092,
+              "2022-01-08": 104,
+              "2022-01-15": 104,
+              "2022-01-22": 104,
+              "2022-01-29": 104,
+              "2022-02-05": 104,
+              "2022-02-12": 104,
+              "2022-02-19": 104,
+              "2022-02-26": 104,
+              "2022-03-05": 104,
+              "2022-03-12": 104,
+              "2022-03-19": 104,
+              "2022-03-26": 104,
+              "2022-03-31": 1092,
+              "2022-04-02": 104,
+              "2022-04-09": 104,
+              "2022-04-16": 104,
+              "2022-04-23": 104,
+              "2022-04-30": 104,
+              "2022-05-07": 104,
+              "2022-05-14": 104,
+              "2022-05-21": 104,
+              "2022-05-28": 104,
+              "2022-06-04": 104,
+              "2022-06-11": 104,
+              "2022-06-18": 104,
+              "2022-06-25": 104,
+              "2022-06-30": 1092,
+              "2022-07-02": 104,
+              "2022-07-09": 104,
+              "2022-07-16": 104,
+              "2022-07-23": 104,
+              "2022-07-30": 104,
+              "2022-08-06": 104,
+              "2022-08-13": 104,
+              "2022-08-20": 104,
+              "2022-08-27": 104,
+              "2022-09-03": 104,
+              "2022-09-10": 104,
+              "2022-09-17": 104,
+              "2022-09-24": 104,
+              "2022-09-30": 1092,
+              "2022-10-01": 104,
+              "2022-10-08": 104,
+              "2022-10-15": 104,
+              "2022-10-22": 104,
+              "2022-10-29": 104,
+              "2022-11-05": 104,
+              "2022-11-12": 104,
+              "2022-11-19": 104,
+              "2022-11-26": 104,
+              "2022-12-03": 104,
+              "2022-12-10": 104,
+              "2022-12-17": 104,
+              "2022-12-24": 104,
+              "2022-12-31": 1196,
+              "2023-01-07": 104,
+              "2023-01-14": 104,
+              "2023-01-21": 104,
+              "2023-01-28": 104,
+              "2023-02-04": 104,
+              "2023-02-11": 104,
+              "2023-02-18": 104,
+              "2023-02-25": 104,
+              "2023-03-04": 104,
+              "2023-03-11": 104,
+              "2023-03-18": 104,
+              "2023-03-25": 104,
+              "2023-03-31": 1092,
+              "2023-04-01": 104,
+              "2023-04-08": 104,
+              "2023-04-15": 104,
+              "2023-04-22": 104,
+              "2023-04-29": 104,
+              "2023-05-06": 104,
+              "2023-05-13": 104,
+              "2023-05-20": 104,
+              "2023-05-27": 104,
+              "2023-06-03": 104,
+              "2023-06-10": 104,
+              "2023-06-17": 104,
+              "2023-06-24": 104,
+              "2023-06-30": 1092,
+              "2023-07-01": 104,
+              "2023-07-08": 104,
+              "2023-07-15": 104,
+              "2023-07-22": 104,
+              "2023-07-29": 104,
+              "2023-08-05": 104,
+              "2023-08-12": 104,
+              "2023-08-19": 104,
+              "2023-08-26": 104,
+              "2023-09-02": 104,
+              "2023-09-09": 104,
+              "2023-09-16": 104,
+              "2023-09-23": 104,
+              "2023-09-30": 1196,
+              "2023-10-07": 104,
+              "2023-10-14": 104,
+              "2023-10-21": 104,
+              "2023-10-28": 104,
+              "2023-11-04": 104,
+              "2023-11-11": 104,
+              "2023-11-18": 104,
+              "2023-11-25": 104,
+              "2023-12-02": 104,
+              "2023-12-09": 104,
+              "2023-12-16": 104,
+              "2023-12-23": 104,
+              "2023-12-30": 104,
+              "2023-12-31": 1092,
+              "2024-01-06": 104,
+              "2024-01-13": 104,
+              "2024-01-20": 104,
+              "2024-01-27": 104,
+              "2024-02-03": 104,
+              "2024-02-10": 104,
+              "2024-02-17": 104,
+              "2024-02-24": 104,
+              "2024-03-02": 104,
+              "2024-03-09": 104,
+              "2024-03-16": 104,
+              "2024-03-23": 104,
+              "2024-03-30": 104,
+              "2024-03-31": 1092,
+              "2024-04-06": 104,
+              "2024-04-13": 104,
+              "2024-04-20": 104,
+              "2024-04-27": 104,
+              "2024-05-04": 104,
+              "2024-05-11": 104,
+              "2024-05-18": 104,
+              "2024-05-25": 104,
+              "2024-06-01": 104,
+              "2024-06-08": 104,
+              "2024-06-15": 104,
+              "2024-06-22": 104,
+              "2024-06-29": 104,
+              "2024-06-30": 1092,
+              "2024-07-06": 104,
+              "2024-07-13": 104,
+              "2024-07-20": 104,
+              "2024-07-27": 104,
+              "2024-08-03": 104,
+              "2024-08-10": 104,
+              "2024-08-17": 104,
+              "2024-08-24": 104,
+              "2024-08-31": 104,
+              "2024-09-07": 104,
+              "2024-09-14": 104,
+              "2024-09-21": 104,
+              "2024-09-28": 104,
+              "2024-09-30": 1092,
+              "2024-10-05": 104,
+              "2024-10-12": 104,
+              "2024-10-19": 104,
+              "2024-10-26": 104,
+              "2024-11-02": 104,
+              "2024-11-09": 104,
+              "2024-11-16": 104,
+              "2024-11-23": 104,
+              "2024-11-30": 104,
+              "2024-12-07": 104,
+              "2024-12-14": 104,
+              "2024-12-21": 104,
+              "2024-12-28": 104,
+              "2024-12-31": 1092,
+              "2025-01-04": 104,
+              "2025-01-11": 104,
+              "2025-01-18": 104,
+              "2025-01-25": 104,
+              "2025-02-01": 104,
+              "2025-02-08": 104,
+              "2025-02-15": 104,
+              "2025-02-22": 104,
+              "2025-03-01": 104,
+              "2025-03-08": 104,
+              "2025-03-15": 104,
+              "2025-03-22": 104,
+              "2025-03-29": 104,
+              "2025-03-31": 1092,
+              "2025-04-05": 104,
+              "2025-04-12": 104,
+              "2025-04-19": 104,
+              "2025-04-26": 104,
+              "2025-05-03": 104,
+              "2025-05-10": 104,
+              "2025-05-17": 104,
+              "2025-05-24": 104,
+              "2025-05-31": 104,
+              "2025-06-07": 104,
+              "2025-06-14": 104,
+              "2025-06-21": 104,
+              "2025-06-28": 104,
+              "2025-06-30": 1092,
+              "2025-07-05": 104,
+              "2025-07-12": 104,
+              "2025-07-19": 104,
+              "2025-07-26": 104,
+              "2025-08-02": 104,
+              "2025-08-09": 104,
+              "2025-08-16": 104,
+              "2025-08-23": 104,
+              "2025-08-30": 104,
+              "2025-09-06": 104,
+              "2025-09-13": 104,
+              "2025-09-20": 104,
+              "2025-09-27": 104,
+              "2025-09-30": 1092,
+              "2025-10-04": 104,
+              "2025-10-11": 104,
+              "2025-10-18": 104,
+              "2025-10-25": 104,
+              "2025-11-01": 104,
+              "2025-11-08": 104,
+              "2025-11-15": 104,
+              "2025-11-22": 104,
+              "2025-11-29": 104,
+              "2025-12-06": 104,
+              "2025-12-13": 104,
+              "2025-12-20": 104,
+              "2025-12-27": 104,
+              "2025-12-31": 1092,
+              "2026-01-03": 104,
+              "2026-01-10": 104,
+              "2026-01-17": 104,
+              "2026-01-24": 104,
+              "2026-01-31": 104,
+              "2026-02-07": 104,
+              "2026-02-14": 104,
+              "2026-02-21": 104,
+              "2026-02-28": 104,
+              "2026-03-07": 104,
+              "2026-03-14": 104,
+              "2026-03-21": 104,
+              "2026-03-28": 104,
+              "2026-04-04": 104,
+              "2026-04-11": 104,
+              "2026-04-18": 104,
+              "2026-04-25": 104,
+              "2026-05-02": 104,
+              "2026-05-09": 104,
+              "2026-05-16": 104,
+              "2026-05-23": 104,
+              "2026-05-30": 104,
+              "2026-06-06": 104,
+              "2026-06-13": 104,
+              "2026-06-20": 104,
+              "2026-06-27": 104,
+              "2026-07-04": 104,
+              "2026-07-11": 104,
+              "2026-07-18": 104,
+              "2026-07-25": 104,
+              "2026-08-01": 104,
+              "2026-08-08": 104,
+              "2026-08-15": 104,
+              "2026-08-22": 104
+            }
+          },
+          {
+            "name": "year",
+            "duplicates": 64470,
+            "info": {
+              "short_name": "Year",
+              "long_name": "Year",
+              "short_description": "Year of the reporting period.",
+              "long_description": "Year of the reporting period, the MMWR year for the weekly NNDSS series.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "id": "year"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 0,
+            "mean": 2022.11129,
+            "sd": 2.588867,
+            "min": 2017,
+            "max": 2026
+          },
+          {
+            "name": "age",
+            "duplicates": 64473,
+            "info": {
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+              "long_description": "Epic Cosmos age band for the row, with \"Total\" as the all-ages aggregate and on every NNDSS row.",
+              "measure_type": "category",
+              "id": "age"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "<1 Years": 5616,
+              "1-4 Years": 5616,
+              "18-49 Years": 5616,
+              "5-17 Years": 5616,
+              "50-64 Years": 5616,
+              "65+ Years": 5616,
+              "Total": 30784
+            }
+          },
+          {
+            "name": "source",
+            "duplicates": 64478,
+            "info": {
+              "short_name": "Source",
+              "long_name": "Data source",
+              "short_description": "Which surveillance system reported the row.",
+              "long_description": "Which surveillance system the row comes from, Epic Cosmos or NNDSS.",
+              "measure_type": "category",
+              "levels": {
+                "Epic Cosmos": {
+                  "short_name": "Epic Cosmos",
+                  "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age.",
+                  "id": "Epic Cosmos"
+                },
+                "NNDSS": {
+                  "short_name": "NNDSS",
+                  "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state.",
+                  "id": "NNDSS"
+                }
+              },
+              "id": "source"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Epic Cosmos": 39312,
+              "NNDSS": 25168
+            }
+          },
+          {
+            "name": "measure",
+            "duplicates": 64475,
+            "info": {
+              "short_name": "Measure",
+              "levels": {
+                "n_strep_throat": {
+                  "source_id": "epic_n_strep_throat",
+                  "id": "n_strep_throat",
+                  "name": "epic_n_strep_throat",
+                  "duplicates": 8685,
+                  "info": {
+                    "id": "epic_n_strep_throat",
+                    "short_name": "Strep Throat Patients",
+                    "long_name": "Patients with a Strep Throat Diagnosis",
+                    "category": "respiratory",
+                    "short_description": "Quarterly count of patients with a strep throat diagnosis (J02.0, J03.00, J03.01).",
+                    "long_description": "Quarterly count of patients with a strep throat diagnosis, including streptococcal pharyngitis (J02.0), acute streptococcal tonsillitis, unspecified (J03.00), and acute recurrent streptococcal tonsillitis (J03.01). Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_strep_throat_suppressed_flag. Quarters only partially covered by the exported date range are dropped, so every value covers a full calendar quarter. Population base per SlicerDicer session 2809857: data model Patients, population base All Patients, criteria Country of Care = United States of America and Has Any Encounters - the denominator is all patients with any encounter, NOT emergency department visits only.",
+                    "statement": "In {location}, {value} patients had a strep throat diagnosis.",
+                    "measure_type": "Count",
+                    "unit": "patients",
+                    "time_resolution": "Quarter",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "quarterly_gas.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    35
+                  ],
+                  "type": "integer",
+                  "missing": 0,
+                  "mean": 4601.032585,
+                  "sd": 31156.086185,
+                  "min": 5,
+                  "max": 1004917
+                },
+                "pct_strep_throat": {
+                  "source_id": "epic_pct_strep_throat",
+                  "id": "pct_strep_throat",
+                  "name": "epic_pct_strep_throat",
+                  "duplicates": 82,
+                  "info": {
+                    "id": "epic_pct_strep_throat",
+                    "short_name": "Strep Throat Percentage",
+                    "long_name": "Percent of Patients with a Strep Throat Diagnosis",
+                    "category": "respiratory",
+                    "short_description": "Quarterly percent of patients with a strep throat diagnosis (J02.0, J03.00, J03.01).",
+                    "long_description": "Quarterly percentage of patients with a strep throat diagnosis, computed as epic_n_strep_throat / epic_n_patients * 100. Diagnosis codes include streptococcal pharyngitis (J02.0), acute streptococcal tonsillitis, unspecified (J03.00), and acute recurrent streptococcal tonsillitis (J03.01). Where the numerator was suppressed it is imputed as 5 before the percentage is computed. Where the denominator was itself suppressed the percentage is left missing, because dividing by the imputed denominator of 5 would assert a meaningless value; those cells are marked by epic_n_patients_suppressed_flag. Data from Epic Cosmos SlicerDicer. Population base per SlicerDicer session 2809857: data model Patients, population base All Patients, criteria Country of Care = United States of America and Has Any Encounters - the denominator is all patients with any encounter, NOT emergency department visits only.",
+                    "statement": "In {location}, {value}% of patients had a strep throat diagnosis.",
+                    "measure_type": "Percent",
+                    "unit": "Percent",
+                    "time_resolution": "Quarter",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "quarterly_gas.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    35
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 0.764799,
+                  "sd": 1.140564,
+                  "min": 0.002825,
+                  "max": 10.636352
+                },
+                "n_patients": {
+                  "source_id": "epic_n_patients",
+                  "id": "n_patients",
+                  "name": "epic_n_patients",
+                  "duplicates": 294,
+                  "info": {
+                    "id": "epic_n_patients",
+                    "short_name": "Total Patients",
+                    "long_name": "Total Patients (Denominator)",
+                    "category": "respiratory",
+                    "short_description": "Quarterly total patient count used as the denominator for the strep throat percentage.",
+                    "long_description": "Quarterly total count of patients, used as the denominator for epic_pct_strep_throat. Data from Epic Cosmos SlicerDicer. Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_n_patients_suppressed_flag. Population base per SlicerDicer session 2809857: data model Patients, population base All Patients, criteria Country of Care = United States of America and Has Any Encounters - the denominator is all patients with any encounter, NOT emergency department visits only.",
+                    "measure_type": "Count",
+                    "unit": "patients",
+                    "time_resolution": "Quarter",
+                    "sources": [
+                      {
+                        "id": "epic_cosmos"
+                      }
+                    ],
+                    "citations": [],
+                    "source_file": {
+                      "project": "epic_resp_infections",
+                      "data_dir": "/data/epic_resp_infections/standard",
+                      "file": "quarterly_gas.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    35
+                  ],
+                  "type": "integer",
+                  "missing": 0,
+                  "mean": 780723.551053,
+                  "sd": 4451446.849236,
+                  "min": 92,
+                  "max": 98758918
+                },
+                "stss_cases_weekly": {
+                  "short_name": "Strep TSS cases (weekly)",
+                  "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
+                  "short_description": "Newly reported STSS cases in the MMWR week.",
+                  "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ],
+                  "id": "stss_cases_weekly"
+                },
+                "stss_cases_cumulative": {
+                  "source_id": "streptococcal_toxic_shock_syndrome",
+                  "short_description": "Year-to-date STSS cases as published by NNDSS.",
+                  "long_description": "Cumulative streptococcal toxic shock syndrome cases reported since the start of the MMWR year.",
+                  "id": "stss_cases_cumulative",
+                  "name": "streptococcal_toxic_shock_syndrome",
+                  "duplicates": 13553,
+                  "info": {
+                    "id": "streptococcal_toxic_shock_syndrome",
+                    "short_name": "Strep TSS cases",
+                    "long_name": "Cumulative year-to-date cases of Streptococcal toxic shock syndrome",
+                    "short_description": "Cumulative year-to-date case count of streptococcal toxic shock syndrome.",
+                    "long_description": "Cumulative year-to-date number of reported cases of streptococcal toxic shock syndrome (STSS), a life-threatening condition caused by group A Streptococcus, as reported through the NNDSS.",
+                    "measure_type": "Cumulative Count",
+                    "unit": "Cumulative cases",
+                    "time_resolution": "week",
+                    "sources": [
+                      {
+                        "id": "nnds"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "nnds",
+                      "data_dir": "/data/nnds/standard",
+                      "file": "data.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    241
+                  ],
+                  "type": "integer",
+                  "missing": 0,
+                  "mean": 7.910033,
+                  "sd": 39.043601,
+                  "min": 0,
+                  "max": 647
+                }
+              },
+              "id": "measure"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "n_patients": 13104,
+              "n_strep_throat": 13104,
+              "pct_strep_throat": 13104,
+              "stss_cases_cumulative": 12584,
+              "stss_cases_weekly": 12584
+            }
+          },
+          {
+            "name": "value",
+            "duplicates": 34793,
+            "info": {
+              "short_name": "Value",
+              "long_name": "Measure value",
+              "short_description": "Value of the measure named in the measure column.",
+              "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
+              "measure_type": "Mixed",
+              "unit": "varies by measure",
+              "id": "value"
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 0,
+            "mean": 159600.134521,
+            "sd": 2031096.868318,
+            "min": -3,
+            "max": 98758918
+          },
+          {
+            "name": "suppressed",
+            "duplicates": 64477,
+            "info": {
+              "short_name": "Suppressed",
+              "long_name": "Epic suppression flag",
+              "short_description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
+              "long_description": "1 where Epic Cosmos withheld the underlying cell as a count of 10 or fewer, in which case the value was imputed as 5; blank on NNDSS rows, which have no such mechanism.",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "sources": [
+                {
+                  "id": "epic_cosmos"
+                }
+              ],
+              "id": "suppressed"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 25168,
+            "mean": 0.076669,
+            "sd": 0.266068,
+            "min": 0,
+            "max": 1
+          }
+        ]
+      },
+      "sha512": "aa73401958fe7d7237e60292417a43ea58e583cece80e7713d3e12141fb831df611f7b848890310319949190d67a42e7012483c1c420095a4278d8ebfcb804b0"
+    },
+    {
+      "bytes": 92543,
       "encoding": "windows-1255",
-      "md5": "137188476f2cfd7a53cf3b7c68c35f55",
+      "md5": "63f0cb4812d0e087ba5681c9f8b51135",
       "format": "parquet",
       "name": "other_measures_trends",
       "filename": "other_measures_trends.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "fa8ecff20d3ca100a3e23a7a02fbf13643b8b1ca",
@@ -7271,6 +8895,7 @@
           "e21d61d0834dee7f460244e7b37400cebb99106a"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -7308,6 +8933,7 @@
           "anshap32 <73296024+anshap32@users.noreply.github.com>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Thu Aug 27 18:26:20 2026 +0000",
@@ -7345,6 +8971,7 @@
           "Mon Jul 6 14:46:24 2026 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -7392,8 +9019,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:58.553633",
-      "last_modified": "2026-09-01 12:21:58.553633",
+      "created": "2026-08-20 12:57:37.268225",
+      "last_modified": "2026-09-01 11:50:03.770733",
       "vintage": {},
       "row_count": 119793,
       "entity_count": 52,
@@ -7853,17 +9480,629 @@
           }
         ]
       },
-      "sha512": "794244607d69c99d7cef13bd0115e0fc7ab559d0480e1c3326ad37ed22bd3b37d13ab5d5ba1734b38c49a353ee0b1834d873001616deb84e2a92308affb35b9b"
+      "sha512": "09877e1e58a35b38eac29ea0c8259a1243c04b3f27d3ab9a2b6e231216750b771e743f47b1d029c567fbf60034d8f5bc14e16716776d1cd08f8cd98a54dc159a"
     },
     {
-      "bytes": 140812,
+      "bytes": 4772,
       "encoding": "UTF-16BE",
-      "md5": "f521dee47e6fd3d28b3908c4d15d7de7",
+      "md5": "8305d40f70e1545a5ecd420c70688b0b",
+      "format": "parquet",
+      "name": "pneumococcus_by_geography",
+      "filename": "pneumococcus_by_geography.parquet",
+      "versions": {
+        "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
+          "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
+          "43b82027f0f534e15ae5f682e253fd8fd5635848",
+          "f676308f5a631b7662030dd7f2e220ee0724500e",
+          "74b52f170949990a9c99c828bb9fd92c391045db",
+          "4c3716d99148cc763099c1b73a28da7f5a510e64",
+          "4abb2e0127a57644a899731907d6a3dec8f41480",
+          "70e2b3430e9a5a8edf10693fa9bd5008a1e164ee",
+          "b5273f5a4723aca6dce8147a4c54addf9a37c9b1",
+          "8e96af224183409f0c0ed3caa578d19dc3ea2c82",
+          "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa",
+          "b2033b8fcbbde82648095e03e9cc67df376106ed",
+          "bfe790de4dfd56e083b62f93dc9841b43f47a52b",
+          "f5d6c3cf54c3af6a834aad2778d3deae5adb5202",
+          "ac3b363a41c75803c9ec6701d87c5c9d90693e8c",
+          "00200d9433f456ab913be5bcc2770bdfd6d399e7",
+          "a7ec91f26ec4f58d04259c78a6e759b306e41edc",
+          "98e8d40764334dd8df2ee5741ef81bbebe579edd",
+          "d1b340f9cf0776aeab5273ee507b8ac6622d809d",
+          "c4dc58938a5506d0a388a913bf59770613b75d5c",
+          "93c94bcc4a1db1ba98a3e8e2ab6a49a66005791a",
+          "fca5414dae4c1baf95f9bd80eec5780d0c7141b2",
+          "27a234dc0fdc758f4b37df938781a3de2f05b5f0",
+          "63d64528725b6c3af04017893e84702db0c4729f",
+          "acbba9f5969c689bc2c3b326607f87ad26579b31",
+          "046d565a3d9ec2fdd9207bb107276151c042816d",
+          "0fad90cdb20992ba09e03a6b01c1220161ab77a0",
+          "d7d562c1f41fc2b0e1b5b578049d2ee331a0156b",
+          "059735c961c63c9307be1f4192c2461b2f4d96dc",
+          "823294fc53d8e3cd5a73be1a84f54278c6f69edb",
+          "4f91a0e0778b5c6417074fc9ed942b5f89377e6f",
+          "98729a3e7edbed8f822302c039ae2de504b83943",
+          "3582dfb7d081b6c4620025ad8f4628360d9f82c9",
+          "5b57e7df25eb6f8e63a80bd1a87f5eee3afb6bf3",
+          "8b724d4f476bc987cd93abcc7864a60da18da76e",
+          "09d3a7ddb221e9ad2952e10c07d2d3bf24acb9fb",
+          "d88753e4dab0f772f722352da3069a8d9cf53f29",
+          "d0cfaea7ecfd234d5d668448b0e52286794e253e",
+          "e21d61d0834dee7f460244e7b37400cebb99106a",
+          "531541661229e4d1693b10365aa0bd0e83e853a8",
+          "702144634da1a7c064e5a0ea117aa85c983aec37",
+          "97fffda5777cca524d3f736bba2643d96ae5a12c",
+          "8a3dff074f011a4a6eaf6d455c6abfdcb8a49bd3",
+          "2baafb92154479634d47460d926009599848a781",
+          "ba8c9a6dba43e01e7cd5f9ffe688a0b7b51ea5f8",
+          "bac40c388e89138e86dbfdbb2421f5d0af3476fc",
+          "b17348ffc63e58e4fc7e67d94c0d24c3bf0515e4",
+          "f23876b3b2a5622f4dfde4685e1eb9a988aa3134",
+          "334f2f74f167b77cf07fcfa98da6f18c47a88492",
+          "2357ea1ae48e880443bfa5e9d4f98d213e1fc510",
+          "9dd38e1a8504195a406f637994e7e3faa13575ff",
+          "1ee28943253ff1056f0b061e102023708180d380",
+          "8671ce54e806c41222d7d7c8b9d8946ee883da0b",
+          "c59c48b46bd111357db8ea2ca9250c11b2cb0924",
+          "be3e3cda5fb5c687a9eedfff9ad4246bf598f06c",
+          "ced52d1dcc8a2480e24171fb109df5c383d9b088",
+          "ec699b785810223eeb113927429ec1493f962fe2",
+          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
+          "c50857aab0dfbecdae594a07bf3a4f95688761f7",
+          "8e58ea57f1e5387ff7235c5a5cae0f2bb33d2930",
+          "f08ed28f54fa99dd7be62443918573b26447d69f",
+          "8188120798d218fb9b2c5f632e0af6411d55b6f7",
+          "98b37166e6c21d05dafb50cb668c5fe26b32289f",
+          "df9903e4cff0aabcd6b10438a7b3d8985019aec1",
+          "9ddde199e3684be497c098ff272189b9eb350e2c",
+          "233ae410fab7c95e512206282d82239cf6a7ddf1",
+          "1a28469dd4a514054e5edaf1711313968ced0670",
+          "51c3e699218312fd6fb07ee99119d24511d562f5",
+          "63a0d7aaa3b514d84c46d5e1e6d6d320767e0358",
+          "5995d754cba3f8d8714c96901d1da38a19e3a717",
+          "bbfc638a80a5c92a877a1f68689249dcb3a7d74e",
+          "22fb558f96c87143455c9984b866afbfe8e01ae1",
+          "4c3cfadaaa9084c0280e5935bf2f5dd8b21952b4",
+          "b0cd5e888daf4a63d94d1370140226c7b8dcd812",
+          "b6e04f2116af27a14126bd4a655443a983a5e8c3",
+          "897ec9b992f1276f64be88fea9be4ebc0e1542f6",
+          "e9f5a7bf631b73df40570210c77f80a30f59a9de",
+          "900660a5424af9c61a044a417906abf5c1ad0fd6",
+          "ef3c9b7bef590dd4fbea5ce768b018844b2e02db",
+          "804ffce903920ce4644b2c636146c352c21a4cc9",
+          "cc6b9ce184b5b1e5cc6efcb03a05b4e2f47bf971",
+          "4479ba395489113e3a4dca0e82e397283032bfe6",
+          "4e3513946c4e5b7fb31ad61f93335d876de8d632",
+          "2f4233b9a013d5af220ceb2551dbfbd0ed855346",
+          "c9a92ce7937b00cf3225465e3a17dc5a911115b8",
+          "4243a89ea52c4d7c435fa21ead5be1c707699d17",
+          "479e03721b2aee1fecde40228eef0686da1f7930",
+          "d1cc81530a001edc9da871ce7cf0a6b00c2e2e6e",
+          "020b2385314d47486b52c4249af9f6966eb59962",
+          "eb0c560a3fcf908e455fe7715cafd633b025694b",
+          "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
+          "ada21b8606ed458eb9ffc34b98fc41539be7fe1d",
+          "f5c2931bf0b3b42dbdaa19de407ec49d58c56c0f",
+          "6379c40be3e5f2890b21091b00677304e7c3324c",
+          "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
+        ],
+        "author": [
+          "scratch <scratch@local>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "anshap32 <73296024+anshap32@users.noreply.github.com>",
+          "GitHub Actions <actions@github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "Callie Annas <callie.annas@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "anshap32 <73296024+anshap32@users.noreply.github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "anshap32 <73296024+anshap32@users.noreply.github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "anshap32 <73296024+anshap32@users.noreply.github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "anshap32 <73296024+anshap32@users.noreply.github.com>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "GitHub Actions <actions@github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "GitHub Actions <actions@github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "GitHub Actions <actions@github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "GitHub Actions <actions@github.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "danweinberger <daniel.weinberger@yale.edu>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "Weinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "Weinberger <daniel.weinberger@yale.edu>",
+          "Weinberger <daniel.weinberger@yale.edu>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "Weinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "Weinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "Weinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "GitHub Actions <actions@github.com>",
+          "Weinberger <daniel.weinberger@yale.edu>",
+          "GitHub Actions <actions@github.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "weinbergerlab <dweinber@gmail.com>",
+          "Weinberger <daniel.weinberger@yale.edu>"
+        ],
+        "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
+          "Sat Aug 29 13:01:46 2026 +0000",
+          "Sat Aug 29 01:54:57 2026 +0000",
+          "Wed Aug 26 07:47:18 2026 +0000",
+          "Tue Aug 25 18:53:47 2026 +0000",
+          "Mon Aug 24 08:00:39 2026 +0000",
+          "Sat Aug 22 07:33:46 2026 +0000",
+          "Fri Aug 21 18:35:25 2026 +0000",
+          "Fri Aug 21 09:47:57 2026 -0400",
+          "Thu Aug 20 07:44:53 2026 +0000",
+          "Tue Aug 18 08:38:37 2026 -0400",
+          "Fri Aug 14 16:37:32 2026 +0000",
+          "Fri Aug 14 10:02:38 2026 -0400",
+          "Wed Aug 12 08:16:59 2026 +0000",
+          "Tue Aug 11 19:38:00 2026 +0000",
+          "Tue Aug 11 08:11:48 2026 +0000",
+          "Mon Aug 10 11:41:11 2026 -0400",
+          "Sat Aug 8 07:48:29 2026 +0000",
+          "Fri Aug 7 18:54:23 2026 +0000",
+          "Wed Aug 5 09:36:50 2026 +0000",
+          "Wed Aug 5 01:08:53 2026 +0000",
+          "Sat Aug 1 09:07:19 2026 +0000",
+          "Fri Jul 31 20:48:09 2026 +0000",
+          "Fri Jul 31 13:45:23 2026 -0400",
+          "Sat Jul 25 09:02:40 2026 +0000",
+          "Fri Jul 24 19:27:59 2026 +0000",
+          "Wed Jul 22 09:28:26 2026 +0000",
+          "Tue Jul 21 19:17:16 2026 +0000",
+          "Tue Jul 21 09:30:13 2026 +0000",
+          "Mon Jul 20 13:42:40 2026 +0000",
+          "Fri Jul 17 09:10:20 2026 +0000",
+          "Wed Jul 15 09:12:09 2026 +0000",
+          "Tue Jul 14 19:11:32 2026 +0000",
+          "Tue Jul 14 09:06:28 2026 +0000",
+          "Mon Jul 13 13:20:16 2026 +0000",
+          "Sat Jul 11 08:48:59 2026 +0000",
+          "Thu Jul 9 10:30:33 2026 +0000",
+          "Tue Jul 7 19:55:10 2026 +0000",
+          "Mon Jul 6 14:46:24 2026 -0400",
+          "Sat Jul 4 09:23:09 2026 +0000",
+          "Fri Jul 3 23:33:32 2026 +0000",
+          "Fri Jul 3 09:57:53 2026 +0000",
+          "Thu Jul 2 15:15:47 2026 -0400",
+          "Thu Jul 2 16:44:21 2026 +0000",
+          "Mon Jun 8 00:45:36 2026 +0000",
+          "Thu Jun 4 12:39:09 2026 -0400",
+          "Fri May 29 20:20:58 2026 +0000",
+          "Tue May 26 15:36:30 2026 -0400",
+          "Fri May 15 19:31:25 2026 +0000",
+          "Wed May 13 22:47:32 2026 -0400",
+          "Tue May 5 19:15:17 2026 +0000",
+          "Mon May 4 10:59:27 2026 -0400",
+          "Fri Apr 10 15:29:41 2026 +0000",
+          "Thu Apr 9 13:01:37 2026 -0400",
+          "Mon Apr 6 14:00:48 2026 +0000",
+          "Sun Apr 5 21:44:32 2026 -0400",
+          "Fri Apr 3 14:11:23 2026 -0400",
+          "Wed Apr 1 02:45:45 2026 +0000",
+          "Mon Mar 23 15:57:46 2026 +0000",
+          "Sun Mar 22 21:53:09 2026 -0400",
+          "Fri Mar 13 21:40:48 2026 +0000",
+          "Fri Mar 13 14:55:15 2026 -0400",
+          "Fri Mar 13 15:04:44 2026 +0000",
+          "Wed Mar 11 22:59:42 2026 -0400",
+          "Fri Mar 6 14:57:55 2026 +0000",
+          "Wed Mar 4 21:32:37 2026 -0500",
+          "Tue Mar 3 00:46:06 2026 +0000",
+          "Mon Mar 2 16:45:00 2026 -0500",
+          "Fri Feb 20 21:34:05 2026 +0000",
+          "Fri Feb 20 04:17:31 2026 -0500",
+          "Thu Feb 19 18:29:10 2026 +0000",
+          "Fri Feb 6 16:53:51 2026 -0500",
+          "Fri Feb 6 16:53:51 2026 -0500",
+          "Sun Feb 1 22:36:14 2026 -0500",
+          "Fri Jan 23 11:18:07 2026 -0500",
+          "Thu Jan 15 04:13:30 2026 +0000",
+          "Mon Jan 12 11:19:25 2026 -0500",
+          "Sun Jan 11 10:24:21 2026 -0500",
+          "Mon Nov 24 08:42:18 2025 +0000",
+          "Fri Nov 21 11:33:48 2025 -0500",
+          "Fri Nov 21 10:30:19 2025 -0500",
+          "Mon Nov 3 11:09:24 2025 -0500",
+          "Sun Nov 2 20:47:07 2025 -0500",
+          "Mon Oct 27 01:13:15 2025 +0000",
+          "Sun Oct 26 00:20:31 2025 -0400",
+          "Thu Sep 25 08:36:23 2025 +0000",
+          "Wed Sep 24 11:27:57 2025 -0400",
+          "Wed Sep 3 02:10:37 2025 +0000",
+          "Fri Aug 29 11:39:20 2025 -0400",
+          "Thu Aug 21 03:17:57 2025 +0000",
+          "Wed Aug 20 22:32:02 2025 -0400",
+          "Wed Aug 20 18:31:46 2025 +0000",
+          "Wed Aug 20 13:35:52 2025 -0400",
+          "Tue Aug 12 17:15:32 2025 -0400",
+          "Sun Aug 10 23:21:57 2025 -0400"
+        ],
+        "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "scheduled daily data update",
+          "scheduled data build",
+          "manually ran bundle_respiratory after bug fix",
+          "scheduled daily data update",
+          "manually update respiratory bundle",
+          "scheduled daily data update",
+          "manual update of rsv data",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "updated filter in epic data",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "scheduled data build",
+          "updated respiratory bundle and epic_resp_infections; fixed Rt bug",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "scheduled daily data update",
+          "scheduled data build",
+          "added CFA Rt, NNDS, and NCHS data to respiratory bundle",
+          "scheduled daily data update",
+          "scheduled data build",
+          "scheduled daily data update",
+          "removed _test",
+          "scheduled daily data update",
+          "scheduled data build",
+          "rebuild bundle with fixed wastewate API and new epic data",
+          "scheduled data build",
+          "updates to cosmos data",
+          "scheduled data build",
+          "fixed denominators for incidence on ABCs standard file",
+          "scheduled data build",
+          "update bunle after fixing Kinsa ingestion",
+          "scheduled data build",
+          "update respiratory bundle with new cosmos data",
+          "scheduled data build",
+          "update bundle to check that all run OK; update medicaid quality package to only download new datasets",
+          "partial update bundle",
+          "scheduled data build",
+          "scheduled respiratory data update",
+          "update bundle",
+          "scheduled respiratory data update",
+          "rebuild respiratory bundle",
+          "scheduled data build",
+          "update epic data",
+          "scheduled data build",
+          "fix respnet age stratified data",
+          "scheduled data build",
+          "fix issues caused by change in cdlTools in resp bundle, nchs_mortality",
+          "scheduled respiratory data update",
+          "fixes issues with WashPost county encoding that was breaking ingestion",
+          "scheduled respiratory data update",
+          "WEEKLY UPDATE",
+          "WEEKLY UPDATE",
+          "update respiratory files",
+          "update data",
+          "scheduled data build",
+          "re-calculate 'all-site' ('United States' values for ABCs to only include the 8 sites that consistently report since 1998",
+          "manual update respiratory bundle",
+          "scheduled data build",
+          "fix issue with age stratified data",
+          "update ABCs geography to use latest data",
+          "resolve diffs",
+          "https://github.com/DISSC-yale/pophive_demo/commit/37db89ccda72eebe0bc07a46bb6593f4cd01bc5f",
+          "scheduled data build",
+          "part 3",
+          "scheduled data build",
+          "update proportions to be *100 for plotting pursposes and for consistency to old PopHIVE_Datahub pipeline",
+          "scheduled data build",
+          "run bundle",
+          "scheduled data build",
+          "udpates build with some additional JSOn meta data",
+          "scheduled data build",
+          "manual re-run",
+          "rerun respiratory bundle",
+          "fix respiratory bundle structure to remove subfolders"
+        ]
+      },
+      "source": [],
+      "data_format": "tall",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-08-14 11:08:34.463409",
+      "last_modified": "2026-09-01 11:50:03.059402",
+      "vintage": {},
+      "row_count": 880,
+      "entity_count": 10,
+      "schema": {
+        "fields": [
+          {
+            "name": "serotype",
+            "duplicates": 792,
+            "info": [],
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "1": 10,
+              "10A": 10,
+              "10F": 10,
+              "11A": 10,
+              "11B": 10,
+              "11C": 10,
+              "12A": 10,
+              "12B": 10,
+              "12F": 10,
+              "13": 10,
+              "14": 10,
+              "15A": 10,
+              "15B": 10,
+              "15C": 10,
+              "15D": 10,
+              "15F": 10,
+              "16A": 10,
+              "16F": 10,
+              "17": 10,
+              "17A": 10,
+              "17F": 10,
+              "18": 10,
+              "18A": 10,
+              "18B": 10,
+              "18C": 10,
+              "18F": 10,
+              "19A": 10,
+              "19B": 10,
+              "19C": 10,
+              "19F": 10,
+              "2": 10,
+              "20": 10,
+              "21": 10,
+              "22A": 10,
+              "22F": 10,
+              "23A": 10,
+              "23B": 10,
+              "23F": 10,
+              "24A": 10,
+              "24B": 10,
+              "24F": 10,
+              "25": 10,
+              "25F": 10,
+              "27": 10,
+              "28": 10,
+              "28A": 10,
+              "28F": 10,
+              "29": 10,
+              "3": 10,
+              "30": 10,
+              "31": 10,
+              "33": 10,
+              "33A": 10,
+              "33B": 10,
+              "33F": 10,
+              "34": 10,
+              "35": 10,
+              "35A": 10,
+              "35B": 10,
+              "35C": 10,
+              "35D": 10,
+              "35F": 10,
+              "36": 10,
+              "37": 10,
+              "38": 10,
+              "39": 10,
+              "4": 10,
+              "40": 10,
+              "41A": 10,
+              "43": 10,
+              "45": 10,
+              "47F": 10,
+              "5": 10,
+              "6A": 10,
+              "6B": 10,
+              "6C": 10,
+              "6D": 10,
+              "7A": 10,
+              "7B": 10,
+              "7C": 10,
+              "7F": 10,
+              "8": 10,
+              "9A": 10,
+              "9L": 10,
+              "9N": 10,
+              "9V": 10,
+              "MISS": 10,
+              "NT": 10
+            }
+          },
+          {
+            "name": "geography",
+            "duplicates": 870,
+            "info": {
+              "short_name": "State",
+              "short_description": "Two-letter USPS state abbreviation of the ABCs surveillance site.",
+              "measure_type": "identifier",
+              "id": "geography"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "CA": 88,
+              "CO": 88,
+              "CT": 88,
+              "GA": 88,
+              "MD": 88,
+              "MN": 88,
+              "NM": 88,
+              "NY": 88,
+              "OR": 88,
+              "TN": 88
+            }
+          },
+          {
+            "name": "year",
+            "duplicates": 879,
+            "info": [],
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 0,
+            "mean": 2024,
+            "sd": 0,
+            "min": 2024,
+            "max": 2024
+          },
+          {
+            "name": "value",
+            "duplicates": 719,
+            "info": {
+              "id": "pct_IPD",
+              "short_name": "Percent of IPD episodes",
+              "long_name": "Percent of IPD episodes caused by the indicated serotype",
+              "category": "Respiratory diseases",
+              "short_description": "Pneumococcal serotype",
+              "measure_type": "percent",
+              "unit": "%",
+              "time_resolution": "year",
+              "sources": [
+                "abcs"
+              ],
+              "source_file": {
+                "project": "abcs",
+                "data_dir": "/data/abcs/standard",
+                "file": "data.csv.gz"
+              }
+            },
+            "time_range": [-1, -1],
+            "type": "float",
+            "missing": 0,
+            "mean": 1.136364,
+            "sd": 3.258382,
+            "min": 0,
+            "max": 40.875912
+          },
+          {
+            "name": "value_N",
+            "duplicates": 829,
+            "info": {
+              "id": "N_IPD",
+              "short_name": "Number of IPD episodes",
+              "long_name": "Number of IPD episodes",
+              "category": "Respiratory diseases",
+              "short_description": "Pneumococcal serotype",
+              "measure_type": "count",
+              "unit": "Number",
+              "time_resolution": "year",
+              "sources": [
+                "abcs"
+              ],
+              "source_file": {
+                "project": "abcs",
+                "data_dir": "/data/abcs/standard",
+                "file": "data.csv.gz"
+              }
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 0,
+            "mean": 4.104545,
+            "sd": 11.960514,
+            "min": 0,
+            "max": 126
+          }
+        ]
+      },
+      "sha512": "da6d16889c9b724cc13d0974a0cb0abe566964d16182a2fc30a3b45678eef917575d2f426492a7d7c4fb241ef2c11d92edf5d9889a53756269684d4a7c25dbbf"
+    },
+    {
+      "bytes": 140955,
+      "encoding": "UTF-16BE",
+      "md5": "7ee51e9311743c54debf6e66621209b2",
       "format": "parquet",
       "name": "pneumococcus_by_geography_year",
       "filename": "pneumococcus_by_geography_year.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -7947,6 +10186,7 @@
           "b1a24f16a8bfde6792bc7df74baba91d0479b4b6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -8030,6 +10270,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -8113,6 +10354,7 @@
           "Wed Nov 26 09:28:06 2025 -0500"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -8206,8 +10448,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:58.35462",
-      "last_modified": "2026-09-01 12:21:58.35462",
+      "created": "2026-08-14 11:08:34.463409",
+      "last_modified": "2026-09-01 11:50:03.394958",
       "vintage": {},
       "row_count": 23760,
       "entity_count": 10,
@@ -8435,624 +10677,18 @@
           }
         ]
       },
-      "sha512": "5b1f42065d9de3be0180a173c9469ea666d6e9442702e65f7f06b8ca413d21650a871b95f8d87741c5b03767200607d02191e9d0b307798234a5010e95f3f3f2"
-    },
-    {
-      "bytes": 4756,
-      "encoding": "UTF-16BE",
-      "md5": "96166a3ff28a785f6cbbd4e16cecd1a9",
-      "format": "parquet",
-      "name": "pneumococcus_by_geography",
-      "filename": "pneumococcus_by_geography.parquet",
-      "versions": {
-        "hash": [
-          "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
-          "43b82027f0f534e15ae5f682e253fd8fd5635848",
-          "f676308f5a631b7662030dd7f2e220ee0724500e",
-          "74b52f170949990a9c99c828bb9fd92c391045db",
-          "4c3716d99148cc763099c1b73a28da7f5a510e64",
-          "4abb2e0127a57644a899731907d6a3dec8f41480",
-          "70e2b3430e9a5a8edf10693fa9bd5008a1e164ee",
-          "b5273f5a4723aca6dce8147a4c54addf9a37c9b1",
-          "8e96af224183409f0c0ed3caa578d19dc3ea2c82",
-          "dc85b9a11eabc154611a750eec7a00f3a7a9e1aa",
-          "b2033b8fcbbde82648095e03e9cc67df376106ed",
-          "bfe790de4dfd56e083b62f93dc9841b43f47a52b",
-          "f5d6c3cf54c3af6a834aad2778d3deae5adb5202",
-          "ac3b363a41c75803c9ec6701d87c5c9d90693e8c",
-          "00200d9433f456ab913be5bcc2770bdfd6d399e7",
-          "a7ec91f26ec4f58d04259c78a6e759b306e41edc",
-          "98e8d40764334dd8df2ee5741ef81bbebe579edd",
-          "d1b340f9cf0776aeab5273ee507b8ac6622d809d",
-          "c4dc58938a5506d0a388a913bf59770613b75d5c",
-          "93c94bcc4a1db1ba98a3e8e2ab6a49a66005791a",
-          "fca5414dae4c1baf95f9bd80eec5780d0c7141b2",
-          "27a234dc0fdc758f4b37df938781a3de2f05b5f0",
-          "63d64528725b6c3af04017893e84702db0c4729f",
-          "acbba9f5969c689bc2c3b326607f87ad26579b31",
-          "046d565a3d9ec2fdd9207bb107276151c042816d",
-          "0fad90cdb20992ba09e03a6b01c1220161ab77a0",
-          "d7d562c1f41fc2b0e1b5b578049d2ee331a0156b",
-          "059735c961c63c9307be1f4192c2461b2f4d96dc",
-          "823294fc53d8e3cd5a73be1a84f54278c6f69edb",
-          "4f91a0e0778b5c6417074fc9ed942b5f89377e6f",
-          "98729a3e7edbed8f822302c039ae2de504b83943",
-          "3582dfb7d081b6c4620025ad8f4628360d9f82c9",
-          "5b57e7df25eb6f8e63a80bd1a87f5eee3afb6bf3",
-          "8b724d4f476bc987cd93abcc7864a60da18da76e",
-          "09d3a7ddb221e9ad2952e10c07d2d3bf24acb9fb",
-          "d88753e4dab0f772f722352da3069a8d9cf53f29",
-          "d0cfaea7ecfd234d5d668448b0e52286794e253e",
-          "e21d61d0834dee7f460244e7b37400cebb99106a",
-          "531541661229e4d1693b10365aa0bd0e83e853a8",
-          "702144634da1a7c064e5a0ea117aa85c983aec37",
-          "97fffda5777cca524d3f736bba2643d96ae5a12c",
-          "8a3dff074f011a4a6eaf6d455c6abfdcb8a49bd3",
-          "2baafb92154479634d47460d926009599848a781",
-          "ba8c9a6dba43e01e7cd5f9ffe688a0b7b51ea5f8",
-          "bac40c388e89138e86dbfdbb2421f5d0af3476fc",
-          "b17348ffc63e58e4fc7e67d94c0d24c3bf0515e4",
-          "f23876b3b2a5622f4dfde4685e1eb9a988aa3134",
-          "334f2f74f167b77cf07fcfa98da6f18c47a88492",
-          "2357ea1ae48e880443bfa5e9d4f98d213e1fc510",
-          "9dd38e1a8504195a406f637994e7e3faa13575ff",
-          "1ee28943253ff1056f0b061e102023708180d380",
-          "8671ce54e806c41222d7d7c8b9d8946ee883da0b",
-          "c59c48b46bd111357db8ea2ca9250c11b2cb0924",
-          "be3e3cda5fb5c687a9eedfff9ad4246bf598f06c",
-          "ced52d1dcc8a2480e24171fb109df5c383d9b088",
-          "ec699b785810223eeb113927429ec1493f962fe2",
-          "222f0bae15fbfb5c5de525c28b4769496d391aa6",
-          "c50857aab0dfbecdae594a07bf3a4f95688761f7",
-          "8e58ea57f1e5387ff7235c5a5cae0f2bb33d2930",
-          "f08ed28f54fa99dd7be62443918573b26447d69f",
-          "8188120798d218fb9b2c5f632e0af6411d55b6f7",
-          "98b37166e6c21d05dafb50cb668c5fe26b32289f",
-          "df9903e4cff0aabcd6b10438a7b3d8985019aec1",
-          "9ddde199e3684be497c098ff272189b9eb350e2c",
-          "233ae410fab7c95e512206282d82239cf6a7ddf1",
-          "1a28469dd4a514054e5edaf1711313968ced0670",
-          "51c3e699218312fd6fb07ee99119d24511d562f5",
-          "63a0d7aaa3b514d84c46d5e1e6d6d320767e0358",
-          "5995d754cba3f8d8714c96901d1da38a19e3a717",
-          "bbfc638a80a5c92a877a1f68689249dcb3a7d74e",
-          "22fb558f96c87143455c9984b866afbfe8e01ae1",
-          "4c3cfadaaa9084c0280e5935bf2f5dd8b21952b4",
-          "b0cd5e888daf4a63d94d1370140226c7b8dcd812",
-          "b6e04f2116af27a14126bd4a655443a983a5e8c3",
-          "897ec9b992f1276f64be88fea9be4ebc0e1542f6",
-          "e9f5a7bf631b73df40570210c77f80a30f59a9de",
-          "900660a5424af9c61a044a417906abf5c1ad0fd6",
-          "ef3c9b7bef590dd4fbea5ce768b018844b2e02db",
-          "804ffce903920ce4644b2c636146c352c21a4cc9",
-          "cc6b9ce184b5b1e5cc6efcb03a05b4e2f47bf971",
-          "4479ba395489113e3a4dca0e82e397283032bfe6",
-          "4e3513946c4e5b7fb31ad61f93335d876de8d632",
-          "2f4233b9a013d5af220ceb2551dbfbd0ed855346",
-          "c9a92ce7937b00cf3225465e3a17dc5a911115b8",
-          "4243a89ea52c4d7c435fa21ead5be1c707699d17",
-          "479e03721b2aee1fecde40228eef0686da1f7930",
-          "d1cc81530a001edc9da871ce7cf0a6b00c2e2e6e",
-          "020b2385314d47486b52c4249af9f6966eb59962",
-          "eb0c560a3fcf908e455fe7715cafd633b025694b",
-          "add5374f9f4f6093f9076cc9ef6cb35b4a3923a0",
-          "ada21b8606ed458eb9ffc34b98fc41539be7fe1d",
-          "f5c2931bf0b3b42dbdaa19de407ec49d58c56c0f",
-          "6379c40be3e5f2890b21091b00677304e7c3324c",
-          "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
-        ],
-        "author": [
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "anshap32 <73296024+anshap32@users.noreply.github.com>",
-          "GitHub Actions <actions@github.com>",
-          "danweinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "Callie Annas <callie.annas@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "anshap32 <73296024+anshap32@users.noreply.github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "anshap32 <73296024+anshap32@users.noreply.github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "anshap32 <73296024+anshap32@users.noreply.github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "anshap32 <73296024+anshap32@users.noreply.github.com>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "GitHub Actions <actions@github.com>",
-          "danweinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "danweinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "GitHub Actions <actions@github.com>",
-          "danweinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "GitHub Actions <actions@github.com>",
-          "danweinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "danweinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "GitHub Actions <actions@github.com>",
-          "danweinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "danweinberger <daniel.weinberger@yale.edu>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "Weinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "Weinberger <daniel.weinberger@yale.edu>",
-          "Weinberger <daniel.weinberger@yale.edu>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "Weinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "Weinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "Weinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "GitHub Actions <actions@github.com>",
-          "Weinberger <daniel.weinberger@yale.edu>",
-          "GitHub Actions <actions@github.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "weinbergerlab <dweinber@gmail.com>",
-          "Weinberger <daniel.weinberger@yale.edu>"
-        ],
-        "date": [
-          "Sat Aug 29 13:01:46 2026 +0000",
-          "Sat Aug 29 01:54:57 2026 +0000",
-          "Wed Aug 26 07:47:18 2026 +0000",
-          "Tue Aug 25 18:53:47 2026 +0000",
-          "Mon Aug 24 08:00:39 2026 +0000",
-          "Sat Aug 22 07:33:46 2026 +0000",
-          "Fri Aug 21 18:35:25 2026 +0000",
-          "Fri Aug 21 09:47:57 2026 -0400",
-          "Thu Aug 20 07:44:53 2026 +0000",
-          "Tue Aug 18 08:38:37 2026 -0400",
-          "Fri Aug 14 16:37:32 2026 +0000",
-          "Fri Aug 14 10:02:38 2026 -0400",
-          "Wed Aug 12 08:16:59 2026 +0000",
-          "Tue Aug 11 19:38:00 2026 +0000",
-          "Tue Aug 11 08:11:48 2026 +0000",
-          "Mon Aug 10 11:41:11 2026 -0400",
-          "Sat Aug 8 07:48:29 2026 +0000",
-          "Fri Aug 7 18:54:23 2026 +0000",
-          "Wed Aug 5 09:36:50 2026 +0000",
-          "Wed Aug 5 01:08:53 2026 +0000",
-          "Sat Aug 1 09:07:19 2026 +0000",
-          "Fri Jul 31 20:48:09 2026 +0000",
-          "Fri Jul 31 13:45:23 2026 -0400",
-          "Sat Jul 25 09:02:40 2026 +0000",
-          "Fri Jul 24 19:27:59 2026 +0000",
-          "Wed Jul 22 09:28:26 2026 +0000",
-          "Tue Jul 21 19:17:16 2026 +0000",
-          "Tue Jul 21 09:30:13 2026 +0000",
-          "Mon Jul 20 13:42:40 2026 +0000",
-          "Fri Jul 17 09:10:20 2026 +0000",
-          "Wed Jul 15 09:12:09 2026 +0000",
-          "Tue Jul 14 19:11:32 2026 +0000",
-          "Tue Jul 14 09:06:28 2026 +0000",
-          "Mon Jul 13 13:20:16 2026 +0000",
-          "Sat Jul 11 08:48:59 2026 +0000",
-          "Thu Jul 9 10:30:33 2026 +0000",
-          "Tue Jul 7 19:55:10 2026 +0000",
-          "Mon Jul 6 14:46:24 2026 -0400",
-          "Sat Jul 4 09:23:09 2026 +0000",
-          "Fri Jul 3 23:33:32 2026 +0000",
-          "Fri Jul 3 09:57:53 2026 +0000",
-          "Thu Jul 2 15:15:47 2026 -0400",
-          "Thu Jul 2 16:44:21 2026 +0000",
-          "Mon Jun 8 00:45:36 2026 +0000",
-          "Thu Jun 4 12:39:09 2026 -0400",
-          "Fri May 29 20:20:58 2026 +0000",
-          "Tue May 26 15:36:30 2026 -0400",
-          "Fri May 15 19:31:25 2026 +0000",
-          "Wed May 13 22:47:32 2026 -0400",
-          "Tue May 5 19:15:17 2026 +0000",
-          "Mon May 4 10:59:27 2026 -0400",
-          "Fri Apr 10 15:29:41 2026 +0000",
-          "Thu Apr 9 13:01:37 2026 -0400",
-          "Mon Apr 6 14:00:48 2026 +0000",
-          "Sun Apr 5 21:44:32 2026 -0400",
-          "Fri Apr 3 14:11:23 2026 -0400",
-          "Wed Apr 1 02:45:45 2026 +0000",
-          "Mon Mar 23 15:57:46 2026 +0000",
-          "Sun Mar 22 21:53:09 2026 -0400",
-          "Fri Mar 13 21:40:48 2026 +0000",
-          "Fri Mar 13 14:55:15 2026 -0400",
-          "Fri Mar 13 15:04:44 2026 +0000",
-          "Wed Mar 11 22:59:42 2026 -0400",
-          "Fri Mar 6 14:57:55 2026 +0000",
-          "Wed Mar 4 21:32:37 2026 -0500",
-          "Tue Mar 3 00:46:06 2026 +0000",
-          "Mon Mar 2 16:45:00 2026 -0500",
-          "Fri Feb 20 21:34:05 2026 +0000",
-          "Fri Feb 20 04:17:31 2026 -0500",
-          "Thu Feb 19 18:29:10 2026 +0000",
-          "Fri Feb 6 16:53:51 2026 -0500",
-          "Fri Feb 6 16:53:51 2026 -0500",
-          "Sun Feb 1 22:36:14 2026 -0500",
-          "Fri Jan 23 11:18:07 2026 -0500",
-          "Thu Jan 15 04:13:30 2026 +0000",
-          "Mon Jan 12 11:19:25 2026 -0500",
-          "Sun Jan 11 10:24:21 2026 -0500",
-          "Mon Nov 24 08:42:18 2025 +0000",
-          "Fri Nov 21 11:33:48 2025 -0500",
-          "Fri Nov 21 10:30:19 2025 -0500",
-          "Mon Nov 3 11:09:24 2025 -0500",
-          "Sun Nov 2 20:47:07 2025 -0500",
-          "Mon Oct 27 01:13:15 2025 +0000",
-          "Sun Oct 26 00:20:31 2025 -0400",
-          "Thu Sep 25 08:36:23 2025 +0000",
-          "Wed Sep 24 11:27:57 2025 -0400",
-          "Wed Sep 3 02:10:37 2025 +0000",
-          "Fri Aug 29 11:39:20 2025 -0400",
-          "Thu Aug 21 03:17:57 2025 +0000",
-          "Wed Aug 20 22:32:02 2025 -0400",
-          "Wed Aug 20 18:31:46 2025 +0000",
-          "Wed Aug 20 13:35:52 2025 -0400",
-          "Tue Aug 12 17:15:32 2025 -0400",
-          "Sun Aug 10 23:21:57 2025 -0400"
-        ],
-        "message": [
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "scheduled daily data update",
-          "scheduled data build",
-          "manually ran bundle_respiratory after bug fix",
-          "scheduled daily data update",
-          "manually update respiratory bundle",
-          "scheduled daily data update",
-          "manual update of rsv data",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "updated filter in epic data",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "scheduled data build",
-          "updated respiratory bundle and epic_resp_infections; fixed Rt bug",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "scheduled daily data update",
-          "scheduled data build",
-          "added CFA Rt, NNDS, and NCHS data to respiratory bundle",
-          "scheduled daily data update",
-          "scheduled data build",
-          "scheduled daily data update",
-          "removed _test",
-          "scheduled daily data update",
-          "scheduled data build",
-          "rebuild bundle with fixed wastewate API and new epic data",
-          "scheduled data build",
-          "updates to cosmos data",
-          "scheduled data build",
-          "fixed denominators for incidence on ABCs standard file",
-          "scheduled data build",
-          "update bunle after fixing Kinsa ingestion",
-          "scheduled data build",
-          "update respiratory bundle with new cosmos data",
-          "scheduled data build",
-          "update bundle to check that all run OK; update medicaid quality package to only download new datasets",
-          "partial update bundle",
-          "scheduled data build",
-          "scheduled respiratory data update",
-          "update bundle",
-          "scheduled respiratory data update",
-          "rebuild respiratory bundle",
-          "scheduled data build",
-          "update epic data",
-          "scheduled data build",
-          "fix respnet age stratified data",
-          "scheduled data build",
-          "fix issues caused by change in cdlTools in resp bundle, nchs_mortality",
-          "scheduled respiratory data update",
-          "fixes issues with WashPost county encoding that was breaking ingestion",
-          "scheduled respiratory data update",
-          "WEEKLY UPDATE",
-          "WEEKLY UPDATE",
-          "update respiratory files",
-          "update data",
-          "scheduled data build",
-          "re-calculate 'all-site' ('United States' values for ABCs to only include the 8 sites that consistently report since 1998",
-          "manual update respiratory bundle",
-          "scheduled data build",
-          "fix issue with age stratified data",
-          "update ABCs geography to use latest data",
-          "resolve diffs",
-          "https://github.com/DISSC-yale/pophive_demo/commit/37db89ccda72eebe0bc07a46bb6593f4cd01bc5f",
-          "scheduled data build",
-          "part 3",
-          "scheduled data build",
-          "update proportions to be *100 for plotting pursposes and for consistency to old PopHIVE_Datahub pipeline",
-          "scheduled data build",
-          "run bundle",
-          "scheduled data build",
-          "udpates build with some additional JSOn meta data",
-          "scheduled data build",
-          "manual re-run",
-          "rerun respiratory bundle",
-          "fix respiratory bundle structure to remove subfolders"
-        ]
-      },
-      "source": [],
-      "data_format": "tall",
-      "ids": [
-        {
-          "variable": "geography"
-        }
-      ],
-      "id_length": 2,
-      "time": "time",
-      "profile": "data-resource",
-      "created": "2026-09-01 12:21:58.076602",
-      "last_modified": "2026-09-01 12:21:58.076602",
-      "vintage": {},
-      "row_count": 880,
-      "entity_count": 10,
-      "schema": {
-        "fields": [
-          {
-            "name": "serotype",
-            "duplicates": 792,
-            "info": [],
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "1": 10,
-              "10A": 10,
-              "10F": 10,
-              "11A": 10,
-              "11B": 10,
-              "11C": 10,
-              "12A": 10,
-              "12B": 10,
-              "12F": 10,
-              "13": 10,
-              "14": 10,
-              "15A": 10,
-              "15B": 10,
-              "15C": 10,
-              "15D": 10,
-              "15F": 10,
-              "16A": 10,
-              "16F": 10,
-              "17": 10,
-              "17A": 10,
-              "17F": 10,
-              "18": 10,
-              "18A": 10,
-              "18B": 10,
-              "18C": 10,
-              "18F": 10,
-              "19A": 10,
-              "19B": 10,
-              "19C": 10,
-              "19F": 10,
-              "2": 10,
-              "20": 10,
-              "21": 10,
-              "22A": 10,
-              "22F": 10,
-              "23A": 10,
-              "23B": 10,
-              "23F": 10,
-              "24A": 10,
-              "24B": 10,
-              "24F": 10,
-              "25": 10,
-              "25F": 10,
-              "27": 10,
-              "28": 10,
-              "28A": 10,
-              "28F": 10,
-              "29": 10,
-              "3": 10,
-              "30": 10,
-              "31": 10,
-              "33": 10,
-              "33A": 10,
-              "33B": 10,
-              "33F": 10,
-              "34": 10,
-              "35": 10,
-              "35A": 10,
-              "35B": 10,
-              "35C": 10,
-              "35D": 10,
-              "35F": 10,
-              "36": 10,
-              "37": 10,
-              "38": 10,
-              "39": 10,
-              "4": 10,
-              "40": 10,
-              "41A": 10,
-              "43": 10,
-              "45": 10,
-              "47F": 10,
-              "5": 10,
-              "6A": 10,
-              "6B": 10,
-              "6C": 10,
-              "6D": 10,
-              "7A": 10,
-              "7B": 10,
-              "7C": 10,
-              "7F": 10,
-              "8": 10,
-              "9A": 10,
-              "9L": 10,
-              "9N": 10,
-              "9V": 10,
-              "MISS": 10,
-              "NT": 10
-            }
-          },
-          {
-            "name": "geography",
-            "duplicates": 870,
-            "info": {
-              "short_name": "State",
-              "short_description": "Two-letter USPS state abbreviation of the ABCs surveillance site.",
-              "measure_type": "identifier",
-              "id": "geography"
-            },
-            "time_range": [-1, -1],
-            "type": "string",
-            "missing": 0,
-            "table": {
-              "CA": 88,
-              "CO": 88,
-              "CT": 88,
-              "GA": 88,
-              "MD": 88,
-              "MN": 88,
-              "NM": 88,
-              "NY": 88,
-              "OR": 88,
-              "TN": 88
-            }
-          },
-          {
-            "name": "year",
-            "duplicates": 879,
-            "info": [],
-            "time_range": [-1, -1],
-            "type": "integer",
-            "missing": 0,
-            "mean": 2024,
-            "sd": 0,
-            "min": 2024,
-            "max": 2024
-          },
-          {
-            "name": "value",
-            "duplicates": 719,
-            "info": {
-              "id": "pct_IPD",
-              "short_name": "Percent of IPD episodes",
-              "long_name": "Percent of IPD episodes caused by the indicated serotype",
-              "category": "Respiratory diseases",
-              "short_description": "Pneumococcal serotype",
-              "measure_type": "percent",
-              "unit": "%",
-              "time_resolution": "year",
-              "sources": [
-                "abcs"
-              ],
-              "source_file": {
-                "project": "abcs",
-                "data_dir": "/data/abcs/standard",
-                "file": "data.csv.gz"
-              }
-            },
-            "time_range": [-1, -1],
-            "type": "float",
-            "missing": 0,
-            "mean": 1.136364,
-            "sd": 3.258382,
-            "min": 0,
-            "max": 40.875912
-          },
-          {
-            "name": "value_N",
-            "duplicates": 829,
-            "info": {
-              "id": "N_IPD",
-              "short_name": "Number of IPD episodes",
-              "long_name": "Number of IPD episodes",
-              "category": "Respiratory diseases",
-              "short_description": "Pneumococcal serotype",
-              "measure_type": "count",
-              "unit": "Number",
-              "time_resolution": "year",
-              "sources": [
-                "abcs"
-              ],
-              "source_file": {
-                "project": "abcs",
-                "data_dir": "/data/abcs/standard",
-                "file": "data.csv.gz"
-              }
-            },
-            "time_range": [-1, -1],
-            "type": "integer",
-            "missing": 0,
-            "mean": 4.104545,
-            "sd": 11.960514,
-            "min": 0,
-            "max": 126
-          }
-        ]
-      },
-      "sha512": "90aea9ef0d6741ccc111a9276d4051aa1b431379298265a6a8d970ffba44e6fb7a27d880469954472c649ccaa3e3f8e6cab233918ca4eb1c9e8e495d1b95511d"
+      "sha512": "2080ac9c99d8340398c5d16766074e4f0fa161ec37aa02e0ce9fac7de61d31840a3cf448af5326c06ec5992e7aa9f17982f54396282f92b86612550ec43d0527"
     },
     {
       "bytes": 1857,
       "encoding": "windows-1252",
-      "md5": "d6643a56b041f7bfbd3a1b99e0de593d",
+      "md5": "da5f2e8a2f2addaee787d24bd81d0248",
       "format": "parquet",
       "name": "pneumococcus_comparison",
       "filename": "pneumococcus_comparison.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -9111,6 +10747,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -9169,6 +10806,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -9227,6 +10865,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -9295,8 +10934,8 @@
       "id_length": 11,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:58.392623",
-      "last_modified": "2026-09-01 12:21:58.392623",
+      "created": "2026-08-14 11:08:34.463409",
+      "last_modified": "2026-09-01 11:50:03.499723",
       "vintage": {},
       "row_count": 15,
       "entity_count": 1,
@@ -9408,17 +11047,18 @@
           }
         ]
       },
-      "sha512": "76f0da07dfd51bedb58a301e820d1f754b37c40ececb36cc9daea2a972d240c638c0b8b723bc1a802c79762779427aa9e7f1ced23c570841c55577803f2d8086"
+      "sha512": "313eeca40f9225bde71a4395954edb23b3a598d6065922ba7f1f9d1b91cf025263d5f2aa539c6dd370f72f0fa54d684c72bc66a69b5daf50e5691c5ba8d0142e"
     },
     {
-      "bytes": 41787,
+      "bytes": 41811,
       "encoding": "windows-1252",
-      "md5": "4b68709332b6867c80bcc8c8d94e11c5",
+      "md5": "e20f7fdb4f73dcc7822c3815b303eac5",
       "format": "parquet",
       "name": "pneumococcus_serotype_trends",
       "filename": "pneumococcus_serotype_trends.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -9518,6 +11158,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -9617,6 +11258,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -9716,6 +11358,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -9825,8 +11468,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:58.006597",
-      "last_modified": "2026-09-01 12:21:58.006597",
+      "created": "2026-08-14 11:08:34.478558",
+      "last_modified": "2026-09-01 11:50:02.923767",
       "vintage": {},
       "row_count": 9504,
       "entity_count": 0,
@@ -10018,17 +11661,18 @@
           }
         ]
       },
-      "sha512": "9f523a45508c8f6086e108f1ee4e3941bba86923899096c7fdbd7af34b17cb3493f528a1b11de3e0e7352798027d6c051eb2c9c402b8a3b528d60befb4d26812"
+      "sha512": "7c025eca80ac2a3329e0256eb69eaf301415af5ac8a95b7f1431056850b9ed99d80df85c9d92a9a0b9a728564596b5c8949f7aa9c4ecefeaef6f2c4755a05b3c"
     },
     {
-      "bytes": 1624581,
+      "bytes": 1625419,
       "encoding": "windows-1252",
-      "md5": "0db155ee149b1be9dca39224893345cf",
+      "md5": "8931c860e456d13c7fb32b72aedbd7be",
       "format": "parquet",
       "name": "rsv_ed_visits_by_county",
       "filename": "rsv_ed_visits_by_county.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -10157,6 +11801,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -10285,6 +11930,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -10413,6 +12059,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -10551,8 +12198,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:53.963345",
-      "last_modified": "2026-09-01 12:21:53.963345",
+      "created": "2026-08-14 11:08:34.481426",
+      "last_modified": "2026-09-01 11:49:58.190598",
       "vintage": {},
       "row_count": 640764,
       "entity_count": 0,
@@ -10909,17 +12556,18 @@
           }
         ]
       },
-      "sha512": "6f0b6c6560c1c2d0f76ec465c252b37c700cb720510704a5dbccedd58ee41e2ecb99468872083e23b00b74d0cf44aade75fedc88c28230635ac1c42c268c0a0d"
+      "sha512": "5572689680fffa8c272ba8b5355eb71f6c76713a1e1ac04f8bddc821f9c315c5d1c087237e63c1e3da04cce6e143bf8d819a7d0693c1fdd3af89a9772e456f17"
     },
     {
-      "bytes": 853583,
+      "bytes": 852732,
       "encoding": "windows-1252",
-      "md5": "bc2854a56195f3757b3e0e9aafe4b992",
+      "md5": "190e2af0d204ba926e6e826bff0d13ef",
       "format": "parquet",
       "name": "rsv_google_dma",
       "filename": "rsv_google_dma.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -11038,6 +12686,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -11156,6 +12805,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -11274,6 +12924,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -11402,8 +13053,8 @@
       "id_length": "NA",
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:57.950594",
-      "last_modified": "2026-09-01 12:21:57.950594",
+      "created": "2026-08-14 11:08:34.494778",
+      "last_modified": "2026-09-01 11:50:02.809904",
       "vintage": {},
       "row_count": 322350,
       "entity_count": 0,
@@ -11576,17 +13227,18 @@
           }
         ]
       },
-      "sha512": "913f19017f4a517d97a66ac5fdead3231bb57b6453e86d99f740bb2b246d0d731013c3c1cff676bd0bcf76f02ab24793fd375fb5acf6d24621571b3acf41a6bd"
+      "sha512": "84bf19789b3e06e239528fbbc8785d213a4831d6e9e8818665dfd7eed8823f4ca52356ffa0ee62c8b65d88b82b0536160bd9810d545c7dda89468d30a7688e50"
     },
     {
-      "bytes": 707259,
+      "bytes": 707310,
       "encoding": "windows-1252",
-      "md5": "2561b698844225974c144cdf8f50adb7",
+      "md5": "889263de1d982e1992882626e3dca122",
       "format": "parquet",
       "name": "rsv_overall_trends",
       "filename": "rsv_overall_trends.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -11767,6 +13419,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -11947,6 +13600,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -12127,6 +13781,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -12317,8 +13972,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:53.153366",
-      "last_modified": "2026-09-01 12:21:53.153366",
+      "created": "2026-08-14 11:08:34.495865",
+      "last_modified": "2026-09-01 11:49:57.147228",
       "vintage": {},
       "row_count": 27473,
       "entity_count": 52,
@@ -12845,17 +14500,18 @@
           }
         ]
       },
-      "sha512": "9863532ab6f36f4fae8c2f129d5602788193a75b1c7170e9e33dc2f4bc56c0dba994fb4c6aee4213483a57b79511fe1876aab89fe97a15d80e301e1c5cf20eb5"
+      "sha512": "e17bece9e377449d3a08d688b15bcc4fae74fb6d2d4027e9592513ff20a51d014d54734e5dfb1c8961b645341887c98509956c36d55e42243731a2ebb7dfe577"
     },
     {
-      "bytes": 45992,
+      "bytes": 46173,
       "encoding": "windows-1252",
-      "md5": "559577ae5f9e6c730f620eae1151c734",
+      "md5": "b2d04366c8b8df9f6fa366fe4f2d02ca",
       "format": "parquet",
       "name": "rsv_positive_tests",
       "filename": "rsv_positive_tests.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -12995,6 +14651,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -13134,6 +14791,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -13273,6 +14931,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -13422,8 +15081,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:53.347361",
-      "last_modified": "2026-09-01 12:21:53.347361",
+      "created": "2026-08-14 11:08:34.495865",
+      "last_modified": "2026-09-01 11:49:57.471928",
       "vintage": {},
       "row_count": 3663,
       "entity_count": 11,
@@ -13988,17 +15647,18 @@
           }
         ]
       },
-      "sha512": "13617827b3dad5fbbe7e4e993db614980b841ce8efd7030d30b05aa29273b447ba2ab620eeef83b019f21e3db1e5dfb48379230bda60eb5a8287a927f7458fb9"
+      "sha512": "c1e199a424b5dd8b93f18cd022ee30878fc909530202dffda2e312d77e3a243b13a79afb149099aed11efe860ff605d2645b277092d12cd9f1a6d945733c5940"
     },
     {
-      "bytes": 130064,
+      "bytes": 130228,
       "encoding": "windows-1252",
-      "md5": "1925abdb309e3454bb619a13902dcdef",
+      "md5": "b63cd5da5534b9edf87bc361fe46a6b0",
       "format": "parquet",
       "name": "rsv_testing_pct",
       "filename": "rsv_testing_pct.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -14106,6 +15766,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -14213,6 +15874,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -14320,6 +15982,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -14437,8 +16100,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:53.417359",
-      "last_modified": "2026-09-01 12:21:53.417359",
+      "created": "2026-08-14 11:08:34.514545",
+      "last_modified": "2026-09-01 11:49:57.618118",
       "vintage": {},
       "row_count": 16442,
       "entity_count": 53,
@@ -14736,17 +16399,18 @@
           }
         ]
       },
-      "sha512": "aa4119352cdc1402bd1e0b9f3be7880b96187cd6e4725e9a10bbac36019186ed15b11b2dbcc98208e5478ac4fa7fb9bfbdbdf0c4c2e66f65e62a0efa384b7815"
+      "sha512": "ce4a82acadef58b15997fb7f21c92c24de1e8caabb4623660a25fab726382ef3464b77001334cd9db03e62dfa71a11148929fb66c8ac535079db3dee66db338b"
     },
     {
-      "bytes": 1377401,
+      "bytes": 1378361,
       "encoding": "UTF-16BE",
-      "md5": "dcc7b73e3c2dd09dda27176791859e96",
+      "md5": "d414a0eef0918c8528a8aacc53782701",
       "format": "parquet",
       "name": "rsv_trends_by_age",
       "filename": "rsv_trends_by_age.parquet",
       "versions": {
         "hash": [
+          "b0210b83f349ba8352b5d9b20a71a0afcb12a02c",
           "5b3a4ada07acf88e985bf724ac0f9f6aa996a629",
           "43b82027f0f534e15ae5f682e253fd8fd5635848",
           "f676308f5a631b7662030dd7f2e220ee0724500e",
@@ -14884,6 +16548,7 @@
           "9d287e479bc0c11ff000edab04888a1b1ff36ed6"
         ],
         "author": [
+          "scratch <scratch@local>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
           "GitHub Actions <actions@github.com>",
@@ -15021,6 +16686,7 @@
           "Weinberger <daniel.weinberger@yale.edu>"
         ],
         "date": [
+          "Tue Sep 1 11:23:28 2026 -0400",
           "Sat Aug 29 13:01:46 2026 +0000",
           "Sat Aug 29 01:54:57 2026 +0000",
           "Wed Aug 26 07:47:18 2026 +0000",
@@ -15158,6 +16824,7 @@
           "Sun Aug 10 23:21:57 2025 -0400"
         ],
         "message": [
+          "update measure_infos with data catalogue fields; combine strep and respiratory bundles",
           "scheduled daily data update",
           "scheduled data build",
           "scheduled daily data update",
@@ -15305,8 +16972,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-01 12:21:57.224546",
-      "last_modified": "2026-09-01 12:21:57.224546",
+      "created": "2026-08-14 11:08:34.51861",
+      "last_modified": "2026-09-01 11:50:01.504589",
       "vintage": {},
       "row_count": 47779,
       "entity_count": 52,
@@ -15687,7 +17354,7 @@
           }
         ]
       },
-      "sha512": "14a3aebc427e0eaadb72377eb2f73fc6d2fe63c2f3ed1e6f41ea63d5ea5b700f78e2e20084c7994b53cf9b2d6e459026bcab5254edf97dad94a015b17a57bbba"
+      "sha512": "3746c0338853d8596cc27f56899aca6dd881946c37b95d8640c89d37a72e78fa8eb4a1e75e7ac4df8dc973c3baed08c935a1b63bc7870fe901d724fc844f6e32"
     }
   ],
   "measure_info": {
@@ -18036,6 +19703,732 @@
       "min": 0,
       "max": 18
     },
+    "bundle_respiratory/dist/abcs_strep.parquet|geography": {
+      "short_name": "Geography",
+      "long_name": "Geography name",
+      "short_description": "State name, or \"United States\" for the national total.",
+      "long_description": "Geographic area the row describes, as a state name or \"United States\" for the national total.",
+      "measure_type": "identifier",
+      "unit": "state name",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|geography"
+    },
+    "bundle_respiratory/dist/gas_state.parquet|geography": {
+      "short_name": "Geography",
+      "long_name": "Geography name",
+      "short_description": "State name, or \"United States\" for the national total.",
+      "long_description": "Geographic area the row describes, as a state name or \"United States\" for the national total.",
+      "measure_type": "identifier",
+      "unit": "state name",
+      "id": "bundle_respiratory/dist/gas_state.parquet|geography"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|geography_fips": {
+      "short_name": "Geography FIPS",
+      "long_name": "Geography FIPS code",
+      "short_description": "FIPS code for the geography; \"00\" is national.",
+      "long_description": "FIPS code for the row's geography, with \"00\" for the national total and 2-digit codes for states.",
+      "measure_type": "identifier",
+      "unit": "FIPS code",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|geography_fips"
+    },
+    "bundle_respiratory/dist/gas_state.parquet|geography_fips": {
+      "short_name": "Geography FIPS",
+      "long_name": "Geography FIPS code",
+      "short_description": "FIPS code for the geography; \"00\" is national.",
+      "long_description": "FIPS code for the row's geography, with \"00\" for the national total and 2-digit codes for states.",
+      "measure_type": "identifier",
+      "unit": "FIPS code",
+      "id": "bundle_respiratory/dist/gas_state.parquet|geography_fips"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|date": {
+      "short_name": "Date",
+      "long_name": "Period end date",
+      "short_description": "End date of the reporting period, in YYYY-mm-dd format.",
+      "long_description": "End date of the reporting period the row covers.",
+      "measure_type": "date",
+      "unit": "date",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|date"
+    },
+    "bundle_respiratory/dist/gas_state.parquet|date": {
+      "short_name": "Date",
+      "long_name": "Period end date",
+      "short_description": "End date of the reporting period, in YYYY-mm-dd format.",
+      "long_description": "End date of the reporting period the row covers.",
+      "measure_type": "date",
+      "unit": "date",
+      "id": "bundle_respiratory/dist/gas_state.parquet|date"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|year": {
+      "short_name": "Year",
+      "long_name": "Year",
+      "short_description": "Year of the reporting period.",
+      "long_description": "Year of the reporting period, the MMWR year for the weekly NNDSS series.",
+      "measure_type": "identifier",
+      "unit": "year",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|year"
+    },
+    "bundle_respiratory/dist/gas_state.parquet|year": {
+      "short_name": "Year",
+      "long_name": "Year",
+      "short_description": "Year of the reporting period.",
+      "long_description": "Year of the reporting period, the MMWR year for the weekly NNDSS series.",
+      "measure_type": "identifier",
+      "unit": "year",
+      "id": "bundle_respiratory/dist/gas_state.parquet|year"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|pathogen": {
+      "short_name": "Pathogen",
+      "long_name": "Bacterial pathogen",
+      "short_description": "Group A or Group B Streptococcus.",
+      "long_description": "Bacterial species the row describes, Group A Streptococcus (Streptococcus pyogenes) or Group B Streptococcus (Streptococcus agalactiae).",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|pathogen"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|rate_denominator": {
+      "short_name": "Rate denominator",
+      "long_name": "Population the rate is relative to",
+      "short_description": "Whether a rate is per 100,000 of the row's stratum or of the whole population.",
+      "long_description": "Which population a per-100,000 rate is relative to, either the stratum the row describes or the whole population.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|rate_denominator"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|age": {
+      "short_name": "Age group",
+      "long_name": "Age group",
+      "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+      "long_description": "Age group the row reports, with \"Total\" as the all-ages aggregate.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|age"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|sex": {
+      "short_name": "Sex",
+      "long_name": "Sex",
+      "short_description": "Sex; \"Total\" combines both.",
+      "long_description": "Sex of the cases the row describes, reported for Group A only.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|sex"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|race_ethnicity": {
+      "short_name": "Race/Ethnicity",
+      "long_name": "Race and ethnicity",
+      "short_description": "Race and ethnicity; \"Total\" combines all groups.",
+      "long_description": "Race and ethnicity of the cases the row describes, collapsed by ABCs to White, Black and Other.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|race_ethnicity"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|onset": {
+      "short_name": "Onset timing",
+      "long_name": "Infant disease onset timing",
+      "short_description": "Early- or late-onset infant Group B disease.",
+      "long_description": "Whether infant Group B disease had early onset (0-6 days of life) or late onset (7-89 days).",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|onset"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|syndrome": {
+      "short_name": "Clinical syndrome",
+      "long_name": "Clinical syndrome",
+      "short_description": "Clinical presentation the row describes; \"Total\" where not syndrome-specific.",
+      "long_description": "Clinical presentation the row reports, for the syndrome measures.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|syndrome"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|antibiotic": {
+      "short_name": "Antibiotic",
+      "long_name": "Antibiotic tested",
+      "short_description": "Drug the resistance percentage refers to; \"Total\" where not drug-specific.",
+      "long_description": "Antibiotic a pct_resistant row refers to.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|antibiotic"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|emm_type": {
+      "short_name": "emm type",
+      "long_name": "Group A emm type",
+      "short_description": "emm type the row describes; \"Total\" where not type-specific.",
+      "long_description": "emm type of the Group A Streptococcus isolates, the M protein gene sequence type.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|emm_type"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|serotype": {
+      "short_name": "Serotype",
+      "long_name": "Group B capsular serotype",
+      "short_description": "Capsular serotype the row describes; \"Total\" where not serotype-specific.",
+      "long_description": "Capsular serotype of the Group B Streptococcus isolates.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|serotype"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|alph_type": {
+      "short_name": "ALPH type",
+      "long_name": "Group B ALPH gene type",
+      "short_description": "Alpha-like protein gene the row describes; \"Total\" where not type-specific.",
+      "long_description": "Alpha-like protein (ALPH) surface gene type of the Group B Streptococcus isolates.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|alph_type"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|measure": {
+      "short_name": "Measure",
+      "levels": {
+        "rate_cases": {
+          "source_id": "abcs_rate_cases",
+          "id": "rate_cases",
+          "name": "abcs_rate_cases",
+          "duplicates": 706,
+          "info": {
+            "id": "abcs_rate_cases",
+            "short_name": "Case rate",
+            "long_name": "Invasive disease case rate",
+            "category": "infectious_disease",
+            "short_description": "Invasive disease cases per 100,000 population.",
+            "long_description": "Rate of invasive disease cases per 100,000 population.",
+            "statement": "In {location}, the invasive case rate was {value} per 100,000.",
+            "measure_type": "Rate",
+            "unit": "Cases per 100,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "abcs_gas"
+              },
+              {
+                "id": "abcs_gbs"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "abcs",
+              "data_dir": "/data/abcs/standard",
+              "file": "strep_rates.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            27
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 6.425756,
+          "sd": 12.180152,
+          "min": 0,
+          "max": 115.7
+        },
+        "rate_deaths": {
+          "source_id": "abcs_rate_deaths",
+          "id": "rate_deaths",
+          "name": "abcs_rate_deaths",
+          "duplicates": 795,
+          "info": {
+            "id": "abcs_rate_deaths",
+            "short_name": "Death rate",
+            "long_name": "Invasive disease death rate",
+            "category": "infectious_disease",
+            "short_description": "Deaths from invasive disease per 100,000 population.",
+            "long_description": "Rate of deaths from invasive disease per 100,000 population.",
+            "measure_type": "Rate",
+            "unit": "Deaths per 100,000",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "abcs_gas"
+              },
+              {
+                "id": "abcs_gbs"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "abcs",
+              "data_dir": "/data/abcs/standard",
+              "file": "strep_rates.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            27
+          ],
+          "type": "float",
+          "missing": 448,
+          "mean": 0.696766,
+          "sd": 1.053664,
+          "min": 0,
+          "max": 5.66
+        },
+        "n_cases": {
+          "source_id": "abcs_N_cases",
+          "id": "n_cases",
+          "name": "abcs_N_cases",
+          "duplicates": 24,
+          "info": {
+            "id": "abcs_N_cases",
+            "short_name": "Cases",
+            "long_name": "Estimated number of invasive cases",
+            "category": "infectious_disease",
+            "short_description": "Estimated annual invasive disease cases.",
+            "long_description": "Estimated number of invasive disease cases in the year.",
+            "measure_type": "Count",
+            "unit": "Cases",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "abcs_gas"
+              },
+              {
+                "id": "abcs_gbs"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "abcs",
+              "data_dir": "/data/abcs/standard",
+              "file": "strep_counts.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            27
+          ],
+          "type": "integer",
+          "missing": 0,
+          "mean": 9187.107143,
+          "sd": 10820.031933,
+          "min": 540,
+          "max": 43100
+        },
+        "n_deaths": {
+          "source_id": "abcs_N_deaths",
+          "id": "n_deaths",
+          "name": "abcs_N_deaths",
+          "duplicates": 96,
+          "info": {
+            "id": "abcs_N_deaths",
+            "short_name": "Deaths",
+            "long_name": "Estimated number of deaths",
+            "category": "infectious_disease",
+            "short_description": "Estimated annual deaths from invasive disease.",
+            "long_description": "Estimated number of deaths from invasive disease in the year.",
+            "measure_type": "Count",
+            "unit": "Deaths",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "abcs_gas"
+              },
+              {
+                "id": "abcs_gbs"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "abcs",
+              "data_dir": "/data/abcs/standard",
+              "file": "strep_counts.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            27
+          ],
+          "type": "integer",
+          "missing": 84,
+          "mean": 1790.089286,
+          "sd": 552.883755,
+          "min": 1000,
+          "max": 4210
+        },
+        "n_survivals": {
+          "source_id": "abcs_N_survivals",
+          "id": "n_survivals",
+          "name": "abcs_N_survivals",
+          "duplicates": 85,
+          "info": {
+            "id": "abcs_N_survivals",
+            "short_name": "Survivals",
+            "long_name": "Estimated number of survivals",
+            "category": "infectious_disease",
+            "short_description": "Estimated annual invasive disease cases who survived.",
+            "long_description": "Estimated number of people with invasive disease who survived, in the year.",
+            "measure_type": "Count",
+            "unit": "People",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "abcs_gas"
+              },
+              {
+                "id": "abcs_gbs"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "abcs",
+              "data_dir": "/data/abcs/standard",
+              "file": "strep_counts.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            27
+          ],
+          "type": "integer",
+          "missing": 84,
+          "mean": 18855,
+          "sd": 8085.829018,
+          "min": 7750,
+          "max": 38890
+        },
+        "pct_resistant": {
+          "source_id": "abcs_pct_resistant_penicillin",
+          "id": "pct_resistant"
+        },
+        "rate_syndrome": {
+          "source_id": "abcs_gas_rate_syndrome_cellulitis",
+          "id": "rate_syndrome"
+        },
+        "pct_syndrome": {
+          "source_id": "abcs_gbs_pct_syndrome_meningitis",
+          "id": "pct_syndrome"
+        },
+        "pct_emm_type": {
+          "source_id": "abcs_gas_emm_pct_emm_1",
+          "id": "pct_emm_type"
+        },
+        "pct_serotype": {
+          "source_id": "abcs_gbs_pct_serotype_ia",
+          "id": "pct_serotype"
+        },
+        "pct_alph_type": {
+          "source_id": "abcs_gbs_pct_alph_alp1",
+          "id": "pct_alph_type"
+        }
+      },
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|measure"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|value": {
+      "short_name": "Value",
+      "long_name": "Measure value",
+      "short_description": "Value of the measure named in the measure column.",
+      "long_description": "Value of the measure named in the measure column, whose units differ by measure; blank where CDC published nothing, so a 0 is always a measured zero.",
+      "measure_type": "Mixed",
+      "unit": "varies by measure",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|value"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|n_isolates": {
+      "short_name": "Isolates",
+      "long_name": "Number of isolates",
+      "short_description": "Isolate count behind the percentage on this row.",
+      "long_description": "Number of isolates the percentage on this row is calculated over.",
+      "measure_type": "Count",
+      "unit": "Isolates",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|n_isolates"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|n_isolates_status": {
+      "short_name": "Isolate count status",
+      "long_name": "Availability of n_isolates",
+      "short_description": "Whether n_isolates is published, unpublished, or not applicable.",
+      "long_description": "Whether n_isolates is published, applies but was not published, or does not apply to the measure.",
+      "measure_type": "category",
+      "levels": {
+        "reported": {
+          "short_name": "Reported",
+          "short_description": "n_isolates holds CDC's published count.",
+          "id": "reported"
+        },
+        "not_reported": {
+          "short_name": "Not reported",
+          "short_description": "The measure has an isolate denominator but CDC published none for this row.",
+          "id": "not_reported"
+        },
+        "not_applicable": {
+          "short_name": "Not applicable",
+          "short_description": "The measure has no isolate denominator.",
+          "id": "not_applicable"
+        }
+      },
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|n_isolates_status"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|n_type": {
+      "short_name": "Isolates of this type",
+      "long_name": "Number of isolates of this type",
+      "short_description": "Isolates of the emm type on this row.",
+      "long_description": "Number of isolates of the emm type on this row, the numerator behind pct_emm_type.",
+      "measure_type": "Count",
+      "unit": "Isolates",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "abcs_gas"
+        },
+        {
+          "id": "abcs_gbs"
+        }
+      ],
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|n_type"
+    },
+    "bundle_respiratory/dist/abcs_strep.parquet|n_type_status": {
+      "short_name": "Type count status",
+      "long_name": "Availability of n_type",
+      "short_description": "Whether n_type is published, unpublished, or not applicable.",
+      "long_description": "Whether n_type is published, applies but was not published, or does not apply to the measure.",
+      "measure_type": "category",
+      "levels": {
+        "reported": {
+          "short_name": "Reported",
+          "short_description": "n_type holds CDC's published per-type count.",
+          "id": "reported"
+        },
+        "not_reported": {
+          "short_name": "Not reported",
+          "short_description": "An emm type CDC did not itemise that year.",
+          "id": "not_reported"
+        },
+        "not_applicable": {
+          "short_name": "Not applicable",
+          "short_description": "Any measure other than pct_emm_type.",
+          "id": "not_applicable"
+        }
+      },
+      "id": "bundle_respiratory/dist/abcs_strep.parquet|n_type_status"
+    },
+    "bundle_respiratory/dist/gas_state.parquet|age": {
+      "short_name": "Age group",
+      "long_name": "Age group",
+      "short_description": "Age group; \"Total\" is the all-ages aggregate.",
+      "long_description": "Epic Cosmos age band for the row, with \"Total\" as the all-ages aggregate and on every NNDSS row.",
+      "measure_type": "category",
+      "id": "bundle_respiratory/dist/gas_state.parquet|age"
+    },
+    "bundle_respiratory/dist/gas_state.parquet|source": {
+      "short_name": "Source",
+      "long_name": "Data source",
+      "short_description": "Which surveillance system reported the row.",
+      "long_description": "Which surveillance system the row comes from, Epic Cosmos or NNDSS.",
+      "measure_type": "category",
+      "levels": {
+        "Epic Cosmos": {
+          "short_name": "Epic Cosmos",
+          "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age.",
+          "id": "Epic Cosmos"
+        },
+        "NNDSS": {
+          "short_name": "NNDSS",
+          "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state.",
+          "id": "NNDSS"
+        }
+      },
+      "id": "bundle_respiratory/dist/gas_state.parquet|source"
+    },
+    "bundle_respiratory/dist/gas_state.parquet|measure": {
+      "short_name": "Measure",
+      "levels": {
+        "n_strep_throat": {
+          "source_id": "epic_n_strep_throat",
+          "id": "n_strep_throat",
+          "name": "epic_n_strep_throat",
+          "duplicates": 8685,
+          "info": {
+            "id": "epic_n_strep_throat",
+            "short_name": "Strep Throat Patients",
+            "long_name": "Patients with a Strep Throat Diagnosis",
+            "category": "respiratory",
+            "short_description": "Quarterly count of patients with a strep throat diagnosis (J02.0, J03.00, J03.01).",
+            "long_description": "Quarterly count of patients with a strep throat diagnosis, including streptococcal pharyngitis (J02.0), acute streptococcal tonsillitis, unspecified (J03.00), and acute recurrent streptococcal tonsillitis (J03.01). Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_strep_throat_suppressed_flag. Quarters only partially covered by the exported date range are dropped, so every value covers a full calendar quarter. Population base per SlicerDicer session 2809857: data model Patients, population base All Patients, criteria Country of Care = United States of America and Has Any Encounters - the denominator is all patients with any encounter, NOT emergency department visits only.",
+            "statement": "In {location}, {value} patients had a strep throat diagnosis.",
+            "measure_type": "Count",
+            "unit": "patients",
+            "time_resolution": "Quarter",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "quarterly_gas.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            35
+          ],
+          "type": "integer",
+          "missing": 0,
+          "mean": 4601.032585,
+          "sd": 31156.086185,
+          "min": 5,
+          "max": 1004917
+        },
+        "pct_strep_throat": {
+          "source_id": "epic_pct_strep_throat",
+          "id": "pct_strep_throat",
+          "name": "epic_pct_strep_throat",
+          "duplicates": 82,
+          "info": {
+            "id": "epic_pct_strep_throat",
+            "short_name": "Strep Throat Percentage",
+            "long_name": "Percent of Patients with a Strep Throat Diagnosis",
+            "category": "respiratory",
+            "short_description": "Quarterly percent of patients with a strep throat diagnosis (J02.0, J03.00, J03.01).",
+            "long_description": "Quarterly percentage of patients with a strep throat diagnosis, computed as epic_n_strep_throat / epic_n_patients * 100. Diagnosis codes include streptococcal pharyngitis (J02.0), acute streptococcal tonsillitis, unspecified (J03.00), and acute recurrent streptococcal tonsillitis (J03.01). Where the numerator was suppressed it is imputed as 5 before the percentage is computed. Where the denominator was itself suppressed the percentage is left missing, because dividing by the imputed denominator of 5 would assert a meaningless value; those cells are marked by epic_n_patients_suppressed_flag. Data from Epic Cosmos SlicerDicer. Population base per SlicerDicer session 2809857: data model Patients, population base All Patients, criteria Country of Care = United States of America and Has Any Encounters - the denominator is all patients with any encounter, NOT emergency department visits only.",
+            "statement": "In {location}, {value}% of patients had a strep throat diagnosis.",
+            "measure_type": "Percent",
+            "unit": "Percent",
+            "time_resolution": "Quarter",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "quarterly_gas.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            35
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 0.764799,
+          "sd": 1.140564,
+          "min": 0.002825,
+          "max": 10.636352
+        },
+        "n_patients": {
+          "source_id": "epic_n_patients",
+          "id": "n_patients",
+          "name": "epic_n_patients",
+          "duplicates": 294,
+          "info": {
+            "id": "epic_n_patients",
+            "short_name": "Total Patients",
+            "long_name": "Total Patients (Denominator)",
+            "category": "respiratory",
+            "short_description": "Quarterly total patient count used as the denominator for the strep throat percentage.",
+            "long_description": "Quarterly total count of patients, used as the denominator for epic_pct_strep_throat. Data from Epic Cosmos SlicerDicer. Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_n_patients_suppressed_flag. Population base per SlicerDicer session 2809857: data model Patients, population base All Patients, criteria Country of Care = United States of America and Has Any Encounters - the denominator is all patients with any encounter, NOT emergency department visits only.",
+            "measure_type": "Count",
+            "unit": "patients",
+            "time_resolution": "Quarter",
+            "sources": [
+              {
+                "id": "epic_cosmos"
+              }
+            ],
+            "citations": [],
+            "source_file": {
+              "project": "epic_resp_infections",
+              "data_dir": "/data/epic_resp_infections/standard",
+              "file": "quarterly_gas.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            35
+          ],
+          "type": "integer",
+          "missing": 0,
+          "mean": 780723.551053,
+          "sd": 4451446.849236,
+          "min": 92,
+          "max": 98758918
+        },
+        "stss_cases_weekly": {
+          "short_name": "Strep TSS cases (weekly)",
+          "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
+          "short_description": "Newly reported STSS cases in the MMWR week.",
+          "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week.",
+          "measure_type": "Count",
+          "unit": "Cases",
+          "time_resolution": "Week",
+          "sources": [
+            {
+              "id": "nnds"
+            }
+          ],
+          "id": "stss_cases_weekly"
+        },
+        "stss_cases_cumulative": {
+          "source_id": "streptococcal_toxic_shock_syndrome",
+          "short_description": "Year-to-date STSS cases as published by NNDSS.",
+          "long_description": "Cumulative streptococcal toxic shock syndrome cases reported since the start of the MMWR year.",
+          "id": "stss_cases_cumulative",
+          "name": "streptococcal_toxic_shock_syndrome",
+          "duplicates": 13553,
+          "info": {
+            "id": "streptococcal_toxic_shock_syndrome",
+            "short_name": "Strep TSS cases",
+            "long_name": "Cumulative year-to-date cases of Streptococcal toxic shock syndrome",
+            "short_description": "Cumulative year-to-date case count of streptococcal toxic shock syndrome.",
+            "long_description": "Cumulative year-to-date number of reported cases of streptococcal toxic shock syndrome (STSS), a life-threatening condition caused by group A Streptococcus, as reported through the NNDSS.",
+            "measure_type": "Cumulative Count",
+            "unit": "Cumulative cases",
+            "time_resolution": "week",
+            "sources": [
+              {
+                "id": "nnds"
+              }
+            ],
+            "source_file": {
+              "project": "nnds",
+              "data_dir": "/data/nnds/standard",
+              "file": "data.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            241
+          ],
+          "type": "integer",
+          "missing": 0,
+          "mean": 7.910033,
+          "sd": 39.043601,
+          "min": 0,
+          "max": 647
+        }
+      },
+      "id": "bundle_respiratory/dist/gas_state.parquet|measure"
+    },
+    "bundle_respiratory/dist/gas_state.parquet|value": {
+      "short_name": "Value",
+      "long_name": "Measure value",
+      "short_description": "Value of the measure named in the measure column.",
+      "long_description": "Value of the measure named in the measure column, whose units differ by measure.",
+      "measure_type": "Mixed",
+      "unit": "varies by measure",
+      "id": "bundle_respiratory/dist/gas_state.parquet|value"
+    },
+    "bundle_respiratory/dist/gas_state.parquet|suppressed": {
+      "short_name": "Suppressed",
+      "long_name": "Epic suppression flag",
+      "short_description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
+      "long_description": "1 where Epic Cosmos withheld the underlying cell as a count of 10 or fewer, in which case the value was imputed as 5; blank on NNDSS rows, which have no such mechanism.",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "sources": [
+        {
+          "id": "epic_cosmos"
+        }
+      ],
+      "id": "bundle_respiratory/dist/gas_state.parquet|suppressed"
+    },
     "_bundle": {
       "name": "bundle_respiratory",
       "sources": [
@@ -18047,6 +20440,7 @@
         "epic_resp_infections",
         "gtrends",
         "kinsa_ili",
+        "nnds",
         "NREVSS",
         "nssp",
         "respnet",
@@ -18223,12 +20617,40 @@
             "abcs/standard/data.csv.gz",
             "abcs/standard/uad.csv.gz"
           ]
+        },
+        "abcs_strep.parquet": {
+          "sources": [
+            "abcs"
+          ],
+          "source_files": [
+            "abcs/standard/strep_rates.csv.gz",
+            "abcs/standard/strep_counts.csv.gz",
+            "abcs/standard/strep_resistance.csv.gz",
+            "abcs/standard/gas_syndromes.csv.gz",
+            "abcs/standard/gas_emm.csv.gz",
+            "abcs/standard/gbs_syndromes.csv.gz",
+            "abcs/standard/gbs_serotypes.csv.gz",
+            "abcs/standard/gbs_alph.csv.gz"
+          ]
+        },
+        "gas_state.parquet": {
+          "sources": [
+            "epic_resp_infections",
+            "nnds"
+          ],
+          "source_files": [
+            "epic_resp_infections/standard/quarterly_gas.csv.gz",
+            "nnds/standard/data.csv.gz"
+          ]
         }
       },
       "id": "_bundle"
     }
   },
   "change_report": {
+    "abcs_strep.parquet": {
+      "state": "unchanged"
+    },
     "covid_ed_visits_by_county.parquet": {
       "state": "unchanged"
     },
@@ -18287,13 +20709,16 @@
     "flu_trends_by_age.parquet": {
       "state": "unchanged"
     },
+    "gas_state.parquet": {
+      "state": "unchanged"
+    },
     "other_measures_trends.parquet": {
       "state": "unchanged"
     },
-    "pneumococcus_by_geography_year.parquet": {
+    "pneumococcus_by_geography.parquet": {
       "state": "unchanged"
     },
-    "pneumococcus_by_geography.parquet": {
+    "pneumococcus_by_geography_year.parquet": {
       "state": "unchanged"
     },
     "pneumococcus_comparison.parquet": {
@@ -18312,53 +20737,7 @@
       "state": "unchanged"
     },
     "rsv_positive_tests.parquet": {
-      "state": "changed",
-      "variables": {
-        "source": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "date": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": ["2026-08-15", "2026-08-22"],
-          "dropped_levels": []
-        },
-        "scaled_cases": {
-          "status": "present",
-          "same_type": true
-        },
-        "value": {
-          "status": "present",
-          "same_type": true
-        },
-        "epiyr": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "epiwk": {
-          "status": "present",
-          "same_type": true
-        },
-        "week": {
-          "status": "present",
-          "same_type": true
-        },
-        "year": {
-          "status": "present",
-          "same_type": true
-        }
-      }
+      "state": "unchanged"
     },
     "rsv_testing_pct.parquet": {
       "state": "unchanged"
