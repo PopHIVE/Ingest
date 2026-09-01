@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-31T15:27:12Z",
+  "generated": "2026-09-01T11:20:10Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -5212,6 +5212,241 @@
       "display_name": "Bundle: Respiratory",
       "dist_files": [
         {
+          "filename": "abcs_strep.parquet",
+          "path": "data/bundle_respiratory/dist/abcs_strep.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_respiratory/dist/abcs_strep.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State name, or \"United States\" for the national total.",
+              "measure_type": "identifier",
+              "unit": "state name",
+              "levels": {}
+            },
+            {
+              "name": "geography_fips",
+              "short_name": "Geography FIPS",
+              "description": "FIPS code for the geography; \"00\" is national.",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "date",
+              "short_name": "Date",
+              "description": "End date of the reporting period, in YYYY-mm-dd format.",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Year of the reporting period.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "pathogen",
+              "short_name": "Pathogen",
+              "description": "Group A or Group B Streptococcus.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex; \"Total\" combines both.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/Ethnicity",
+              "description": "Race and ethnicity; \"Total\" combines all groups.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "onset",
+              "short_name": "Onset timing",
+              "description": "Early- or late-onset infant Group B disease.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "rate_denominator",
+              "short_name": "Rate denominator",
+              "description": "Whether a rate is per 100,000 of the row's stratum or of the whole population.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "syndrome",
+              "short_name": "Clinical syndrome",
+              "description": "Clinical presentation the row describes; \"Total\" where not syndrome-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "antibiotic",
+              "short_name": "Antibiotic",
+              "description": "Drug the resistance percentage refers to; \"Total\" where not drug-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "emm_type",
+              "short_name": "emm type",
+              "description": "emm type the row describes; \"Total\" where not type-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "serotype",
+              "short_name": "Serotype",
+              "description": "Capsular serotype the row describes; \"Total\" where not serotype-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "alph_type",
+              "short_name": "ALPH type",
+              "description": "Alpha-like protein gene the row describes; \"Total\" where not type-specific.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "rate_cases": {
+                  "source_id": "abcs_rate_cases"
+                },
+                "rate_deaths": {
+                  "source_id": "abcs_rate_deaths"
+                },
+                "n_cases": {
+                  "source_id": "abcs_N_cases"
+                },
+                "n_deaths": {
+                  "source_id": "abcs_N_deaths"
+                },
+                "n_survivals": {
+                  "source_id": "abcs_N_survivals"
+                },
+                "pct_resistant": {
+                  "source_id": "abcs_pct_resistant_penicillin"
+                },
+                "rate_syndrome": {
+                  "source_id": "abcs_gas_rate_syndrome_cellulitis"
+                },
+                "pct_syndrome": {
+                  "source_id": "abcs_gbs_pct_syndrome_meningitis"
+                },
+                "pct_emm_type": {
+                  "source_id": "abcs_gas_emm_pct_emm_1"
+                },
+                "pct_serotype": {
+                  "source_id": "abcs_gbs_pct_serotype_ia"
+                },
+                "pct_alph_type": {
+                  "source_id": "abcs_gbs_pct_alph_alp1"
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value of the measure named in the measure column.",
+              "measure_type": "Mixed",
+              "unit": "varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "n_type",
+              "short_name": "Isolates of this type",
+              "description": "Isolates of the emm type on this row.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "n_type_status",
+              "short_name": "Type count status",
+              "description": "Whether n_type is published, unpublished, or not applicable.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "reported": {
+                  "short_name": "Reported",
+                  "short_description": "n_type holds CDC's published per-type count."
+                },
+                "not_reported": {
+                  "short_name": "Not reported",
+                  "short_description": "An emm type CDC did not itemise that year."
+                },
+                "not_applicable": {
+                  "short_name": "Not applicable",
+                  "short_description": "Any measure other than pct_emm_type."
+                }
+              }
+            },
+            {
+              "name": "n_isolates",
+              "short_name": "Isolates",
+              "description": "Isolate count behind the percentage on this row.",
+              "measure_type": "Count",
+              "unit": "Isolates",
+              "levels": {}
+            },
+            {
+              "name": "n_isolates_status",
+              "short_name": "Isolate count status",
+              "description": "Whether n_isolates is published, unpublished, or not applicable.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "reported": {
+                  "short_name": "Reported",
+                  "short_description": "n_isolates holds CDC's published count."
+                },
+                "not_reported": {
+                  "short_name": "Not reported",
+                  "short_description": "The measure has an isolate denominator but CDC published none for this row."
+                },
+                "not_applicable": {
+                  "short_name": "Not applicable",
+                  "short_description": "The measure has no isolate denominator."
+                }
+              }
+            }
+          ]
+        },
+        {
           "filename": "covid_ed_visits_by_county.parquet",
           "path": "data/bundle_respiratory/dist/covid_ed_visits_by_county.parquet",
           "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_respiratory/dist/covid_ed_visits_by_county.parquet",
@@ -5670,6 +5905,123 @@
               "description": "Equals 1 when the underlying Epic Cosmos count for this age group was suppressed (small cell) and imputed; 0 otherwise.",
               "measure_type": "Flag",
               "unit": "",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "gas_state.parquet",
+          "path": "data/bundle_respiratory/dist/gas_state.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_respiratory/dist/gas_state.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State name, or \"United States\" for the national total.",
+              "measure_type": "identifier",
+              "unit": "state name",
+              "levels": {}
+            },
+            {
+              "name": "geography_fips",
+              "short_name": "Geography FIPS",
+              "description": "FIPS code for the geography; \"00\" is national.",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "date",
+              "short_name": "Date",
+              "description": "End date of the reporting period, in YYYY-mm-dd format.",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Year of the reporting period.",
+              "measure_type": "identifier",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group; \"Total\" is the all-ages aggregate.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Source",
+              "description": "Which surveillance system reported the row.",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {
+                "Epic Cosmos": {
+                  "short_name": "Epic Cosmos",
+                  "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age."
+                },
+                "NNDSS": {
+                  "short_name": "NNDSS",
+                  "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state."
+                }
+              }
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "n_strep_throat": {
+                  "source_id": "epic_n_strep_throat"
+                },
+                "pct_strep_throat": {
+                  "source_id": "epic_pct_strep_throat"
+                },
+                "n_patients": {
+                  "source_id": "epic_n_patients"
+                },
+                "stss_cases_weekly": {
+                  "short_name": "Strep TSS cases (weekly)",
+                  "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
+                  "short_description": "Newly reported STSS cases in the MMWR week.",
+                  "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "stss_cases_cumulative": {
+                  "source_id": "streptococcal_toxic_shock_syndrome",
+                  "short_description": "Year-to-date STSS cases as published by NNDSS.",
+                  "long_description": "Cumulative streptococcal toxic shock syndrome cases reported since the start of the MMWR year."
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value of the measure named in the measure column.",
+              "measure_type": "Mixed",
+              "unit": "varies by measure",
+              "levels": {}
+            },
+            {
+              "name": "suppressed",
+              "short_name": "Suppressed",
+              "description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
+              "measure_type": "Binary",
+              "unit": "0/1",
               "levels": {}
             }
           ]
@@ -6325,364 +6677,6 @@
               "description": "Equals 1 when the underlying Epic Cosmos count for this age group was suppressed (small cell) and imputed; 0 otherwise.",
               "measure_type": "Flag",
               "unit": "",
-              "levels": {}
-            }
-          ]
-        }
-      ]
-    },
-    "bundle_strep": {
-      "name": "bundle_strep",
-      "display_name": "Bundle: Strep",
-      "dist_files": [
-        {
-          "filename": "abcs_strep.parquet",
-          "path": "data/bundle_strep/dist/abcs_strep.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_strep/dist/abcs_strep.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is national.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "date",
-              "short_name": "Date",
-              "description": "End date of the reporting period, in YYYY-mm-dd format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "year",
-              "short_name": "Year",
-              "description": "Year of the reporting period.",
-              "measure_type": "identifier",
-              "unit": "year",
-              "levels": {}
-            },
-            {
-              "name": "pathogen",
-              "short_name": "Pathogen",
-              "description": "Group A or Group B Streptococcus.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age group",
-              "description": "Age group; \"Total\" is the all-ages aggregate.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "sex",
-              "short_name": "Sex",
-              "description": "Sex; \"Total\" combines both.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "race_ethnicity",
-              "short_name": "Race/Ethnicity",
-              "description": "Race and ethnicity; \"Total\" combines all groups.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "onset",
-              "short_name": "Onset timing",
-              "description": "Early- or late-onset infant Group B disease.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "rate_denominator",
-              "short_name": "Rate denominator",
-              "description": "Whether a rate is per 100,000 of the row's stratum or of the whole population.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "syndrome",
-              "short_name": "Clinical syndrome",
-              "description": "Clinical presentation the row describes; \"Total\" where not syndrome-specific.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "antibiotic",
-              "short_name": "Antibiotic",
-              "description": "Drug the resistance percentage refers to; \"Total\" where not drug-specific.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "emm_type",
-              "short_name": "emm type",
-              "description": "emm type the row describes; \"Total\" where not type-specific.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "serotype",
-              "short_name": "Serotype",
-              "description": "Capsular serotype the row describes; \"Total\" where not serotype-specific.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "alph_type",
-              "short_name": "ALPH type",
-              "description": "Alpha-like protein gene the row describes; \"Total\" where not type-specific.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "rate_cases": {
-                  "source_id": "abcs_rate_cases"
-                },
-                "rate_deaths": {
-                  "source_id": "abcs_rate_deaths"
-                },
-                "n_cases": {
-                  "source_id": "abcs_N_cases"
-                },
-                "n_deaths": {
-                  "source_id": "abcs_N_deaths"
-                },
-                "n_survivals": {
-                  "source_id": "abcs_N_survivals"
-                },
-                "pct_resistant": {
-                  "source_id": "abcs_pct_resistant_penicillin"
-                },
-                "rate_syndrome": {
-                  "source_id": "abcs_gas_rate_syndrome_cellulitis"
-                },
-                "pct_syndrome": {
-                  "source_id": "abcs_gbs_pct_syndrome_meningitis"
-                },
-                "pct_emm_type": {
-                  "source_id": "abcs_gas_emm_pct_emm_1"
-                },
-                "pct_serotype": {
-                  "source_id": "abcs_gbs_pct_serotype_ia"
-                },
-                "pct_alph_type": {
-                  "source_id": "abcs_gbs_pct_alph_alp1"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column.",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "n_type",
-              "short_name": "Isolates of this type",
-              "description": "Isolates of the emm type on this row.",
-              "measure_type": "Count",
-              "unit": "Isolates",
-              "levels": {}
-            },
-            {
-              "name": "n_type_status",
-              "short_name": "Type count status",
-              "description": "Whether n_type is published, unpublished, or not applicable.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {
-                "reported": {
-                  "short_name": "Reported",
-                  "short_description": "n_type holds CDC's published per-type count."
-                },
-                "not_reported": {
-                  "short_name": "Not reported",
-                  "short_description": "An emm type CDC did not itemise that year."
-                },
-                "not_applicable": {
-                  "short_name": "Not applicable",
-                  "short_description": "Any measure other than pct_emm_type."
-                }
-              }
-            },
-            {
-              "name": "n_isolates",
-              "short_name": "Isolates",
-              "description": "Isolate count behind the percentage on this row.",
-              "measure_type": "Count",
-              "unit": "Isolates",
-              "levels": {}
-            },
-            {
-              "name": "n_isolates_status",
-              "short_name": "Isolate count status",
-              "description": "Whether n_isolates is published, unpublished, or not applicable.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {
-                "reported": {
-                  "short_name": "Reported",
-                  "short_description": "n_isolates holds CDC's published count."
-                },
-                "not_reported": {
-                  "short_name": "Not reported",
-                  "short_description": "The measure has an isolate denominator but CDC published none for this row."
-                },
-                "not_applicable": {
-                  "short_name": "Not applicable",
-                  "short_description": "The measure has no isolate denominator."
-                }
-              }
-            }
-          ]
-        },
-        {
-          "filename": "gas_state.parquet",
-          "path": "data/bundle_strep/dist/gas_state.parquet",
-          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_strep/dist/gas_state.parquet",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "State name, or \"United States\" for the national total.",
-              "measure_type": "identifier",
-              "unit": "state name",
-              "levels": {}
-            },
-            {
-              "name": "geography_fips",
-              "short_name": "Geography FIPS",
-              "description": "FIPS code for the geography; \"00\" is national.",
-              "measure_type": "identifier",
-              "unit": "FIPS code",
-              "levels": {}
-            },
-            {
-              "name": "date",
-              "short_name": "Date",
-              "description": "End date of the reporting period, in YYYY-mm-dd format.",
-              "measure_type": "date",
-              "unit": "date",
-              "levels": {}
-            },
-            {
-              "name": "year",
-              "short_name": "Year",
-              "description": "Year of the reporting period.",
-              "measure_type": "identifier",
-              "unit": "year",
-              "levels": {}
-            },
-            {
-              "name": "age",
-              "short_name": "Age group",
-              "description": "Age group; \"Total\" is the all-ages aggregate.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {}
-            },
-            {
-              "name": "source",
-              "short_name": "Source",
-              "description": "Which surveillance system reported the row.",
-              "measure_type": "category",
-              "unit": "",
-              "levels": {
-                "Epic Cosmos": {
-                  "short_name": "Epic Cosmos",
-                  "short_description": "Strep throat diagnoses among Epic Cosmos patients, quarterly by state and age."
-                },
-                "NNDSS": {
-                  "short_name": "NNDSS",
-                  "short_description": "Nationally notifiable streptococcal toxic shock syndrome cases, weekly by state."
-                }
-              }
-            },
-            {
-              "name": "measure",
-              "short_name": "Measure",
-              "description": "",
-              "measure_type": "",
-              "unit": "",
-              "levels": {
-                "n_strep_throat": {
-                  "source_id": "epic_n_strep_throat"
-                },
-                "pct_strep_throat": {
-                  "source_id": "epic_pct_strep_throat"
-                },
-                "n_patients": {
-                  "source_id": "epic_n_patients"
-                },
-                "stss_cases_weekly": {
-                  "short_name": "Strep TSS cases (weekly)",
-                  "long_name": "Weekly incident cases of streptococcal toxic shock syndrome",
-                  "short_description": "Newly reported STSS cases in the MMWR week.",
-                  "long_description": "Incident cases of streptococcal toxic shock syndrome newly reported in the MMWR week.",
-                  "measure_type": "Count",
-                  "unit": "Cases",
-                  "time_resolution": "Week",
-                  "sources": [
-                    {
-                      "id": "nnds"
-                    }
-                  ]
-                },
-                "stss_cases_cumulative": {
-                  "source_id": "streptococcal_toxic_shock_syndrome",
-                  "short_description": "Year-to-date STSS cases as published by NNDSS.",
-                  "long_description": "Cumulative streptococcal toxic shock syndrome cases reported since the start of the MMWR year."
-                }
-              }
-            },
-            {
-              "name": "value",
-              "short_name": "Value",
-              "description": "Value of the measure named in the measure column.",
-              "measure_type": "Mixed",
-              "unit": "varies by measure",
-              "levels": {}
-            },
-            {
-              "name": "suppressed",
-              "short_name": "Suppressed",
-              "description": "1 where Epic withheld the underlying cell; blank on NNDSS rows.",
-              "measure_type": "Binary",
-              "unit": "0/1",
               "levels": {}
             }
           ]
@@ -11634,95 +11628,6 @@
               "description": "Upper bound of the 95% confidence interval for percent obesity.",
               "measure_type": "percent",
               "unit": "percent"
-            }
-          ]
-        },
-        {
-          "filename": "data_survey.csv.gz",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
-              "measure_type": "identifier",
-              "unit": "FIPS code"
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
-              "measure_type": "date",
-              "unit": "date"
-            },
-            {
-              "name": "age",
-              "short_name": "Age",
-              "description": "Age group.",
-              "measure_type": "integer",
-              "unit": "years"
-            },
-            {
-              "name": "prev_diabetes_survey",
-              "short_name": "Diabetes Prevalence (Survey)",
-              "description": "Estimated diabetes prevalence from BRFSS survey data.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_diabetes_survey_lcl",
-              "short_name": "Diabetes Prevalence Lower CI",
-              "description": "Lower bound of 95% confidence interval for diabetes prevalence.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_diabetes_survey_ucl",
-              "short_name": "Diabetes Prevalence Upper CI",
-              "description": "Upper bound of 95% confidence interval for diabetes prevalence.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_obesity_survey",
-              "short_name": "Obesity Prevalence (Survey)",
-              "description": "Estimated obesity prevalence (BMI >= 30) from BRFSS survey data.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_obesity_survey_lcl",
-              "short_name": "Obesity Prevalence Lower CI",
-              "description": "Lower bound of 95% confidence interval for obesity prevalence.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_obesity_survey_ucl",
-              "short_name": "Obesity Prevalence Upper CI",
-              "description": "Upper bound of 95% confidence interval for obesity prevalence.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "agec",
-              "short_name": "Age Category",
-              "description": "Categorical age grouping used in survey analysis.",
-              "measure_type": "categorical",
-              "unit": "category"
-            },
-            {
-              "name": "sample_size_diab",
-              "short_name": "Sample Size (Diabetes)",
-              "description": "Number of survey respondents used to estimate diabetes prevalence.",
-              "measure_type": "integer",
-              "unit": "count"
-            },
-            {
-              "name": "sample_size_obesity",
-              "short_name": "Sample Size (Obesity)",
-              "description": "Number of survey respondents used to estimate obesity prevalence.",
-              "measure_type": "integer",
-              "unit": "count"
             }
           ]
         }

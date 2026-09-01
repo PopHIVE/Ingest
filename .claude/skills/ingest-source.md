@@ -1,6 +1,6 @@
 ---
 name: ingest-source
-description: Ingest a new data source into the PopHIVE/Ingest repository — creates the folder structure via the dcf R package (required), writes an ingest.R script that standardizes raw data into wide format, and generates measure_info.json. Use when the user wants to add a new CDC/Socrata/URL/file-based data source, mentions "ingest", "new data source", or provides a dataset ID to onboard.
+description: Ingest a new data source into the PopHIVE/Ingest repository — creates the folder structure via the dcf R package (required), writes an ingest.R script that standardizes raw data into wide format, and generates measure_info.json including the _catalog block that drives the website data-sources index. Use when the user wants to add a new CDC/Socrata/URL/file-based data source, mentions "ingest", "new data source", or provides a dataset ID to onboard.
 ---
 
 # ingest-source
@@ -20,8 +20,11 @@ End-to-end skill for adding and ingesting a new data source into the PopHIVE/Ing
 1. Creates the folder structure **exclusively via `dcf::dcf_add_source()`** — never by hand
 2. Examines the raw data to understand its structure
 3. Writes an `ingest.R` script that transforms raw data into the standard wide format
-4. Creates a `measure_info.json` documenting all output variables
-5. Updates `docs/data_sources_index.json` (the website data-sources catalog) with the new source's summary and per-file stratification text
+4. Creates a `measure_info.json` documenting all output variables **and a `_catalog` block**
+   carrying the catalog text (`summary`, `search_terms`, `bucket`, per-file stratification)
+   that the website data-sources page shows
+5. Runs `scripts/build_docs.R`, which generates `docs/data_sources_index.json` from that
+   `_catalog` block
 
 ## Instructions
 
@@ -296,6 +299,100 @@ If multiple columns share the same structure differing only by a variant (e.g., 
 }
 ```
 
+#### Always Include `_catalog`
+
+`_catalog` is the **source of truth for the website data-sources catalog**.
+`scripts/build_docs.R` reads it to generate each dataset's entry in
+`docs/data_sources_index.json` — that file is fully generated output and must never be
+hand-edited. Write `_catalog` as the last top-level key, after `_sources`:
+
+```json
+{
+  "_catalog": {
+    "name": "Display name (OPTIONAL — omit unless it must differ from _sources[].name)",
+    "summary": "One to two plain-English sentences describing the dataset.",
+    "search_terms": ["Respiratory", "flu", "rsv"],
+    "bucket": [],
+    "files": {
+      "data.csv.gz": "How this file is stratified beyond time and geography",
+      "data_county.csv.gz": "..."
+    }
+  }
+}
+```
+
+Everything else in the index entry (`github_folder`, `data_url`, `data_dictionary`,
+`latest_date`, and the `dataset_link` URLs) is computed from the repo on every build.
+
+**`name`** — omit it. `build_docs.R` falls back to `_sources[].name`, which is right
+almost always. Only set it when one source directory needs a label more specific than its
+source name — e.g. the `epic_*` directories, which would otherwise all read "Epic Cosmos"
+(`epic_hepb_vax` → `"Epic HepB Vaccination"`, `epic_injury` → `"Epic Injury"`).
+
+**`summary`** — one to two sentences, **~25 words** (the existing catalog runs 12–70).
+Write at roughly a 15-year-old reading level: short sentences, everyday words, one idea
+each. Derive it from the `_sources` `description` field(s) — read **all** `_sources`
+entries, since a multi-source dataset covers several things — but compress hard; the
+catalog summary is a "should I click this?" blurb, not the methodology. Cut model names,
+survey-instrument citations, ICD code lists, catchment sizes, and lag times; those stay in
+`_sources.description`. Expand an acronym on first use unless it is in the dataset name.
+No preamble, no quotes, no markdown.
+
+The house pattern is *`<source short name> <verb> <what it measures>`*:
+
+- `"The NSSP records the percentage of emergency department patient visits for RSV, flu, and COVID-19."`
+- `"NARMS tracks antimicrobial resistance in bacteria infecting people and animals in the food supply chain."`
+- `"Annual average county unemployment rate from the BLS's LAUS program, covering the labor force ages 16 and older."`
+- `"SchoolVaxView monitors vaccination coverage among U.S. school-aged children. Data are collected annually by states, territories, and select local jurisdictions through school vaccination assessments, which review student vaccination records at kindergarten entry."`
+
+**`search_terms`** — the website search box matches on these. **Typically 3–4 terms**
+(range 1–9), ordered *topic label(s) first, then specific keywords*:
+
+1. **Topic labels**, capitalized. Start from the labels of the bundles that consume this
+   source (`bundle_chronic_diseases` → `"Chronic diseases"`), then reuse the established
+   vocabulary rather than inventing a synonym: `Antimicrobial resistance`, `Cancer
+   screening`, `Childhood immunizations`, `Chronic diseases`, `County access`, `Enteric
+   diseases`, `Injury and overdose`, `Maternal health`, `Measles`, `Preventative
+   services`, `Respiratory`, `Rural health`, `Vector borne`, `Youth wellbeing`.
+2. **Specific keywords**, lowercase — how a visitor would actually type it: disease and
+   pathogen names, colloquial synonyms, and the domain words behind the measures
+   (`flu`, `rsv`, `overdose`, `gun`, `firearm`, `hep b`, `diarrhea`, `unemployment`,
+   `heat`, `food access`, `traumatic brain injury`, `maternal mortality`).
+
+Examples: `["Respiratory", "flu", "rsv", "Covid"]`, `["Childhood immunizations", "Measles"]`,
+`["Rural health", "unemployment", "labor force", "economic determinants"]`,
+`["Maternal health", "maternal mortality", "maternal deaths", "pregnancy-related deaths"]`.
+
+**`bucket`** — the site-navigation grouping. **Every dataset currently has `[]`**; the
+grouping has not been assigned yet, so write `"bucket": []` unless the user names one.
+(`bucket` and `search_terms` are independent fields. Omitting either from `_catalog`
+re-derives it from bundle membership on the next build; an explicit `[]` is respected as
+an intentional "none" and sticks.)
+
+**`files`** — one key per `standard/*.csv.gz` the ingest produces, mapping **file name**
+(not path or URL) to a short blurb saying what that file holds and how it is stratified
+**beyond time and geography**. The stratifiers are exactly the non-`time`, non-`geography`,
+non-value columns (`age`, `sex`, `race_ethnicity`, `serotype`, `vaccine`, `virus`,
+`grade`, …); read a header with `vroom::vroom(path, n_max = 0)`.
+
+Keep each to a **noun phrase of ~5 words** (the existing catalog runs 2–16, no trailing
+period). Multi-file sources: say what distinguishes each file from its siblings.
+Single-file sources: still name the stratifiers — do not leave a `"Stratified by <tokens>."`
+or `"Overall; no stratification beyond time and geography."` placeholder. Only when a file
+genuinely has no dimension beyond time and geography, name its measure instead.
+
+```json
+"files": {
+  "data.csv.gz":            "Vaccination uptake by vaccine and age",
+  "data_insurance.csv.gz":  "Vaccination uptake by vaccine and insurance coverage type",
+  "data_urban.csv.gz":      "Vaccination uptake by vaccine and urban/rural residence"
+}
+```
+
+More: `"County level unemployment rates"`, `"School-level vaccination and exemption rates"`,
+`"Antimicrobial resistance in people by antimicrobial agent"`, `"Rt data by state"`,
+`"Weekly measles case counts"`.
+
 ### Phase 6: Validate and Report
 
 After writing all files:
@@ -335,72 +432,40 @@ After writing all files:
    - Time resolution
    - Next steps (run ingest, add to bundle, etc.)
 
-### Phase 7: Update the Data Sources Index
+### Phase 7: Regenerate the Docs and Data Sources Index
 
-After the source's `standard/*.csv.gz` files exist, add the source to
-`docs/data_sources_index.json` — the lightweight catalog that powers the website
-data page. This file is **regenerated by `scripts/build_docs.R`** (which runs
-automatically every day and on every `measure_info.json` change), but four
-fields are **hand-written and preserved across rebuilds**: `name`, `summary`,
-and `category` (per dataset) and `dataset_stratification` (per file). Everything
-else (`github_folder`, `data_url`, `data_dictionary`, `latest_date`, and the
-`files[]` links) is always recomputed — don't hand-edit those.
+Once the source's `standard/*.csv.gz` files exist and `measure_info.json` has its
+`_catalog` block (Phase 5), the website catalog entry is just a build away.
+`docs/data_sources_index.json` is **fully generated** by `scripts/build_docs.R`
+(which also runs automatically every day and on every `measure_info.json`
+change) — **never hand-edit it**; edit `_catalog` in `measure_info.json` and
+rebuild.
 
-Because those four fields are preserved, the workflow is: **rebuild → hand-write
-the text into the JSON → rebuild again → commit.**
-
-1. **First rebuild** to create the new dataset's entry. From the repo **root**
-   (not `docs/`):
+1. **Rebuild.** From the repo **root** (not `docs/`):
    ```powershell
    Rscript scripts/build_docs.R
    ```
-   A brand-new dataset gets derived defaults: `name` from `measure_info.json`, a
-   first-sentence extractive `summary`, `category` from bundle membership, and a
-   filename-derived (or cached) `dataset_stratification`.
+   This rewrites `docs/index.html`, `resources/data_manifest.json`, and
+   `docs/data_sources_index.json`.
 
-2. **Write the `summary`** (1-2 sentences). Read `data/<source_name>/measure_info.json`
-   and use the `_sources` `description` field(s) — consider all `_sources`
-   entries for multi-source datasets. Write one to two plain-English sentences
-   describing what the dataset contains, suitable for a data catalog: no
-   preamble, no quotes, no markdown. Put it directly in the dataset's `summary`
-   value in `docs/data_sources_index.json`.
+2. **Watch for the fallback warning.** If `_catalog.summary` is missing or empty,
+   the build prints:
+   ```
+   WARNING: <dataset> has no hand-written summary in measure_info.json _catalog
+   ```
+   and falls back to a mechanical first-sentence stub, which reads as an abrupt
+   fragment. Treat that line as a stop signal: write a real `_catalog.summary`
+   and rebuild.
 
-3. **Write `dataset_stratification` for every file.** For **each**
-   `standard/*.csv.gz` (single- and multi-file alike), write a short sentence
-   describing what that file contains and how it is stratified **beyond time and
-   geography**. Infer it from the file name and column headers — the
-   non-`time`/non-`geography`/non-value columns (e.g. `age`, `sex`,
-   `race_ethnicity`, `serotype`, `vaccine`, `virus`, `grade`) are exactly the
-   stratification. Read a file's header with `vroom::vroom(path, n_max = 0)`.
-   Replace the `"Overall; no stratification beyond time and geography."`
-   placeholder with a real sentence; if a file genuinely has no dimension beyond
-   time and geography, describe its measure instead (e.g.
-   `"Weekly measles case counts."`). Keep each blurb to one short sentence.
+3. **Verify** the new entry in `docs/data_sources_index.json`: the `summary`,
+   `search_terms`, and `bucket` match what you wrote in `_catalog`; `latest_date`
+   looks right; and `files` has one entry per `standard/*.csv.gz`, each with a
+   `dataset_link` pointing at a real file and the `dataset_stratification` you
+   wrote. A `"Stratified by <tokens>."` blurb means `_catalog.files` is missing
+   that file name (the keys are bare file names — no path, no URL).
 
-   Examples:
-   - `nchs_mortality/data_state_21_causes.csv.gz` → `"Age-adjusted mortality rates for 21 selected causes of death (state-level)."`
-   - `nccr/data.csv.gz` → `"Childhood cancer incidence by cancer type (ICCC site), age group, sex, and race/ethnicity."`
-   - `nssp/data.csv.gz` → `"Percentage of emergency department visits for RSV, influenza, and COVID-19, by virus."`
-
-4. **Adjust `name`/`category` if needed.** Override `name` when one source dir
-   needs a more specific label than the `measure_info.json` source name (e.g.
-   `epic_*` datasets, which otherwise all read "Epic Cosmos"). `category` is an
-   array of human-readable labels derived from bundle membership — edit to add,
-   remove, or rename.
-
-5. **Second rebuild** and **verify**. Run `Rscript scripts/build_docs.R` again,
-   then open `docs/data_sources_index.json` and confirm the entry has a
-   purpose-written `summary`, a sensible `category`, and a `files` array whose
-   entries each have a `dataset_link` pointing at a real `standard/*.csv.gz` and
-   a meaningful `dataset_stratification`.
-
-**Re-deriving a preserved field:** for `name`/`summary`/`dataset_stratification`,
-blank the value and rebuild. For `category`, **delete the field entirely** — an
-empty `[]` is respected as an intentional "no categories".
-
-**Commit** the regenerated `docs/data_sources_index.json` together with the rest
-of `docs/` and `resources/data_manifest.json`; your hand-written text persists on
-future automated rebuilds only because it is committed.
+**Commit** `data/<source_name>/measure_info.json` together with the regenerated
+`docs/` and `resources/data_manifest.json`.
 
 ## Example
 
@@ -410,6 +475,8 @@ The skill would:
 1. Run `dcf::dcf_add_source("nssp_ili")` to create the directory and all of its contents, then
    verify the generated `process.json`
 2. Write `ingest.R` that downloads via `dcf::dcf_download_cdc("abc-1234", ...)`, transforms to wide format with columns like `nssp_ili_pct_visits`
-3. Write `measure_info.json` with entries for each output column
-4. Update `docs/data_sources_index.json` — rebuild with `scripts/build_docs.R`, write the dataset `summary` and per-file `dataset_stratification`, rebuild again, and commit
+3. Write `measure_info.json` with entries for each output column, plus a `_catalog` block
+   holding the dataset `summary`, `search_terms`, `bucket`, and a per-file stratification blurb
+4. Run `Rscript scripts/build_docs.R` to regenerate `docs/data_sources_index.json` from that
+   `_catalog`, verify the entry, and commit
 5. Report the created structure and suggest next steps
