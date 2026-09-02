@@ -5,7 +5,7 @@
     "long_name": "ED Encounters with a Concussion Diagnosis",
     "category": "injury",
     "short_description": "Monthly count of ED encounters with a concussion diagnosis (ICD-10-CA S06.0).",
-    "long_description": "Monthly count of emergency department encounters with a concussion diagnosis using \"Concussion( ICD-10-CA: S06.0 )\" ED Diagnoses. Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_n_concussion_suppressed_flag.",
+    "long_description": "Monthly count of emergency department encounters with a concussion diagnosis, per Epic's \"Concussion( ICD-10-CA: S06.0 )\" ED Diagnoses grouping. Data from Epic Cosmos, which contains de-identified data from 300M+ patients across 1,600+ hospitals. Counts of 10 or fewer are suppressed by Epic and imputed as 5; see epic_n_concussion_suppressed_flag. Population base per SlicerDicer session 2852165: data model ED Encounters, population base All ED Encounters, criteria Country of Residence = United States of America - the denominator (epic_n_ed_encounters) is all ED encounters regardless of diagnosis. Stratified by age at time of visit and evaluated sex; age buckets are Epic's own (not the PopHIVE standard bands). As of the 2852165 export the buckets are contiguous (10-13 Years, 14-17 Years); an earlier export (session 2851311) used 10-12 Years and had a gap at age 13.",
     "statement": "In {location}, {value} ED encounters had a concussion diagnosis.",
     "measure_type": "Count",
     "unit": "encounters",
@@ -23,7 +23,7 @@
     "long_name": "Suppression flag for the concussion numerator (count and percent)",
     "category": "injury",
     "short_description": "Indicates whether the concussion numerator was suppressed and imputed; applies to both epic_n_concussion and epic_pct_concussion.",
-    "long_description": "1 when Epic Cosmos suppressed the concussion cell (a count of 10 or fewer, reported as \"10 or fewer\" or left blank) and epic_n_concussion was imputed as 5; 0 otherwise. Suppression of the denominator is tracked separately by epic_n_ed_encounters_suppressed_flag; a reader wanting to know whether the percentage was affected by suppression at all takes the OR of the two flags.",
+    "long_description": "1 when Epic Cosmos suppressed the concussion cell (a count of 10 or fewer, reported as \"10 or fewer\" or left blank) and epic_n_concussion was imputed as 5; 0 otherwise. The flag is computed before imputation, so it records what the source withheld rather than what the ingest wrote. It covers epic_pct_concussion as well, because the percentage is derived from this same numerator cell. Suppression of the denominator is tracked separately by epic_n_ed_encounters_suppressed_flag; a reader wanting to know whether the percentage was affected by suppression at all takes the OR of the two flags.",
     "statement": "",
     "measure_type": "Binary",
     "unit": "0/1",
@@ -41,7 +41,7 @@
     "long_name": "Percent of ED Encounters with a Concussion Diagnosis",
     "category": "injury",
     "short_description": "Monthly percent of ED encounters with a concussion diagnosis (ICD-10-CA S06.0).",
-    "long_description": "Monthly percentage of ED encounters with a concussion diagnosis, computed as epic_n_concussion / epic_n_ed_encounters * 100. This is a percent of all ED encounters, NOT a rate per population. Where the numerator was suppressed it is imputed as 5 before the percentage is computed.",
+    "long_description": "Monthly percentage of ED encounters with a concussion diagnosis, computed as epic_n_concussion / epic_n_ed_encounters * 100 - a percent of all ED encounters, NOT a rate per 100,000. Where the numerator was suppressed it is imputed as 5 before the percentage is computed. Where the denominator was itself suppressed the percentage is left missing, because dividing by the imputed denominator of 5 would assert a meaningless value; those cells are marked by epic_n_ed_encounters_suppressed_flag. Data from Epic Cosmos SlicerDicer. Population base per SlicerDicer session 2852165: data model ED Encounters, population base All ED Encounters, criteria Country of Residence = United States of America.",
     "statement": "In {location}, {value}% of ED encounters had a concussion diagnosis.",
     "measure_type": "Percent",
     "unit": "Percent",
@@ -96,17 +96,8 @@
       "date_accessed": 2026,
       "organization": "Epic Systems",
       "organization_url": "https://www.epic.com/",
-      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Generated using data model ED Encounters, population base All ED Encounters, criteria Country of Residence = United States of America - the denominator (epic_n_ed_encounters) is all ED encounters regardless of diagnosis.",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
       "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
-    }
-  },
-  "_catalog": {
-    "name": "Epic Cosmos Concussions",
-    "summary": "Emergency department encounters with a concussion diagnosis from Epic Cosmos,a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems.",
-    "search_terms": ["concussion", "traumatic brain injury", "TBI", "head injury", "injury"],
-    "bucket": [],
-    "files": {
-      "data.csv.gz": "Concussion-related ED encounters"
     }
   }
 }
