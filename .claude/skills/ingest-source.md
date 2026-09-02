@@ -327,7 +327,7 @@ Everything else in the index entry (`github_folder`, `data_url`, `data_dictionar
 **`name`** — omit it. `build_docs.R` falls back to `_sources[].name`, which is right
 almost always. Only set it when one source directory needs a label more specific than its
 source name — e.g. the `epic_*` directories, which would otherwise all read "Epic Cosmos"
-(`epic_hepb_vax` → `"Epic HepB Vaccination"`, `epic_injury` → `"Epic Injury"`).
+(`epic_concussions` → `"Epic Concussions"`, `epic_injury` → `"Epic Injury"`).
 
 **`summary`** — one to two sentences, **~25 words** (the existing catalog runs 12–70).
 Write at roughly a 15-year-old reading level: short sentences, everyday words, one idea
