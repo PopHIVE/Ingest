@@ -175,7 +175,29 @@ to_percent_scale_file(file.path("standard", "data_state.csv.gz"))
 local({
   if (!file.exists("measure_info.json") || !length(percent_measures)) return(invisible(NULL))
   mi <- jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)
-  for (nm in percent_measures) mi[[nm]][["scale"]] <- "0-100"
+
+  # Only measures the file ALREADY declares. percent_measures deliberately
+  # includes column names that are not declared here -- CHR&R ships data for
+  # measures it has retired -- and `mi[[nm]][["scale"]] <- ...` on a name that
+  # does not exist CREATES it, which silently added 26 stub entries holding
+  # nothing but a scale. The data conversion above needs those names; the
+  # declared catalog must not gain them.
+  targets <- intersect(percent_measures, names(mi))
+  targets <- targets[vapply(targets, function(nm) is.list(mi[[nm]]), logical(1))]
+  todo <- targets[vapply(targets, function(nm) {
+    !identical(mi[[nm]][["scale"]], "0-100")
+  }, logical(1))]
+
+  # Rewrite only when something actually changes. This file is re-fetched on
+  # every run, so an unconditional write churns it on every build and makes
+  # every merge conflict.
+  if (!length(todo)) {
+    message("  measure_info.json: scale already declared on all ",
+            length(targets), " percent measure(s)")
+    return(invisible(NULL))
+  }
+  for (nm in todo) mi[[nm]][["scale"]] <- "0-100"
   jsonlite::write_json(mi, "measure_info.json", auto_unbox = TRUE, pretty = 2, null = "null")
-  message("  measure_info.json: declared scale 0-100 on ", length(percent_measures), " measure(s)")
+  message("  measure_info.json: declared scale 0-100 on ", length(todo),
+          " measure(s) (", length(targets) - length(todo), " already declared)")
 })
