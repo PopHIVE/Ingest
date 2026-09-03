@@ -1,0 +1,112 @@
+{
+  "countybuddy_pop_total": {
+    "id": "countybuddy_pop_total",
+    "short_name": "Total population",
+    "long_name": "County total population (2020 Census)",
+    "category": "demographic",
+    "short_description": "Total 2020 Census population of the county.",
+    "long_description": "Total resident population of the county from the 2020 Census, used as the denominator for County Buddy's institutional-population percentages.",
+    "statement": "In {location}, the total population was {value}.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [{ "id": "countybuddy" }]
+  },
+
+  "countybuddy_pop_{variant}": {
+    "id": "countybuddy_pop_{variant}",
+    "short_name": "{variant.short_name} population",
+    "long_name": "{variant.long_name}",
+    "category": "demographic",
+    "short_description": "{variant.short_description}",
+    "long_description": "{variant.long_description} Set to 0 if the county did not meet County Buddy's outlier threshold (2 standard deviations above the national mean) for this population, per the source methodology.",
+    "statement": "In {location}, the {variant.short_name} population was {value}.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [{ "id": "countybuddy" }],
+    "variants": {
+      "prison": {
+        "short_name": "Incarcerated",
+        "long_name": "Incarcerated (prison) population",
+        "short_description": "Residents registered as incarcerated by the 2020 Census Group Quarters survey.",
+        "long_description": "Residential population of the county registered as incarcerated by the U.S. Census Bureau's 2020 Group Quarters survey."
+      },
+      "student": {
+        "short_name": "University student",
+        "long_name": "University student population",
+        "short_description": "Residents registered as a university student by the 2020 Census Group Quarters survey.",
+        "long_description": "Residential population of the county registered as a university student by the U.S. Census Bureau's 2020 Group Quarters survey."
+      },
+      "military": {
+        "short_name": "Active military",
+        "long_name": "Active military population",
+        "short_description": "Residents registered as active military by the 2020 Census Group Quarters survey.",
+        "long_description": "Residential population of the county registered as active military by the U.S. Census Bureau's 2020 Group Quarters survey."
+      },
+      "native_american": {
+        "short_name": "Native American",
+        "long_name": "Native American population",
+        "short_description": "Residents identified as Native American by the 2020 Census demographic survey.",
+        "long_description": "Residential population of the county identified as Native American by the U.S. Census Bureau's 2020 Census demographic survey."
+      }
+    }
+  },
+
+  "countybuddy_pct_{variant}": {
+    "id": "countybuddy_pct_{variant}",
+    "short_name": "{variant.short_name} percent",
+    "long_name": "{variant.long_name}, percent of total population",
+    "category": "demographic",
+    "short_description": "{variant.short_name} population as a percent of the county's total 2020 Census population.",
+    "long_description": "{variant.long_name} as a percent of the county's total population. Set to 0 if the county did not meet County Buddy's outlier threshold (2 standard deviations above the national mean) for this population, per the source methodology.",
+    "statement": "In {location}, {value}% of the population was {variant.short_name_lower}.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [{ "id": "countybuddy" }],
+    "variants": {
+      "prison": {
+        "short_name": "Incarcerated",
+        "short_name_lower": "incarcerated",
+        "long_name": "Incarcerated (prison) population"
+      },
+      "student": {
+        "short_name": "University student",
+        "short_name_lower": "university students",
+        "long_name": "University student population"
+      },
+      "military": {
+        "short_name": "Active military",
+        "short_name_lower": "active military",
+        "long_name": "Active military population"
+      },
+      "native_american": {
+        "short_name": "Native American",
+        "short_name_lower": "Native American",
+        "long_name": "Native American population"
+      }
+    }
+  },
+
+  "_sources": {
+    "countybuddy": {
+      "name": "County Buddy",
+      "url": "https://github.com/ColinVu/CountyBuddy/blob/main/county_data.csv",
+      "organization": "Georgia Institute of Technology, College of Computing",
+      "organization_url": "https://www.cc.gatech.edu/",
+      "description": "County Buddy is a companion dataset built to give geographic and demographic context to socioeconomic analyses. It identifies U.S. counties where the incarcerated, university student, active-military, or Native American population is an outlier -- exceeding 2 standard deviations above the national mean share of total population. The original source also names the specific prisons, universities, military bases, or reservations responsible for each outlier; this ingest keeps only the numeric population counts and percentages, not those institution names. Only outlier counties appear as rows; within a row, any of the four categories that did not meet the threshold is zeroed out. Underlying figures are drawn from several federal sources at different vintages: total population and Native American population from the 2020 Census, incarcerated and university-student population from the Census Bureau's 2020 Group Quarters survey, prison facilities from a 2017 Oak Ridge National Laboratory boundary file (capacity >= 200), universities from a 2019/2020 NCES/IPEDS listing (non-junior, non-profit, 1,000+ students), military bases from a 2023 Department of Transportation dataset, and Native American reservations from a 2021 Department of the Interior dataset. Published by researchers at Georgia Tech's College of Computing (Vu, Baniassad & Andris).",
+      "restrictions": "Public domain / freely reusable. The source README states the data 'can be used freely'; no formal license is specified.",
+      "date_accessed": 2026
+    }
+  },
+
+  "_catalog": {
+    "summary": "County Buddy flags U.S. counties with an unusually large prison, university, military, or Native American population, as a share of the total.",
+    "search_terms": ["Demographic", "incarceration", "prison", "military bases", "Native American", "university"],
+    "bucket": [],
+    "files": {
+      "data.csv.gz": "Outlier counties by prison, university, military, or Native American population"
+    }
+  }
+}
