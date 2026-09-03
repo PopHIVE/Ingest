@@ -1127,35 +1127,28 @@ cat(sprintf("  - %d data sources\n", length(manifest$data_sources)))
 # array (one entry per standardized csv.gz, each with a direct `dataset_link`
 # and a short `dataset_stratification` blurb).
 #
-# Five hand-editable fields are PRESERVED from the existing
-# docs/data_sources_index.json on rebuild -- edit them directly in that file and
-# they are maintained: `name`, `summary`, `search_terms`, `bucket`, and each
-# file's `dataset_stratification`. When absent they are derived: name from
-# measure_info, summary as a concise extractive first sentence, search_terms
-# and bucket both from bundle membership (bundle_* -> human-readable label,
-# identical starting values that can then be hand-edited independently), and
-# dataset_stratification from resources/stratification_cache.json or a
-# filename-derived blurb. To re-derive a preserved field, clear it in the JSON
-# and rebuild. All other fields (links, latest_date) are always recomputed.
+# docs/data_sources_index.json is fully GENERATED -- never hand-edit it. The
+# five hand-written fields live in each source's measure_info.json under a
+# "_catalog" block and are read from there on every build:
+#
+#   "_catalog": {
+#     "name": "Display name",            # optional override of _sources[].name
+#     "summary": "One to two sentences.",
+#     "search_terms": ["Respiratory", "rsv"],
+#     "bucket": ["Respiratory"],
+#     "files": { "data.csv.gz": "How this file is stratified." }
+#   }
+#
+# When a field is absent it is derived: name from _sources[].name, summary as a
+# concise extractive first sentence, search_terms and bucket both from bundle
+# membership (bundle_* -> human-readable label, identical starting values that
+# can then be edited independently in _catalog), and dataset_stratification from
+# the file name. An empty [] in _catalog is respected as an intentional "none"
+# and is not re-derived; to re-derive, delete the field from _catalog. All other
+# fields (links, latest_date) are always computed from the repo contents.
 # =====================================================================
 
 cat("Building data sources index JSON...\n")
-
-# Cache of short, human-authored stratification blurbs for individual standard
-# files, keyed by "dataset/filename.csv.gz". Populated by the
-# update-data-sources-index skill (Claude writes the blurbs); this script only
-# reads it and falls back to a filename-derived blurb when a key is missing.
-STRATIFICATION_CACHE_PATH <- "resources/stratification_cache.json"
-
-load_stratification_cache <- function() {
-  if (!file.exists(STRATIFICATION_CACHE_PATH)) return(list())
-  fromJSON(STRATIFICATION_CACHE_PATH, simplifyVector = FALSE)
-}
-
-save_stratification_cache <- function(cache) {
-  if (length(cache) > 0) cache <- cache[order(names(cache))]
-  write(toJSON(cache, auto_unbox = TRUE, pretty = TRUE), STRATIFICATION_CACHE_PATH)
-}
 
 # Direct raw-content URL to a standardized csv.gz file on GitHub.
 github_raw_file <- function(source_name, filename) {
@@ -1174,7 +1167,7 @@ format_bundle_label <- function(bundle_name) {
 }
 
 # Fallback stratification blurb derived from a standard file's name, used only
-# when the stratification cache has no Claude-authored blurb for the file.
+# when measure_info.json's _catalog has no hand-written blurb for the file.
 # Strips the data/ prefix, extension, and geography tokens, leaving the
 # distinguishing tokens that describe the file's stratification dimension.
 derive_stratification <- function(filename) {
@@ -1187,61 +1180,6 @@ derive_stratification <- function(filename) {
     return("Overall; no stratification beyond time and geography.")
   }
   paste0("Stratified by ", gsub("_", " ", paste(tokens, collapse = " ")), ".")
-}
-
-stratification_cache <- load_stratification_cache()
-
-# Preserve hand-edited text from the existing index so manual edits to
-# docs/data_sources_index.json survive a rebuild. `name`, `summary`,
-# `search_terms`, `bucket` (per dataset) and `dataset_stratification` (per
-# file) are treated as authoritative if already present; otherwise they are
-# derived (name from measure_info, summary extractively, search_terms/bucket
-# from bundle membership, stratification from the cache or file name). Links
-# and latest_date are always recomputed. To re-derive name/summary/
-# stratification, blank them and rebuild; to re-derive search_terms or bucket,
-# DELETE that field entirely (an empty [] is respected as an intentional
-# "none", so it is not re-derived).
-existing_name <- list()
-existing_summary <- list()
-existing_search_terms <- list()
-existing_search_terms_present <- character(0)  # datasets whose entry has a search_terms field
-existing_bucket <- list()
-existing_bucket_present <- character(0)  # datasets whose entry has a bucket field
-existing_strat <- list()
-existing_index_path <- "docs/data_sources_index.json"
-if (file.exists(existing_index_path)) {
-  prev <- tryCatch(fromJSON(existing_index_path, simplifyVector = FALSE),
-                   error = function(e) NULL)
-  if (!is.null(prev) && !is.null(prev$datasets)) {
-    for (d in prev$datasets) {
-      if (is.null(d$dataset)) next
-      if (!is.null(d$name) && nzchar(d$name)) {
-        existing_name[[d$dataset]] <- d$name
-      }
-      if (!is.null(d$summary) && nzchar(d$summary)) {
-        existing_summary[[d$dataset]] <- d$summary
-      }
-      if (!is.null(d$search_terms)) {  # field present (even []): preserve verbatim
-        vals <- unlist(d$search_terms)
-        existing_search_terms[[d$dataset]] <- if (is.null(vals)) character(0) else vals
-        existing_search_terms_present <- c(existing_search_terms_present, d$dataset)
-      }
-      if (!is.null(d$bucket)) {  # field present (even []): preserve verbatim
-        vals <- unlist(d$bucket)
-        existing_bucket[[d$dataset]] <- if (is.null(vals)) character(0) else vals
-        existing_bucket_present <- c(existing_bucket_present, d$dataset)
-      }
-      if (!is.null(d$files)) {
-        for (f in d$files) {
-          if (!is.null(f$dataset_link) && !is.null(f$dataset_stratification) &&
-              nzchar(f$dataset_stratification)) {
-            fn <- sub(".*/standard/", "", f$dataset_link)
-            existing_strat[[paste0(d$dataset, "/", fn)]] <- f$dataset_stratification
-          }
-        }
-      }
-    }
-  }
 }
 
 # Helper: find the most recent date across a source's standard files
@@ -1358,6 +1296,9 @@ index_datasets <- lapply(index_source_idx, function(i) {
   } else {
     list()
   }
+  # Hand-written catalog text lives in measure_info.json under "_catalog".
+  catalog <- measure_info[["_catalog"]]
+  if (is.null(catalog)) catalog <- list()
 
   # Concise extractive fallback (first sentence of each source description).
   # Descriptions span ALL sources so multi-source datasets aren't
@@ -1372,51 +1313,52 @@ index_datasets <- lapply(index_source_idx, function(i) {
   }
   fallback_summary <- paste(unique(short_descs), collapse = " ")
 
-  # name: a hand-edited value in the index wins; otherwise the measure_info name.
-  display_name <- existing_name[[source_name]] %||%
-    first_source$name %||% format_source_name(source_name)
-  # A hand-edited summary already in the index wins and is preserved; a
-  # brand-new dataset falls back to a concise extractive summary.
-  if (is.null(existing_summary[[source_name]])) {
+  # name: a _catalog override wins; otherwise the measure_info source name.
+  display_name <- catalog$name %||% first_source$name %||%
+    format_source_name(source_name)
+  # The hand-written _catalog summary wins; a source without one falls back to
+  # a concise extractive summary.
+  if (!nzchar(catalog$summary %||% "")) {
     cat(sprintf(
-      "  WARNING: %s has no hand-written summary -- using an auto-derived fallback. Write a real one via the update-data-sources-index skill.\n",
+      "  WARNING: %s has no hand-written summary in measure_info.json _catalog -- using an auto-derived fallback. Write a real one via the update-data-sources-index skill.\n",
       source_name
     ))
   }
-  dataset_summary <- existing_summary[[source_name]] %||% fallback_summary
+  dataset_summary <- catalog$summary %||% fallback_summary
 
   section_id <- gsub("[^a-zA-Z0-9]", "-", source_name)
 
-  # search_terms and bucket: both preserved whenever the existing entry HAS the
+  # search_terms and bucket: both taken verbatim whenever _catalog HAS the
   # field (even an empty [] -- so clearing one sticks). Both derive from bundle
-  # membership only when the field is entirely absent, i.e. a brand-new
-  # dataset -- they start out identical, then diverge as each is hand-edited
-  # independently. To re-derive later, delete the field in the JSON and rebuild.
+  # membership only when the field is entirely absent from _catalog, i.e. a
+  # brand-new dataset -- they start out identical, then diverge as each is
+  # edited independently. To re-derive later, delete the field from _catalog.
   bundles <- source_to_bundles[[source_name]]
   if (is.null(bundles)) bundles <- character(0)
   bundle_labels <- sort(unique(vapply(bundles, format_bundle_label, character(1))))
 
-  if (source_name %in% existing_search_terms_present) {
-    search_terms <- existing_search_terms[[source_name]]
-  } else {
-    search_terms <- bundle_labels
+  catalog_list <- function(field) {
+    if (is.null(catalog[[field]])) return(NULL)
+    vals <- unlist(catalog[[field]])
+    if (is.null(vals)) character(0) else as.character(vals)
   }
 
-  if (source_name %in% existing_bucket_present) {
-    bucket <- existing_bucket[[source_name]]
-  } else {
-    bucket <- bundle_labels
-  }
+  search_terms <- catalog_list("search_terms")
+  if (is.null(search_terms)) search_terms <- bundle_labels
+
+  bucket <- catalog_list("bucket")
+  if (is.null(bucket)) bucket <- bundle_labels
 
   cat(sprintf("  Indexing %s (%d/%d)\n", source_name, i, length(source_dirs)))
 
   # One entry per standardized csv.gz: a short stratification blurb and a direct
-  # link. Blurb precedence: a hand-edited value already in the index, then the
-  # cache, then a value derived from the file name.
+  # link. Blurb precedence: the hand-written _catalog$files value, then a value
+  # derived from the file name.
+  catalog_files <- catalog$files
+  if (is.null(catalog_files)) catalog_files <- list()
   standard_files <- get_standard_files(source_dir)
   files_entry <- lapply(sort(basename(standard_files)), function(fn) {
-    cache_key <- paste0(source_name, "/", fn)
-    strat <- existing_strat[[cache_key]] %||% stratification_cache[[cache_key]]
+    strat <- catalog_files[[fn]]
     if (is.null(strat) || !nzchar(strat)) strat <- derive_stratification(fn)
     list(
       dataset_stratification = strat,
@@ -1439,8 +1381,6 @@ index_datasets <- lapply(index_source_idx, function(i) {
   entry$files <- I(files_entry)
   entry
 })
-
-save_stratification_cache(stratification_cache)
 
 data_sources_index <- list(
   description = "Index of PopHIVE/Ingest standardized data sources (excludes bundle_* directories).",
