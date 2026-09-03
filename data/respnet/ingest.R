@@ -78,7 +78,18 @@ if (!identical(process$raw_state, raw_state)) {
         )
       )
     ) %>%
-    reshape2::dcast(., time + age + state ~ virus, value.var = 'Estimate') %>%
+    # CDC's export contains exact duplicate rows for some time/age/state/virus
+    # combos (e.g. RSV-NET repeated 3x for a given week/age/state). dcast picks
+    # its aggregation function once for the whole call, so any duplicate
+    # anywhere silently switches every cell (including unrelated ones) from
+    # the real Estimate to a row count. Dedupe first and pin fun.aggregate so
+    # this fails loudly instead of silently corrupting values.
+    distinct(time, age, state, virus, .keep_all = TRUE) %>%
+    reshape2::dcast(
+      time + age + state ~ virus,
+      value.var = 'Estimate',
+      fun.aggregate = mean
+    ) %>%
     left_join(state_fips_lookup, by = c("state" = "geography_name")) %>%
     mutate(
       rate_flu = if_else(is.na(rate_flu), 0, rate_flu), #do not fill in below
