@@ -4,17 +4,33 @@
   "licenses": [],
   "resources": [
     {
-      "bytes": 2237498,
+      "bytes": 2242428,
       "encoding": "windows-1251",
-      "md5": "277ceea10fb3a95852ffb3095508c84b",
+      "md5": "7aea61b2cc26233fa4d1866bfd04bcc8",
       "format": "parquet",
       "name": "county_chronic",
       "filename": "county_chronic.parquet",
       "versions": {
-        "hash": ["ebd39c1c35b81350a985854ad655968593242320", "9cdc8a5c02d6926f57b36332f706ef55cc493817", "5325b77c9218172d8b08c3cf3b4d4ae3fe16ff68"],
-        "author": ["GitHub Actions <actions@github.com>", "Callie Annas <callie.annas@yale.edu>", "Callie Annas <callie.annas@yale.edu>"],
-        "date": ["Fri Jun 19 20:16:40 2026 +0000", "Thu Jun 18 12:12:21 2026 -0400", "Wed Jun 17 10:38:41 2026 -0400"],
-        "message": ["scheduled data build", "Updates to CHR exploration (bundles and corrects data workflow)", "Creating new county-level chronic condition bundle"]
+        "hash": [
+          "ebd39c1c35b81350a985854ad655968593242320",
+          "9cdc8a5c02d6926f57b36332f706ef55cc493817",
+          "5325b77c9218172d8b08c3cf3b4d4ae3fe16ff68"
+        ],
+        "author": [
+          "GitHub Actions <actions@github.com>",
+          "Callie Annas <callie.annas@yale.edu>",
+          "Callie Annas <callie.annas@yale.edu>"
+        ],
+        "date": [
+          "Fri Jun 19 20:16:40 2026 +0000",
+          "Thu Jun 18 12:12:21 2026 -0400",
+          "Wed Jun 17 10:38:41 2026 -0400"
+        ],
+        "message": [
+          "scheduled data build",
+          "Updates to CHR exploration (bundles and corrects data workflow)",
+          "Creating new county-level chronic condition bundle"
+        ]
       },
       "source": [],
       "data_format": "tall",
@@ -26,8 +42,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-07-31 20:44:20.771874",
-      "last_modified": "2026-07-31 20:44:20.771874",
+      "created": "2026-09-04 20:37:45.795214",
+      "last_modified": "2026-09-04 20:37:45.795214",
       "vintage": {},
       "row_count": 401706,
       "entity_count": 3159,
@@ -3245,39 +3261,348 @@
               "levels": {
                 "chr_diabetes_prevalence": {
                   "source_id": "chr_diabetes_prevalence",
-                  "id": "chr_diabetes_prevalence"
+                  "id": "chr_diabetes_prevalence",
+                  "name": "chr_diabetes_prevalence",
+                  "duplicates": 542,
+                  "info": {
+                    "id": "chr_diabetes_prevalence",
+                    "short_name": "Diabetes Prevalence",
+                    "long_name": "Diagnosed Diabetes Prevalence",
+                    "category": "chronic",
+                    "short_description": "Percentage of adults aged 18+ with diagnosed diabetes (age-adjusted).",
+                    "long_description": "Percentage of adults aged 18 and above with diagnosed diabetes (age-adjusted), from the CDC Division of Diabetes Translation.",
+                    "statement": "In {location}, {value}% of adults had diagnosed diabetes.",
+                    "measure_type": "Percent",
+                    "unit": "Percent",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "chr"
+                      }
+                    ],
+                    "scale": "0-100",
+                    "source_file": {
+                      "project": "county_health_rankings",
+                      "data_dir": "/data/county_health_rankings/standard",
+                      "file": "data_state.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    1,
+                    15
+                  ],
+                  "type": "float",
+                  "missing": 58,
+                  "mean": 9.674965,
+                  "sd": 1.785134,
+                  "min": 4.8,
+                  "max": 15.1
                 },
                 "chr_adult_obesity": {
                   "source_id": "chr_adult_obesity",
-                  "id": "chr_adult_obesity"
+                  "id": "chr_adult_obesity",
+                  "name": "chr_adult_obesity",
+                  "duplicates": 409,
+                  "info": {
+                    "id": "chr_adult_obesity",
+                    "short_name": "Adult Obesity",
+                    "long_name": "Adult Obesity Prevalence",
+                    "category": "chronic",
+                    "short_description": "Percentage of adults with BMI ≥ 30 (age-adjusted).",
+                    "long_description": "Percentage of the adult population (age 18 and older) that reports a body mass index (BMI) greater than or equal to 30 kg/m2 (age-adjusted), from the BRFSS.",
+                    "statement": "In {location}, {value}% of adults were obese.",
+                    "measure_type": "Percent",
+                    "unit": "Percent",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "chr"
+                      }
+                    ],
+                    "scale": "0-100",
+                    "source_file": {
+                      "project": "county_health_rankings",
+                      "data_dir": "/data/county_health_rankings/standard",
+                      "file": "data_state.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    15
+                  ],
+                  "type": "float",
+                  "missing": 3,
+                  "mean": 29.484148,
+                  "sd": 4.286002,
+                  "min": 18.7,
+                  "max": 41.5
                 },
                 "chr_poor_or_fair_health": {
                   "source_id": "chr_poor_or_fair_health",
-                  "id": "chr_poor_or_fair_health"
+                  "id": "chr_poor_or_fair_health",
+                  "name": "chr_poor_or_fair_health",
+                  "duplicates": 419,
+                  "info": {
+                    "id": "chr_poor_or_fair_health",
+                    "short_name": "Poor or Fair Health",
+                    "long_name": "Adults Reporting Poor or Fair Health",
+                    "category": "chronic",
+                    "short_description": "Percentage of adults reporting fair or poor health (age-adjusted).",
+                    "long_description": "Percentage of adults reporting fair or poor health (age-adjusted), based on self-reported health status from the Behavioral Risk Factor Surveillance System (BRFSS).",
+                    "statement": "In {location}, {value}% of adults reported fair or poor health.",
+                    "measure_type": "Percent",
+                    "unit": "Percent",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "chr"
+                      }
+                    ],
+                    "scale": "0-100",
+                    "source_file": {
+                      "project": "county_health_rankings",
+                      "data_dir": "/data/county_health_rankings/standard",
+                      "file": "data_state.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    15
+                  ],
+                  "type": "float",
+                  "missing": 7,
+                  "mean": 15.734216,
+                  "sd": 3.186115,
+                  "min": 10,
+                  "max": 24.472339
                 },
                 "chr_poor_physical_health_days": {
                   "source_id": "chr_poor_physical_health_days",
-                  "id": "chr_poor_physical_health_days"
+                  "id": "chr_poor_physical_health_days",
+                  "name": "chr_poor_physical_health_days",
+                  "duplicates": 361,
+                  "info": {
+                    "id": "chr_poor_physical_health_days",
+                    "short_name": "Poor Physical Health Days",
+                    "long_name": "Average Physically Unhealthy Days per Month",
+                    "category": "chronic",
+                    "short_description": "Average number of physically unhealthy days reported in past 30 days (age-adjusted).",
+                    "long_description": "Average number of physically unhealthy days reported in past 30 days (age-adjusted), from the BRFSS.",
+                    "statement": "In {location}, adults reported an average of {value} physically unhealthy days per month.",
+                    "measure_type": "Count",
+                    "unit": "Days per month",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "chr"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "county_health_rankings",
+                      "data_dir": "/data/county_health_rankings/standard",
+                      "file": "data_state.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    15
+                  ],
+                  "type": "float",
+                  "missing": 7,
+                  "mean": 3.61684,
+                  "sd": 0.537857,
+                  "min": 2.275738,
+                  "max": 5.34421
                 },
                 "chr_poor_mental_health_days": {
                   "source_id": "chr_poor_mental_health_days",
-                  "id": "chr_poor_mental_health_days"
+                  "id": "chr_poor_mental_health_days",
+                  "name": "chr_poor_mental_health_days",
+                  "duplicates": 360,
+                  "info": {
+                    "id": "chr_poor_mental_health_days",
+                    "short_name": "Poor Mental Health Days",
+                    "long_name": "Average Mentally Unhealthy Days per Month",
+                    "category": "chronic",
+                    "short_description": "Average number of mentally unhealthy days reported in past 30 days (age-adjusted).",
+                    "long_description": "Average number of mentally unhealthy days reported in past 30 days (age-adjusted), from the BRFSS.",
+                    "statement": "In {location}, adults reported an average of {value} mentally unhealthy days per month.",
+                    "measure_type": "Count",
+                    "unit": "Days per month",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "chr"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "county_health_rankings",
+                      "data_dir": "/data/county_health_rankings/standard",
+                      "file": "data_state.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    15
+                  ],
+                  "type": "float",
+                  "missing": 7,
+                  "mean": 3.931107,
+                  "sd": 0.770168,
+                  "min": 2.4,
+                  "max": 6.728684
                 },
                 "chr_premature_death": {
                   "source_id": "chr_premature_death",
-                  "id": "chr_premature_death"
+                  "id": "chr_premature_death",
+                  "name": "chr_premature_death",
+                  "duplicates": 105,
+                  "info": {
+                    "id": "chr_premature_death",
+                    "short_name": "Premature Death",
+                    "long_name": "Years of Potential Life Lost (YPLL)",
+                    "category": "chronic",
+                    "short_description": "Years of potential life lost before age 75 per 100,000 population.",
+                    "long_description": "Years of potential life lost before age 75 per 100,000 population (age-adjusted). This measure captures the burden of premature death by weighting deaths that occur at younger ages more heavily.",
+                    "statement": "In {location}, the premature death rate was {value} years of potential life lost per 100,000 population.",
+                    "measure_type": "Rate",
+                    "unit": "Years lost per 100,000 population",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "chr"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "county_health_rankings",
+                      "data_dir": "/data/county_health_rankings/standard",
+                      "file": "data_state.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    15
+                  ],
+                  "type": "float",
+                  "missing": 0,
+                  "mean": 7393.455128,
+                  "sd": 1544.945878,
+                  "min": 5038.05,
+                  "max": 13327.665964
                 },
                 "chr_premature_age_adjusted_mortality": {
                   "source_id": "chr_premature_age_adjusted_mortality",
-                  "id": "chr_premature_age_adjusted_mortality"
+                  "id": "chr_premature_age_adjusted_mortality",
+                  "name": "chr_premature_age_adjusted_mortality",
+                  "duplicates": 285,
+                  "info": {
+                    "id": "chr_premature_age_adjusted_mortality",
+                    "short_name": "Premature Age-Adjusted Mortality",
+                    "long_name": "Premature Age-Adjusted Mortality Rate",
+                    "category": "chronic",
+                    "short_description": "Number of deaths among residents under age 75 per 100,000 population (age-adjusted).",
+                    "long_description": "Number of deaths among residents under age 75 per 100,000 population (age-adjusted), from the National Center for Health Statistics (NCHS) Multiple Cause of Death files.",
+                    "statement": "In {location}, the premature age-adjusted mortality rate was {value} per 100,000 population.",
+                    "measure_type": "Rate",
+                    "unit": "Per 100,000 population",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "chr"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "county_health_rankings",
+                      "data_dir": "/data/county_health_rankings/standard",
+                      "file": "data_state.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    3,
+                    15
+                  ],
+                  "type": "float",
+                  "missing": 156,
+                  "mean": 362.140273,
+                  "sd": 69.616698,
+                  "min": 262.2,
+                  "max": 629.291493
                 },
                 "chr_life_expectancy": {
                   "source_id": "chr_life_expectancy",
-                  "id": "chr_life_expectancy"
+                  "id": "chr_life_expectancy",
+                  "name": "chr_life_expectancy",
+                  "duplicates": 519,
+                  "info": {
+                    "id": "chr_life_expectancy",
+                    "short_name": "Life Expectancy",
+                    "long_name": "Life Expectancy at Birth",
+                    "category": "chronic",
+                    "short_description": "Average number of years people are expected to live.",
+                    "long_description": "Average number of years a person born in a given area is expected to live, based on age-specific death rates, from the National Center for Health Statistics and CDC WONDER.",
+                    "statement": "In {location}, life expectancy at birth was {value} years.",
+                    "measure_type": "Count",
+                    "unit": "Years",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "chr"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "county_health_rankings",
+                      "data_dir": "/data/county_health_rankings/standard",
+                      "file": "data_state.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    9,
+                    15
+                  ],
+                  "type": "float",
+                  "missing": 468,
+                  "mean": 78.080964,
+                  "sd": 1.983766,
+                  "min": 71.920238,
+                  "max": 82.290383
                 },
                 "chr_preventable_hospital_stays": {
                   "source_id": "chr_preventable_hospital_stays",
-                  "id": "chr_preventable_hospital_stays"
+                  "id": "chr_preventable_hospital_stays",
+                  "name": "chr_preventable_hospital_stays",
+                  "duplicates": 18,
+                  "info": {
+                    "id": "chr_preventable_hospital_stays",
+                    "short_name": "Preventable Hospital Stays",
+                    "long_name": "Preventable Hospital Stays Rate",
+                    "category": "chronic",
+                    "short_description": "Rate of hospital stays for ambulatory-care sensitive conditions per 100,000 Medicare enrollees.",
+                    "long_description": "Discharge rate for ambulatory care-sensitive (preventable) conditions per 100,000 Medicare enrollees, from the Dartmouth Atlas of Health Care.",
+                    "statement": "In {location}, there were {value} preventable hospital stays per 100,000 Medicare enrollees.",
+                    "measure_type": "Rate",
+                    "unit": "Per 100,000 Medicare enrollees",
+                    "time_resolution": "Year",
+                    "sources": [
+                      {
+                        "id": "chr"
+                      }
+                    ],
+                    "source_file": {
+                      "project": "county_health_rankings",
+                      "data_dir": "/data/county_health_rankings/standard",
+                      "file": "data_state.csv.gz"
+                    }
+                  },
+                  "time_range": [
+                    0,
+                    15
+                  ],
+                  "type": "float",
+                  "missing": 1,
+                  "mean": 1560.648149,
+                  "sd": 1856.112198,
+                  "min": 23.32,
+                  "max": 6168
                 }
               },
               "id": "outcome_name"
@@ -3299,7 +3624,7 @@
           },
           {
             "name": "value",
-            "duplicates": 229610,
+            "duplicates": 230057,
             "info": {
               "short_name": "Value",
               "long_name": "Chronic condition measure value",
@@ -3318,14 +3643,14 @@
             "time_range": [0, 15],
             "type": "float",
             "missing": 0,
-            "mean": 1307.343189,
-            "sd": 3038.196531,
+            "mean": 1314.71739,
+            "sd": 3035.04415,
             "min": 0,
             "max": 46417.851928
           }
         ]
       },
-      "sha512": "8d498222338ecc1978c9fd73bec8816b46500e10d69fa3930393668d58495f63fd55eb78f44eb52f30443acca02da4db15dcf0c72af04d1669cd8fc8708041b3"
+      "sha512": "efc5cb1f4d422d0be747440a693e86bd4cf46fe955d6ea02a818c66e45627e5c2123aba1ca104735f710f213e165a4357670598a3c25e67958bae616de33685d"
     }
   ],
   "measure_info": {
@@ -3345,39 +3670,348 @@
       "levels": {
         "chr_diabetes_prevalence": {
           "source_id": "chr_diabetes_prevalence",
-          "id": "chr_diabetes_prevalence"
+          "id": "chr_diabetes_prevalence",
+          "name": "chr_diabetes_prevalence",
+          "duplicates": 542,
+          "info": {
+            "id": "chr_diabetes_prevalence",
+            "short_name": "Diabetes Prevalence",
+            "long_name": "Diagnosed Diabetes Prevalence",
+            "category": "chronic",
+            "short_description": "Percentage of adults aged 18+ with diagnosed diabetes (age-adjusted).",
+            "long_description": "Percentage of adults aged 18 and above with diagnosed diabetes (age-adjusted), from the CDC Division of Diabetes Translation.",
+            "statement": "In {location}, {value}% of adults had diagnosed diabetes.",
+            "measure_type": "Percent",
+            "unit": "Percent",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "chr"
+              }
+            ],
+            "scale": "0-100",
+            "source_file": {
+              "project": "county_health_rankings",
+              "data_dir": "/data/county_health_rankings/standard",
+              "file": "data_state.csv.gz"
+            }
+          },
+          "time_range": [
+            1,
+            15
+          ],
+          "type": "float",
+          "missing": 58,
+          "mean": 9.674965,
+          "sd": 1.785134,
+          "min": 4.8,
+          "max": 15.1
         },
         "chr_adult_obesity": {
           "source_id": "chr_adult_obesity",
-          "id": "chr_adult_obesity"
+          "id": "chr_adult_obesity",
+          "name": "chr_adult_obesity",
+          "duplicates": 409,
+          "info": {
+            "id": "chr_adult_obesity",
+            "short_name": "Adult Obesity",
+            "long_name": "Adult Obesity Prevalence",
+            "category": "chronic",
+            "short_description": "Percentage of adults with BMI ≥ 30 (age-adjusted).",
+            "long_description": "Percentage of the adult population (age 18 and older) that reports a body mass index (BMI) greater than or equal to 30 kg/m2 (age-adjusted), from the BRFSS.",
+            "statement": "In {location}, {value}% of adults were obese.",
+            "measure_type": "Percent",
+            "unit": "Percent",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "chr"
+              }
+            ],
+            "scale": "0-100",
+            "source_file": {
+              "project": "county_health_rankings",
+              "data_dir": "/data/county_health_rankings/standard",
+              "file": "data_state.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            15
+          ],
+          "type": "float",
+          "missing": 3,
+          "mean": 29.484148,
+          "sd": 4.286002,
+          "min": 18.7,
+          "max": 41.5
         },
         "chr_poor_or_fair_health": {
           "source_id": "chr_poor_or_fair_health",
-          "id": "chr_poor_or_fair_health"
+          "id": "chr_poor_or_fair_health",
+          "name": "chr_poor_or_fair_health",
+          "duplicates": 419,
+          "info": {
+            "id": "chr_poor_or_fair_health",
+            "short_name": "Poor or Fair Health",
+            "long_name": "Adults Reporting Poor or Fair Health",
+            "category": "chronic",
+            "short_description": "Percentage of adults reporting fair or poor health (age-adjusted).",
+            "long_description": "Percentage of adults reporting fair or poor health (age-adjusted), based on self-reported health status from the Behavioral Risk Factor Surveillance System (BRFSS).",
+            "statement": "In {location}, {value}% of adults reported fair or poor health.",
+            "measure_type": "Percent",
+            "unit": "Percent",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "chr"
+              }
+            ],
+            "scale": "0-100",
+            "source_file": {
+              "project": "county_health_rankings",
+              "data_dir": "/data/county_health_rankings/standard",
+              "file": "data_state.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            15
+          ],
+          "type": "float",
+          "missing": 7,
+          "mean": 15.734216,
+          "sd": 3.186115,
+          "min": 10,
+          "max": 24.472339
         },
         "chr_poor_physical_health_days": {
           "source_id": "chr_poor_physical_health_days",
-          "id": "chr_poor_physical_health_days"
+          "id": "chr_poor_physical_health_days",
+          "name": "chr_poor_physical_health_days",
+          "duplicates": 361,
+          "info": {
+            "id": "chr_poor_physical_health_days",
+            "short_name": "Poor Physical Health Days",
+            "long_name": "Average Physically Unhealthy Days per Month",
+            "category": "chronic",
+            "short_description": "Average number of physically unhealthy days reported in past 30 days (age-adjusted).",
+            "long_description": "Average number of physically unhealthy days reported in past 30 days (age-adjusted), from the BRFSS.",
+            "statement": "In {location}, adults reported an average of {value} physically unhealthy days per month.",
+            "measure_type": "Count",
+            "unit": "Days per month",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "chr"
+              }
+            ],
+            "source_file": {
+              "project": "county_health_rankings",
+              "data_dir": "/data/county_health_rankings/standard",
+              "file": "data_state.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            15
+          ],
+          "type": "float",
+          "missing": 7,
+          "mean": 3.61684,
+          "sd": 0.537857,
+          "min": 2.275738,
+          "max": 5.34421
         },
         "chr_poor_mental_health_days": {
           "source_id": "chr_poor_mental_health_days",
-          "id": "chr_poor_mental_health_days"
+          "id": "chr_poor_mental_health_days",
+          "name": "chr_poor_mental_health_days",
+          "duplicates": 360,
+          "info": {
+            "id": "chr_poor_mental_health_days",
+            "short_name": "Poor Mental Health Days",
+            "long_name": "Average Mentally Unhealthy Days per Month",
+            "category": "chronic",
+            "short_description": "Average number of mentally unhealthy days reported in past 30 days (age-adjusted).",
+            "long_description": "Average number of mentally unhealthy days reported in past 30 days (age-adjusted), from the BRFSS.",
+            "statement": "In {location}, adults reported an average of {value} mentally unhealthy days per month.",
+            "measure_type": "Count",
+            "unit": "Days per month",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "chr"
+              }
+            ],
+            "source_file": {
+              "project": "county_health_rankings",
+              "data_dir": "/data/county_health_rankings/standard",
+              "file": "data_state.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            15
+          ],
+          "type": "float",
+          "missing": 7,
+          "mean": 3.931107,
+          "sd": 0.770168,
+          "min": 2.4,
+          "max": 6.728684
         },
         "chr_premature_death": {
           "source_id": "chr_premature_death",
-          "id": "chr_premature_death"
+          "id": "chr_premature_death",
+          "name": "chr_premature_death",
+          "duplicates": 105,
+          "info": {
+            "id": "chr_premature_death",
+            "short_name": "Premature Death",
+            "long_name": "Years of Potential Life Lost (YPLL)",
+            "category": "chronic",
+            "short_description": "Years of potential life lost before age 75 per 100,000 population.",
+            "long_description": "Years of potential life lost before age 75 per 100,000 population (age-adjusted). This measure captures the burden of premature death by weighting deaths that occur at younger ages more heavily.",
+            "statement": "In {location}, the premature death rate was {value} years of potential life lost per 100,000 population.",
+            "measure_type": "Rate",
+            "unit": "Years lost per 100,000 population",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "chr"
+              }
+            ],
+            "source_file": {
+              "project": "county_health_rankings",
+              "data_dir": "/data/county_health_rankings/standard",
+              "file": "data_state.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            15
+          ],
+          "type": "float",
+          "missing": 0,
+          "mean": 7393.455128,
+          "sd": 1544.945878,
+          "min": 5038.05,
+          "max": 13327.665964
         },
         "chr_premature_age_adjusted_mortality": {
           "source_id": "chr_premature_age_adjusted_mortality",
-          "id": "chr_premature_age_adjusted_mortality"
+          "id": "chr_premature_age_adjusted_mortality",
+          "name": "chr_premature_age_adjusted_mortality",
+          "duplicates": 285,
+          "info": {
+            "id": "chr_premature_age_adjusted_mortality",
+            "short_name": "Premature Age-Adjusted Mortality",
+            "long_name": "Premature Age-Adjusted Mortality Rate",
+            "category": "chronic",
+            "short_description": "Number of deaths among residents under age 75 per 100,000 population (age-adjusted).",
+            "long_description": "Number of deaths among residents under age 75 per 100,000 population (age-adjusted), from the National Center for Health Statistics (NCHS) Multiple Cause of Death files.",
+            "statement": "In {location}, the premature age-adjusted mortality rate was {value} per 100,000 population.",
+            "measure_type": "Rate",
+            "unit": "Per 100,000 population",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "chr"
+              }
+            ],
+            "source_file": {
+              "project": "county_health_rankings",
+              "data_dir": "/data/county_health_rankings/standard",
+              "file": "data_state.csv.gz"
+            }
+          },
+          "time_range": [
+            3,
+            15
+          ],
+          "type": "float",
+          "missing": 156,
+          "mean": 362.140273,
+          "sd": 69.616698,
+          "min": 262.2,
+          "max": 629.291493
         },
         "chr_life_expectancy": {
           "source_id": "chr_life_expectancy",
-          "id": "chr_life_expectancy"
+          "id": "chr_life_expectancy",
+          "name": "chr_life_expectancy",
+          "duplicates": 519,
+          "info": {
+            "id": "chr_life_expectancy",
+            "short_name": "Life Expectancy",
+            "long_name": "Life Expectancy at Birth",
+            "category": "chronic",
+            "short_description": "Average number of years people are expected to live.",
+            "long_description": "Average number of years a person born in a given area is expected to live, based on age-specific death rates, from the National Center for Health Statistics and CDC WONDER.",
+            "statement": "In {location}, life expectancy at birth was {value} years.",
+            "measure_type": "Count",
+            "unit": "Years",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "chr"
+              }
+            ],
+            "source_file": {
+              "project": "county_health_rankings",
+              "data_dir": "/data/county_health_rankings/standard",
+              "file": "data_state.csv.gz"
+            }
+          },
+          "time_range": [
+            9,
+            15
+          ],
+          "type": "float",
+          "missing": 468,
+          "mean": 78.080964,
+          "sd": 1.983766,
+          "min": 71.920238,
+          "max": 82.290383
         },
         "chr_preventable_hospital_stays": {
           "source_id": "chr_preventable_hospital_stays",
-          "id": "chr_preventable_hospital_stays"
+          "id": "chr_preventable_hospital_stays",
+          "name": "chr_preventable_hospital_stays",
+          "duplicates": 18,
+          "info": {
+            "id": "chr_preventable_hospital_stays",
+            "short_name": "Preventable Hospital Stays",
+            "long_name": "Preventable Hospital Stays Rate",
+            "category": "chronic",
+            "short_description": "Rate of hospital stays for ambulatory-care sensitive conditions per 100,000 Medicare enrollees.",
+            "long_description": "Discharge rate for ambulatory care-sensitive (preventable) conditions per 100,000 Medicare enrollees, from the Dartmouth Atlas of Health Care.",
+            "statement": "In {location}, there were {value} preventable hospital stays per 100,000 Medicare enrollees.",
+            "measure_type": "Rate",
+            "unit": "Per 100,000 Medicare enrollees",
+            "time_resolution": "Year",
+            "sources": [
+              {
+                "id": "chr"
+              }
+            ],
+            "source_file": {
+              "project": "county_health_rankings",
+              "data_dir": "/data/county_health_rankings/standard",
+              "file": "data_state.csv.gz"
+            }
+          },
+          "time_range": [
+            0,
+            15
+          ],
+          "type": "float",
+          "missing": 1,
+          "mean": 1560.648149,
+          "sd": 1856.112198,
+          "min": 23.32,
+          "max": 6168
         }
       },
       "id": "bundle_county_chronic/dist/county_chronic.parquet|outcome_name"
@@ -3417,7 +4051,31 @@
   },
   "change_report": {
     "county_chronic.parquet": {
-      "state": "unchanged"
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "time": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "outcome_name": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "value": {
+          "status": "present",
+          "same_type": true
+        }
+      }
     }
   }
 }
