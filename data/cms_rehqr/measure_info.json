@@ -1,0 +1,49 @@
+{
+  "cms_rehqr_op_36": {
+    "id": "cms_rehqr_op_36",
+    "short_name": "REH unplanned visits after outpatient surgery",
+    "long_name": "Ratio of unplanned hospital visits after outpatient surgery at Rural Emergency Hospitals",
+    "category": "access",
+    "short_description": "National ratio of observed-to-expected unplanned hospital visits within 7 days of outpatient surgery at Rural Emergency Hospitals.",
+    "long_description": "Measure REH_OP_36 from CMS's Rural Emergency Hospital Quality Reporting (REHQR) Program. It reports the national ratio of observed-to-expected unplanned hospital visits (emergency department visits, observation stays, or unplanned inpatient admissions) within 7 days of an outpatient surgical procedure performed at a Rural Emergency Hospital. A ratio of 1 means visits occurred as expected given patient risk; a ratio above 1 means more unplanned visits occurred than expected. Because Rural Emergency Hospitals are a newly created facility type, the national rate may be suppressed as 'Not Available' when too few hospitals have sufficient surgical case volume to produce a reliable estimate; suppressed periods are flagged in cms_rehqr_op_36_suppressed rather than imputed, since no comparable national value exists to impute from.",
+    "statement": "Nationally, the ratio of unplanned hospital visits after outpatient surgery at Rural Emergency Hospitals was {value}.",
+    "measure_type": "Rate",
+    "unit": "Ratio",
+    "time_resolution": "Year",
+    "sources": [{ "id": "cms_rehqr" }]
+  },
+
+  "cms_rehqr_op_36_suppressed": {
+    "id": "cms_rehqr_op_36_suppressed",
+    "short_name": "REH OP-36 suppressed",
+    "long_name": "Suppression flag for the REH unplanned visits after outpatient surgery measure",
+    "category": "access",
+    "short_description": "Flag indicating the national REH_OP_36 rate was not available for this reporting period.",
+    "long_description": "Equals 1 when CMS reported the national REH_OP_36 rate as 'Not Available' for the reporting period (typically because too few Rural Emergency Hospitals had sufficient outpatient surgical case volume), 0 otherwise. No value is imputed in the suppressed case because there is no other national estimate for the same period to impute from.",
+    "statement": "The national REH_OP_36 rate for {time} was suppressed: {value}.",
+    "measure_type": "Count",
+    "unit": "Flag (0/1)",
+    "time_resolution": "Year",
+    "sources": [{ "id": "cms_rehqr" }]
+  },
+
+  "_sources": {
+    "cms_rehqr": {
+      "name": "Rural Emergency Hospital Unplanned Hospital Visits - National",
+      "url": "https://data.cms.gov/provider-data/dataset/uk3n-au7a",
+      "organization": "Centers for Medicare & Medicaid Services (CMS)",
+      "organization_url": "https://www.cms.gov/",
+      "description": "National-level quality measure data from the Rural Emergency Hospital Quality Reporting (REHQR) Program, published on the CMS Provider Data Catalog. Rural Emergency Hospitals (REHs) are a Medicare provider type created in 2023 for small rural hospitals that convert from inpatient care to 24/7 emergency and outpatient services. REHQR is the quality reporting program for this new facility type, and this dataset reports the national rate for each measure along with counts of participating hospitals performing worse, the same, better, or with too few cases to be scored, relative to the national rate. As a new program, national rates for a measure may be suppressed as 'Not Available' when too few Rural Emergency Hospitals have sufficient case volume.",
+      "restrictions": "Public domain. CMS data is generally not subject to copyright restrictions."
+    }
+  },
+
+  "_catalog": {
+    "summary": "CMS reports how Rural Emergency Hospitals compare nationally on unplanned hospital visits after outpatient surgery, a new quality measure for this small-hospital program.",
+    "search_terms": ["Rural health", "hospital quality", "unplanned visits", "outpatient surgery", "rural emergency hospital"],
+    "bucket": [],
+    "files": {
+      "data.csv.gz": "National REHQR unplanned-visit rate and suppression flag by measure"
+    }
+  }
+}
