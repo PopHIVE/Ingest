@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-04T15:42:06Z",
+  "generated": "2026-09-04T15:47:16Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -13972,6 +13972,39 @@
               "description": "Share of the civilian noninstitutionalized population covered by Medicaid or other means-tested public insurance.",
               "measure_type": "Percent",
               "unit": "Percent (0-100)"
+            }
+          ]
+        }
+      ]
+    },
+    "cms_birth": {
+      "name": "cms_birth",
+      "display_name": "CMS Birth",
+      "description": "A list, with geocoded addresses, of all Medicare-registered hospitals that meet CMS's criteria for the 'Birthing Friendly' designation, published on the CMS Provider Data Catalog. The designation identifies hospitals that participate in a statewide or national perinatal quality improvement collaborative and have implemented recommended patient safety practices for maternal health, drawn from CMS's Hospital Inpatient Quality Reporting (IQR) Program 'Maternal Morbidity Structural Measure.' This ingest aggregates the facility list to a count of designated hospitals per state and nationally as of the most recent CMS update; it does not include county-level geocoding.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "cms_birth_n_birthing_friendly",
+              "short_name": "Birthing Friendly hospitals",
+              "description": "Count of hospitals that have earned CMS's Birthing Friendly designation.",
+              "measure_type": "Count",
+              "unit": "Count"
             }
           ]
         }
