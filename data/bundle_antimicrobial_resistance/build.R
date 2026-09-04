@@ -37,33 +37,30 @@ food_animals  <- vroom::vroom("../narms/standard/data_food_animals.csv.gz", show
 # 3a. Human clinical — by agent
 # -----------------------------------------------------------------------------
 human_long <- human_agent %>%
-  mutate(
-    source = "NARMS Now (Human Clinical)",
-    antimicrobial = antimicrobial_agent
-  ) %>%
+  mutate(source = "NARMS Now (Human Clinical)") %>%
   select(
-    geography, time, source, genus,
-    species_serotype, antimicrobial_class, antimicrobial,
-    test_method, pct_resistant, n_resistant, n_tested,
-    flag_not_tested, flag_no_isolates_tested
+    geography, time, source, genus_species_serotype, antimicrobial,
+    test_method,
+    pct_resistant = narms_pct_resistant,
+    n_resistant   = narms_n_resistant,
+    n_tested      = narms_n_tested,
+    narms_flag
   )
 
 # -----------------------------------------------------------------------------
 # 3b. Retail meats
 # -----------------------------------------------------------------------------
 retail_long <- retail_meats %>%
-  mutate(
-    source = "FDA Retail Meats",
-    species_serotype = if_else(
-      is.na(serotype),
-      species,
-      paste0(species, " ", serotype)
-    )
-  ) %>%
+  mutate(source = "FDA Retail Meats") %>%
   select(
-    geography, time, source, genus,
-    species_serotype, antimicrobial, meat_source,
-    pct_resistant, n_resistant, n_tested, mic50, mic90
+    geography, time, source, genus_species_serotype,
+    antimicrobial, meat_source,
+    pct_resistant = narms_pct_resistant,
+    n_resistant   = narms_n_resistant,
+    n_tested      = narms_n_tested,
+    mic50         = narms_mic50,
+    mic90         = narms_mic90,
+    narms_flag
   )
 
 # -----------------------------------------------------------------------------
@@ -76,26 +73,33 @@ animal_long <- animal_path %>%
   select(
     geography, time, source, genus,
     antimicrobial, host_species, collection_source,
-    pct_resistant, n_resistant, n_tested, mic50, mic90
+    pct_resistant = narms_pct_resistant,
+    n_resistant   = narms_n_resistant,
+    n_tested      = narms_n_tested,
+    mic50         = narms_mic50,
+    mic90         = narms_mic90,
+    narms_flag
   )
 
 # -----------------------------------------------------------------------------
 # 3d. Food-producing animals
 # -----------------------------------------------------------------------------
+# NOTE: narms/ingest.R no longer preserves a per-file source label
+# (formerly `source_program`, e.g. "HACCP"/"Cecal"/"Minor Species") through
+# its aggregation step for data_food_animals.csv.gz, so that distinction is
+# no longer available here.
 food_long <- food_animals %>%
-  mutate(
-    source = paste0("FDA Food Animals (", source_program, ")"),
-    species_serotype = if_else(
-      is.na(serotype),
-      species,
-      paste0(species, " ", serotype)
-    )
-  ) %>%
+  mutate(source = "FDA Food Animals") %>%
   select(
-    geography, time, source, genus,
-    species_serotype, antimicrobial, host_species,
+    geography, time, source, genus_species_serotype,
+    antimicrobial, host_species,
     source_type,
-    pct_resistant, n_resistant, n_tested, mic50, mic90
+    pct_resistant = narms_pct_resistant,
+    n_resistant   = narms_n_resistant,
+    n_tested      = narms_n_tested,
+    mic50         = narms_mic50,
+    mic90         = narms_mic90,
+    narms_flag
   )
 
 # -----------------------------------------------------------------------------
@@ -107,10 +111,6 @@ resistance_agent <- bind_rows(
   animal_long,
   food_long
 ) %>%
-  mutate(
-    flag_not_tested = replace(flag_not_tested, is.na(flag_not_tested), 0L),
-    flag_no_isolates_tested = replace(flag_no_isolates_tested, is.na(flag_no_isolates_tested), 0L)
-  ) %>%
   # Convert geography FIPS to state names for display
   left_join(state_fips_lookup, by = c("geography" = "fips")) %>%
   mutate(
@@ -121,7 +121,7 @@ resistance_agent <- bind_rows(
     )
   ) %>%
   select(-geography_name) %>%
-  arrange(source, geography, time, genus, antimicrobial)
+  arrange(source, geography, time, antimicrobial)
 
 arrow::write_parquet(
   resistance_agent,
@@ -146,11 +146,14 @@ resistance_pattern <- human_pattern %>%
   ) %>%
   select(-geography_name) %>%
   select(
-    geography, time, source, genus, species_serotype,
-    pattern, test_method, pct_resistant, n_resistant, n_tested,
-    flag_not_tested, flag_no_isolates_tested
+    geography, time, source, genus_species_serotype,
+    pattern, test_method,
+    pct_resistant = narms_pct_resistant,
+    n_resistant   = narms_n_resistant,
+    n_tested      = narms_n_tested,
+    narms_flag
   ) %>%
-  arrange(geography, time, genus, pattern)
+  arrange(geography, time, genus_species_serotype, pattern)
 
 arrow::write_parquet(
   resistance_pattern,
