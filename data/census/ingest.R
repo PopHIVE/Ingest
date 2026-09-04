@@ -27,6 +27,55 @@ library(censusapi)
 library(readxl)
 
 # -----------------------------------------------------------------------------
+# Percent scale
+# -----------------------------------------------------------------------------
+# PopHIVE's standard is 0-100: a percent measure stores 18.44, not 0.1844.
+# The Census API returns counts, so every share below is derived as a
+# proportion; each derived block is converted once, where it is built.
+#
+# Converting at the point of DERIVATION and not at the point of writing is
+# deliberate. The urban-rural block further down re-reads
+# standard/data_county.csv.gz, swaps three columns and writes it back, and the
+# ACS county file is written before that runs -- a write-time hook would
+# multiply the already-converted ACS columns by 100 again on every such run.
+#
+# The measure list is read from measure_info.json rather than hard-coded, so it
+# cannot drift from the declaration it implements. Adding a percent measure to
+# measure_info.json is therefore enough; nothing here needs editing.
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
+PERCENT_MEASURES <- local({
+  mi <- jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)
+  mi[["_sources"]] <- NULL
+  is_pct <- vapply(mi, function(e) {
+    identical(tolower(as.character(e[["measure_type"]] %||% "")), "percent")
+  }, logical(1))
+  names(mi)[is_pct]
+})
+
+# Guarded per column, so this is a no-op on values that are already 0-100.
+# That matters if the Census API ever starts publishing a share as a percentage,
+# or if a derivation below is rewritten to produce one: without the guard those
+# values would be multiplied a second time and silently land 100x too large.
+#
+# The threshold is 2, not 1, because a proportion legitimately reaches 1.0
+# (100%). Its blind spot is a genuine percentage whose maximum never exceeds 2 --
+# that would be read as a proportion and scaled. No census percent measure is
+# close: the lowest column maximum is 8.88 (acs_INL), so there is 4x headroom.
+# Re-check this if a sub-2% percent measure is ever added here.
+PERCENT_SCALE_CEILING <- 2
+
+to_percent_scale <- function(df) {
+  for (cl in intersect(names(df), PERCENT_MEASURES)) {
+    x  <- suppressWarnings(as.numeric(df[[cl]]))
+    mx <- suppressWarnings(max(x, na.rm = TRUE))
+    if (is.finite(mx) && mx > PERCENT_SCALE_CEILING) next
+    df[[cl]] <- x * 100
+  }
+  df
+}
+
+# -----------------------------------------------------------------------------
 # Read Census API key
 # -----------------------------------------------------------------------------
 
@@ -368,10 +417,16 @@ fetch_sdoh_year <- function(vintage_year, geo_level, api_key) {
         acs_PCI = B19301_001E,
         # B19082 reports the aggregate income share held by each household
         # quintile as a percentage (0-100), unlike every other rate in this
-        # script, which safe_div() leaves as a 0-1 proportion. Rescale to the
-        # 0-1 convention PopHIVE uses for all Percent measures (and which these
-        # measures' `unit` in measure_info.json already declares), so the five
-        # quintile shares sum to 1 rather than 100.
+        # script, which safe_div() leaves as a 0-1 proportion. Divide by 100 to
+        # put it on the same internal footing as its siblings, so the single
+        # to_percent_scale() call below is the ONE place a scale is applied.
+        # The two operations cancel, which is intended: these six measures end
+        # up back on the 0-100 scale B19082 publishes them on.
+        #
+        # An earlier version of this comment justified the division by "the 0-1
+        # convention PopHIVE uses for all Percent measures". That convention did
+        # not exist -- measured across Ingest, 169 percent measures stored 0-100
+        # against 126 on 0-1. The standard is 0-100. Do not cite the old claim.
         acs_INL = B19082_001E / 100,
         acs_INM = B19082_002E / 100,
         acs_INN = B19082_003E / 100,
@@ -587,11 +642,13 @@ if (force_block("sdoh") || !output_exists || is.null(last_vintage) ||
     # county_health_rankings and bls_laus's data_state.csv.gz.
     data_state  <- data_all %>%
                     filter(geo_level %in% c("state", "national")) %>%
-                    select(-geo_level)
+                    select(-geo_level) %>%
+                    to_percent_scale()
 
     data_county <- data_all %>%
                     filter(geo_level == "county") %>%
-                    select(-geo_level)
+                    select(-geo_level) %>%
+                    to_percent_scale()
 
    if (nrow(data_state) > 0) vroom::vroom_write(data_state, "standard/data_state.csv.gz", delim = ",")
    if (nrow(data_county) > 0) vroom::vroom_write(data_county, "standard/data_county.csv.gz", delim = ",")
@@ -636,7 +693,8 @@ if (force_block("ur") || !identical(process$ur_state, list(hash = ur_hash)) ||
       census_ur_pct_urban_pop  = POPPCT_URB,
       census_ur_pct_urban_land = ALAND_PCT_URB,
       census_ur_pct_urban_hu   = HOUPCT_URB
-    )
+    ) %>%
+    to_percent_scale()
 
   if (file.exists(county_file)) {
     data_county <- vroom::vroom(county_file, show_col_types = FALSE) %>%
@@ -825,6 +883,7 @@ if (!is.na(latest_pep_vintage) &&
     fetch_pep_level("us:*", c("us"), function(df) "00")
   )
 
+  pep_result <- to_percent_scale(pep_result)
   if (!is.null(pep_result) && nrow(pep_result) > 0) {
     vroom::vroom_write(pep_result, "standard/data_pep.csv.gz", delim = ",")
     process$pep_vintage_year <- latest_pep_vintage
@@ -892,6 +951,9 @@ if (!is.na(latest_saipe_year) &&
         mutate(
           geography                     = build_geography(.),
           time                          = paste0(latest_saipe_year, "-12-31"),
+          # SAIPE publishes SAEPOVRT as a percentage. Divide to a proportion
+          # so the single to_percent_scale() call below is the only place a
+          # scale is applied; the two cancel and the stored value is 0-100.
           saipe_pct_children_poverty    = as.numeric(SAEPOVRT0_17_PT) / 100,
           saipe_median_household_income = as.numeric(SAEMHI_PT)
         ) %>%
@@ -908,6 +970,7 @@ if (!is.na(latest_saipe_year) &&
     fetch_saipe_level("us:*", function(df) "00")
   )
 
+  saipe_result <- to_percent_scale(saipe_result)
   if (!is.null(saipe_result) && nrow(saipe_result) > 0) {
     vroom::vroom_write(saipe_result, "standard/data_saipe.csv.gz", delim = ",")
     process$saipe_year <- latest_saipe_year
@@ -956,6 +1019,7 @@ if (force_block("oqm") || !identical(process$oqm_state, list(hash = oqm_hash)) |
     ) %>%
     select(geography, time, oqm_self_response_rate)
 
+  oqm_result <- to_percent_scale(oqm_result)
   vroom::vroom_write(oqm_result, "standard/data_oqm.csv.gz", delim = ",")
 
   process$oqm_state <- list(hash = oqm_hash)
@@ -1022,6 +1086,9 @@ if (!is.na(latest_sahie_year) &&
           region = region_str, time = as.character(latest_sahie_year),
           AGECAT = agecat_code, IPRCAT = "0", RACECAT = "0", SEXCAT = "0", key = api_key
         ) %>%
+          # PCTUI is published as a percentage; divided to a proportion here
+          # for the same reason as SAIPE above, then restored by
+          # to_percent_scale(). Net effect: stored on 0-100.
           transmute(across(all_of(join_cols)), value = as.numeric(PCTUI_PT) / 100)
       }, error = function(e) {
         message("  [WARN] SAHIE fetch failed (AGECAT=", agecat_code, ", region=", region_str, "): ", conditionMessage(e))
@@ -1052,6 +1119,7 @@ if (!is.na(latest_sahie_year) &&
     fetch_sahie_level("us:*", c("us"), function(df) "00")
   )
 
+  sahie_result <- to_percent_scale(sahie_result)
   if (!is.null(sahie_result) && nrow(sahie_result) > 0) {
     vroom::vroom_write(sahie_result, "standard/data_sahie.csv.gz", delim = ",")
     process$sahie_year <- latest_sahie_year
