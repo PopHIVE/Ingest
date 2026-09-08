@@ -1,0 +1,166 @@
+---
+title: "CMS Birthing Friendly Hospitals - Maps"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                       fig.width = 11, fig.height = 7.5)
+```
+
+```{r libs}
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(sf)
+  library(tigris)
+  library(ggplot2)
+  library(scales)
+})
+options(tigris_use_cache = TRUE)
+
+# American Samoa, Guam, N. Mariana Islands, US Virgin Islands have no
+# birthing-friendly hospitals in the raw data and no county boundaries worth
+# plotting; AK/HI/PR are kept and relocated near the mainland for display.
+DROP_ST <- c("60", "66", "69", "78")
+```
+
+```{r data}
+hospitals_raw <- vroom::vroom(
+  "raw/Birthing_Friendly_Hospitals_Geocoded.csv",
+  show_col_types = FALSE
+)
+
+all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+state_fips_lookup <- all_fips %>%
+  filter(nchar(geography) == 2) %>%
+  select(geography, state)
+
+hospitals <- hospitals_raw %>%
+  left_join(state_fips_lookup, by = "state") %>%
+  filter(!geography %in% DROP_ST)
+
+county_counts <- vroom::vroom("standard/data_county.csv.gz", show_col_types = FALSE) %>%
+  select(geography, n_birthing_friendly = cms_birth_n_birthing_friendly)
+
+states_sf <- tigris::states(cb = TRUE, resolution = "5m", year = 2023, progress_bar = FALSE) %>%
+  filter(!STATEFP %in% DROP_ST) %>%
+  transmute(geography = GEOID)
+
+counties_sf <- tigris::counties(cb = TRUE, resolution = "5m", year = 2023, progress_bar = FALSE) %>%
+  filter(!STATEFP %in% DROP_ST) %>%
+  transmute(geography = GEOID, state_fips = STATEFP)
+```
+
+```{r map1-points, fig.height=6.5}
+hospitals_sf <- sf::st_as_sf(hospitals, coords = c("lon", "lat"), crs = 4326)
+
+states_shift <- tigris::shift_geometry(states_sf, geoid_column = "geography")
+counties_shift_map1 <- tigris::shift_geometry(
+  counties_sf %>% select(geography), geoid_column = "geography"
+)
+hospitals_shift <- tigris::shift_geometry(hospitals_sf, geoid_column = "geography")
+
+ggplot() +
+  geom_sf(data = states_shift, fill = "grey96", color = "grey50", linewidth = 0.2) +
+  geom_sf(data = counties_shift_map1, fill = NA, color = "grey75", linewidth = 0.1) +
+  geom_sf(data = states_shift, fill = NA, color = "grey30", linewidth = 0.4) +
+  geom_sf(data = hospitals_shift, color = "#B2182B", size = 0.6, alpha = 0.7) +
+  coord_sf(datum = NA) +
+  labs(title = "Birthing Friendly Hospitals") +
+  theme_void(base_size = 11) +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 13))
+```
+
+```{r map2-county-counts, fig.height=6.5}
+county_map_data <- counties_sf %>%
+  left_join(county_counts, by = "geography") %>%
+  mutate(
+    n_birthing_friendly = coalesce(n_birthing_friendly, 0),
+    # Most counties have 0-2 hospitals and a handful of large metro counties
+    # have 10-40+, so bin (rather than a continuous scale) keeps the low end
+    # visually distinct instead of being washed out by the outliers.
+    n_bin = cut(n_birthing_friendly,
+                breaks = c(-Inf, 0, 1, 2, 4, 9, 19, Inf),
+                labels = c("0", "1", "2", "3-4", "5-9", "10-19", "20+"))
+  )
+
+county_shift <- tigris::shift_geometry(county_map_data, geoid_column = "geography")
+
+ggplot(county_shift) +
+  geom_sf(aes(fill = n_bin), color = "white", linewidth = 0.03) +
+  geom_sf(data = states_shift, fill = NA, color = "black", linewidth = 0.45) +
+  scale_fill_viridis_d(option = "viridis", name = "Hospitals") +
+  coord_sf(datum = NA) +
+  labs(title = "Number of Birthing Friendly Hospitals by County") +
+  theme_void(base_size = 11) +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 13),
+        legend.position = "right")
+```
+
+```{r map3-state-proportion, fig.height=6.5}
+county_has_bf <- counties_sf %>%
+  st_drop_geometry() %>%
+  mutate(has_bf = geography %in% county_counts$geography)
+
+state_prop <- county_has_bf %>%
+  group_by(geography = state_fips) %>%
+  summarize(prop_with_bf = mean(has_bf), .groups = "drop")
+
+state_map_data <- states_sf %>%
+  left_join(state_prop, by = "geography")
+
+state_prop_shift <- tigris::shift_geometry(state_map_data, geoid_column = "geography")
+
+ggplot(state_prop_shift) +
+  geom_sf(aes(fill = prop_with_bf), color = "white", linewidth = 0.1) +
+  scale_fill_viridis_c(option = "viridis", name = "Proportion\nof counties",
+                       labels = label_percent(), limits = c(0, 1)) +
+  coord_sf(datum = NA) +
+  labs(title = "Proportion of Counties with a Birthing Friendly Hospital, by State") +
+  theme_void(base_size = 11) +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 13),
+        legend.position = "right")
+```
+
+```{r map4-neighbor-access, fig.height=6.5}
+has_bf <- counties_sf$geography %in% county_counts$geography
+
+touch_list <- sf::st_touches(counties_sf)
+neighbor_has_bf <- vapply(seq_along(touch_list), function(i) {
+  nbrs <- touch_list[[i]]
+  length(nbrs) > 0 && any(has_bf[nbrs])
+}, logical(1))
+
+county_neighbor_data <- counties_sf %>%
+  mutate(
+    has_bf = has_bf,
+    status = case_when(
+      has_bf              ~ "Has a birthing friendly hospital",
+      neighbor_has_bf     ~ "No hospital, but a neighboring county has one",
+      TRUE                ~ "No hospital in county or neighboring county"
+    ),
+    status = factor(status, levels = c(
+      "Has a birthing friendly hospital",
+      "No hospital, but a neighboring county has one",
+      "No hospital in county or neighboring county"
+    ))
+  )
+
+county_neighbor_shift <- tigris::shift_geometry(county_neighbor_data, geoid_column = "geography")
+
+ggplot(county_neighbor_shift) +
+  geom_sf(aes(fill = status), color = "white", linewidth = 0.03) +
+  scale_fill_manual(
+    values = c(
+      "Has a birthing friendly hospital" = "grey80",
+      "No hospital, but a neighboring county has one" = "#4575B4",
+      "No hospital in county or neighboring county" = "#D73027"
+    ),
+    name = NULL
+  ) +
+  coord_sf(datum = NA) +
+  labs(title = "County Access to a Birthing Friendly Hospital via Neighboring Counties") +
+  theme_void(base_size = 11) +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 13),
+        legend.position = "bottom")
+```
