@@ -1,0 +1,36 @@
+{
+  "cms_birth_n_birthing_friendly": {
+    "id": "cms_birth_n_birthing_friendly",
+    "short_name": "Birthing Friendly hospitals",
+    "long_name": "Number of CMS-designated Birthing Friendly hospitals",
+    "category": "maternal",
+    "short_description": "Count of hospitals that have earned CMS's Birthing Friendly designation.",
+    "long_description": "Number of Medicare-registered hospitals per geography that meet CMS's criteria for the 'Birthing Friendly' designation, which recognizes hospitals participating in a national or state perinatal quality improvement collaborative and implementing evidence-based best practices to improve maternal health outcomes and reduce preventable harm during obstetric care. This is a facility-count snapshot from CMS's current list of designated hospitals with geocoded addresses, not a longitudinal survey; each ingest run reflects the list as most recently published by CMS, so period-to-period changes reflect hospitals gaining or losing the designation (or address corrections), not a moving time series in the usual sense.",
+    "statement": "In {location}, {value} hospitals held the CMS Birthing Friendly designation.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [{ "id": "cms_birth" }]
+  },
+
+  "_sources": {
+    "cms_birth": {
+      "name": "Birthing Friendly Hospitals with Geocoded Addresses",
+      "url": "https://data.cms.gov/provider-data/dataset/hbf-map",
+      "organization": "Centers for Medicare & Medicaid Services (CMS)",
+      "organization_url": "https://www.cms.gov/",
+      "description": "A list, with geocoded addresses, of all Medicare-registered hospitals that meet CMS's criteria for the 'Birthing Friendly' designation, published on the CMS Provider Data Catalog. The designation identifies hospitals that participate in a statewide or national perinatal quality improvement collaborative and have implemented recommended patient safety practices for maternal health, drawn from CMS's Hospital Inpatient Quality Reporting (IQR) Program 'Maternal Morbidity Structural Measure.' This ingest aggregates the geocoded facility list to a count of designated hospitals per county, state, and nationally as of the most recent CMS update, assigning each hospital to a county via a point-in-polygon match of its latitude/longitude against Census county boundaries.",
+      "restrictions": "Public domain. CMS data is generally not subject to copyright restrictions."
+    }
+  },
+
+  "_catalog": {
+    "summary": "CMS designates hospitals as Birthing Friendly when they follow best practices to improve maternal health and reduce harm during childbirth. This tracks how many hospitals hold that designation nationally and by state.",
+    "search_terms": ["Maternal health", "birthing friendly", "obstetric care", "hospital quality", "childbirth"],
+    "bucket": [],
+    "files": {
+      "data_state.csv.gz": "Count of Birthing Friendly designated hospitals by state and nationally",
+      "data_county.csv.gz": "Count of Birthing Friendly designated hospitals by county"
+    }
+  }
+}
