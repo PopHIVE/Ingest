@@ -364,6 +364,7 @@ format_bundle_name <- function(name) {
   display <- sub("^bundle_", "", name)
   display <- gsub("_", " ", display)
   display <- tools::toTitleCase(display)
+  display <- gsub("\\bSti\\b", "STI", display)
   paste0("Bundle: ", display)
 }
 
@@ -1163,7 +1164,7 @@ format_bundle_label <- function(bundle_name) {
   x <- sub("^bundle_", "", bundle_name)
   x <- gsub("_", " ", x)
   if (nchar(x) > 0) x <- paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
-  x
+  gsub("\\bSti\\b", "STI", x)
 }
 
 # Fallback stratification blurb derived from a standard file's name, used only
