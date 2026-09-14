@@ -18,14 +18,24 @@ all_fips = vroom::vroom('../../resources/all_fips.csv.gz')
 
 
 #read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/chronic_diseases/brfss_prevalence_by_geography.parquet')
-brfss <- vroom::vroom('../brfss/standard/data_survey.csv.gz') #uses the raw survey data from
+brfss <- vroom::vroom('../brfss/standard/data.csv.gz') %>% #CDC's pre-tabulated BRFSS prevalence table
+  # data.csv.gz names columns pct_<topic>_<metric>; rename just the two
+  # topics used here into the prev_<outcome>_<metric> shape the pivot below
+  # expects (matches the naming this pipeline already used previously)
+  rename(
+    prev_diabetes_survey = pct_diabetes_value,
+    prev_diabetes_survey_lcl = pct_diabetes_value_lcl,
+    prev_diabetes_survey_ucl = pct_diabetes_value_ucl,
+    prev_diabetes_survey_sample_size = pct_diabetes_sample_size,
+    prev_obesity_survey = pct_obesity_value,
+    prev_obesity_survey_lcl = pct_obesity_value_lcl,
+    prev_obesity_survey_ucl = pct_obesity_value_ucl,
+    prev_obesity_survey_sample_size = pct_obesity_sample_size
+  )
 
 
 brfss_long <- brfss %>%
-  rename(fips=geography,
-         prev_diabetes_survey_sample_size= sample_size_diab,
-         prev_obesity_survey_sample_size= sample_size_obesity,
-         ) %>%
+  rename(fips=geography) %>%
   mutate( geography = cdlTools::fips(fips, to = 'Name' ),
           geography = if_else(fips=='00','United States', geography)) %>%
   pivot_longer(
