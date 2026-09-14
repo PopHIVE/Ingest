@@ -363,11 +363,24 @@ Examples: `["Respiratory", "flu", "rsv", "Covid"]`, `["Childhood immunizations",
 `["Rural health", "unemployment", "labor force", "economic determinants"]`,
 `["Maternal health", "maternal mortality", "maternal deaths", "pregnancy-related deaths"]`.
 
-**`bucket`** — the site-navigation grouping. **Every dataset currently has `[]`**; the
-grouping has not been assigned yet, so write `"bucket": []` unless the user names one.
-(`bucket` and `search_terms` are independent fields. Omitting either from `_catalog`
-re-derives it from bundle membership on the next build; an explicit `[]` is respected as
-an intentional "none" and sticks.)
+**`bucket`** — the site-navigation grouping. Every entry MUST come from this fixed list —
+never invent a new category string or reuse a `search_terms` topic label as a bucket:
+
+- `Infectious disease`
+- `Chronic disease`
+- `Immunization`
+- `Injury/Overdose`
+- `Youth well-being`
+- `Rural health`
+- `Prevention`
+- `Social determinants of health`
+- `Maternal health`
+
+A dataset can belong to more than one bucket, e.g. `["Injury/Overdose", "Youth well-being"]`.
+If none of these genuinely fits a new dataset, ask the user rather than adding a category
+to this list yourself. (`bucket` and `search_terms` are independent fields. Omitting either
+from `_catalog` re-derives it from bundle membership on the next build; an explicit `[]` is
+respected as an intentional "none" and sticks.)
 
 **`files`** — one key per `standard/*.csv.gz` the ingest produces, mapping **file name**
 (not path or URL) to a short blurb saying what that file holds and how it is stratified

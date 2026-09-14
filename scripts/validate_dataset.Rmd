@@ -93,7 +93,12 @@ classify_columns <- function(d) {
   )
   demo <- c(demo, extra_demo)
   measure_cols <- setdiff(nms, c(ID_COLS, demo))
-  measure_cols <- measure_cols[vapply(d[measure_cols], is.numeric, logical(1))]
+  # A numeric measure column that is 100% NA for every row written so far
+  # (e.g. a brand-new source whose only period is fully suppressed) round-trips
+  # through CSV as logical, since there is no non-NA value left to type it by.
+  # Treat those the same as numeric so they aren't silently dropped from roles.
+  is_measure_like <- function(x) is.numeric(x) || (is.logical(x) && all(is.na(x)))
+  measure_cols <- measure_cols[vapply(d[measure_cols], is_measure_like, logical(1))]
   bounds <- grep(BOUND_RE, measure_cols, value = TRUE)
   flags  <- grep(FLAG_RE,  measure_cols, value = TRUE)
   values <- setdiff(measure_cols, c(bounds, flags))

@@ -34,7 +34,16 @@ for (f in standard_files) {
   })
 }
 
-# Download measure_info.json
+# Download measure_info.json, preserving the local `_catalog` block (drives
+# the website data-sources index) across re-downloads: the upstream file
+# doesn't carry it, so overwriting outright would erase it on every ingest run.
+local_catalog <- NULL
+if (file.exists("measure_info.json")) {
+  local_catalog <- tryCatch({
+    jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)[["_catalog"]]
+  }, error = function(e) NULL)
+}
+
 tryCatch({
   download.file(
     paste0(base_url, "/measure_info.json"),
@@ -42,6 +51,11 @@ tryCatch({
     mode = "wb",
     quiet = TRUE
   )
+  if (!is.null(local_catalog)) {
+    downloaded <- jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)
+    downloaded[["_catalog"]] <- local_catalog
+    jsonlite::write_json(downloaded, "measure_info.json", auto_unbox = TRUE, pretty = TRUE)
+  }
 }, error = function(e) {
   message("Warning: failed to download measure_info.json: ", e$message)
 })
