@@ -1,7 +1,7 @@
 {
   "description": "Index of PopHIVE/Ingest standardized data sources (excludes bundle_* directories).",
   "repository": "PopHIVE/Ingest",
-  "n_datasets": 49,
+  "n_datasets": 50,
   "datasets": [
     {
       "dataset": "abcs",
@@ -63,16 +63,16 @@
       "data_url": "https://www.cdc.gov/mosquitoes/php/arbonet/index.html",
       "data_dictionary": "https://pophive.github.io/Ingest/#arbonet",
       "latest_date": "2025-12-31",
-      "search_terms": ["Vector borne"],
-      "bucket": ["Vector borne"],
-      "summary": "ArboNET is the national arboviral surveillance system managed by CDC together with state and territorial health departments.",
+      "search_terms": ["Vector borne", "west nile virus", "arbovirus", "mosquito-borne"],
+      "bucket": ["Infectious disease"],
+      "summary": "ArboNET tracks human disease cases, neuroinvasive illness, non-human activity, and blood donor screening results for six mosquito- and tick-borne viruses reported to CDC by state and local health departments.",
       "files": [
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "County-level virus case and activity counts",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/arbonet/standard/data_county.csv.gz"
         },
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "State-level virus case and activity counts",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/arbonet/standard/data_state.csv.gz"
         }
       ]
@@ -84,12 +84,12 @@
       "data_url": "https://data.hrsa.gov/topics/health-workforce/ahrf",
       "data_dictionary": "https://pophive.github.io/Ingest/#area-health-resource-file",
       "latest_date": "2025-12-31",
-      "search_terms": ["County access"],
-      "bucket": ["County access"],
-      "summary": "The Area Health Resource File (AHRF) is an annual county-level database produced by the Health Resources and Services Administration (HRSA).",
+      "search_terms": ["County access", "health workforce", "physician shortage", "rural health"],
+      "bucket": ["Social determinants of health", "Rural health"],
+      "summary": "The AHRF compiles county-level measures of health workforce supply, hospital and facility counts, shortage-area designations, Medicare utilization and spending, and demographic and environmental conditions from over 50 federal sources.",
       "files": [
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "State and county level AHRF data",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/area_health_resource_file/standard/data.csv.gz"
         }
       ]
@@ -118,16 +118,16 @@
       "data_url": "https://www.bls.gov/lau/",
       "data_dictionary": "https://pophive.github.io/Ingest/#bls-laus",
       "latest_date": "2025-12-31",
-      "search_terms": ["County access"],
-      "bucket": ["County access"],
-      "summary": "LAUS produces monthly and annual employment, unemployment, and labor force estimates for states, counties, metropolitan areas, and cities by place of residence.",
+      "search_terms": ["County access", "unemployment", "labor force", "jobs"],
+      "bucket": ["Social determinants of health", "Rural health"],
+      "summary": "Annual average county and state unemployment rate from the BLS's LAUS program, covering the labor force ages 16 and older.",
       "files": [
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "County-level annual unemployment rate",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bls_laus/standard/data_county.csv.gz"
         },
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "State-level annual unemployment rate",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bls_laus/standard/data_state.csv.gz"
         }
       ]
@@ -138,11 +138,15 @@
       "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/brfss/standard",
       "data_url": "https://www.cdc.gov/brfss/index.html",
       "data_dictionary": "https://pophive.github.io/Ingest/#brfss",
-      "latest_date": "2024-01-01",
+      "latest_date": "2025-01-01",
       "search_terms": ["Chronic diseases"],
       "bucket": ["Chronic disease"],
       "summary": "BRFSS is a survey that collects health-related risk behaviors, chronic health conditions, and use of preventive services.",
       "files": [
+        {
+          "dataset_stratification": "Aggregated BRFSS survey results",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/brfss/standard/data_survey.csv.gz"
+        },
         {
           "dataset_stratification": "BRFSS survey data",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/brfss/standard/data.csv.gz"
@@ -192,7 +196,7 @@
       "latest_date": "2024-12-31",
       "search_terms": ["Maternal health", "rural", "demographics"],
       "bucket": ["Maternal health", "Rural health", "Social determinants of health"],
-      "summary": "Demographic, social, economic, housing, and land use data at the ZIP code and county level. They are supplemented with data from the American Community Survey (ACS), a survey of households in the United States conducted by the Census Bureau.",
+      "summary": "Demographic, social, economic, housing, and land use data at the ZIP code and county level. Data are supplemented with data from the American Community Survey (ACS), a survey of households in the United States conducted by the Census Bureau.",
       "files": [
         {
           "dataset_stratification": "2020 Census data by county",
@@ -228,7 +232,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#cms-birth",
       "latest_date": "2026-07-28",
       "search_terms": ["Maternal health", "birthing friendly", "obstetric care", "hospital quality", "childbirth"],
-      "bucket": [],
+      "bucket": ["Maternal health"],
       "summary": "CMS designates hospitals as Birthing Friendly when they follow best practices to improve maternal health and reduce harm during childbirth. This tracks how many hospitals hold that designation nationally and by state.",
       "files": [
         {
@@ -236,7 +240,7 @@
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/cms_birth/standard/data_county.csv.gz"
         },
         {
-          "dataset_stratification": "Count of Birthing Friendly designated hospitals by state and nationally",
+          "dataset_stratification": "Count of Birthing Friendly designated hospitals by state",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/cms_birth/standard/data_state.csv.gz"
         }
       ]
@@ -249,7 +253,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#cms-mmd",
       "latest_date": "2023-01-01",
       "search_terms": ["Cancer screening", "Chronic diseases", "STI", "Youth wellbeing", "sti screening"],
-      "bucket": ["Prevention", "Cancer screening", "Chronic disease", "Injury and overdose", "Rural health"],
+      "bucket": ["Prevention", "Chronic disease", "Injury/Overdose", "Rural health"],
       "summary": "These data are generated from the Mapping Medicare Disparities (MMD) by Population Tool, which reports chronic disease prevalence, costs, hospitalization, and preventive care use for Medicare Fee-for-Service beneficiaries.",
       "files": [
         {
@@ -273,17 +277,34 @@
       "data_url": "https://www.countyhealthrankings.org",
       "data_dictionary": "https://pophive.github.io/Ingest/#county-health-rankings",
       "latest_date": "2025-12-31",
-      "search_terms": ["County access", "County chronic", "Maternal health", "STI"],
-      "bucket": ["County access", "County chronic", "Maternal health", "STI"],
-      "summary": "The County Health Rankings & Roadmaps (CHR&R) program, a collaboration between the Robert Wood Johnson Foundation and the University of Wisconsin Population Health Institute, ranks the health of nearly all counties in the nation.",
+      "search_terms": ["County access", "Chronic diseases", "Maternal health", "Youth wellbeing", "health rankings", "social determinants"],
+      "bucket": ["Social determinants of health", "Rural health", "Chronic disease", "Maternal health", "Youth well-being"],
+      "summary": "County Health Rankings & Roadmaps ranks the health of nearly all U.S. counties and states each year, covering factors like smoking, obesity, access to care, education, income, and housing that shape how long and how well people live.",
       "files": [
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "County-level health factors and rankings",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/county_health_rankings/standard/data_county.csv.gz"
         },
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "State-level health factors and rankings",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/county_health_rankings/standard/data_state.csv.gz"
+        }
+      ]
+    },
+    {
+      "dataset": "countybuddy",
+      "name": "County Buddy",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/countybuddy/standard",
+      "data_url": "https://github.com/ColinVu/CountyBuddy/blob/main/county_data.csv",
+      "data_dictionary": "https://pophive.github.io/Ingest/#countybuddy",
+      "latest_date": "2020-12-31",
+      "search_terms": ["Demographic", "incarceration", "prison", "military bases", "Native American", "university"],
+      "bucket": [],
+      "summary": "County Buddy flags U.S. counties with an unusually large prison, university, military, or Native American population, as a share of the total.",
+      "files": [
+        {
+          "dataset_stratification": "Outlier counties by prison, university, military, or Native American population",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/countybuddy/standard/data.csv.gz"
         }
       ]
     },
@@ -299,7 +320,7 @@
       "summary": "The Delphi Doctor Visits signal estimates the percentage of outpatient doctor visits with COVID-related diagnoses based on claims data from health system partners.",
       "files": [
         {
-          "dataset_stratification": "Outpatient doctor visits with COVID-related diagnoses.",
+          "dataset_stratification": "Outpatient doctor visits with COVID-related diagnoses",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_doctors_claims/standard/data.csv.gz"
         }
       ]
@@ -357,67 +378,67 @@
     },
     {
       "dataset": "epic_chronic",
-      "name": "Epic Cosmos",
+      "name": "Epic Chronic Disease",
       "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/epic_chronic/standard",
       "data_url": "https://cosmos.epic.com/",
       "data_dictionary": "https://pophive.github.io/Ingest/#epic-chronic",
       "latest_date": "2025-01-01",
-      "search_terms": ["Chronic diseases"],
-      "bucket": ["Chronic diseases"],
-      "summary": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems.",
+      "search_terms": ["Chronic diseases", "obesity", "diabetes", "BMI"],
+      "bucket": ["Chronic disease", "Youth well-being"],
+      "summary": "Obesity and diabetes rates extracted from Epic Cosmos, a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems.",
       "files": [
         {
-          "dataset_stratification": "Stratified by no time.",
+          "dataset_stratification": "Latest county obesity by age, aggregated over time",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_chronic/standard/county_no_time.csv.gz"
         },
         {
-          "dataset_stratification": "Stratified by year.",
+          "dataset_stratification": "County obesity and diabetes rates by age and year",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_chronic/standard/county_year.csv.gz"
         },
         {
-          "dataset_stratification": "Stratified by no time.",
+          "dataset_stratification": "Latest state obesity and diabetes by age, aggregated over time",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_chronic/standard/state_no_time.csv.gz"
         },
         {
-          "dataset_stratification": "Stratified by year.",
+          "dataset_stratification": "State obesity and diabetes rates by age and year",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_chronic/standard/state_year.csv.gz"
         }
       ]
     },
     {
       "dataset": "epic_concussions",
-      "name": "Epic Cosmos",
+      "name": "Epic Concussions",
       "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/epic_concussions/standard",
       "data_url": "https://cosmos.epic.com/",
       "data_dictionary": "https://pophive.github.io/Ingest/#epic-concussions",
       "latest_date": "2026-05-31",
-      "search_terms": [],
-      "bucket": [],
-      "summary": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems.",
+      "search_terms": ["Injury and overdose", "concussion", "traumatic brain injury", "emergency department"],
+      "bucket": ["Injury/Overdose"],
+      "summary": "Emergency department visits related to concussions by age and sex. Data come from Epic Cosmos, a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems.",
       "files": [
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "ED concussion encounters by age and sex",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_concussions/standard/data.csv.gz"
         }
       ]
     },
     {
       "dataset": "epic_diarrhea",
-      "name": "Epic Cosmos",
+      "name": "Epic Diarrhea",
       "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/epic_diarrhea/standard",
       "data_url": "https://cosmos.epic.com/",
       "data_dictionary": "https://pophive.github.io/Ingest/#epic-diarrhea",
       "latest_date": "2026-08-22",
-      "search_terms": ["Enteric diseases"],
-      "bucket": ["Enteric diseases"],
-      "summary": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems.",
+      "search_terms": ["Enteric diseases", "diarrhea", "vomiting", "cyclospora"],
+      "bucket": ["Infectious disease"],
+      "summary": "These data track health care encounters and emergency room visits for diarrhea and vomiting and cyclospora testing rates. Data come from Epic Cosmos, a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems.",
       "files": [
         {
-          "dataset_stratification": "Stratified by weekly.",
+          "dataset_stratification": "Enterics related health care encounters counts by age",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_diarrhea/standard/data_weekly.csv.gz"
         },
         {
-          "dataset_stratification": "Stratified by weekly tests.",
+          "dataset_stratification": "State-level cyclospora testing counts",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_diarrhea/standard/weekly_tests.csv.gz"
         }
       ]
@@ -441,50 +462,50 @@
     },
     {
       "dataset": "epic_injury",
-      "name": "Epic Cosmos",
+      "name": "Epic Injury, Overdose, and Heat Illness",
       "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/epic_injury/standard",
       "data_url": "https://cosmos.epic.com/",
       "data_dictionary": "https://pophive.github.io/Ingest/#epic-injury",
       "latest_date": "2025-09-01",
-      "search_terms": [],
-      "bucket": [],
-      "summary": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems.",
+      "search_terms": ["Injury and overdose", "firearm", "opioid overdose", "heat-related illness"],
+      "bucket": ["Injury/Overdose", "Youth well-being"],
+      "summary": "Firearm injuries, opioid overdoses, and heat-related illness rates from Epic Cosmos, a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems.",
       "files": [
         {
-          "dataset_stratification": "Stratified by heat year.",
+          "dataset_stratification": "Yearly county-level heat-related ED visit counts and rates",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_injury/standard/heat_year_county.csv.gz"
         },
         {
-          "dataset_stratification": "Stratified by monthly injury.",
+          "dataset_stratification": "Monthly firearm, opioid, and heat ED visits by age",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_injury/standard/monthly_injury.csv.gz"
         },
         {
-          "dataset_stratification": "Stratified by yearly injury.",
+          "dataset_stratification": "Yearly firearm, opioid, and heat ED visits by age",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_injury/standard/yearly_injury.csv.gz"
         }
       ]
     },
     {
       "dataset": "epic_resp_infections",
-      "name": "Epic Cosmos",
+      "name": "Epic Respiratory Infections",
       "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/epic_resp_infections/standard",
       "data_url": "https://cosmos.epic.com/",
       "data_dictionary": "https://pophive.github.io/Ingest/#epic-resp-infections",
       "latest_date": "2026-08-22",
-      "search_terms": ["Respiratory"],
-      "bucket": ["Respiratory"],
-      "summary": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems.",
+      "search_terms": ["Respiratory", "rsv", "flu", "covid", "strep throat"],
+      "bucket": ["Infectious disease"],
+      "summary": "Healthcare visits for RSV, flu, and COVID-19, RSV test positivity, and strep throat. Data come from Epic Cosmos, a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems.",
       "files": [
         {
-          "dataset_stratification": "Stratified by monthly tests.",
+          "dataset_stratification": "Monthly RSV test positivity among pneumonia admissions",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_resp_infections/standard/monthly_tests.csv.gz"
         },
         {
-          "dataset_stratification": "Stratified by quarterly gas.",
+          "dataset_stratification": "Quarterly strep throat encounters and patient counts by age",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_resp_infections/standard/quarterly_gas.csv.gz"
         },
         {
-          "dataset_stratification": "Stratified by weekly.",
+          "dataset_stratification": "Weekly RSV, flu, and COVID-19 ED encounters by age",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_resp_infections/standard/weekly.csv.gz"
         }
       ]
@@ -497,7 +518,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#gtrends",
       "latest_date": "2026-09-05",
       "search_terms": ["Injury and overdose", "Respiratory"],
-      "bucket": ["Injury and overdose", "Infectious disease"],
+      "bucket": ["Injury/Overdose", "Infectious disease"],
       "summary": "Weekly Google search-volume trends on RSV, firearm, overdose, and naloxone related terms.",
       "files": [
         {
@@ -525,16 +546,16 @@
       "data_url": "https://www.huduser.gov/portal/datasets/cp.html",
       "data_dictionary": "https://pophive.github.io/Ingest/#hud-chas",
       "latest_date": "2022-12-31",
-      "search_terms": ["County access"],
-      "bucket": ["County access"],
-      "summary": "CHAS data is a custom tabulation of American Community Survey data produced for HUD, providing detailed cross-tabulations of housing problems (cost burden, overcrowding, and facilities adequacy) by income, tenure, and race, at multiple geographic levels including county.",
+      "search_terms": ["County access", "housing", "housing costs", "housing problems"],
+      "bucket": ["Social determinants of health", "Rural health"],
+      "summary": "HUD's Comprehensive Housing Affordability Strategy (CHAS) data measures the share of households with severe housing problems, such as overcrowding, high cost burden, or inadequate plumbing, at the state and county level.",
       "files": [
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "County-level severe housing problems rate",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/hud_chas/standard/data_county.csv.gz"
         },
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "State-level severe housing problems rate",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/hud_chas/standard/data_state.csv.gz"
         }
       ]
@@ -623,7 +644,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#medicaid-quality",
       "latest_date": "2023-01-01",
       "search_terms": ["Cancer screening", "Injury and overdose", "Maternal health", "Preventative services", "STI", "Youth wellbeing", "mental health", "immunizations", "opioids", "diabetes", "chlamydia screening"],
-      "bucket": ["Prevention", "Cancer screening", "Injury and overdose", "Maternal health", "Youth well-being", "Rural health"],
+      "bucket": ["Prevention", "Injury/Overdose", "Maternal health", "Youth well-being", "Rural health"],
       "summary": "Health care access and quality measures for Medicaid and CHIP beneficiaries across behavioral, maternal, primary and preventive, dental, and chronic disease care. Reporting is voluntary; not all states report all measures each year.",
       "files": [
         {
@@ -640,7 +661,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#mmr-healthmap",
       "latest_date": "2024-12-31",
       "search_terms": ["Measles"],
-      "bucket": ["Infectious disease"],
+      "bucket": ["Immunization"],
       "summary": "Estimates of measles, mumps, and rubella (MMR) vaccination coverage among children in the United States.",
       "files": [
         {
@@ -698,7 +719,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#nccr",
       "latest_date": "2022-12-31",
       "search_terms": ["cancer"],
-      "bucket": ["Cancer screening"],
+      "bucket": ["Chronic disease"],
       "summary": "Cancer incidence by cancer classication among children, adolescents, and young adults (ages 0-39).",
       "files": [
         {
@@ -715,7 +736,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#nchs-mortality",
       "latest_date": "2026-03-01",
       "search_terms": ["Injury and overdose", "STI", "cause of death", "cancer", "gun", "firearm", "hiv"],
-      "bucket": ["Injury and overdose", "Infectious disease"],
+      "bucket": ["Injury/Overdose", "Infectious disease"],
       "summary": "Provisional mortality data from the CDC's Vital Statistics Rapid Release (VSRR) program by cause of death.",
       "files": [
         {
@@ -814,7 +835,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#nis",
       "latest_date": "2024-11-30",
       "search_terms": ["Childhood immunizations"],
-      "bucket": ["Immunizations"],
+      "bucket": ["Immunization"],
       "summary": "The National Immunization Surveys (NIS) monitors vaccination coverage among children 19-35 months, teens 13-17 years, flu vaccinations for children 6 months-17 years, and COVID-19 vaccination for children, teens, and adults.",
       "files": [
         {
@@ -928,7 +949,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#schoolvax-washpost",
       "latest_date": "2024-09-01",
       "search_terms": ["Childhood immunizations", "Measles"],
-      "bucket": ["Immunizations", "Infectious disease"],
+      "bucket": ["Immunization", "Infectious disease"],
       "summary": "School and county-level vaccination rate data compiled by the Washington Post from state health department records.",
       "files": [
         {
@@ -949,7 +970,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#schoolvaxview",
       "latest_date": "2025-09-01",
       "search_terms": ["Childhood immunizations"],
-      "bucket": ["Immunizations"],
+      "bucket": ["Immunization"],
       "summary": "SchoolVaxView monitors vaccination coverage among U.S. school-aged children. Data are collected annually by states, territories, and select local jurisdictions through school vaccination assessments, which review student vaccination records at kindergarten entry.",
       "files": [
         {
@@ -969,12 +990,12 @@
       "data_url": "https://www.ers.usda.gov/data-products/food-environment-atlas/",
       "data_dictionary": "https://pophive.github.io/Ingest/#usda-food-access",
       "latest_date": "2019-12-31",
-      "search_terms": ["County access"],
-      "bucket": ["County access"],
-      "summary": "The Food Environment Atlas assembles county-level statistics on food environment indicators, including store/restaurant availability, food and nutrition assistance programs, food insecurity, and food access.",
+      "search_terms": ["County access", "food access", "food desert", "grocery store distance"],
+      "bucket": ["Social determinants of health", "Rural health"],
+      "summary": "The USDA Food Environment Atlas reports the share of each county's population that is low-income and lives far from a grocery store.",
       "files": [
         {
-          "dataset_stratification": "Overall; no stratification beyond time and geography.",
+          "dataset_stratification": "County-level limited food access",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/usda_food_access/standard/data_county.csv.gz"
         }
       ]
@@ -1016,7 +1037,7 @@
       "summary": "The NWSS monitors SARS-CoV-2, Influenza A, and RSV levels in wastewater across the United States. Wastewater surveillance provides population-level data on pathogen circulation regardless of whether individuals seek healthcare or testing.",
       "files": [
         {
-          "dataset_stratification": "NWSS data",
+          "dataset_stratification": "Wastewater detection by state",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/wastewater/standard/data.csv.gz"
         }
       ]
@@ -1033,7 +1054,7 @@
       "summary": "The NWSS was expanded in 2025 to track measles virus RNA in wastewater samples from participating wastewater treatment facilities across the United States. Wastewater surveillance detects viral shedding in a community regardless of healthcare-seeking behavior.",
       "files": [
         {
-          "dataset_stratification": "Measles wastewater by county",
+          "dataset_stratification": "Measles wastewater detection by county",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/wastewater_measles/standard/data_county.csv.gz"
         },
         {
@@ -1050,7 +1071,7 @@
       "data_dictionary": "https://pophive.github.io/Ingest/#wisqars",
       "latest_date": "2024-01-01",
       "search_terms": ["cause of death", "overdose", "gun", "firearm"],
-      "bucket": ["Injury and overdose", "Youth well-being"],
+      "bucket": ["Injury/Overdose", "Youth well-being"],
       "summary": "WISQARS provides data on fatal and nonfatal injury, violent death, and cost of injury data.",
       "files": [
         {
@@ -1066,20 +1087,20 @@
       "data_url": "https://yrbs-explorer.services.cdc.gov/",
       "data_dictionary": "https://pophive.github.io/Ingest/#yrbss",
       "latest_date": "2023-12-31",
-      "search_terms": ["Youth wellbeing", "STI", "sexual behavior", "condom use", "hiv testing", "suicide", "vaping", "bullying"],
-      "bucket": [],
-      "summary": "The YRBSS surveys high school students every two years about behaviors that affect their health: injury and violence, tobacco, alcohol and drugs, diet, physical activity, sexual behavior, sleep, and mental health.",
+      "search_terms": ["Youth wellbeing", "STI", "risk behaviors", "substance use", "mental health", "sexual behavior", "condom use", "hiv testing"],
+      "bucket": ["Youth well-being"],
+      "summary": "YRBSS tracks health-risk behaviors among U.S. high school students, including seatbelt use and drinking and driving, bullying and violence, suicidal thoughts, tobacco/alcohol/drug use, sexual behavior and HIV/STD testing, nutrition, physical activity, sleep, and housing instability.",
       "files": [
         {
-          "dataset_stratification": "Student risk behaviors by grade and race/ethnicity",
+          "dataset_stratification": "YRBSS by age and race/ethnicity",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/yrbss/standard/data_age_ethnicity.csv.gz"
         },
         {
-          "dataset_stratification": "Student risk behaviors by grade and sex",
+          "dataset_stratification": "YRBSS by age and sex",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/yrbss/standard/data_age_sex.csv.gz"
         },
         {
-          "dataset_stratification": "Student risk behaviors by grade (as modal age)",
+          "dataset_stratification": "YRBSS by age",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/yrbss/standard/data_age.csv.gz"
         }
       ]
