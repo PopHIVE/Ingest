@@ -613,21 +613,17 @@ measure_info[["_sources"]] <- list(
     restrictions     = "Public domain. Suggested attribution: Centers for Disease Control and Prevention (CDC). Youth Risk Behavior Surveillance System (YRBSS)."
   )
 )
-measure_info[["_catalog"]] <- list(
-  summary      = paste0(
-    "The YRBSS surveys high school students every two years about behaviors ",
-    "that affect their health: injury and violence, tobacco, alcohol and drugs, ",
-    "diet, physical activity, sexual behavior, sleep, and mental health."
-  ),
-  search_terms = c("Youth wellbeing", "STI", "sexual behavior", "condom use",
-                   "hiv testing", "suicide", "vaping", "bullying"),
-  bucket       = list(),
-  files        = list(
-    "data_age.csv.gz"           = "Student risk behaviors by grade (as modal age)",
-    "data_age_sex.csv.gz"       = "Student risk behaviors by grade and sex",
-    "data_age_ethnicity.csv.gz" = "Student risk behaviors by grade and race/ethnicity"
+# Preserve the local `_catalog` block (drives the website data-sources index)
+# across regeneration: measure_info.json is rebuilt from scratch above on
+# every run, so a hand-written _catalog would otherwise be erased each time.
+measure_info[["_catalog"]] <- if (file.exists("measure_info.json")) {
+  tryCatch(
+    jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)[["_catalog"]],
+    error = function(e) NULL
   )
-)
+} else {
+  NULL
+}
 
 jsonlite::write_json(measure_info, "measure_info.json",
                      pretty = TRUE, auto_unbox = TRUE, null = "null")

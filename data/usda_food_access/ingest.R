@@ -37,7 +37,25 @@ for (f in standard_files) {
   if (!is.null(hash)) current_hashes[[f]] <- hash
 }
 
+# Preserve the local `_catalog` block (drives the website data-sources index)
+# across re-downloads: the upstream measure_info.json doesn't carry it, so
+# overwriting the file outright would erase it on every ingest run.
+local_catalog <- NULL
+if (file.exists("measure_info.json")) {
+  local_catalog <- tryCatch({
+    jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)[["_catalog"]]
+  }, error = function(e) NULL)
+}
+
 fetch(paste0(base_url, "/measure_info.json"), "measure_info.json")
+
+if (!is.null(local_catalog) && file.exists("measure_info.json")) {
+  downloaded <- tryCatch(jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE), error = function(e) NULL)
+  if (!is.null(downloaded)) {
+    downloaded[["_catalog"]] <- local_catalog
+    jsonlite::write_json(downloaded, "measure_info.json", auto_unbox = TRUE, pretty = TRUE)
+  }
+}
 
 if (!identical(process$raw_state, current_hashes)) {
   process$raw_state <- current_hashes
