@@ -53,6 +53,16 @@ tryCatch({
   message("Warning: failed to download quarterly_gas.csv.gz: ", e$message)
 })
 
+# Preserve the local `_catalog` block (drives the website data-sources index)
+# across re-downloads: neither upstream measure_info.json carries it, so
+# overwriting the file outright would erase it on every ingest run.
+local_catalog <- NULL
+if (file.exists("measure_info.json")) {
+  local_catalog <- tryCatch({
+    jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)[["_catalog"]]
+  }, error = function(e) NULL)
+}
+
 # Download and merge measure_info.json from both sources
 tryCatch({
   tmp_resp <- tempfile(fileext = ".json")
@@ -67,6 +77,10 @@ tryCatch({
   new_keys <- setdiff(names(mi_gas), c(names(mi_resp), "_sources"))
   for (k in new_keys) {
     mi_resp[[k]] <- mi_gas[[k]]
+  }
+
+  if (!is.null(local_catalog)) {
+    mi_resp[["_catalog"]] <- local_catalog
   }
 
   jsonlite::write_json(mi_resp, "measure_info.json", auto_unbox = TRUE, pretty = TRUE)
