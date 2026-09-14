@@ -1,15 +1,23 @@
 # yrbss
 
-This is a dcf data source project, initialized with `dcf::dcf_add_source`.
+CDC Youth Risk Behavior Surveillance System, pulled from the YRBS Explorer API
+(https://yrbs-explorer.services.cdc.gov/). National and state estimates for
+high school students, 2005 onward, every two years.
 
-You can use the `dcf` package to check the project:
+Questions covered: all of Physical Activity (C06) and Sexual Behaviors (C04),
+plus selected items from injury and violence, tobacco, alcohol and other
+drugs, diet, and other health topics. The full list is `measure_dict` in
+`ingest.R`.
 
-```R
-dcf_check()
-```
+Three wide files, one per stratification (sex, race/ethnicity, grade mapped to
+modal age). Strata are marginal, not crossed. Each measure has value, 95% CI
+bounds, and `_suppressed` / `_not_asked` flags.
 
-And process it:
+Not included: sexual identity, transgender status, and sex-of-contacts strata
+(dropped at download).
 
-```R
-dcf_process()
+Rebuild from the repo root:
+
+```r
+dcf::dcf_process("yrbss")
 ```
