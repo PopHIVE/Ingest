@@ -577,6 +577,18 @@ measure_info[["_sources"]] <- list(
   )
 )
 
+# Preserve the local `_catalog` block (drives the website data-sources index)
+# across regeneration: measure_info.json is rebuilt from scratch above on
+# every run, so a hand-written _catalog would otherwise be erased each time.
+measure_info[["_catalog"]] <- if (file.exists("measure_info.json")) {
+  tryCatch(
+    jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)[["_catalog"]],
+    error = function(e) NULL
+  )
+} else {
+  NULL
+}
+
 jsonlite::write_json(measure_info, "measure_info.json",
                      pretty = TRUE, auto_unbox = TRUE, null = "null")
 
