@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-15T10:50:01Z",
+  "generated": "2026-09-15T14:31:16Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -7589,6 +7589,856 @@
               "measure_type": "Flag",
               "unit": "",
               "levels": {}
+            }
+          ]
+        }
+      ]
+    },
+    "bundle_sti": {
+      "name": "bundle_sti",
+      "display_name": "Bundle: STI",
+      "dist_files": [
+        {
+          "filename": "sti_county.parquet",
+          "path": "data/bundle_sti/dist/sti_county.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_sti/dist/sti_county.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "5-digit county FIPS code. Connecticut uses planning-region codes (09110-09190) in County Health Rankings from 2023.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Year",
+              "description": "Year end (YYYY-12-31) of the annual observation.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "Source variable the row's value belongs to; names match the source standard file columns.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "chr_sexually_transmitted_infections": {
+                  "id": "bundle_sti/dist/sti_county.parquet|measure=chr_sexually_transmitted_infections",
+                  "short_name": "Sexually Transmitted Infections",
+                  "long_name": "Chlamydia Incidence Rate",
+                  "category": "chronic",
+                  "short_description": "Number of newly diagnosed chlamydia cases per 100,000 population.",
+                  "long_description": "Number of newly diagnosed chlamydia cases per 100,000 population, from the CDC National Center for HIV/AIDS, Viral Hepatitis, STD, and TB Prevention.",
+                  "measure_type": "Rate",
+                  "unit": "Per 100,000 population",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "chr"
+                    }
+                  ]
+                },
+                "chr_hiv_prevalence": {
+                  "id": "bundle_sti/dist/sti_county.parquet|measure=chr_hiv_prevalence",
+                  "short_name": "HIV Prevalence",
+                  "long_name": "HIV Prevalence Rate",
+                  "category": "chronic",
+                  "short_description": "People aged 13+ living with diagnosed HIV per 100,000 population.",
+                  "long_description": "Number of people aged 13 years and older living with a diagnosis of HIV infection per 100,000 population, from the CDC National Center for HIV/AIDS, Viral Hepatitis, STD, and TB Prevention.",
+                  "measure_type": "Rate",
+                  "unit": "Per 100,000 population",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "chr"
+                    }
+                  ]
+                },
+                "cms_scrn_prvnt_sti": {
+                  "id": "bundle_sti/dist/sti_county.parquet|measure=cms_scrn_prvnt_sti",
+                  "short_name": "STI screening, Medicare FFS",
+                  "long_name": "Sexually transmitted infection screening among Medicare Fee-for-Service beneficiaries",
+                  "category": "preventive",
+                  "short_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for sexually transmitted infection screening during the year.",
+                  "long_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for sexually transmitted infection screening during the year, from the CMS Mapping Medicare Disparities by Population tool (preventive services group). All ages combined; the source also reports this by age group, race/ethnicity, and sex. Medicare FFS is mostly people 65 and older, so this is not comparable with the Medicaid or NNDSS measures.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "cms_mmd"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value of the measure named in the measure column; units differ by measure (rate per 100,000 or percent).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "Dataset the row comes from.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "County Health Rankings": {},
+                "CMS Medicare FFS": {}
+              }
+            }
+          ]
+        },
+        {
+          "filename": "sti_quarterly.parquet",
+          "path": "data/bundle_sti/dist/sti_quarterly.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_sti/dist/sti_quarterly.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "2-digit state FIPS code; \"00\" is national.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Quarter",
+              "description": "Last day of the calendar quarter.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "Source variable the row's value belongs to; names match the source standard file columns.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "rate_hiv_disease": {
+                  "id": "bundle_sti/dist/sti_quarterly.parquet|measure=rate_hiv_disease",
+                  "short_name": "HIV mortality rate",
+                  "long_name": "Age-adjusted HIV disease mortality rate",
+                  "short_description": "Quarterly age-adjusted death rate from HIV disease per 100,000 population.",
+                  "long_description": "Provisional quarterly age-adjusted mortality rate for HIV disease, expressed per 100,000 population. Based on 3-month period estimates. National and state level.",
+                  "measure_type": "Rate",
+                  "unit": "Deaths per 100,000",
+                  "time_resolution": "Quarter",
+                  "sources": [
+                    {
+                      "id": "nchs_vsrr_quarterly"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Age-adjusted deaths per 100,000 population for the measure named in the measure column.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "Dataset the row comes from.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "NCHS VSRR": {}
+              }
+            }
+          ]
+        },
+        {
+          "filename": "sti_state.parquet",
+          "path": "data/bundle_sti/dist/sti_state.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_sti/dist/sti_state.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "2-digit state or territory FIPS code; \"00\" is national.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Year",
+              "description": "Year end (YYYY-12-31) of the annual observation.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "Source variable the row's value belongs to; names match the source standard file columns.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "chr_sexually_transmitted_infections": {
+                  "id": "bundle_sti/dist/sti_state.parquet|measure=chr_sexually_transmitted_infections",
+                  "short_name": "Sexually Transmitted Infections",
+                  "long_name": "Chlamydia Incidence Rate",
+                  "category": "chronic",
+                  "short_description": "Number of newly diagnosed chlamydia cases per 100,000 population.",
+                  "long_description": "Number of newly diagnosed chlamydia cases per 100,000 population, from the CDC National Center for HIV/AIDS, Viral Hepatitis, STD, and TB Prevention.",
+                  "measure_type": "Rate",
+                  "unit": "Per 100,000 population",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "chr"
+                    }
+                  ]
+                },
+                "chr_hiv_prevalence": {
+                  "id": "bundle_sti/dist/sti_state.parquet|measure=chr_hiv_prevalence",
+                  "short_name": "HIV Prevalence",
+                  "long_name": "HIV Prevalence Rate",
+                  "category": "chronic",
+                  "short_description": "People aged 13+ living with diagnosed HIV per 100,000 population.",
+                  "long_description": "Number of people aged 13 years and older living with a diagnosis of HIV infection per 100,000 population, from the CDC National Center for HIV/AIDS, Viral Hepatitis, STD, and TB Prevention.",
+                  "measure_type": "Rate",
+                  "unit": "Per 100,000 population",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "chr"
+                    }
+                  ]
+                },
+                "medicaid_chl_ch_rate": {
+                  "id": "bundle_sti/dist/sti_state.parquet|measure=medicaid_chl_ch_rate",
+                  "short_name": "CHL: Chlamydia Screening in Women (Child/Adolescent)",
+                  "long_name": "Chlamydia Screening in Women – Adolescents",
+                  "category": "preventive",
+                  "short_description": "Percent of sexually active adolescent females screened for chlamydia.",
+                  "long_description": "Child Core Set measure (CHL). Percentage of sexually active adolescent females aged 16–20 who were screened for chlamydia during the measurement year. Associated columns: medicaid_chl_ch_rate, medicaid_chl_ch_pct_25, medicaid_chl_ch_pct_75.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "medicaid_quality_cms"
+                    }
+                  ]
+                },
+                "medicaid_chl_ch_pct_25": {
+                  "id": "bundle_sti/dist/sti_state.parquet|measure=medicaid_chl_ch_pct_25",
+                  "short_name": "Chlamydia screening (Adolescent), 25th percentile",
+                  "long_name": "Chlamydia Screening in Women, Adolescent: 25th percentile of reporting states",
+                  "category": "preventive",
+                  "short_description": "25th percentile, across reporting states, of the percent of sexually active women aged 16-20 enrolled in Medicaid who were screened for chlamydia.",
+                  "long_description": "National benchmark for the Medicaid Core Set chlamydia screening measure (CHL), adolescent population, ages 16-20: the 25th percentile of state rates among states reporting that year. The same value is repeated on every state row for the year so it can be drawn as a reference line against the state rate.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "medicaid_quality_cms"
+                    }
+                  ]
+                },
+                "medicaid_chl_ch_pct_75": {
+                  "id": "bundle_sti/dist/sti_state.parquet|measure=medicaid_chl_ch_pct_75",
+                  "short_name": "Chlamydia screening (Adolescent), 75th percentile",
+                  "long_name": "Chlamydia Screening in Women, Adolescent: 75th percentile of reporting states",
+                  "category": "preventive",
+                  "short_description": "75th percentile, across reporting states, of the percent of sexually active women aged 16-20 enrolled in Medicaid who were screened for chlamydia.",
+                  "long_description": "National benchmark for the Medicaid Core Set chlamydia screening measure (CHL), adolescent population, ages 16-20: the 75th percentile of state rates among states reporting that year. The same value is repeated on every state row for the year so it can be drawn as a reference line against the state rate.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "medicaid_quality_cms"
+                    }
+                  ]
+                },
+                "medicaid_chl_ad_rate": {
+                  "id": "bundle_sti/dist/sti_state.parquet|measure=medicaid_chl_ad_rate",
+                  "short_name": "CHL: Chlamydia Screening in Women (Adult)",
+                  "long_name": "Chlamydia Screening in Women – Adults",
+                  "category": "preventive",
+                  "short_description": "Percent of sexually active adult women screened for chlamydia.",
+                  "long_description": "Adult Core Set measure (CHL). Percentage of sexually active women aged 21–24 who were screened for chlamydia during the measurement year. Associated columns: medicaid_chl_ad_rate, medicaid_chl_ad_pct_25, medicaid_chl_ad_pct_75.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "medicaid_quality_cms"
+                    }
+                  ]
+                },
+                "medicaid_chl_ad_pct_25": {
+                  "id": "bundle_sti/dist/sti_state.parquet|measure=medicaid_chl_ad_pct_25",
+                  "short_name": "Chlamydia screening (Adult), 25th percentile",
+                  "long_name": "Chlamydia Screening in Women, Adult: 25th percentile of reporting states",
+                  "category": "preventive",
+                  "short_description": "25th percentile, across reporting states, of the percent of sexually active women aged 21-24 enrolled in Medicaid who were screened for chlamydia.",
+                  "long_description": "National benchmark for the Medicaid Core Set chlamydia screening measure (CHL), adult population, ages 21-24: the 25th percentile of state rates among states reporting that year. The same value is repeated on every state row for the year so it can be drawn as a reference line against the state rate.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "medicaid_quality_cms"
+                    }
+                  ]
+                },
+                "medicaid_chl_ad_pct_75": {
+                  "id": "bundle_sti/dist/sti_state.parquet|measure=medicaid_chl_ad_pct_75",
+                  "short_name": "Chlamydia screening (Adult), 75th percentile",
+                  "long_name": "Chlamydia Screening in Women, Adult: 75th percentile of reporting states",
+                  "category": "preventive",
+                  "short_description": "75th percentile, across reporting states, of the percent of sexually active women aged 21-24 enrolled in Medicaid who were screened for chlamydia.",
+                  "long_description": "National benchmark for the Medicaid Core Set chlamydia screening measure (CHL), adult population, ages 21-24: the 75th percentile of state rates among states reporting that year. The same value is repeated on every state row for the year so it can be drawn as a reference line against the state rate.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "medicaid_quality_cms"
+                    }
+                  ]
+                },
+                "cms_scrn_prvnt_sti": {
+                  "id": "bundle_sti/dist/sti_state.parquet|measure=cms_scrn_prvnt_sti",
+                  "short_name": "STI screening, Medicare FFS",
+                  "long_name": "Sexually transmitted infection screening among Medicare Fee-for-Service beneficiaries",
+                  "category": "preventive",
+                  "short_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for sexually transmitted infection screening during the year.",
+                  "long_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for sexually transmitted infection screening during the year, from the CMS Mapping Medicare Disparities by Population tool (preventive services group). All ages combined; the source also reports this by age group, race/ethnicity, and sex. Medicare FFS is mostly people 65 and older, so this is not comparable with the Medicaid or NNDSS measures.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "cms_mmd"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Value of the measure named in the measure column; units differ by measure (rate per 100,000 or percent).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "Dataset the row comes from.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "County Health Rankings": {},
+                "CMS Medicaid Core Set": {},
+                "CMS Medicare FFS": {}
+              }
+            }
+          ]
+        },
+        {
+          "filename": "sti_weekly.parquet",
+          "path": "data/bundle_sti/dist/sti_weekly.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_sti/dist/sti_weekly.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "2-digit state or territory FIPS code; \"00\" is the national total.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Week",
+              "description": "MMWR week-ending date (Saturday).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "Source variable the row's value belongs to; names match the source standard file columns.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "chlamydia_trachomatis_infection": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=chlamydia_trachomatis_infection",
+                  "short_name": "Chlamydia cases",
+                  "long_name": "Weekly reported cases of Chlamydia trachomatis infection",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of Chlamydia trachomatis infection cases reported to NNDSS.",
+                  "long_description": "Weekly number of Chlamydia trachomatis infection cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "gonorrhea": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=gonorrhea",
+                  "short_name": "Gonorrhea cases",
+                  "long_name": "Weekly reported cases of gonorrhea",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of gonorrhea cases reported to NNDSS.",
+                  "long_description": "Weekly number of gonorrhea cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "syphilis_primary_and_secondary": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=syphilis_primary_and_secondary",
+                  "short_name": "Syphilis P&S cases",
+                  "long_name": "Weekly reported cases of primary and secondary syphilis",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of primary and secondary syphilis cases reported to NNDSS.",
+                  "long_description": "Weekly number of primary and secondary syphilis cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "syphilis_congenital": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=syphilis_congenital",
+                  "short_name": "Congenital syphilis cases",
+                  "long_name": "Weekly reported cases of congenital syphilis",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of congenital syphilis cases reported to NNDSS.",
+                  "long_description": "Weekly number of congenital syphilis cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "chancroid": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=chancroid",
+                  "short_name": "Chancroid cases",
+                  "long_name": "Weekly reported cases of chancroid",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of chancroid cases reported to NNDSS.",
+                  "long_description": "Weekly number of chancroid cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "mpox": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=mpox",
+                  "short_name": "Mpox cases",
+                  "long_name": "Weekly reported cases of mpox",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of mpox cases reported to NNDSS.",
+                  "long_description": "Weekly number of mpox cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported to NNDSS from 2024.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_b_acute": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_b_acute",
+                  "short_name": "Hep B acute cases",
+                  "long_name": "Weekly reported cases of acute hepatitis B",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of acute hepatitis B cases reported to NNDSS.",
+                  "long_description": "Weekly number of acute hepatitis B cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported under this label through 2023; from 2024 NNDSS splits it into confirmed and probable columns.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_b_acute_confirmed": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_b_acute_confirmed",
+                  "short_name": "Hep B acute, confirmed",
+                  "long_name": "Weekly reported cases of confirmed acute hepatitis B",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of confirmed acute hepatitis B cases reported to NNDSS.",
+                  "long_description": "Weekly number of confirmed acute hepatitis B cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported from 2024; earlier years use the single unsplit column.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_b_acute_probable": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_b_acute_probable",
+                  "short_name": "Hep B acute, probable",
+                  "long_name": "Weekly reported cases of probable acute hepatitis B",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of probable acute hepatitis B cases reported to NNDSS.",
+                  "long_description": "Weekly number of probable acute hepatitis B cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported from 2024; earlier years use the single unsplit column.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_b_chronic_confirmed": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_b_chronic_confirmed",
+                  "short_name": "Hep B chronic, confirmed",
+                  "long_name": "Weekly reported cases of confirmed chronic hepatitis B",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of confirmed chronic hepatitis B cases reported to NNDSS.",
+                  "long_description": "Weekly number of confirmed chronic hepatitis B cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported from 2024.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_b_chronic_probable": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_b_chronic_probable",
+                  "short_name": "Hep B chronic, probable",
+                  "long_name": "Weekly reported cases of probable chronic hepatitis B",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of probable chronic hepatitis B cases reported to NNDSS.",
+                  "long_description": "Weekly number of probable chronic hepatitis B cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported from 2024.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_b_perinatal_infection": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_b_perinatal_infection",
+                  "short_name": "Hep B perinatal cases",
+                  "long_name": "Weekly reported cases of perinatal hepatitis B infection",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of perinatal hepatitis B infection cases reported to NNDSS.",
+                  "long_description": "Weekly number of perinatal hepatitis B infection cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported under this label through 2023; from late 2023 NNDSS uses the confirmed column.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_b_perinatal_confirmed": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_b_perinatal_confirmed",
+                  "short_name": "Hep B perinatal, confirmed",
+                  "long_name": "Weekly reported cases of confirmed perinatal hepatitis B infection",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of confirmed perinatal hepatitis B infection cases reported to NNDSS.",
+                  "long_description": "Weekly number of confirmed perinatal hepatitis B infection cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported from late 2023.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_c_acute_confirmed": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_c_acute_confirmed",
+                  "short_name": "Hep C acute, confirmed",
+                  "long_name": "Weekly reported cases of confirmed acute hepatitis C",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of confirmed acute hepatitis C cases reported to NNDSS.",
+                  "long_description": "Weekly number of confirmed acute hepatitis C cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_c_acute_probable": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_c_acute_probable",
+                  "short_name": "Hep C acute, probable",
+                  "long_name": "Weekly reported cases of probable acute hepatitis C",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of probable acute hepatitis C cases reported to NNDSS.",
+                  "long_description": "Weekly number of probable acute hepatitis C cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_c_chronic_confirmed": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_c_chronic_confirmed",
+                  "short_name": "Hep C chronic, confirmed",
+                  "long_name": "Weekly reported cases of confirmed chronic hepatitis C",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of confirmed chronic hepatitis C cases reported to NNDSS.",
+                  "long_description": "Weekly number of confirmed chronic hepatitis C cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported from 2024.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_c_chronic_probable": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_c_chronic_probable",
+                  "short_name": "Hep C chronic, probable",
+                  "long_name": "Weekly reported cases of probable chronic hepatitis C",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of probable chronic hepatitis C cases reported to NNDSS.",
+                  "long_description": "Weekly number of probable chronic hepatitis C cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported from 2024.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_c_perinatal_infection": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_c_perinatal_infection",
+                  "short_name": "Hep C perinatal cases",
+                  "long_name": "Weekly reported cases of perinatal hepatitis C infection",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of perinatal hepatitis C infection cases reported to NNDSS.",
+                  "long_description": "Weekly number of perinatal hepatitis C infection cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported under this label through 2023; from late 2023 NNDSS uses the confirmed column.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                },
+                "hepatitis_c_perinatal_confirmed": {
+                  "id": "bundle_sti/dist/sti_weekly.parquet|measure=hepatitis_c_perinatal_confirmed",
+                  "short_name": "Hep C perinatal, confirmed",
+                  "long_name": "Weekly reported cases of confirmed perinatal hepatitis C infection",
+                  "category": "infectious_disease",
+                  "short_description": "Weekly number of confirmed perinatal hepatitis C infection cases reported to NNDSS.",
+                  "long_description": "Weekly number of confirmed perinatal hepatitis C infection cases reported through the National Notifiable Diseases Surveillance System, national and state/territory. Derived by differencing the source's cumulative year-to-date counts between consecutive MMWR weeks, so negative values reflect downward revisions by CDC. Reported from late 2023.",
+                  "measure_type": "Count",
+                  "unit": "Cases",
+                  "time_resolution": "Week",
+                  "sources": [
+                    {
+                      "id": "nnds"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Weekly case count for the measure named in the measure column, derived by differencing NNDSS cumulative year-to-date counts. Negative values are downward revisions by CDC.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "Dataset the row comes from.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "CDC NNDSS": {}
+              }
+            }
+          ]
+        },
+        {
+          "filename": "sti_youth.parquet",
+          "path": "data/bundle_sti/dist/sti_youth.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_sti/dist/sti_youth.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "2-digit state FIPS code; \"00\" is national. States that do not share data with CDC are absent; New York excludes New York City.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Survey year",
+              "description": "Survey year, stored as YYYY-12-31. YRBSS runs in odd years.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Modal age for grade (14 = 9th grade through 17 = 12th) or \"Overall\". Age rows carry sex and race_ethnicity = \"Overall\".",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "\"Female\", \"Male\", or \"Overall\".",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/ethnicity",
+              "description": "\"AI/AN\", \"Asian\", \"Black\", \"Hispanic\", \"Multiple\", \"NH/PI\", \"White\", or \"Overall\".",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "Source variable the row's value belongs to; names match the source standard file columns.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "pct_never_tested_hiv": {
+                  "id": "bundle_sti/dist/sti_youth.parquet|measure=pct_never_tested_hiv",
+                  "short_name": "Never tested for HIV",
+                  "long_name": "YRBSS: Were never tested for human immunodeficiency virus (HIV) (Sexual Behaviors)",
+                  "category": "sexual_health",
+                  "short_description": "Percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+                  "long_description": "Percent of high school students who were never tested for human immunodeficiency virus (HIV), from the CDC Youth Risk Behavior Surveillance System (YRBSS question H81). Weighted estimates for high school students, overall and stratified separately by sex, race/ethnicity, and grade (grade mapped to modal age 14-17). Estimates CDC suppressed are NA with suppressed_flag = 1; jurisdiction-years where the question was not asked are omitted. New York excludes New York City.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "yrbss"
+                    }
+                  ]
+                },
+                "pct_not_tested_std": {
+                  "id": "bundle_sti/dist/sti_youth.parquet|measure=pct_not_tested_std",
+                  "short_name": "Not tested for an STD",
+                  "long_name": "YRBSS: Were not tested for a sexually transmitted disease (STD) other than HIV (Sexual Behaviors)",
+                  "category": "sexual_health",
+                  "short_description": "Percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+                  "long_description": "Percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV, from the CDC Youth Risk Behavior Surveillance System (YRBSS question H82). Weighted estimates for high school students, overall and stratified separately by sex, race/ethnicity, and grade (grade mapped to modal age 14-17). Estimates CDC suppressed are NA with suppressed_flag = 1; jurisdiction-years where the question was not asked are omitted. New York excludes New York City.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "yrbss"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Weighted percent of high school students for the measure named in the measure column. NA when CDC suppressed the estimate (see suppressed_flag).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "value_lcl",
+              "short_name": "Lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for value.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "value_ucl",
+              "short_name": "Upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for value.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed flag",
+              "description": "1 if CDC suppressed the estimate (value and CI are NA), 0 otherwise.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Data source",
+              "description": "Dataset the row comes from.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "CDC YRBSS": {}
+              }
             }
           ]
         }
@@ -29531,6 +30381,461 @@
               "unit": "0/1 flag"
             },
             {
+              "name": "pct_ever_sex",
+              "short_name": "Ever had sexual intercourse",
+              "description": "Percent of high school students who ever had sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_ever_sex_lcl",
+              "short_name": "Ever had sexual intercourse - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who ever had sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_ever_sex_ucl",
+              "short_name": "Ever had sexual intercourse - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who ever had sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_ever_sex_suppressed",
+              "short_name": "Ever had sexual intercourse - suppressed flag",
+              "description": "1 if the estimate for 'pct_ever_sex' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_ever_sex_not_asked",
+              "short_name": "Ever had sexual intercourse - not-asked flag",
+              "description": "1 if 'pct_ever_sex' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_sex_before_13",
+              "short_name": "Had sex before age 13",
+              "description": "Percent of high school students who had sexual intercourse for the first time before age 13 years.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_sex_before_13_lcl",
+              "short_name": "Had sex before age 13 - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who had sexual intercourse for the first time before age 13 years.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_sex_before_13_ucl",
+              "short_name": "Had sex before age 13 - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who had sexual intercourse for the first time before age 13 years.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_sex_before_13_suppressed",
+              "short_name": "Had sex before age 13 - suppressed flag",
+              "description": "1 if the estimate for 'pct_sex_before_13' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_sex_before_13_not_asked",
+              "short_name": "Had sex before age 13 - not-asked flag",
+              "description": "1 if 'pct_sex_before_13' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_four_plus_partners",
+              "short_name": "Four or more sexual partners",
+              "description": "Percent of high school students who had sexual intercourse with four or more persons.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_four_plus_partners_lcl",
+              "short_name": "Four or more sexual partners - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who had sexual intercourse with four or more persons.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_four_plus_partners_ucl",
+              "short_name": "Four or more sexual partners - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who had sexual intercourse with four or more persons.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_four_plus_partners_suppressed",
+              "short_name": "Four or more sexual partners - suppressed flag",
+              "description": "1 if the estimate for 'pct_four_plus_partners' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_four_plus_partners_not_asked",
+              "short_name": "Four or more sexual partners - not-asked flag",
+              "description": "1 if 'pct_four_plus_partners' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_currently_sexually_active",
+              "short_name": "Currently sexually active",
+              "description": "Percent of high school students who were currently sexually active.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_currently_sexually_active_lcl",
+              "short_name": "Currently sexually active - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who were currently sexually active.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_currently_sexually_active_ucl",
+              "short_name": "Currently sexually active - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who were currently sexually active.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_currently_sexually_active_suppressed",
+              "short_name": "Currently sexually active - suppressed flag",
+              "description": "1 if the estimate for 'pct_currently_sexually_active' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_currently_sexually_active_not_asked",
+              "short_name": "Currently sexually active - not-asked flag",
+              "description": "1 if 'pct_currently_sexually_active' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex",
+              "short_name": "Alcohol or drugs before last sex",
+              "description": "Percent of high school students who drank alcohol or used drugs before last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_lcl",
+              "short_name": "Alcohol or drugs before last sex - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who drank alcohol or used drugs before last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_ucl",
+              "short_name": "Alcohol or drugs before last sex - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who drank alcohol or used drugs before last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_suppressed",
+              "short_name": "Alcohol or drugs before last sex - suppressed flag",
+              "description": "1 if the estimate for 'pct_alcohol_drugs_before_sex' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_not_asked",
+              "short_name": "Alcohol or drugs before last sex - not-asked flag",
+              "description": "1 if 'pct_alcohol_drugs_before_sex' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_condom_last_sex",
+              "short_name": "No condom at last sex",
+              "description": "Percent of high school students who did not use a condom during last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_condom_last_sex_lcl",
+              "short_name": "No condom at last sex - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use a condom during last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_condom_last_sex_ucl",
+              "short_name": "No condom at last sex - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use a condom during last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_condom_last_sex_suppressed",
+              "short_name": "No condom at last sex - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_condom_last_sex' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_condom_last_sex_not_asked",
+              "short_name": "No condom at last sex - not-asked flag",
+              "description": "1 if 'pct_no_condom_last_sex' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_birth_control_pills",
+              "short_name": "No birth control pills",
+              "description": "Percent of high school students who did not use birth control pills before last sexual intercourse with opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_birth_control_pills_lcl",
+              "short_name": "No birth control pills - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use birth control pills before last sexual intercourse with opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_birth_control_pills_ucl",
+              "short_name": "No birth control pills - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use birth control pills before last sexual intercourse with opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_birth_control_pills_suppressed",
+              "short_name": "No birth control pills - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_birth_control_pills' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_birth_control_pills_not_asked",
+              "short_name": "No birth control pills - not-asked flag",
+              "description": "1 if 'pct_no_birth_control_pills' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_iud_implant",
+              "short_name": "No IUD or implant",
+              "description": "Percent of high school students who did not use an IUD or implant before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_iud_implant_lcl",
+              "short_name": "No IUD or implant - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use an IUD or implant before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_iud_implant_ucl",
+              "short_name": "No IUD or implant - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use an IUD or implant before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_iud_implant_suppressed",
+              "short_name": "No IUD or implant - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_iud_implant' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_iud_implant_not_asked",
+              "short_name": "No IUD or implant - not-asked flag",
+              "description": "1 if 'pct_no_iud_implant' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_hormonal_contraception",
+              "short_name": "No hormonal contraception",
+              "description": "Percent of high school students who did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_lcl",
+              "short_name": "No hormonal contraception - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_ucl",
+              "short_name": "No hormonal contraception - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_suppressed",
+              "short_name": "No hormonal contraception - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_hormonal_contraception' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_not_asked",
+              "short_name": "No hormonal contraception - not-asked flag",
+              "description": "1 if 'pct_no_hormonal_contraception' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention",
+              "short_name": "No pregnancy prevention method",
+              "description": "Percent of high school students who did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_lcl",
+              "short_name": "No pregnancy prevention method - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_ucl",
+              "short_name": "No pregnancy prevention method - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_suppressed",
+              "short_name": "No pregnancy prevention method - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_pregnancy_prevention' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_not_asked",
+              "short_name": "No pregnancy prevention method - not-asked flag",
+              "description": "1 if 'pct_no_pregnancy_prevention' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_verbal_consent",
+              "short_name": "Did not ask for consent",
+              "description": "Percent of high school students who did not verbally ask for consent the last time they had sexual contact.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_verbal_consent_lcl",
+              "short_name": "Did not ask for consent - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not verbally ask for consent the last time they had sexual contact.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_verbal_consent_ucl",
+              "short_name": "Did not ask for consent - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not verbally ask for consent the last time they had sexual contact.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_verbal_consent_suppressed",
+              "short_name": "Did not ask for consent - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_verbal_consent' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_verbal_consent_not_asked",
+              "short_name": "Did not ask for consent - not-asked flag",
+              "description": "1 if 'pct_no_verbal_consent' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_never_tested_hiv",
+              "short_name": "Never tested for HIV",
+              "description": "Percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_never_tested_hiv_lcl",
+              "short_name": "Never tested for HIV - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_never_tested_hiv_ucl",
+              "short_name": "Never tested for HIV - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_never_tested_hiv_suppressed",
+              "short_name": "Never tested for HIV - suppressed flag",
+              "description": "1 if the estimate for 'pct_never_tested_hiv' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_never_tested_hiv_not_asked",
+              "short_name": "Never tested for HIV - not-asked flag",
+              "description": "1 if 'pct_never_tested_hiv' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_not_tested_std",
+              "short_name": "Not tested for an STD",
+              "description": "Percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_not_tested_std_lcl",
+              "short_name": "Not tested for an STD - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_not_tested_std_ucl",
+              "short_name": "Not tested for an STD - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_not_tested_std_suppressed",
+              "short_name": "Not tested for an STD - suppressed flag",
+              "description": "1 if the estimate for 'pct_not_tested_std' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_not_tested_std_not_asked",
+              "short_name": "Not tested for an STD - not-asked flag",
+              "description": "1 if 'pct_not_tested_std' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
               "name": "pct_social_media_daily",
               "short_name": "Used social media several/day",
               "description": "Percent of high school students who used social media at least several times a day.",
@@ -31349,6 +32654,461 @@
               "unit": "0/1 flag"
             },
             {
+              "name": "pct_ever_sex",
+              "short_name": "Ever had sexual intercourse",
+              "description": "Percent of high school students who ever had sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_ever_sex_lcl",
+              "short_name": "Ever had sexual intercourse - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who ever had sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_ever_sex_ucl",
+              "short_name": "Ever had sexual intercourse - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who ever had sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_ever_sex_suppressed",
+              "short_name": "Ever had sexual intercourse - suppressed flag",
+              "description": "1 if the estimate for 'pct_ever_sex' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_ever_sex_not_asked",
+              "short_name": "Ever had sexual intercourse - not-asked flag",
+              "description": "1 if 'pct_ever_sex' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_sex_before_13",
+              "short_name": "Had sex before age 13",
+              "description": "Percent of high school students who had sexual intercourse for the first time before age 13 years.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_sex_before_13_lcl",
+              "short_name": "Had sex before age 13 - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who had sexual intercourse for the first time before age 13 years.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_sex_before_13_ucl",
+              "short_name": "Had sex before age 13 - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who had sexual intercourse for the first time before age 13 years.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_sex_before_13_suppressed",
+              "short_name": "Had sex before age 13 - suppressed flag",
+              "description": "1 if the estimate for 'pct_sex_before_13' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_sex_before_13_not_asked",
+              "short_name": "Had sex before age 13 - not-asked flag",
+              "description": "1 if 'pct_sex_before_13' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_four_plus_partners",
+              "short_name": "Four or more sexual partners",
+              "description": "Percent of high school students who had sexual intercourse with four or more persons.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_four_plus_partners_lcl",
+              "short_name": "Four or more sexual partners - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who had sexual intercourse with four or more persons.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_four_plus_partners_ucl",
+              "short_name": "Four or more sexual partners - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who had sexual intercourse with four or more persons.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_four_plus_partners_suppressed",
+              "short_name": "Four or more sexual partners - suppressed flag",
+              "description": "1 if the estimate for 'pct_four_plus_partners' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_four_plus_partners_not_asked",
+              "short_name": "Four or more sexual partners - not-asked flag",
+              "description": "1 if 'pct_four_plus_partners' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_currently_sexually_active",
+              "short_name": "Currently sexually active",
+              "description": "Percent of high school students who were currently sexually active.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_currently_sexually_active_lcl",
+              "short_name": "Currently sexually active - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who were currently sexually active.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_currently_sexually_active_ucl",
+              "short_name": "Currently sexually active - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who were currently sexually active.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_currently_sexually_active_suppressed",
+              "short_name": "Currently sexually active - suppressed flag",
+              "description": "1 if the estimate for 'pct_currently_sexually_active' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_currently_sexually_active_not_asked",
+              "short_name": "Currently sexually active - not-asked flag",
+              "description": "1 if 'pct_currently_sexually_active' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex",
+              "short_name": "Alcohol or drugs before last sex",
+              "description": "Percent of high school students who drank alcohol or used drugs before last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_lcl",
+              "short_name": "Alcohol or drugs before last sex - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who drank alcohol or used drugs before last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_ucl",
+              "short_name": "Alcohol or drugs before last sex - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who drank alcohol or used drugs before last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_suppressed",
+              "short_name": "Alcohol or drugs before last sex - suppressed flag",
+              "description": "1 if the estimate for 'pct_alcohol_drugs_before_sex' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_not_asked",
+              "short_name": "Alcohol or drugs before last sex - not-asked flag",
+              "description": "1 if 'pct_alcohol_drugs_before_sex' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_condom_last_sex",
+              "short_name": "No condom at last sex",
+              "description": "Percent of high school students who did not use a condom during last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_condom_last_sex_lcl",
+              "short_name": "No condom at last sex - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use a condom during last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_condom_last_sex_ucl",
+              "short_name": "No condom at last sex - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use a condom during last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_condom_last_sex_suppressed",
+              "short_name": "No condom at last sex - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_condom_last_sex' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_condom_last_sex_not_asked",
+              "short_name": "No condom at last sex - not-asked flag",
+              "description": "1 if 'pct_no_condom_last_sex' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_birth_control_pills",
+              "short_name": "No birth control pills",
+              "description": "Percent of high school students who did not use birth control pills before last sexual intercourse with opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_birth_control_pills_lcl",
+              "short_name": "No birth control pills - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use birth control pills before last sexual intercourse with opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_birth_control_pills_ucl",
+              "short_name": "No birth control pills - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use birth control pills before last sexual intercourse with opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_birth_control_pills_suppressed",
+              "short_name": "No birth control pills - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_birth_control_pills' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_birth_control_pills_not_asked",
+              "short_name": "No birth control pills - not-asked flag",
+              "description": "1 if 'pct_no_birth_control_pills' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_iud_implant",
+              "short_name": "No IUD or implant",
+              "description": "Percent of high school students who did not use an IUD or implant before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_iud_implant_lcl",
+              "short_name": "No IUD or implant - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use an IUD or implant before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_iud_implant_ucl",
+              "short_name": "No IUD or implant - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use an IUD or implant before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_iud_implant_suppressed",
+              "short_name": "No IUD or implant - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_iud_implant' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_iud_implant_not_asked",
+              "short_name": "No IUD or implant - not-asked flag",
+              "description": "1 if 'pct_no_iud_implant' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_hormonal_contraception",
+              "short_name": "No hormonal contraception",
+              "description": "Percent of high school students who did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_lcl",
+              "short_name": "No hormonal contraception - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_ucl",
+              "short_name": "No hormonal contraception - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_suppressed",
+              "short_name": "No hormonal contraception - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_hormonal_contraception' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_not_asked",
+              "short_name": "No hormonal contraception - not-asked flag",
+              "description": "1 if 'pct_no_hormonal_contraception' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention",
+              "short_name": "No pregnancy prevention method",
+              "description": "Percent of high school students who did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_lcl",
+              "short_name": "No pregnancy prevention method - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_ucl",
+              "short_name": "No pregnancy prevention method - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_suppressed",
+              "short_name": "No pregnancy prevention method - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_pregnancy_prevention' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_not_asked",
+              "short_name": "No pregnancy prevention method - not-asked flag",
+              "description": "1 if 'pct_no_pregnancy_prevention' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_verbal_consent",
+              "short_name": "Did not ask for consent",
+              "description": "Percent of high school students who did not verbally ask for consent the last time they had sexual contact.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_verbal_consent_lcl",
+              "short_name": "Did not ask for consent - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not verbally ask for consent the last time they had sexual contact.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_verbal_consent_ucl",
+              "short_name": "Did not ask for consent - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not verbally ask for consent the last time they had sexual contact.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_verbal_consent_suppressed",
+              "short_name": "Did not ask for consent - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_verbal_consent' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_verbal_consent_not_asked",
+              "short_name": "Did not ask for consent - not-asked flag",
+              "description": "1 if 'pct_no_verbal_consent' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_never_tested_hiv",
+              "short_name": "Never tested for HIV",
+              "description": "Percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_never_tested_hiv_lcl",
+              "short_name": "Never tested for HIV - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_never_tested_hiv_ucl",
+              "short_name": "Never tested for HIV - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_never_tested_hiv_suppressed",
+              "short_name": "Never tested for HIV - suppressed flag",
+              "description": "1 if the estimate for 'pct_never_tested_hiv' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_never_tested_hiv_not_asked",
+              "short_name": "Never tested for HIV - not-asked flag",
+              "description": "1 if 'pct_never_tested_hiv' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_not_tested_std",
+              "short_name": "Not tested for an STD",
+              "description": "Percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_not_tested_std_lcl",
+              "short_name": "Not tested for an STD - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_not_tested_std_ucl",
+              "short_name": "Not tested for an STD - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_not_tested_std_suppressed",
+              "short_name": "Not tested for an STD - suppressed flag",
+              "description": "1 if the estimate for 'pct_not_tested_std' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_not_tested_std_not_asked",
+              "short_name": "Not tested for an STD - not-asked flag",
+              "description": "1 if 'pct_not_tested_std' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
               "name": "pct_social_media_daily",
               "short_name": "Used social media several/day",
               "description": "Percent of high school students who used social media at least several times a day.",
@@ -33156,6 +34916,461 @@
               "name": "pct_inactive_60min_7days_not_asked",
               "short_name": "Inactive <7 days/wk - not-asked flag",
               "description": "1 if 'pct_inactive_60min_7days' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_ever_sex",
+              "short_name": "Ever had sexual intercourse",
+              "description": "Percent of high school students who ever had sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_ever_sex_lcl",
+              "short_name": "Ever had sexual intercourse - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who ever had sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_ever_sex_ucl",
+              "short_name": "Ever had sexual intercourse - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who ever had sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_ever_sex_suppressed",
+              "short_name": "Ever had sexual intercourse - suppressed flag",
+              "description": "1 if the estimate for 'pct_ever_sex' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_ever_sex_not_asked",
+              "short_name": "Ever had sexual intercourse - not-asked flag",
+              "description": "1 if 'pct_ever_sex' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_sex_before_13",
+              "short_name": "Had sex before age 13",
+              "description": "Percent of high school students who had sexual intercourse for the first time before age 13 years.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_sex_before_13_lcl",
+              "short_name": "Had sex before age 13 - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who had sexual intercourse for the first time before age 13 years.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_sex_before_13_ucl",
+              "short_name": "Had sex before age 13 - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who had sexual intercourse for the first time before age 13 years.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_sex_before_13_suppressed",
+              "short_name": "Had sex before age 13 - suppressed flag",
+              "description": "1 if the estimate for 'pct_sex_before_13' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_sex_before_13_not_asked",
+              "short_name": "Had sex before age 13 - not-asked flag",
+              "description": "1 if 'pct_sex_before_13' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_four_plus_partners",
+              "short_name": "Four or more sexual partners",
+              "description": "Percent of high school students who had sexual intercourse with four or more persons.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_four_plus_partners_lcl",
+              "short_name": "Four or more sexual partners - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who had sexual intercourse with four or more persons.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_four_plus_partners_ucl",
+              "short_name": "Four or more sexual partners - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who had sexual intercourse with four or more persons.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_four_plus_partners_suppressed",
+              "short_name": "Four or more sexual partners - suppressed flag",
+              "description": "1 if the estimate for 'pct_four_plus_partners' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_four_plus_partners_not_asked",
+              "short_name": "Four or more sexual partners - not-asked flag",
+              "description": "1 if 'pct_four_plus_partners' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_currently_sexually_active",
+              "short_name": "Currently sexually active",
+              "description": "Percent of high school students who were currently sexually active.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_currently_sexually_active_lcl",
+              "short_name": "Currently sexually active - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who were currently sexually active.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_currently_sexually_active_ucl",
+              "short_name": "Currently sexually active - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who were currently sexually active.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_currently_sexually_active_suppressed",
+              "short_name": "Currently sexually active - suppressed flag",
+              "description": "1 if the estimate for 'pct_currently_sexually_active' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_currently_sexually_active_not_asked",
+              "short_name": "Currently sexually active - not-asked flag",
+              "description": "1 if 'pct_currently_sexually_active' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex",
+              "short_name": "Alcohol or drugs before last sex",
+              "description": "Percent of high school students who drank alcohol or used drugs before last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_lcl",
+              "short_name": "Alcohol or drugs before last sex - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who drank alcohol or used drugs before last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_ucl",
+              "short_name": "Alcohol or drugs before last sex - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who drank alcohol or used drugs before last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_suppressed",
+              "short_name": "Alcohol or drugs before last sex - suppressed flag",
+              "description": "1 if the estimate for 'pct_alcohol_drugs_before_sex' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_alcohol_drugs_before_sex_not_asked",
+              "short_name": "Alcohol or drugs before last sex - not-asked flag",
+              "description": "1 if 'pct_alcohol_drugs_before_sex' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_condom_last_sex",
+              "short_name": "No condom at last sex",
+              "description": "Percent of high school students who did not use a condom during last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_condom_last_sex_lcl",
+              "short_name": "No condom at last sex - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use a condom during last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_condom_last_sex_ucl",
+              "short_name": "No condom at last sex - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use a condom during last sexual intercourse.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_condom_last_sex_suppressed",
+              "short_name": "No condom at last sex - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_condom_last_sex' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_condom_last_sex_not_asked",
+              "short_name": "No condom at last sex - not-asked flag",
+              "description": "1 if 'pct_no_condom_last_sex' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_birth_control_pills",
+              "short_name": "No birth control pills",
+              "description": "Percent of high school students who did not use birth control pills before last sexual intercourse with opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_birth_control_pills_lcl",
+              "short_name": "No birth control pills - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use birth control pills before last sexual intercourse with opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_birth_control_pills_ucl",
+              "short_name": "No birth control pills - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use birth control pills before last sexual intercourse with opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_birth_control_pills_suppressed",
+              "short_name": "No birth control pills - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_birth_control_pills' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_birth_control_pills_not_asked",
+              "short_name": "No birth control pills - not-asked flag",
+              "description": "1 if 'pct_no_birth_control_pills' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_iud_implant",
+              "short_name": "No IUD or implant",
+              "description": "Percent of high school students who did not use an IUD or implant before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_iud_implant_lcl",
+              "short_name": "No IUD or implant - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use an IUD or implant before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_iud_implant_ucl",
+              "short_name": "No IUD or implant - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use an IUD or implant before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_iud_implant_suppressed",
+              "short_name": "No IUD or implant - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_iud_implant' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_iud_implant_not_asked",
+              "short_name": "No IUD or implant - not-asked flag",
+              "description": "1 if 'pct_no_iud_implant' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_hormonal_contraception",
+              "short_name": "No hormonal contraception",
+              "description": "Percent of high school students who did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_lcl",
+              "short_name": "No hormonal contraception - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_ucl",
+              "short_name": "No hormonal contraception - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_suppressed",
+              "short_name": "No hormonal contraception - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_hormonal_contraception' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_hormonal_contraception_not_asked",
+              "short_name": "No hormonal contraception - not-asked flag",
+              "description": "1 if 'pct_no_hormonal_contraception' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention",
+              "short_name": "No pregnancy prevention method",
+              "description": "Percent of high school students who did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_lcl",
+              "short_name": "No pregnancy prevention method - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_ucl",
+              "short_name": "No pregnancy prevention method - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_suppressed",
+              "short_name": "No pregnancy prevention method - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_pregnancy_prevention' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_pregnancy_prevention_not_asked",
+              "short_name": "No pregnancy prevention method - not-asked flag",
+              "description": "1 if 'pct_no_pregnancy_prevention' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_verbal_consent",
+              "short_name": "Did not ask for consent",
+              "description": "Percent of high school students who did not verbally ask for consent the last time they had sexual contact.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_verbal_consent_lcl",
+              "short_name": "Did not ask for consent - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who did not verbally ask for consent the last time they had sexual contact.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_verbal_consent_ucl",
+              "short_name": "Did not ask for consent - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who did not verbally ask for consent the last time they had sexual contact.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_no_verbal_consent_suppressed",
+              "short_name": "Did not ask for consent - suppressed flag",
+              "description": "1 if the estimate for 'pct_no_verbal_consent' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_no_verbal_consent_not_asked",
+              "short_name": "Did not ask for consent - not-asked flag",
+              "description": "1 if 'pct_no_verbal_consent' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_never_tested_hiv",
+              "short_name": "Never tested for HIV",
+              "description": "Percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_never_tested_hiv_lcl",
+              "short_name": "Never tested for HIV - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_never_tested_hiv_ucl",
+              "short_name": "Never tested for HIV - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who were never tested for human immunodeficiency virus (HIV).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_never_tested_hiv_suppressed",
+              "short_name": "Never tested for HIV - suppressed flag",
+              "description": "1 if the estimate for 'pct_never_tested_hiv' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_never_tested_hiv_not_asked",
+              "short_name": "Never tested for HIV - not-asked flag",
+              "description": "1 if 'pct_never_tested_hiv' was not asked for this geography and year and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_not_tested_std",
+              "short_name": "Not tested for an STD",
+              "description": "Percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_not_tested_std_lcl",
+              "short_name": "Not tested for an STD - lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for the percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_not_tested_std_ucl",
+              "short_name": "Not tested for an STD - upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for the percent of high school students who were not tested for a sexually transmitted disease (STD) other than HIV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "pct_not_tested_std_suppressed",
+              "short_name": "Not tested for an STD - suppressed flag",
+              "description": "1 if the estimate for 'pct_not_tested_std' was suppressed by CDC and set to 0; 0 otherwise.",
+              "measure_type": "Indicator",
+              "unit": "0/1 flag"
+            },
+            {
+              "name": "pct_not_tested_std_not_asked",
+              "short_name": "Not tested for an STD - not-asked flag",
+              "description": "1 if 'pct_not_tested_std' was not asked for this geography and year and set to 0; 0 otherwise.",
               "measure_type": "Indicator",
               "unit": "0/1 flag"
             },

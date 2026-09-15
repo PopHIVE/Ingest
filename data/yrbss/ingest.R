@@ -14,9 +14,10 @@
 #   - Geographies : National (00) + 47 states + DC
 #   - Years       : 2005 onward
 #   - Questions   : Curated subset across topics (see FULL_TOPICS +
-#                   SELECT_CODES below): all of Physical Activity (C06) plus
-#                   selected injury/violence, mental-health, tobacco,
-#                   substance-use, diet, and other-health-topic items.
+#                   SELECT_CODES below): all of Physical Activity (C06) and
+#                   Sexual Behaviors (C04) plus selected injury/violence,
+#                   mental-health, tobacco, substance-use, diet, and
+#                   other-health-topic items.
 #   - Strata      : Total, Sex, Race, Grade. Sex->sex, Race->race_ethnicity,
 #                   Grade->age (approximate modal age), Total->Overall.
 #                   YRBSS provides MARGINAL strata only (each estimate is broken
@@ -39,7 +40,7 @@ library(dcf)
 BASE        <- "https://yrbs-explorer.services.cdc.gov/api"
 MIN_YEAR    <- 2005
 # Topic codes to include in full (every question in the topic)
-FULL_TOPICS <- c("C06")                                # all Physical Activity
+FULL_TOPICS <- c("C06", "C04")                         # all Physical Activity, all Sexual Behaviors
 # Individual question codes to include (in addition to FULL_TOPICS)
 SELECT_CODES <- c(
   # C01 Injuries & Violence
@@ -117,6 +118,20 @@ measure_dict <- tibble::tribble(
   "QNMUSCLESTRENGTH", "pct_no_muscle_strengthening",  "No muscle strengthening",          "Did not do exercises to strengthen or tone muscles on three or more days",                                              "Physical Activity",
   "QNPA0DAY",         "pct_inactive_all_days",        "Inactive every day",               "Were not physically active for at least 60 minutes on at least 1 day",                                                  "Physical Activity",
   "QNPA7DAY",         "pct_inactive_60min_7days",     "Inactive <7 days/wk",              "Were not physically active at least 60 minutes per day on all 7 days",                                                  "Physical Activity",
+  # ---- Sexual Behaviors (category: sexual_health) ----
+  "H56",              "pct_ever_sex",                 "Ever had sexual intercourse",      "Ever had sexual intercourse",                                                                                           "Sexual Behaviors",
+  "H57",              "pct_sex_before_13",            "Had sex before age 13",            "Had sexual intercourse for the first time before age 13 years",                                                        "Sexual Behaviors",
+  "H58",              "pct_four_plus_partners",       "Four or more sexual partners",     "Had sexual intercourse with four or more persons",                                                                      "Sexual Behaviors",
+  "H59",              "pct_currently_sexually_active","Currently sexually active",        "Were currently sexually active",                                                                                        "Sexual Behaviors",
+  "H60",              "pct_alcohol_drugs_before_sex", "Alcohol or drugs before last sex", "Drank alcohol or used drugs before last sexual intercourse",                                                             "Sexual Behaviors",
+  "H61",              "pct_no_condom_last_sex",       "No condom at last sex",            "Did not use a condom during last sexual intercourse",                                                                   "Sexual Behaviors",
+  "H62",              "pct_no_birth_control_pills",   "No birth control pills",           "Did not use birth control pills before last sexual intercourse with opposite-sex partner",                              "Sexual Behaviors",
+  "QNIUDIMP",         "pct_no_iud_implant",           "No IUD or implant",                "Did not use an IUD or implant before last sexual intercourse with an opposite-sex partner",                             "Sexual Behaviors",
+  "QNOTHHPL",         "pct_no_hormonal_contraception","No hormonal contraception",        "Did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner", "Sexual Behaviors",
+  "QNBCNONE",         "pct_no_pregnancy_prevention",  "No pregnancy prevention method",   "Did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner",                "Sexual Behaviors",
+  "QNCONSENTSEXCONT", "pct_no_verbal_consent",        "Did not ask for consent",          "Did not verbally ask for consent the last time they had sexual contact",                                                "Sexual Behaviors",
+  "H81",              "pct_never_tested_hiv",         "Never tested for HIV",             "Were never tested for human immunodeficiency virus (HIV)",                                                              "Sexual Behaviors",
+  "H82",              "pct_not_tested_std",           "Not tested for an STD",            "Were not tested for a sexually transmitted disease (STD) other than HIV",                                               "Sexual Behaviors",
   # ---- Other Health Topics (category: chronic) ----
   "H80",              "pct_social_media_daily",       "Used social media several/day",    "Used social media at least several times a day",                                                                        "Other Health Topics",
   "H84",              "pct_poor_mental_health",       "Poor mental health",               "Reported that their mental health was most of the time or always not good",                                             "Other Health Topics",
@@ -210,13 +225,28 @@ sig_same  <- !is.null(disk_sig) &&
 
 if (!sig_same || !file.exists(RAW_FILE)) {
 
-  message(sprintf("Downloading YRBSS ChartData: %d questions x %d locations",
-                  nrow(selected), nrow(locations)))
-
   grid <- tidyr::expand_grid(
     question_code = selected$question_code,
     LocationCode  = locations$LocationCode
   )
+
+  # The server is slow (a full pull takes hours) and drops requests, so when
+  # the survey years are unchanged keep the cached raw rows and only fetch
+  # question x location pairs that have no rows in the cache. Pairs that were
+  # never asked come back empty and are requested again, which is cheap. A new
+  # survey year still forces a full pull.
+  raw_cached <- NULL
+  if (file.exists(RAW_FILE) && !is.null(disk_sig) &&
+      identical(as.integer(unlist(disk_sig$years)), sig$years)) {
+    raw_cached <- vroom::vroom(RAW_FILE, show_col_types = FALSE,
+                               col_types = vroom::cols(.default = "c")) %>%
+      filter(question_code %in% selected$question_code)
+    grid <- anti_join(grid, distinct(raw_cached, question_code, LocationCode),
+                      by = c("question_code", "LocationCode"))
+  }
+
+  message(sprintf("Downloading YRBSS ChartData: %d question-location pairs",
+                  nrow(grid)))
   grid$url <- sprintf("%s/ChartData?QuestionId=%s&LocationId=%s&Yr=9999",
                       BASE, grid$question_code, grid$LocationCode)
   n_req <- nrow(grid)
@@ -234,7 +264,7 @@ if (!sig_same || !file.exists(RAW_FILE)) {
   pull_one <- function(i) {
     url <- grid$url[i]
     d <- NULL
-    for (attempt in 1:3) {
+    for (attempt in 1:5) {
       # Bounded timeout so a hung connection can't stall a worker for 60s
       d <- tryCatch(
         jsonlite::fromJSON(curl::curl(url, handle = curl::new_handle(
@@ -242,7 +272,7 @@ if (!sig_same || !file.exists(RAW_FILE)) {
         error = function(e) NULL
       )
       if (!is.null(d)) break
-      Sys.sleep(0.3)
+      Sys.sleep(2 * attempt)
     }
     file.create(file.path(PROG_DIR, as.character(i)))  # progress marker
     if (is.null(d) || length(d) == 0 || !is.data.frame(d) || nrow(d) == 0)
@@ -257,25 +287,29 @@ if (!sig_same || !file.exists(RAW_FILE)) {
     d
   }
 
-  n_workers <- 8
-  message(sprintf("Fetching %d requests across %d workers (load-balanced)...",
-                  n_req, n_workers))
-  cl <- makeCluster(n_workers)
-  on.exit(stopCluster(cl), add = TRUE)
-  clusterEvalQ(cl, { library(jsonlite); library(curl) })
-  clusterExport(cl, c("grid", "PROG_DIR"), envir = environment())
-  # Load-balanced, one request per dispatch: idle workers immediately pull the
-  # next request, so a few slow responses never stall the whole job.
-  results <- parLapplyLB(cl, seq_len(n_req), pull_one, chunk.size = 1)
-  stopCluster(cl)
+  results <- list()
+  if (n_req > 0) {
+    n_workers <- 8
+    message(sprintf("Fetching %d requests across %d workers (load-balanced)...",
+                    n_req, n_workers))
+    cl <- makeCluster(n_workers)
+    clusterEvalQ(cl, { library(jsonlite); library(curl) })
+    clusterExport(cl, c("grid", "PROG_DIR"), envir = environment())
+    # Load-balanced, one request per dispatch: idle workers immediately pull the
+    # next request, so a few slow responses never stall the whole job.
+    results <- parLapplyLB(cl, seq_len(n_req), pull_one, chunk.size = 1)
+    stopCluster(cl)
+  }
   unlink(PROG_DIR, recursive = TRUE)  # clean up progress markers
 
   n_ok <- sum(!vapply(results, is.null, logical(1)))
   message(sprintf("Got data for %d / %d question-location pairs", n_ok, n_req))
 
-  raw_all <- bind_rows(results)
+  # Cached rows are all character; match before binding.
+  raw_new <- bind_rows(results) %>% mutate(across(everything(), as.character))
+  raw_all <- bind_rows(raw_cached, raw_new)
   vroom::vroom_write(raw_all, RAW_FILE, delim = ",")
-  message(sprintf("Saved %d raw rows to %s", nrow(raw_all), RAW_FILE))
+  message(sprintf("Saved %d raw rows to %s (%d new)", nrow(raw_all), RAW_FILE, nrow(raw_new)))
 } else {
   message("Raw signature unchanged; reusing cached ", RAW_FILE)
   raw_all <- vroom::vroom(RAW_FILE, show_col_types = FALSE,
@@ -441,7 +475,10 @@ lc_first <- function(s) paste0(tolower(substr(s, 1, 1)), substring(s, 2))
 measure_entries <- list()
 for (i in seq_len(nrow(measures))) {
   m <- measures[i, ]
-  category <- if (m$topic == "Unintentional Injuries and Violence") "injury" else "chronic"
+  category <- switch(m$topic,
+    "Unintentional Injuries and Violence" = "injury",
+    "Sexual Behaviors"                    = "sexual_health",
+    "chronic")
   base_long_desc <- paste0(
     "Weighted percentage of U.S. high school students who ", lc_first(m$question_text),
     ", from the CDC Youth Risk Behavior Surveillance System (YRBSS) ",
@@ -576,7 +613,6 @@ measure_info[["_sources"]] <- list(
     restrictions     = "Public domain. Suggested attribution: Centers for Disease Control and Prevention (CDC). Youth Risk Behavior Surveillance System (YRBSS)."
   )
 )
-
 # Preserve the local `_catalog` block (drives the website data-sources index)
 # across regeneration: measure_info.json is rebuilt from scratch above on
 # every run, so a hand-written _catalog would otherwise be erased each time.
