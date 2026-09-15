@@ -1,12 +1,12 @@
 # =============================================================================
 # Bundle: STI
 #
-# Sexually transmitted infection surveillance, screening, and youth sexual
-# behavior as tall parquet files keyed by geography (FIPS) + time + measure.
+# Sexually transmitted infection surveillance, screening, and testing as tall
+# parquet files keyed by geography (FIPS) + time + measure.
 #
 # Sources:
 #   - county_health_rankings/standard/data_{state,county}.csv.gz
-#       chlamydia incidence, HIV prevalence, teen births (annual)
+#       chlamydia incidence, HIV prevalence (annual)
 #   - medicaid_quality/standard/data.csv.gz
 #       chlamydia screening in women, Medicaid Core Set (annual, state only)
 #   - cms_mmd/standard/data_state_county_age.csv.gz
@@ -16,7 +16,7 @@
 #   - nnds/standard/data.csv.gz
 #       weekly case counts, national + state/territory
 #   - yrbss/standard/data_age{,_sex,_ethnicity}.csv.gz
-#       high school sexual behaviors (biennial, state + national)
+#       HIV and STD testing among high school students (biennial)
 #
 # Outputs (split by time resolution so each file has one grain):
 #   - dist/sti_state.parquet     : geography(2-digit) x year x measure x value
@@ -42,8 +42,7 @@ read_chr <- function(path) vroom(path, col_types = cols(.default = "c"), show_co
 
 CHR_MEASURES <- c(
   "chr_sexually_transmitted_infections",
-  "chr_hiv_prevalence",
-  "chr_teen_births"
+  "chr_hiv_prevalence"
 )
 
 MEDICAID_MEASURES <- c(
@@ -79,18 +78,9 @@ NNDS_MEASURES <- c(
   "hepatitis_c_perinatal_confirmed"
 )
 
+# Only the testing items; the other Sexual Behaviors questions stay in the
+# yrbss source but are out of scope here.
 YRBSS_MEASURES <- c(
-  "pct_ever_sex",
-  "pct_sex_before_13",
-  "pct_four_plus_partners",
-  "pct_currently_sexually_active",
-  "pct_alcohol_drugs_before_sex",
-  "pct_no_condom_last_sex",
-  "pct_no_birth_control_pills",
-  "pct_no_iud_implant",
-  "pct_no_hormonal_contraception",
-  "pct_no_pregnancy_prevention",
-  "pct_no_verbal_consent",
   "pct_never_tested_hiv",
   "pct_not_tested_std"
 )
