@@ -1,13 +1,13 @@
 # STI Bundle
 
-Sexually transmitted infection surveillance, screening, HIV outcomes, and
-high school sexual behaviors, combined for the PopHIVE platform. Files are
-split by time resolution so each has a single grain.
+Sexually transmitted infection surveillance, screening, testing, and HIV
+outcomes, combined for the PopHIVE platform. Files are split by time
+resolution so each has a single grain.
 
 ## Data Sources
 
-- **County Health Rankings**: annual chlamydia incidence, HIV prevalence, and
-  teen birth rates, state and county.
+- **County Health Rankings**: annual chlamydia incidence and HIV prevalence,
+  state and county.
 - **CMS Medicaid Core Set** (`medicaid_quality`): annual chlamydia screening
   rates among women 16-20 and 21-24 enrolled in Medicaid, state only, with the
   national 25th and 75th percentile benchmarks.
@@ -17,8 +17,9 @@ split by time resolution so each has a single grain.
   rate, state and national.
 - **CDC NNDSS** (`nnds`): weekly case counts for chlamydia, gonorrhea,
   syphilis, chancroid, mpox, and hepatitis B and C, national and state.
-- **CDC YRBSS** (`yrbss`): biennial sexual behavior questions from the Youth
-  Risk Behavior Survey, national and state.
+- **CDC YRBSS** (`yrbss`): biennial share of high school students never
+  tested for HIV and not tested for an STD in the past year, national and
+  state.
 
 ## Output Files
 
