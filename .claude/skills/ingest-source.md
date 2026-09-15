@@ -1,6 +1,6 @@
 ---
 name: ingest-source
-description: Ingest a new data source into the PopHIVE/Ingest repository — creates the folder structure via the dcf R package (required), writes an ingest.R script that standardizes raw data into wide format, and generates measure_info.json including the _catalog block that drives the website data-sources index. Use when the user wants to add a new CDC/Socrata/URL/file-based data source, mentions "ingest", "new data source", or provides a dataset ID to onboard.
+description: Ingest a new data source into the PopHIVE/Ingest repository — creates the folder structure via the dcf R package (required), writes an ingest.R script that standardizes raw data into wide format, and generates measure_info.json including the _catalog block that drives the website data-sources index. Also covers the alternative repo-per-source pattern (e.g. arbonet, crisis-text-line), where the source's ingest.R lives in its own standalone PopHIVE repo (no dcf calls) and Ingest keeps a thin pull-script. Use when the user wants to add a new CDC/Socrata/URL/file-based data source, mentions "ingest", "new data source", or provides a dataset ID to onboard.
 ---
 
 # ingest-source
@@ -99,6 +99,174 @@ Steps:
 
 From this point on, only `ingest.R` and `measure_info.json` are edited by you. `process.json` is
 owned by `dcf` and is updated at runtime through `dcf::dcf_process_record()` inside `ingest.R`.
+
+### Alternative to Phase 1: the source lives in its own repo
+
+Some sources are ingested into their own standalone repo under the PopHIVE GitHub org instead of
+living inside `PopHIVE/Ingest` as `data/<source_name>/`. Two sources already follow this pattern:
+[`PopHIVE/arbonet`](https://github.com/PopHIVE/arbonet) (CDC ArboNET arboviral disease data) and
+`PopHIVE/crisis-text-line` (Crisis Text Line contact data). Reach for this when the source is more
+naturally maintained on its own — its own release cadence, a separate maintainer, or reuse
+potential outside PopHIVE — not as the default for every new source.
+
+This is a two-repo handoff:
+
+- The **standalone repo** (`PopHIVE/<source_name>`) does the real ingestion work: downloads raw
+  data, transforms it, and writes `standard/*.csv.gz` and `measure_info.json`. It does **not** use
+  the `dcf` package at all — no `dcf::dcf_add_source()`, no `dcf::dcf_process_record()`. It
+  hand-rolls its own idempotency check in `process.json` (an MD5 fingerprint of the raw download,
+  or a simpler "latest vintage year" check — whichever fits the source; see arbonet for the
+  fingerprint approach).
+- `PopHIVE/Ingest` keeps a thin **pull-script** at `data/<source_name>/ingest.R` that does nothing
+  but download the standalone repo's `standard/*.csv.gz` and `measure_info.json` from
+  `raw.githubusercontent.com` into its own `data/<source_name>/standard/` folder, where they get
+  committed and feed bundles exactly as before. This pull-script *does* still call
+  `dcf::dcf_process_record()` — only the standalone repos have dropped `dcf`, not Ingest itself.
+
+Because Claude never commits or pushes to a PopHIVE remote, prepare both repos' contents locally
+and hand the user the exact `gh repo create` / `git` commands to run themselves.
+
+**Setting up the standalone repo:**
+
+1. **Naming**: prefer hyphens for multi-word source names to match the majority convention
+   (`hud-chas`, `bureau-labor-statistics`, `usda-food-access`, `crisis-text-line`), though a
+   single-word name is fine as-is (`arbonet`). This differs from the underscore convention used
+   for in-repo sources (`cdc_flu_data`).
+2. **Create the local folder** (a plain local directory, not a git action):
+   ```
+   mkdir -p <source_name>/raw <source_name>/standard
+   ```
+3. **Target structure** (repo root — no `data/<source_name>/` nesting):
+   ```
+   <source_name>/
+   ├── raw/                  # downloaded source files — gitignored, never committed
+   ├── standard/             # standardized output files
+   ├── ingest.R              # download + transform script (no dcf:: calls)
+   ├── measure_info.json     # variable metadata, INCLUDING the _catalog block (see Phase 5)
+   ├── process.json          # hand-rolled idempotency state, written by ingest.R itself
+   ├── .gitignore            # must ignore raw/
+   ├── .gitattributes        # `* text=auto`
+   └── README.md             # what's ingested, output columns, caveats, "consumed by" pointer
+   ```
+4. Once the files below are written locally, give the user the commands to create and populate
+   the repo themselves:
+   ```
+   gh repo create PopHIVE/<source_name> --public --source=. --remote=origin
+   git add .
+   git commit -m "Initial ingest of <source_name>"
+   git push -u origin main
+   ```
+
+Phases 2–4 below (gather info, examine raw data, write `ingest.R`) still apply — just write
+`ingest.R` at the repo root with hand-rolled state tracking instead of
+`dcf::dcf_process_record()`, and skip the `dcf::dcf_add_source()` call above entirely.
+
+**Technical guidance for the download step** — some sources need special handling to get past bot
+protection, or don't publish on a fixed schedule:
+
+- **Akamai-fronted CDC pages** (`www.cdc.gov`) 403 most non-browser clients — use
+  `download.file(url, dest, method = "libcurl", mode = "wb", quiet = TRUE)`; `httr`/plain curl
+  often don't get through.
+- **AWS WAF JS-challenge pages** (e.g. `huduser.gov`) return a 202 with no content to a bare
+  `download.file()`. Visit the HTML page first with a shared `httr::handle()`, then reuse that
+  same handle for the actual download.
+- **No fixed release schedule** (e.g. HUD CHAS's 5-year ACS windows): probe forward from a
+  known-good starting point (e.g. increment the vintage year and check for a 200) rather than
+  hard-coding the current vintage.
+- **Geography**: if the raw data already carries Census geoid-style strings, a simple prefix strip
+  may be all that's needed (e.g. `sub("^0500000US", "", geoid)` for county-level data) — don't
+  reach for the FIPS crosswalk if the raw geography is already usable. When conversion genuinely
+  is needed, fetch the canonical crosswalk at runtime rather than vendoring a copy, so the
+  standalone repo stays in step with Ingest:
+  ```r
+  FIPS_URL <- "https://raw.githubusercontent.com/PopHIVE/Ingest/main/resources/all_fips.csv.gz"
+  download.file(FIPS_URL, "raw/all_fips.csv.gz", method = "libcurl", mode = "wb", quiet = TRUE)
+  all_fips <- vroom::vroom("raw/all_fips.csv.gz", show_col_types = FALSE)
+  ```
+
+**`measure_info.json` still needs the `_catalog` block.** Follow Phase 5 below exactly, including
+the `_catalog` block (`summary`, `search_terms`, `bucket`, `files`) — this drives the website's
+data-sources index, and that dependency doesn't go away just because the source lives in its own
+repo. Write it into `measure_info.json` at the standalone repo's root, following the same rules
+and examples as an in-repo source (see arbonet's `measure_info.json` for a worked example of
+`_catalog` alongside a `variants`-based schema for its six diseases).
+
+Because the standalone repo's own re-runs of `ingest.R` may regenerate `measure_info.json` without
+knowing about `_catalog` (it's Ingest/website-specific metadata, not something the source repo's
+own logic needs), the Ingest-side pull-script must preserve whatever `_catalog` block is already
+committed locally across re-pulls, rather than blindly overwriting it with whatever the upstream
+repo currently has:
+
+```r
+# =============================================================================
+# {SOURCE_NAME} Data
+# Source: https://github.com/PopHIVE/{source_name}
+# Pulls pre-processed standard files from the {source_name} repository.
+# =============================================================================
+
+library(dplyr)
+
+process <- dcf::dcf_process_record()
+
+base_url <- "https://raw.githubusercontent.com/PopHIVE/{source_name}/main"
+
+standard_files <- c(
+  "data.csv.gz"        # match whatever the standalone repo actually writes,
+                        # e.g. data_state.csv.gz / data_county.csv.gz
+)
+
+current_hashes <- list()
+
+for (f in standard_files) {
+  url  <- paste0(base_url, "/standard/", f)
+  dest <- file.path("standard", f)
+
+  tryCatch({
+    download.file(url, dest, mode = "wb", quiet = TRUE)
+    current_hashes[[f]] <- tools::md5sum(dest)
+  }, error = function(e) {
+    message("Warning: failed to download ", f, ": ", e$message)
+  })
+}
+
+# Preserve the local `_catalog` block (drives the website data-sources index)
+# across re-downloads: the upstream measure_info.json doesn't carry it, so
+# overwriting the file outright would erase it on every ingest run.
+local_catalog <- NULL
+if (file.exists("measure_info.json")) {
+  local_catalog <- tryCatch({
+    jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)[["_catalog"]]
+  }, error = function(e) NULL)
+}
+
+tryCatch({
+  download.file(
+    paste0(base_url, "/measure_info.json"),
+    "measure_info.json",
+    mode = "wb",
+    quiet = TRUE
+  )
+  if (!is.null(local_catalog)) {
+    downloaded <- jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)
+    downloaded[["_catalog"]] <- local_catalog
+    jsonlite::write_json(downloaded, "measure_info.json", auto_unbox = TRUE, pretty = TRUE)
+  }
+}, error = function(e) {
+  message("Warning: failed to download measure_info.json: ", e$message)
+})
+
+if (!identical(process$raw_state, current_hashes)) {
+  process$raw_state <- current_hashes
+  dcf::dcf_process_record(updated = process)
+}
+```
+
+This pull-script does no transformation at all — it's purely a fetch, which is why it still calls
+`dcf::dcf_process_record()` even though the standalone repo doesn't. The pulled
+`standard/*.csv.gz` and `measure_info.json` files are committed inside `PopHIVE/Ingest` too (not
+gitignored there), so bundles reference `data/<source_name>/standard/...` exactly as they did
+under the old single-repo pattern. Phases 6 and 7 below (validate/report, rebuild docs) still run
+against the pulled files inside Ingest.
 
 ### Phase 2: Gather Information
 
