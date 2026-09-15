@@ -34,6 +34,8 @@ jobs:
             any::sf
             any::tigris
             any::vroom
+            any::tidyr
+            any::lubridate
             any::arrow
             any::jsonlite
             any::htmltools
@@ -45,6 +47,7 @@ jobs:
       - run: Rscript -e "dcf::dcf_process('epic_health_alerts')"
       - run: Rscript -e "dcf::dcf_process('nnds')"
       - run: Rscript -e "dcf::dcf_process('bundle_respiratory', '.')"
+      - run: Rscript -e "dcf::dcf_process('bundle_sti', '.')"
 
       - id: diff
         run: |

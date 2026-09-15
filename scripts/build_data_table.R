@@ -113,7 +113,7 @@ format_source_name <- function(name) {
 format_bundle_name <- function(name) {
   display <- sub("^bundle_", "", name)
   display <- gsub("_", " ", display)
-  tools::toTitleCase(display)
+  gsub("\\bSti\\b", "STI", tools::toTitleCase(display))
 }
 
 # Short one-sentence summary of a (possibly long) description.
