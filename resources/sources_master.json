@@ -375,7 +375,7 @@
     "description": "Annual state-level performance data on the Medicaid and CHIP Adult Core Set and Child Core Set quality measures, as voluntarily reported by states to CMS and analyzed by Mathematica via the Quality Measure Reporting (QMR) system. Measures span behavioral health (e.g., follow-up after ED visits for mental illness, substance use disorder treatment), primary and preventive care (e.g., well-child visits, immunizations), maternal and perinatal health (e.g., prenatal and postpartum care, low birthweight), dental health, care of chronic conditions (e.g., diabetes, asthma, hypertension), and long-term services and supports. Each annual dataset includes state rates and national 25th and 75th percentile benchmarks. Data cover federal fiscal years 2014–2023. Reporting is voluntary; not all states report all measures each year. The wide-format standard file contains one row per state-year-payer-domain combination, with each measure-statistic combination as a separate column following the naming convention medicaid_{measure_abbr}_{population}_{sub_metric}_{stat} where population is 'ch' (child) or 'ad' (adult), sub_metric captures time windows or sub-components, and stat is 'rate', 'pct_25', or 'pct_75'.",
     "restrictions": "Public domain. CMS/Medicaid.gov data is generally not subject to copyright restrictions.",
     "date_accessed": 2025,
-    "data_source": ["medicaid_quality", "bundle_maternal_health", "bundle_sti", "bundle_youth_wellbeing"]
+    "data_source": ["medicaid_quality", "bundle_adolescent_vaccination", "bundle_maternal_health", "bundle_sti", "bundle_youth_wellbeing"]
   },
   "healthmap_mmr": {
     "name": "HealthMap MMR Vaccine Coverage Estimates",
@@ -501,7 +501,7 @@
     "organization_url": "https://www.cdc.gov/ncird/",
     "description": "The National Immunization Surveys (NIS) are a group of telephone surveys used to monitor vaccination coverage among children 19-35 months, teens 13-17 years, flu vaccinations for children 6 months-17 years, and COVID-19 vaccination for children, teens, and adults. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the CDC and authorized by the Public Health Service Act. NIS provides population-based, state and local area estimates of vaccination coverage using a standard survey methodology. Surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll age-eligible children. With parental permission, vaccination providers are contacted to verify immunization records. Children and teens are classified as up to date based on ACIP-recommended vaccine doses.",
     "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
-    "data_source": ["nis", "bundle_youth_wellbeing"]
+    "data_source": ["nis", "nis_teen", "bundle_adolescent_vaccination", "bundle_youth_wellbeing"]
   },
   "nnds": {
     "name": "National Notifiable Diseases Surveillance System (NNDSS)",
@@ -552,6 +552,98 @@
     "description": "The Respiratory Virus Hospitalization Surveillance Network (RESP-NET) monitors laboratory-confirmed hospitalizations associated with influenza, COVID-19, and respiratory syncytial virus (RSV) among children and adults. The CDC's  Respiratory Virus Hospitalization Surveillance Network (RESP-NET) monitors laboratory-confirmed hospitalizations associated with influenza, COVID-19, and respiratory syncytial virus (RSV) among children and adults. The data are collected from hospitals in selected counties and county equivalents. This dataset has several important advantages: the area around the hospitals is well described, so rates of disease adjusted for population size can be accurately reported. The selected counties include ~10% of the US population and are demographically representative of the country. Detailed patient demographic information is available, and officials actively search for cases to ensure they capture all cases in the data. A limitation is that the network relies on the clinicians to perform viral tests as part of their routine clinical practice, so they likely miss cases that are not tested.",
     "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
     "data_source": "respnet"
+  },
+  "school_immunizations": {
+    "name": "PopHIVE school immunization assessments",
+    "url": "https://github.com/PopHIVE/school_immunizations",
+    "organization": "PopHIVE, Yale School of Public Health",
+    "organization_url": "https://www.pophive.org",
+    "location": "Per-state standard files and source notes",
+    "location_url": "https://github.com/PopHIVE/school_immunizations/blob/main/data/DATA_SOURCES.md",
+    "description": "State health departments publish the results of their annual school-entry immunization assessments in different formats (open data portals, workbooks, PDF reports, registry reports). The PopHIVE school_immunizations repository ingests each state into a wide standard file keyed by school year, county, and grade. This source takes the states that publish adolescent-grade (6th or 7th grade, or a registry adolescent series) Tdap, MenACWY, or HPV coverage, keeps their county and state rows, and maps each state's columns onto a common set. Coverage definitions, the grade assessed, and denominators vary by state; compare within a state over time rather than across states. Connecticut reports by county through 2023-24 and by planning region from 2024-25. Washington assessed 6th grade through 2019-20 and 7th grade from 2020-21.",
+    "restrictions": "Public data published by the state agencies; no access restrictions. Cite the state source for a given state.",
+    "date_accessed": 2026,
+    "data_source": ["school_immunizations_adolescent", "bundle_adolescent_vaccination"]
+  },
+  "ak_school_immunization": {
+    "name": "Alaska Vaccination Coverage Report, Kindergarten and Adolescent Series",
+    "url": "https://health.alaska.gov/en/data-and-statistics/data-and-statistics-communicable-diseases/",
+    "organization": "Alaska Department of Health, Division of Public Health",
+    "organization_url": "https://health.alaska.gov/",
+    "location_url": "https://github.com/PopHIVE/school_immunizations/tree/main/data/AK",
+    "description": "Quarterly report built from VacTrAK, Alaska's immunization registry, rather than from a school-entry survey. The adolescent series (ages 13-17) gives Tdap, HPV, MenACWY, and an overall up-to-date rate for the state, Anchorage, and public health regions; only the state and Anchorage rows have FIPS codes and are kept.",
+    "restrictions": "Public data published by the source agency; no access restrictions.",
+    "data_source": "school_immunizations_adolescent"
+  },
+  "ct_school_immunization": {
+    "name": "Connecticut School Immunization and Exemption Rates",
+    "url": "https://data.ct.gov/resource/8kid-pp5k",
+    "organization": "Connecticut Department of Public Health",
+    "organization_url": "https://portal.ct.gov/dph",
+    "location_url": "https://github.com/PopHIVE/school_immunizations/tree/main/data/CT",
+    "description": "CT Open Data dataset 8kid-pp5k gives, for grades Pre-K, K, and 7th and each required vaccine series, enrolment plus coverage, religious and medical exemption, and non-compliance rates by county (planning region from 2024-25) and statewide. The 2024-25 7th-grade statewide row is short of the sum of its planning regions, as DPH published it.",
+    "restrictions": "Public data published by the source agency; no access restrictions.",
+    "data_source": "school_immunizations_adolescent"
+  },
+  "in_school_immunization": {
+    "name": "Indiana School Immunization Coverage",
+    "url": "https://hub.mph.in.gov/dataset/immunization-division-s-school-supplemental-dashboard",
+    "organization": "Indiana Department of Health",
+    "organization_url": "https://www.in.gov/health/",
+    "location_url": "https://github.com/PopHIVE/school_immunizations/tree/main/data/IN",
+    "description": "County-level, multi-grade antigen coverage from the Indiana Department of Health open-data hub. The 6th and 7th grade rows are kept. The hub files carry no exemption split.",
+    "restrictions": "Public data published by the source agency; no access restrictions.",
+    "data_source": "school_immunizations_adolescent"
+  },
+  "la_school_immunization": {
+    "name": "Louisiana School Immunization Coverage",
+    "url": "https://ldh.la.gov/immunization-program/vaccination-data-resources",
+    "organization": "Louisiana Department of Health",
+    "organization_url": "https://ldh.la.gov/",
+    "location_url": "https://github.com/PopHIVE/school_immunizations/tree/main/data/LA",
+    "description": "Parish-level coverage and exemption rates from a multi-year Louisiana Office of Public Health school immunization workbook; the 6th grade rows are kept.",
+    "restrictions": "Public data. Ingested upstream from a committed workbook because the LDH online dashboard is behind authentication.",
+    "data_source": "school_immunizations_adolescent"
+  },
+  "ma_school_immunization": {
+    "name": "Massachusetts School Immunization Survey",
+    "url": "https://www.mass.gov/info-details/school-immunizations",
+    "organization": "Massachusetts Department of Public Health",
+    "organization_url": "https://www.mass.gov/orgs/department-of-public-health",
+    "location_url": "https://github.com/PopHIVE/school_immunizations/tree/main/data/MA",
+    "description": "County-level kindergarten and 7th-grade coverage and exemption rates from the annual MDPH by-county school immunization workbooks; the 7th grade rows are kept.",
+    "restrictions": "Public data published by the source agency; no access restrictions.",
+    "data_source": "school_immunizations_adolescent"
+  },
+  "nd_school_immunization": {
+    "name": "North Dakota School Immunization Coverage",
+    "url": "https://www.hhs.nd.gov/immunizations/coverage-rates",
+    "organization": "North Dakota Health and Human Services",
+    "organization_url": "https://www.hhs.nd.gov/",
+    "location_url": "https://github.com/PopHIVE/school_immunizations/tree/main/data/ND",
+    "description": "County-level school immunization coverage and exemption rates from the ND HHS coverage-rate reports; the 7th grade county rows are kept and the school rows are not.",
+    "restrictions": "Public data published by the source agency; no access restrictions.",
+    "data_source": "school_immunizations_adolescent"
+  },
+  "tx_school_immunization": {
+    "name": "Texas School Immunization Coverage",
+    "url": "https://www.dshs.texas.gov/immunizations/data/school",
+    "organization": "Texas Department of State Health Services",
+    "organization_url": "https://www.dshs.texas.gov/",
+    "location_url": "https://github.com/PopHIVE/school_immunizations/tree/main/data/TX",
+    "description": "County-level school immunization and conscientious exemption rates from the annual DSHS Annual Report of Immunization Status; the 7th grade county and state rows are kept. DSHS suppresses small cells, which are flagged here.",
+    "restrictions": "Public data published by the source agency; no access restrictions.",
+    "data_source": "school_immunizations_adolescent"
+  },
+  "wa_school_immunization": {
+    "name": "Washington School Immunization Data",
+    "url": "https://doh.wa.gov/data-and-statistical-reports/washington-tracking-network-wtn/school-immunization",
+    "organization": "Washington State Department of Health",
+    "organization_url": "https://doh.wa.gov/",
+    "location_url": "https://github.com/PopHIVE/school_immunizations/tree/main/data/WA",
+    "description": "County-level school immunization completion and exemption rates from the WA DOH school immunization reports. The adolescent assessment covered 6th grade through 2019-20 and 7th grade from 2020-21. Washington publishes completion and exemptions but no Tdap or MenACWY rate.",
+    "restrictions": "Public data published by the source agency; no access restrictions.",
+    "data_source": "school_immunizations_adolescent"
   },
   "wapo_school_vax": {
     "name": "Washington Post School Vaccination Rates",

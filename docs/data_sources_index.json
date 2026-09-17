@@ -1,7 +1,7 @@
 {
   "description": "Index of PopHIVE/Ingest standardized data sources (excludes bundle_* directories).",
   "repository": "PopHIVE/Ingest",
-  "n_datasets": 50,
+  "n_datasets": 52,
   "datasets": [
     {
       "dataset": "abcs",
@@ -643,7 +643,7 @@
       "data_url": "https://data.medicaid.gov/datasets?theme%5B0%5D=Quality",
       "data_dictionary": "https://pophive.github.io/Ingest/#medicaid-quality",
       "latest_date": "2023-01-01",
-      "search_terms": ["Cancer screening", "Injury and overdose", "Maternal health", "Preventative services", "STI", "Youth wellbeing", "mental health", "immunizations", "opioids", "diabetes", "chlamydia screening"],
+      "search_terms": ["Adolescent vaccination", "Cancer screening", "Injury and overdose", "Maternal health", "Preventative services", "STI", "Youth wellbeing", "mental health", "immunizations", "hpv", "opioids", "diabetes", "chlamydia screening"],
       "bucket": ["Prevention", "Injury/Overdose", "Maternal health", "Youth well-being", "Rural health"],
       "summary": "Health care access and quality measures for Medicaid and CHIP beneficiaries across behavioral, maternal, primary and preventive, dental, and chronic disease care. Reporting is voluntary; not all states report all measures each year.",
       "files": [
@@ -853,6 +853,39 @@
       ]
     },
     {
+      "dataset": "nis_teen",
+      "name": "National Immunization Survey-Teen (NIS-Teen)",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/nis_teen/standard",
+      "data_url": "https://www.cdc.gov/nis/about/index.html",
+      "data_dictionary": "https://pophive.github.io/Ingest/#nis-teen",
+      "latest_date": "2025-12-31",
+      "search_terms": ["Childhood immunizations", "Youth wellbeing", "hpv", "tdap", "meningococcal", "adolescent vaccines"],
+      "bucket": ["Immunization"],
+      "summary": "The National Immunization Survey-Teen (NIS-Teen) estimates how many adolescents ages 13-17 have received HPV, Tdap, meningococcal, and other recommended vaccines, by state and year.",
+      "files": [
+        {
+          "dataset_stratification": "Pooled 2018-2022 coverage by insurance coverage type",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_teen/standard/data_insurance.csv.gz"
+        },
+        {
+          "dataset_stratification": "Pooled 2018-2022 coverage by household poverty status",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_teen/standard/data_poverty.csv.gz"
+        },
+        {
+          "dataset_stratification": "Pooled 2018-2022 coverage by race and ethnicity",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_teen/standard/data_race_ethnicity.csv.gz"
+        },
+        {
+          "dataset_stratification": "Pooled 2018-2022 coverage by urban/rural residence",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_teen/standard/data_urban.csv.gz"
+        },
+        {
+          "dataset_stratification": "Annual coverage by vaccine, dose, sex, and age group",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_teen/standard/data.csv.gz"
+        }
+      ]
+    },
+    {
       "dataset": "nnds",
       "name": "National Notifiable Diseases Surveillance System (NNDSS)",
       "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/nnds/standard",
@@ -938,6 +971,23 @@
         {
           "dataset_stratification": "RESP-NET data",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/respnet/standard/data.csv.gz"
+        }
+      ]
+    },
+    {
+      "dataset": "school_immunizations_adolescent",
+      "name": "School immunization assessments, adolescents",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/school_immunizations_adolescent/standard",
+      "data_url": "https://github.com/PopHIVE/school_immunizations",
+      "data_dictionary": "https://pophive.github.io/Ingest/#school-immunizations-adolescent",
+      "latest_date": "2025-09-01",
+      "search_terms": ["Childhood immunizations", "Youth wellbeing", "tdap", "meningococcal", "hpv", "school vaccination", "exemptions"],
+      "bucket": ["Immunization"],
+      "summary": "State school-entry immunization assessments for 6th and 7th graders: Tdap, meningococcal, and HPV coverage and exemption rates by county, from the eight states that publish adolescent-grade coverage.",
+      "files": [
+        {
+          "dataset_stratification": "County and state adolescent-grade coverage and exemption rates by grade",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/school_immunizations_adolescent/standard/data.csv.gz"
         }
       ]
     },
