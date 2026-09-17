@@ -1,28 +1,25 @@
 # =============================================================================
 # Bundle: Adolescent vaccination
 #
-# Vaccination coverage among adolescents, Medicaid adolescent quality measures,
-# and weekly counts of the diseases the adolescent schedule targets, as tall
-# parquet files keyed by geography (FIPS) + time + measure.
+# Vaccination coverage among adolescents from Medicaid quality measures, the
+# NIS-Teen survey, and state school-entry assessments, as tall parquet files
+# keyed by geography (FIPS) + time + measure.
 #
 # Sources:
 #   - medicaid_quality/standard/data.csv.gz
-#       Child Core Set IMA (MenACWY + Tdap by 13; HPV series by 13), the
-#       2014-2016 HPV measure, and well-care visits (annual, state only)
+#       Child Core Set IMA (MenACWY + Tdap by 13; HPV series by 13) and the
+#       2014-2016 HPV measure (annual, state only)
 #   - nis_teen/standard/data.csv.gz
 #       NIS-Teen coverage, ages 13-17 and 13-15 (annual, state + national)
 #   - nis_teen/standard/data_{insurance,poverty,race_ethnicity,urban}.csv.gz
 #       pooled 2018-2022 NIS-Teen coverage by demographic group
 #   - school_immunizations_adolescent/standard/data.csv.gz
 #       state school-entry assessments, 6th/7th grade (annual, county + state)
-#   - nnds/standard/data.csv.gz
-#       weekly case counts, national + state/territory
 #
-# Outputs (split by time resolution and grain):
+# Outputs (split by grain):
 #   - dist/adolescent_vax_state.parquet        : geography(2-digit) x year x measure
 #   - dist/adolescent_vax_county.parquet       : geography(5-digit) x year x grade x measure
 #   - dist/adolescent_vax_demographics.parquet : geography(2-digit) x year x stratum x measure
-#   - dist/adolescent_vax_weekly.parquet       : geography(2-digit) x MMWR week x measure
 # =============================================================================
 
 library(dplyr)
@@ -41,10 +38,7 @@ read_chr <- function(path) vroom(path, col_types = cols(.default = "c"), show_co
 MEDICAID_STEMS <- c(
   "medicaid_ima_ch",        # MenACWY + Tdap by 13th birthday (Combination 1)
   "medicaid_ima_ch_hpv",    # HPV series by 13th birthday, 2017+
-  "medicaid_hpv_ch",        # standalone HPV measure, 2014-2016
-  "medicaid_awc_ch",        # adolescent well-care visits, ages 12-21, through 2020
-  "medicaid_wcv_ch",        # well-care visits, ages 3-21, 2021+
-  "medicaid_wcv_ch_12_17"   # well-care visits, ages 12-17, 2021+
+  "medicaid_hpv_ch"         # standalone HPV measure, 2014-2016
 )
 MEDICAID_MEASURES <- paste0(rep(MEDICAID_STEMS, each = 3), c("_rate", "_pct_25", "_pct_75"))
 
@@ -57,22 +51,6 @@ SCHOOL_MEASURES <- paste0("school_adol_pct_", c(
   "medical_exempt", "religious_exempt", "personal_exempt", "full_exempt"
 ))
 
-# varicella_disease replaced varicella_morbidity in late 2023; its 2023 weeks
-# repeat the old column and are dropped below. Hepatitis B split into
-# confirmed and probable at the start of 2024 with no overlap.
-NNDS_MEASURES <- c(
-  "pertussis",
-  "meningococcal_disease_all_serogroups",
-  "meningococcal_disease_serogroups_acwy",
-  "meningococcal_disease_serogroup_b",
-  "tetanus",
-  "mumps",
-  "varicella_morbidity",
-  "varicella_disease",
-  "hepatitis_b_acute",
-  "hepatitis_b_acute_confirmed",
-  "hepatitis_b_acute_probable"
-)
 
 # -----------------------------------------------------------------------------
 # 1. Helpers
@@ -267,51 +245,13 @@ adolescent_vax_county <- school_county %>%
   check_dupes("adolescent_vax_county", c("geography", "time", "grade", "measure"))
 
 # -----------------------------------------------------------------------------
-# 6. NNDSS (weekly, national + state/territory). The source stores cumulative
-#    year-to-date counts; difference within each geography/measure/MMWR year
-#    to get weekly counts. Negative values are downward revisions by CDC.
-#    Missing YTD values are stored as 0 in the source, so a measure that was
-#    not reported in a given year shows up as an all-zero national series;
-#    those measure-years are dropped rather than emitted as zero counts.
-# -----------------------------------------------------------------------------
-
-nnds_cum <- read_chr("../nnds/standard/data.csv.gz") %>%
-  select(geography, time, mmwr_year, mmwr_week, all_of(NNDS_MEASURES)) %>%
-  pivot_longer(all_of(NNDS_MEASURES), names_to = "measure", values_to = "value") %>%
-  mutate(
-    value     = suppressWarnings(as.numeric(value)),
-    mmwr_year = as.integer(mmwr_year),
-    mmwr_week = as.integer(mmwr_week)
-  ) %>%
-  filter(!is.na(value)) %>%
-  filter(!(measure == "varicella_disease" & mmwr_year < 2024))
-
-reported <- nnds_cum %>%
-  filter(geography == "00") %>%
-  group_by(measure, mmwr_year) %>%
-  summarize(reported = any(value > 0), .groups = "drop") %>%
-  filter(reported) %>%
-  select(measure, mmwr_year)
-
-adolescent_vax_weekly <- nnds_cum %>%
-  semi_join(reported, by = c("measure", "mmwr_year")) %>%
-  arrange(geography, measure, mmwr_year, mmwr_week) %>%
-  group_by(geography, measure, mmwr_year) %>%
-  mutate(value = value - lag(value, default = 0)) %>%
-  ungroup() %>%
-  transmute(geography, time = as.Date(time), measure, value, source = "CDC NNDSS") %>%
-  arrange(measure, geography, time) %>%
-  check_dupes("adolescent_vax_weekly")
-
-# -----------------------------------------------------------------------------
-# 7. Write outputs
+# 6. Write outputs
 # -----------------------------------------------------------------------------
 
 dir.create("dist", showWarnings = FALSE)
 write_parquet(adolescent_vax_state,        "dist/adolescent_vax_state.parquet")
 write_parquet(adolescent_vax_county,       "dist/adolescent_vax_county.parquet")
 write_parquet(adolescent_vax_demographics, "dist/adolescent_vax_demographics.parquet")
-write_parquet(adolescent_vax_weekly,       "dist/adolescent_vax_weekly.parquet")
 
 report <- function(df, name) {
   sprintf("  %-36s: %d rows, %d measures, %d geographies, %s to %s",
@@ -322,6 +262,5 @@ message(
   "bundle_adolescent_vaccination:\n",
   report(adolescent_vax_state,        "adolescent_vax_state.parquet"), "\n",
   report(adolescent_vax_county,       "adolescent_vax_county.parquet"), "\n",
-  report(adolescent_vax_demographics, "adolescent_vax_demographics.parquet"), "\n",
-  report(adolescent_vax_weekly,       "adolescent_vax_weekly.parquet")
+  report(adolescent_vax_demographics, "adolescent_vax_demographics.parquet")
 )
