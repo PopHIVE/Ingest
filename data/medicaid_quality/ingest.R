@@ -190,6 +190,29 @@ if (!identical(process$raw_state, raw_state)) {
       value, n_states, median, pct25, pct75, notes, source, state_comments
     )
   
+  # Some measures report more than one rate definition under the same
+  # abbreviation and sub_metric. distinct() below keeps the first, so list the
+  # affected variable-years in the log instead of dropping them silently.
+  warn_collapsed <- function(d) {
+    collapsed <- d %>%
+      filter(!is.na(val)) %>%
+      group_by(geography, time, payer, domain, var_name) %>%
+      summarize(n_def = n_distinct(measure_info), .groups = "drop") %>%
+      filter(n_def > 1) %>%
+      mutate(measure = sub("_(rate|pct_25|pct_75)$", "", var_name),
+             year = substr(time, 1, 4)) %>%
+      distinct(measure, year) %>%
+      group_by(measure) %>%
+      summarize(years = paste(sort(year), collapse = " "), .groups = "drop")
+    if (nrow(collapsed) > 0) {
+      warning("medicaid_quality: ", nrow(collapsed),
+              " measures have more than one rate definition in some years; ",
+              "keeping the first row:\n",
+              paste0("  ", collapsed$measure, ": ", collapsed$years, collapse = "\n"))
+    }
+    d
+  }
+
   #creating wide format
   data_wide <- data1 %>%
     mutate(
@@ -204,7 +227,20 @@ if (!identical(process$raw_state, raw_state)) {
         grepl("CHIP", population, ignore.case = TRUE)     ~ "CHIP",
         TRUE                                               ~ "Total"
       ),
+      # IMA carries two definitions from 2017 (Combination 1 = MenACWY + Tdap,
+      # and HPV series completion); WCV carries four age bands from 2021. Keep
+      # the base column as Combination 1 / ages 3-21 and split the rest out.
       sub_metric = case_when(
+        measure_abbr == "IMA-CH" &
+          grepl("Papillomavirus|HPV", coalesce(measure_info, ""))               ~ "hpv",
+        measure_abbr == "IMA-CH"                                                 ~ "",
+        measure_abbr == "WCV-CH" &
+          grepl("Ages 3 to 11$", coalesce(measure_info, ""))                     ~ "3_11",
+        measure_abbr == "WCV-CH" &
+          grepl("Ages 12 to 17$", coalesce(measure_info, ""))                    ~ "12_17",
+        measure_abbr == "WCV-CH" &
+          grepl("Ages 18 to 21$", coalesce(measure_info, ""))                    ~ "18_21",
+        measure_abbr == "WCV-CH"                                                 ~ "",
         grepl("Within 7 Days|7-Day|7 Days", measure_info, ignore.case = TRUE)    ~ "7d",
         grepl("Within 30 Days|30-Day|30 Days", measure_info, ignore.case = TRUE) ~ "30d",
         grepl("Initiation Phase", measure_info, ignore.case = TRUE)               ~ "init",
@@ -220,7 +256,8 @@ if (!identical(process$raw_state, raw_state)) {
       pct75 = as.numeric(if_else(pct75 == "DS", NA_character_, pct75))
     ) %>%
     select(geography, geography_level, time, age, sex, race_ethnicity,
-           payer, domain, measure_clean, sub_metric, value, pct25, pct75) %>%
+           payer, domain, measure_abbr, measure_info, measure_clean, sub_metric,
+           value, pct25, pct75) %>%
     pivot_longer(cols = c(value, pct25, pct75), names_to = "stat", values_to = "val") %>%
     mutate(
       stat = case_when(
@@ -232,6 +269,8 @@ if (!identical(process$raw_state, raw_state)) {
       var_name = gsub("_+$", "", gsub("__+", "_", var_name))
     ) %>%
     select(-measure_clean, -sub_metric, -stat) %>%
+    warn_collapsed() %>%
+    select(-measure_abbr, -measure_info) %>%
     distinct(geography, time, payer, domain, var_name, .keep_all = TRUE) %>%
     pivot_wider(names_from = var_name, values_from = val) %>%
     mutate(across(starts_with("medicaid_"), as.numeric))
