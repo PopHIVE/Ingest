@@ -1,0 +1,121 @@
+{
+  "age": {
+    "id": "age",
+    "short_name": "Age group",
+    "long_name": "Age group of the texter",
+    "category": "mental_health",
+    "short_description": "Age group of the person who started the conversation.",
+    "long_description": "Age group of the texter as reported to Crisis Text Line: \"13 or younger\", \"14-17\", \"18-24\", \"25-34\", \"35-44\", \"45-54\", \"55-64\", \"65+\", \"Missing\" (age not reported), or \"Overall\" (all ages, including conversations where age was not reported). Age is not reported for most conversations, so \"Overall\" is not the sum of the specific bins without \"Missing\".",
+    "statement": "",
+    "measure_type": "Category",
+    "unit": "Age group",
+    "time_resolution": "",
+    "sources": [{ "id": "ctl_crisistrends" }]
+  },
+
+  "crisistrends_{variant}": {
+    "short_name": "Crisis Text Line: {variant.short_name}",
+    "long_name": "Monthly count of Crisis Text Line conversations tagged {variant.short_name}",
+    "category": "mental_health",
+    "short_description": "Number of Crisis Text Line conversations in the month tagged with this topic. A conversation can carry more than one tag, so tag columns overlap and don't sum to a total.",
+    "long_description": "Monthly count of Crisis Text Line text/chat conversations tagged with this topic, by state (\"Missing\" if not reported) and age group (\"Missing\" if not reported). Conversations can have multiple tags. A conversation with multiple topics is counted once in each corresponding column. National and \"Overall\" age rows also include conversations where state or age was not reported, so they are not the sum of the state-level or age-specific rows. Small counts are suppressed (blank) for disclosure control: a cell for a specific state and specific age group is suppressed if it is 3 or fewer, any national or all-ages total if it is 24 or fewer, and additionally if the cell's calendar-year or all-time visible total is 24 or fewer, or if the cell could be recomputed from other visible cells. A true zero is never suppressed.",
+    "statement": "In {location}, there were {value} Crisis Text Line conversations tagged {variant.short_name} in {time}.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Month",
+    "sources": [{ "id": "ctl_crisistrends" }],
+    "variants": {
+      "anxiety_stress": { "short_name": "Anxiety / Stress" },
+      "relationships": { "short_name": "Relationships" },
+      "suicide": { "short_name": "Suicide" },
+      "depression_sadness": { "short_name": "Depression / Sadness" },
+      "isolation_loneliness": { "short_name": "Isolation / Loneliness" },
+      "self_harm": { "short_name": "Self-Harm" },
+      "grief": { "short_name": "Grief" },
+      "eating_body_image": { "short_name": "Eating / Body Image" },
+      "bullying": { "short_name": "Bullying" },
+      "substance_use": { "short_name": "Substance Use" },
+      "abuse": { "short_name": "Abuse" },
+      "gender_sexual_identity": { "short_name": "Gender / Sexual Identity" }
+    }
+  },
+
+  "crisistrends_{variant}_reported_total": {
+    "short_name": "Crisis Text Line: {variant.short_name}, reported-state total",
+    "long_name": "Monthly sum of visible state-level counts of Crisis Text Line conversations ({variant.short_name})",
+    "category": "mental_health",
+    "short_description": "Sum of the visible state-level values of this measure for the month and age group, excluding the national rollup and conversations with no state reported. Denominator for a state's share on a map.",
+    "long_description": "Sum of this measure's published (post-suppression) values across the 50 states, DC and Puerto Rico for the same month and age group, excluding the \"00\" national rollup (which includes conversations with no state reported) and the \"Missing\" state bucket. Dividing a state's value by this gives its share of the conversations that can be placed on a map; dividing by the national total instead would understate every state's share by however much came from conversations with no state reported. Suppressed state values contribute zero, so this discloses nothing beyond what is already published per state. The same value is repeated on every geography row for the month and age group.",
+    "statement": "",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Month",
+    "sources": [{ "id": "ctl_crisistrends" }],
+    "variants": {
+      "anxiety_stress": { "short_name": "Anxiety / Stress" },
+      "relationships": { "short_name": "Relationships" },
+      "suicide": { "short_name": "Suicide" },
+      "depression_sadness": { "short_name": "Depression / Sadness" },
+      "isolation_loneliness": { "short_name": "Isolation / Loneliness" },
+      "self_harm": { "short_name": "Self-Harm" },
+      "grief": { "short_name": "Grief" },
+      "eating_body_image": { "short_name": "Eating / Body Image" },
+      "bullying": { "short_name": "Bullying" },
+      "substance_use": { "short_name": "Substance Use" },
+      "abuse": { "short_name": "Abuse" },
+      "gender_sexual_identity": { "short_name": "Gender / Sexual Identity" },
+      "total": { "short_name": "Total conversations" },
+      "n_tagged": { "short_name": "Tagged conversations" }
+    }
+  },
+
+  "crisistrends_n_tagged": {
+    "id": "crisistrends_n_tagged",
+    "short_name": "Crisis Text Line: Tagged conversations",
+    "long_name": "Monthly count of Crisis Text Line conversations with at least one issue tag recorded",
+    "category": "mental_health",
+    "short_description": "Number of Crisis Text Line conversations in the month with at least one issue tag recorded, counted once per conversation no matter how many tags it carries.",
+    "long_description": "Monthly count of Crisis Text Line text/chat conversations with at least one issue_tags value recorded, by state (\"Missing\" if not reported) and age group (\"Missing\" if not reported). Unlike the per-topic crisistrends_<tag> columns, a conversation with multiple tags is counted only once here, making this the correct denominator for a topic's share of tagged conversations. Includes conversations tagged only with a topic CTL tracks internally but doesn't surface as its own crisistrends_<tag> column (e.g. Racism, School), so this total can exceed the dedup sum across the surfaced topic columns. Because it is a total across every issue, every cell is suppressed (blank) if it is 24 or fewer, or if its calendar-year or all-time visible total is 24 or fewer, or if it could be recomputed from other visible cells.",
+    "statement": "In {location}, {value} Crisis Text Line conversations in {time} had at least one issue tag recorded.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Month",
+    "sources": [{ "id": "ctl_crisistrends" }]
+  },
+
+  "crisistrends_total": {
+    "id": "crisistrends_total",
+    "short_name": "Crisis Text Line: Total conversations",
+    "long_name": "Monthly count of all Crisis Text Line conversations, tagged or not",
+    "category": "mental_health",
+    "short_description": "Total number of Crisis Text Line conversations in the month, whether or not they carry an issue tag.",
+    "long_description": "Monthly count of all Crisis Text Line text/chat conversations, by state (\"Missing\" if not reported) and age group (\"Missing\" if not reported), including both tagged and untagged conversations. This is the overall denominator; there is no separate column for untagged conversations alone. Because it is a total across every issue, every cell is suppressed (blank) if it is 24 or fewer, or if its calendar-year or all-time visible total is 24 or fewer, or if it could be recomputed from other visible cells.",
+    "statement": "In {location}, there were {value} total Crisis Text Line conversations in {time}.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Month",
+    "sources": [{ "id": "ctl_crisistrends" }]
+  },
+
+  "_sources": {
+    "ctl_crisistrends": {
+      "name": "Crisis Text Line's Crisis Trends",
+      "url": "https://crisistrends.org",
+      "organization": "Crisis Text Line",
+      "organization_url": "https://www.crisistextline.org",
+      "description": "Crisis Text Line is a nonprofit organization that provides free, 24/7, confidential text-based mental health support and crisis intervention in both English and Spanish for anyone in the United States and Puerto Rico. Crisis Text Line has unique insight into the mental health crisis in the United States, and believes it is their duty to share aggregate, actionable insights that shape policy, improve practice, and advance mental health and wellbeing for people. This dataset contains de-identified conversation metrics, aggregated to unique combinations of month, issue tags, service, age, and state, delivered to PopHIVE via the ctl_data_client Python package under a per-project data-sharing agreement. Each conversation may carry multiple issue tags, so per-tag counts overlap. Note that these data are not expected to exactly match those on crisistrends.org because Crisis Trends includes conversations that are purposefully excluded from this data set due to data sharing restrictions.",
+      "restrictions": "Attribution required. Cite as: Crisis Text Line (2026). Crisis Trends. https://crisistrends.org/ (date accessed).",
+      "date_accessed": 2026
+    }
+  },
+
+  "_catalog": {
+    "name": "Crisis Text Line: Crisis Trends",
+    "summary": "Crisis Text Line's Crisis Trends data reports monthly text and chat conversation counts by state, age group, and topic.",
+    "search_terms": ["Mental health", "crisis text line", "suicide", "self-harm", "anxiety"],
+    "bucket": [],
+    "files": {
+      "data.csv.gz": "Conversation counts by state, age group, and issue tag"
+    }
+  }
+}
