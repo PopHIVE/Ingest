@@ -9,6 +9,10 @@
 #   - county_health_rankings/standard/data_{state,county}.csv.gz (CHR&R)
 #   - medicaid_quality/standard/data.csv.gz               (CMS Core Set,
 #                                                          state-level only)
+#   - cdc_wonder_natality/standard/data_state.csv.gz      (CDC WONDER natality
+#                                                          counts, state +
+#                                                          national, Overall
+#                                                          only; county pending)
 #   - cdc_vssr/standard/data.csv.gz                       (NCHS VSRR maternal
 #                                                          mortality, national
 #                                                          only, monthly, by
@@ -164,13 +168,34 @@ medicaid_long <- medicaid_raw %>%
   pivot_measures(MEDICAID_MEASURES)
 
 # -----------------------------------------------------------------------------
-# 5. Assemble state and county outputs
+# 5. CDC WONDER natality — state + national; Overall demographic totals only.
+#    The source table (data_state.csv.gz) carries age/sex/race_ethnicity
+#    breakdowns too, but maternal_state has no demographic columns (unlike
+#    maternal_mortality below), so only the Overall row is kept here.
+#    County not yet wired in -- data_county.csv.gz doesn't exist for this
+#    source until the county-level scrape finishes; add it alongside
+#    maternal_county below once it lands.
+# -----------------------------------------------------------------------------
+
+WONDER_NATALITY_MEASURES <- c(
+  natality_births = "total_births"
+)
+
+wonder_natality_raw <- read_chr("../cdc_wonder_natality/standard/data_state.csv.gz")
+
+wonder_natality_long <- wonder_natality_raw %>%
+  filter(age == "Overall", sex == "Overall", race_ethnicity == "Overall") %>%
+  pivot_measures(WONDER_NATALITY_MEASURES)
+
+# -----------------------------------------------------------------------------
+# 6. Assemble state and county outputs
 # -----------------------------------------------------------------------------
 
 maternal_state <- bind_rows(
   census_state_long,
   chr_state_long,
-  medicaid_long
+  medicaid_long,
+  wonder_natality_long
 ) %>%
   mutate(time = as.Date(time)) %>%
   arrange(measure, geography, time)
@@ -189,7 +214,7 @@ maternal_state  <- check_dupes(maternal_state,  "maternal_state")
 maternal_county <- check_dupes(maternal_county, "maternal_county")
 
 # -----------------------------------------------------------------------------
-# 6. CDC VSRR provisional maternal mortality — national only, monthly, kept in
+# 7. CDC VSRR provisional maternal mortality — national only, monthly, kept in
 #    its own output (different time resolution + demographic stratification
 #    than the annual, non-stratified maternal_state/county measures above).
 # -----------------------------------------------------------------------------
@@ -207,7 +232,7 @@ maternal_mortality <- check_dupes(
 )
 
 # -----------------------------------------------------------------------------
-# 7. Write outputs
+# 8. Write outputs
 # -----------------------------------------------------------------------------
 
 dir.create("dist", showWarnings = FALSE)
