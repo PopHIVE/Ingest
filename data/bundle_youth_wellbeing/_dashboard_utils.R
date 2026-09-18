@@ -74,28 +74,58 @@ epic_concussion <- vroom::vroom(epic_concussion_path, show_col_types = FALSE) %>
   mutate(geography_name = if_else(geography == "00", "United States", fips2name[geography])) %>%
   filter(!is.na(geography_name))
 
-# Epic Cosmos mental-health ED length-of-stay data (Suicidal behavior
-# diagnosis only -- the Mood diagnosis bucket in the same file is out of
-# scope for now). Same stopgap as epic_concussion above: this lives on the
-# epic_preprocessing repo's `ingest-mh` branch and hasn't yet been merged /
-# formally ingested into PopHIVE/Ingest as its own data/{source} folder.
+# Epic Cosmos mental-health ED length-of-stay data -- two ED-diagnosis
+# buckets (Suicidal behavior, Mood), reshaped long on `diagnosis` so the
+# dashboard can offer both as a dropdown/filter rather than hard-coding one.
+# Now formally ingested at data/epic_mental_health (unlike epic_concussion
+# above, which is still a stopgap absolute-path read).
 # Median/Q1/Q3 ED length-of-stay cells are suppressed-to-NA at source (no
 # imputation, unlike count-based Epic measures), so no suppressed_flag
 # handling is needed downstream for those three. `pct_share` is a
 # compositional share of THIS diagnosis's own encounters across state/age --
 # not a rate or a visit count -- see the chart's "About this chart" caveat.
-epic_mh_path <- "C:/Users/as5325/Desktop/epic_preprocessing/data/cosmos_mental_health/standard/data.csv.gz"
-epic_mh_suicidal <- vroom::vroom(epic_mh_path, show_col_types = FALSE) %>%
-  transmute(
-    geography, time, age,
-    geography_name = if_else(geography == "00", "United States", fips2name[geography]),
-    median_los = epic_median_ed_los_suicidal_behavior,
-    q1_los = epic_q1_ed_los_suicidal_behavior,
-    q3_los = epic_q3_ed_los_suicidal_behavior,
-    pct_share = epic_pct_sliced_population_suicidal_behavior,
-    pct_share_suppressed = epic_pct_sliced_population_suicidal_behavior_suppressed_flag
+epic_mh_path <- "../epic_mental_health/standard/data.csv.gz"
+epic_mh <- vroom::vroom(epic_mh_path, show_col_types = FALSE) %>%
+  mutate(geography_name = if_else(geography == "00", "United States", fips2name[geography])) %>%
+  filter(!is.na(geography_name)) %>%
+  pivot_longer(
+    cols = matches("^epic_(median_ed_los|q1_ed_los|q3_ed_los|pct_sliced_population)_(suicidal_behavior|mood)$"),
+    names_pattern = "^epic_(median_ed_los|q1_ed_los|q3_ed_los|pct_sliced_population)_(suicidal_behavior|mood)$",
+    names_to = c(".value", "diagnosis")
   ) %>%
-  filter(!is.na(geography_name))
+  transmute(
+    geography, time, age, geography_name,
+    diagnosis = if_else(diagnosis == "suicidal_behavior", "Suicidal behavior", "Mood"),
+    median_los = median_ed_los, q1_los = q1_ed_los, q3_los = q3_ed_los, pct_share = pct_sliced_population
+  )
+
+# Crisis Text Line "Crisis Trends" (crisistrends.org) conversation-topic
+# data, year-grain aggregate. Same stopgap as epic_concussion above: lives
+# in a separate crisis-text-line repo that
+# hasn't yet been formally ingested into PopHIVE/Ingest as its own
+# data/{source} folder. Only the year-grain aggregate is loaded (not the
+# monthly file) to keep this dashboard's embedded page size in line with its
+# other choropleths/bar grids -- see
+# crisis-text-line/crisis_trends_dashboard.qmd for the fuller monthly/yearly
+# toggle the charts built from this are a scoped-down version of.
+ctl_annual <- vroom::vroom(
+  "C:/Users/as5325/Desktop/repos/crisis-text-line/standard/data_annual.csv.gz",
+  show_col_types = FALSE
+) %>%
+  filter(geography != "Missing")
+
+# Population denominators for per-100,000 conversions, by state x age group x
+# year. "Missing" (age not reported) has no Census equivalent, so it's
+# aliased to the same total-population denominator as "Overall" -- same
+# convention as the source dashboard.
+ctl_population_raw <- vroom::vroom(
+  "C:/Users/as5325/Desktop/repos/crisis-text-line/population_denominators/standard/population_by_age.csv.gz",
+  show_col_types = FALSE
+)
+ctl_population <- bind_rows(
+  ctl_population_raw,
+  ctl_population_raw %>% filter(age_group == "Overall") %>% mutate(age_group = "Missing")
+)
 
 # ---------------------------------------------------------------------------
 # JSON helpers
@@ -325,4 +355,4 @@ chr_choropleth_measure <- function(measure_id, level = c("state", "county"), tag
                        unit = chr_unit[[measure_id]], decimals = chr_dec[[measure_id]], tags = tags)
 }
 
-cat("Dashboard data loaded:", nrow(chr_county), "chr_county rows,", nrow(yrbss), "yrbss rows\n")
+cat("Dashboard data loaded:", nrow(chr_county), "chr_county rows,", nrow(yrbss), "yrbss rows,", nrow(ctl_annual), "crisis text line rows\n")
