@@ -303,6 +303,23 @@
             "id": "medicaid_quality_cms"
           }
         ]
+      },
+      "total_births": {
+        "id": "bundle_maternal_health/dist/maternal_state.parquet|measure=total_births",
+        "short_name": "Total Births",
+        "long_name": "Total Live Births",
+        "category": "maternal",
+        "short_description": "Total number of live births.",
+        "long_description": "Total count of live births to residents, from CDC WONDER Natality (database D149). State and national counts only (county pending); cells representing 1-9 births are suppressed by CDC for confidentiality and excluded here rather than imputed.",
+        "statement": "In {location}, there were {value} live births.",
+        "measure_type": "Count",
+        "unit": "Births",
+        "time_resolution": "Year",
+        "sources": [
+          {
+            "id": "cdc_wonder_natality"
+          }
+        ]
       }
     }
   },
@@ -468,6 +485,9 @@
       },
       {
         "id": "medicaid_quality_cms"
+      },
+      {
+        "id": "cdc_wonder_natality"
       }
     ]
   },
@@ -537,6 +557,17 @@
       "description": "Annual state-level performance data on the Medicaid and CHIP Adult and Child Core Set quality measures, voluntarily reported by states to CMS. The maternal bundle uses the Maternal and Perinatal Health domain measures (prenatal and postpartum care, first prenatal visit, postpartum contraceptive care, and low birthweight), restricted to the Medicaid payer. State-level only; values are state rates.",
       "restrictions": "Public domain. CMS/Medicaid.gov data is generally not subject to copyright restrictions.",
       "date_accessed": 2025
+    },
+    "cdc_wonder_natality": {
+      "name": "CDC WONDER Natality, 2016-2024 expanded",
+      "url": "https://wonder.cdc.gov/natality-expanded-current.html",
+      "organization": "Centers for Disease Control and Prevention, National Center for Health Statistics",
+      "organization_url": "https://www.cdc.gov/nchs/",
+      "location": "Natality, 2016-2024 expanded (Single Race), database D149",
+      "location_url": "https://wonder.cdc.gov/natality-expanded-current.html",
+      "description": "Counts of live births from the National Vital Statistics System birth certificate file, published through CDC WONDER. The maternal bundle uses the overall (all ages, all sexes, all races/ethnicities) annual total births, state and national level; the underlying source also provides age/sex/race breakdowns and county-level data (county pending in this bundle). Cells representing 1-9 births are suppressed for confidentiality and excluded rather than imputed.",
+      "restrictions": "Data Use Restrictions: The Public Health Service Act (42 U.S.C. 242m(d)) provides that the data collected by the National Center for Health Statistics (NCHS) may be used only for the purpose for which they were obtained; any effort to determine the identity of any reported cases, or to use the information for any purpose other than for health statistical reporting and analysis, is against the law. Do not present or publish birth counts of 9 or fewer. Make no attempt to learn the identity of any person or establishment included in these data.",
+      "date_accessed": 2026
     }
   },
   "_bundle": {
@@ -544,19 +575,22 @@
     "sources": [
       "census",
       "county_health_rankings",
-      "medicaid_quality"
+      "medicaid_quality",
+      "cdc_wonder_natality"
     ],
     "dist_files": {
       "maternal_state.parquet": {
         "sources": [
           "census",
           "county_health_rankings",
-          "medicaid_quality"
+          "medicaid_quality",
+          "cdc_wonder_natality"
         ],
         "source_files": [
           "census/standard/data_state.csv.gz",
           "county_health_rankings/standard/data_state.csv.gz",
-          "medicaid_quality/standard/data.csv.gz"
+          "medicaid_quality/standard/data.csv.gz",
+          "cdc_wonder_natality/standard/data_state.csv.gz"
         ]
       },
       "maternal_county.parquet": {
