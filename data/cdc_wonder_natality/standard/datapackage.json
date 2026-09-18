@@ -2,5 +2,673 @@
   "name": "cdc_wonder_natality",
   "title": "Cdc Wonder Natality",
   "licenses": [],
-  "resources": []
+  "resources": [
+    {
+      "bytes": 125528,
+      "encoding": "windows-1252",
+      "md5": "14bd657e503f7a7e364eb244bef348ef",
+      "format": "csv",
+      "name": "data_state_detail.csv",
+      "filename": "data_state_detail.csv.gz",
+      "versions": {
+        "hash": ["c1c8680a5014125e866e24dbb3870b401f649ba9"],
+        "author": ["Callie Annas <callie.annas@yale.edu>"],
+        "date": ["Wed Sep 16 15:57:13 2026 -0400"],
+        "message": ["Adding CDC Wonder Natality data"]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-09-18 20:11:29.593549",
+      "last_modified": "2026-09-18 20:11:29.593549",
+      "vintage": {},
+      "row_count": 22464,
+      "entity_count": 52,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 22412,
+            "info": [],
+            "time_range": [0, 8],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 432,
+              "01": 432,
+              "02": 432,
+              "04": 432,
+              "05": 432,
+              "06": 432,
+              "08": 432,
+              "09": 432,
+              "10": 432,
+              "11": 432,
+              "12": 432,
+              "13": 432,
+              "15": 432,
+              "16": 432,
+              "17": 432,
+              "18": 432,
+              "19": 432,
+              "20": 432,
+              "21": 432,
+              "22": 432,
+              "23": 432,
+              "24": 432,
+              "25": 432,
+              "26": 432,
+              "27": 432,
+              "28": 432,
+              "29": 432,
+              "30": 432,
+              "31": 432,
+              "32": 432,
+              "33": 432,
+              "34": 432,
+              "35": 432,
+              "36": 432,
+              "37": 432,
+              "38": 432,
+              "39": 432,
+              "40": 432,
+              "41": 432,
+              "42": 432,
+              "44": 432,
+              "45": 432,
+              "46": 432,
+              "47": 432,
+              "48": 432,
+              "49": 432,
+              "50": 432,
+              "51": 432,
+              "53": 432,
+              "54": 432,
+              "55": 432,
+              "56": 432
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 22455,
+            "info": [],
+            "time_range": [0, 8],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2016-12-31": 2496,
+              "2017-12-31": 2496,
+              "2018-12-31": 2496,
+              "2019-12-31": 2496,
+              "2020-12-31": 2496,
+              "2021-12-31": 2496,
+              "2022-12-31": 2496,
+              "2023-12-31": 2496,
+              "2024-12-31": 2496
+            }
+          },
+          {
+            "name": "dimension",
+            "duplicates": 22456,
+            "info": {
+              "id": "dimension",
+              "short_name": "Dimension",
+              "long_name": "Which detail breakdown this row belongs to",
+              "category": "demographic",
+              "short_description": "Which of eight detail breakdowns (data_state_detail.csv.gz only) this row's `category` value is a level of: birth_weight, gestational_age, delivery_method, plurality, prenatal_care_trimester, tobacco_use, mothers_education, or marital_status.",
+              "long_description": "Each is queried on its own WONDER variable, national + state only (no county); a row's `category` is a level of exactly this one dimension, never crossed with another. birth_weight = \"Infant Birth Weight 12\" (500g bands; finer 14-group and 100g-increment versions exist on the source form but are not pulled). gestational_age = \"OE Gestational Age Recode 10\", the Obstetric Estimate method NCHS has preferred since ~2014, not the older LMP-based method (a separate, unpulled variable). delivery_method = the plain 3-level \"Delivery Method\" variable (Vaginal/Cesarean/Unknown; finer \"Final Route\"/\"Delivery Method Expanded\" variables exist but aren't pulled) -- cross-checked against the national 2023 rate, 32.3% cesarean, matching published NCHS figures. plurality = single/twin/triplet-or-higher, an exhaustive breakdown (its three categories sum to the geography/year's total births exactly). prenatal_care_trimester = \"Trimester Prenatal Care Began\"; \"No prenatal care\" is a real, substantive category here, not collapsed into \"Unknown\" like WONDER's other non-informative labels. tobacco_use = a simple yes/no/unknown variable (WONDER's separate cigarette-count-by-trimester variables aren't pulled). mothers_education = \"Mother's Education\"; its raw \"Excluded\" category (a state's birth-certificate revision not collecting the item at all, a jurisdiction-level gap rather than one record's missingness) is collapsed into \"Unknown\" here like every other placeholder. marital_status = married/unmarried/unknown.",
+              "measure_type": "category",
+              "unit": "category",
+              "sources": [
+                {
+                  "id": "cdc_wonder_natality"
+                }
+              ]
+            },
+            "time_range": [0, 8],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "birth_weight": 5616,
+              "delivery_method": 1404,
+              "gestational_age": 4680,
+              "marital_status": 1404,
+              "mothers_education": 4212,
+              "plurality": 1404,
+              "prenatal_care_trimester": 2340,
+              "tobacco_use": 1404
+            }
+          },
+          {
+            "name": "category",
+            "duplicates": 22422,
+            "info": {
+              "id": "category",
+              "short_name": "Category",
+              "long_name": "Category value within the row's dimension",
+              "category": "demographic",
+              "short_description": "The specific level of whichever `dimension` this row is (data_state_detail.csv.gz only), e.g. \"Cesarean\" when dimension is delivery_method.",
+              "long_description": "WONDER's non-informative category labels (\"Unknown or Not Stated\", \"Not Reported\", and, on mothers_education only, \"Excluded\" -- states whose birth-certificate revision does not collect that item at all, a jurisdiction-level gap rather than a single record's missingness) are collapsed into a single \"Unknown\" level, same as in data_state.csv.gz. \"No prenatal care\" (prenatal_care_trimester) is a real, substantive answer and is kept as its own category, not collapsed.",
+              "measure_type": "category",
+              "unit": "category",
+              "sources": [
+                {
+                  "id": "cdc_wonder_natality"
+                }
+              ]
+            },
+            "time_range": [0, 8],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "1000 - 1499 grams": 468,
+              "1500 - 1999 grams": 468,
+              "1st to 3rd month": 468,
+              "20 - 27 weeks": 468,
+              "2000 - 2499 grams": 468,
+              "2500 - 2999 grams": 468,
+              "28 - 31 weeks": 468,
+              "3000 - 3499 grams": 468,
+              "32 - 35 weeks": 468,
+              "3500 - 3999 grams": 468,
+              "36 weeks": 468,
+              "37 - 39 weeks": 468,
+              "40 weeks": 468,
+              "4000 - 4499 grams": 468,
+              "41 weeks": 468,
+              "42 weeks or more": 468,
+              "4500 - 4999 grams": 468,
+              "499 grams or less": 468,
+              "4th to 6th month": 468,
+              "500 - 999 grams": 468,
+              "5000 - 8165 grams": 468,
+              "7th to final month": 468,
+              "8th grade or less": 468,
+              "9th through 12th grade with no diploma": 468,
+              "Associate degree (AA, AS)": 468,
+              "Bachelor's degree (BA, AB, BS)": 468,
+              "Cesarean": 468,
+              "Doctorate (PhD, EdD) or Professional Degree (MD, DDS, DVM, LLB, JD)": 468,
+              "High school graduate or GED completed": 468,
+              "Married": 468,
+              "Master's degree (MA, MS, MEng, MEd, MSW, MBA)": 468,
+              "No": 468,
+              "No prenatal care": 468,
+              "Single": 468,
+              "Some college credit, but not a degree": 468,
+              "Triplet or higher": 468,
+              "Twin": 468,
+              "Under 20 weeks": 468,
+              "Unknown": 3276,
+              "Unmarried": 468,
+              "Vaginal": 468,
+              "Yes": 468
+            }
+          },
+          {
+            "name": "natality_births",
+            "duplicates": 11497,
+            "info": {
+              "id": "natality_births",
+              "short_name": "Live births",
+              "long_name": "Number of live births (CDC WONDER Natality)",
+              "category": "demographic",
+              "short_description": "Count of live births to residents of the area.",
+              "long_description": "Annual count of live births registered in the National Vital Statistics System, as published through CDC WONDER's Natality, 2016-2024 expanded database (Single Race). Each record represents one liveborn infant, counted by the mother's state of residence. National rows (geography \"00\") are taken from CDC WONDER's own national query rather than summed from the states, because suppressed state cells each hide 1-9 births and a state sum therefore runs low. The Overall row for each state is summed from its infant-sex rows.",
+              "statement": "In {location}, there were {value} live births in {time}.",
+              "measure_type": "Count",
+              "unit": "Live births",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "cdc_wonder_natality"
+                }
+              ],
+              "citations": [
+                {
+                  "title": "National Vital Statistics System, Natality on CDC WONDER Online Database",
+                  "url": "https://wonder.cdc.gov/natality-expanded-current.html"
+                }
+              ]
+            },
+            "time_range": [0, 8],
+            "type": "integer",
+            "missing": 918,
+            "mean": 24885.175949,
+            "sd": 160310.647815,
+            "min": 0,
+            "max": 3810149
+          },
+          {
+            "name": "natality_suppressed_flag",
+            "duplicates": 22462,
+            "info": {
+              "id": "natality_suppressed_flag",
+              "short_name": "Suppressed flag",
+              "long_name": "Confidentiality suppression indicator",
+              "category": "demographic",
+              "short_description": "1 if CDC WONDER suppressed the birth count for this row, 0 otherwise.",
+              "long_description": "CDC WONDER suppresses any cell representing 1-9 births under its assurance of confidentiality. Where that happened, `natality_births` is NA and this flag is 1; the true count is between 1 and 9 and is not imputed. An Overall row derived by summing the infant-sex rows carries the flag if either sex was suppressed, in which case its total is NA rather than a partial sum.",
+              "measure_type": "Count",
+              "unit": "Indicator (0/1)",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "cdc_wonder_natality"
+                }
+              ]
+            },
+            "time_range": [0, 8],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.040865,
+            "sd": 0.197983,
+            "min": 0,
+            "max": 1
+          }
+        ]
+      },
+      "sha512": "1cd05d5f5cdcb290e324c3293344ef1757fa27d081ad793d3f582e398ae28304f8bf9e43077b8801cbb3cc6985c876fd9cb4786353bb1982a334ca980706b60c"
+    },
+    {
+      "bytes": 56949,
+      "encoding": "windows-1252",
+      "md5": "a0048082fc39a28e3967bdb423313cbb",
+      "format": "csv",
+      "name": "data_state.csv",
+      "filename": "data_state.csv.gz",
+      "versions": {
+        "hash": ["c1c8680a5014125e866e24dbb3870b401f649ba9"],
+        "author": ["Callie Annas <callie.annas@yale.edu>"],
+        "date": ["Wed Sep 16 15:57:13 2026 -0400"],
+        "message": ["Adding CDC Wonder Natality data"]
+      },
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 2,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-09-18 20:11:28.025517",
+      "last_modified": "2026-09-18 20:11:28.025517",
+      "vintage": {},
+      "row_count": 10296,
+      "entity_count": 52,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 10244,
+            "info": [],
+            "time_range": [0, 8],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "00": 198,
+              "01": 198,
+              "02": 198,
+              "04": 198,
+              "05": 198,
+              "06": 198,
+              "08": 198,
+              "09": 198,
+              "10": 198,
+              "11": 198,
+              "12": 198,
+              "13": 198,
+              "15": 198,
+              "16": 198,
+              "17": 198,
+              "18": 198,
+              "19": 198,
+              "20": 198,
+              "21": 198,
+              "22": 198,
+              "23": 198,
+              "24": 198,
+              "25": 198,
+              "26": 198,
+              "27": 198,
+              "28": 198,
+              "29": 198,
+              "30": 198,
+              "31": 198,
+              "32": 198,
+              "33": 198,
+              "34": 198,
+              "35": 198,
+              "36": 198,
+              "37": 198,
+              "38": 198,
+              "39": 198,
+              "40": 198,
+              "41": 198,
+              "42": 198,
+              "44": 198,
+              "45": 198,
+              "46": 198,
+              "47": 198,
+              "48": 198,
+              "49": 198,
+              "50": 198,
+              "51": 198,
+              "53": 198,
+              "54": 198,
+              "55": 198,
+              "56": 198
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 10287,
+            "info": [],
+            "time_range": [0, 8],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2016-12-31": 1144,
+              "2017-12-31": 1144,
+              "2018-12-31": 1144,
+              "2019-12-31": 1144,
+              "2020-12-31": 1144,
+              "2021-12-31": 1144,
+              "2022-12-31": 1144,
+              "2023-12-31": 1144,
+              "2024-12-31": 1144
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 10286,
+            "info": {
+              "id": "age",
+              "short_name": "Mother's age",
+              "long_name": "Age group of the mother",
+              "category": "demographic",
+              "short_description": "Age group of the mother at the time of birth (<15, 15-19, ... 50+), or \"Overall\".",
+              "measure_type": "age",
+              "unit": "age group (years)"
+            },
+            "time_range": [0, 8],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "<15": 468,
+              "15-19": 468,
+              "20-24": 468,
+              "25-29": 468,
+              "30-34": 468,
+              "35-39": 468,
+              "40-44": 468,
+              "45-49": 468,
+              "50+": 468,
+              "Overall": 6084
+            }
+          },
+          {
+            "name": "sex",
+            "duplicates": 10293,
+            "info": {
+              "id": "sex",
+              "short_name": "Infant sex",
+              "long_name": "Sex of the infant",
+              "category": "demographic",
+              "short_description": "Sex of the liveborn infant, or \"Overall\". Note this is the infant's sex, not the mother's.",
+              "measure_type": "sex",
+              "unit": "category"
+            },
+            "time_range": [0, 8],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Female": 468,
+              "Male": 468,
+              "Overall": 9360
+            }
+          },
+          {
+            "name": "race_ethnicity",
+            "duplicates": 10285,
+            "info": {
+              "id": "race_ethnicity",
+              "short_name": "Race/ethnicity",
+              "long_name": "Race and Hispanic origin of the mother",
+              "category": "demographic",
+              "short_description": "Mother's single race (6 groups) or Hispanic origin, or \"Overall\". Race and Hispanic origin are separate queries, so they appear as levels of one column and are never crossed.",
+              "measure_type": "race_ethnicity",
+              "unit": "category"
+            },
+            "time_range": [0, 8],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "American Indian or Alaska Native": 468,
+              "Asian": 468,
+              "Black or African American": 468,
+              "Hispanic": 468,
+              "More than one race": 468,
+              "Native Hawaiian or Other Pacific Islander": 468,
+              "Not Hispanic": 468,
+              "Overall": 5616,
+              "Unknown": 468,
+              "Unknown Hispanic origin": 468,
+              "White": 468
+            }
+          },
+          {
+            "name": "natality_births",
+            "duplicates": 3774,
+            "info": {
+              "id": "natality_births",
+              "short_name": "Live births",
+              "long_name": "Number of live births (CDC WONDER Natality)",
+              "category": "demographic",
+              "short_description": "Count of live births to residents of the area.",
+              "long_description": "Annual count of live births registered in the National Vital Statistics System, as published through CDC WONDER's Natality, 2016-2024 expanded database (Single Race). Each record represents one liveborn infant, counted by the mother's state of residence. National rows (geography \"00\") are taken from CDC WONDER's own national query rather than summed from the states, because suppressed state cells each hide 1-9 births and a state sum therefore runs low. The Overall row for each state is summed from its infant-sex rows.",
+              "statement": "In {location}, there were {value} live births in {time}.",
+              "measure_type": "Count",
+              "unit": "Live births",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "cdc_wonder_natality"
+                }
+              ],
+              "citations": [
+                {
+                  "title": "National Vital Statistics System, Natality on CDC WONDER Online Database",
+                  "url": "https://wonder.cdc.gov/natality-expanded-current.html"
+                }
+              ]
+            },
+            "time_range": [0, 8],
+            "type": "integer",
+            "missing": 441,
+            "mean": 34004.142872,
+            "sd": 193636.522203,
+            "min": 0,
+            "max": 3945875
+          },
+          {
+            "name": "natality_suppressed_flag",
+            "duplicates": 10294,
+            "info": {
+              "id": "natality_suppressed_flag",
+              "short_name": "Suppressed flag",
+              "long_name": "Confidentiality suppression indicator",
+              "category": "demographic",
+              "short_description": "1 if CDC WONDER suppressed the birth count for this row, 0 otherwise.",
+              "long_description": "CDC WONDER suppresses any cell representing 1-9 births under its assurance of confidentiality. Where that happened, `natality_births` is NA and this flag is 1; the true count is between 1 and 9 and is not imputed. An Overall row derived by summing the infant-sex rows carries the flag if either sex was suppressed, in which case its total is NA rather than a partial sum.",
+              "measure_type": "Count",
+              "unit": "Indicator (0/1)",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "cdc_wonder_natality"
+                }
+              ]
+            },
+            "time_range": [0, 8],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.042832,
+            "sd": 0.202488,
+            "min": 0,
+            "max": 1
+          }
+        ]
+      },
+      "sha512": "d3df57c6f69b472958872a01e2d3004c9ca54389f50a0f3e702dba71445b3f08b39776c615a83e014986843d8fc9561a2aac8bcc917370190e974968aec0d51d"
+    }
+  ],
+  "measure_info": {
+    "natality_births": {
+      "id": "natality_births",
+      "short_name": "Live births",
+      "long_name": "Number of live births (CDC WONDER Natality)",
+      "category": "demographic",
+      "short_description": "Count of live births to residents of the area.",
+      "long_description": "Annual count of live births registered in the National Vital Statistics System, as published through CDC WONDER's Natality, 2016-2024 expanded database (Single Race). Each record represents one liveborn infant, counted by the mother's state of residence. National rows (geography \"00\") are taken from CDC WONDER's own national query rather than summed from the states, because suppressed state cells each hide 1-9 births and a state sum therefore runs low. The Overall row for each state is summed from its infant-sex rows.",
+      "statement": "In {location}, there were {value} live births in {time}.",
+      "measure_type": "Count",
+      "unit": "Live births",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "cdc_wonder_natality"
+        }
+      ],
+      "citations": [
+        {
+          "title": "National Vital Statistics System, Natality on CDC WONDER Online Database",
+          "url": "https://wonder.cdc.gov/natality-expanded-current.html"
+        }
+      ]
+    },
+    "natality_suppressed_flag": {
+      "id": "natality_suppressed_flag",
+      "short_name": "Suppressed flag",
+      "long_name": "Confidentiality suppression indicator",
+      "category": "demographic",
+      "short_description": "1 if CDC WONDER suppressed the birth count for this row, 0 otherwise.",
+      "long_description": "CDC WONDER suppresses any cell representing 1-9 births under its assurance of confidentiality. Where that happened, `natality_births` is NA and this flag is 1; the true count is between 1 and 9 and is not imputed. An Overall row derived by summing the infant-sex rows carries the flag if either sex was suppressed, in which case its total is NA rather than a partial sum.",
+      "measure_type": "Count",
+      "unit": "Indicator (0/1)",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "cdc_wonder_natality"
+        }
+      ]
+    },
+    "age": {
+      "id": "age",
+      "short_name": "Mother's age",
+      "long_name": "Age group of the mother",
+      "category": "demographic",
+      "short_description": "Age group of the mother at the time of birth (<15, 15-19, ... 50+), or \"Overall\".",
+      "measure_type": "age",
+      "unit": "age group (years)"
+    },
+    "sex": {
+      "id": "sex",
+      "short_name": "Infant sex",
+      "long_name": "Sex of the infant",
+      "category": "demographic",
+      "short_description": "Sex of the liveborn infant, or \"Overall\". Note this is the infant's sex, not the mother's.",
+      "measure_type": "sex",
+      "unit": "category"
+    },
+    "race_ethnicity": {
+      "id": "race_ethnicity",
+      "short_name": "Race/ethnicity",
+      "long_name": "Race and Hispanic origin of the mother",
+      "category": "demographic",
+      "short_description": "Mother's single race (6 groups) or Hispanic origin, or \"Overall\". Race and Hispanic origin are separate queries, so they appear as levels of one column and are never crossed.",
+      "measure_type": "race_ethnicity",
+      "unit": "category"
+    },
+    "dimension": {
+      "id": "dimension",
+      "short_name": "Dimension",
+      "long_name": "Which detail breakdown this row belongs to",
+      "category": "demographic",
+      "short_description": "Which of eight detail breakdowns (data_state_detail.csv.gz only) this row's `category` value is a level of: birth_weight, gestational_age, delivery_method, plurality, prenatal_care_trimester, tobacco_use, mothers_education, or marital_status.",
+      "long_description": "Each is queried on its own WONDER variable, national + state only (no county); a row's `category` is a level of exactly this one dimension, never crossed with another. birth_weight = \"Infant Birth Weight 12\" (500g bands; finer 14-group and 100g-increment versions exist on the source form but are not pulled). gestational_age = \"OE Gestational Age Recode 10\", the Obstetric Estimate method NCHS has preferred since ~2014, not the older LMP-based method (a separate, unpulled variable). delivery_method = the plain 3-level \"Delivery Method\" variable (Vaginal/Cesarean/Unknown; finer \"Final Route\"/\"Delivery Method Expanded\" variables exist but aren't pulled) -- cross-checked against the national 2023 rate, 32.3% cesarean, matching published NCHS figures. plurality = single/twin/triplet-or-higher, an exhaustive breakdown (its three categories sum to the geography/year's total births exactly). prenatal_care_trimester = \"Trimester Prenatal Care Began\"; \"No prenatal care\" is a real, substantive category here, not collapsed into \"Unknown\" like WONDER's other non-informative labels. tobacco_use = a simple yes/no/unknown variable (WONDER's separate cigarette-count-by-trimester variables aren't pulled). mothers_education = \"Mother's Education\"; its raw \"Excluded\" category (a state's birth-certificate revision not collecting the item at all, a jurisdiction-level gap rather than one record's missingness) is collapsed into \"Unknown\" here like every other placeholder. marital_status = married/unmarried/unknown.",
+      "measure_type": "category",
+      "unit": "category",
+      "sources": [
+        {
+          "id": "cdc_wonder_natality"
+        }
+      ]
+    },
+    "category": {
+      "id": "category",
+      "short_name": "Category",
+      "long_name": "Category value within the row's dimension",
+      "category": "demographic",
+      "short_description": "The specific level of whichever `dimension` this row is (data_state_detail.csv.gz only), e.g. \"Cesarean\" when dimension is delivery_method.",
+      "long_description": "WONDER's non-informative category labels (\"Unknown or Not Stated\", \"Not Reported\", and, on mothers_education only, \"Excluded\" -- states whose birth-certificate revision does not collect that item at all, a jurisdiction-level gap rather than a single record's missingness) are collapsed into a single \"Unknown\" level, same as in data_state.csv.gz. \"No prenatal care\" (prenatal_care_trimester) is a real, substantive answer and is kept as its own category, not collapsed.",
+      "measure_type": "category",
+      "unit": "category",
+      "sources": [
+        {
+          "id": "cdc_wonder_natality"
+        }
+      ]
+    },
+    "_sources": {
+      "cdc_wonder_natality": {
+        "name": "CDC WONDER Natality, 2016-2024 expanded",
+        "url": "https://wonder.cdc.gov/natality-expanded-current.html",
+        "organization": "Centers for Disease Control and Prevention, National Center for Health Statistics",
+        "organization_url": "https://www.cdc.gov/nchs/",
+        "location": "Natality, 2016-2024 expanded (Single Race), database D149",
+        "location_url": "https://wonder.cdc.gov/natality-expanded-current.html",
+        "description": "Counts of live births from the National Vital Statistics System birth certificate file, as compiled from data provided by the 57 vital statistics jurisdictions through the Vital Statistics Cooperative Program and published through CDC WONDER. Coverage is national, state and county level. County data is published by CDC only for counties of 100,000 or more people; within each state every smaller county is pooled into a single \"Unidentified Counties\" row under the pseudo-FIPS code SS999, which is retained in the county file but is not a joinable FIPS code. CDC WONDER provides no API for sub-national data (its official API is national-only by policy) so these files are produced by driving the live query form with the Selenium scraper in PopHIVE/wonder-scraper-drowning (scraper/natality_scraper.py), one query per year x geography level x demographic breakdown. Every download is validated against the 'Query Parameters:' footer of the export before it is kept. WONDER's non-informative category rows (\"Unknown or Not Stated\", \"Not Available\", \"Not Reported\", \"Not Stated\") are collapsed into a single \"Unknown\" level rather than dropped. Limitations: cells representing 1-9 births are suppressed for confidentiality; breakdowns are single-dimension, not cross-tabulated; and the pull requests counts only, so no birth or fertility rate is included.",
+        "restrictions": "Data Use Restrictions: The Public Health Service Act (42 U.S.C. 242m(d)) provides that the data collected by the National Center for Health Statistics (NCHS) may be used only for the purpose for which they were obtained; any effort to determine the identity of any reported cases, or to use the information for any purpose other than for health statistical reporting and analysis, is against the law. Therefore users will: (1) Use these data for health statistical reporting and analysis only. (2) Do not present or publish birth counts of 9 or fewer or birth rates based on counts of nine or fewer (in figures, graphs, maps, tables, etc.). (3) Make no attempt to learn the identity of any person or establishment included in these data. (4) Make no disclosure or other use of the identity of any person or establishment discovered inadvertently and advise the NCHS Confidentiality Officer of any such discovery: Confidentiality Officer, National Center for Health Statistics, 3311 Toledo Road, Hyattsville, MD 20782. Telephone 888-642-4159. Email: nchsconfidentiality@cdc.gov. Sanctions for Violating Rules: Researchers who violate the terms of the data use restrictions will lose access to WONDER and their sponsors and institutions will be notified. Researchers who are suspected of violating the rules may be prevented from using WONDER until an investigation can be completed. Deliberately making a false statement in any matter within the jurisdiction of any department or agency of the Federal government violates 18 USC 1001 and is punishable by a fine of up to $10,000 or up to 5 years in prison, or both.",
+        "date_accessed": 2026
+      },
+      "id": "_sources"
+    },
+    "_catalog": {
+      "name": "CDC WONDER Natality",
+      "summary": "Yearly counts of babies born in each state and nationwide, broken out by the mother's age, race, and Hispanic origin, and by the baby's sex. Additional birth details aggregated by state without demographic breakdowns are also included.",
+      "search_terms": [
+        "Maternal health",
+        "births",
+        "natality",
+        "fertility"
+      ],
+      "bucket": [
+        "Maternal health"
+      ],
+      "files": {
+        "data_state.csv.gz": "Births by state",
+        "data_county.csv.gz": "Births by counties (population 100,000+)",
+        "data_state_detail.csv.gz": "Birth details by state"
+      },
+      "id": "_catalog"
+    }
+  },
+  "change_report": {
+    "data_state_detail.csv.gz": {
+      "state": "new file"
+    },
+    "data_state.csv.gz": {
+      "state": "new file"
+    }
+  }
 }
