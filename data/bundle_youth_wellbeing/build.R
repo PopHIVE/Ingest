@@ -64,6 +64,7 @@ AGE_EPIC_I  <- c('<15 Years'  = '0-14 years', '15-25 Years' = '15-25 years')
 AGE_EPIC_C  <- c('<18 Years'  = '0-17 years')
 AGE_YRBSS   <- c('14' = '14 years', '15' = '15 years', '16' = '16 years',
                  '17' = '17 years', 'Overall' = 'Overall')
+AGE_CRISIS  <- c('13 or younger' = '0-13 years', '14-17' = '14-17 years')
 
 # YRBSS reports race and Hispanic ethnicity in one column; WISQARS keeps them
 # separate. Map YRBSS onto the WISQARS scheme so both use `race` / `ethnicity`.
@@ -262,7 +263,19 @@ SPEC <- bind_rows(
   sp('noaa_heat_risk', 'Chronic disease', 'Environmental health', 'heat_risk'),
 
   # ---- Childhood immunizations ----
-  sp('immunizations', 'Preventative health and wellness', 'Vaccinations', 'pct_vaccinated')
+  sp('immunizations', 'Preventative health and wellness', 'Vaccinations', 'pct_vaccinated'),
+
+  # ---- Crisis Text Line / Crisis Trends ----
+  sp('crisis_trends', 'Mental health', 'Suicide and suicidal ideation',
+     c('crisistrends_suicide', 'crisistrends_self_harm')),
+  sp('crisis_trends', 'Mental health', 'Bullying', 'crisistrends_bullying'),
+  sp('crisis_trends', 'Mental health', 'General mental health measures',
+     c('crisistrends_anxiety_stress', 'crisistrends_depression_sadness',
+       'crisistrends_isolation_loneliness', 'crisistrends_grief',
+       'crisistrends_eating_body_image', 'crisistrends_gender_sexual_identity',
+       'crisistrends_relationships', 'crisistrends_abuse',
+       'crisistrends_total', 'crisistrends_n_tagged')),
+  sp('crisis_trends', 'Substance abuse', 'Substances used', 'crisistrends_substance_use')
 )
 
 stopifnot(!anyDuplicated(SPEC[c('dataset', 'section', 'focus_area', 'measure')]))
@@ -821,7 +834,43 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 
 
 # =============================================================================
-# 11. MAIN PAGE -- PLACEHOLDER
+# 11. Crisis Text Line -- Crisis Trends, national + state, age
+#
+#   dist/crisis_trends_state_age.parquet
+#
+# Monthly counts of Crisis Text Line conversations by issue tag. Restricted to
+# the two youth age bins the source reports ('13 or younger', '14-17');
+# 'Missing' age and the adult bins are dropped. `crisistrends_total` and
+# `crisistrends_n_tagged` (all conversations / all tagged conversations) are
+# kept as their own measures alongside the per-topic tag counts, filed under
+# General mental health measures as a volume denominator, same as
+# n_patients_chronic for Epic Chronic.
+#
+# geography arrives already as a FIPS code ('00' national, 2-digit state, or
+# 'Missing'/'72' for unreported/Puerto Rico), so it joins directly onto
+# state_cw's fips column via as_state() -- Missing and territories are dropped
+# by the inner join, same as every other dataset in this bundle.
+#
+# Every crisistrends_* count is disclosure-controlled at source: suppressed
+# cells arrive as NA and are dropped by the !is.na(value) filter below rather
+# than carried as a visible suppressed flag.
+# =============================================================================
+
+crisis_measures <- SPEC %>% filter(dataset == 'crisis_trends') %>% pull(measure) %>% unique()
+
+vroom::vroom('../crisis_trends/standard/data.csv.gz', show_col_types = FALSE) %>%
+  filter(age %in% names(AGE_CRISIS)) %>%
+  mutate(age = unname(AGE_CRISIS[age])) %>%
+  tall_simple(crisis_measures, c('geography', 'time', 'age')) %>%
+  rename(fips = geography) %>%
+  filter(!is.na(value)) %>%
+  as_state() %>%
+  label('crisis_trends', 'Crisis Text Line') %>%
+  write_parquet('dist/crisis_trends_state_age.parquet')
+
+
+# =============================================================================
+# 12. MAIN PAGE -- PLACEHOLDER
 # =============================================================================
 # TODO: to be defined; see the 'Main page' tab of the workbook.
 # Expected output: dist/main_*.parquet
