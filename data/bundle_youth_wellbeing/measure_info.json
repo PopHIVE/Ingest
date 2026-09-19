@@ -2328,6 +2328,146 @@
     "measure_type": "Percent",
     "unit": "Percent"
   },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band of the texter. Youth only: the source's two under-18 bins, relabeled '0-13 years' (source: '13 or younger') and '14-17 years' (source: '14-17'). Rows with age not reported ('Missing') and the adult bins are dropped."
+  },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "crisistrends_abuse": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_anxiety_stress": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_bullying": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_depression_sadness": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_eating_body_image": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_gender_sexual_identity": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_grief": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_isolation_loneliness": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_n_tagged": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_relationships": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_self_harm": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_substance_use": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_suicide": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      },
+      "crisistrends_total": {
+        "sources": [
+          {
+            "id": "ctl_crisistrends"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/crisis_trends_state_age.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Monthly conversation count for the measure. Suppressed cells (too small to publish safely) arrive as NA at source and are dropped rather than carried as a flagged zero."
+  },
   "_sources": {
     "wisqars": {
       "name": "Web-based Injury Statistics Query and Reporting System (WISQARS)",
@@ -2417,6 +2557,15 @@
       "description": "SchoolVaxView monitors vaccination coverage among U.S. school-aged children. Data are collected annually by states, territories, and select local jurisdictions through school vaccination assessments, which review student vaccination records at kindergarten entry. These data are made available by the CDC.",
       "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
     },
+    "ctl_crisistrends": {
+      "name": "Crisis Text Line's Crisis Trends",
+      "url": "https://crisistrends.org",
+      "organization": "Crisis Text Line",
+      "organization_url": "https://www.crisistextline.org",
+      "description": "Crisis Text Line is a nonprofit organization that provides free, 24/7, confidential text-based mental health support and crisis intervention in both English and Spanish for anyone in the United States and Puerto Rico. This dataset contains de-identified conversation metrics, aggregated to unique combinations of month, issue tags, age group, and state. Each conversation may carry multiple issue tags, so per-tag counts overlap and don't sum to a total. This bundle restricts the data to the two youth age bins the source reports ('13 or younger', '14-17'). Note that these data are not expected to exactly match those on crisistrends.org because their data include conversations that are purposefully excluded from this data set due to data sharing restrictions.",
+      "restrictions": "Attribution required. Cite as: Crisis Text Line (2026). Crisis Trends. https://crisistrends.org/ (date accessed).",
+      "date_accessed": 2026
+    },
     "neiss": {
       "name": "National Electronic Injury Surveillance System (NEISS)",
       "url": "https://www.cpsc.gov/Research--Statistics/NEISS-Injury-Data",
@@ -2434,6 +2583,7 @@
     "sources": [
       "bundle_childhood_immunizations",
       "county_health_rankings",
+      "crisis_trends",
       "epic_chronic",
       "epic_injury",
       "medicaid_quality",
@@ -2574,6 +2724,14 @@
         "source_files": [
           "neiss/standard/data_agegroup_diagnosis.csv.gz",
           "neiss/standard/data_infant_diagnosis.csv.gz"
+        ]
+      },
+      "crisis_trends_state_age.parquet": {
+        "sources": [
+          "crisis_trends"
+        ],
+        "source_files": [
+          "crisis_trends/standard/data.csv.gz"
         ]
       }
     }
