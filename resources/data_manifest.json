@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-18T12:07:21Z",
+  "generated": "2026-09-19T11:49:49Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -6874,6 +6874,23 @@
                   "sources": [
                     {
                       "id": "medicaid_quality_cms"
+                    }
+                  ]
+                },
+                "total_births": {
+                  "id": "bundle_maternal_health/dist/maternal_state.parquet|measure=total_births",
+                  "short_name": "Total Births",
+                  "long_name": "Total Live Births",
+                  "category": "maternal",
+                  "short_description": "Total number of live births.",
+                  "long_description": "Total count of live births to residents, from CDC WONDER Natality (database D149). State and national counts only (county pending); cells representing 1-9 births are suppressed by CDC for confidentiality and excluded here rather than imputed.",
+                  "statement": "In {location}, there were {value} live births.",
+                  "measure_type": "Count",
+                  "unit": "Births",
+                  "time_resolution": "Year",
+                  "sources": [
+                    {
+                      "id": "cdc_wonder_natality"
                     }
                   ]
                 }
@@ -15019,6 +15036,13 @@
               "unit": "date"
             },
             {
+              "name": "cdc_rt_covid",
+              "short_name": "COVID-19",
+              "description": "Median estimate of the effective reproduction number (Rt) for COVID-19, indicating whether the epidemic is growing (Rt > 1) or declining (Rt < 1).",
+              "measure_type": "Rate",
+              "unit": "Reproduction number"
+            },
+            {
               "name": "cdc_rt_rsv",
               "short_name": "RSV",
               "description": "Median estimate of the effective reproduction number (Rt) for RSV, indicating whether the epidemic is growing (Rt > 1) or declining (Rt < 1).",
@@ -15033,9 +15057,9 @@
               "unit": "Reproduction number"
             },
             {
-              "name": "cdc_rt_covid",
+              "name": "cdc_rt_covid_lower",
               "short_name": "COVID-19",
-              "description": "Median estimate of the effective reproduction number (Rt) for COVID-19, indicating whether the epidemic is growing (Rt > 1) or declining (Rt < 1).",
+              "description": "Lower bound of the 95% credible interval for the Rt estimate for COVID-19.",
               "measure_type": "Rate",
               "unit": "Reproduction number"
             },
@@ -15054,9 +15078,9 @@
               "unit": "Reproduction number"
             },
             {
-              "name": "cdc_rt_covid_lower",
+              "name": "cdc_rt_covid_upper",
               "short_name": "COVID-19",
-              "description": "Lower bound of the 95% credible interval for the Rt estimate for COVID-19.",
+              "description": "Upper bound of the 95% credible interval for the Rt estimate for COVID-19.",
               "measure_type": "Rate",
               "unit": "Reproduction number"
             },
@@ -15075,11 +15099,11 @@
               "unit": "Reproduction number"
             },
             {
-              "name": "cdc_rt_covid_upper",
+              "name": "cdc_rt_covid_p_growing",
               "short_name": "COVID-19",
-              "description": "Upper bound of the 95% credible interval for the Rt estimate for COVID-19.",
-              "measure_type": "Rate",
-              "unit": "Reproduction number"
+              "description": "Probability that Rt is above 1.0, indicating epidemic growth, for COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Probability (0-1)"
             },
             {
               "name": "cdc_rt_rsv_p_growing",
@@ -15092,13 +15116,6 @@
               "name": "cdc_rt_flu_p_growing",
               "short_name": "Influenza",
               "description": "Probability that Rt is above 1.0, indicating epidemic growth, for Influenza.",
-              "measure_type": "Percent",
-              "unit": "Probability (0-1)"
-            },
-            {
-              "name": "cdc_rt_covid_p_growing",
-              "short_name": "COVID-19",
-              "description": "Probability that Rt is above 1.0, indicating epidemic growth, for COVID-19.",
               "measure_type": "Percent",
               "unit": "Probability (0-1)"
             }
@@ -15176,6 +15193,114 @@
               "description": "1 if the maternal mortality rate is based on a death count under 20 and considered unreliable by NCHS (rate not reported), 0 otherwise.",
               "measure_type": "Count",
               "unit": "Flag (0/1)"
+            }
+          ]
+        }
+      ]
+    },
+    "cdc_wonder_natality": {
+      "name": "cdc_wonder_natality",
+      "display_name": "CDC Wonder Natality",
+      "description": "Counts of live births from the National Vital Statistics System birth certificate file, as compiled from data provided by the 57 vital statistics jurisdictions through the Vital Statistics Cooperative Program and published through CDC WONDER. Coverage is national, state and county level. County data is published by CDC only for counties of 100,000 or more people; within each state every smaller county is pooled into a single \"Unidentified Counties\" row under the pseudo-FIPS code SS999, which is retained in the county file but is not a joinable FIPS code. CDC WONDER provides no API for sub-national data (its official API is national-only by policy) so these files are produced by driving the live query form with the Selenium scraper in PopHIVE/wonder-scraper-drowning (scraper/natality_scraper.py), one query per year x geography level x demographic breakdown. Every download is validated against the 'Query Parameters:' footer of the export before it is kept. WONDER's non-informative category rows (\"Unknown or Not Stated\", \"Not Available\", \"Not Reported\", \"Not Stated\") are collapsed into a single \"Unknown\" level rather than dropped. Limitations: cells representing 1-9 births are suppressed for confidentiality; breakdowns are single-dimension, not cross-tabulated; and the pull requests counts only, so no birth or fertility rate is included.",
+      "standard_files": [
+        {
+          "filename": "data_state_detail.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "dimension",
+              "short_name": "Dimension",
+              "description": "Which of eight detail breakdowns (data_state_detail.csv.gz only) this row's `category` value is a level of: birth_weight, gestational_age, delivery_method, plurality, prenatal_care_trimester, tobacco_use, mothers_education, or marital_status.",
+              "measure_type": "category",
+              "unit": "category"
+            },
+            {
+              "name": "category",
+              "short_name": "Category",
+              "description": "The specific level of whichever `dimension` this row is (data_state_detail.csv.gz only), e.g. \"Cesarean\" when dimension is delivery_method.",
+              "measure_type": "category",
+              "unit": "category"
+            },
+            {
+              "name": "natality_births",
+              "short_name": "Live births",
+              "description": "Count of live births to residents of the area.",
+              "measure_type": "Count",
+              "unit": "Live births"
+            },
+            {
+              "name": "natality_suppressed_flag",
+              "short_name": "Suppressed flag",
+              "description": "1 if CDC WONDER suppressed the birth count for this row, 0 otherwise.",
+              "measure_type": "Count",
+              "unit": "Indicator (0/1)"
+            }
+          ]
+        },
+        {
+          "filename": "data_state.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Mother's age",
+              "description": "Age group of the mother at the time of birth (<15, 15-19, ... 50+), or \"Overall\".",
+              "measure_type": "age",
+              "unit": "age group (years)"
+            },
+            {
+              "name": "sex",
+              "short_name": "Infant sex",
+              "description": "Sex of the liveborn infant, or \"Overall\". Note this is the infant's sex, not the mother's.",
+              "measure_type": "sex",
+              "unit": "category"
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/ethnicity",
+              "description": "Mother's single race (6 groups) or Hispanic origin, or \"Overall\". Race and Hispanic origin are separate queries, so they appear as levels of one column and are never crossed.",
+              "measure_type": "race_ethnicity",
+              "unit": "category"
+            },
+            {
+              "name": "natality_births",
+              "short_name": "Live births",
+              "description": "Count of live births to residents of the area.",
+              "measure_type": "Count",
+              "unit": "Live births"
+            },
+            {
+              "name": "natality_suppressed_flag",
+              "short_name": "Suppressed flag",
+              "description": "1 if CDC WONDER suppressed the birth count for this row, 0 otherwise.",
+              "measure_type": "Count",
+              "unit": "Indicator (0/1)"
             }
           ]
         }
