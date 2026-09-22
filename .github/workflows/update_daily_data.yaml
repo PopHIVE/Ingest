@@ -13,7 +13,6 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       KINSA_EMAIL: ${{ secrets.KINSA_EMAIL }}
       KINSA_PASSWORD: ${{ secrets.KINSA_PASSWORD }}
-      CRISISTRENDS_POPHIVE_CONFIG: ${{ secrets.CRISISTRENDS_POPHIVE_CONFIG }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     steps:
       - run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libudunits2-dev libproj-dev libgdal-dev libgeos-dev
@@ -47,7 +46,6 @@ jobs:
       - run: Rscript -e "dcf::dcf_process('kinsa_ili')"
       - run: Rscript -e "dcf::dcf_process('epic_health_alerts')"
       - run: Rscript -e "dcf::dcf_process('nnds')"
-      - run: Rscript -e "dcf::dcf_process('crisis_trends')"
       - run: Rscript -e "dcf::dcf_process('bundle_respiratory', '.')"
       - run: Rscript -e "dcf::dcf_process('bundle_sti', '.')"
 
