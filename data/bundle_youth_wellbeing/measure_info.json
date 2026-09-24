@@ -1114,6 +1114,77 @@
     "short_name": "Suppressed flag",
     "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
   },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band. Youth only: bands entirely under 18, using Epic Concussions' own bands (<1, 1-4, 5-9, 10-13, 14-17 years) rather than a shared cross-source label."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "Sex stratum: 'Female', 'Male', or 'Overall'."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "epic_n_concussion": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_n_ed_encounters": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      },
+      "epic_pct_concussion": {
+        "sources": [
+          {
+            "id": "epic_cosmos"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed do NOT carry a usable value; see that column."
+  },
+  "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|suppressed": {
+    "short_name": "Suppressed flag",
+    "short_description": "1 if the source suppressed the estimate (a count of 10 or fewer, imputed as 5). epic_pct_concussion carries its numerator's flag; rows where the denominator (epic_n_ed_encounters) was suppressed are dropped entirely rather than computed from an imputed denominator. Filter on suppressed == 0 before using value."
+  },
   "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|geography": {
     "short_name": "Geography",
     "short_description": "State or county name; 'United States' for the national total."

@@ -62,6 +62,8 @@ AGE_WISQARS <- c('0-14 Years' = '0-14 years', '15-24 Years' = '15-24 years')
 AGE_NHTSA   <- c('0-14'       = '0-14 years', '15-24'       = '15-24 years')
 AGE_EPIC_I  <- c('<15 Years'  = '0-14 years', '15-25 Years' = '15-25 years')
 AGE_EPIC_C  <- c('<18 Years'  = '0-17 years')
+AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' = '5-9 years',
+                 '10-13 Years' = '10-13 years', '14-17 Years' = '14-17 years')
 AGE_YRBSS   <- c('14' = '14 years', '15' = '15 years', '16' = '16 years',
                  '17' = '17 years', 'Overall' = 'Overall')
 
@@ -211,6 +213,12 @@ SPEC <- bind_rows(
   sp('epic_chronic', 'Chronic disease', 'Obesity',
      c('obesity_bmi', 'obesity_dx_ccw', 'n_patients_chronic')),
   sp('epic_chronic', 'Chronic disease', 'Diabetes', c('diabetes_a1c_6_5', 'diabetes_dx_ccw')),
+
+  # ---- Epic Concussions (not in the workbook; added alongside YRBSS's
+  # self-reported concussion measure so ED-diagnosed and self-reported
+  # concussion data sit in the same focus area) ----
+  sp('epic_concussions', 'Injury and violence', 'Concussions',
+     c('epic_n_concussion', 'epic_pct_concussion', 'epic_n_ed_encounters')),
 
   # ---- medicaid_quality ----
   sp('medicaid', 'Substance abuse', 'Follow up for ED visits for drug/alcohol related reasons',
@@ -459,7 +467,42 @@ epic_chronic_tall('county_year.csv.gz') %>%
 
 
 # =============================================================================
-# 6. medicaid_quality -- Child Core Set quality measures, state, payer
+# 6. Epic Concussions -- ED visits with a concussion diagnosis, state, age x sex
+#
+#   dist/epic_concussions_state_age_sex.parquet
+#
+# Restricted to age bands entirely under 18 (Epic Concussions' own bands:
+# <1, 1-4, 5-9, 10-13, 14-17 Years -- none straddle 18, so no relabeling
+# compromise is needed the way Epic Injury's 15-25 band requires one).
+#
+# epic_n_ed_encounters (the all-diagnosis ED denominator behind
+# epic_pct_concussion) is carried through as its own measure, the same
+# treatment epic_chronic gives n_patients_chronic above.
+#
+# epic_pct_concussion has no suppression flag of its own at source: it is
+# already left NA there when the denominator is suppressed (and so dropped
+# below by the !is.na(value) filter), so the numerator's flag is what's left
+# to carry -- see the "OR of the two flags" note in measure_info.json.
+# =============================================================================
+
+epic_concussions_measures <- SPEC %>% filter(dataset == 'epic_concussions') %>%
+  pull(measure) %>% unique()
+
+vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE) %>%
+  filter(age %in% names(AGE_EPIC_CC)) %>%
+  mutate(age = unname(AGE_EPIC_CC[age]),
+         epic_pct_concussion_suppressed_flag = epic_n_concussion_suppressed_flag) %>%
+  rename_with(~ sub('_suppressed_flag$', '_suppressed', .x), ends_with('_suppressed_flag')) %>%
+  tall_flagged(epic_concussions_measures, c('geography', 'time', 'age', 'sex'), '_suppressed') %>%
+  rename(fips = geography) %>%
+  filter(!is.na(value)) %>%
+  as_state() %>%
+  label('epic_concussions', 'Epic Cosmos') %>%
+  write_parquet('dist/epic_concussions_state_age_sex.parquet')
+
+
+# =============================================================================
+# 7. medicaid_quality -- Child Core Set quality measures, state, payer
 #
 #   dist/medicaid_state_payer.parquet
 #
@@ -501,7 +544,7 @@ vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE)
 
 
 # =============================================================================
-# 7. County Health Rankings -- state + county, no demographic stratification
+# 8. County Health Rankings -- state + county, no demographic stratification
 #
 #   dist/chr_state.parquet
 #   dist/chr_county.parquet
@@ -555,7 +598,7 @@ chr_read('data_county.csv.gz') %>%
 
 
 # =============================================================================
-# 8. NOAA heat risk -- daily HeatRisk index, state + county
+# 9. NOAA heat risk -- daily HeatRisk index, state + county
 #
 #   dist/noaa_heat_risk_state.parquet
 #   dist/noaa_heat_risk_county.parquet
@@ -586,7 +629,7 @@ noaa_read('data_county.csv.gz') %>%
 
 
 # =============================================================================
-# 9. Childhood immunizations -- state, age x vaccine
+# 10. Childhood immunizations -- state, age x vaccine
 #
 #   dist/immunizations_state_age_vaccine.parquet
 #
@@ -626,7 +669,7 @@ read_parquet('../bundle_childhood_immunizations/dist/overall_rates_by_source.par
 
 
 # =============================================================================
-# 10. NEISS -- ED injuries under 20, national, age x sex x year
+# 11. NEISS -- ED injuries under 20, national, age x sex x year
 #
 #   dist/neiss_product_age_sex_year.parquet
 #   dist/neiss_diagnosis_age_sex_year.parquet
@@ -821,7 +864,7 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 
 
 # =============================================================================
-# 11. MAIN PAGE -- PLACEHOLDER
+# 12. MAIN PAGE -- PLACEHOLDER
 # =============================================================================
 # TODO: to be defined; see the 'Main page' tab of the workbook.
 # Expected output: dist/main_*.parquet
