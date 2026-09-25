@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T12:35:12Z",
+  "generated": "2026-09-25T12:34:04Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -11329,6 +11329,131 @@
               "name": "suppressed",
               "short_name": "Suppressed flag",
               "description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "epic_concussions_state_age_sex.parquet",
+          "path": "data/bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State or county name; 'United States' for the national total.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "fips",
+              "short_name": "FIPS code",
+              "description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Period the estimate covers, as a date (YYYY-mm-dd).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year of `time`, for convenience.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age band. Youth only: bands entirely under 18, using Epic Concussions' own bands (<1, 1-4, 5-9, 10-13, 14-17 years) rather than a shared cross-source label.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex stratum: 'Female', 'Male', or 'Overall'.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "section",
+              "short_name": "Dashboard section",
+              "description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "focus_area",
+              "short_name": "Focus area",
+              "description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Source",
+              "description": "Data source the row came from.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "Tall-format measure identifier; see levels for each measure's metadata.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "epic_n_concussion": {
+                  "sources": [
+                    {
+                      "id": "epic_cosmos"
+                    }
+                  ]
+                },
+                "epic_n_ed_encounters": {
+                  "sources": [
+                    {
+                      "id": "epic_cosmos"
+                    }
+                  ]
+                },
+                "epic_pct_concussion": {
+                  "sources": [
+                    {
+                      "id": "epic_cosmos"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed do NOT carry a usable value; see that column.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "suppressed",
+              "short_name": "Suppressed flag",
+              "description": "1 if the source suppressed the estimate (a count of 10 or fewer, imputed as 5). epic_pct_concussion carries its numerator's flag; rows where the denominator (epic_n_ed_encounters) was suppressed are dropped entirely rather than computed from an imputed denominator. Filter on suppressed == 0 before using value.",
               "measure_type": "",
               "unit": "",
               "levels": {}
