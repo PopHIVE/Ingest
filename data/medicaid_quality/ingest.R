@@ -71,6 +71,8 @@ get_medicaid_data_complete <- function(dataset_id, limit = 1000) {
 # Sorted by year for deterministic hashing. Falls back to the known list if unreachable.
 discover_core_set_datasets <- function() {
   known <- c(
+    "2025" = "14bc26c3-5584-4032-9175-f3a0399cb206",
+    "2024" = "a5023394-ab10-465b-bb4a-7de5ac98d90c",
     "2023" = "e85033c7-367e-467e-9e81-8e85048102b8",
     "2022" = "dfd13757-d763-4f7a-9641-3f06ce21b4c6",
     "2021" = "a058ef78-e18b-4435-94aa-b70ab6ce5904",
@@ -102,8 +104,10 @@ discover_core_set_datasets <- function() {
     return(known[order(names(known))])
   }
 
-  # Keep datasets whose title mentions "core set" (Child or Adult Core Set annual reports)
-  mask <- grepl("core set", catalog$title, ignore.case = TRUE)
+  # Match on the portal's actual title text, not "core set" -- these ARE the
+  # Core Set reports, but their titles never contain that phrase (matching it
+  # is the bug that silently stalled discovery at 2023; don't reintroduce it).
+  mask <- grepl("Child and Adult Health Care Quality Measures", catalog$title, ignore.case = TRUE)
   discovered <- catalog[mask, c("identifier", "title")]
 
   if (nrow(discovered) == 0) {
@@ -191,8 +195,15 @@ if (!identical(process$raw_state, raw_state)) {
     )
   
   # Some measures report more than one rate definition under the same
-  # abbreviation and sub_metric. distinct() below keeps the first, so list the
-  # affected variable-years in the log instead of dropping them silently.
+  # abbreviation and sub_metric (e.g. different age bands or survey questions
+  # CMS doesn't expose as separate columns). distinct() below keeps one row
+  # per (geography, time, payer, domain, var_name) -- arrange_for_distinct()
+  # makes that pick deterministic (a real value over a suppressed/missing one,
+  # then the least demographically-qualified population, then alphabetical)
+  # instead of depending on the CMS API's pagination order, which is not
+  # guaranteed stable across pulls. This does not recover the collapsed rows;
+  # it only makes which one survives reproducible. List the affected
+  # variable-years in the log instead of dropping them silently.
   warn_collapsed <- function(d) {
     collapsed <- d %>%
       filter(!is.na(val)) %>%
@@ -211,6 +222,29 @@ if (!identical(process$raw_state, raw_state)) {
               paste0("  ", collapsed$measure, ": ", collapsed$years, collapse = "\n"))
     }
     d
+  }
+
+  # Deterministic tie-break for the distinct() below: prefer a real value over
+  # a suppressed/missing one, then the population with fewest demographic
+  # qualifiers (drop "Dual Eligibles"/"Other" breakouts in favor of the base
+  # reporting population), then the most inclusive population string among
+  # what's left, then alphabetical by population and (for measures whose
+  # sub-components share one population, e.g. AIS-AD's per-vaccine rows)
+  # by rate definition -- so re-running the ingest always keeps the same row
+  # for a given ambiguous key, regardless of API response order.
+  arrange_for_distinct <- function(d) {
+    d %>%
+      mutate(
+        population_priority = if_else(
+          grepl("Dual Eligible", population, ignore.case = TRUE) |
+            grepl("(^|, )Other(,|$)", population, ignore.case = TRUE),
+          1L, 0L
+        )
+      ) %>%
+      arrange(geography, time, payer, domain, var_name,
+              is.na(val), population_priority, desc(nchar(population)), population,
+              measure_info) %>%
+      select(-population_priority)
   }
 
   #creating wide format
@@ -257,7 +291,7 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     select(geography, geography_level, time, age, sex, race_ethnicity,
            payer, domain, measure_abbr, measure_info, measure_clean, sub_metric,
-           value, pct25, pct75) %>%
+           population, value, pct25, pct75) %>%
     pivot_longer(cols = c(value, pct25, pct75), names_to = "stat", values_to = "val") %>%
     mutate(
       stat = case_when(
@@ -270,7 +304,8 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     select(-measure_clean, -sub_metric, -stat) %>%
     warn_collapsed() %>%
-    select(-measure_abbr, -measure_info) %>%
+    arrange_for_distinct() %>%
+    select(-measure_abbr, -measure_info, -population) %>%
     distinct(geography, time, payer, domain, var_name, .keep_all = TRUE) %>%
     pivot_wider(names_from = var_name, values_from = val) %>%
     mutate(across(starts_with("medicaid_"), as.numeric))
