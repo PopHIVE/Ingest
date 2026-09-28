@@ -27,13 +27,14 @@
 # this bundle did too, the two would silently drift apart whenever the Census
 # ingest gained a variable. Being definitionally complete means it cannot.
 #
-# Sources (all of census/standard/, ZCTA excluded -- it is no longer produced):
-#   data_state.csv.gz   ACS 5-year, 2-digit FIPS + national "00"
-#   data_county.csv.gz  ACS 5-year + urban/rural allocation, 5-digit FIPS
-#   data_pep.csv.gz     Population Estimates Program
-#   data_saipe.csv.gz   Small Area Income and Poverty Estimates
-#   data_sahie.csv.gz   Small Area Health Insurance Estimates
-#   data_oqm.csv.gz     2020 Census Operational Quality Metrics
+# Sources (census/standard/ and ACS_estimates/standard/, ZCTA excluded -- it is
+# no longer produced):
+#   ACS_estimates/standard/data_state.csv.gz   ACS 5-year, 2-digit FIPS + national "00"
+#   ACS_estimates/standard/data_county.csv.gz  ACS 5-year + urban/rural allocation, 5-digit FIPS
+#   census/standard/data_pep.csv.gz     Population Estimates Program
+#   census/standard/data_saipe.csv.gz   Small Area Income and Poverty Estimates
+#   census/standard/data_sahie.csv.gz   Small Area Health Insurance Estimates
+#   census/standard/data_oqm.csv.gz     2020 Census Operational Quality Metrics
 # The last four carry national, state and county rows in a single file, so the
 # build splits them by FIPS length.
 #
@@ -54,8 +55,8 @@ library(arrow)
 # Which files hold which geography levels. Files listed as "both" carry
 # national/state/county together and are split by nchar(geography).
 SOURCE_FILES <- c(
-  "../census/standard/data_state.csv.gz",
-  "../census/standard/data_county.csv.gz",
+  "../ACS_estimates/standard/data_state.csv.gz",
+  "../ACS_estimates/standard/data_county.csv.gz",
   "../census/standard/data_pep.csv.gz",
   "../census/standard/data_saipe.csv.gz",
   "../census/standard/data_sahie.csv.gz",
@@ -173,14 +174,14 @@ check_dupes <- function(df, label,
 # -----------------------------------------------------------------------------
 
 census_state <- bind_rows(lapply(
-  setdiff(SOURCE_FILES, "../census/standard/data_county.csv.gz"),
+  setdiff(SOURCE_FILES, "../ACS_estimates/standard/data_county.csv.gz"),
   read_all_measures, geo_nchar = 2
 )) %>%
   select(geography, time, measure, value, source) %>%
   arrange(measure, geography, time)
 
 census_county <- bind_rows(lapply(
-  setdiff(SOURCE_FILES, "../census/standard/data_state.csv.gz"),
+  setdiff(SOURCE_FILES, "../ACS_estimates/standard/data_state.csv.gz"),
   read_all_measures, geo_nchar = 5
 )) %>%
   select(geography, time, measure, value, source) %>%

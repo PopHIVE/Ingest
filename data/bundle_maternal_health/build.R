@@ -5,7 +5,7 @@
 # files keyed by geography (FIPS) + year + measure.
 #
 # Sources:
-#   - census/standard/data_{state,county}.csv.gz          (ACS, fertility)
+#   - ACS_estimates/standard/data_{state,county}.csv.gz   (ACS, fertility)
 #   - county_health_rankings/standard/data_{state,county}.csv.gz (CHR&R)
 #   - medicaid_quality/standard/data.csv.gz               (CMS Core Set,
 #                                                          state-level only)
@@ -130,8 +130,8 @@ check_dupes <- function(df, label, key_cols = c("geography", "time", "measure"))
 # 2. Census (ACS) — state + county
 # -----------------------------------------------------------------------------
 
-census_state  <- read_chr("../census/standard/data_state.csv.gz")
-census_county <- read_chr("../census/standard/data_county.csv.gz")
+census_state  <- read_chr("../ACS_estimates/standard/data_state.csv.gz")
+census_county <- read_chr("../ACS_estimates/standard/data_county.csv.gz")
 
 census_state_long  <- pivot_measures(census_state,  CENSUS_MEASURES)
 census_county_long <- pivot_measures(census_county, CENSUS_MEASURES)

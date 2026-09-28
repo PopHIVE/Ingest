@@ -133,7 +133,7 @@ message(
 # 5. County and state social/economic/health-resource determinants
 #    (moved here from the former bundle_rural_health)
 #    Sources: hud_chas, area_health_resource_file, bls_laus, usda_food_access,
-#             census (ACS 5-year SDOH, SAHIE, SAIPE, urban/rural, OQM)
+#             ACS_estimates (ACS 5-year SDOH, urban/rural), census (SAHIE, SAIPE, OQM)
 #    Outputs: dist/county_determinants.parquet, dist/state_determinants.parquet
 #    Same long format as county_access.parquet, plus a `source` column.
 # -----------------------------------------------------------------------------
@@ -145,8 +145,8 @@ det_paths <- c(
   bls_county  = "../bls_laus/standard/data_county.csv.gz",
   bls_state   = "../bls_laus/standard/data_state.csv.gz",
   usda_county = "../usda_food_access/standard/data_county.csv.gz",
-  acs_state   = "../census/standard/data_state.csv.gz",
-  acs_county  = "../census/standard/data_county.csv.gz",
+  acs_state   = "../ACS_estimates/standard/data_state.csv.gz",
+  acs_county  = "../ACS_estimates/standard/data_county.csv.gz",
   sahie       = "../census/standard/data_sahie.csv.gz",
   saipe       = "../census/standard/data_saipe.csv.gz",
   oqm         = "../census/standard/data_oqm.csv.gz"
