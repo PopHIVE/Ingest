@@ -62,8 +62,22 @@ jobs:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Custom Package
-        # epidatr 1.3.0 is not on CRAN yet; it is needed for the cast (v5) endpoints
-        run: Rscript -e "renv::install('dissc-yale/dcf'); renv::install('cmu-delphi/epidatr@main')"
+        # epidatr 1.3.0 is not on CRAN yet; it is needed for the cast (v5) endpoints.
+        # GitHub's api.github.com enforces a secondary rate limit on top of the
+        # normal quota, triggered by request burstiness rather than raw count
+        # (docs.github.com/rest/overview/rate-limits-for-the-rest-api). Shared
+        # Actions runners share IP ranges across many concurrent jobs, so
+        # resolving these two GitHub refs back-to-back occasionally trips it
+        # even with GITHUB_PAT set (rstudio/renv#324). Retry instead of failing
+        # the whole scheduled build over a transient 403.
+        run: |
+          for attempt in 1 2 3; do
+            Rscript -e "renv::install('dissc-yale/dcf'); renv::install('cmu-delphi/epidatr@main')" && exit 0
+            echo "install failed (attempt $attempt); retrying after backoff"
+            sleep $((attempt * 15))
+          done
+          echo "::error::failed to install GitHub packages after 3 attempts"
+          exit 1
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
