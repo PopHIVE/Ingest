@@ -7,16 +7,16 @@ flowchart LR
     s2(("<strong><a href="https://data.cdc.gov/d/95m5-agj4" target="_blank" rel="noreferrer">Active Bacterial Core surveillance (ABCs) Group B Streptococcus</a></strong>"))
     s4(("<strong><a href="https://data.cdc.gov/d/9y49-tura" target="_blank" rel="noreferrer">Active Bacterial Core surveillance (ABCs) Group A Streptococcus</a></strong>"))
     s5(("<strong><a href="https://pubmed.ncbi.nlm.nih.gov/39758745/" target="_blank" rel="noreferrer">Serotype-Specific Urinary Antigen Detection (SSUAD) Study</a></strong>"))
-    s7(("<strong><a href="https://www.cdc.gov/mosquitoes/php/arbonet/index.html" target="_blank" rel="noreferrer">ArboNET Arboviral Disease Surveillance System</a></strong>"))
-    s9(("<strong><a href="https://data.hrsa.gov/topics/health-workforce/ahrf" target="_blank" rel="noreferrer">Area Health Resource File (AHRF)</a></strong>"))
-    s11(("<strong><a href="https://data.cdc.gov/Foodborne-Waterborne-and-Related-Diseases/BEAM-Dashboard-Report-Data/jbhn-e8xn/about_data" target="_blank" rel="noreferrer">BEAM Dashboard - Report Data</a></strong>"))
-    s13(("<strong><a href="https://www.bls.gov/lau/" target="_blank" rel="noreferrer">Local Area Unemployment Statistics (LAUS)</a></strong>"))
-    s15(("<strong><a href="https://www.cdc.gov/brfss/index.html" target="_blank" rel="noreferrer">Behavioral Risk Factor Surveillance System (BRFSS)</a></strong>"))
-    s17(("<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/CDC-Epidemic-Trends-and-Rt/5dqz-y4ea/" target="_blank" rel="noreferrer">CDC Epidemic Trends and Rt</a></strong>"))
-    s18(("<strong><a href="https://data.cdc.gov/d/e2d5-ggg7" target="_blank" rel="noreferrer">NCHS VSRR Provisional Maternal Death Counts and Rates</a></strong>"))
-    s19(("<strong><a href="https://wonder.cdc.gov/natality-expanded-current.html" target="_blank" rel="noreferrer">CDC WONDER Natality, 2016-2024 expanded</a></strong>"))
-    s21(("<strong><a href="https://www.census.gov/programs-surveys/acs/data.html" target="_blank" rel="noreferrer">2024 American Community Survey 5-Year Estimates, Powered by Metopio</a></strong>"))
-    s23(("<strong><a href="https://www.census.gov/programs-surveys/geography/guidance/geo-areas/urban-rural.html" target="_blank" rel="noreferrer">2020 Census Urban Area to County Allocation File</a></strong>"))
+    s7(("<strong><a href="https://www.census.gov/programs-surveys/acs/data.html" target="_blank" rel="noreferrer">2024 American Community Survey 5-Year Estimates, Powered by Metopio</a></strong>"))
+    s9(("<strong><a href="https://www.census.gov/programs-surveys/geography/guidance/geo-areas/urban-rural.html" target="_blank" rel="noreferrer">2020 Census Urban Area to County Allocation File</a></strong>"))
+    s11(("<strong><a href="https://www.cdc.gov/mosquitoes/php/arbonet/index.html" target="_blank" rel="noreferrer">ArboNET Arboviral Disease Surveillance System</a></strong>"))
+    s13(("<strong><a href="https://data.hrsa.gov/topics/health-workforce/ahrf" target="_blank" rel="noreferrer">Area Health Resource File (AHRF)</a></strong>"))
+    s15(("<strong><a href="https://data.cdc.gov/Foodborne-Waterborne-and-Related-Diseases/BEAM-Dashboard-Report-Data/jbhn-e8xn/about_data" target="_blank" rel="noreferrer">BEAM Dashboard - Report Data</a></strong>"))
+    s17(("<strong><a href="https://www.bls.gov/lau/" target="_blank" rel="noreferrer">Local Area Unemployment Statistics (LAUS)</a></strong>"))
+    s19(("<strong><a href="https://www.cdc.gov/brfss/index.html" target="_blank" rel="noreferrer">Behavioral Risk Factor Surveillance System (BRFSS)</a></strong>"))
+    s21(("<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/CDC-Epidemic-Trends-and-Rt/5dqz-y4ea/" target="_blank" rel="noreferrer">CDC Epidemic Trends and Rt</a></strong>"))
+    s22(("<strong><a href="https://data.cdc.gov/d/e2d5-ggg7" target="_blank" rel="noreferrer">NCHS VSRR Provisional Maternal Death Counts and Rates</a></strong>"))
+    s23(("<strong><a href="https://wonder.cdc.gov/natality-expanded-current.html" target="_blank" rel="noreferrer">CDC WONDER Natality, 2016-2024 expanded</a></strong>"))
     s25(("<strong><a href="https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/process/data-quality.html" target="_blank" rel="noreferrer">2020 Census Operational Quality Metrics</a></strong>"))
     s27(("<strong><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noreferrer">Population Estimates Program (PEP): Annual Population Estimates by Age, Sex, Race, and Hispanic Origin</a></strong>"))
     s29(("<strong><a href="https://www.census.gov/programs-surveys/sahie.html" target="_blank" rel="noreferrer">Small Area Health Insurance Estimates (SAHIE)</a></strong>"))
@@ -83,54 +83,57 @@ flowchart LR
         n9["`strep_resistance.csv.gz`"]:::pass
         n10["`uad.csv.gz`"]:::pass
     end
-    subgraph arbonet["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/arbonet" target="_blank" rel="noreferrer">arbonet</a></strong>`"]
+    subgraph ACS_estimates["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/ACS_estimates" target="_blank" rel="noreferrer">ACS_estimates</a></strong>`"]
         direction LR
         n11["`data_county.csv.gz`"]:::pass
         n12["`data_state.csv.gz`"]:::pass
     end
+    subgraph arbonet["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/arbonet" target="_blank" rel="noreferrer">arbonet</a></strong>`"]
+        direction LR
+        n13["`data_county.csv.gz`"]:::pass
+        n14["`data_state.csv.gz`"]:::pass
+    end
     subgraph area_health_resource_file["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/area_health_resource_file" target="_blank" rel="noreferrer">area_health_resource_file</a></strong>`"]
         direction LR
-        n13["`data.csv.gz`"]:::pass
+        n15["`data.csv.gz`"]:::pass
     end
     subgraph atlas_amr["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/atlas_amr" target="_blank" rel="noreferrer">atlas_amr</a></strong>`"]
         direction LR
     end
     subgraph beam["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/beam" target="_blank" rel="noreferrer">beam</a></strong>`"]
         direction LR
-        n14["`data.csv.gz`"]:::pass
+        n16["`data.csv.gz`"]:::pass
     end
     subgraph bls_laus["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bls_laus" target="_blank" rel="noreferrer">bls_laus</a></strong>`"]
         direction LR
-        n15["`data_county.csv.gz`"]:::pass
-        n16["`data_state.csv.gz`"]:::pass
+        n17["`data_county.csv.gz`"]:::pass
+        n18["`data_state.csv.gz`"]:::pass
     end
     subgraph brfss["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/brfss" target="_blank" rel="noreferrer">brfss</a></strong>`"]
         direction LR
-        n17["`data_survey.csv.gz<br/><br/><ul><li><code>missing_info: sex, race_ethnicity, prev_insured_survey, prev_insured_survey_lcl, prev_insured_survey_ucl, sample_size_insured</code></li></ul>`"]:::warn
-        n18["`data.csv.gz`"]:::pass
+        n19["`data_survey.csv.gz<br/><br/><ul><li><code>missing_info: sex, race_ethnicity, prev_insured_survey, prev_insured_survey_lcl, prev_insured_survey_ucl, sample_size_insured</code></li></ul>`"]:::warn
+        n20["`data.csv.gz`"]:::pass
     end
     subgraph cdc_cfa_rt["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cdc_cfa_rt" target="_blank" rel="noreferrer">cdc_cfa_rt</a></strong>`"]
         direction LR
-        n19["`data.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li></ul>`"]:::warn
+        n21["`data.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li></ul>`"]:::warn
     end
     subgraph cdc_vssr["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cdc_vssr" target="_blank" rel="noreferrer">cdc_vssr</a></strong>`"]
         direction LR
-        n20["`data.csv.gz`"]:::pass
+        n22["`data.csv.gz`"]:::pass
     end
     subgraph cdc_wonder_natality["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cdc_wonder_natality" target="_blank" rel="noreferrer">cdc_wonder_natality</a></strong>`"]
         direction LR
-        n21["`data_county.csv.gz`"]:::pass
-        n22["`data_state_detail.csv.gz`"]:::pass
-        n23["`data_state.csv.gz`"]:::pass
+        n23["`data_county.csv.gz`"]:::pass
+        n24["`data_state_detail.csv.gz`"]:::pass
+        n25["`data_state.csv.gz`"]:::pass
     end
     subgraph census["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/census" target="_blank" rel="noreferrer">census</a></strong>`"]
         direction LR
-        n24["`data_county.csv.gz`"]:::pass
-        n25["`data_oqm.csv.gz`"]:::pass
-        n26["`data_pep.csv.gz`"]:::pass
-        n27["`data_sahie.csv.gz`"]:::pass
-        n28["`data_saipe.csv.gz`"]:::pass
-        n29["`data_state.csv.gz`"]:::pass
+        n26["`data_oqm.csv.gz`"]:::pass
+        n27["`data_pep.csv.gz`"]:::pass
+        n28["`data_sahie.csv.gz`"]:::pass
+        n29["`data_saipe.csv.gz`"]:::pass
     end
     subgraph cms_birth["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cms_birth" target="_blank" rel="noreferrer">cms_birth</a></strong>`"]
         direction LR
@@ -534,38 +537,38 @@ flowchart LR
     s1 --> n10
     s5---s6["<strong><a href="https://pubmed.ncbi.nlm.nih.gov/39758745/" target="_blank" rel="noreferrer">Open Forum for Infectious Diseases</a></strong>"]
     s6 --> n10
-    s7---s8["<strong><a href="https://www.cdc.gov/west-nile-virus/data-maps/historic-data.html" target="_blank" rel="noreferrer">CDC arboviral historic data dashboards</a></strong>"]
+    s7---s8["<strong><a href="https://api.census.gov/data.html" target="_blank" rel="noreferrer">Census API — ACS 5-Year Detailed Tables and Subject Tables</a></strong>"]
     s8 --> n11
+    s9---s10["<strong><a href="https://www2.census.gov/geo/docs/reference/ua/2020_UA_COUNTY.xlsx" target="_blank" rel="noreferrer">2020 Census Urban Area to County Allocation File (XLSX)</a></strong>"]
+    s10 --> n11
     s8 --> n12
-    s9---s10["<strong><a href="https://data.hrsa.gov/topics/health-workforce/ahrf" target="_blank" rel="noreferrer">AHRF County-Level Data Files</a></strong>"]
-    s10 --> n13
-    s11---s12["<strong><a href="https://www.cdc.gov/beam/dashboard/" target="_blank" rel="noreferrer">BEAM (Bacteria, Enterics, Amoeba, and Mycotics) Dashboard</a></strong>"]
+    s11---s12["<strong><a href="https://www.cdc.gov/west-nile-virus/data-maps/historic-data.html" target="_blank" rel="noreferrer">CDC arboviral historic data dashboards</a></strong>"]
+    s12 --> n13
     s12 --> n14
-    s13---s14["<strong><a href="https://www.bls.gov/developers/api_signature_v2.htm" target="_blank" rel="noreferrer">BLS API v2 — api.bls.gov/publicAPI/v2/timeseries/data/</a></strong>"]
+    s13---s14["<strong><a href="https://data.hrsa.gov/topics/health-workforce/ahrf" target="_blank" rel="noreferrer">AHRF County-Level Data Files</a></strong>"]
     s14 --> n15
-    s14 --> n16
-    s15---s16["<strong><a href="https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data" target="_blank" rel="noreferrer">Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)</a></strong>"]
-    s16 --> n17
-    s16 --> n18
-    s17 --> n19
-    s18 --> n20
-    s19---s20["<strong><a href="https://wonder.cdc.gov/natality-expanded-current.html" target="_blank" rel="noreferrer">Natality, 2016-2024 expanded (Single Race), database D149</a></strong>"]
-    s20 --> n21
-    s20 --> n22
-    s20 --> n23
-    s21---s22["<strong><a href="https://api.census.gov/data.html" target="_blank" rel="noreferrer">Census API — ACS 5-Year Detailed Tables and Subject Tables</a></strong>"]
-    s22 --> n24
-    s23---s24["<strong><a href="https://www2.census.gov/geo/docs/reference/ua/2020_UA_COUNTY.xlsx" target="_blank" rel="noreferrer">2020 Census Urban Area to County Allocation File (XLSX)</a></strong>"]
+    s15---s16["<strong><a href="https://www.cdc.gov/beam/dashboard/" target="_blank" rel="noreferrer">BEAM (Bacteria, Enterics, Amoeba, and Mycotics) Dashboard</a></strong>"]
+    s16 --> n16
+    s17---s18["<strong><a href="https://www.bls.gov/developers/api_signature_v2.htm" target="_blank" rel="noreferrer">BLS API v2 — api.bls.gov/publicAPI/v2/timeseries/data/</a></strong>"]
+    s18 --> n17
+    s18 --> n18
+    s19---s20["<strong><a href="https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data" target="_blank" rel="noreferrer">Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)</a></strong>"]
+    s20 --> n19
+    s20 --> n20
+    s21 --> n21
+    s22 --> n22
+    s23---s24["<strong><a href="https://wonder.cdc.gov/natality-expanded-current.html" target="_blank" rel="noreferrer">Natality, 2016-2024 expanded (Single Race), database D149</a></strong>"]
+    s24 --> n23
     s24 --> n24
+    s24 --> n25
     s25---s26["<strong><a href="https://www2.census.gov/programs-surveys/decennial/2020/data/operational-quality-metrics/census-operational-quality-metrics-release_4.xlsx" target="_blank" rel="noreferrer">Release 4 county-level file (October 2022)</a></strong>"]
-    s26 --> n25
+    s26 --> n26
     s27---s28["<strong><a href="https://api.census.gov/data/2023/pep/charv.html" target="_blank" rel="noreferrer">Census API — pep/charv</a></strong>"]
-    s28 --> n26
+    s28 --> n27
     s29---s30["<strong><a href="https://api.census.gov/data/timeseries/healthins/sahie.html" target="_blank" rel="noreferrer">Census API — timeseries/healthins/sahie</a></strong>"]
-    s30 --> n27
+    s30 --> n28
     s31---s32["<strong><a href="https://api.census.gov/data/timeseries/poverty/saipe.html" target="_blank" rel="noreferrer">Census API — timeseries/poverty/saipe</a></strong>"]
-    s32 --> n28
-    s22 --> n29
+    s32 --> n29
     s33 --> n30
     s33 --> n31
     s34---s35["<strong><a href="https://data.cms.gov/tools/mapping-medicare-disparities-by-population" target="_blank" rel="noreferrer">Mapping Medicare Disparities by Population Tool</a></strong>"]
@@ -727,12 +730,12 @@ flowchart LR
     n32 --> bundle_cancer_screening
     n66 --> bundle_cancer_screening
     n75 --> bundle_cancer_screening
-    n29 --> bundle_census
-    n24 --> bundle_census
-    n26 --> bundle_census
-    n28 --> bundle_census
+    n12 --> bundle_census
+    n11 --> bundle_census
     n27 --> bundle_census
-    n25 --> bundle_census
+    n29 --> bundle_census
+    n28 --> bundle_census
+    n26 --> bundle_census
     n109 --> bundle_childhood_immunizations
     n108 --> bundle_childhood_immunizations
     n98 --> bundle_childhood_immunizations
@@ -740,23 +743,23 @@ flowchart LR
     n96 --> bundle_childhood_immunizations
     n106 --> bundle_childhood_immunizations
     n107 --> bundle_childhood_immunizations
-    n17 --> bundle_chronic_diseases
+    n19 --> bundle_chronic_diseases
     n43 --> bundle_chronic_diseases
     n41 --> bundle_chronic_diseases
     n34 --> bundle_chronic_diseases
     n58 --> bundle_county_access
     n59 --> bundle_county_access
-    n13 --> bundle_county_access
     n15 --> bundle_county_access
-    n16 --> bundle_county_access
+    n17 --> bundle_county_access
+    n18 --> bundle_county_access
     n110 --> bundle_county_access
-    n29 --> bundle_county_access
-    n24 --> bundle_county_access
-    n27 --> bundle_county_access
+    n12 --> bundle_county_access
+    n11 --> bundle_county_access
     n28 --> bundle_county_access
-    n25 --> bundle_county_access
+    n29 --> bundle_county_access
+    n26 --> bundle_county_access
     n99 --> bundle_enteric_diseases
-    n14 --> bundle_enteric_diseases
+    n16 --> bundle_enteric_diseases
     n72 --> bundle_enteric_diseases
     n74 --> bundle_enteric_diseases
     n70 --> bundle_enteric_diseases
@@ -773,11 +776,11 @@ flowchart LR
     n50 --> bundle_injury_overdose
     n66 --> bundle_injury_overdose
     n54 --> bundle_injury_overdose
-    n29 --> bundle_maternal_health
-    n24 --> bundle_maternal_health
+    n12 --> bundle_maternal_health
+    n11 --> bundle_maternal_health
     n66 --> bundle_maternal_health
-    n23 --> bundle_maternal_health
-    n20 --> bundle_maternal_health
+    n25 --> bundle_maternal_health
+    n22 --> bundle_maternal_health
     n115 --> bundle_measles
     n113 --> bundle_measles
     n64 --> bundle_measles
@@ -819,7 +822,7 @@ flowchart LR
     n6 --> bundle_respiratory
     n5 --> bundle_respiratory
     n4 --> bundle_respiratory
-    n19 --> bundle_respiratory
+    n21 --> bundle_respiratory
     n77 --> bundle_respiratory
     n99 --> bundle_respiratory
     n66 --> bundle_sti
@@ -829,9 +832,9 @@ flowchart LR
     n120 --> bundle_sti
     n119 --> bundle_sti
     n118 --> bundle_sti
-    n12 --> bundle_vector_borne
+    n14 --> bundle_vector_borne
     n99 --> bundle_vector_borne
-    n11 --> bundle_vector_borne
+    n13 --> bundle_vector_borne
     n117 --> bundle_youth_wellbeing
     n87 --> bundle_youth_wellbeing
     n120 --> bundle_youth_wellbeing
