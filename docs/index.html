@@ -115,10 +115,22 @@
                 <a class="nav-link" href="#epic-resp-infections">Epic Resp Infections</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="#flu-doses-distributed">Flu Doses Distributed</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#fluvaxview">Fluvaxview</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="#gtrends">Gtrends</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#hud-chas">Hud Chas</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#iis-vax">Iis Vax</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#iqvia-vax-administered">Iqvia Vax Administered</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#kinsa-ili">Kinsa ILI</a>
@@ -134,6 +146,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#medicaid-quality">Medicaid Quality</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#medicare-vax">Medicare Vax</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#mmr-healthmap">MMR Healthmap</a>
@@ -155,6 +170,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#nis">NIS</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#nis-flu-rsv">NIS Flu Rsv</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#nis-teen">NIS Teen</a>
@@ -191,6 +209,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#vaers">VAERS</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#vsd-pregnancy-vax">Vsd Pregnancy Vax</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#wastewater">Wastewater</a>
@@ -11695,6 +11716,732 @@
                 </table>
               </div>
             </section>
+            <section id="flu-doses-distributed" class="mb-5">
+              <h2 class="border-bottom pb-2">Flu Doses Distributed</h2>
+              <p class="lead">Influenza vaccine is produced by private manufacturers, which together with a subset of wholesalers and distributors report to CDC each week the number of doses they have shipped in the United States. CDC publishes the cumulative total for each week of the season, from late July through early March, for the 2018-19 season onward. The figures approximate all doses distributed nationally, are not projections, and say nothing about how many doses were administered. Weeks are aligned to the current season's week ending dates; in years with 53 weeks the year-end reporting period is shorter than a week.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.cdc.gov/fluvaxview/dashboard/vaccine-doses-distributed.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncird/" target="_blank">Centers for Disease Control and Prevention</a>
+                   | 
+                  <a href="https://data.cdc.gov/d/ph8r-wzxn" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Public domain. CDC data is generally not subject to copyright restrictions.
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Flu season the cumulative total belongs to, e.g. 2024-25.</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>flu_doses_cumulative_millions</code>
+                      </td>
+                      <td>Flu vaccine doses distributed</td>
+                      <td>Millions of flu vaccine doses shipped by manufacturers and distributors in the United States, cumulative from the start of the season through the week.</td>
+                      <td>Count</td>
+                      <td>Millions of doses</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="fluvaxview" class="mb-5">
+              <h2 class="border-bottom pb-2">Fluvaxview</h2>
+              <p class="lead">FluVaxView Interactive is CDC's end-of-season summary of influenza vaccination coverage in the general population. Estimates for children 6 months-17 years come from the National Immunization Survey-Flu (NIS-Flu), a national random-digit-dialed cellular telephone survey in which a parent or guardian reports whether and when the child received a flu vaccine. Coverage is reported as the cumulative percent vaccinated since July for each month of the season (July through May) for the nation, HHS regions, all states, the District of Columbia, Puerto Rico, Guam, the U.S. Virgin Islands, and selected local areas, by age group and race and ethnicity, from the 2009-10 season to the most recent complete season. These are CDC's final estimates, published each fall after the season ends; CDC recalculated the 2022-23 and 2023-24 estimates with consistent imputation so recent seasons are comparable. Parent report is subject to recall error and telephone surveys to selection bias. Combined all-ages (&gt;=6 months) estimates pool NIS-Flu with the BRFSS adult estimates.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.cdc.gov/fluvaxview/interactive/general-population-coverage.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncird/" target="_blank">Centers for Disease Control and Prevention</a>
+                   | 
+                  <a href="https://data.cdc.gov/d/vh55-3he6" target="_blank">API/Data Location</a>
+                </li>
+                <li>
+                  <a href="https://www.cdc.gov/brfss/index.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncird/" target="_blank">Centers for Disease Control and Prevention</a>
+                   | 
+                  <a href="https://data.cdc.gov/d/vh55-3he6" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions:</strong>
+                <ul class="mb-0 mt-2">
+                  <li>
+                    <strong>
+                      National Immunization Survey-Flu (NIS-Flu), FluVaxView Interactive
+                      : 
+                    </strong>
+                    Public domain. CDC data is generally not subject to copyright restrictions.
+                  </li>
+                  <li>
+                    <strong>
+                      Behavioral Risk Factor Surveillance System (BRFSS), FluVaxView Interactive
+                      : 
+                    </strong>
+                    Public domain. CDC data is generally not subject to copyright restrictions.
+                  </li>
+                </ul>
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data_county.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>CDC age group, e.g. &gt;=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, &gt;=18 Years, 18-49 Years, 50-64 Years, &gt;=65 Years, and high-risk splits of 18-49 and 18-64.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage</code>
+                      </td>
+                      <td>Flu vaccination coverage</td>
+                      <td>Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_lcl</code>
+                      </td>
+                      <td>Coverage, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_ucl</code>
+                      </td>
+                      <td>Coverage, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed</td>
+                      <td>1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_monthly.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Flu season the estimate belongs to, e.g. 2024-25 (July through May).</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>CDC age group, e.g. &gt;=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, &gt;=18 Years, 18-49 Years, 50-64 Years, &gt;=65 Years, and high-risk splits of 18-49 and 18-64.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage</code>
+                      </td>
+                      <td>Flu vaccination coverage</td>
+                      <td>Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_lcl</code>
+                      </td>
+                      <td>Coverage, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_ucl</code>
+                      </td>
+                      <td>Coverage, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_sample_size</code>
+                      </td>
+                      <td>Sample size</td>
+                      <td>Unweighted number of survey respondents behind the estimate; not published for counties.</td>
+                      <td>Count</td>
+                      <td>Respondents</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed</td>
+                      <td>1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_race.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Flu season the estimate belongs to, e.g. 2024-25 (July through May).</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race_ethnicity</code>
+                      </td>
+                      <td>Race and ethnicity</td>
+                      <td>White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Other or Multiple Races, Non-Hispanic; and, from 2024-25, Asian and American Indian or Alaska Native, Non-Hispanic.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage</code>
+                      </td>
+                      <td>Flu vaccination coverage</td>
+                      <td>Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_lcl</code>
+                      </td>
+                      <td>Coverage, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_ucl</code>
+                      </td>
+                      <td>Coverage, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_sample_size</code>
+                      </td>
+                      <td>Sample size</td>
+                      <td>Unweighted number of survey respondents behind the estimate; not published for counties.</td>
+                      <td>Count</td>
+                      <td>Respondents</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed</td>
+                      <td>1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_setting.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Flu season the estimate belongs to, e.g. 2024-25 (July through May).</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>CDC age group, e.g. &gt;=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, &gt;=18 Years, 18-49 Years, 50-64 Years, &gt;=65 Years, and high-risk splits of 18-49 and 18-64.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>setting</code>
+                      </td>
+                      <td>Place of vaccination</td>
+                      <td>Medical Setting, Non-Medical Setting, Pharmacy/Store, Workplace, or School.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage</code>
+                      </td>
+                      <td>Flu vaccination coverage</td>
+                      <td>Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_lcl</code>
+                      </td>
+                      <td>Coverage, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_ucl</code>
+                      </td>
+                      <td>Coverage, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_sample_size</code>
+                      </td>
+                      <td>Sample size</td>
+                      <td>Unweighted number of survey respondents behind the estimate; not published for counties.</td>
+                      <td>Count</td>
+                      <td>Respondents</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed</td>
+                      <td>1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_substate.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_name</code>
+                      </td>
+                      <td>Area name</td>
+                      <td>CDC's label for the HHS region or local area in data_substate.csv.gz (e.g. Region 4, NY-City of New York, TX-Rest of state).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_level</code>
+                      </td>
+                      <td>Area type</td>
+                      <td>Region (HHS region) or Local (city, county, or rest-of-state area).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>state_fips</code>
+                      </td>
+                      <td>Parent state FIPS</td>
+                      <td>Two-digit FIPS code of the state a local area belongs to; missing for HHS regions.</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Flu season the estimate belongs to, e.g. 2024-25 (July through May).</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>CDC age group, e.g. &gt;=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, &gt;=18 Years, 18-49 Years, 50-64 Years, &gt;=65 Years, and high-risk splits of 18-49 and 18-64.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage</code>
+                      </td>
+                      <td>Flu vaccination coverage</td>
+                      <td>Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_lcl</code>
+                      </td>
+                      <td>Coverage, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_ucl</code>
+                      </td>
+                      <td>Coverage, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_sample_size</code>
+                      </td>
+                      <td>Sample size</td>
+                      <td>Unweighted number of survey respondents behind the estimate; not published for counties.</td>
+                      <td>Count</td>
+                      <td>Respondents</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed</td>
+                      <td>1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Flu season the estimate belongs to, e.g. 2024-25 (July through May).</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>CDC age group, e.g. &gt;=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, &gt;=18 Years, 18-49 Years, 50-64 Years, &gt;=65 Years, and high-risk splits of 18-49 and 18-64.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage</code>
+                      </td>
+                      <td>Flu vaccination coverage</td>
+                      <td>Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_lcl</code>
+                      </td>
+                      <td>Coverage, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_coverage_ucl</code>
+                      </td>
+                      <td>Coverage, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for fluvaxview_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fluvaxview_sample_size</code>
+                      </td>
+                      <td>Sample size</td>
+                      <td>Unweighted number of survey respondents behind the estimate; not published for counties.</td>
+                      <td>Count</td>
+                      <td>Respondents</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed</td>
+                      <td>1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
             <section id="gtrends" class="mb-5">
               <h2 class="border-bottom pb-2">Gtrends</h2>
               <p class="lead">Google Health Trends data accessed via the Google Health Trends API, processed and collected using Yale DISSC's gtrends_collection framework. The data represents the probability of a short search session including a specific health-related term within a geography and timeframe, multiplied by 10 million for readability. Search volumes are provided at the DMA (Designated Market Area) and state level on a weekly basis. This data source enables tracking of public interest in health topics such as RSV, overdose, and naloxone as potential early indicators of disease activity or public health concerns.</p>
@@ -12338,6 +13085,359 @@
                       <td>Share of occupied housing units with at least 1 of 4 severe housing problems.</td>
                       <td>Percent</td>
                       <td>Proportion (0–1)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="iis-vax" class="mb-5">
+              <h2 class="border-bottom pb-2">Iis Vax</h2>
+              <p class="lead">Immunization Information Systems (IIS) are the confidential, population-based registries that states, some large cities, and territories use to record vaccine doses given by participating providers. Jurisdictions submit aggregate counts to CDC each month, by age group, of residents with at least one dose of seasonal influenza vaccine (children 6 months-17 years and adults 18 and older, 2022-23 season onward), RSV vaccine (adults 75 and older, 2024-25 onward), and RSV monoclonal antibody (infants under 8 months, 2024-25 onward). Counts are cumulative from the start of the season and are divided by the previous year's Census population estimate to give coverage. Because a registry is meant to capture every dose rather than a sample, no standard errors are published. Completeness varies with each jurisdiction's reporting laws and provider participation, so IIS coverage usually runs below survey estimates from the National Immunization Survey. Not all jurisdictions report: 54 submitted data through the 2024-25 season and about half did in 2025-26, and CDC does not publish a national estimate. New York City and Philadelphia report separately from their states; Chicago and Houston have reported separately in some seasons. Each RSV season is published under a new dataset ID (n2zz-25mk and 4bdk-kyzv for 2024-25; 2yum-eg9f and vhcj-3k53 for 2025-26).</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.cdc.gov/iis/about/index.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncird/" target="_blank">Centers for Disease Control and Prevention</a>
+                   | 
+                  <a href="https://data.cdc.gov/d/ivdz-qhnr" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Public domain. CDC data is generally not subject to copyright restrictions.
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data_substate.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_name</code>
+                      </td>
+                      <td>Area name</td>
+                      <td>Name of the city or freely associated state in data_substate.csv.gz.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_level</code>
+                      </td>
+                      <td>Area type</td>
+                      <td>City or Freely associated state.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>state_fips</code>
+                      </td>
+                      <td>Parent state FIPS</td>
+                      <td>Two-digit FIPS code of the state a city belongs to; missing for freely associated states.</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Season</td>
+                      <td>Season the cumulative estimate belongs to, e.g. 2024-25.</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vaccine</code>
+                      </td>
+                      <td>Immunization</td>
+                      <td>flu (influenza vaccine), rsv (RSV vaccine, adults 75+), or rsv_mab (RSV monoclonal antibody, infants under 8 months).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>CDC age group label: 6-23 months, 2-4, 5-8, 9-12, 13-17, 6 months to 17 years, 18-49, 50-64, 65+, 18+ years (flu); 75+ years (rsv); 0-7 months (rsv_mab).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>iis_n_vaccinated</code>
+                      </td>
+                      <td>People immunized</td>
+                      <td>Number of residents with at least one dose recorded in the jurisdiction's immunization information system from the start of the season through the month.</td>
+                      <td>Count</td>
+                      <td>People</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>iis_population</code>
+                      </td>
+                      <td>Population</td>
+                      <td>Census population of the age group used as the coverage denominator.</td>
+                      <td>Count</td>
+                      <td>People</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>iis_coverage</code>
+                      </td>
+                      <td>Immunization coverage</td>
+                      <td>Percent of the age group with at least one dose recorded in the jurisdiction's immunization information system, cumulative through the month.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Season</td>
+                      <td>Season the cumulative estimate belongs to, e.g. 2024-25.</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vaccine</code>
+                      </td>
+                      <td>Immunization</td>
+                      <td>flu (influenza vaccine), rsv (RSV vaccine, adults 75+), or rsv_mab (RSV monoclonal antibody, infants under 8 months).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>CDC age group label: 6-23 months, 2-4, 5-8, 9-12, 13-17, 6 months to 17 years, 18-49, 50-64, 65+, 18+ years (flu); 75+ years (rsv); 0-7 months (rsv_mab).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>jurisdiction</code>
+                      </td>
+                      <td>Reporting jurisdiction</td>
+                      <td>CDC's name for the reporting jurisdiction; shows when a state row excludes a separately reporting city.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>partial_state_flag</code>
+                      </td>
+                      <td>Partial state</td>
+                      <td>1 for New York (excluding New York City) and Pennsylvania (excluding Philadelphia County), 0 otherwise.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>iis_n_vaccinated</code>
+                      </td>
+                      <td>People immunized</td>
+                      <td>Number of residents with at least one dose recorded in the jurisdiction's immunization information system from the start of the season through the month.</td>
+                      <td>Count</td>
+                      <td>People</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>iis_population</code>
+                      </td>
+                      <td>Population</td>
+                      <td>Census population of the age group used as the coverage denominator.</td>
+                      <td>Count</td>
+                      <td>People</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>iis_coverage</code>
+                      </td>
+                      <td>Immunization coverage</td>
+                      <td>Percent of the age group with at least one dose recorded in the jurisdiction's immunization information system, cumulative through the month.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="iqvia-vax-administered" class="mb-5">
+              <h2 class="border-bottom pb-2">Iqvia Vax Administered</h2>
+              <p class="lead">CDC publishes weekly estimates of the number of influenza (adults 18 and older, 2019-20 season onward) and RSV (adults 50 and older) vaccine doses administered in retail pharmacies and physicians' medical offices in the United States. The pharmacy estimates are projected by IQVIA from its Longitudinal Prescription Claims (LRx) data covering about 41,000 of the roughly 57,000 U.S. retail pharmacies; the physician-office estimates are projected from IQVIA Medical Claims (Dx) for a subset of office-based physicians on the American Medical Association list. Doses given at workplaces, community sites, long-term care facilities, public health clinics, and hospitals are not captured, and the estimates are national dose counts with no denominator, so CDC states they must not be used to calculate vaccination coverage. Physician-office estimates continue to rise for about two months as claims are processed. IQVIA assigns age from year of birth. Each RSV season is published under a new dataset ID (52ds-xw49 for 2025-26).</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.cdc.gov/fluvaxview/dashboard/adult-vaccinations-administered.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncird/" target="_blank">Centers for Disease Control and Prevention, using IQVIA data</a>
+                   | 
+                  <a href="https://data.cdc.gov/d/ysd3-txwj" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Public domain as published by CDC on data.cdc.gov. The estimates are CDC projections derived from proprietary IQVIA pharmacy and physician-office claims data; reuse should attribute them to CDC FluVaxView/RSVVaxView and note that they are based on IQVIA data.
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Season</td>
+                      <td>Season the weekly count belongs to, e.g. 2024-25.</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vaccine</code>
+                      </td>
+                      <td>Vaccine</td>
+                      <td>flu (seasonal influenza vaccine, adults 18+) or rsv (RSV vaccine, adults 50+).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>setting</code>
+                      </td>
+                      <td>Setting</td>
+                      <td>Pharmacy, Physician Medical Office, or Combined (the two together).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Flu: 18+, 18-49, 18-64, 50-64, 65+, and from 2023-24 60-74 and 75+. RSV: 50-59, 60-74, 75+.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>iqvia_doses</code>
+                      </td>
+                      <td>Doses administered in the week</td>
+                      <td>Estimated number of doses given in the setting during the week ending on the date.</td>
+                      <td>Count</td>
+                      <td>Doses</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>iqvia_cumulative_doses</code>
+                      </td>
+                      <td>Cumulative doses administered</td>
+                      <td>Estimated doses given in the setting from the start of the season (flu) or since August 2023 (RSV) through the week.</td>
+                      <td>Count</td>
+                      <td>Doses</td>
                     </tr>
                   </tbody>
                 </table>
@@ -15566,6 +16666,106 @@
                       </td>
                       <td>HPC: Use of Opioids at High Dosage (Adult)</td>
                       <td>Percent of adults without cancer who received opioid prescriptions at high dosage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="medicare-vax" class="mb-5">
+              <h2 class="border-bottom pb-2">Medicare Vax</h2>
+              <p class="lead">CDC's National Center for Immunization and Respiratory Diseases estimates vaccination coverage among Medicare fee-for-service beneficiaries from administrative claims in the CMS Chronic Conditions Warehouse. Weekly cumulative estimates use Kaplan-Meier survival analysis among beneficiaries enrolled as of August 1: influenza vaccines received since August 1 of each season among adults 65 and older (2019-20 season onward), and RSV vaccines received since August 1, 2023 among adults 75 and older enrolled in a Part D plan. Estimates are national, broken down by race and ethnicity, and reflect claims processed by the CMS release date noted on the dashboard. Fee-for-service claims exclude Medicare Advantage enrollees. Each season's RSV series is published under a new dataset ID (msnx-y6hi for 2025-26).</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www2.ccwdata.org/web/guest/home" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncird/" target="_blank">Centers for Medicare &amp; Medicaid Services, analysed by the Centers for Disease Control and Prevention</a>
+                   | 
+                  <a href="https://data.cdc.gov/d/agz7-4mvg" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Public domain. CDC and CMS data are generally not subject to copyright restrictions.
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Flu season the estimate belongs to, e.g. 2024-25; missing for RSV, which is cumulative since August 2023.</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vaccine</code>
+                      </td>
+                      <td>Vaccine</td>
+                      <td>flu (seasonal influenza vaccine, beneficiaries 65+) or rsv (RSV vaccine, beneficiaries 75+ with Part D).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>65+ (flu) or 75+ (RSV).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race_ethnicity</code>
+                      </td>
+                      <td>Race and ethnicity</td>
+                      <td>Overall, White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Asian, Non-Hispanic; or Other, Non-Hispanic.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>medicare_coverage</code>
+                      </td>
+                      <td>Vaccination coverage, Medicare</td>
+                      <td>Percent of Medicare fee-for-service beneficiaries with a vaccine claim as of the week ending date (flu since August 1 of the season; RSV since August 2023).</td>
                       <td>Percent</td>
                       <td>Percent</td>
                     </tr>
@@ -21293,6 +22493,497 @@
                 </table>
               </div>
             </section>
+            <section id="nis-flu-rsv" class="mb-5">
+              <h2 class="border-bottom pb-2">NIS Flu Rsv</h2>
+              <p class="lead">The National Immunization Survey-Flu (NIS-Flu) is a national random-digit-dialed cellular telephone survey of households with children ages 6 months-17 years, conducted by CDC's National Center for Immunization and Respiratory Diseases from October through June each flu season. A parent or guardian who knows the child's vaccination history reports whether and when the child received a flu vaccine; estimates are weighted to the population of each state and the nation. CDC publishes weekly cumulative coverage and, since the 2023-24 season, parental intent to vaccinate, for the nation, HHS regions, states, and selected sub-state areas, with national breakdowns by age, race and ethnicity, poverty, mother's education, and urbanicity. Estimates are preliminary in-season numbers that may differ from CDC's final post-season estimates, and are subject to non-coverage of households without cell phones, selection bias, and parental recall error, which tends to overstate coverage compared with immunization registries. Seasons 2019-20 to present are included.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.cdc.gov/nis/about/index.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncird/" target="_blank">Centers for Disease Control and Prevention</a>
+                   | 
+                  <a href="https://data.cdc.gov/d/judz-8etw" target="_blank">API/Data Location</a>
+                </li>
+                <li>
+                  <a href="https://www.cdc.gov/nis/about/index.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncird/" target="_blank">Centers for Disease Control and Prevention</a>
+                   | 
+                  <a href="https://data.cdc.gov/d/sw5n-wg2p" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions:</strong>
+                <ul class="mb-0 mt-2">
+                  <li>
+                    <strong>
+                      National Immunization Survey-Flu (NIS-Flu)
+                      : 
+                    </strong>
+                    Public domain. CDC data is generally not subject to copyright restrictions.
+                  </li>
+                  <li>
+                    <strong>
+                      National Immunization Survey-Fall Respiratory Virus Module (NIS-FRVM)
+                      : 
+                    </strong>
+                    Public domain. CDC data is generally not subject to copyright restrictions.
+                  </li>
+                </ul>
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data_demographics.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Season the estimate belongs to, e.g. 2024-25 (July through June).</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vaccine</code>
+                      </td>
+                      <td>Vaccine</td>
+                      <td>flu (seasonal influenza vaccine) or rsv (RSV vaccine).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Population</td>
+                      <td>Population surveyed: 6 months-17 years, 18+, 75+, or 50-74 (high risk).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>stratum_type</code>
+                      </td>
+                      <td>Demographic dimension</td>
+                      <td>Dimension the national estimate is broken down by: Age, Sex, Race and Ethnicity, Poverty Status, Urbanicity, Health Insurance, Disability Status, Sexual Orientation, Mother's Education, or Chronic Conditions.</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>stratum</code>
+                      </td>
+                      <td>Demographic group</td>
+                      <td>Group within stratum_type, using CDC's labels (e.g. 65+ years, Hispanic, Below Poverty, Rural (Non-MSA)).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_coverage</code>
+                      </td>
+                      <td>Vaccination coverage</td>
+                      <td>Percent of the population reporting a flu vaccination this season (or ever for RSV) as of the week ending date.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_coverage_lcl</code>
+                      </td>
+                      <td>Coverage, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for nis_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_coverage_ucl</code>
+                      </td>
+                      <td>Coverage, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for nis_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_intent_definitely</code>
+                      </td>
+                      <td>Definitely will get vaccinated</td>
+                      <td>Percent of the population not yet vaccinated who say they definitely will get the vaccine (2023-24 season onward).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_intent_probably</code>
+                      </td>
+                      <td>Probably will or unsure</td>
+                      <td>Percent of the population not yet vaccinated who say they probably will get the vaccine or are unsure (2023-24 onward).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_intent_no</code>
+                      </td>
+                      <td>Will not get vaccinated</td>
+                      <td>Percent of the population not yet vaccinated who say they definitely or probably will not get the vaccine (2023-24 onward).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_sample_size</code>
+                      </td>
+                      <td>Sample size</td>
+                      <td>Unweighted number of respondents contributing to the cumulative estimate.</td>
+                      <td>Count</td>
+                      <td>Respondents</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed</td>
+                      <td>1 if CDC withheld the estimate (small sample), 0 otherwise. Suppressed values are left missing, not imputed.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_substate.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_name</code>
+                      </td>
+                      <td>Area name</td>
+                      <td>CDC's label for the HHS region, sub-state area, or local area (data_substate.csv.gz only).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_level</code>
+                      </td>
+                      <td>Area type</td>
+                      <td>Region (HHS region), Substate (part of a state), or Local (city or county reported on its own).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>state_fips</code>
+                      </td>
+                      <td>Parent state FIPS</td>
+                      <td>Two-digit FIPS code of the state a sub-state or local area belongs to; missing for HHS regions.</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Season the estimate belongs to, e.g. 2024-25 (July through June).</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vaccine</code>
+                      </td>
+                      <td>Vaccine</td>
+                      <td>flu (seasonal influenza vaccine) or rsv (RSV vaccine).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Population</td>
+                      <td>Population surveyed: 6 months-17 years, 18+, 75+, or 50-74 (high risk).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_coverage</code>
+                      </td>
+                      <td>Vaccination coverage</td>
+                      <td>Percent of the population reporting a flu vaccination this season (or ever for RSV) as of the week ending date.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_coverage_lcl</code>
+                      </td>
+                      <td>Coverage, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for nis_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_coverage_ucl</code>
+                      </td>
+                      <td>Coverage, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for nis_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_intent_definitely</code>
+                      </td>
+                      <td>Definitely will get vaccinated</td>
+                      <td>Percent of the population not yet vaccinated who say they definitely will get the vaccine (2023-24 season onward).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_intent_probably</code>
+                      </td>
+                      <td>Probably will or unsure</td>
+                      <td>Percent of the population not yet vaccinated who say they probably will get the vaccine or are unsure (2023-24 onward).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_intent_no</code>
+                      </td>
+                      <td>Will not get vaccinated</td>
+                      <td>Percent of the population not yet vaccinated who say they definitely or probably will not get the vaccine (2023-24 onward).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_sample_size</code>
+                      </td>
+                      <td>Sample size</td>
+                      <td>Unweighted number of respondents contributing to the cumulative estimate.</td>
+                      <td>Count</td>
+                      <td>Respondents</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed</td>
+                      <td>1 if CDC withheld the estimate (small sample), 0 otherwise. Suppressed values are left missing, not imputed.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Flu season</td>
+                      <td>Season the estimate belongs to, e.g. 2024-25 (July through June).</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vaccine</code>
+                      </td>
+                      <td>Vaccine</td>
+                      <td>flu (seasonal influenza vaccine) or rsv (RSV vaccine).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Population</td>
+                      <td>Population surveyed: 6 months-17 years, 18+, 75+, or 50-74 (high risk).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_coverage</code>
+                      </td>
+                      <td>Vaccination coverage</td>
+                      <td>Percent of the population reporting a flu vaccination this season (or ever for RSV) as of the week ending date.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_coverage_lcl</code>
+                      </td>
+                      <td>Coverage, lower 95% CI</td>
+                      <td>Lower bound of the 95% confidence interval for nis_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_coverage_ucl</code>
+                      </td>
+                      <td>Coverage, upper 95% CI</td>
+                      <td>Upper bound of the 95% confidence interval for nis_coverage.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_intent_definitely</code>
+                      </td>
+                      <td>Definitely will get vaccinated</td>
+                      <td>Percent of the population not yet vaccinated who say they definitely will get the vaccine (2023-24 season onward).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_intent_probably</code>
+                      </td>
+                      <td>Probably will or unsure</td>
+                      <td>Percent of the population not yet vaccinated who say they probably will get the vaccine or are unsure (2023-24 onward).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_intent_no</code>
+                      </td>
+                      <td>Will not get vaccinated</td>
+                      <td>Percent of the population not yet vaccinated who say they definitely or probably will not get the vaccine (2023-24 onward).</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>nis_sample_size</code>
+                      </td>
+                      <td>Sample size</td>
+                      <td>Unweighted number of respondents contributing to the cumulative estimate.</td>
+                      <td>Count</td>
+                      <td>Respondents</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed</td>
+                      <td>1 if CDC withheld the estimate (small sample), 0 otherwise. Suppressed values are left missing, not imputed.</td>
+                      <td>Flag</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
             <section id="nis-teen" class="mb-5">
               <h2 class="border-bottom pb-2">NIS Teen</h2>
               <p class="lead">The National Immunization Surveys (NIS) are a group of telephone surveys used to monitor vaccination coverage among children 19-35 months, teens 13-17 years, flu vaccinations for children 6 months-17 years, and COVID-19 vaccination for children, teens, and adults. The surveys are sponsored and conducted by the National Center for Immunization and Respiratory Diseases (NCIRD) of the CDC and authorized by the Public Health Service Act. NIS provides population-based, state and local area estimates of vaccination coverage using a standard survey methodology. Surveys collect data through telephone interviews with parents or guardians in all 50 states, the District of Columbia, and some U.S. territories. Cell phone numbers are randomly selected and called to enroll age-eligible children. With parental permission, vaccination providers are contacted to verify immunization records. NIS-Teen covers adolescents aged 13-17 and reports coverage for HPV, Tdap, MenACWY, MMR, hepatitis A and B, and varicella by survey year for states, the District of Columbia, Puerto Rico, Guam, and the U.S. Virgin Islands, plus pooled 2018-2022 estimates by insurance, poverty, race and ethnicity, and urbanicity. HHS regions and sub-state local areas published by CDC are not included here.</p>
@@ -24492,6 +26183,106 @@ VAERS data have important limitations: the number of reports alone cannot establ
                 </li>
               </ul>
               <p class="text-muted">No standard data files found.</p>
+            </section>
+            <section id="vsd-pregnancy-vax" class="mb-5">
+              <h2 class="border-bottom pb-2">Vsd Pregnancy Vax</h2>
+              <p class="lead">The Vaccine Safety Datalink (VSD) is a collaboration between CDC's Immunization Safety Office and integrated health care organizations that use their electronic health records to study vaccine safety. CDC uses the VSD to publish weekly cumulative influenza vaccination coverage among pregnant women ages 18-49 (2019-20 season onward) and, since 2023-24, RSV vaccination coverage among pregnant women reaching 32 weeks' gestation, overall and by race and ethnicity. The current dashboards use 10 reporting sites for every season (earlier archived data used 8). Coverage is national only, describes VSD members rather than a representative sample, can be revised as pregnancies are identified, and may miss vaccines given outside the health system. The RSV series is published under a new dataset ID each season (uqxy-gepz for 2025-26).</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.cdc.gov/vaccine-safety-systems/vsd/index.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.cdc.gov/ncird/" target="_blank">Centers for Disease Control and Prevention</a>
+                   | 
+                  <a href="https://data.cdc.gov/d/8fbp-accd" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Public domain. CDC data is generally not subject to copyright restrictions.
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>season</code>
+                      </td>
+                      <td>Season</td>
+                      <td>Season the cumulative estimate belongs to, e.g. 2025-26.</td>
+                      <td>identifier</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vaccine</code>
+                      </td>
+                      <td>Vaccine</td>
+                      <td>flu (seasonal influenza vaccine, 2019-20 onward) or rsv (maternal RSV vaccine, 2025-26).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race_ethnicity</code>
+                      </td>
+                      <td>Race and ethnicity</td>
+                      <td>Overall or one of nine CDC race and ethnicity groups (e.g. White, NH; Black, NH; Hispanic/Latino; Asian, NH; Unknown).</td>
+                      <td>category</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vsd_coverage</code>
+                      </td>
+                      <td>Vaccination coverage, pregnant women</td>
+                      <td>Percent of women 18-49 with a pregnancy this season who had received the vaccine as of the week ending date, in Vaccine Safety Datalink health systems.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vsd_denominator</code>
+                      </td>
+                      <td>Pregnant women in denominator</td>
+                      <td>Number of women ages 18-49 in the denominator for the week.</td>
+                      <td>Count</td>
+                      <td>Women</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
             <section id="wastewater" class="mb-5">
               <h2 class="border-bottom pb-2">Wastewater</h2>

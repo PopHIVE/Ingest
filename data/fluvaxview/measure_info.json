@@ -1,0 +1,193 @@
+{
+  "season": {
+    "id": "season",
+    "short_name": "Flu season",
+    "long_name": "Influenza season",
+    "category": "immunization",
+    "short_description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+    "long_description": "Influenza season the cumulative estimate belongs to, written as the two calendar years it spans (e.g. 2024-25). Seasons run from July of the first year through May of the second. The county file has no season column; its rows are calendar years.",
+    "measure_type": "identifier",
+    "unit": "",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }]
+  },
+  "age": {
+    "id": "age",
+    "short_name": "Age group",
+    "long_name": "Age group",
+    "category": "immunization",
+    "short_description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+    "long_description": "Age group as labelled by CDC. Children's groups (6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years) come from NIS-Flu; adult groups (>=18 Years, 18-49 Years, 50-64 Years, >=65 Years, 18-64 Years, and the 18-49 and 18-64 groups split by whether the person has a condition placing them at high risk of flu complications) come from BRFSS; >=6 Months combines both. County rows are >=18 Years only. In data_setting.csv.gz the age column is the population the place-of-vaccination percentages describe.",
+    "measure_type": "category",
+    "unit": "",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }]
+  },
+  "race_ethnicity": {
+    "id": "race_ethnicity",
+    "short_name": "Race and ethnicity",
+    "long_name": "Race and ethnicity",
+    "category": "immunization",
+    "short_description": "White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Other or Multiple Races, Non-Hispanic; and, from 2024-25, Asian and American Indian or Alaska Native, Non-Hispanic.",
+    "long_description": "Race and ethnicity group of the estimate in data_race.csv.gz, using CDC's labels. Four groups are available in every season (White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Other or Multiple Races, Non-Hispanic); Asian, Non-Hispanic and American Indian or Alaska Native, Non-Hispanic were added in 2024-25. Estimates cover all ages 6 months and older.",
+    "measure_type": "category",
+    "unit": "",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }]
+  },
+  "setting": {
+    "id": "setting",
+    "short_name": "Place of vaccination",
+    "long_name": "Place where the flu vaccine was received",
+    "category": "immunization",
+    "short_description": "Medical Setting, Non-Medical Setting, Pharmacy/Store, Workplace, or School.",
+    "long_description": "Type of place where vaccinated people said they received their flu vaccine, in data_setting.csv.gz: Medical Setting (doctor's office, clinic, hospital, health department), Non-Medical Setting (all other places, which include the next three), Pharmacy/Store, Workplace (adults), or School (children). Percentages are of vaccinated people, not of the population, and are published only for some seasons.",
+    "measure_type": "category",
+    "unit": "",
+    "time_resolution": "Year",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }]
+  },
+  "geography_name": {
+    "id": "geography_name",
+    "short_name": "Area name",
+    "long_name": "CDC name of the non-FIPS area",
+    "category": "immunization",
+    "short_description": "CDC's label for the HHS region or local area in data_substate.csv.gz (e.g. Region 4, NY-City of New York, TX-Rest of state).",
+    "long_description": "CDC's label for the area in data_substate.csv.gz: the ten HHS regions and the local areas CDC reports separately (NY-City of New York, NY-Rest of state, IL-City of Chicago, IL-Rest of state, PA-Philadelphia, PA-Rest of state, TX-Bexar County, TX-City of Houston, TX-Rest of state). The geography column in that file is hhs_<n> for regions and a lowercase slug of this name otherwise; it is not a FIPS code.",
+    "measure_type": "category",
+    "unit": "",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }]
+  },
+  "geography_level": {
+    "id": "geography_level",
+    "short_name": "Area type",
+    "long_name": "Type of non-FIPS area",
+    "category": "immunization",
+    "short_description": "Region (HHS region) or Local (city, county, or rest-of-state area).",
+    "long_description": "Type of area in data_substate.csv.gz: Region (one of the ten HHS regions) or Local (a city, county, or rest-of-state area that CDC reports separately).",
+    "measure_type": "category",
+    "unit": "",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }]
+  },
+  "state_fips": {
+    "id": "state_fips",
+    "short_name": "Parent state FIPS",
+    "long_name": "FIPS code of the state containing the area",
+    "category": "immunization",
+    "short_description": "Two-digit FIPS code of the state a local area belongs to; missing for HHS regions.",
+    "long_description": "Two-digit FIPS code of the state that contains the local area in data_substate.csv.gz. Missing for HHS regions.",
+    "measure_type": "identifier",
+    "unit": "FIPS code",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }]
+  },
+  "fluvaxview_coverage": {
+    "id": "fluvaxview_coverage",
+    "short_name": "Flu vaccination coverage",
+    "long_name": "Cumulative percent vaccinated against influenza",
+    "category": "immunization",
+    "short_description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+    "long_description": "Weighted survey estimate of the percent of the population who had received a seasonal influenza vaccine since July 1, cumulative through the end of the month. Children 6 months-17 years come from the National Immunization Survey-Flu (parent report); adults 18 and older come from the Behavioral Risk Factor Surveillance System (self report); the >=6 Months group combines the two. These are CDC's final post-season estimates from FluVaxView Interactive, published each fall and recalculated for recent seasons with consistent imputation methods, so they can differ from the weekly in-season dashboard numbers. In data.csv.gz the value is the last reported month of the season (normally May); data_monthly.csv.gz has every month; data_county.csv.gz has one annual BRFSS estimate for adults per county for 2018-2022; data_setting.csv.gz gives the percent of vaccinated people by place of vaccination. CDC marks estimates as not reliable (NR) when the sample is under 30, the relative standard error is over 0.3, or the confidence interval half-width is over 10; those rows are missing and flagged in suppressed_flag.",
+    "statement": "In {location}, {value}% were vaccinated against flu as of {time}",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "scale": "0-100",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }],
+    "citations": []
+  },
+  "fluvaxview_coverage_lcl": {
+    "id": "fluvaxview_coverage_lcl",
+    "short_name": "Coverage, lower 95% CI",
+    "long_name": "Lower bound of the 95% confidence interval for flu vaccination coverage",
+    "category": "immunization",
+    "short_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+    "long_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "scale": "0-100",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }],
+    "citations": []
+  },
+  "fluvaxview_coverage_ucl": {
+    "id": "fluvaxview_coverage_ucl",
+    "short_name": "Coverage, upper 95% CI",
+    "long_name": "Upper bound of the 95% confidence interval for flu vaccination coverage",
+    "category": "immunization",
+    "short_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+    "long_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "scale": "0-100",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }],
+    "citations": []
+  },
+  "fluvaxview_sample_size": {
+    "id": "fluvaxview_sample_size",
+    "short_name": "Sample size",
+    "long_name": "Unweighted number of survey respondents",
+    "category": "immunization",
+    "short_description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+    "long_description": "Unweighted number of NIS-Flu or BRFSS respondents in the season, geography, and group contributing to the estimate, as published by CDC. Not published for the county estimates.",
+    "measure_type": "Count",
+    "unit": "Respondents",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }],
+    "citations": []
+  },
+  "suppressed_flag": {
+    "id": "suppressed_flag",
+    "short_name": "Suppressed",
+    "long_name": "Estimate marked not reliable by CDC",
+    "category": "immunization",
+    "short_description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+    "long_description": "1 when CDC published NR (not reliable) instead of an estimate because the sample was under 30, the relative standard error was over 0.3, or the confidence interval half-width was over 10; 0 otherwise. Suppressed values are missing in fluvaxview_coverage and are not imputed.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Month",
+    "sources": [{ "id": "fluvaxview_nis_flu" }, { "id": "fluvaxview_brfss" }],
+    "citations": []
+  },
+  "_sources": {
+    "fluvaxview_nis_flu": {
+      "name": "National Immunization Survey-Flu (NIS-Flu), FluVaxView Interactive",
+      "url": "https://www.cdc.gov/fluvaxview/interactive/general-population-coverage.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/ncird/",
+      "location": "Influenza Vaccination Coverage for All Ages (6+ Months)",
+      "location_url": "https://data.cdc.gov/d/vh55-3he6",
+      "description": "FluVaxView Interactive is CDC's end-of-season summary of influenza vaccination coverage in the general population. Estimates for children 6 months-17 years come from the National Immunization Survey-Flu (NIS-Flu), a national random-digit-dialed cellular telephone survey in which a parent or guardian reports whether and when the child received a flu vaccine. Coverage is reported as the cumulative percent vaccinated since July for each month of the season (July through May) for the nation, HHS regions, all states, the District of Columbia, Puerto Rico, Guam, the U.S. Virgin Islands, and selected local areas, by age group and race and ethnicity, from the 2009-10 season to the most recent complete season. These are CDC's final estimates, published each fall after the season ends; CDC recalculated the 2022-23 and 2023-24 estimates with consistent imputation so recent seasons are comparable. Parent report is subject to recall error and telephone surveys to selection bias. Combined all-ages (>=6 months) estimates pool NIS-Flu with the BRFSS adult estimates.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
+    "fluvaxview_brfss": {
+      "name": "Behavioral Risk Factor Surveillance System (BRFSS), FluVaxView Interactive",
+      "url": "https://www.cdc.gov/brfss/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov/ncird/",
+      "location": "Influenza Vaccination Coverage for All Ages (6+ Months)",
+      "location_url": "https://data.cdc.gov/d/vh55-3he6",
+      "description": "Adult (18 years and older) estimates in FluVaxView Interactive come from the Behavioral Risk Factor Surveillance System (BRFSS), the state-based telephone survey that interviews more than 400,000 adults a year in all states, the District of Columbia, and participating territories. Respondents report whether and in which month they received a flu vaccine; CDC calculates cumulative coverage for each month of the flu season (July through May) by age group, high-risk status, and race and ethnicity for the nation, HHS regions, states, and selected local areas, from the 2009-10 season onward. CDC also publishes annual county-level adult flu vaccination estimates from BRFSS for calendar years 2018-2022, included here in data_county.csv.gz. Self-reported vaccination is subject to recall error, and BRFSS county estimates rely on small samples in many counties.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    }
+  },
+  "_catalog": {
+    "name": "FluVaxView end-of-season flu vaccination coverage",
+    "summary": "CDC's final end-of-season estimates of how many people got a flu shot, by month of the season, age, and race, for the nation, states, and (for adults) counties, since 2009.",
+    "search_terms": ["Respiratory", "Childhood immunizations", "flu vaccine", "vaccination coverage", "county flu shots"],
+    "bucket": ["Immunization"],
+    "files": {
+      "data.csv.gz": "End-of-season coverage by age group, national and state",
+      "data_monthly.csv.gz": "Monthly cumulative coverage by age group, national and state",
+      "data_race.csv.gz": "Monthly cumulative coverage by race and ethnicity",
+      "data_setting.csv.gz": "Place of vaccination among the vaccinated, by age group",
+      "data_county.csv.gz": "Annual adult flu coverage by county, 2018-2022",
+      "data_substate.csv.gz": "Monthly coverage for HHS regions and local areas (non-FIPS)"
+    }
+  }
+}
