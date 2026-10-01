@@ -78,7 +78,7 @@ YRBSS_RACE <- c('AI/AN'    = 'American Indian/Alaska Native',
 
 # Canonical column order; each file carries the subset that applies to it.
 COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
-               'age', 'sex', 'race', 'ethnicity', 'payer', 'domain',
+               'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer', 'domain',
                'vaccine', 'product', 'diagnosis', 'forecast_day',
                'section', 'focus_area', 'source', 'measure', 'rank', 'value',
                'pct_of_all', 'lcl', 'ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
@@ -474,7 +474,9 @@ epic_chronic_tall('county_year.csv.gz') %>%
 # race_ethnicity are 'Total' on every row. Its real dimensions are payer
 # (Medicaid / CHIP / Total) and domain. The requested measures are all Child
 # Core Set (_ch_) rates, so the population is children by construction; age is
-# set to 'Not stratified'.
+# carried through from the source. The source's age, sex and race_ethnicity
+# columns are all 'Total' today but are kept so any future stratification flows
+# through.
 #
 # Each rate has 25th and 75th percentile companions (medicaid_<stem>_pct_25 /
 # _pct_75) describing the spread across states; they are carried as pct_25 /
@@ -490,17 +492,17 @@ vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE)
   filter(geography_level == 's') %>%
   mutate(geography = if_else(geography == 'Dist. of Col.', 'District of Columbia', geography)) %>%
   rename_with(~ sub('_rate$', '_value', .x), all_of(medicaid_measures)) %>%
-  select(geography, time, payer, domain,
+  select(geography, time, age, sex, race_ethnicity, payer, domain,
          all_of(intersect(as.vector(outer(medicaid_stems,
                                           c('_value', '_pct_25', '_pct_75'), paste0)),
                           names(.)))) %>%
   pivot_longer(
-    cols          = -c(geography, time, payer, domain),
+    cols          = -c(geography, time, age, sex, race_ethnicity, payer, domain),
     names_to      = c('measure', '.value'),
     names_pattern = sprintf('^(%s)_(value|pct_25|pct_75)$',
                             paste(medicaid_stems[order(-nchar(medicaid_stems))], collapse = '|'))
   ) %>%
-  mutate(measure = paste0(measure, '_rate'), age = 'Not stratified') %>%
+  mutate(measure = paste0(measure, '_rate')) %>%
   filter(!is.na(value)) %>%
   inner_join(state_cw %>% select(fips, geography = geography_name), by = 'geography') %>%
   label('medicaid', 'Medicaid/CHIP Child Core Set') %>%
@@ -546,10 +548,22 @@ chr_read <- function(file) {
     filter(!is.na(value))
 }
 
+# CHR parquets carry no section / focus_area: label()'s join on those would
+# duplicate every measure that SPEC maps to two pairs, so skip it and just
+# restrict to the chr measures (already done in chr_read).
+chr_label <- function(df) {
+  df %>%
+    distinct() %>%
+    mutate(source = 'County Health Rankings',
+           year = as.integer(lubridate::year(time))) %>%
+    relocate(any_of(COL_ORDER)) %>%
+    arrange(measure, fips, time)
+}
+
 chr_read('data_state.csv.gz') %>%
   rename(fips = geography) %>%
   as_state() %>%
-  label('chr', 'County Health Rankings') %>%
+  chr_label() %>%
   write_parquet('dist/chr_state.parquet')
 
 chr_read('data_county.csv.gz') %>%
@@ -557,7 +571,7 @@ chr_read('data_county.csv.gz') %>%
   select(-geography) %>%
   inner_join(county_cw, by = 'fips') %>%
   rename(geography = geography_name) %>%
-  label('chr', 'County Health Rankings') %>%
+  chr_label() %>%
   write_parquet('dist/chr_county.parquet')
 
 
