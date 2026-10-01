@@ -1,0 +1,2648 @@
+{
+  "name": "fluvaxview",
+  "title": "Fluvaxview",
+  "licence": {
+    "url": "http://opendatacommons.org/licenses/pddl",
+    "name": "Open Data Commons Public Domain",
+    "version": "1.0",
+    "id": "odc-pddl"
+  },
+  "resources": [
+    {
+      "bytes": 123858,
+      "encoding": "ISO-8859-1",
+      "md5": "b2d76e74826d4601f8c4c975a76cc6ba",
+      "format": "csv",
+      "name": "data_county.csv",
+      "filename": "data_county.csv.gz",
+      "versions": {},
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-10-01 17:48:48.772825",
+      "last_modified": "2026-10-01 17:48:48.772825",
+      "vintage": {},
+      "row_count": 15613,
+      "entity_count": 3153,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 12460,
+            "info": [],
+            "time_range": [0, 4],
+            "type": "integer",
+            "missing": 0,
+            "mean": 30446.504451,
+            "sd": 15157.188865,
+            "min": 1001,
+            "max": 56045
+          },
+          {
+            "name": "time",
+            "duplicates": 15608,
+            "info": [],
+            "time_range": [0, 4],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2018-12-31": 3129,
+              "2019-12-31": 3121,
+              "2020-12-31": 3143,
+              "2021-12-31": 3076,
+              "2022-12-31": 3144
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 15612,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "immunization",
+              "short_description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "long_description": "Age group as labelled by CDC. Children's groups (6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years) come from NIS-Flu; adult groups (>=18 Years, 18-49 Years, 50-64 Years, >=65 Years, 18-64 Years, and the 18-49 and 18-64 groups split by whether the person has a condition placing them at high risk of flu complications) come from BRFSS; >=6 Months combines both. County rows are >=18 Years only. In data_setting.csv.gz the age column is the population the place-of-vaccination percentages describe.",
+              "measure_type": "category",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 4],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              ">=18 Years": 15613
+            }
+          },
+          {
+            "name": "fluvaxview_coverage",
+            "duplicates": 15218,
+            "info": {
+              "id": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "long_name": "Cumulative percent vaccinated against influenza",
+              "category": "immunization",
+              "short_description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "long_description": "Weighted survey estimate of the percent of the population who had received a seasonal influenza vaccine since July 1, cumulative through the end of the month. Children 6 months-17 years come from the National Immunization Survey-Flu (parent report); adults 18 and older come from the Behavioral Risk Factor Surveillance System (self report); the >=6 Months group combines the two. These are CDC's final post-season estimates from FluVaxView Interactive, published each fall and recalculated for recent seasons with consistent imputation methods, so they can differ from the weekly in-season dashboard numbers. Every month of the season is included in data_state.csv.gz, data_region.csv.gz, and data_substate.csv.gz, so the May row is the end-of-season estimate; data_county.csv.gz has one annual BRFSS estimate for adults per county for 2018-2022; data_setting.csv.gz gives the percent of vaccinated people by place of vaccination. CDC marks estimates as not reliable (NR) when the sample is under 30, the relative standard error is over 0.3, or the confidence interval half-width is over 10; those rows are missing and flagged in suppressed_flag.",
+              "statement": "In {location}, {value}% were vaccinated against flu as of {time}",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 4],
+            "type": "float",
+            "missing": 0,
+            "mean": 41.064126,
+            "sd": 6.691447,
+            "min": 20.2,
+            "max": 66.1
+          },
+          {
+            "name": "fluvaxview_coverage_lcl",
+            "duplicates": 15228,
+            "info": {
+              "id": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "long_name": "Lower bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 4],
+            "type": "float",
+            "missing": 0,
+            "mean": 36.648677,
+            "sd": 6.727936,
+            "min": 17.2,
+            "max": 60.4
+          },
+          {
+            "name": "fluvaxview_coverage_ucl",
+            "duplicates": 15161,
+            "info": {
+              "id": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "long_name": "Upper bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 4],
+            "type": "float",
+            "missing": 0,
+            "mean": 45.68092,
+            "sd": 8.050358,
+            "min": 21.2,
+            "max": 72.6
+          },
+          {
+            "name": "suppressed_flag",
+            "duplicates": 15612,
+            "info": {
+              "id": "suppressed_flag",
+              "short_name": "Suppressed",
+              "long_name": "Estimate marked not reliable by CDC",
+              "category": "immunization",
+              "short_description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "long_description": "1 when CDC published NR (not reliable) instead of an estimate because the sample was under 30, the relative standard error was over 0.3, or the confidence interval half-width was over 10; 0 otherwise. Suppressed values are missing in fluvaxview_coverage and are not imputed.",
+              "measure_type": "Flag",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 4],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0,
+            "sd": 0,
+            "min": 0,
+            "max": 0
+          }
+        ]
+      },
+      "sha512": "870d5b9e806d80af1e7f148c867315aceeaa619bb42685a812794c68d0d50979d1a7fc1d1004c2407d32324e907a556be0e19dd9889518c97302a9c97f436a31"
+    },
+    {
+      "bytes": 370248,
+      "encoding": "ISO-8859-1",
+      "md5": "bb94528258e2c6d1e3337f9876f17ef8",
+      "format": "csv",
+      "name": "data_race.csv",
+      "filename": "data_race.csv.gz",
+      "versions": {},
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-10-01 17:48:48.501792",
+      "last_modified": "2026-10-01 17:48:48.501792",
+      "vintage": {},
+      "row_count": 36885,
+      "entity_count": 54,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 36831,
+            "info": [],
+            "time_range": [0, 172],
+            "type": "integer",
+            "missing": 0,
+            "mean": 28.504189,
+            "sd": 16.134408,
+            "min": 0,
+            "max": 72
+          },
+          {
+            "name": "time",
+            "duplicates": 36712,
+            "info": [],
+            "time_range": [0, 172],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2009-08-31": 268,
+              "2009-09-30": 312,
+              "2009-10-31": 312,
+              "2009-11-30": 312,
+              "2009-12-31": 312,
+              "2010-01-31": 312,
+              "2010-02-28": 312,
+              "2010-03-31": 312,
+              "2010-04-30": 312,
+              "2010-05-31": 312,
+              "2010-08-31": 204,
+              "2010-09-30": 208,
+              "2010-10-31": 208,
+              "2010-11-30": 208,
+              "2010-12-31": 208,
+              "2011-01-31": 208,
+              "2011-02-28": 208,
+              "2011-03-31": 208,
+              "2011-04-30": 208,
+              "2011-05-31": 208,
+              "2011-08-31": 207,
+              "2011-09-30": 208,
+              "2011-10-31": 208,
+              "2011-11-30": 208,
+              "2011-12-31": 208,
+              "2012-01-31": 208,
+              "2012-02-29": 208,
+              "2012-03-31": 208,
+              "2012-04-30": 208,
+              "2012-05-31": 208,
+              "2012-07-31": 195,
+              "2012-08-31": 205,
+              "2012-09-30": 208,
+              "2012-10-31": 208,
+              "2012-11-30": 208,
+              "2012-12-31": 208,
+              "2013-01-31": 208,
+              "2013-02-28": 208,
+              "2013-03-31": 208,
+              "2013-04-30": 208,
+              "2013-05-31": 208,
+              "2013-07-31": 189,
+              "2013-08-31": 206,
+              "2013-09-30": 208,
+              "2013-10-31": 208,
+              "2013-11-30": 208,
+              "2013-12-31": 208,
+              "2014-01-31": 208,
+              "2014-02-28": 208,
+              "2014-03-31": 208,
+              "2014-04-30": 208,
+              "2014-05-31": 208,
+              "2014-07-31": 197,
+              "2014-08-31": 208,
+              "2014-09-30": 208,
+              "2014-10-31": 208,
+              "2014-11-30": 208,
+              "2014-12-31": 208,
+              "2015-01-31": 208,
+              "2015-02-28": 208,
+              "2015-03-31": 208,
+              "2015-04-30": 208,
+              "2015-05-31": 208,
+              "2015-07-31": 198,
+              "2015-08-31": 207,
+              "2015-09-30": 208,
+              "2015-10-31": 208,
+              "2015-11-30": 208,
+              "2015-12-31": 208,
+              "2016-01-31": 208,
+              "2016-02-29": 208,
+              "2016-03-31": 208,
+              "2016-04-30": 208,
+              "2016-05-31": 208,
+              "2016-07-31": 201,
+              "2016-08-31": 208,
+              "2016-09-30": 208,
+              "2016-10-31": 208,
+              "2016-11-30": 208,
+              "2016-12-31": 208,
+              "2017-01-31": 208,
+              "2017-02-28": 208,
+              "2017-03-31": 208,
+              "2017-04-30": 208,
+              "2017-05-31": 208,
+              "2017-07-31": 208,
+              "2017-08-31": 208,
+              "2017-09-30": 208,
+              "2017-10-31": 208,
+              "2017-11-30": 208,
+              "2017-12-31": 204,
+              "2018-01-31": 204,
+              "2018-02-28": 204,
+              "2018-03-31": 204,
+              "2018-04-30": 204,
+              "2018-05-31": 204,
+              "2018-07-31": 200,
+              "2018-08-31": 200,
+              "2018-09-30": 200,
+              "2018-10-31": 200,
+              "2018-11-30": 200,
+              "2018-12-31": 200,
+              "2019-01-31": 200,
+              "2019-02-28": 200,
+              "2019-03-31": 200,
+              "2019-04-30": 200,
+              "2019-05-31": 200,
+              "2019-07-31": 208,
+              "2019-08-31": 208,
+              "2019-09-30": 208,
+              "2019-10-31": 208,
+              "2019-11-30": 208,
+              "2019-12-31": 208,
+              "2020-01-31": 208,
+              "2020-02-29": 208,
+              "2020-03-31": 208,
+              "2020-04-30": 208,
+              "2020-05-31": 208,
+              "2020-07-31": 208,
+              "2020-08-31": 208,
+              "2020-09-30": 208,
+              "2020-10-31": 208,
+              "2020-11-30": 208,
+              "2020-12-31": 208,
+              "2021-01-31": 208,
+              "2021-02-28": 208,
+              "2021-03-31": 208,
+              "2021-04-30": 208,
+              "2021-05-31": 208,
+              "2021-07-31": 208,
+              "2021-08-31": 208,
+              "2021-09-30": 208,
+              "2021-10-31": 208,
+              "2021-11-30": 208,
+              "2021-12-31": 208,
+              "2022-01-31": 208,
+              "2022-02-28": 208,
+              "2022-03-31": 208,
+              "2022-04-30": 208,
+              "2022-05-31": 208,
+              "2022-07-31": 208,
+              "2022-08-31": 208,
+              "2022-09-30": 208,
+              "2022-10-31": 208,
+              "2022-11-30": 208,
+              "2022-12-31": 208,
+              "2023-01-31": 208,
+              "2023-02-28": 208,
+              "2023-03-31": 208,
+              "2023-04-30": 208,
+              "2023-05-31": 208,
+              "2023-07-31": 208,
+              "2023-08-31": 208,
+              "2023-09-30": 208,
+              "2023-10-31": 208,
+              "2023-11-30": 208,
+              "2023-12-31": 208,
+              "2024-01-31": 208,
+              "2024-02-29": 208,
+              "2024-03-31": 208,
+              "2024-04-30": 208,
+              "2024-05-31": 208,
+              "2024-07-31": 216,
+              "2024-08-31": 216,
+              "2024-09-30": 216,
+              "2024-10-31": 216,
+              "2024-11-30": 216,
+              "2024-12-31": 216,
+              "2025-01-31": 216,
+              "2025-02-28": 216,
+              "2025-03-31": 216,
+              "2025-04-30": 216,
+              "2025-05-31": 216
+            }
+          },
+          {
+            "name": "season",
+            "duplicates": 36869,
+            "info": {
+              "id": "season",
+              "short_name": "Flu season",
+              "long_name": "Influenza season",
+              "category": "immunization",
+              "short_description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "long_description": "Influenza season the cumulative estimate belongs to, written as the two calendar years it spans (e.g. 2024-25). Seasons run from July of the first year through May of the second. The county file has no season column; its rows are calendar years.",
+              "measure_type": "identifier",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 172],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2009-10": 3076,
+              "2010-11": 2076,
+              "2011-12": 2079,
+              "2012-13": 2272,
+              "2013-14": 2267,
+              "2014-15": 2277,
+              "2015-16": 2277,
+              "2016-17": 2281,
+              "2017-18": 2264,
+              "2018-19": 2200,
+              "2019-20": 2288,
+              "2020-21": 2288,
+              "2021-22": 2288,
+              "2022-23": 2288,
+              "2023-24": 2288,
+              "2024-25": 2376
+            }
+          },
+          {
+            "name": "race_ethnicity",
+            "duplicates": 36879,
+            "info": {
+              "id": "race_ethnicity",
+              "short_name": "Race and ethnicity",
+              "long_name": "Race and ethnicity",
+              "category": "immunization",
+              "short_description": "White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Other or Multiple Races, Non-Hispanic; and, from 2024-25, Asian and American Indian or Alaska Native, Non-Hispanic.",
+              "long_description": "Race and ethnicity group of the estimate in data_race.csv.gz, using CDC's labels. Four groups are available in every season (White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Other or Multiple Races, Non-Hispanic); Asian, Non-Hispanic and American Indian or Alaska Native, Non-Hispanic were added in 2024-25. Estimates cover all ages 6 months and older.",
+              "measure_type": "category",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 172],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "American Indian or Alaska Native, Non-Hispanic": 504,
+              "Asian, Non-Hispanic": 508,
+              "Black, Non-Hispanic": 8941,
+              "Hispanic": 8977,
+              "Other or Multiple Races, Non-Hispanic": 8971,
+              "White, Non-Hispanic": 8984
+            }
+          },
+          {
+            "name": "fluvaxview_coverage",
+            "duplicates": 36148,
+            "info": {
+              "id": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "long_name": "Cumulative percent vaccinated against influenza",
+              "category": "immunization",
+              "short_description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "long_description": "Weighted survey estimate of the percent of the population who had received a seasonal influenza vaccine since July 1, cumulative through the end of the month. Children 6 months-17 years come from the National Immunization Survey-Flu (parent report); adults 18 and older come from the Behavioral Risk Factor Surveillance System (self report); the >=6 Months group combines the two. These are CDC's final post-season estimates from FluVaxView Interactive, published each fall and recalculated for recent seasons with consistent imputation methods, so they can differ from the weekly in-season dashboard numbers. Every month of the season is included in data_state.csv.gz, data_region.csv.gz, and data_substate.csv.gz, so the May row is the end-of-season estimate; data_county.csv.gz has one annual BRFSS estimate for adults per county for 2018-2022; data_setting.csv.gz gives the percent of vaccinated people by place of vaccination. CDC marks estimates as not reliable (NR) when the sample is under 30, the relative standard error is over 0.3, or the confidence interval half-width is over 10; those rows are missing and flagged in suppressed_flag.",
+              "statement": "In {location}, {value}% were vaccinated against flu as of {time}",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 172],
+            "type": "float",
+            "missing": 4769,
+            "mean": 34.974925,
+            "sd": 15.728355,
+            "min": 0,
+            "max": 88.8
+          },
+          {
+            "name": "fluvaxview_coverage_lcl",
+            "duplicates": 36206,
+            "info": {
+              "id": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "long_name": "Lower bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 172],
+            "type": "float",
+            "missing": 4769,
+            "mean": 29.256505,
+            "sd": 14.491268,
+            "min": 0,
+            "max": 76
+          },
+          {
+            "name": "fluvaxview_coverage_ucl",
+            "duplicates": 36028,
+            "info": {
+              "id": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "long_name": "Upper bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 172],
+            "type": "float",
+            "missing": 4769,
+            "mean": 40.693349,
+            "sd": 17.964537,
+            "min": 0,
+            "max": 107
+          },
+          {
+            "name": "fluvaxview_sample_size",
+            "duplicates": 34755,
+            "info": {
+              "id": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "long_name": "Unweighted number of survey respondents",
+              "category": "immunization",
+              "short_description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "long_description": "Unweighted number of NIS-Flu or BRFSS respondents in the season, geography, and group contributing to the estimate, as published by CDC. Not published for the county estimates.",
+              "measure_type": "Count",
+              "unit": "Respondents",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 172],
+            "type": "integer",
+            "missing": 368,
+            "mean": 4222.832325,
+            "sd": 22826.818747,
+            "min": 30,
+            "max": 391359
+          },
+          {
+            "name": "suppressed_flag",
+            "duplicates": 36883,
+            "info": {
+              "id": "suppressed_flag",
+              "short_name": "Suppressed",
+              "long_name": "Estimate marked not reliable by CDC",
+              "category": "immunization",
+              "short_description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "long_description": "1 when CDC published NR (not reliable) instead of an estimate because the sample was under 30, the relative standard error was over 0.3, or the confidence interval half-width was over 10; 0 otherwise. Suppressed values are missing in fluvaxview_coverage and are not imputed.",
+              "measure_type": "Flag",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 172],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.126908,
+            "sd": 0.332874,
+            "min": 0,
+            "max": 1
+          }
+        ]
+      },
+      "sha512": "402f554c6646ed589b9e53286c55a071caeb53572fb425be9f93d9ca90a4206d0fdf3c4027c29028819336c8ac9ef8918b11cac3ee7421655555348fb863a555"
+    },
+    {
+      "bytes": 243657,
+      "encoding": "ISO-8859-1",
+      "md5": "9dd23f1adae0437a1f785ad991c8f005",
+      "format": "csv",
+      "name": "data_region.csv",
+      "filename": "data_region.csv.gz",
+      "versions": {},
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-10-01 17:48:48.679758",
+      "last_modified": "2026-10-01 17:48:48.679758",
+      "vintage": {},
+      "row_count": 22563,
+      "entity_count": 10,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 22553,
+            "info": [],
+            "time_range": [162, 163],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "hhs_1": 2257,
+              "hhs_10": 2256,
+              "hhs_2": 2257,
+              "hhs_3": 2256,
+              "hhs_4": 2257,
+              "hhs_5": 2257,
+              "hhs_6": 2257,
+              "hhs_7": 2253,
+              "hhs_8": 2257,
+              "hhs_9": 2256
+            }
+          },
+          {
+            "name": "geography_name",
+            "duplicates": 22553,
+            "info": {
+              "id": "geography_name",
+              "short_name": "Area name",
+              "long_name": "CDC name of the non-FIPS area",
+              "category": "immunization",
+              "short_description": "CDC's label for the HHS region in data_region.csv.gz or the local area in data_substate.csv.gz (e.g. Region 4, NY-City of New York, TX-Rest of state).",
+              "long_description": "CDC's label for the area: the ten HHS regions in data_region.csv.gz and the local areas CDC reports separately in data_substate.csv.gz (NY-City of New York, NY-Rest of state, IL-City of Chicago, IL-Rest of state, PA-Philadelphia, PA-Rest of state, TX-Bexar County, TX-City of Houston, TX-Rest of state). The geography column is hhs_<n> in data_region.csv.gz and a lowercase slug of this name in data_substate.csv.gz; neither is a FIPS code.",
+              "measure_type": "category",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Region 1": 2257,
+              "Region 10": 2256,
+              "Region 2": 2257,
+              "Region 3": 2256,
+              "Region 4": 2257,
+              "Region 5": 2257,
+              "Region 6": 2257,
+              "Region 7": 2253,
+              "Region 8": 2257,
+              "Region 9": 2256
+            }
+          },
+          {
+            "name": "time",
+            "duplicates": 22390,
+            "info": [],
+            "time_range": [162, 163],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2009-08-31": 70,
+              "2009-09-30": 70,
+              "2009-10-31": 70,
+              "2009-11-30": 70,
+              "2009-12-31": 70,
+              "2010-01-31": 70,
+              "2010-02-28": 70,
+              "2010-03-31": 70,
+              "2010-04-30": 70,
+              "2010-05-31": 70,
+              "2010-08-31": 120,
+              "2010-09-30": 120,
+              "2010-10-31": 120,
+              "2010-11-30": 120,
+              "2010-12-31": 120,
+              "2011-01-31": 120,
+              "2011-02-28": 120,
+              "2011-03-31": 120,
+              "2011-04-30": 120,
+              "2011-05-31": 120,
+              "2011-08-31": 120,
+              "2011-09-30": 120,
+              "2011-10-31": 120,
+              "2011-11-30": 120,
+              "2011-12-31": 120,
+              "2012-01-31": 120,
+              "2012-02-29": 120,
+              "2012-03-31": 120,
+              "2012-04-30": 120,
+              "2012-05-31": 120,
+              "2012-07-31": 117,
+              "2012-08-31": 120,
+              "2012-09-30": 120,
+              "2012-10-31": 120,
+              "2012-11-30": 120,
+              "2012-12-31": 120,
+              "2013-01-31": 120,
+              "2013-02-28": 120,
+              "2013-03-31": 120,
+              "2013-04-30": 120,
+              "2013-05-31": 120,
+              "2013-07-31": 139,
+              "2013-08-31": 140,
+              "2013-09-30": 140,
+              "2013-10-31": 140,
+              "2013-11-30": 140,
+              "2013-12-31": 140,
+              "2014-01-31": 140,
+              "2014-02-28": 140,
+              "2014-03-31": 140,
+              "2014-04-30": 140,
+              "2014-05-31": 140,
+              "2014-07-31": 139,
+              "2014-08-31": 140,
+              "2014-09-30": 140,
+              "2014-10-31": 140,
+              "2014-11-30": 140,
+              "2014-12-31": 140,
+              "2015-01-31": 140,
+              "2015-02-28": 140,
+              "2015-03-31": 140,
+              "2015-04-30": 140,
+              "2015-05-31": 140,
+              "2015-07-31": 140,
+              "2015-08-31": 140,
+              "2015-09-30": 140,
+              "2015-10-31": 140,
+              "2015-11-30": 140,
+              "2015-12-31": 140,
+              "2016-01-31": 140,
+              "2016-02-29": 140,
+              "2016-03-31": 140,
+              "2016-04-30": 140,
+              "2016-05-31": 140,
+              "2016-07-31": 138,
+              "2016-08-31": 140,
+              "2016-09-30": 140,
+              "2016-10-31": 140,
+              "2016-11-30": 140,
+              "2016-12-31": 140,
+              "2017-01-31": 140,
+              "2017-02-28": 140,
+              "2017-03-31": 140,
+              "2017-04-30": 140,
+              "2017-05-31": 140,
+              "2017-07-31": 140,
+              "2017-08-31": 140,
+              "2017-09-30": 140,
+              "2017-10-31": 140,
+              "2017-11-30": 140,
+              "2017-12-31": 140,
+              "2018-01-31": 140,
+              "2018-02-28": 140,
+              "2018-03-31": 140,
+              "2018-04-30": 140,
+              "2018-05-31": 140,
+              "2018-07-31": 140,
+              "2018-08-31": 140,
+              "2018-09-30": 140,
+              "2018-10-31": 140,
+              "2018-11-30": 140,
+              "2018-12-31": 140,
+              "2019-01-31": 140,
+              "2019-02-28": 140,
+              "2019-03-31": 140,
+              "2019-04-30": 140,
+              "2019-05-31": 140,
+              "2019-07-31": 140,
+              "2019-08-31": 140,
+              "2019-09-30": 140,
+              "2019-10-31": 140,
+              "2019-11-30": 140,
+              "2019-12-31": 140,
+              "2020-01-31": 140,
+              "2020-02-29": 140,
+              "2020-03-31": 140,
+              "2020-04-30": 140,
+              "2020-05-31": 140,
+              "2020-07-31": 140,
+              "2020-08-31": 140,
+              "2020-09-30": 140,
+              "2020-10-31": 140,
+              "2020-11-30": 140,
+              "2020-12-31": 140,
+              "2021-01-31": 140,
+              "2021-02-28": 140,
+              "2021-03-31": 140,
+              "2021-04-30": 140,
+              "2021-05-31": 140,
+              "2021-07-31": 140,
+              "2021-08-31": 140,
+              "2021-09-30": 140,
+              "2021-10-31": 140,
+              "2021-11-30": 140,
+              "2021-12-31": 140,
+              "2022-01-31": 140,
+              "2022-02-28": 140,
+              "2022-03-31": 140,
+              "2022-04-30": 140,
+              "2022-05-31": 140,
+              "2022-07-31": 140,
+              "2022-08-31": 140,
+              "2022-09-30": 140,
+              "2022-10-31": 140,
+              "2022-11-30": 140,
+              "2022-12-31": 140,
+              "2023-01-31": 140,
+              "2023-02-28": 140,
+              "2023-03-31": 140,
+              "2023-04-30": 140,
+              "2023-05-31": 140,
+              "2023-07-31": 110,
+              "2023-08-31": 110,
+              "2023-09-30": 110,
+              "2023-10-31": 110,
+              "2023-11-30": 110,
+              "2023-12-31": 110,
+              "2024-01-31": 110,
+              "2024-02-29": 110,
+              "2024-03-31": 110,
+              "2024-04-30": 110,
+              "2024-05-31": 110,
+              "2024-07-31": 140,
+              "2024-08-31": 140,
+              "2024-09-30": 140,
+              "2024-10-31": 140,
+              "2024-11-30": 140,
+              "2024-12-31": 140,
+              "2025-01-31": 140,
+              "2025-02-28": 140,
+              "2025-03-31": 140,
+              "2025-04-30": 140,
+              "2025-05-31": 140
+            }
+          },
+          {
+            "name": "season",
+            "duplicates": 22547,
+            "info": {
+              "id": "season",
+              "short_name": "Flu season",
+              "long_name": "Influenza season",
+              "category": "immunization",
+              "short_description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "long_description": "Influenza season the cumulative estimate belongs to, written as the two calendar years it spans (e.g. 2024-25). Seasons run from July of the first year through May of the second. The county file has no season column; its rows are calendar years.",
+              "measure_type": "identifier",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2009-10": 700,
+              "2010-11": 1200,
+              "2011-12": 1200,
+              "2012-13": 1317,
+              "2013-14": 1539,
+              "2014-15": 1539,
+              "2015-16": 1540,
+              "2016-17": 1538,
+              "2017-18": 1540,
+              "2018-19": 1540,
+              "2019-20": 1540,
+              "2020-21": 1540,
+              "2021-22": 1540,
+              "2022-23": 1540,
+              "2023-24": 1210,
+              "2024-25": 1540
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 22549,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "immunization",
+              "short_description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "long_description": "Age group as labelled by CDC. Children's groups (6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years) come from NIS-Flu; adult groups (>=18 Years, 18-49 Years, 50-64 Years, >=65 Years, 18-64 Years, and the 18-49 and 18-64 groups split by whether the person has a condition placing them at high risk of flu complications) come from BRFSS; >=6 Months combines both. County rows are >=18 Years only. In data_setting.csv.gz the age column is the population the place-of-vaccination percentages describe.",
+              "measure_type": "category",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "13-17 Years": 1630,
+              "18-49 Years": 1630,
+              "18-49 Years at High Risk": 1727,
+              "18-49 Years not at High Risk": 1420,
+              "18-64 Years": 1630,
+              "18-64 Years at High Risk": 1630,
+              "18-64 Years not at High Risk": 1320,
+              "5-12 Years": 1630,
+              "50-64 Years": 1726,
+              "6 Months - 17 Years": 1730,
+              "6 Months - 4 Years": 1630,
+              ">=18 Years": 1620,
+              ">=6 Months": 1620,
+              ">=65 Years": 1620
+            }
+          },
+          {
+            "name": "fluvaxview_coverage",
+            "duplicates": 21740,
+            "info": {
+              "id": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "long_name": "Cumulative percent vaccinated against influenza",
+              "category": "immunization",
+              "short_description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "long_description": "Weighted survey estimate of the percent of the population who had received a seasonal influenza vaccine since July 1, cumulative through the end of the month. Children 6 months-17 years come from the National Immunization Survey-Flu (parent report); adults 18 and older come from the Behavioral Risk Factor Surveillance System (self report); the >=6 Months group combines the two. These are CDC's final post-season estimates from FluVaxView Interactive, published each fall and recalculated for recent seasons with consistent imputation methods, so they can differ from the weekly in-season dashboard numbers. Every month of the season is included in data_state.csv.gz, data_region.csv.gz, and data_substate.csv.gz, so the May row is the end-of-season estimate; data_county.csv.gz has one annual BRFSS estimate for adults per county for 2018-2022; data_setting.csv.gz gives the percent of vaccinated people by place of vaccination. CDC marks estimates as not reliable (NR) when the sample is under 30, the relative standard error is over 0.3, or the confidence interval half-width is over 10; those rows are missing and flagged in suppressed_flag.",
+              "statement": "In {location}, {value}% were vaccinated against flu as of {time}",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "float",
+            "missing": 929,
+            "mean": 34.416992,
+            "sd": 19.878211,
+            "min": 0,
+            "max": 85.2
+          },
+          {
+            "name": "fluvaxview_coverage_lcl",
+            "duplicates": 21764,
+            "info": {
+              "id": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "long_name": "Lower bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "float",
+            "missing": 929,
+            "mean": 32.48813,
+            "sd": 19.273168,
+            "min": 0,
+            "max": 82.2
+          },
+          {
+            "name": "fluvaxview_coverage_ucl",
+            "duplicates": 21709,
+            "info": {
+              "id": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "long_name": "Upper bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "float",
+            "missing": 929,
+            "mean": 36.345854,
+            "sd": 20.542369,
+            "min": 0,
+            "max": 88.7
+          },
+          {
+            "name": "fluvaxview_sample_size",
+            "duplicates": 20598,
+            "info": {
+              "id": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "long_name": "Unweighted number of survey respondents",
+              "category": "immunization",
+              "short_description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "long_description": "Unweighted number of NIS-Flu or BRFSS respondents in the season, geography, and group contributing to the estimate, as published by CDC. Not published for the county estimates.",
+              "measure_type": "Count",
+              "unit": "Respondents",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "integer",
+            "missing": 0,
+            "mean": 13174.639011,
+            "sd": 13001.075805,
+            "min": 606,
+            "max": 92724
+          },
+          {
+            "name": "suppressed_flag",
+            "duplicates": 22561,
+            "info": {
+              "id": "suppressed_flag",
+              "short_name": "Suppressed",
+              "long_name": "Estimate marked not reliable by CDC",
+              "category": "immunization",
+              "short_description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "long_description": "1 when CDC published NR (not reliable) instead of an estimate because the sample was under 30, the relative standard error was over 0.3, or the confidence interval half-width was over 10; 0 otherwise. Suppressed values are missing in fluvaxview_coverage and are not imputed.",
+              "measure_type": "Flag",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.041174,
+            "sd": 0.198696,
+            "min": 0,
+            "max": 1
+          }
+        ]
+      },
+      "sha512": "8b64cc6fa611a83a251892684131ac6ee012bc5ad876829002aa6a84fcae894d0f23838057a30666a2fe25ecae49dd241df70a060bcaec23df89525a61552639"
+    },
+    {
+      "bytes": 45312,
+      "encoding": "ISO-8859-1",
+      "md5": "027255eab0b118ac395f7e3038c7668b",
+      "format": "csv",
+      "name": "data_setting.csv",
+      "filename": "data_setting.csv.gz",
+      "versions": {},
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-10-01 17:48:48.536723",
+      "last_modified": "2026-10-01 17:48:48.536723",
+      "vintage": {},
+      "row_count": 4228,
+      "entity_count": 55,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 4173,
+            "info": [],
+            "time_range": [3, 4],
+            "type": "integer",
+            "missing": 0,
+            "mean": 29.733207,
+            "sd": 17.309954,
+            "min": 0,
+            "max": 78
+          },
+          {
+            "name": "time",
+            "duplicates": 4223,
+            "info": [],
+            "time_range": [3, 4],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2015-05-31": 416,
+              "2018-05-31": 1252,
+              "2021-05-31": 1260,
+              "2024-05-31": 1080,
+              "2025-05-31": 220
+            }
+          },
+          {
+            "name": "season",
+            "duplicates": 4223,
+            "info": {
+              "id": "season",
+              "short_name": "Flu season",
+              "long_name": "Influenza season",
+              "category": "immunization",
+              "short_description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "long_description": "Influenza season the cumulative estimate belongs to, written as the two calendar years it spans (e.g. 2024-25). Seasons run from July of the first year through May of the second. The county file has no season column; its rows are calendar years.",
+              "measure_type": "identifier",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [3, 4],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2014-15": 416,
+              "2017-18": 1252,
+              "2020-21": 1260,
+              "2023-24": 1080,
+              "2024-25": 220
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 4222,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "immunization",
+              "short_description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "long_description": "Age group as labelled by CDC. Children's groups (6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years) come from NIS-Flu; adult groups (>=18 Years, 18-49 Years, 50-64 Years, >=65 Years, 18-64 Years, and the 18-49 and 18-64 groups split by whether the person has a condition placing them at high risk of flu complications) come from BRFSS; >=6 Months combines both. County rows are >=18 Years only. In data_setting.csv.gz the age column is the population the place-of-vaccination percentages describe.",
+              "measure_type": "category",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [3, 4],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "18-49 Years": 632,
+              "18-64 Years": 632,
+              "50-64 Years": 632,
+              "6 Months - 17 Years": 860,
+              ">=18 Years": 840,
+              ">=65 Years": 632
+            }
+          },
+          {
+            "name": "setting",
+            "duplicates": 4223,
+            "info": {
+              "id": "setting",
+              "short_name": "Place of vaccination",
+              "long_name": "Place where the flu vaccine was received",
+              "category": "immunization",
+              "short_description": "Medical Setting, Non-Medical Setting, Pharmacy/Store, Workplace, or School.",
+              "long_description": "Type of place where vaccinated people said they received their flu vaccine, in data_setting.csv.gz: Medical Setting (doctor's office, clinic, hospital, health department), Non-Medical Setting (all other places, which include the next three), Pharmacy/Store, Workplace (adults), or School (children). Percentages are of vaccinated people, not of the population, and are published only for some seasons.",
+              "measure_type": "category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [3, 4],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Medical Setting": 1057,
+              "Non-Medical Setting": 1057,
+              "Pharmacy/Store": 1057,
+              "School": 215,
+              "Workplace": 842
+            }
+          },
+          {
+            "name": "fluvaxview_coverage",
+            "duplicates": 3398,
+            "info": {
+              "id": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "long_name": "Cumulative percent vaccinated against influenza",
+              "category": "immunization",
+              "short_description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "long_description": "Weighted survey estimate of the percent of the population who had received a seasonal influenza vaccine since July 1, cumulative through the end of the month. Children 6 months-17 years come from the National Immunization Survey-Flu (parent report); adults 18 and older come from the Behavioral Risk Factor Surveillance System (self report); the >=6 Months group combines the two. These are CDC's final post-season estimates from FluVaxView Interactive, published each fall and recalculated for recent seasons with consistent imputation methods, so they can differ from the weekly in-season dashboard numbers. Every month of the season is included in data_state.csv.gz, data_region.csv.gz, and data_substate.csv.gz, so the May row is the end-of-season estimate; data_county.csv.gz has one annual BRFSS estimate for adults per county for 2018-2022; data_setting.csv.gz gives the percent of vaccinated people by place of vaccination. CDC marks estimates as not reliable (NR) when the sample is under 30, the relative standard error is over 0.3, or the confidence interval half-width is over 10; those rows are missing and flagged in suppressed_flag.",
+              "statement": "In {location}, {value}% were vaccinated against flu as of {time}",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [3, 4],
+            "type": "float",
+            "missing": 32,
+            "mean": 35.039681,
+            "sd": 22.704267,
+            "min": 0,
+            "max": 97.9
+          },
+          {
+            "name": "fluvaxview_coverage_lcl",
+            "duplicates": 3439,
+            "info": {
+              "id": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "long_name": "Lower bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [3, 4],
+            "type": "float",
+            "missing": 48,
+            "mean": 30.628182,
+            "sd": 21.735425,
+            "min": 0,
+            "max": 96.8
+          },
+          {
+            "name": "fluvaxview_coverage_ucl",
+            "duplicates": 3340,
+            "info": {
+              "id": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "long_name": "Upper bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [3, 4],
+            "type": "float",
+            "missing": 48,
+            "mean": 39.908469,
+            "sd": 23.523696,
+            "min": 0,
+            "max": 100.9
+          },
+          {
+            "name": "fluvaxview_sample_size",
+            "duplicates": 3176,
+            "info": {
+              "id": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "long_name": "Unweighted number of survey respondents",
+              "category": "immunization",
+              "short_description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "long_description": "Unweighted number of NIS-Flu or BRFSS respondents in the season, geography, and group contributing to the estimate, as published by CDC. Not published for the county estimates.",
+              "measure_type": "Count",
+              "unit": "Respondents",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [3, 4],
+            "type": "integer",
+            "missing": 1070,
+            "mean": 2238.105446,
+            "sd": 10847.205107,
+            "min": 0,
+            "max": 208917
+          },
+          {
+            "name": "suppressed_flag",
+            "duplicates": 4226,
+            "info": {
+              "id": "suppressed_flag",
+              "short_name": "Suppressed",
+              "long_name": "Estimate marked not reliable by CDC",
+              "category": "immunization",
+              "short_description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "long_description": "1 when CDC published NR (not reliable) instead of an estimate because the sample was under 30, the relative standard error was over 0.3, or the confidence interval half-width was over 10; 0 otherwise. Suppressed values are missing in fluvaxview_coverage and are not imputed.",
+              "measure_type": "Flag",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [3, 4],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.007569,
+            "sd": 0.086678,
+            "min": 0,
+            "max": 1
+          }
+        ]
+      },
+      "sha512": "0f82ac77754f557cb4e1a61ad9aa2cf83f948d04c31ffa1b5c001a9f2a54979461bfced64223297846479a8fc5d1c8274c0ce70261c5030b44e8d7ad2f421b59"
+    },
+    {
+      "bytes": 1194281,
+      "encoding": "ISO-8859-1",
+      "md5": "494dba980ab9b8545286dfa4bbade1ee",
+      "format": "csv",
+      "name": "data_state.csv",
+      "filename": "data_state.csv.gz",
+      "versions": {},
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-10-01 17:48:48.316237",
+      "last_modified": "2026-10-01 17:48:48.316237",
+      "vintage": {},
+      "row_count": 119371,
+      "entity_count": 55,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 119316,
+            "info": [],
+            "time_range": [162, 163],
+            "type": "integer",
+            "missing": 0,
+            "mean": 29.408927,
+            "sd": 17.103342,
+            "min": 0,
+            "max": 78
+          },
+          {
+            "name": "time",
+            "duplicates": 119198,
+            "info": [],
+            "time_range": [162, 163],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2009-08-31": 359,
+              "2009-09-30": 364,
+              "2009-10-31": 364,
+              "2009-11-30": 364,
+              "2009-12-31": 364,
+              "2010-01-31": 364,
+              "2010-02-28": 364,
+              "2010-03-31": 364,
+              "2010-04-30": 364,
+              "2010-05-31": 364,
+              "2010-08-31": 613,
+              "2010-09-30": 624,
+              "2010-10-31": 624,
+              "2010-11-30": 624,
+              "2010-12-31": 624,
+              "2011-01-31": 624,
+              "2011-02-28": 624,
+              "2011-03-31": 624,
+              "2011-04-30": 624,
+              "2011-05-31": 624,
+              "2011-08-31": 621,
+              "2011-09-30": 624,
+              "2011-10-31": 624,
+              "2011-11-30": 624,
+              "2011-12-31": 624,
+              "2012-01-31": 624,
+              "2012-02-29": 624,
+              "2012-03-31": 624,
+              "2012-04-30": 624,
+              "2012-05-31": 624,
+              "2012-07-31": 517,
+              "2012-08-31": 621,
+              "2012-09-30": 624,
+              "2012-10-31": 624,
+              "2012-11-30": 624,
+              "2012-12-31": 624,
+              "2013-01-31": 624,
+              "2013-02-28": 624,
+              "2013-03-31": 624,
+              "2013-04-30": 624,
+              "2013-05-31": 624,
+              "2013-07-31": 622,
+              "2013-08-31": 728,
+              "2013-09-30": 728,
+              "2013-10-31": 728,
+              "2013-11-30": 728,
+              "2013-12-31": 728,
+              "2014-01-31": 728,
+              "2014-02-28": 728,
+              "2014-03-31": 728,
+              "2014-04-30": 728,
+              "2014-05-31": 728,
+              "2014-07-31": 636,
+              "2014-08-31": 725,
+              "2014-09-30": 728,
+              "2014-10-31": 728,
+              "2014-11-30": 728,
+              "2014-12-31": 728,
+              "2015-01-31": 728,
+              "2015-02-28": 728,
+              "2015-03-31": 728,
+              "2015-04-30": 728,
+              "2015-05-31": 728,
+              "2015-07-31": 654,
+              "2015-08-31": 724,
+              "2015-09-30": 728,
+              "2015-10-31": 728,
+              "2015-11-30": 728,
+              "2015-12-31": 728,
+              "2016-01-31": 728,
+              "2016-02-29": 728,
+              "2016-03-31": 728,
+              "2016-04-30": 728,
+              "2016-05-31": 728,
+              "2016-07-31": 644,
+              "2016-08-31": 724,
+              "2016-09-30": 728,
+              "2016-10-31": 728,
+              "2016-11-30": 728,
+              "2016-12-31": 728,
+              "2017-01-31": 728,
+              "2017-02-28": 728,
+              "2017-03-31": 728,
+              "2017-04-30": 728,
+              "2017-05-31": 728,
+              "2017-07-31": 750,
+              "2017-08-31": 750,
+              "2017-09-30": 750,
+              "2017-10-31": 750,
+              "2017-11-30": 750,
+              "2017-12-31": 740,
+              "2018-01-31": 740,
+              "2018-02-28": 740,
+              "2018-03-31": 740,
+              "2018-04-30": 740,
+              "2018-05-31": 740,
+              "2018-07-31": 730,
+              "2018-08-31": 730,
+              "2018-09-30": 730,
+              "2018-10-31": 730,
+              "2018-11-30": 730,
+              "2018-12-31": 730,
+              "2019-01-31": 730,
+              "2019-02-28": 730,
+              "2019-03-31": 730,
+              "2019-04-30": 730,
+              "2019-05-31": 730,
+              "2019-07-31": 754,
+              "2019-08-31": 754,
+              "2019-09-30": 754,
+              "2019-10-31": 754,
+              "2019-11-30": 754,
+              "2019-12-31": 754,
+              "2020-01-31": 754,
+              "2020-02-29": 754,
+              "2020-03-31": 754,
+              "2020-04-30": 754,
+              "2020-05-31": 754,
+              "2020-07-31": 758,
+              "2020-08-31": 758,
+              "2020-09-30": 758,
+              "2020-10-31": 758,
+              "2020-11-30": 758,
+              "2020-12-31": 758,
+              "2021-01-31": 758,
+              "2021-02-28": 758,
+              "2021-03-31": 758,
+              "2021-04-30": 758,
+              "2021-05-31": 758,
+              "2021-07-31": 767,
+              "2021-08-31": 767,
+              "2021-09-30": 767,
+              "2021-10-31": 767,
+              "2021-11-30": 767,
+              "2021-12-31": 767,
+              "2022-01-31": 767,
+              "2022-02-28": 767,
+              "2022-03-31": 767,
+              "2022-04-30": 767,
+              "2022-05-31": 767,
+              "2022-07-31": 767,
+              "2022-08-31": 767,
+              "2022-09-30": 767,
+              "2022-10-31": 767,
+              "2022-11-30": 767,
+              "2022-12-31": 767,
+              "2023-01-31": 767,
+              "2023-02-28": 767,
+              "2023-03-31": 767,
+              "2023-04-30": 767,
+              "2023-05-31": 767,
+              "2023-07-31": 605,
+              "2023-08-31": 605,
+              "2023-09-30": 605,
+              "2023-10-31": 605,
+              "2023-11-30": 605,
+              "2023-12-31": 605,
+              "2024-01-31": 605,
+              "2024-02-29": 605,
+              "2024-03-31": 605,
+              "2024-04-30": 605,
+              "2024-05-31": 605,
+              "2024-07-31": 770,
+              "2024-08-31": 770,
+              "2024-09-30": 770,
+              "2024-10-31": 770,
+              "2024-11-30": 770,
+              "2024-12-31": 770,
+              "2025-01-31": 770,
+              "2025-02-28": 770,
+              "2025-03-31": 770,
+              "2025-04-30": 770,
+              "2025-05-31": 770
+            }
+          },
+          {
+            "name": "season",
+            "duplicates": 119355,
+            "info": {
+              "id": "season",
+              "short_name": "Flu season",
+              "long_name": "Influenza season",
+              "category": "immunization",
+              "short_description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "long_description": "Influenza season the cumulative estimate belongs to, written as the two calendar years it spans (e.g. 2024-25). Seasons run from July of the first year through May of the second. The county file has no season column; its rows are calendar years.",
+              "measure_type": "identifier",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2009-10": 3635,
+              "2010-11": 6229,
+              "2011-12": 6237,
+              "2012-13": 6754,
+              "2013-14": 7902,
+              "2014-15": 7913,
+              "2015-16": 7930,
+              "2016-17": 7920,
+              "2017-18": 8190,
+              "2018-19": 8030,
+              "2019-20": 8294,
+              "2020-21": 8338,
+              "2021-22": 8437,
+              "2022-23": 8437,
+              "2023-24": 6655,
+              "2024-25": 8470
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 119357,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "immunization",
+              "short_description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "long_description": "Age group as labelled by CDC. Children's groups (6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years) come from NIS-Flu; adult groups (>=18 Years, 18-49 Years, 50-64 Years, >=65 Years, 18-64 Years, and the 18-49 and 18-64 groups split by whether the person has a condition placing them at high risk of flu complications) come from BRFSS; >=6 Months combines both. County rows are >=18 Years only. In data_setting.csv.gz the age column is the population the place-of-vaccination percentages describe.",
+              "measure_type": "category",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "13-17 Years": 8668,
+              "18-49 Years": 8631,
+              "18-49 Years at High Risk": 9026,
+              "18-49 Years not at High Risk": 7547,
+              "18-64 Years": 8642,
+              "18-64 Years at High Risk": 8598,
+              "18-64 Years not at High Risk": 7028,
+              "5-12 Years": 8682,
+              "50-64 Years": 9109,
+              "6 Months - 17 Years": 9205,
+              "6 Months - 4 Years": 8685,
+              ">=18 Years": 8570,
+              ">=6 Months": 8428,
+              ">=65 Years": 8552
+            }
+          },
+          {
+            "name": "fluvaxview_coverage",
+            "duplicates": 118490,
+            "info": {
+              "id": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "long_name": "Cumulative percent vaccinated against influenza",
+              "category": "immunization",
+              "short_description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "long_description": "Weighted survey estimate of the percent of the population who had received a seasonal influenza vaccine since July 1, cumulative through the end of the month. Children 6 months-17 years come from the National Immunization Survey-Flu (parent report); adults 18 and older come from the Behavioral Risk Factor Surveillance System (self report); the >=6 Months group combines the two. These are CDC's final post-season estimates from FluVaxView Interactive, published each fall and recalculated for recent seasons with consistent imputation methods, so they can differ from the weekly in-season dashboard numbers. Every month of the season is included in data_state.csv.gz, data_region.csv.gz, and data_substate.csv.gz, so the May row is the end-of-season estimate; data_county.csv.gz has one annual BRFSS estimate for adults per county for 2018-2022; data_setting.csv.gz gives the percent of vaccinated people by place of vaccination. CDC marks estimates as not reliable (NR) when the sample is under 30, the relative standard error is over 0.3, or the confidence interval half-width is over 10; those rows are missing and flagged in suppressed_flag.",
+              "statement": "In {location}, {value}% were vaccinated against flu as of {time}",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "float",
+            "missing": 11463,
+            "mean": 35.714373,
+            "sd": 18.953104,
+            "min": 0,
+            "max": 92.7
+          },
+          {
+            "name": "fluvaxview_coverage_lcl",
+            "duplicates": 118536,
+            "info": {
+              "id": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "long_name": "Lower bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "float",
+            "missing": 11463,
+            "mean": 31.927361,
+            "sd": 18.027949,
+            "min": 0,
+            "max": 86.8
+          },
+          {
+            "name": "fluvaxview_coverage_ucl",
+            "duplicates": 118430,
+            "info": {
+              "id": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "long_name": "Upper bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "float",
+            "missing": 11463,
+            "mean": 39.501385,
+            "sd": 20.151492,
+            "min": 0,
+            "max": 99.6
+          },
+          {
+            "name": "fluvaxview_sample_size",
+            "duplicates": 114274,
+            "info": {
+              "id": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "long_name": "Unweighted number of survey respondents",
+              "category": "immunization",
+              "short_description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "long_description": "Unweighted number of NIS-Flu or BRFSS respondents in the season, geography, and group contributing to the estimate, as published by CDC. Not published for the county estimates.",
+              "measure_type": "Count",
+              "unit": "Respondents",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "integer",
+            "missing": 143,
+            "mean": 5001.779951,
+            "sd": 24149.828526,
+            "min": 38,
+            "max": 511357
+          },
+          {
+            "name": "suppressed_flag",
+            "duplicates": 119369,
+            "info": {
+              "id": "suppressed_flag",
+              "short_name": "Suppressed",
+              "long_name": "Estimate marked not reliable by CDC",
+              "category": "immunization",
+              "short_description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "long_description": "1 when CDC published NR (not reliable) instead of an estimate because the sample was under 30, the relative standard error was over 0.3, or the confidence interval half-width was over 10; 0 otherwise. Suppressed values are missing in fluvaxview_coverage and are not imputed.",
+              "measure_type": "Flag",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [162, 163],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.094923,
+            "sd": 0.293109,
+            "min": 0,
+            "max": 1
+          }
+        ]
+      },
+      "sha512": "dedf98024a4c769498834f91a12a8cb68ce5f952af68a0700d9126da864160e955008aea9150054364eb88e4d05ef64ecd3cc0965012804ef5fc8f7c06805abc"
+    },
+    {
+      "bytes": 76954,
+      "encoding": "ISO-8859-1",
+      "md5": "bd05f693c59bde7ae9821245468ca642",
+      "format": "csv",
+      "name": "data_substate.csv",
+      "filename": "data_substate.csv.gz",
+      "versions": {},
+      "source": [],
+      "data_format": "wide",
+      "ids": [
+        {
+          "variable": "geography"
+        }
+      ],
+      "id_length": 0,
+      "time": "time",
+      "profile": "data-resource",
+      "created": "2026-10-01 17:48:48.729077",
+      "last_modified": "2026-10-01 17:48:48.729077",
+      "vintage": {},
+      "row_count": 7469,
+      "entity_count": 9,
+      "schema": {
+        "fields": [
+          {
+            "name": "geography",
+            "duplicates": 7460,
+            "info": [],
+            "time_range": [0, 87],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "il_city_of_chicago": 1133,
+              "il_rest_of_state": 462,
+              "ny_city_of_new_york": 1133,
+              "ny_rest_of_state": 462,
+              "pa_philadelphia": 1133,
+              "pa_rest_of_state": 418,
+              "tx_bexar_county": 1133,
+              "tx_city_of_houston": 1133,
+              "tx_rest_of_state": 462
+            }
+          },
+          {
+            "name": "geography_name",
+            "duplicates": 7460,
+            "info": {
+              "id": "geography_name",
+              "short_name": "Area name",
+              "long_name": "CDC name of the non-FIPS area",
+              "category": "immunization",
+              "short_description": "CDC's label for the HHS region in data_region.csv.gz or the local area in data_substate.csv.gz (e.g. Region 4, NY-City of New York, TX-Rest of state).",
+              "long_description": "CDC's label for the area: the ten HHS regions in data_region.csv.gz and the local areas CDC reports separately in data_substate.csv.gz (NY-City of New York, NY-Rest of state, IL-City of Chicago, IL-Rest of state, PA-Philadelphia, PA-Rest of state, TX-Bexar County, TX-City of Houston, TX-Rest of state). The geography column is hhs_<n> in data_region.csv.gz and a lowercase slug of this name in data_substate.csv.gz; neither is a FIPS code.",
+              "measure_type": "category",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 87],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "IL-City of Chicago": 1133,
+              "IL-Rest of state": 462,
+              "NY-City of New York": 1133,
+              "NY-Rest of state": 462,
+              "PA-Philadelphia": 1133,
+              "PA-Rest of state": 418,
+              "TX-Bexar County": 1133,
+              "TX-City of Houston": 1133,
+              "TX-Rest of state": 462
+            }
+          },
+          {
+            "name": "state_fips",
+            "duplicates": 7465,
+            "info": {
+              "id": "state_fips",
+              "short_name": "Parent state FIPS",
+              "long_name": "FIPS code of the state containing the area",
+              "category": "immunization",
+              "short_description": "Two-digit FIPS code of the state a local area belongs to.",
+              "long_description": "Two-digit FIPS code of the state that contains the local area in data_substate.csv.gz.",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 87],
+            "type": "integer",
+            "missing": 0,
+            "mean": 37.571429,
+            "sd": 11.606492,
+            "min": 17,
+            "max": 48
+          },
+          {
+            "name": "time",
+            "duplicates": 7381,
+            "info": [],
+            "time_range": [0, 87],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2017-07-31": 81,
+              "2017-08-31": 81,
+              "2017-09-30": 81,
+              "2017-10-31": 81,
+              "2017-11-30": 81,
+              "2017-12-31": 81,
+              "2018-01-31": 81,
+              "2018-02-28": 81,
+              "2018-03-31": 81,
+              "2018-04-30": 81,
+              "2018-05-31": 81,
+              "2018-07-31": 81,
+              "2018-08-31": 81,
+              "2018-09-30": 81,
+              "2018-10-31": 81,
+              "2018-11-30": 81,
+              "2018-12-31": 81,
+              "2019-01-31": 81,
+              "2019-02-28": 81,
+              "2019-03-31": 81,
+              "2019-04-30": 81,
+              "2019-05-31": 81,
+              "2019-07-31": 81,
+              "2019-08-31": 81,
+              "2019-09-30": 81,
+              "2019-10-31": 81,
+              "2019-11-30": 81,
+              "2019-12-31": 81,
+              "2020-01-31": 81,
+              "2020-02-29": 81,
+              "2020-03-31": 81,
+              "2020-04-30": 81,
+              "2020-05-31": 81,
+              "2020-07-31": 81,
+              "2020-08-31": 81,
+              "2020-09-30": 81,
+              "2020-10-31": 81,
+              "2020-11-30": 81,
+              "2020-12-31": 81,
+              "2021-01-31": 81,
+              "2021-02-28": 81,
+              "2021-03-31": 81,
+              "2021-04-30": 81,
+              "2021-05-31": 81,
+              "2021-07-31": 81,
+              "2021-08-31": 81,
+              "2021-09-30": 81,
+              "2021-10-31": 81,
+              "2021-11-30": 81,
+              "2021-12-31": 81,
+              "2022-01-31": 81,
+              "2022-02-28": 81,
+              "2022-03-31": 81,
+              "2022-04-30": 81,
+              "2022-05-31": 81,
+              "2022-07-31": 81,
+              "2022-08-31": 81,
+              "2022-09-30": 81,
+              "2022-10-31": 81,
+              "2022-11-30": 81,
+              "2022-12-31": 81,
+              "2023-01-31": 81,
+              "2023-02-28": 81,
+              "2023-03-31": 81,
+              "2023-04-30": 81,
+              "2023-05-31": 81,
+              "2023-07-31": 67,
+              "2023-08-31": 67,
+              "2023-09-30": 67,
+              "2023-10-31": 67,
+              "2023-11-30": 67,
+              "2023-12-31": 67,
+              "2024-01-31": 67,
+              "2024-02-29": 67,
+              "2024-03-31": 67,
+              "2024-04-30": 67,
+              "2024-05-31": 67,
+              "2024-07-31": 126,
+              "2024-08-31": 126,
+              "2024-09-30": 126,
+              "2024-10-31": 126,
+              "2024-11-30": 126,
+              "2024-12-31": 126,
+              "2025-01-31": 126,
+              "2025-02-28": 126,
+              "2025-03-31": 126,
+              "2025-04-30": 126,
+              "2025-05-31": 126
+            }
+          },
+          {
+            "name": "season",
+            "duplicates": 7461,
+            "info": {
+              "id": "season",
+              "short_name": "Flu season",
+              "long_name": "Influenza season",
+              "category": "immunization",
+              "short_description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "long_description": "Influenza season the cumulative estimate belongs to, written as the two calendar years it spans (e.g. 2024-25). Seasons run from July of the first year through May of the second. The county file has no season column; its rows are calendar years.",
+              "measure_type": "identifier",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 87],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "2017-18": 891,
+              "2018-19": 891,
+              "2019-20": 891,
+              "2020-21": 891,
+              "2021-22": 891,
+              "2022-23": 891,
+              "2023-24": 737,
+              "2024-25": 1386
+            }
+          },
+          {
+            "name": "age",
+            "duplicates": 7455,
+            "info": {
+              "id": "age",
+              "short_name": "Age group",
+              "long_name": "Age group",
+              "category": "immunization",
+              "short_description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "long_description": "Age group as labelled by CDC. Children's groups (6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years) come from NIS-Flu; adult groups (>=18 Years, 18-49 Years, 50-64 Years, >=65 Years, 18-64 Years, and the 18-49 and 18-64 groups split by whether the person has a condition placing them at high risk of flu complications) come from BRFSS; >=6 Months combines both. County rows are >=18 Years only. In data_setting.csv.gz the age column is the population the place-of-vaccination percentages describe.",
+              "measure_type": "category",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 87],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "13-17 Years": 781,
+              "18-49 Years": 484,
+              "18-49 Years at High Risk": 484,
+              "18-49 Years not at High Risk": 484,
+              "18-64 Years": 484,
+              "18-64 Years at High Risk": 484,
+              "18-64 Years not at High Risk": 484,
+              "5-12 Years": 781,
+              "50-64 Years": 484,
+              "6 Months - 17 Years": 781,
+              "6 Months - 4 Years": 781,
+              ">=18 Years": 429,
+              ">=6 Months": 99,
+              ">=65 Years": 429
+            }
+          },
+          {
+            "name": "fluvaxview_coverage",
+            "duplicates": 6675,
+            "info": {
+              "id": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "long_name": "Cumulative percent vaccinated against influenza",
+              "category": "immunization",
+              "short_description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "long_description": "Weighted survey estimate of the percent of the population who had received a seasonal influenza vaccine since July 1, cumulative through the end of the month. Children 6 months-17 years come from the National Immunization Survey-Flu (parent report); adults 18 and older come from the Behavioral Risk Factor Surveillance System (self report); the >=6 Months group combines the two. These are CDC's final post-season estimates from FluVaxView Interactive, published each fall and recalculated for recent seasons with consistent imputation methods, so they can differ from the weekly in-season dashboard numbers. Every month of the season is included in data_state.csv.gz, data_region.csv.gz, and data_substate.csv.gz, so the May row is the end-of-season estimate; data_county.csv.gz has one annual BRFSS estimate for adults per county for 2018-2022; data_setting.csv.gz gives the percent of vaccinated people by place of vaccination. CDC marks estimates as not reliable (NR) when the sample is under 30, the relative standard error is over 0.3, or the confidence interval half-width is over 10; those rows are missing and flagged in suppressed_flag.",
+              "statement": "In {location}, {value}% were vaccinated against flu as of {time}",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 87],
+            "type": "float",
+            "missing": 1372,
+            "mean": 39.965622,
+            "sd": 20.389834,
+            "min": 0,
+            "max": 85.7
+          },
+          {
+            "name": "fluvaxview_coverage_lcl",
+            "duplicates": 6729,
+            "info": {
+              "id": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "long_name": "Lower bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 87],
+            "type": "float",
+            "missing": 1372,
+            "mean": 34.010349,
+            "sd": 19.397833,
+            "min": 0,
+            "max": 81.8
+          },
+          {
+            "name": "fluvaxview_coverage_ucl",
+            "duplicates": 6601,
+            "info": {
+              "id": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "long_name": "Upper bound of the 95% confidence interval for flu vaccination coverage",
+              "category": "immunization",
+              "short_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "long_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "scale": "0-100",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 87],
+            "type": "float",
+            "missing": 1372,
+            "mean": 45.92083,
+            "sd": 22.178757,
+            "min": 0,
+            "max": 106
+          },
+          {
+            "name": "fluvaxview_sample_size",
+            "duplicates": 6940,
+            "info": {
+              "id": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "long_name": "Unweighted number of survey respondents",
+              "category": "immunization",
+              "short_description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "long_description": "Unweighted number of NIS-Flu or BRFSS respondents in the season, geography, and group contributing to the estimate, as published by CDC. Not published for the county estimates.",
+              "measure_type": "Count",
+              "unit": "Respondents",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 87],
+            "type": "integer",
+            "missing": 572,
+            "mean": 1002.197767,
+            "sd": 1027.306887,
+            "min": 34,
+            "max": 7047
+          },
+          {
+            "name": "suppressed_flag",
+            "duplicates": 7467,
+            "info": {
+              "id": "suppressed_flag",
+              "short_name": "Suppressed",
+              "long_name": "Estimate marked not reliable by CDC",
+              "category": "immunization",
+              "short_description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "long_description": "1 when CDC published NR (not reliable) instead of an estimate because the sample was under 30, the relative standard error was over 0.3, or the confidence interval half-width was over 10; 0 otherwise. Suppressed values are missing in fluvaxview_coverage and are not imputed.",
+              "measure_type": "Flag",
+              "time_resolution": "Month",
+              "sources": [
+                {
+                  "id": "fluvaxview_nis_flu"
+                },
+                {
+                  "id": "fluvaxview_brfss"
+                }
+              ]
+            },
+            "time_range": [0, 87],
+            "type": "integer",
+            "missing": 0,
+            "mean": 0.117419,
+            "sd": 0.32194,
+            "min": 0,
+            "max": 1
+          }
+        ]
+      },
+      "sha512": "4085379692c9e3c301076b3d76aee89f38ee36864c7d4ada2e912e77851600a0c0f1c86b28a1ad85563e6858e91d4ad4a8468c9af44b06857497d328dee7c55e"
+    }
+  ],
+  "measure_info": {
+    "season": {
+      "id": "season",
+      "short_name": "Flu season",
+      "long_name": "Influenza season",
+      "category": "immunization",
+      "short_description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+      "long_description": "Influenza season the cumulative estimate belongs to, written as the two calendar years it spans (e.g. 2024-25). Seasons run from July of the first year through May of the second. The county file has no season column; its rows are calendar years.",
+      "measure_type": "identifier",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ]
+    },
+    "age": {
+      "id": "age",
+      "short_name": "Age group",
+      "long_name": "Age group",
+      "category": "immunization",
+      "short_description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+      "long_description": "Age group as labelled by CDC. Children's groups (6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years) come from NIS-Flu; adult groups (>=18 Years, 18-49 Years, 50-64 Years, >=65 Years, 18-64 Years, and the 18-49 and 18-64 groups split by whether the person has a condition placing them at high risk of flu complications) come from BRFSS; >=6 Months combines both. County rows are >=18 Years only. In data_setting.csv.gz the age column is the population the place-of-vaccination percentages describe.",
+      "measure_type": "category",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ]
+    },
+    "race_ethnicity": {
+      "id": "race_ethnicity",
+      "short_name": "Race and ethnicity",
+      "long_name": "Race and ethnicity",
+      "category": "immunization",
+      "short_description": "White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Other or Multiple Races, Non-Hispanic; and, from 2024-25, Asian and American Indian or Alaska Native, Non-Hispanic.",
+      "long_description": "Race and ethnicity group of the estimate in data_race.csv.gz, using CDC's labels. Four groups are available in every season (White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Other or Multiple Races, Non-Hispanic); Asian, Non-Hispanic and American Indian or Alaska Native, Non-Hispanic were added in 2024-25. Estimates cover all ages 6 months and older.",
+      "measure_type": "category",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ]
+    },
+    "setting": {
+      "id": "setting",
+      "short_name": "Place of vaccination",
+      "long_name": "Place where the flu vaccine was received",
+      "category": "immunization",
+      "short_description": "Medical Setting, Non-Medical Setting, Pharmacy/Store, Workplace, or School.",
+      "long_description": "Type of place where vaccinated people said they received their flu vaccine, in data_setting.csv.gz: Medical Setting (doctor's office, clinic, hospital, health department), Non-Medical Setting (all other places, which include the next three), Pharmacy/Store, Workplace (adults), or School (children). Percentages are of vaccinated people, not of the population, and are published only for some seasons.",
+      "measure_type": "category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ]
+    },
+    "geography_name": {
+      "id": "geography_name",
+      "short_name": "Area name",
+      "long_name": "CDC name of the non-FIPS area",
+      "category": "immunization",
+      "short_description": "CDC's label for the HHS region in data_region.csv.gz or the local area in data_substate.csv.gz (e.g. Region 4, NY-City of New York, TX-Rest of state).",
+      "long_description": "CDC's label for the area: the ten HHS regions in data_region.csv.gz and the local areas CDC reports separately in data_substate.csv.gz (NY-City of New York, NY-Rest of state, IL-City of Chicago, IL-Rest of state, PA-Philadelphia, PA-Rest of state, TX-Bexar County, TX-City of Houston, TX-Rest of state). The geography column is hhs_<n> in data_region.csv.gz and a lowercase slug of this name in data_substate.csv.gz; neither is a FIPS code.",
+      "measure_type": "category",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ]
+    },
+    "state_fips": {
+      "id": "state_fips",
+      "short_name": "Parent state FIPS",
+      "long_name": "FIPS code of the state containing the area",
+      "category": "immunization",
+      "short_description": "Two-digit FIPS code of the state a local area belongs to.",
+      "long_description": "Two-digit FIPS code of the state that contains the local area in data_substate.csv.gz.",
+      "measure_type": "identifier",
+      "unit": "FIPS code",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ]
+    },
+    "fluvaxview_coverage": {
+      "id": "fluvaxview_coverage",
+      "short_name": "Flu vaccination coverage",
+      "long_name": "Cumulative percent vaccinated against influenza",
+      "category": "immunization",
+      "short_description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+      "long_description": "Weighted survey estimate of the percent of the population who had received a seasonal influenza vaccine since July 1, cumulative through the end of the month. Children 6 months-17 years come from the National Immunization Survey-Flu (parent report); adults 18 and older come from the Behavioral Risk Factor Surveillance System (self report); the >=6 Months group combines the two. These are CDC's final post-season estimates from FluVaxView Interactive, published each fall and recalculated for recent seasons with consistent imputation methods, so they can differ from the weekly in-season dashboard numbers. Every month of the season is included in data_state.csv.gz, data_region.csv.gz, and data_substate.csv.gz, so the May row is the end-of-season estimate; data_county.csv.gz has one annual BRFSS estimate for adults per county for 2018-2022; data_setting.csv.gz gives the percent of vaccinated people by place of vaccination. CDC marks estimates as not reliable (NR) when the sample is under 30, the relative standard error is over 0.3, or the confidence interval half-width is over 10; those rows are missing and flagged in suppressed_flag.",
+      "statement": "In {location}, {value}% were vaccinated against flu as of {time}",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "scale": "0-100",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ],
+      "citations": []
+    },
+    "fluvaxview_coverage_lcl": {
+      "id": "fluvaxview_coverage_lcl",
+      "short_name": "Coverage, lower 95% CI",
+      "long_name": "Lower bound of the 95% confidence interval for flu vaccination coverage",
+      "category": "immunization",
+      "short_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+      "long_description": "Lower bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "scale": "0-100",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ],
+      "citations": []
+    },
+    "fluvaxview_coverage_ucl": {
+      "id": "fluvaxview_coverage_ucl",
+      "short_name": "Coverage, upper 95% CI",
+      "long_name": "Upper bound of the 95% confidence interval for flu vaccination coverage",
+      "category": "immunization",
+      "short_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+      "long_description": "Upper bound of the 95% confidence interval for fluvaxview_coverage, as published by CDC.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "scale": "0-100",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ],
+      "citations": []
+    },
+    "fluvaxview_sample_size": {
+      "id": "fluvaxview_sample_size",
+      "short_name": "Sample size",
+      "long_name": "Unweighted number of survey respondents",
+      "category": "immunization",
+      "short_description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+      "long_description": "Unweighted number of NIS-Flu or BRFSS respondents in the season, geography, and group contributing to the estimate, as published by CDC. Not published for the county estimates.",
+      "measure_type": "Count",
+      "unit": "Respondents",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ],
+      "citations": []
+    },
+    "suppressed_flag": {
+      "id": "suppressed_flag",
+      "short_name": "Suppressed",
+      "long_name": "Estimate marked not reliable by CDC",
+      "category": "immunization",
+      "short_description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+      "long_description": "1 when CDC published NR (not reliable) instead of an estimate because the sample was under 30, the relative standard error was over 0.3, or the confidence interval half-width was over 10; 0 otherwise. Suppressed values are missing in fluvaxview_coverage and are not imputed.",
+      "measure_type": "Flag",
+      "time_resolution": "Month",
+      "sources": [
+        {
+          "id": "fluvaxview_nis_flu"
+        },
+        {
+          "id": "fluvaxview_brfss"
+        }
+      ],
+      "citations": []
+    },
+    "_sources": {
+      "fluvaxview_nis_flu": {
+        "name": "National Immunization Survey-Flu (NIS-Flu), FluVaxView Interactive",
+        "url": "https://www.cdc.gov/fluvaxview/interactive/general-population-coverage.html",
+        "organization": "Centers for Disease Control and Prevention",
+        "organization_url": "https://www.cdc.gov/ncird/",
+        "location": "Influenza Vaccination Coverage for All Ages (6+ Months)",
+        "location_url": "https://data.cdc.gov/d/vh55-3he6",
+        "description": "FluVaxView Interactive is CDC's end-of-season summary of influenza vaccination coverage in the general population. Estimates for children 6 months-17 years come from the National Immunization Survey-Flu (NIS-Flu), a national random-digit-dialed cellular telephone survey in which a parent or guardian reports whether and when the child received a flu vaccine. Coverage is reported as the cumulative percent vaccinated since July for each month of the season (July through May) for the nation, HHS regions, all states, the District of Columbia, Puerto Rico, Guam, the U.S. Virgin Islands, and selected local areas, by age group and race and ethnicity, from the 2009-10 season to the most recent complete season. These are CDC's final estimates, published each fall after the season ends; CDC recalculated the 2022-23 and 2023-24 estimates with consistent imputation so recent seasons are comparable. Parent report is subject to recall error and telephone surveys to selection bias. Combined all-ages (>=6 months) estimates pool NIS-Flu with the BRFSS adult estimates.",
+        "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+        "date_accessed": 2026
+      },
+      "fluvaxview_brfss": {
+        "name": "Behavioral Risk Factor Surveillance System (BRFSS), FluVaxView Interactive",
+        "url": "https://www.cdc.gov/brfss/index.html",
+        "organization": "Centers for Disease Control and Prevention",
+        "organization_url": "https://www.cdc.gov/ncird/",
+        "location": "Influenza Vaccination Coverage for All Ages (6+ Months)",
+        "location_url": "https://data.cdc.gov/d/vh55-3he6",
+        "description": "Adult (18 years and older) estimates in FluVaxView Interactive come from the Behavioral Risk Factor Surveillance System (BRFSS), the state-based telephone survey that interviews more than 400,000 adults a year in all states, the District of Columbia, and participating territories. Respondents report whether and in which month they received a flu vaccine; CDC calculates cumulative coverage for each month of the flu season (July through May) by age group, high-risk status, and race and ethnicity for the nation, HHS regions, states, and selected local areas, from the 2009-10 season onward. CDC also publishes annual county-level adult flu vaccination estimates from BRFSS for calendar years 2018-2022, included here in data_county.csv.gz. Self-reported vaccination is subject to recall error, and BRFSS county estimates rely on small samples in many counties.",
+        "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+        "date_accessed": 2026
+      },
+      "id": "_sources"
+    },
+    "_catalog": {
+      "name": "FluVaxView end-of-season flu vaccination coverage",
+      "summary": "CDC's final end-of-season estimates of how many people got a flu shot, by month of the season, age, and race, for the nation, states, and (for adults) counties, since 2009.",
+      "search_terms": [
+        "Respiratory",
+        "Childhood immunizations",
+        "flu vaccine",
+        "vaccination coverage",
+        "county flu shots"
+      ],
+      "bucket": [
+        "Immunization"
+      ],
+      "files": {
+        "data_state.csv.gz": "Monthly cumulative flu vaccination coverage by age group, national and state",
+        "data_race.csv.gz": "Monthly cumulative flu vaccination coverage by race and ethnicity, national and state",
+        "data_setting.csv.gz": "Place of flu vaccination among the vaccinated, by age group, national and state",
+        "data_county.csv.gz": "Annual adult flu vaccination coverage by county, 2018-2022",
+        "data_region.csv.gz": "Monthly cumulative flu vaccination coverage by age group for the ten HHS regions",
+        "data_substate.csv.gz": "Monthly cumulative flu vaccination coverage by age group for local areas (non-FIPS)"
+      },
+      "id": "_catalog"
+    }
+  }
+}

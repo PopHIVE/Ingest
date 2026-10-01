@@ -1,7 +1,7 @@
 {
   "description": "Index of PopHIVE/Ingest standardized data sources (excludes bundle_* directories).",
   "repository": "PopHIVE/Ingest",
-  "n_datasets": 54,
+  "n_datasets": 61,
   "datasets": [
     {
       "dataset": "abcs",
@@ -549,6 +549,60 @@
       ]
     },
     {
+      "dataset": "flu_doses_distributed",
+      "name": "Influenza vaccine doses distributed (CDC FluVaxView)",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/flu_doses_distributed/standard",
+      "data_url": "https://www.cdc.gov/fluvaxview/dashboard/vaccine-doses-distributed.html",
+      "data_dictionary": "https://pophive.github.io/Ingest/#flu-doses-distributed",
+      "latest_date": "2026-03-07",
+      "search_terms": ["Respiratory", "flu vaccine", "vaccine supply", "doses distributed"],
+      "bucket": ["Immunization"],
+      "summary": "Weekly cumulative total of flu vaccine doses that manufacturers have shipped in the United States each season, as reported to CDC.",
+      "files": [
+        {
+          "dataset_stratification": "Weekly national cumulative flu vaccine doses distributed",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/flu_doses_distributed/standard/data.csv.gz"
+        }
+      ]
+    },
+    {
+      "dataset": "fluvaxview",
+      "name": "FluVaxView end-of-season flu vaccination coverage",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/fluvaxview/standard",
+      "data_url": "https://www.cdc.gov/fluvaxview/interactive/general-population-coverage.html",
+      "data_dictionary": "https://pophive.github.io/Ingest/#fluvaxview",
+      "latest_date": "2025-05-31",
+      "search_terms": ["Respiratory", "Childhood immunizations", "flu vaccine", "vaccination coverage", "county flu shots"],
+      "bucket": ["Immunization"],
+      "summary": "CDC's final end-of-season estimates of how many people got a flu shot, by month of the season, age, and race, for the nation, states, and (for adults) counties, since 2009.",
+      "files": [
+        {
+          "dataset_stratification": "Annual adult flu vaccination coverage by county, 2018-2022",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/fluvaxview/standard/data_county.csv.gz"
+        },
+        {
+          "dataset_stratification": "Monthly cumulative flu vaccination coverage by race and ethnicity, national and state",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/fluvaxview/standard/data_race.csv.gz"
+        },
+        {
+          "dataset_stratification": "Monthly cumulative flu vaccination coverage by age group for the ten HHS regions",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/fluvaxview/standard/data_region.csv.gz"
+        },
+        {
+          "dataset_stratification": "Place of flu vaccination among the vaccinated, by age group, national and state",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/fluvaxview/standard/data_setting.csv.gz"
+        },
+        {
+          "dataset_stratification": "Monthly cumulative flu vaccination coverage by age group, national and state",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/fluvaxview/standard/data_state.csv.gz"
+        },
+        {
+          "dataset_stratification": "Monthly cumulative flu vaccination coverage by age group for local areas (non-FIPS)",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/fluvaxview/standard/data_substate.csv.gz"
+        }
+      ]
+    },
+    {
       "dataset": "gtrends",
       "name": "Google Health Trends API",
       "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/gtrends/standard",
@@ -595,6 +649,44 @@
         {
           "dataset_stratification": "State-level severe housing problems rate",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/hud_chas/standard/data_state.csv.gz"
+        }
+      ]
+    },
+    {
+      "dataset": "iis_vax",
+      "name": "IIS monthly flu and RSV immunization by jurisdiction",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/iis_vax/standard",
+      "data_url": "https://www.cdc.gov/iis/about/index.html",
+      "data_dictionary": "https://pophive.github.io/Ingest/#iis-vax",
+      "latest_date": "2026-04-30",
+      "search_terms": ["Respiratory", "Childhood immunizations", "flu vaccine", "rsv vaccine", "nirsevimab", "immunization registry"],
+      "bucket": ["Immunization"],
+      "summary": "State immunization registries report to CDC each month how many residents have received a flu shot, an RSV vaccine (adults 75 and older), or an RSV antibody (infants), by age group.",
+      "files": [
+        {
+          "dataset_stratification": "Monthly counts for cities and freely associated states (non-FIPS)",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/iis_vax/standard/data_substate.csv.gz"
+        },
+        {
+          "dataset_stratification": "Monthly cumulative immunization counts and coverage by immunization and age group",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/iis_vax/standard/data.csv.gz"
+        }
+      ]
+    },
+    {
+      "dataset": "iqvia_vax_administered",
+      "name": "IQVIA pharmacy and physician-office vaccination claims (CDC estimates)",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/iqvia_vax_administered/standard",
+      "data_url": "https://www.cdc.gov/fluvaxview/dashboard/adult-vaccinations-administered.html",
+      "data_dictionary": "https://pophive.github.io/Ingest/#iqvia-vax-administered",
+      "latest_date": "2026-04-25",
+      "search_terms": ["Respiratory", "flu vaccine", "rsv vaccine", "doses administered", "pharmacy"],
+      "bucket": ["Immunization"],
+      "summary": "CDC's weekly estimates of how many flu and RSV vaccine doses adults received at retail pharmacies and doctors' offices nationwide, based on IQVIA claims data.",
+      "files": [
+        {
+          "dataset_stratification": "Weekly national dose counts by vaccine, setting, and age group",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/iqvia_vax_administered/standard/data.csv.gz"
         }
       ]
     },
@@ -688,6 +780,23 @@
         {
           "dataset_stratification": "Medicaid quality measures",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/medicaid_quality/standard/data.csv.gz"
+        }
+      ]
+    },
+    {
+      "dataset": "medicare_vax",
+      "name": "Medicare Fee-For-Service claims (CMS Chronic Conditions Warehouse)",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/medicare_vax/standard",
+      "data_url": "https://www2.ccwdata.org/web/guest/home",
+      "data_dictionary": "https://pophive.github.io/Ingest/#medicare-vax",
+      "latest_date": "2026-03-28",
+      "search_terms": ["Respiratory", "flu vaccine", "rsv vaccine", "medicare", "older adults", "vaccination coverage"],
+      "bucket": ["Immunization"],
+      "summary": "Weekly share of older adults on traditional Medicare with a claim for a flu shot (65 and older) or an RSV vaccine (75 and older), by race and ethnicity.",
+      "files": [
+        {
+          "dataset_stratification": "Weekly national coverage by vaccine, age group, and race/ethnicity",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/medicare_vax/standard/data.csv.gz"
         }
       ]
     },
@@ -887,6 +996,39 @@
         {
           "dataset_stratification": "Vaccination uptake by vaccine and age",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis/standard/data.csv.gz"
+        }
+      ]
+    },
+    {
+      "dataset": "nis_flu_rsv",
+      "name": "NIS-Flu and NIS-FRVM weekly flu and RSV vaccination",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/nis_flu_rsv/standard",
+      "data_url": "https://www.cdc.gov/nis/about/index.html",
+      "data_dictionary": "https://pophive.github.io/Ingest/#nis-flu-rsv",
+      "latest_date": "2026-05-16",
+      "search_terms": ["Respiratory", "Childhood immunizations", "flu vaccine", "rsv vaccine", "vaccination coverage", "vaccine intent"],
+      "bucket": ["Immunization"],
+      "summary": "CDC's National Immunization Surveys track each week how many children and adults have gotten a flu shot, and how many older adults have had an RSV vaccine, by state and demographic group.",
+      "files": [
+        {
+          "dataset_stratification": "Weekly national flu and RSV vaccination coverage and intent by age group",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_flu_rsv/standard/data_age.csv.gz"
+        },
+        {
+          "dataset_stratification": "Weekly national flu and RSV vaccination coverage and intent by demographic group",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_flu_rsv/standard/data_demographics.csv.gz"
+        },
+        {
+          "dataset_stratification": "Weekly flu and RSV vaccination coverage and intent for the ten HHS regions",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_flu_rsv/standard/data_region.csv.gz"
+        },
+        {
+          "dataset_stratification": "Weekly flu vaccination coverage and intent for sub-state and local areas (non-FIPS)",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_flu_rsv/standard/data_substate.csv.gz"
+        },
+        {
+          "dataset_stratification": "Weekly flu and RSV vaccination coverage and intent by vaccine and population, national and state",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_flu_rsv/standard/data.csv.gz"
         }
       ]
     },
@@ -1110,6 +1252,23 @@
         {
           "dataset_stratification": "National MMR exemption rates",
           "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/vaccine_exemptions_fattah/standard/data.csv.gz"
+        }
+      ]
+    },
+    {
+      "dataset": "vsd_pregnancy_vax",
+      "name": "Vaccine Safety Datalink (VSD) pregnancy vaccination coverage",
+      "github_folder": "https://github.com/PopHIVE/Ingest/tree/main/data/vsd_pregnancy_vax/standard",
+      "data_url": "https://www.cdc.gov/vaccine-safety-systems/vsd/index.html",
+      "data_dictionary": "https://pophive.github.io/Ingest/#vsd-pregnancy-vax",
+      "latest_date": "2026-04-04",
+      "search_terms": ["Maternal health", "Respiratory", "flu vaccine", "rsv vaccine", "pregnancy", "vaccination coverage"],
+      "bucket": ["Immunization", "Maternal health"],
+      "summary": "Weekly share of pregnant women in the Vaccine Safety Datalink health systems who have had a flu or RSV vaccine, overall and by race and ethnicity.",
+      "files": [
+        {
+          "dataset_stratification": "Weekly national coverage by vaccine and race/ethnicity",
+          "dataset_link": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/vsd_pregnancy_vax/standard/data.csv.gz"
         }
       ]
     },

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-01T14:10:52Z",
+  "generated": "2026-10-01T17:56:24Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -21763,6 +21763,475 @@
         }
       ]
     },
+    "flu_doses_distributed": {
+      "name": "flu_doses_distributed",
+      "display_name": "Flu Doses Distributed",
+      "description": "Influenza vaccine is produced by private manufacturers, which together with a subset of wholesalers and distributors report to CDC each week the number of doses they have shipped in the United States. CDC publishes the cumulative total for each week of the season, from late July through early March, for the 2018-19 season onward. The figures approximate all doses distributed nationally, are not projections, and say nothing about how many doses were administered.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Flu season the cumulative total belongs to, e.g. 2024-25.",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "flu_doses_cumulative_millions",
+              "short_name": "Flu vaccine doses distributed",
+              "description": "Flu vaccine doses shipped by manufacturers and distributors, in millions, in the United States, cumulative from the start of the season through the end of the week.",
+              "measure_type": "Count",
+              "unit": "Millions of doses"
+            }
+          ]
+        }
+      ]
+    },
+    "fluvaxview": {
+      "name": "fluvaxview",
+      "display_name": "Fluvaxview",
+      "description": "FluVaxView Interactive is CDC's end-of-season summary of influenza vaccination coverage in the general population. Estimates for children 6 months-17 years come from the National Immunization Survey-Flu (NIS-Flu), a national random-digit-dialed cellular telephone survey in which a parent or guardian reports whether and when the child received a flu vaccine. Coverage is reported as the cumulative percent vaccinated since July for each month of the season (July through May) for the nation, HHS regions, all states, the District of Columbia, Puerto Rico, Guam, the U.S. Virgin Islands, and selected local areas, by age group and race and ethnicity, from the 2009-10 season to the most recent complete season. These are CDC's final estimates, published each fall after the season ends; CDC recalculated the 2022-23 and 2023-24 estimates with consistent imputation so recent seasons are comparable. Parent report is subject to recall error and telephone surveys to selection bias. Combined all-ages (>=6 months) estimates pool NIS-Flu with the BRFSS adult estimates.",
+      "standard_files": [
+        {
+          "filename": "data_county.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data_race.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race and ethnicity",
+              "description": "White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Other or Multiple Races, Non-Hispanic; and, from 2024-25, Asian and American Indian or Alaska Native, Non-Hispanic.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data_region.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "geography_name",
+              "short_name": "Area name",
+              "description": "CDC's label for the HHS region in data_region.csv.gz or the local area in data_substate.csv.gz (e.g. Region 4, NY-City of New York, TX-Rest of state).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data_setting.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "setting",
+              "short_name": "Place of vaccination",
+              "description": "Medical Setting, Non-Medical Setting, Pharmacy/Store, Workplace, or School.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data_state.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data_substate.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "geography_name",
+              "short_name": "Area name",
+              "description": "CDC's label for the HHS region in data_region.csv.gz or the local area in data_substate.csv.gz (e.g. Region 4, NY-City of New York, TX-Rest of state).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "state_fips",
+              "short_name": "Parent state FIPS",
+              "description": "Two-digit FIPS code of the state a local area belongs to.",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Flu season the estimate belongs to, e.g. 2024-25 (July through May).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "CDC age group, e.g. >=6 Months, 6 Months - 17 Years, 6 Months - 4 Years, 5-12 Years, 13-17 Years, >=18 Years, 18-49 Years, 50-64 Years, >=65 Years, and high-risk splits of 18-49 and 18-64.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "fluvaxview_coverage",
+              "short_name": "Flu vaccination coverage",
+              "description": "Percent of the population vaccinated against flu, cumulative from July through the month (or for the season / calendar year).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for fluvaxview_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "fluvaxview_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of survey respondents behind the estimate; not published for counties.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate as not reliable (NR), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        }
+      ]
+    },
     "gtrends": {
       "name": "gtrends",
       "display_name": "Gtrends",
@@ -22194,6 +22663,238 @@
               "description": "Share of occupied housing units with at least 1 of 4 severe housing problems.",
               "measure_type": "Percent",
               "unit": "Proportion (0–1)"
+            }
+          ]
+        }
+      ]
+    },
+    "iis_vax": {
+      "name": "iis_vax",
+      "display_name": "Iis Vax",
+      "description": "Immunization Information Systems (IIS) are the confidential, population-based registries that states, some large cities, and territories use to record vaccine doses given by participating providers. Jurisdictions submit aggregate counts to CDC each month, by age group, of residents with at least one dose of seasonal influenza vaccine (children 6 months-17 years and adults 18 and older, 2022-23 season onward), RSV vaccine (adults 75 and older, 2024-25 onward), and RSV monoclonal antibody (infants under 8 months, 2024-25 onward). Counts are cumulative from the start of the season and are divided by the previous year's Census population estimate to give coverage. Because a registry is meant to capture every dose rather than a sample, no standard errors are published. Completeness varies with each jurisdiction's reporting laws and provider participation, so IIS coverage usually runs below survey estimates from the National Immunization Survey. Not all jurisdictions report: 54 submitted data through the 2024-25 season and about half did in 2025-26, and CDC does not publish a national estimate. New York City and Philadelphia report separately from their states; Chicago and Houston have reported separately in some seasons.",
+      "standard_files": [
+        {
+          "filename": "data_substate.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "geography_name",
+              "short_name": "Area name",
+              "description": "Name of the city or freely associated state in data_substate.csv.gz.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "geography_level",
+              "short_name": "Area type",
+              "description": "City or Freely associated state.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "state_fips",
+              "short_name": "Parent state FIPS",
+              "description": "Two-digit FIPS code of the state a city belongs to; missing for freely associated states.",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Season",
+              "description": "Season the cumulative estimate belongs to, e.g. 2024-25.",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Immunization",
+              "description": "Flu (influenza vaccine), rsv (RSV vaccine, adults 75+), or rsv_mab (RSV monoclonal antibody, infants under 8 months).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "CDC age group label: 6-23 months, 2-4, 5-8, 9-12, 13-17, 6 months to 17 years, 18-49, 50-64, 65+, 18+ years (flu); 75+ years (rsv); 0-7 months (rsv_mab).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "iis_n_vaccinated",
+              "short_name": "People immunized",
+              "description": "Number of residents with at least one dose recorded in the jurisdiction's immunization information system from the start of the season through the month.",
+              "measure_type": "Count",
+              "unit": "People"
+            },
+            {
+              "name": "iis_population",
+              "short_name": "Population",
+              "description": "Census population of the age group used as the coverage denominator.",
+              "measure_type": "Count",
+              "unit": "People"
+            },
+            {
+              "name": "iis_coverage",
+              "short_name": "Immunization coverage",
+              "description": "Percent of the age group with at least one dose recorded in the jurisdiction's immunization information system, cumulative through the month.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            }
+          ]
+        },
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Season",
+              "description": "Season the cumulative estimate belongs to, e.g. 2024-25.",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Immunization",
+              "description": "Flu (influenza vaccine), rsv (RSV vaccine, adults 75+), or rsv_mab (RSV monoclonal antibody, infants under 8 months).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "CDC age group label: 6-23 months, 2-4, 5-8, 9-12, 13-17, 6 months to 17 years, 18-49, 50-64, 65+, 18+ years (flu); 75+ years (rsv); 0-7 months (rsv_mab).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "jurisdiction",
+              "short_name": "Reporting jurisdiction",
+              "description": "CDC's name for the reporting jurisdiction; shows when a state row excludes a separately reporting city.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "partial_state_flag",
+              "short_name": "Partial state",
+              "description": "1 for New York (excluding New York City) and Pennsylvania (excluding Philadelphia County), 0 otherwise.",
+              "measure_type": "Flag",
+              "unit": ""
+            },
+            {
+              "name": "iis_n_vaccinated",
+              "short_name": "People immunized",
+              "description": "Number of residents with at least one dose recorded in the jurisdiction's immunization information system from the start of the season through the month.",
+              "measure_type": "Count",
+              "unit": "People"
+            },
+            {
+              "name": "iis_population",
+              "short_name": "Population",
+              "description": "Census population of the age group used as the coverage denominator.",
+              "measure_type": "Count",
+              "unit": "People"
+            },
+            {
+              "name": "iis_coverage",
+              "short_name": "Immunization coverage",
+              "description": "Percent of the age group with at least one dose recorded in the jurisdiction's immunization information system, cumulative through the month.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            }
+          ]
+        }
+      ]
+    },
+    "iqvia_vax_administered": {
+      "name": "iqvia_vax_administered",
+      "display_name": "Iqvia Vax Administered",
+      "description": "CDC publishes weekly estimates of the number of influenza (adults 18 and older, 2019-20 season onward) and RSV (adults 50 and older) vaccine doses administered in retail pharmacies and physicians' medical offices in the United States. The pharmacy estimates are projected by IQVIA from its Longitudinal Prescription Claims (LRx) data covering about 41,000 of the roughly 57,000 U.S. retail pharmacies; the physician-office estimates are projected from IQVIA Medical Claims (Dx) for a subset of office-based physicians on the American Medical Association list. Doses given at workplaces, community sites, long-term care facilities, public health clinics, and hospitals are not captured, and the estimates are national dose counts with no denominator, so CDC states they must not be used to calculate vaccination coverage. Physician-office estimates continue to rise for about two months as claims are processed. IQVIA assigns age from year of birth.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Season",
+              "description": "Season the weekly count belongs to, e.g. 2024-25.",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Vaccine",
+              "description": "Flu (seasonal influenza vaccine, adults 18+) or rsv (RSV vaccine, adults 50+).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "setting",
+              "short_name": "Setting",
+              "description": "Pharmacy, Physician Medical Office, or Combined (the two together).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Flu: 18+, 18-49, 18-64, 50-64, 65+, and from 2023-24 60-74 and 75+. RSV: 50-59, 60-74, 75+.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "iqvia_doses",
+              "short_name": "Doses administered in the week",
+              "description": "Estimated number of doses given in the setting during the week ending on the date.",
+              "measure_type": "Count",
+              "unit": "Doses"
+            },
+            {
+              "name": "iqvia_cumulative_doses",
+              "short_name": "Cumulative doses administered",
+              "description": "Estimated doses given in the setting from the start of the season (flu) or since August 2023 (RSV) through the week.",
+              "measure_type": "Count",
+              "unit": "Doses"
             }
           ]
         }
@@ -24607,6 +25308,67 @@
               "name": "medicaid_hpc_ad_rate",
               "short_name": "HPC: Use of Opioids at High Dosage (Adult)",
               "description": "Percent of adults without cancer who received opioid prescriptions at high dosage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            }
+          ]
+        }
+      ]
+    },
+    "medicare_vax": {
+      "name": "medicare_vax",
+      "display_name": "Medicare Vax",
+      "description": "CDC's National Center for Immunization and Respiratory Diseases estimates vaccination coverage among Medicare fee-for-service beneficiaries from administrative claims in the CMS Chronic Conditions Warehouse. Weekly cumulative estimates use Kaplan-Meier survival analysis among beneficiaries enrolled as of August 1: influenza vaccines received since August 1 of each season among adults 65 and older (2019-20 season onward), and RSV vaccines received since August 1, 2023 among adults 75 and older enrolled in a Part D plan. Estimates are national, broken down by race and ethnicity, and reflect claims processed by the CMS release date noted on the dashboard. Fee-for-service claims exclude Medicare Advantage enrollees.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Flu season the estimate belongs to, e.g. 2024-25; missing for RSV, which is cumulative since August 2023.",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Vaccine",
+              "description": "Flu (seasonal influenza vaccine, beneficiaries 65+) or rsv (RSV vaccine, beneficiaries 75+ with Part D).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "65+ (flu) or 75+ (RSV).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race and ethnicity",
+              "description": "Overall, White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Asian, Non-Hispanic; or Other, Non-Hispanic.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "medicare_coverage",
+              "short_name": "Vaccination coverage, Medicare",
+              "description": "Percent of Medicare fee-for-service beneficiaries with a vaccine claim as of the week ending date (flu since August 1 of the season; RSV since August 2023).",
               "measure_type": "Percent",
               "unit": "Percent"
             }
@@ -28711,6 +29473,542 @@
         }
       ]
     },
+    "nis_flu_rsv": {
+      "name": "nis_flu_rsv",
+      "display_name": "NIS Flu Rsv",
+      "description": "The National Immunization Survey-Flu (NIS-Flu) is a national random-digit-dialed cellular telephone survey of households with children ages 6 months-17 years, conducted by CDC's National Center for Immunization and Respiratory Diseases from October through June each flu season. A parent or guardian who knows the child's vaccination history reports whether and when the child received a flu vaccine; estimates are weighted to the population of each state and the nation. CDC publishes weekly cumulative coverage and, since the 2023-24 season, parental intent to vaccinate, for the nation, HHS regions, states, and selected sub-state areas, with national breakdowns by age, race and ethnicity, poverty, mother's education, and urbanicity. Estimates are preliminary in-season numbers that may differ from CDC's final post-season estimates, and are subject to non-coverage of households without cell phones, selection bias, and parental recall error, which tends to overstate coverage compared with immunization registries. Seasons 2019-20 to present are included.",
+      "standard_files": [
+        {
+          "filename": "data_age.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Season the estimate belongs to, e.g. 2024-25 (July through June).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Vaccine",
+              "description": "Flu (seasonal influenza vaccine) or rsv (RSV vaccine).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "population",
+              "short_name": "Population",
+              "description": "Population surveyed: 6 months-17 years, 18+, 75+, or 50-74 (high risk).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "CDC age group within the population, in data_age.csv.gz (e.g. 6-23 months, 5-11 years, 18-49 years, 65+ years).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "nis_coverage",
+              "short_name": "Vaccination coverage",
+              "description": "Percent of the population reporting a flu vaccination this season (or ever for RSV) as of the week ending date.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_definitely",
+              "short_name": "Definitely will get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely will get the vaccine (2023-24 season onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_probably",
+              "short_name": "Probably will or unsure",
+              "description": "Percent of the population not yet vaccinated who say they probably will get the vaccine or are unsure (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_no",
+              "short_name": "Will not get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely or probably will not get the vaccine (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of respondents contributing to the cumulative estimate.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate (small sample), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data_demographics.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Season the estimate belongs to, e.g. 2024-25 (July through June).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Vaccine",
+              "description": "Flu (seasonal influenza vaccine) or rsv (RSV vaccine).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "population",
+              "short_name": "Population",
+              "description": "Population surveyed: 6 months-17 years, 18+, 75+, or 50-74 (high risk).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "stratum_type",
+              "short_name": "Demographic dimension",
+              "description": "Dimension the national estimate is broken down by: Sex, Race and Ethnicity, Poverty Status, Urbanicity, Health Insurance, Disability Status, Sexual Orientation, Mother's Education, or Chronic Conditions.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "stratum",
+              "short_name": "Demographic group",
+              "description": "Group within stratum_type, using CDC's labels (e.g. Female, Hispanic, Below Poverty, Rural (Non-MSA)).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "nis_coverage",
+              "short_name": "Vaccination coverage",
+              "description": "Percent of the population reporting a flu vaccination this season (or ever for RSV) as of the week ending date.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_definitely",
+              "short_name": "Definitely will get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely will get the vaccine (2023-24 season onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_probably",
+              "short_name": "Probably will or unsure",
+              "description": "Percent of the population not yet vaccinated who say they probably will get the vaccine or are unsure (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_no",
+              "short_name": "Will not get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely or probably will not get the vaccine (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of respondents contributing to the cumulative estimate.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate (small sample), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data_region.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "geography_name",
+              "short_name": "Area name",
+              "description": "CDC's label for the HHS region in data_region.csv.gz or the sub-state or local area in data_substate.csv.gz.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Season the estimate belongs to, e.g. 2024-25 (July through June).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Vaccine",
+              "description": "Flu (seasonal influenza vaccine) or rsv (RSV vaccine).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "population",
+              "short_name": "Population",
+              "description": "Population surveyed: 6 months-17 years, 18+, 75+, or 50-74 (high risk).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "nis_coverage",
+              "short_name": "Vaccination coverage",
+              "description": "Percent of the population reporting a flu vaccination this season (or ever for RSV) as of the week ending date.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_definitely",
+              "short_name": "Definitely will get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely will get the vaccine (2023-24 season onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_probably",
+              "short_name": "Probably will or unsure",
+              "description": "Percent of the population not yet vaccinated who say they probably will get the vaccine or are unsure (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_no",
+              "short_name": "Will not get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely or probably will not get the vaccine (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of respondents contributing to the cumulative estimate.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate (small sample), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data_substate.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "geography_name",
+              "short_name": "Area name",
+              "description": "CDC's label for the HHS region in data_region.csv.gz or the sub-state or local area in data_substate.csv.gz.",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "geography_level",
+              "short_name": "Area type",
+              "description": "Substate (part of a state) or Local (city or county reported on its own).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "state_fips",
+              "short_name": "Parent state FIPS",
+              "description": "Two-digit FIPS code of the state a sub-state or local area belongs to.",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Season the estimate belongs to, e.g. 2024-25 (July through June).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Vaccine",
+              "description": "Flu (seasonal influenza vaccine) or rsv (RSV vaccine).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "population",
+              "short_name": "Population",
+              "description": "Population surveyed: 6 months-17 years, 18+, 75+, or 50-74 (high risk).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "nis_coverage",
+              "short_name": "Vaccination coverage",
+              "description": "Percent of the population reporting a flu vaccination this season (or ever for RSV) as of the week ending date.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_definitely",
+              "short_name": "Definitely will get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely will get the vaccine (2023-24 season onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_probably",
+              "short_name": "Probably will or unsure",
+              "description": "Percent of the population not yet vaccinated who say they probably will get the vaccine or are unsure (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_no",
+              "short_name": "Will not get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely or probably will not get the vaccine (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of respondents contributing to the cumulative estimate.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate (small sample), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Flu season",
+              "description": "Season the estimate belongs to, e.g. 2024-25 (July through June).",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Vaccine",
+              "description": "Flu (seasonal influenza vaccine) or rsv (RSV vaccine).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "population",
+              "short_name": "Population",
+              "description": "Population surveyed: 6 months-17 years, 18+, 75+, or 50-74 (high risk).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "nis_coverage",
+              "short_name": "Vaccination coverage",
+              "description": "Percent of the population reporting a flu vaccination this season (or ever for RSV) as of the week ending date.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_lcl",
+              "short_name": "Coverage, lower 95% CI",
+              "description": "Lower bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_coverage_ucl",
+              "short_name": "Coverage, upper 95% CI",
+              "description": "Upper bound of the 95% confidence interval for nis_coverage.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_definitely",
+              "short_name": "Definitely will get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely will get the vaccine (2023-24 season onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_probably",
+              "short_name": "Probably will or unsure",
+              "description": "Percent of the population not yet vaccinated who say they probably will get the vaccine or are unsure (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_intent_no",
+              "short_name": "Will not get vaccinated",
+              "description": "Percent of the population not yet vaccinated who say they definitely or probably will not get the vaccine (2023-24 onward).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nis_sample_size",
+              "short_name": "Sample size",
+              "description": "Unweighted number of respondents contributing to the cumulative estimate.",
+              "measure_type": "Count",
+              "unit": "Respondents"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed",
+              "description": "1 if CDC withheld the estimate (small sample), 0 otherwise. Suppressed values are left missing, not imputed.",
+              "measure_type": "Flag",
+              "unit": ""
+            }
+          ]
+        }
+      ]
+    },
     "nis_teen": {
       "name": "nis_teen",
       "display_name": "NIS Teen",
@@ -30815,6 +32113,67 @@
               "description": "Percentage of kindergarten children with non-medical exemptions from MMR vaccination requirements",
               "measure_type": "Percent",
               "unit": "Percent"
+            }
+          ]
+        }
+      ]
+    },
+    "vsd_pregnancy_vax": {
+      "name": "vsd_pregnancy_vax",
+      "display_name": "Vsd Pregnancy Vax",
+      "description": "The Vaccine Safety Datalink (VSD) is a collaboration between CDC's Immunization Safety Office and integrated health care organizations that use their electronic health records to study vaccine safety. CDC uses the VSD to publish weekly cumulative influenza vaccination coverage among pregnant women ages 18-49 (2019-20 season onward) and, since 2023-24, RSV vaccination coverage among pregnant women reaching 32 weeks' gestation, overall and by race and ethnicity. The current dashboards use 10 reporting sites for every season (earlier archived data used 8). Coverage is national only, describes VSD members rather than a representative sample, can be revised as pregnancies are identified, and may miss vaccines given outside the health system.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "season",
+              "short_name": "Season",
+              "description": "Season the cumulative estimate belongs to, e.g. 2025-26.",
+              "measure_type": "identifier",
+              "unit": ""
+            },
+            {
+              "name": "vaccine",
+              "short_name": "Vaccine",
+              "description": "Flu (seasonal influenza vaccine, 2019-20 onward) or rsv (maternal RSV vaccine, 2025-26).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race and ethnicity",
+              "description": "Overall or one of nine CDC race and ethnicity groups (e.g. White, NH; Black, NH; Hispanic/Latino; Asian, NH; Unknown).",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "vsd_coverage",
+              "short_name": "Vaccination coverage, pregnant women",
+              "description": "Percent of women 18-49 with a pregnancy this season who had received the vaccine as of the week ending date, in Vaccine Safety Datalink health systems.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "vsd_denominator",
+              "short_name": "Pregnant women in denominator",
+              "description": "Number of women ages 18-49 in the denominator for the week.",
+              "measure_type": "Count",
+              "unit": "Women"
             }
           ]
         }
