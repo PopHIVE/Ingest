@@ -22,25 +22,41 @@ DATASETS <- c(flu = "ysd3-txwj", rsv = "52ds-xw49")
 new_state <- lapply(DATASETS, function(id) dcf::dcf_download_cdc(id, "raw", process$raw_state[[id]]))
 names(new_state) <- DATASETS
 
+read_raw <- function(id, needed) {
+  d <- vroom::vroom(
+    sprintf("raw/%s.csv.xz", id), delim = ",",
+    col_types = vroom::cols(.default = "c"), altrep = FALSE, show_col_types = FALSE
+  )
+  absent <- setdiff(needed, names(d))
+  if (length(absent) > 0) stop(id, " columns not found: ", paste(absent, collapse = ", "))
+  d
+}
+parse_cdc_date <- function(x) {
+  x <- substr(x, 1, 10)
+  out <- as.Date(x, format = "%Y-%m-%d")
+  i <- is.na(out)
+  out[i] <- as.Date(x[i], format = "%m/%d/%Y")
+  if (any(is.na(out) & !is.na(x))) stop("unparsed dates")
+  out
+}
+
+# CDC publishes each RSV season as a new dataset ID. From November to March the
+# newest RSV date should fall in the current season; if it does not, the ID
+# list above needs the new season's dataset. message() rather than warning()
+# so the text lands in the dcf process log.
+check_rsv_current <- function(dates, ids, today = Sys.Date()) {
+  m <- as.integer(format(today, "%m")); y <- as.integer(format(today, "%Y"))
+  season_start <- as.Date(sprintf("%d-10-01", if (m >= 7) y else y - 1))
+  latest <- suppressWarnings(max(dates, na.rm = TRUE))
+  if ((m >= 11 || m <= 3) && is.finite(latest) && latest < season_start) {
+    message("Warning: latest RSV data is ", latest, "; CDC has probably published ",
+            "the current season under a new dataset ID (current: ",
+            paste(ids, collapse = ", "), ")")
+  }
+}
+
 if (!identical(process$raw_state, new_state)) {
 
-  read_raw <- function(id, needed) {
-    d <- vroom::vroom(
-      sprintf("raw/%s.csv.xz", id), delim = ",",
-      col_types = vroom::cols(.default = "c"), altrep = FALSE, show_col_types = FALSE
-    )
-    absent <- setdiff(needed, names(d))
-    if (length(absent) > 0) stop(id, " columns not found: ", paste(absent, collapse = ", "))
-    d
-  }
-  parse_cdc_date <- function(x) {
-    x <- substr(x, 1, 10)
-    out <- as.Date(x, format = "%Y-%m-%d")
-    i <- is.na(out)
-    out[i] <- as.Date(x[i], format = "%m/%d/%Y")
-    if (any(is.na(out) & !is.na(x))) stop("unparsed dates")
-    out
-  }
   norm_season <- function(x) sub("^(\\d{4})-(\\d{2})?(\\d{2})$", "\\1-\\3", x)
   season_from_date <- function(d) {
     y <- as.integer(format(d, "%Y")); m <- as.integer(format(d, "%m"))
@@ -83,3 +99,6 @@ if (!identical(process$raw_state, new_state)) {
   process$raw_state <- new_state
   dcf::dcf_process_record(updated = process)
 }
+
+rsv_raw <- read_raw(DATASETS[["rsv"]], "Week_ID")
+check_rsv_current(parse_cdc_date(rsv_raw$Week_ID), DATASETS[["rsv"]])

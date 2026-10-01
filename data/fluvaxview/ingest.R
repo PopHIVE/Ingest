@@ -12,12 +12,13 @@
 # dashboard numbers.
 #
 # Outputs
-#   data.csv.gz          national + state, by age group, end of season
-#   data_monthly.csv.gz  national + state, by age group, every season month
+#   data_state.csv.gz    national + state, by age group, every season month
+#                        (the May row is the end-of-season estimate)
 #   data_race.csv.gz     national + state, by race/ethnicity, every season month
 #   data_setting.csv.gz  national + state, place of vaccination by age group
 #   data_county.csv.gz   county, adults 18+, calendar years 2018-2022
-#   data_substate.csv.gz HHS regions and local areas (non-FIPS), by age group
+#   data_region.csv.gz   HHS regions (non-FIPS), by age group, every season month
+#   data_substate.csv.gz local areas (non-FIPS), by age group, every season month
 # =============================================================================
 
 library(dplyr)
@@ -108,7 +109,6 @@ if (!identical(process$raw_state, raw_state)) {
         is_local  ~ slug(geo_name),
         TRUE      ~ geo_lookup$geography[match(geo_name, geo_lookup$geography_name)]
       ),
-      geography_level = case_when(is_region ~ "Region", is_local ~ "Local", TRUE ~ NA_character_),
       state_fips = if_else(is_local, state_abbr$geography[match(substr(geo_name, 1, 2), state_abbr$state)], NA_character_)
     )
   unmapped <- unique(area$geo_name[is.na(area$geography)])
@@ -116,22 +116,13 @@ if (!identical(process$raw_state, raw_state)) {
 
   fips_area <- area %>% filter(!is_region, !is_local)
 
-  monthly <- fips_area %>%
+  data_state <- fips_area %>%
     filter(dim_type == "Age") %>%
-    mutate(time = format(month_end(season, month), "%Y-%m-%d"), season_order = ifelse(month >= 7, month - 6, month + 6)) %>%
-    select(geography, time, season, season_order, age = dim, all_of(VALUE_COLS)) %>%
+    mutate(time = format(month_end(season, month), "%Y-%m-%d")) %>%
+    select(geography, time, season, age = dim, all_of(VALUE_COLS)) %>%
     arrange(geography, age, time) %>%
-    check_unique(c("geography", "time", "age"), "data_monthly")
-  vroom::vroom_write(select(monthly, -season_order), "standard/data_monthly.csv.gz", ",")
-
-  # End of season = the last reported month of each season
-  data <- monthly %>%
-    group_by(season) %>%
-    filter(season_order == max(season_order)) %>%
-    ungroup() %>%
-    select(-season_order) %>%
-    check_unique(c("geography", "season", "age"), "data")
-  vroom::vroom_write(data, "standard/data.csv.gz", ",")
+    check_unique(c("geography", "time", "age"), "data_state")
+  vroom::vroom_write(data_state, "standard/data_state.csv.gz", ",")
 
   data_race <- fips_area %>%
     filter(dim_type == "Race and Ethnicity") %>%
@@ -151,10 +142,20 @@ if (!identical(process$raw_state, raw_state)) {
     check_unique(c("geography", "time", "age", "setting"), "data_setting")
   vroom::vroom_write(data_setting, "standard/data_setting.csv.gz", ",")
 
-  data_substate <- area %>%
-    filter(is_region | is_local, dim_type == "Age") %>%
+  # HHS regions (geography = hhs_<n>) and local areas (geography = slug of the
+  # CDC name) are not FIPS codes and go to their own files
+  data_region <- area %>%
+    filter(is_region, dim_type == "Age") %>%
     mutate(time = format(month_end(season, month), "%Y-%m-%d")) %>%
-    select(geography, geography_name = geo_name, geography_level, state_fips,
+    select(geography, geography_name = geo_name, time, season, age = dim, all_of(VALUE_COLS)) %>%
+    arrange(geography, age, time) %>%
+    check_unique(c("geography", "time", "age"), "data_region")
+  vroom::vroom_write(data_region, "standard/data_region.csv.gz", ",")
+
+  data_substate <- area %>%
+    filter(is_local, dim_type == "Age") %>%
+    mutate(time = format(month_end(season, month), "%Y-%m-%d")) %>%
+    select(geography, geography_name = geo_name, state_fips,
            time, season, age = dim, all_of(VALUE_COLS)) %>%
     arrange(geography, age, time) %>%
     check_unique(c("geography", "time", "age"), "data_substate")

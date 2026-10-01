@@ -35,25 +35,50 @@ all_ids <- unlist(DATASETS, use.names = FALSE)
 new_state <- lapply(all_ids, function(id) dcf::dcf_download_cdc(id, "raw", process$raw_state[[id]]))
 names(new_state) <- all_ids
 
+read_raw <- function(id) {
+  d <- vroom::vroom(
+    sprintf("raw/%s.csv.xz", id), delim = ",",
+    col_types = vroom::cols(.default = "c"), altrep = FALSE, show_col_types = FALSE
+  )
+  season_col <- intersect(c("Current Season", "Season", "season"), names(d))
+  needed <- c("Month", "Numerator", "Population", "Jurisdiction", "Estimate", "Age_group_label")
+  absent <- setdiff(needed, names(d))
+  if (length(absent) > 0 || length(season_col) != 1) {
+    stop(id, " columns not found: ", paste(c(absent, if (length(season_col) != 1) "season"), collapse = ", "))
+  }
+  d %>% transmute(
+    season = .data[[season_col[1]]], month = toupper(Month), numerator = Numerator,
+    population = Population, jurisdiction = trimws(Jurisdiction), estimate = Estimate,
+    age = Age_group_label
+  )
+}
+# Season month (JUL..JUN) -> last day of that calendar month
+month_end <- function(season, month) {
+  y1 <- as.integer(substr(season, 1, 4))
+  m <- match(month, toupper(month.abb))
+  if (any(is.na(m))) stop("unrecognised month: ", paste(unique(month[is.na(m)]), collapse = ", "))
+  y <- ifelse(m >= 7, y1, y1 + 1)
+  first_next <- as.Date(sprintf("%d-%02d-01", ifelse(m == 12, y + 1, y), ifelse(m == 12, 1, m + 1)))
+  first_next - 1
+}
+
+# CDC publishes each RSV season as a new dataset ID. From November to March the
+# newest RSV date should fall in the current season; if it does not, the ID
+# list above needs the new season's dataset. message() rather than warning()
+# so the text lands in the dcf process log.
+check_rsv_current <- function(dates, ids, today = Sys.Date()) {
+  m <- as.integer(format(today, "%m")); y <- as.integer(format(today, "%Y"))
+  season_start <- as.Date(sprintf("%d-10-01", if (m >= 7) y else y - 1))
+  latest <- suppressWarnings(max(dates, na.rm = TRUE))
+  if ((m >= 11 || m <= 3) && is.finite(latest) && latest < season_start) {
+    message("Warning: latest RSV data is ", latest, "; CDC has probably published ",
+            "the current season under a new dataset ID (current: ",
+            paste(ids, collapse = ", "), ")")
+  }
+}
+
 if (!identical(process$raw_state, new_state)) {
 
-  read_raw <- function(id) {
-    d <- vroom::vroom(
-      sprintf("raw/%s.csv.xz", id), delim = ",",
-      col_types = vroom::cols(.default = "c"), altrep = FALSE, show_col_types = FALSE
-    )
-    season_col <- intersect(c("Current Season", "Season", "season"), names(d))
-    needed <- c("Month", "Numerator", "Population", "Jurisdiction", "Estimate", "Age_group_label")
-    absent <- setdiff(needed, names(d))
-    if (length(absent) > 0 || length(season_col) != 1) {
-      stop(id, " columns not found: ", paste(c(absent, if (length(season_col) != 1) "season"), collapse = ", "))
-    }
-    d %>% transmute(
-      season = .data[[season_col[1]]], month = toupper(Month), numerator = Numerator,
-      population = Population, jurisdiction = trimws(Jurisdiction), estimate = Estimate,
-      age = Age_group_label
-    )
-  }
   check_unique <- function(d, keys, label) {
     n_dup <- sum(duplicated(d[keys]))
     if (n_dup > 0) stop(label, ": ", n_dup, " duplicate rows on ", paste(keys, collapse = ", "))
@@ -61,15 +86,6 @@ if (!identical(process$raw_state, new_state)) {
   }
   slug <- function(x) gsub("^_|_$", "", gsub("[^a-z0-9]+", "_", tolower(x)))
 
-  # Season month (JUL..JUN) -> last day of that calendar month
-  month_end <- function(season, month) {
-    y1 <- as.integer(substr(season, 1, 4))
-    m <- match(month, toupper(month.abb))
-    if (any(is.na(m))) stop("unrecognised month: ", paste(unique(month[is.na(m)]), collapse = ", "))
-    y <- ifelse(m >= 7, y1, y1 + 1)
-    first_next <- as.Date(sprintf("%d-%02d-01", ifelse(m == 12, y + 1, y), ifelse(m == 12, 1, m + 1)))
-    first_next - 1
-  }
 
   # Territories have no name in all_fips.csv.gz
   all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
@@ -145,3 +161,7 @@ if (!identical(process$raw_state, new_state)) {
   process$raw_state <- new_state
   dcf::dcf_process_record(updated = process)
 }
+
+rsv_id <- tail(DATASETS$rsv, 1)
+rsv_raw <- read_raw(rsv_id)
+check_rsv_current(month_end(rsv_raw$season, rsv_raw$month), rsv_id)

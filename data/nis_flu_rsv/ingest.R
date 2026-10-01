@@ -7,9 +7,15 @@
 #
 # Weekly cumulative coverage (percent vaccinated this season; RSV = ever
 # vaccinated) plus intent to vaccinate, from CDC's random-digit-dial cellular
-# telephone surveys. National and state estimates go to standard/data.csv.gz;
-# national estimates by demographic group go to data_demographics.csv.gz; HHS
-# regions, sub-state areas, and local areas (non-FIPS) go to data_substate.csv.gz.
+# telephone surveys. `population` is the group each survey covers (children
+# 6 months-17 years, adults 18+, adults 75+, adults 50-74 at high risk).
+#
+# Outputs
+#   data.csv.gz              national + state, by vaccine and population
+#   data_age.csv.gz          national, by age group within the population
+#   data_demographics.csv.gz national, by other demographic group
+#   data_region.csv.gz       HHS regions (non-FIPS)
+#   data_substate.csv.gz     sub-state and local areas (non-FIPS)
 #
 # Season-specific notes:
 #   - Seasons before 2023-24 only carry the "Up-to-date" indicator (coverage);
@@ -28,29 +34,45 @@ DATASETS <- c(judz = "judz-8etw", sw5n = "sw5n-wg2p", qeq7 = "qeq7-f3ir")
 new_state <- lapply(DATASETS, function(id) dcf::dcf_download_cdc(id, "raw", process$raw_state[[id]]))
 names(new_state) <- DATASETS
 
+read_raw <- function(id, needed) {
+  d <- vroom::vroom(
+    sprintf("raw/%s.csv.xz", id), delim = ",",
+    col_types = vroom::cols(.default = "c"), altrep = FALSE, show_col_types = FALSE
+  )
+  absent <- setdiff(needed, names(d))
+  if (length(absent) > 0) stop(id, " columns not found: ", paste(absent, collapse = ", "))
+  d
+}
+# Dates arrive as "YYYY-MM-DD hh:mm:ss" or "MM/DD/YYYY hh:mm:ss AM"
+parse_cdc_date <- function(x) {
+  x <- substr(x, 1, 10)
+  out <- as.Date(x, format = "%Y-%m-%d")
+  i <- is.na(out)
+  out[i] <- as.Date(x[i], format = "%m/%d/%Y")
+  if (any(is.na(out) & !is.na(x))) stop("unparsed dates: ", paste(head(x[is.na(out)]), collapse = ", "))
+  out
+}
+
+# CDC publishes each RSV season as a new dataset ID. From November to March the
+# newest RSV date should fall in the current season; if it does not, the ID
+# list above needs the new season's dataset. message() rather than warning()
+# so the text lands in the dcf process log.
+check_rsv_current <- function(dates, ids, today = Sys.Date()) {
+  m <- as.integer(format(today, "%m")); y <- as.integer(format(today, "%Y"))
+  season_start <- as.Date(sprintf("%d-10-01", if (m >= 7) y else y - 1))
+  latest <- suppressWarnings(max(dates, na.rm = TRUE))
+  if ((m >= 11 || m <= 3) && is.finite(latest) && latest < season_start) {
+    message("Warning: latest RSV data is ", latest, "; CDC has probably published ",
+            "the current season under a new dataset ID (current: ",
+            paste(ids, collapse = ", "), ")")
+  }
+}
+
 if (!identical(process$raw_state, new_state)) {
 
   # ---------------------------------------------------------------------------
   # Helpers
   # ---------------------------------------------------------------------------
-  read_raw <- function(id, needed) {
-    d <- vroom::vroom(
-      sprintf("raw/%s.csv.xz", id), delim = ",",
-      col_types = vroom::cols(.default = "c"), altrep = FALSE, show_col_types = FALSE
-    )
-    absent <- setdiff(needed, names(d))
-    if (length(absent) > 0) stop(id, " columns not found: ", paste(absent, collapse = ", "))
-    d
-  }
-  # Dates arrive as "YYYY-MM-DD hh:mm:ss" or "MM/DD/YYYY hh:mm:ss AM"
-  parse_cdc_date <- function(x) {
-    x <- substr(x, 1, 10)
-    out <- as.Date(x, format = "%Y-%m-%d")
-    i <- is.na(out)
-    out[i] <- as.Date(x[i], format = "%m/%d/%Y")
-    if (any(is.na(out) & !is.na(x))) stop("unparsed dates: ", paste(head(x[is.na(out)]), collapse = ", "))
-    out
-  }
   # Saturday on or after the date (a few end-of-season rows fall mid-week)
   to_saturday <- function(d) d + (6 - as.integer(format(d, "%u"))) %% 7
   # "2024-2025" / "2024-25" -> "2024-25"
@@ -87,7 +109,7 @@ if (!identical(process$raw_state, new_state)) {
     "CI_Half_width_95pct", "Unweighted Sample Size", "suppression_flag", "influenza_season"
   )) %>%
     transmute(
-      vaccine = "flu", age = "6 months-17 years",
+      vaccine = "flu", population = "6 months-17 years",
       geo_level = `Geographic Level`, geo_name = `Geographic Name`,
       demo_level = Demographic_Level, demo_name = `Demographic Name`,
       indicator = Indicator_label, category = Indicator_category_label,
@@ -103,7 +125,7 @@ if (!identical(process$raw_state, new_state)) {
   )) %>%
     filter(is.na(Vaccine) | Vaccine == "FLU") %>%
     transmute(
-      vaccine = "flu", age = "18+",
+      vaccine = "flu", population = "18+",
       geo_level = `Geographic Level`, geo_name = `Geographic Name`,
       demo_level = `Demographic Level`, demo_name = `Demographic Name`,
       indicator = indicator_label, category = indicator_category_label,
@@ -119,7 +141,7 @@ if (!identical(process$raw_state, new_state)) {
   )) %>%
     filter(Vaccine == "RSV") %>%
     transmute(
-      vaccine = "rsv", age = sub(" years", "", `Age Group`),
+      vaccine = "rsv", population = sub(" years", "", `Age Group`),
       geo_level = Geography_level, geo_name = Geography_name,
       demo_level = `Demographic Level`, demo_name = `Demographic Name`,
       indicator = Indicator_label, category = Indicator_category_label,
@@ -164,7 +186,7 @@ if (!identical(process$raw_state, new_state)) {
 
   # "Received a vaccination" duplicates the "Up-to-date" coverage row, which
   # exists in every season; keep the latter only.
-  KEYS <- c("vaccine", "age", "geo_level", "geo_name", "demo_level", "demo_name", "season", "time")
+  KEYS <- c("vaccine", "population", "geo_level", "geo_name", "demo_level", "demo_name", "season", "time")
   long <- base %>%
     filter(measure != "coverage_4level") %>%
     # The adult file repeats a few national 50-64 rows with different rounding
@@ -202,49 +224,71 @@ if (!identical(process$raw_state, new_state)) {
   if (length(unmapped) > 0) stop("State names not mapped to FIPS: ", paste(unmapped, collapse = ", "))
   data <- data %>%
     mutate(time = format(time, "%Y-%m-%d")) %>%
-    select(geography, time, season, vaccine, age, all_of(VALUE_COLS)) %>%
-    arrange(vaccine, age, geography, time) %>%
-    check_unique(c("geography", "time", "vaccine", "age"), "data")
+    select(geography, time, season, vaccine, population, all_of(VALUE_COLS)) %>%
+    arrange(vaccine, population, geography, time) %>%
+    check_unique(c("geography", "time", "vaccine", "population"), "data")
   vroom::vroom_write(data, "standard/data.csv.gz", ",")
 
   # ---------------------------------------------------------------------------
-  # standard/data_demographics.csv.gz: national, by demographic group
+  # standard/data_age.csv.gz: national, by age group within the population
+  # ---------------------------------------------------------------------------
+  data_age <- wide %>%
+    filter(geo_level == "National", demo_level == "Age") %>%
+    mutate(geography = "00", time = format(time, "%Y-%m-%d")) %>%
+    select(geography, time, season, vaccine, population, age = demo_name, all_of(VALUE_COLS)) %>%
+    arrange(vaccine, population, age, time) %>%
+    check_unique(c("geography", "time", "vaccine", "population", "age"), "data_age")
+  vroom::vroom_write(data_age, "standard/data_age.csv.gz", ",")
+
+  # ---------------------------------------------------------------------------
+  # standard/data_demographics.csv.gz: national, by other demographic group
   # ---------------------------------------------------------------------------
   data_demographics <- wide %>%
-    filter(geo_level == "National", demo_level != "Overall") %>%
+    filter(geo_level == "National", !demo_level %in% c("Overall", "Age")) %>%
     mutate(geography = "00", time = format(time, "%Y-%m-%d")) %>%
-    select(geography, time, season, vaccine, age,
+    select(geography, time, season, vaccine, population,
            stratum_type = demo_level, stratum = demo_name, all_of(VALUE_COLS)) %>%
-    arrange(vaccine, age, stratum_type, stratum, time) %>%
-    check_unique(c("geography", "time", "vaccine", "age", "stratum_type", "stratum"), "data_demographics")
+    arrange(vaccine, population, stratum_type, stratum, time) %>%
+    check_unique(c("geography", "time", "vaccine", "population", "stratum_type", "stratum"), "data_demographics")
   vroom::vroom_write(data_demographics, "standard/data_demographics.csv.gz", ",")
 
   # ---------------------------------------------------------------------------
-  # standard/data_substate.csv.gz: HHS regions, sub-state and local areas.
-  # geography is NOT a FIPS code here: hhs_<n> for regions, otherwise a slug of
-  # the CDC area name; state_fips gives the parent state where there is one.
+  # standard/data_region.csv.gz: HHS regions (geography = hhs_<n>, not FIPS)
+  # ---------------------------------------------------------------------------
+  data_region <- wide %>%
+    filter(geo_level == "Region", demo_level == "Overall") %>%
+    mutate(geography = sub("^Region ", "hhs_", geo_name), time = format(time, "%Y-%m-%d")) %>%
+    select(geography, geography_name = geo_name, time, season, vaccine, population, all_of(VALUE_COLS)) %>%
+    arrange(vaccine, population, geography, time) %>%
+    check_unique(c("geography", "time", "vaccine", "population"), "data_region")
+  vroom::vroom_write(data_region, "standard/data_region.csv.gz", ",")
+
+  # ---------------------------------------------------------------------------
+  # standard/data_substate.csv.gz: sub-state and local areas. geography is a
+  # slug of the CDC area name, not a FIPS code; state_fips is the parent state.
   # ---------------------------------------------------------------------------
   LOCAL_STATE <- c(
     "Bexar County" = "48", "City of Chicago" = "17", "City of Houston" = "48",
     "New York City" = "36", "Philadelphia County" = "42"
   )
   data_substate <- wide %>%
-    filter(geo_level %in% c("Region", "Substate", "Local"), demo_level == "Overall") %>%
+    filter(geo_level %in% c("Substate", "Local"), demo_level == "Overall") %>%
     mutate(
-      geography = if_else(geo_level == "Region", sub("^Region ", "hhs_", geo_name), slug(geo_name)),
-      state_fips = case_when(
-        geo_level == "Substate" ~ state_fips_of(sub("-.*$", "", geo_name)),
-        geo_level == "Local"    ~ unname(LOCAL_STATE[geo_name]),
-        TRUE                    ~ NA_character_
-      ),
+      geography = slug(geo_name),
+      state_fips = if_else(geo_level == "Substate",
+                           state_fips_of(sub("-.*$", "", geo_name)),
+                           unname(LOCAL_STATE[geo_name])),
       time = format(time, "%Y-%m-%d")
     ) %>%
     select(geography, geography_name = geo_name, geography_level = geo_level, state_fips,
-           time, season, vaccine, age, all_of(VALUE_COLS)) %>%
-    arrange(vaccine, age, geography, time) %>%
-    check_unique(c("geography", "time", "vaccine", "age"), "data_substate")
+           time, season, vaccine, population, all_of(VALUE_COLS)) %>%
+    arrange(vaccine, population, geography, time) %>%
+    check_unique(c("geography", "time", "vaccine", "population"), "data_substate")
   vroom::vroom_write(data_substate, "standard/data_substate.csv.gz", ",")
 
   process$raw_state <- new_state
   dcf::dcf_process_record(updated = process)
 }
+
+rsv_raw <- read_raw(DATASETS[["qeq7"]], "Week_ending")
+check_rsv_current(parse_cdc_date(rsv_raw$Week_ending), DATASETS[["qeq7"]])
