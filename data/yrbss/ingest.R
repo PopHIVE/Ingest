@@ -137,7 +137,7 @@ measure_dict <- tibble::tribble(
   "H84",              "pct_poor_mental_health",       "Poor mental health",               "Reported that their mental health was most of the time or always not good",                                             "Other Health Topics",
   "H85",              "pct_insufficient_sleep",       "Insufficient sleep (<8 hrs)",      "Did not get 8 or more hours of sleep (on an average school night)",                                                     "Other Health Topics",
   "H86",              "pct_unstable_housing",         "Experienced unstable housing",     "Experienced unstable housing",                                                                                          "Other Health Topics",
-  "QNCLOSE2PEOPLE",   "pct_not_close_at_school",      "Did not feel close at school",     "Strongly disagreed or disagreed that they feel close to people at their school",                                        "Other Health Topics"
+  "QNCLOSE2PEOPLE",   "pct_close_at_school",      "Felt close at school",     "Strongly agreed or agreed that they feel close to people at their school",                                        "Other Health Topics"
 )
 
 # -----------------------------------------------------------------------------
