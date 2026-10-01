@@ -1006,22 +1006,22 @@ emit_json("SA_OD", list(
 
 ```{r sa-fua}
 #| results: asis
-# Medicaid/CHIP payers are pooled into one "Medicaid" label (averaged on the
-# rare state-year where both are reported) -- same treatment as every other
-# Medicaid Child Core Set chart in this dashboard -- but the 7-day and
-# 30-day follow-up windows are kept separate as a measure toggle rather than
-# pooled, since they answer different questions.
+# Medicaid and CHIP are shown as separate series: the source gives no
+# enrollment counts, so the two payer rates cannot be pooled without an
+# unweighted average that ignores group size.
 fua_labels <- c(medicaid_fua_ch_7d_rate = "Follow-up within 7 days", medicaid_fua_ch_30d_rate = "Follow-up within 30 days")
 fua_data <- medicaid %>% filter(measure %in% names(fua_labels)) %>%
-  mutate(loc = fips2abbr[fips], t = year) %>%
-  group_by(measure, loc, t) %>% summarise(value = mean(value, na.rm = TRUE), .groups = "drop")
-fua_entries <- lapply(names(fua_labels), function(mid) {
-  d <- fua_data %>% filter(measure == mid) %>% select(loc, t, value)
-  build_measure_entry(d, id = mid, label = fua_labels[[mid]], level = "state", unit = "%", decimals = 1)
-})
+  mutate(loc = fips2abbr[fips], t = year)
+fua_combos <- expand.grid(mid = names(fua_labels), py = c("Medicaid", "CHIP"), stringsAsFactors = FALSE)
+fua_entries <- Filter(Negate(is.null), lapply(seq_len(nrow(fua_combos)), function(i) {
+  mid <- fua_combos$mid[i]; py <- fua_combos$py[i]
+  d <- fua_data %>% filter(measure == mid, payer == py, !is.na(value)) %>% select(loc, t, value)
+  if (nrow(d) == 0) return(NULL)
+  build_measure_entry(d, id = paste0(mid, "|", py), label = paste0(fua_labels[[mid]], " — ", py), level = "state", unit = "%", decimals = 1)
+}))
 emit_json("SA_FUA_MAP", list(
-  measureLabel = "Follow-up window", height = 460,
-  defaultMeasure = "medicaid_fua_ch_7d_rate", measures = fua_entries
+  measureLabel = "Follow-up window and payer", height = 460,
+  defaultMeasure = "medicaid_fua_ch_7d_rate|Medicaid", measures = fua_entries
 ))
 ```
 
@@ -1794,14 +1794,15 @@ emit_json("CD_ASTHMA_MAP", list(
 ```{r cd-lead}
 #| results: asis
 lead_data <- medicaid %>% filter(measure == "medicaid_lsc_ch_rate") %>%
-  mutate(loc = fips2abbr[fips], t = year) %>%
-  # CHIP has very few reporting state-years (3, vs 44 for Medicaid) for this
-  # measure; pool both payers under one "Medicaid" label rather than a payer
-  # toggle. Average on the rare state-year where both happen to be reported.
-  group_by(loc, t) %>%
-  summarise(value = mean(value, na.rm = TRUE), .groups = "drop")
-lead_entries <- list(build_measure_entry(lead_data, id = "medicaid_lsc_ch_rate", label = "Lead screening in children (LSC) — Medicaid",
-  level = "state", unit = "%", decimals = 1))
+  mutate(loc = fips2abbr[fips], t = year)
+# Payers are shown separately (no enrollment counts to weight a pooled rate).
+# CHIP has very few reporting state-years for this measure.
+lead_entries <- Filter(Negate(is.null), lapply(c("Medicaid", "CHIP"), function(py) {
+  d <- lead_data %>% filter(payer == py, !is.na(value)) %>% select(loc, t, value)
+  if (nrow(d) == 0) return(NULL)
+  build_measure_entry(d, id = paste0("medicaid_lsc_ch_rate|", py), label = paste0("Lead screening in children (LSC) — ", py),
+    level = "state", unit = "%", decimals = 1)
+}))
 emit_json("CD_LEAD_MAP", list(height = 460, measures = lead_entries))
 ```
 
@@ -1908,18 +1909,19 @@ emit_json("PH_TEEN_BIRTHS_MAP", list(height = 520, measures = list(chr_choroplet
 ```{r ph-contraception}
 #| results: asis
 contra_labels <- c(medicaid_fpc_ch_rate = "Family planning services (FPC)", medicaid_ppc_ch_rate = "Postpartum care (PPC)")
-# Pool Medicaid + CHIP under one "Medicaid" label (as with lead testing):
-# average the rare state-year where both payers are reported.
+# Medicaid and CHIP are shown separately (no enrollment counts to weight a pooled rate).
 contra_map_data <- medicaid %>% filter(measure %in% names(contra_labels)) %>%
-  mutate(loc = fips2abbr[fips], t = year) %>%
-  group_by(measure, loc, t) %>% summarise(value = mean(value, na.rm = TRUE), .groups = "drop")
-contra_map_entries <- lapply(names(contra_labels), function(mid) {
-  d <- contra_map_data %>% filter(measure == mid) %>% select(loc, t, value)
-  build_measure_entry(d, id = mid, label = contra_labels[[mid]], level = "state", unit = "%", decimals = 1)
-})
+  mutate(loc = fips2abbr[fips], t = year)
+contra_combos <- expand.grid(mid = names(contra_labels), py = c("Medicaid", "CHIP"), stringsAsFactors = FALSE)
+contra_map_entries <- Filter(Negate(is.null), lapply(seq_len(nrow(contra_combos)), function(i) {
+  mid <- contra_combos$mid[i]; py <- contra_combos$py[i]
+  d <- contra_map_data %>% filter(measure == mid, payer == py, !is.na(value)) %>% select(loc, t, value)
+  if (nrow(d) == 0) return(NULL)
+  build_measure_entry(d, id = paste0(mid, "|", py), label = paste0(contra_labels[[mid]], " — ", py), level = "state", unit = "%", decimals = 1)
+}))
 emit_json("PH_CONTRA_MAP", list(
-  measureLabel = "Measure", height = 480,
-  defaultMeasure = "medicaid_fpc_ch_rate", measures = contra_map_entries
+  measureLabel = "Measure and payer", height = 480,
+  defaultMeasure = "medicaid_fpc_ch_rate|Medicaid", measures = contra_map_entries
 ))
 ```
 
@@ -1948,10 +1950,18 @@ prev_labels <- c(
   medicaid_cap_ch_rate = "Children's access to primary care (CAP)",
   medicaid_dev_ch_rate = "Developmental screening in first 3 years (DEV)"
 )
-prev_data <- medicaid %>% filter(measure %in% prev_measures) %>%
-  group_by(measure, geography, year) %>% summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
-  transmute(geography, series = measure, year, value)
+# One series per measure x payer; Medicaid and CHIP are not pooled because the
+# source has no enrollment counts to weight them.
+prev_payers <- c("Medicaid", "CHIP")
+prev_series <- as.vector(t(outer(prev_measures, prev_payers, paste, sep = "|")))
+prev_series_label <- function(s) {
+  parts <- strsplit(s, "|", fixed = TRUE)[[1]]
+  paste0(prev_labels[[parts[1]]], " — ", parts[2])
+}
+prev_data <- medicaid %>% filter(measure %in% prev_measures, payer %in% prev_payers, !is.na(value)) %>%
+  transmute(geography, series = paste(measure, payer, sep = "|"), year, value)
 prev_lines <- build_lines(prev_data, dim_cols = "geography", series_col = "series", x_col = "year", y_col = "value")
+prev_series <- prev_series[prev_series %in% unique(prev_data$series)]
 state_opts_prev <- sort(unique(prev_data$geography))
 emit_json("PH_PREVENTIVE_TS", list(
   title = "Preventive care over time", height = 480, toggle = TRUE,
@@ -1959,9 +1969,9 @@ emit_json("PH_PREVENTIVE_TS", list(
   filters = list(
     list(key = "geography", label = "State", options = state_opts_prev, default = state_opts_prev[1])
   ),
-  seriesOrder = prev_measures,
-  seriesMeta = setNames(lapply(prev_measures, function(m) list(label = prev_labels[[m]])), prev_measures),
-  defaultOn = c("medicaid_ima_ch_rate", "medicaid_cap_ch_rate"),
+  seriesOrder = prev_series,
+  seriesMeta = setNames(lapply(prev_series, function(s) list(label = prev_series_label(s))), prev_series),
+  defaultOn = c("medicaid_ima_ch_rate|Medicaid", "medicaid_cap_ch_rate|Medicaid"),
   lines = prev_lines
 ))
 ```
@@ -1971,7 +1981,7 @@ emit_json("PH_PREVENTIVE_TS", list(
 <script>PH.renderLineChart('ph-preventive', window.PH_PREVENTIVE_TS);</script>
 <details class="chart-info">
 <summary>About this chart</summary>
-<p>Eight Medicaid/CHIP Child Core Set preventive-care quality measures over time. Use the drop down to select a state. Click legend chips to add/remove measures. Data are voluntarily self-reported by states, so not every state reports every year. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid">CMS Medicaid/CHIP Child Core Set</a>.</p>
+<p>Eight Medicaid/CHIP Child Core Set preventive-care quality measures over time, reported separately for Medicaid and CHIP (the two rates are not combined, since the source has no enrollment counts to weight them). Use the drop down to select a state. Click legend chips to add/remove measures. Data are voluntarily self-reported by states, so not every state reports every year. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid">CMS Medicaid/CHIP Child Core Set</a>.</p>
 </details>
 ```
 
