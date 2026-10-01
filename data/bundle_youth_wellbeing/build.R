@@ -194,7 +194,7 @@ SPEC <- bind_rows(
   sp('yrbss', 'Mental health', 'Bullying', c('pct_bullied_at_school', 'pct_bullied_electronic')),
   sp('yrbss', 'Mental health', 'General mental health measures',
      c('pct_social_media_daily', 'pct_poor_mental_health', 'pct_insufficient_sleep',
-       'pct_not_close_at_school')),
+       'pct_close_at_school')),
   sp('yrbss', 'Preventative health and wellness', 'Activity levels',
      c('pct_inactive_60min_5days', 'pct_no_pe_classes', 'pct_no_sports_team',
        'pct_no_daily_pe', 'pct_inactive_all_days')),
