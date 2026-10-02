@@ -162,7 +162,8 @@ SPEC <- bind_rows(
   sp('wisqars', 'Substance abuse', 'Overdose trends', wq('drug_poisoning')),
 
   # ---- NHTSA ----
-  sp('nhtsa', 'Injury and violence', 'Motor vehicle accidents', 'nhtsa_fatalities'),
+  sp('nhtsa', 'Injury and violence', 'Motor vehicle accidents',
+     c('nhtsa_fatalities', 'nhtsa_fatality_rate')),
 
   # ---- NEISS (not in the workbook; added for the injury page) ----
   # `product` / `diagnosis` are dimensions, so both datasets carry the same
@@ -319,8 +320,31 @@ nhtsa_tall <- nhtsa_youth %>%
       summarize(nhtsa_fatalities = sum(nhtsa_fatalities, na.rm = TRUE), .groups = 'drop') %>%
       mutate(sex = 'All')
   ) %>%
-  tall_simple('nhtsa_fatalities', c('geography', 'time', 'age', 'sex')) %>%
-  rename(fips = geography) %>%
+  rename(fips = geography)
+
+# Per-100,000 rate by youth age band and sex, using the same-year July 1 PEP
+# population (pep_population, 2010-2023) as the denominator. PEP is published in
+# 5-year bands, so 0-14 = 0-4 + 5-9 + 10-14 and 15-24 = 15-19 + 20-24. Years
+# before 2010 have no denominator, so only counts are kept for them. PEP's
+# 'Overall' sex is the sum of Male and Female, matching this file's 'All'.
+nhtsa_pop <- vroom::vroom('../pep_population/standard/data.csv.gz', show_col_types = FALSE,
+                          col_types = vroom::cols(geography = 'c', time = 'c', age = 'c',
+                                                  sex = 'c', pep_population = 'd')) %>%
+  mutate(age = case_when(age %in% c('0-4', '5-9', '10-14') ~ '0-14 years',
+                         age %in% c('15-19', '20-24')      ~ '15-24 years'),
+         sex = if_else(sex == 'Overall', 'All', sex),
+         time = as.Date(time)) %>%
+  filter(!is.na(age)) %>%
+  group_by(fips = geography, time, age, sex) %>%
+  summarize(population = sum(pep_population), .groups = 'drop')
+
+nhtsa_tall <- nhtsa_tall %>%
+  left_join(nhtsa_pop, by = c('fips', 'time', 'age', 'sex')) %>%
+  mutate(nhtsa_fatality_rate = if_else(population > 0,
+                                       round(nhtsa_fatalities / population * 100000, 2),
+                                       NA_real_)) %>%
+  tall_simple(c('nhtsa_fatalities', 'nhtsa_fatality_rate'),
+              c('fips', 'time', 'age', 'sex')) %>%
   filter(!is.na(value))
 
 nhtsa_tall %>%
