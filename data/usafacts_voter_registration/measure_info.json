@@ -1,0 +1,86 @@
+{
+  "usafacts_voters_total": {
+    "id": "usafacts_voters_total",
+    "short_name": "Registered voters",
+    "long_name": "Number of registered voters",
+    "category": "demographic",
+    "short_description": "Number of registered voters.",
+    "long_description": "Number of registered voters in the state report closest to November of each year. Only active voters are counted in states that separate active and inactive registrations.",
+    "statement": "In {location}, there were {value} registered voters",
+    "measure_type": "Count",
+    "unit": "Registered voters",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "usafacts_voter_registration"
+      }
+    ],
+    "citations": []
+  },
+  "usafacts_pct_{variant}": {
+    "id": "usafacts_pct_{variant}",
+    "short_name": "{variant.short_name}",
+    "long_name": "{variant.long_name}",
+    "category": "demographic",
+    "short_description": "{variant.long_name}.",
+    "long_description": "{variant.long_description}",
+    "statement": "In {location}, {value}% of registered voters were {variant.statement}",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "scale": "0-100",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "usafacts_voter_registration"
+      }
+    ],
+    "citations": [],
+    "variants": {
+      "dem": {
+        "short_name": "Registered Democrats",
+        "long_name": "Percent of registered voters affiliated with the Democratic Party",
+        "long_description": "Percent of registered voters affiliated with the Democratic Party.",
+        "statement": "affiliated with the Democratic Party"
+      },
+      "rep": {
+        "short_name": "Registered Republicans",
+        "long_name": "Percent of registered voters affiliated with the Republican Party",
+        "long_description": "Percent of registered voters affiliated with the Republican Party.",
+        "statement": "affiliated with the Republican Party"
+      },
+      "other_unaffiliated": {
+        "short_name": "Other or unaffiliated voters",
+        "long_name": "Percent of registered voters not affiliated with either major party",
+        "long_description": "Percent of registered voters affiliated with a minor party, no party, or unknown.",
+        "statement": "not affiliated with either major party"
+      }
+    }
+  },
+  "_sources": {
+    "usafacts_voter_registration": {
+      "name": "USAFacts Voter Registration by Party Affiliation",
+      "url": "https://usafacts.org/articles/more-voters-are-registering-outside-the-two-party-system/",
+      "organization": "USAFacts",
+      "organization_url": "https://usafacts.org",
+      "description": "USAFacts compiled county voter registration by party affiliation from state election offices for the 27 states and Washington, DC, that record party affiliation and publish it by county. One report is used per year, the one closest to November; the most recent is generally from early 2026. Most states span 2016 to 2026, but Kentucky starts in 2017, Idaho and Rhode Island in 2018, and California, Connecticut, and Massachusetts end in 2025. Only active voters are counted in states that separate active and inactive registrations. Connecticut is reported for its eight former counties.",
+      "restrictions": "CC BY-SA 4.0. Attribution required. Cite USAFacts with a link to the source page.",
+      "date_accessed": 2026
+    }
+  },
+  "_catalog": {
+    "summary": "USAFacts tracks how many voters are registered as Democratic, Republican, or neither, in the 27 states and DC that record party affiliation.",
+    "search_terms": [
+      "political affiliation",
+      "voter registration",
+      "political party",
+      "independent voters"
+    ],
+    "bucket": [
+      "Social determinants of health"
+    ],
+    "files": {
+      "data_county.csv.gz": "County-level voter registration by party",
+      "data_state.csv.gz": "State-level voter registration by party"
+    }
+  }
+}
