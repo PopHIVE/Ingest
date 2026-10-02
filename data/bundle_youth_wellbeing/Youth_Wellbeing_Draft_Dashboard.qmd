@@ -1064,37 +1064,44 @@ for (mid in names(mv_wisqars_labels)) for (ag in mv_age_opts) for (sx in mv_sex_
     decimals = if (grepl("_rate_", mid)) 2 else 0, tags = list(source = "WISQARS", age = ag, sex = sx)
   )
 }
-for (ag in mv_age_opts) for (sx in mv_sex_opts) {
-  d <- nhtsa_state %>% filter(age == ag, sex == sx, geography != "United States") %>%
-    mutate(loc = fips2abbr[fips], t = year) %>% select(loc, t, value)
+# NHTSA parquets carry two measures (count + per-100k rate); each becomes its own
+# Source option. Rates use same-year PEP population (2010-2023); counts go back to 2000.
+nhtsa_specs <- list(
+  list(key = "rate",  name = "rate",  measure = "nhtsa_fatality_rate", unit = "per 100k", decimals = 2),
+  list(key = "count", name = "count", measure = "nhtsa_fatalities",    unit = "deaths",   decimals = 0)
+)
+for (sp in nhtsa_specs) for (lvl in c("state", "county")) for (ag in mv_age_opts) for (sx in mv_sex_opts) {
+  src <- if (lvl == "state") nhtsa_state else nhtsa_county
+  d <- src %>% filter(measure == sp$measure, age == ag, sex == sx)
+  if (lvl == "state") {
+    d <- d %>% filter(geography != "United States") %>% mutate(loc = fips2abbr[fips])
+  } else {
+    d <- d %>% mutate(loc = fips)
+  }
+  d <- d %>% mutate(t = year) %>% select(loc, t, value)
   if (nrow(d) == 0) next
-  eid <- paste("nhtsa_state", ag, sx, sep = "|")
+  eid <- paste("nhtsa", sp$key, lvl, ag, sx, sep = "|")
+  src_label <- sprintf("NHTSA %s (%s)", sp$name, lvl)
   mv_entries[[eid]] <- build_measure_entry(
-    d, id = eid, label = paste0("NHTSA traffic fatalities, state (count) — ", ag, ", ", sx),
-    level = "state", unit = "deaths", decimals = 0, tags = list(source = "NHTSA (state)", age = ag, sex = sx)
-  )
-}
-for (ag in mv_age_opts) for (sx in mv_sex_opts) {
-  d <- nhtsa_county %>% filter(age == ag, sex == sx) %>%
-    mutate(loc = fips, t = year) %>% select(loc, t, value)
-  if (nrow(d) == 0) next
-  eid <- paste("nhtsa_county", ag, sx, sep = "|")
-  mv_entries[[eid]] <- build_measure_entry(
-    d, id = eid, label = paste0("NHTSA traffic fatalities, county (count) — ", ag, ", ", sx),
-    level = "county", unit = "deaths", decimals = 0, tags = list(source = "NHTSA (county)", age = ag, sex = sx)
+    d, id = eid, label = sprintf("NHTSA traffic fatalities, %s (%s) — %s, %s", lvl, sp$name, ag, sx),
+    level = lvl, unit = sp$unit, decimals = sp$decimals,
+    tags = list(source = src_label, age = ag, sex = sx)
   )
 }
 mv_all <- unname(mv_entries)
 mv_sources <- unique(vapply(mv_all, function(m) m$tags$source, character(1)))
+# NHTSA rate options first so the rate is the leading choice in the dropdown
+mv_sources <- mv_sources[order(match(mv_sources, c("NHTSA rate (state)", "NHTSA rate (county)",
+                                                   "NHTSA count (state)", "NHTSA count (county)")))]
 
 emit_json("IV_MV_MAP", list(
   measureLabel = "Source / measure", height = 500,
   filters = list(
-    list(key = "source", label = "Source", options = mv_sources, default = "NHTSA (state)"),
+    list(key = "source", label = "Source", options = mv_sources, default = "NHTSA rate (state)"),
     list(key = "age", label = "Age", options = mv_age_opts, default = "15-24 years"),
     list(key = "sex", label = "Sex", options = mv_sex_opts, default = "All")
   ),
-  defaultMeasure = "nhtsa_state|15-24 years|All",
+  defaultMeasure = "nhtsa|rate|state|15-24 years|All",
   measures = mv_all
 ))
 ```
@@ -1104,7 +1111,7 @@ emit_json("IV_MV_MAP", list(
 <script>PH.renderChoropleth('iv-mv-map', window.IV_MV_MAP);</script>
 <details class="chart-info">
 <summary>About this chart</summary>
-<p>Motor-vehicle-related traffic deaths by state (NHTSA state totals, WISQARS) or by county (NHTSA county totals), by age and sex. Switch Source to compare CDC/WISQARS cause-specific death rates (pedestrian and all motor-vehicle-traffic deaths, per 100,000 population) against NHTSA FARS fatality counts; switching to "NHTSA (county)" automatically switches the map to county geography. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/wisqars">CDC/WISQARS</a>, <a href="https://github.com/PopHIVE/Ingest/tree/main/data/nhtsa">NHTSA FARS</a>.</p>
+<p>Motor-vehicle-related traffic deaths by state (NHTSA, WISQARS) or by county (NHTSA), by age and sex. The default is the NHTSA FARS fatality rate per 100,000 residents in the age and sex group, using same-year Census Population Estimates Program (PEP) denominators (2010&ndash;2023). Switch Source to see NHTSA raw counts (available back to 2000) or CDC/WISQARS cause-specific death rates (pedestrian and all motor-vehicle-traffic deaths, per 100,000 population); choosing a county Source automatically switches the map to county geography. Connecticut county rates are unavailable from 2020 because PEP uses planning regions there while FARS still reports the former counties. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/wisqars">CDC/WISQARS</a>, <a href="https://github.com/PopHIVE/Ingest/tree/main/data/nhtsa">NHTSA FARS</a>.</p>
 </details>
 ```
 
@@ -1409,12 +1416,12 @@ mh_ed_map_base <- epic_mh %>%
   mutate(loc = fips2abbr[geography], t = time)
 
 mh_ed_metrics <- list(
-  median = list(col = "median_los", label = "Median ED length of stay (minutes)",
-                unit = "min", decimals = 0,
-                sub = "Epic Cosmos ED visits for the selected diagnosis"),
   pct = list(col = "pct_share", label = "Share of ED visits (%)",
              unit = "%", decimals = 2,
-             sub = "Compositional share of this diagnosis's own visits across state/age -- not a rate or a visit count")
+             sub = "Compositional share of this diagnosis's own visits across state/age -- not a rate or a visit count"),
+  median = list(col = "median_los", label = "Median ED length of stay (minutes)",
+                unit = "min", decimals = 0,
+                sub = "Epic Cosmos ED visits for the selected diagnosis")
 )
 
 mh_ed_measures <- list()
@@ -1434,7 +1441,7 @@ for (dx in mh_ed_diagnoses) {
 }
 
 emit_json("MH_ED_MAP", list(
-  measureLabel = "Metric", height = 520, defaultMeasure = "median__Overall__Suicidal behavior",
+  measureLabel = "Metric", height = 520, defaultMeasure = "pct__Overall__Suicidal behavior",
   filters = list(
     list(key = "age", label = "Age", options = mh_ed_age_order, default = "Overall"),
     list(key = "diagnosis", label = "Diagnosis", options = mh_ed_diagnoses, default = "Suicidal behavior")
@@ -1475,7 +1482,7 @@ emit_json("MH_ED_TS", list(
 <script>PH.renderChoropleth('mh-ed-los-map', window.MH_ED_MAP);</script>
 <details class="chart-info">
 <summary>About this chart</summary>
-<p>Emergency department visits diagnosed with suicidal behavior or a mood disorder (Epic Cosmos ED Diagnoses buckets "Suicidal behavior" and "Mood"), by state, age at time of visit, and month. Use the Diagnosis dropdown to switch between the two, and the Metric dropdown to switch between median ED length of stay (minutes) and each state/age slice's share of that diagnosis's own ED visits nationally that month. <b>The share metric is a composition, not a rate</b> -- it is not adjusted for population and does not indicate how common visits for that diagnosis are relative to all ED visits in that state, so it should not be used to compare risk across geographies. No visit-count/volume measure is available from the current data export. Use the Age dropdown and the slider to change age group and month; suppressed cells (too few visits for a reliable estimate) show as no data. Data: Epic Cosmos, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
+<p>Emergency department visits diagnosed with suicidal behavior or a mood disorder (Epic Cosmos ED Diagnoses buckets "Suicidal behavior" and "Mood"), by state, age at time of visit, and month. Use the Diagnosis dropdown to switch between the two, and the Metric dropdown to switch between each state/age slice's share of that diagnosis's own ED visits nationally that month (the default) and median ED length of stay (minutes). <b>The share metric is a composition, not a rate</b> -- it is not adjusted for population and does not indicate how common visits for that diagnosis are relative to all ED visits in that state, so it should not be used to compare risk across geographies. No visit-count/volume measure is available from the current data export. Use the Age dropdown and the slider to change age group and month; suppressed cells (too few visits for a reliable estimate) show as no data. Data: Epic Cosmos, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
 </details>
 ```
 
