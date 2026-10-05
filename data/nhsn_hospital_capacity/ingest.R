@@ -1,16 +1,19 @@
 # =============================================================================
-# NHSN Hospital Bed Capacity Data Ingestion
+# NHSN Hospital Bed Capacity and Respiratory Admissions Data Ingestion
 # Source: Weekly Hospital Respiratory Data (HRD) Metrics by Jurisdiction,
 #         National Healthcare Safety Network (NHSN)
 #         https://data.cdc.gov/d/ua7e-t2fy
 #
-# Output: standard/data.csv.gz        - national, states, DC and territories
-#         standard/data_region.csv.gz - HHS regions (geography hhs_1 ... hhs_10)
+# Output: standard/data.csv.gz            - national, states, DC and territories
+#         standard/data_age.csv.gz        - same geographies, admissions by age
+#         standard/data_region.csv.gz     - HHS regions (hhs_1 ... hhs_10)
+#         standard/data_region_age.csv.gz - HHS regions, admissions by age
 #
-# Through the week ending 2024-10-05 the source reports weekly averages of
-# daily values; from 2024-10-12 it reports the value for the Wednesday of the
-# week. Reporting was voluntary from 2024-05-01 to 2024-10-31, so the
-# nhsn_pct_hosp_reporting_* columns are kept to identify low-coverage weeks.
+# Through the week ending 2024-10-05 the source reports bed and patient values
+# as weekly averages of daily values; from 2024-10-12 it reports the value for
+# the Wednesday of the week. Admissions are weekly totals throughout. Reporting
+# was voluntary from 2024-05-01 to 2024-10-31, so the nhsn_pct_hosp_reporting_*
+# columns are kept to identify low-coverage weeks.
 # =============================================================================
 
 library(dplyr)
@@ -27,7 +30,7 @@ if (!identical(process$raw_state, raw_state)) {
 
   # Standard name = source column label. Labels are written out in full because
   # the source is not consistent (e.g. "Inpatient beds", "TotalPatients").
-  VALUE_COLS <- c(
+  BED_COLS <- c(
     nhsn_inpt_beds           = "Number of Inpatient Beds",
     nhsn_inpt_beds_adult     = "Number of Adult Inpatient Beds",
     nhsn_inpt_beds_ped       = "Number of Pediatric Inpatient beds",
@@ -75,10 +78,70 @@ if (!identical(process$raw_state, raw_state)) {
     nhsn_pct_hosp_reporting_icu_pats_rsv    = "Percent Hospitals Reporting ICU Patients Hospitalized with RSV"
   )
 
-  needed <- c("Week Ending Date", "Geographic aggregation", VALUE_COLS)
+  # New admissions: the labels follow one pattern per virus
+  VIRUSES <- c(covid = "COVID-19", flu = "Influenza", rsv = "RSV")
+  ADM_COLS <- unlist(lapply(names(VIRUSES), function(v) {
+    V <- VIRUSES[[v]]
+    setNames(
+      c(
+        paste0("Total ", V, " Admissions"),
+        paste0("Total Adult ", V, " Admissions"),
+        paste0("Total Pediatric ", V, " Admissions"),
+        paste0("Total number of ", V, " Admissions per 100,000 population"),
+        paste0("Total Number of Adult ", V, " Admissions per 100,000 population"),
+        paste0("Total Number of Pediatric ", V, " Admissions per 100,000 population"),
+        paste0("Percent Hospitals Reporting ", V, " Admissions"),
+        paste0("Percent Hospitals Reporting Adult ", V, " Admissions"),
+        paste0("Percent Hospitals Reporting Pediatric ", V, " Admissions")
+      ),
+      paste0(
+        c("nhsn_adm_", "nhsn_adm_", "nhsn_adm_", "nhsn_adm_rate_", "nhsn_adm_rate_", "nhsn_adm_rate_",
+          "nhsn_pct_hosp_reporting_adm_", "nhsn_pct_hosp_reporting_adm_", "nhsn_pct_hosp_reporting_adm_"),
+        v, c("", "_adult", "_ped")
+      )
+    )
+  }))
+  VALUE_COLS <- c(BED_COLS, ADM_COLS)
+
+  # Admissions by age band; CDC publishes no rate for unknown age
+  AGE_BANDS <- c(
+    "0-4" = "Pediatric", "5-17" = "Pediatric",
+    "18-49" = "Adult", "50-64" = "Adult", "65-74" = "Adult", "75+" = "Adult"
+  )
+  age_label <- function(V, age, rate = FALSE) {
+    if (age == "Unknown") return(paste0("Number of ", V, " Admissions, unknown age"))
+    paste0("Number of ", AGE_BANDS[[age]], " ", V, " Admissions, ", age, " years",
+           if (rate) ", per 100,000 population")
+  }
+  AGE_LABELS <- unlist(lapply(VIRUSES, function(V) c(
+    sapply(names(AGE_BANDS), age_label, V = V),
+    sapply(names(AGE_BANDS), age_label, V = V, rate = TRUE),
+    age_label(V, "Unknown")
+  )))
+
+  needed <- c("Week Ending Date", "Geographic aggregation", VALUE_COLS, AGE_LABELS)
   absent <- setdiff(needed, names(raw))
   if (length(absent) > 0) stop("ua7e-t2fy columns not found: ", paste(absent, collapse = ", "))
 
+  # CDC date columns arrive as "YYYY-MM-DD ...", "MM/DD/YYYY ...", or
+  # "YYYY Mon DD ...", depending on how the file was exported
+  parse_cdc_date <- function(x) {
+    out <- as.Date(rep(NA_character_, length(x)))
+    for (fmt in c("%Y-%m-%d", "%m/%d/%Y", "%Y %b %d")) {
+      i <- is.na(out) & !is.na(x)
+      out[i] <- as.Date(x[i], format = fmt)
+    }
+    bad <- is.na(out) & !is.na(x)
+    if (any(bad)) stop("unparsed dates: ", paste(head(unique(x[bad])), collapse = ", "))
+    out
+  }
+  # Numbers arrive with or without thousands separators
+  parse_cdc_number <- function(x) {
+    out <- suppressWarnings(as.numeric(gsub(",", "", x, fixed = TRUE)))
+    bad <- is.na(out) & !is.na(x)
+    if (any(bad)) stop("unparsed numbers: ", paste(head(unique(x[bad])), collapse = ", "))
+    out
+  }
   check_unique <- function(d, keys, label) {
     n_dup <- sum(duplicated(d[keys]))
     if (n_dup > 0) stop(label, ": ", n_dup, " duplicate rows on ", paste(keys, collapse = ", "))
@@ -92,15 +155,14 @@ if (!identical(process$raw_state, raw_state)) {
     select(geography, state) %>%
     distinct(state, .keep_all = TRUE)
 
-  time <- as.Date(substr(raw[["Week Ending Date"]], 1, 10), format = "%Y-%m-%d")
-  if (any(is.na(time))) stop("unparsed dates")
+  time <- parse_cdc_date(raw[["Week Ending Date"]])
   if (any(format(time, "%u") != "6")) stop("week ending dates not on Saturday")
 
   all <- raw %>%
     transmute(
       jurisdiction = `Geographic aggregation`,
       time = format(time, "%Y-%m-%d"),
-      across(all_of(VALUE_COLS), as.numeric)
+      across(all_of(unname(c(VALUE_COLS, AGE_LABELS))), parse_cdc_number)
     ) %>%
     left_join(state_fips_lookup, by = c("jurisdiction" = "state")) %>%
     mutate(
@@ -114,19 +176,41 @@ if (!identical(process$raw_state, raw_state)) {
   unmapped <- unique(all$jurisdiction[is.na(all$geography)])
   if (length(unmapped) > 0) stop("Jurisdictions not mapped: ", paste(unmapped, collapse = ", "))
 
-  all <- all %>%
-    select(geography, time, all_of(names(VALUE_COLS))) %>%
+  wide <- all %>%
+    select(geography, time, all_of(VALUE_COLS)) %>%
     arrange(geography, time)
 
-  data <- all %>%
-    filter(!grepl("^hhs_", geography)) %>%
-    check_unique(c("geography", "time"), "data")
-  vroom::vroom_write(data, "standard/data.csv.gz", ",")
+  ages <- c(names(AGE_BANDS), "Unknown")
+  by_age <- bind_rows(lapply(ages, function(a) {
+    out <- all %>% transmute(geography, time, age = a)
+    for (v in names(VIRUSES)) {
+      out[[paste0("nhsn_adm_", v)]] <- all[[age_label(VIRUSES[[v]], a)]]
+      out[[paste0("nhsn_adm_rate_", v)]] <-
+        if (a == "Unknown") NA_real_ else all[[age_label(VIRUSES[[v]], a, rate = TRUE)]]
+    }
+    out
+  })) %>%
+    select(geography, time, age, starts_with("nhsn_adm_")) %>%
+    arrange(geography, time, match(age, ages))
 
-  data_region <- all %>%
-    filter(grepl("^hhs_", geography)) %>%
-    check_unique(c("geography", "time"), "data_region")
-  vroom::vroom_write(data_region, "standard/data_region.csv.gz", ",")
+  is_region <- function(d) grepl("^hhs_", d$geography)
+
+  wide %>%
+    filter(!is_region(.)) %>%
+    check_unique(c("geography", "time"), "data") %>%
+    vroom::vroom_write("standard/data.csv.gz", ",")
+  wide %>%
+    filter(is_region(.)) %>%
+    check_unique(c("geography", "time"), "data_region") %>%
+    vroom::vroom_write("standard/data_region.csv.gz", ",")
+  by_age %>%
+    filter(!is_region(.)) %>%
+    check_unique(c("geography", "time", "age"), "data_age") %>%
+    vroom::vroom_write("standard/data_age.csv.gz", ",")
+  by_age %>%
+    filter(is_region(.)) %>%
+    check_unique(c("geography", "time", "age"), "data_region_age") %>%
+    vroom::vroom_write("standard/data_region_age.csv.gz", ",")
 
   process$raw_state <- raw_state
   dcf::dcf_process_record(updated = process)

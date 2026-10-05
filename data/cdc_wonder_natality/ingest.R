@@ -10,14 +10,16 @@
 # form. To refresh or extend the pull, from a checkout of that repo:
 #
 #   caffeinate -i -s scraper/.venv/bin/python scraper/natality_scraper.py \
+#       --levels national state county \
 #       --output-dir ../Ingest/data/cdc_wonder_natality/raw/natality_expanded_2016_2024
 #
-# and add `--levels national state county` for the county loop (a
-# 51-states x 9-years x 4-queries loop with a 20-40s delay per request plus a
-# fresh browser session each time -- budget 2-3 days, not hours). Already-
-# downloaded files are skipped, so a re-run only fills gaps. This script
-# builds standard/data_county.csv.gz only if county files are present, so no
-# change here is needed when that pull lands.
+# County level (age/sex/race/ethnicity plus the eight detail dimensions below)
+# is a 12-queries x 51-states x 9-years loop with a 20-40s delay per request
+# plus a fresh browser session each time -- budget 1-3 days, not hours.
+# Already-downloaded files are skipped, so a re-run only fills gaps (e.g. once
+# a new year's data is published). This script builds data_county.csv.gz and
+# data_county_detail.csv.gz only if their respective county files are
+# present, so no change here is needed to pick up a future re-run.
 #
 # Geography: national and state (and county, once that pull exists). National
 #            rows are queried from CDC WONDER directly (never summed up from
@@ -29,12 +31,13 @@
 #   sex            is the INFANT's sex
 #   race_ethnicity is the MOTHER's single race / Hispanic origin
 #
-# Eight more one-at-a-time breakdowns (added 2026-09-15, national + state
-# only -- see DETAIL_DIMENSIONS below) land in a SEPARATE file,
-# standard/data_state_detail.csv.gz, with generic dimension/category columns
-# rather than eight more age/sex/race_ethnicity-style columns on
-# data_state.csv.gz: with 11 independent breakdowns a wide table would be
-# dominated by "Overall" filler on every row. data_state.csv.gz's shape is
+# Eight more one-at-a-time breakdowns (added 2026-09-15 at national + state,
+# 2026-09-28 at county -- see DETAIL_DIMENSIONS below) land in SEPARATE files,
+# standard/data_state_detail.csv.gz and standard/data_county_detail.csv.gz,
+# with generic dimension/category columns rather than eight more
+# age/sex/race_ethnicity-style columns on data_state.csv.gz/data_county.csv.gz:
+# with 11 independent breakdowns a wide table would be dominated by "Overall"
+# filler on every row.
 # =============================================================================
 
 library(dplyr)
@@ -386,9 +389,15 @@ read_detail_category <- function(path, dimension, time_val, has_geography = TRUE
 }
 
 # Builds the full standardized detail table across all years and all eight
-# dimensions, national + state. Returns NULL if none of the detail files
-# exist yet, matching build_level()'s NULL-if-absent convention for county.
-build_detail_level <- function() {
+# dimensions, for one geography level. "state" also carries the national rows
+# (one file each, e.g. state_birthweight.csv / national_birthweight.csv);
+# "county" reads the per-state files the scraper produces instead (e.g.
+# county_birthweight_<State_Name>.csv), the same naming scheme build_level()
+# already reads for age/sex/race/ethnicity. Returns NULL if none of the
+# detail files for that level exist yet, matching build_level()'s
+# NULL-if-absent convention.
+build_detail_level <- function(level = "state") {
+  is_state <- level == "state"
   parts <- list()
   found_any <- FALSE
 
@@ -400,17 +409,30 @@ build_detail_level <- function() {
     year_rows <- list()
     for (dim_name in names(DETAIL_DIMENSIONS)) {
       token <- DETAIL_DIMENSIONS[[dim_name]]
-      state_path <- file.path(year_dir, paste0("state_", token, ".csv"))
-      national_path <- file.path(year_dir, paste0("national_", token, ".csv"))
-      if (file.exists(state_path)) {
-        found_any <- TRUE
-        year_rows[[length(year_rows) + 1]] <-
-          read_detail_category(state_path, dim_name, time_val, has_geography = TRUE)
-      }
-      if (file.exists(national_path)) {
-        found_any <- TRUE
-        year_rows[[length(year_rows) + 1]] <-
-          read_detail_category(national_path, dim_name, time_val, has_geography = FALSE)
+      if (is_state) {
+        state_path <- file.path(year_dir, paste0("state_", token, ".csv"))
+        national_path <- file.path(year_dir, paste0("national_", token, ".csv"))
+        if (file.exists(state_path)) {
+          found_any <- TRUE
+          year_rows[[length(year_rows) + 1]] <-
+            read_detail_category(state_path, dim_name, time_val, has_geography = TRUE)
+        }
+        if (file.exists(national_path)) {
+          found_any <- TRUE
+          year_rows[[length(year_rows) + 1]] <-
+            read_detail_category(national_path, dim_name, time_val, has_geography = FALSE)
+        }
+      } else {
+        county_paths <- list.files(
+          year_dir, pattern = sprintf("^county_%s_.*\\.csv$", token), full.names = TRUE
+        )
+        if (length(county_paths)) {
+          found_any <- TRUE
+          year_rows[[length(year_rows) + 1]] <- map_dfr(
+            county_paths, read_detail_category,
+            dimension = dim_name, time_val = time_val, has_geography = TRUE
+          )
+        }
       }
     }
     parts[[as.character(yr)]] <- bind_rows(year_rows)
@@ -472,7 +494,7 @@ if (!identical(process$raw_state, raw_state)) {
             "; skipping data_county.csv.gz (see the header for the county pull command)")
   }
 
-  data_state_detail <- build_detail_level()
+  data_state_detail <- build_detail_level("state")
   if (!is.null(data_state_detail)) {
     vroom::vroom_write(data_state_detail, "standard/data_state_detail.csv.gz", delim = ",")
     message("cdc_wonder_natality: data_state_detail.csv.gz — ", nrow(data_state_detail), " rows, ",
@@ -482,6 +504,29 @@ if (!identical(process$raw_state, raw_state)) {
   } else {
     message("cdc_wonder_natality: no detail-dimension files under ", RAW_DIR,
             "; skipping data_state_detail.csv.gz")
+  }
+
+  data_county_detail <- build_detail_level("county")
+  if (!is.null(data_county_detail)) {
+    vroom::vroom_write(data_county_detail, "standard/data_county_detail.csv.gz", delim = ",")
+    # Same "Unidentified Counties" caveat as data_county.csv.gz above, computed
+    # from one dimension's rows only -- every dimension independently
+    # partitions all births for a geography/time, so summing across all eight
+    # would overcount total births eight-fold.
+    one_dim <- data_county_detail %>% filter(dimension == names(DETAIL_DIMENSIONS)[[1]])
+    unid <- one_dim %>% filter(is_unidentified_county(geography))
+    unid_share <- 100 * sum(one_dim$natality_births[is_unidentified_county(one_dim$geography)],
+                            na.rm = TRUE) / sum(one_dim$natality_births, na.rm = TRUE)
+    message("cdc_wonder_natality: data_county_detail.csv.gz — ", nrow(data_county_detail), " rows, ",
+            n_distinct(data_county_detail$dimension), " dimensions (",
+            paste(sort(unique(data_county_detail$dimension)), collapse = ", "), "), ",
+            n_distinct(data_county_detail$geography), " geographies (of which ",
+            n_distinct(unid$geography), " are pooled \"Unidentified Counties\" SS999 codes, ",
+            sprintf("%.1f%%", unid_share), " of all county births — not real FIPS, ",
+            "exclude when joining to county geography)")
+  } else {
+    message("cdc_wonder_natality: no county detail-dimension files under ", RAW_DIR,
+            "; skipping data_county_detail.csv.gz")
   }
 
   # ---------------------------------------------------------------------------

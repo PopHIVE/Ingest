@@ -10,12 +10,17 @@
   "resources": [
     {
       "bytes": 1774,
-      "encoding": "ISO-8859-1",
+      "encoding": "windows-1252",
       "md5": "313044e3df5a1799277a2428a88da71f",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
-      "versions": {},
+      "versions": {
+        "hash": ["cb26fe6c3783d3cebbfe5ab8eb46689de47d0a7d"],
+        "author": ["Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"],
+        "date": ["Thu Oct 1 18:02:15 2026 -0400"],
+        "message": ["Flu and RSV vaccination sources (#233)"]
+      },
       "source": [],
       "data_format": "wide",
       "ids": [
@@ -23,11 +28,11 @@
           "variable": "geography"
         }
       ],
-      "id_length": 1,
+      "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-09-30 15:55:28.051827",
-      "last_modified": "2026-09-30 15:55:28.051827",
+      "created": "2026-10-02 21:32:39.70562",
+      "last_modified": "2026-10-02 21:32:39.70562",
       "vintage": {},
       "row_count": 258,
       "entity_count": 1,
@@ -38,12 +43,11 @@
             "duplicates": 257,
             "info": [],
             "time_range": [0, 257],
-            "type": "integer",
+            "type": "string",
             "missing": 0,
-            "mean": 0,
-            "sd": 0,
-            "min": 0,
-            "max": 0
+            "table": {
+              "00": 258
+            }
           },
           {
             "name": "time",
@@ -316,7 +320,21 @@
           {
             "name": "season",
             "duplicates": 250,
-            "info": [],
+            "info": {
+              "id": "season",
+              "short_name": "Flu season",
+              "long_name": "Influenza season",
+              "category": "immunization",
+              "short_description": "Flu season the cumulative total belongs to, e.g. 2024-25.",
+              "long_description": "Influenza season the cumulative total belongs to, written as the two calendar years it spans. Distribution reporting starts in late July and ends in March.",
+              "measure_type": "identifier",
+              "time_resolution": "Week",
+              "sources": [
+                {
+                  "id": "cdc_doses_distributed"
+                }
+              ]
+            },
             "time_range": [0, 257],
             "type": "string",
             "missing": 0,
@@ -334,7 +352,23 @@
           {
             "name": "flu_doses_cumulative_millions",
             "duplicates": 4,
-            "info": [],
+            "info": {
+              "id": "flu_doses_cumulative_millions",
+              "short_name": "Flu vaccine doses distributed",
+              "long_name": "Cumulative influenza vaccine doses distributed in the United States (millions)",
+              "category": "immunization",
+              "short_description": "Flu vaccine doses shipped by manufacturers and distributors, in millions, in the United States, cumulative from the start of the season through the end of the week.",
+              "long_description": "Cumulative number of seasonal influenza vaccine doses, in millions, distributed in the United States from the start of the season through the reporting week, as reported to CDC by U.S.-licensed influenza vaccine manufacturers and a subset of wholesalers and distributors that receive vaccine directly from them. The figures approximate all doses distributed and are not projections. Distribution is not administration: doses may sit in inventory or go unused. National only.",
+              "statement": "{value} million flu vaccine doses had been distributed in the United States as of {time}",
+              "measure_type": "Count",
+              "unit": "Millions of doses",
+              "time_resolution": "Week",
+              "sources": [
+                {
+                  "id": "cdc_doses_distributed"
+                }
+              ]
+            },
             "time_range": [0, 257],
             "type": "float",
             "missing": 0,
@@ -349,10 +383,73 @@
     }
   ],
   "measure_info": {
-    "example_variable": {
-      "id": "example_variable",
-      "sources": [],
+    "season": {
+      "id": "season",
+      "short_name": "Flu season",
+      "long_name": "Influenza season",
+      "category": "immunization",
+      "short_description": "Flu season the cumulative total belongs to, e.g. 2024-25.",
+      "long_description": "Influenza season the cumulative total belongs to, written as the two calendar years it spans. Distribution reporting starts in late July and ends in March.",
+      "measure_type": "identifier",
+      "time_resolution": "Week",
+      "sources": [
+        {
+          "id": "cdc_doses_distributed"
+        }
+      ]
+    },
+    "flu_doses_cumulative_millions": {
+      "id": "flu_doses_cumulative_millions",
+      "short_name": "Flu vaccine doses distributed",
+      "long_name": "Cumulative influenza vaccine doses distributed in the United States (millions)",
+      "category": "immunization",
+      "short_description": "Flu vaccine doses shipped by manufacturers and distributors, in millions, in the United States, cumulative from the start of the season through the end of the week.",
+      "long_description": "Cumulative number of seasonal influenza vaccine doses, in millions, distributed in the United States from the start of the season through the reporting week, as reported to CDC by U.S.-licensed influenza vaccine manufacturers and a subset of wholesalers and distributors that receive vaccine directly from them. The figures approximate all doses distributed and are not projections. Distribution is not administration: doses may sit in inventory or go unused. National only.",
+      "statement": "{value} million flu vaccine doses had been distributed in the United States as of {time}",
+      "measure_type": "Count",
+      "unit": "Millions of doses",
+      "time_resolution": "Week",
+      "sources": [
+        {
+          "id": "cdc_doses_distributed"
+        }
+      ],
       "citations": []
+    },
+    "_sources": {
+      "cdc_doses_distributed": {
+        "name": "Influenza vaccine doses distributed (CDC FluVaxView)",
+        "url": "https://www.cdc.gov/fluvaxview/dashboard/vaccine-doses-distributed.html",
+        "organization": "Centers for Disease Control and Prevention",
+        "organization_url": "https://www.cdc.gov/ncird/",
+        "location": "Weekly Cumulative Doses (in Millions) of Influenza Vaccines Distributed by Season, United States",
+        "location_url": "https://data.cdc.gov/d/ph8r-wzxn",
+        "description": "Influenza vaccine is produced by private manufacturers, which together with a subset of wholesalers and distributors report to CDC each week the number of doses they have shipped in the United States. CDC publishes the cumulative total for each week of the season, from late July through early March, for the 2018-19 season onward. The figures approximate all doses distributed nationally, are not projections, and say nothing about how many doses were administered.",
+        "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+        "date_accessed": 2026
+      },
+      "id": "_sources"
+    },
+    "_catalog": {
+      "summary": "Weekly cumulative total of flu vaccine doses that manufacturers have shipped in the United States each season, as reported to CDC.",
+      "search_terms": [
+        "Respiratory",
+        "flu vaccine",
+        "vaccine supply",
+        "doses distributed"
+      ],
+      "bucket": [
+        "Immunization"
+      ],
+      "files": {
+        "data.csv.gz": "Weekly national cumulative flu vaccine doses distributed"
+      },
+      "id": "_catalog"
+    }
+  },
+  "change_report": {
+    "data.csv.gz": {
+      "state": "unchanged"
     }
   }
 }

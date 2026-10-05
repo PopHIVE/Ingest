@@ -11,6 +11,10 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    # bash with pipefail, so a step piped through tee still fails when R does
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -80,7 +84,9 @@ jobs:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Build Script
-        run: Rscript scripts/build.R
+        # Output is also kept in a log so the last step can tell whether
+        # anything failed: dcf_build() exits 0 even when a source errors.
+        run: Rscript scripts/build.R 2>&1 | tee "$RUNNER_TEMP/build.log"
         env:
           DELPHI_EPIDATA_KEY: ${{ secrets.DELPHI_EPIDATA_KEY }}
 
@@ -118,3 +124,10 @@ jobs:
           done
           echo "::error::could not push data build after 3 attempts"
           exit 1
+
+      # Runs after the commit so data that did build is still published, then
+      # turns the run red if any source or bundle failed. kinsa_ili needs
+      # credentials this workflow does not have; the daily workflow runs it.
+      - if: ${{ always() }}
+        name: Check for failed sources
+        run: Rscript scripts/check_build_status.R "$RUNNER_TEMP/build.log" --allow=kinsa_ili
