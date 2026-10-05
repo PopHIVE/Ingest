@@ -134,7 +134,7 @@ measure_dict <- tibble::tribble(
   "QNOTHHPL",         "pct_no_hormonal_contraception","No hormonal contraception",        "Did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner", "Sexual Behaviors",
   "QNBCNONE",         "pct_no_pregnancy_prevention",  "No pregnancy prevention method",   "Did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner",                "Sexual Behaviors",
   "QNCONSENTSEXCONT", "pct_no_verbal_consent",        "Did not ask for consent",          "Did not verbally ask for consent the last time they had sexual contact",                                                "Sexual Behaviors",
-  "H78",              "pct_never_tested_hiv",         "Never tested for HIV",             "Were not tested or were not sure whether they had been tested for human immunodeficiency virus (HIV)",                  "Sexual Behaviors",
+  "H78",              "pct_never_tested_hiv",         "Not tested for HIV",               "Were not tested for HIV, or were not sure",                                                                             "Sexual Behaviors",
   "H79",              "pct_not_tested_std",           "Not tested for an STD",            "Were not tested for a sexually transmitted disease (STD) other than HIV",                                               "Sexual Behaviors",
   # ---- Other Health Topics (category: chronic) ----
   "H77",              "pct_social_media_daily",       "Used social media several/day",    "Used social media at least several times a day",                                                                        "Other Health Topics",
@@ -696,16 +696,13 @@ measure_info[["_sources"]] <- list(
       "behaviors contributing to the leading causes of death and disability. ",
       "Data were accessed via the YRBS Explorer API. Estimates are provided ",
       "overall and stratified (separately, not crossed) by sex, race/ethnicity, ",
-      "and grade. Every measure is expressed as the percentage of students ",
-      "with the risk behavior. Estimates that CDC suppressed (e.g., small ",
-      "sample sizes) are set to 0 and flagged. State estimates are available ",
-      "only for jurisdictions that share data with CDC; Minnesota, Oregon, and ",
+      "and grade. Estimates that CDC suppressed (e.g., small sample sizes) ",
+      "are set to 0 and flagged. State estimates are available only for ",
+      "jurisdictions that share data with CDC; Minnesota, Oregon, and ",
       "Washington are not included, and New York state excludes New York City. ",
-      "Since the 2025 release the YRBS Explorer no longer serves Alabama, ",
-      "Alaska, California, Colorado, Florida, Georgia, Idaho, Iowa, Kansas, ",
-      "Nebraska, Pennsylvania, Tennessee, Texas, or Wyoming; estimates for ",
-      "these states come from the previous release and end with the last ",
-      "survey year each state had in it (2023 or earlier)."
+      "Alabama, Alaska, California, Colorado, Florida, Georgia, Idaho, Iowa, ",
+      "Kansas, Nebraska, Pennsylvania, Tennessee, Texas, and Wyoming are not ",
+      "in the 2025 release, so their estimates end in 2023 or earlier."
     ),
     restrictions     = "Public domain. Suggested attribution: Centers for Disease Control and Prevention (CDC). Youth Risk Behavior Surveillance System (YRBSS)."
   )

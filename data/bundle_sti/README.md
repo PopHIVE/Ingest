@@ -17,7 +17,7 @@ resolution so each has a single grain.
   rate, state and national.
 - **CDC NNDSS** (`nnds`): weekly case counts for chlamydia, gonorrhea,
   syphilis, chancroid, mpox, and hepatitis B and C, national and state.
-- **CDC YRBSS** (`yrbss`): biennial share of high school students never
+- **CDC YRBSS** (`yrbss`): biennial share of high school students not
   tested for HIV and not tested for an STD in the past year, national and
   state.
 
