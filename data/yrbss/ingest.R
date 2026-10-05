@@ -13,11 +13,10 @@
 # Scope (per project request):
 #   - Geographies : National (00) + 47 states + DC
 #   - Years       : 2005 onward
-#   - Questions   : Curated subset across topics (see FULL_TOPICS +
-#                   SELECT_CODES below): all of Physical Activity (C06) and
-#                   Sexual Behaviors (C04) plus selected injury/violence,
-#                   mental-health, tobacco, substance-use, diet, and
-#                   other-health-topic items.
+#   - Questions   : Curated subset across topics (see measure_dict below):
+#                   Physical Activity and Sexual Behaviors plus selected
+#                   injury/violence, mental-health, tobacco, substance-use,
+#                   diet, and other-health-topic items.
 #   - Strata      : Total, Sex, Race, Grade. Sex->sex, Race->race_ethnicity,
 #                   Grade->age (approximate modal age), Total->Overall.
 #                   YRBSS provides MARGINAL strata only (each estimate is broken
@@ -30,6 +29,24 @@
 #     standard/data_age_ethnicity.csv.gz  keys: geography, time, age, race_ethnicity
 #   Suppressed values, topic, and question_code are dropped from the data files
 #   and documented in measure_info.json instead.
+#
+# Question codes: CDC renumbered most H-codes when it added the 2025 survey
+#   (e.g. seat belt H8 -> H7). The codes in measure_dict are the current ones;
+#   CODE_PRE2025 keeps the old ones for reading the archived pull. The catalog
+#   is checked against raw/yrbss_catalog_reference.csv on every run so another
+#   renumbering stops the script instead of mislabeling the columns.
+#
+# Direction: ChartData returns each estimate in the question's native
+#   direction. For questions the catalog marks "Positive" that is the share
+#   WITHOUT the risk (e.g. got 8+ hours of sleep), while the measures here are
+#   named for the risk (pct_insufficient_sleep), so those are converted to
+#   100 - value. pct_close_at_school is the one measure kept as reported.
+#
+# Archived states: since the 2025 release the Explorer returns nothing, not
+#   even earlier years, for 14 states (AL, AK, CA, CO, FL, GA, ID, IA, KS, NE,
+#   PA, TN, TX, WY). Their history comes from the last pull made before that
+#   release (raw/yrbss_chartdata_pre2025.csv.gz) and is used only for
+#   locations with no rows in the current pull.
 # =============================================================================
 
 library(tidyverse)
@@ -39,24 +56,11 @@ library(dcf)
 
 BASE        <- "https://yrbs-explorer.services.cdc.gov/api"
 MIN_YEAR    <- 2005
-# Topic codes to include in full (every question in the topic)
-FULL_TOPICS <- c("C06", "C04")                         # all Physical Activity, all Sexual Behaviors
-# Individual question codes to include (in addition to FULL_TOPICS)
-SELECT_CODES <- c(
-  # C01 Injuries & Violence
-  "H8", "H9", "H10", "H11", "H12", "H13", "H15", "H24", "H25", "H14",
-  "H27", "H28", "H29", "H30",
-  # C02 Tobacco
-  "H31", "H33", "H35", "H36", "H38",
-  # C03 Alcohol & Other Drug Use
-  "H42", "H43", "H46", "H47", "H48", "H49", "QNCURRENTOPIOID",
-  "H50", "H51", "H52", "H53", "H54", "QNHALLUCDRUG", "H55", "QNILLICT",
-  # C05 Dietary
-  "QNFR0", "QNVEG0", "H75", "QNBK7DAY",
-  # C08 Other Health Topics
-  "H84", "H85", "H86", "QNCLOSE2PEOPLE", "H80"
-)
-RAW_FILE    <- "raw/yrbss_chartdata.csv.gz"
+RAW_FILE     <- "raw/yrbss_chartdata.csv.gz"
+ARCHIVE_FILE <- "raw/yrbss_chartdata_pre2025.csv.gz"   # last pull before the 2025 release
+CATALOG_REF  <- "raw/yrbss_catalog_reference.csv"      # catalog wording the dictionary was checked against
+# Measures named for the non-risk side, so the native value is kept as is
+KEEP_NATIVE  <- c("QNCLOSE2PEOPLE")
 
 # -----------------------------------------------------------------------------
 # Measure dictionary: maps each YRBSS question_code to a short descriptive
@@ -68,16 +72,16 @@ RAW_FILE    <- "raw/yrbss_chartdata.csv.gz"
 measure_dict <- tibble::tribble(
   ~question_code,     ~slug,                          ~short_label,                       ~question_text,                                                                                                          ~topic,
   # ---- Unintentional Injuries and Violence (category: injury) ----
-  "H8",               "pct_no_seatbelt",              "Did not always wear a seat belt",  "Did not always wear a seat belt",                                                                                       "Unintentional Injuries and Violence",
-  "H9",               "pct_rode_drinking_driver",     "Rode with a drinking driver",      "Rode with a driver who had been drinking alcohol",                                                                      "Unintentional Injuries and Violence",
-  "H10",              "pct_drove_drinking",           "Drove after drinking alcohol",     "Drove when they had been drinking alcohol",                                                                             "Unintentional Injuries and Violence",
-  "H11",              "pct_text_while_driving",       "Texted/e-mailed while driving",    "Texted or e-mailed while driving a car or other vehicle",                                                               "Unintentional Injuries and Violence",
-  "H12",              "pct_carried_weapon_school",    "Carried a weapon at school",       "Carried a weapon on school property",                                                                                   "Unintentional Injuries and Violence",
-  "H13",              "pct_carried_gun",              "Carried a gun",                    "Carried a gun",                                                                                                         "Unintentional Injuries and Violence",
-  "H14",              "pct_unsafe_at_school",         "Did not go to school, unsafe",     "Did not go to school because they felt unsafe at school or on their way to or from school",                              "Unintentional Injuries and Violence",
-  "H15",              "pct_threatened_weapon_school", "Threatened with weapon at school", "Were threatened or injured with a weapon on school property",                                                           "Unintentional Injuries and Violence",
-  "H24",              "pct_bullied_at_school",        "Bullied on school property",       "Were bullied on school property",                                                                                       "Unintentional Injuries and Violence",
-  "H25",              "pct_bullied_electronic",       "Electronically bullied",           "Were electronically bullied",                                                                                           "Unintentional Injuries and Violence",
+  "H7",               "pct_no_seatbelt",              "Did not always wear a seat belt",  "Did not always wear a seat belt",                                                                                       "Unintentional Injuries and Violence",
+  "H8",               "pct_rode_drinking_driver",     "Rode with a drinking driver",      "Rode with a driver who had been drinking alcohol",                                                                      "Unintentional Injuries and Violence",
+  "H9",               "pct_drove_drinking",           "Drove after drinking alcohol",     "Drove when they had been drinking alcohol",                                                                             "Unintentional Injuries and Violence",
+  "H10",              "pct_text_while_driving",       "Texted/e-mailed while driving",    "Texted or e-mailed while driving a car or other vehicle",                                                               "Unintentional Injuries and Violence",
+  "H11",              "pct_carried_weapon_school",    "Carried a weapon at school",       "Carried a weapon on school property",                                                                                   "Unintentional Injuries and Violence",
+  "H12",              "pct_carried_gun",              "Carried a gun",                    "Carried a gun",                                                                                                         "Unintentional Injuries and Violence",
+  "H13",              "pct_unsafe_at_school",         "Did not go to school, unsafe",     "Did not go to school because they felt unsafe at school or on their way to or from school",                              "Unintentional Injuries and Violence",
+  "H14",              "pct_threatened_weapon_school", "Threatened with weapon at school", "Were threatened or injured with a weapon on school property",                                                           "Unintentional Injuries and Violence",
+  "H23",              "pct_bullied_at_school",        "Bullied on school property",       "Were bullied on school property",                                                                                       "Unintentional Injuries and Violence",
+  "H24",              "pct_bullied_electronic",       "Electronically bullied",           "Were electronically bullied",                                                                                           "Unintentional Injuries and Violence",
   "H27",              "pct_considered_suicide",       "Seriously considered suicide",     "Seriously considered attempting suicide",                                                                               "Unintentional Injuries and Violence",
   "H28",              "pct_planned_suicide",          "Made a suicide plan",              "Made a plan about how they would attempt suicide",                                                                      "Unintentional Injuries and Violence",
   "H29",              "pct_attempted_suicide",        "Attempted suicide",                "Actually attempted suicide",                                                                                            "Unintentional Injuries and Violence",
@@ -89,55 +93,69 @@ measure_dict <- tibble::tribble(
   "H36",              "pct_current_vape",             "Currently used vapor products",    "Currently used electronic vapor products",                                                                              "Tobacco Use",
   "H38",              "pct_current_smokeless_tobacco","Currently used smokeless tobacco", "Currently used smokeless tobacco",                                                                                      "Tobacco Use",
   # ---- Alcohol and Other Drug Use (category: chronic) ----
-  "H42",              "pct_current_alcohol",          "Currently drank alcohol",          "Currently drank alcohol",                                                                                               "Alcohol and Other Drug Use",
-  "H43",              "pct_binge_drinking",           "Currently binge drinking",         "Currently were binge drinking",                                                                                         "Alcohol and Other Drug Use",
-  "H46",              "pct_ever_marijuana",           "Ever used marijuana",              "Ever used marijuana",                                                                                                   "Alcohol and Other Drug Use",
-  "H47",              "pct_early_marijuana",          "Tried marijuana before age 13",    "Tried marijuana for the first time before age 13 years",                                                                "Alcohol and Other Drug Use",
-  "H48",              "pct_current_marijuana",        "Currently used marijuana",         "Currently used marijuana",                                                                                              "Alcohol and Other Drug Use",
-  "H49",              "pct_ever_rx_opioid_misuse",    "Ever misused Rx opioids",          "Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it","Alcohol and Other Drug Use",
+  "H41",              "pct_current_alcohol",          "Currently drank alcohol",          "Currently drank alcohol",                                                                                               "Alcohol and Other Drug Use",
+  "ALCBINGE",         "pct_binge_drinking",           "Currently binge drinking",         "Currently were binge drinking",                                                                                         "Alcohol and Other Drug Use",
+  "H44",              "pct_ever_marijuana",           "Ever used marijuana",              "Ever used marijuana",                                                                                                   "Alcohol and Other Drug Use",
+  "H45",              "pct_early_marijuana",          "Tried marijuana before age 13",    "Tried marijuana for the first time before age 13 years",                                                                "Alcohol and Other Drug Use",
+  "H46",              "pct_current_marijuana",        "Currently used marijuana",         "Currently used marijuana",                                                                                              "Alcohol and Other Drug Use",
+  "H47",              "pct_ever_rx_opioid_misuse",    "Ever misused Rx opioids",          "Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it","Alcohol and Other Drug Use",
   "QNCURRENTOPIOID",  "pct_current_rx_opioid_misuse", "Currently misused Rx opioids",     "Currently took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it","Alcohol and Other Drug Use",
-  "H50",              "pct_ever_cocaine",             "Ever used cocaine",                "Ever used cocaine",                                                                                                     "Alcohol and Other Drug Use",
-  "H51",              "pct_ever_inhalants",           "Ever used inhalants",              "Ever used inhalants",                                                                                                   "Alcohol and Other Drug Use",
-  "H52",              "pct_ever_heroin",              "Ever used heroin",                 "Ever used heroin",                                                                                                      "Alcohol and Other Drug Use",
-  "H53",              "pct_ever_methamphetamines",    "Ever used methamphetamines",       "Ever used methamphetamines",                                                                                            "Alcohol and Other Drug Use",
-  "H54",              "pct_ever_ecstasy",             "Ever used ecstasy",                "Ever used ecstasy",                                                                                                     "Alcohol and Other Drug Use",
+  "H48",              "pct_ever_cocaine",             "Ever used cocaine",                "Ever used cocaine",                                                                                                     "Alcohol and Other Drug Use",
+  "H49",              "pct_ever_inhalants",           "Ever used inhalants",              "Ever used inhalants",                                                                                                   "Alcohol and Other Drug Use",
+  "H50",              "pct_ever_heroin",              "Ever used heroin",                 "Ever used heroin",                                                                                                      "Alcohol and Other Drug Use",
+  "H51",              "pct_ever_methamphetamines",    "Ever used methamphetamines",       "Ever used methamphetamines",                                                                                            "Alcohol and Other Drug Use",
+  "H52",              "pct_ever_ecstasy",             "Ever used ecstasy",                "Ever used ecstasy",                                                                                                     "Alcohol and Other Drug Use",
   "QNHALLUCDRUG",     "pct_ever_hallucinogens",       "Ever used hallucinogens",          "Ever used hallucinogenic drugs",                                                                                        "Alcohol and Other Drug Use",
-  "H55",              "pct_ever_inject_drug",         "Ever injected illegal drug",       "Ever injected any illegal drug",                                                                                        "Alcohol and Other Drug Use",
+  "H53",              "pct_ever_inject_drug",         "Ever injected illegal drug",       "Ever injected any illegal drug",                                                                                        "Alcohol and Other Drug Use",
   "QNILLICT",         "pct_ever_illicit_drug",        "Ever used select illicit drugs",   "Ever used select illicit drugs",                                                                                        "Alcohol and Other Drug Use",
   # ---- Dietary Behaviors (category: chronic) ----
-  "H75",              "pct_no_breakfast",             "Did not eat breakfast",            "Did not eat breakfast (during the 7 days before the survey)",                                                           "Dietary Behaviors",
+  "H72",              "pct_no_breakfast",             "Did not eat breakfast",            "Did not eat breakfast (during the 7 days before the survey)",                                                           "Dietary Behaviors",
   "QNBK7DAY",         "pct_no_breakfast_7days",       "No breakfast on all 7 days",       "Did not eat breakfast on all 7 days (before the survey)",                                                               "Dietary Behaviors",
   "QNFR0",            "pct_no_fruit",                 "Did not eat fruit",                "Did not eat fruit or drink 100% fruit juices (during the 7 days before the survey)",                                    "Dietary Behaviors",
   "QNVEG0",           "pct_no_vegetables",            "Did not eat vegetables",           "Did not eat vegetables (during the 7 days before the survey)",                                                          "Dietary Behaviors",
   # ---- Physical Activity (category: chronic) ----
-  "H76",              "pct_inactive_60min_5days",     "Inactive <5 days/wk",              "Were not physically active at least 60 minutes per day on 5 or more days",                                              "Physical Activity",
-  "H77",              "pct_no_pe_classes",            "Did not attend PE classes",        "Did not attend physical education (PE) classes on 1 or more days",                                                      "Physical Activity",
-  "H78",              "pct_no_sports_team",           "Did not play on a sports team",    "Did not play on at least one sports team",                                                                              "Physical Activity",
-  "H79",              "pct_sports_concussion",        "Concussion from sport/activity",   "Had a concussion from playing a sport or being physically active",                                                      "Physical Activity",
+  "H73",              "pct_inactive_60min_5days",     "Inactive <5 days/wk",              "Were not physically active at least 60 minutes per day on 5 or more days",                                              "Physical Activity",
+  "H74",              "pct_no_pe_classes",            "Did not attend PE classes",        "Did not attend physical education (PE) classes on 1 or more days",                                                      "Physical Activity",
+  "H75",              "pct_no_sports_team",           "Did not play on a sports team",    "Did not play on at least one sports team",                                                                              "Physical Activity",
+  "H76",              "pct_sports_concussion",        "Concussion from sport/activity",   "Had a concussion from playing a sport or being physically active",                                                      "Physical Activity",
   "QNDLYPE",          "pct_no_daily_pe",              "No daily PE",                      "Did not attend physical education (PE) classes on all 5 days",                                                          "Physical Activity",
   "QNMUSCLESTRENGTH", "pct_no_muscle_strengthening",  "No muscle strengthening",          "Did not do exercises to strengthen or tone muscles on three or more days",                                              "Physical Activity",
   "QNPA0DAY",         "pct_inactive_all_days",        "Inactive every day",               "Were not physically active for at least 60 minutes on at least 1 day",                                                  "Physical Activity",
   "QNPA7DAY",         "pct_inactive_60min_7days",     "Inactive <7 days/wk",              "Were not physically active at least 60 minutes per day on all 7 days",                                                  "Physical Activity",
   # ---- Sexual Behaviors (category: sexual_health) ----
-  "H56",              "pct_ever_sex",                 "Ever had sexual intercourse",      "Ever had sexual intercourse",                                                                                           "Sexual Behaviors",
-  "H57",              "pct_sex_before_13",            "Had sex before age 13",            "Had sexual intercourse for the first time before age 13 years",                                                        "Sexual Behaviors",
-  "H58",              "pct_four_plus_partners",       "Four or more sexual partners",     "Had sexual intercourse with four or more persons",                                                                      "Sexual Behaviors",
-  "H59",              "pct_currently_sexually_active","Currently sexually active",        "Were currently sexually active",                                                                                        "Sexual Behaviors",
-  "H60",              "pct_alcohol_drugs_before_sex", "Alcohol or drugs before last sex", "Drank alcohol or used drugs before last sexual intercourse",                                                             "Sexual Behaviors",
-  "H61",              "pct_no_condom_last_sex",       "No condom at last sex",            "Did not use a condom during last sexual intercourse",                                                                   "Sexual Behaviors",
-  "H62",              "pct_no_birth_control_pills",   "No birth control pills",           "Did not use birth control pills before last sexual intercourse with opposite-sex partner",                              "Sexual Behaviors",
+  "H54",              "pct_ever_sex",                 "Ever had sexual intercourse",      "Ever had sexual intercourse",                                                                                           "Sexual Behaviors",
+  "H55",              "pct_sex_before_13",            "Had sex before age 13",            "Had sexual intercourse for the first time before age 13 years",                                                        "Sexual Behaviors",
+  "H56",              "pct_four_plus_partners",       "Four or more sexual partners",     "Had sexual intercourse with four or more persons",                                                                      "Sexual Behaviors",
+  "H57",              "pct_currently_sexually_active","Currently sexually active",        "Were currently sexually active",                                                                                        "Sexual Behaviors",
+  "H58",              "pct_alcohol_drugs_before_sex", "Alcohol or drugs before last sex", "Drank alcohol or used drugs before last sexual intercourse",                                                             "Sexual Behaviors",
+  "H59",              "pct_no_condom_last_sex",       "No condom at last sex",            "Did not use a condom during last sexual intercourse",                                                                   "Sexual Behaviors",
+  "H60",              "pct_no_birth_control_pills",   "No birth control pills",           "Did not use birth control pills before last sexual intercourse with opposite-sex partner",                              "Sexual Behaviors",
   "QNIUDIMP",         "pct_no_iud_implant",           "No IUD or implant",                "Did not use an IUD or implant before last sexual intercourse with an opposite-sex partner",                             "Sexual Behaviors",
   "QNOTHHPL",         "pct_no_hormonal_contraception","No hormonal contraception",        "Did not use birth control pills, an IUD or implant, or a shot, patch, or birth control ring before last sexual intercourse with an opposite-sex partner", "Sexual Behaviors",
   "QNBCNONE",         "pct_no_pregnancy_prevention",  "No pregnancy prevention method",   "Did not use any method to prevent pregnancy during last sexual intercourse with an opposite-sex partner",                "Sexual Behaviors",
   "QNCONSENTSEXCONT", "pct_no_verbal_consent",        "Did not ask for consent",          "Did not verbally ask for consent the last time they had sexual contact",                                                "Sexual Behaviors",
-  "H81",              "pct_never_tested_hiv",         "Never tested for HIV",             "Were never tested for human immunodeficiency virus (HIV)",                                                              "Sexual Behaviors",
-  "H82",              "pct_not_tested_std",           "Not tested for an STD",            "Were not tested for a sexually transmitted disease (STD) other than HIV",                                               "Sexual Behaviors",
+  "H78",              "pct_never_tested_hiv",         "Not tested for HIV",               "Were not tested for HIV, or were not sure",                                                                             "Sexual Behaviors",
+  "H79",              "pct_not_tested_std",           "Not tested for an STD",            "Were not tested for a sexually transmitted disease (STD) other than HIV",                                               "Sexual Behaviors",
   # ---- Other Health Topics (category: chronic) ----
-  "H80",              "pct_social_media_daily",       "Used social media several/day",    "Used social media at least several times a day",                                                                        "Other Health Topics",
-  "H84",              "pct_poor_mental_health",       "Poor mental health",               "Reported that their mental health was most of the time or always not good",                                             "Other Health Topics",
-  "H85",              "pct_insufficient_sleep",       "Insufficient sleep (<8 hrs)",      "Did not get 8 or more hours of sleep (on an average school night)",                                                     "Other Health Topics",
-  "H86",              "pct_unstable_housing",         "Experienced unstable housing",     "Experienced unstable housing",                                                                                          "Other Health Topics",
+  "H77",              "pct_social_media_daily",       "Used social media several/day",    "Used social media at least several times a day",                                                                        "Other Health Topics",
+  "H81",              "pct_poor_mental_health",       "Poor mental health",               "Reported that their mental health was most of the time or always not good",                                             "Other Health Topics",
+  "H83",              "pct_insufficient_sleep",       "Insufficient sleep (<8 hrs)",      "Did not get 8 or more hours of sleep (on an average school night)",                                                     "Other Health Topics",
+  "H84",              "pct_unstable_housing",         "Experienced unstable housing",     "Experienced unstable housing",                                                                                          "Other Health Topics",
   "QNCLOSE2PEOPLE",   "pct_close_at_school",      "Felt close at school",     "Strongly agreed or agreed that they feel close to people at their school",                                        "Other Health Topics"
+)
+
+# Codes these questions had before the 2025 release (current code = old code).
+# Questions not listed kept their code.
+CODE_PRE2025 <- c(
+  H7 = "H8", H8 = "H9", H9 = "H10", H10 = "H11", H11 = "H12", H12 = "H13",
+  H13 = "H14", H14 = "H15", H23 = "H24", H24 = "H25",
+  H41 = "H42", ALCBINGE = "H43", H44 = "H46", H45 = "H47", H46 = "H48",
+  H47 = "H49", H48 = "H50", H49 = "H51", H50 = "H52", H51 = "H53",
+  H52 = "H54", H53 = "H55",
+  H72 = "H75", H73 = "H76", H74 = "H77", H75 = "H78", H76 = "H79",
+  H54 = "H56", H55 = "H57", H56 = "H58", H57 = "H59", H58 = "H60",
+  H59 = "H61", H60 = "H62", H78 = "H81", H79 = "H82",
+  H77 = "H80", H81 = "H84", H83 = "H85", H84 = "H86"
 )
 
 # -----------------------------------------------------------------------------
@@ -176,16 +194,47 @@ catalog <- purrr::map_dfr(topics, function(tp) {
     tibble(
       topic_code    = tp$TopicCode,
       topic_text    = tp$TopicText,
-      question_code = q$QuestionCode,
-      question_text = q$GreaterRiskQuestionText
+      question_code    = q$QuestionCode,
+      question_text    = q$GreaterRiskQuestionText,
+      native_direction = q$NativeDirection
     )
   })
 })
 
 # Select the questions in scope
 selected <- catalog %>%
-  filter(topic_code %in% FULL_TOPICS | question_code %in% SELECT_CODES) %>%
+  filter(question_code %in% measure_dict$question_code) %>%
   distinct(question_code, .keep_all = TRUE)
+
+# Every code in the dictionary must still exist with the wording and direction
+# it had when the dictionary was written. If CDC renumbers or rewords a
+# question, stop here: review the change, fix measure_dict if needed, then
+# update the reference file.
+squish_lower <- function(x) tolower(gsub("\\s+", " ", trimws(x)))
+catalog_ref <- vroom::vroom(CATALOG_REF, show_col_types = FALSE,
+                            col_types = vroom::cols(.default = "c"))
+catalog_cmp <- measure_dict %>%
+  select(question_code, slug) %>%
+  left_join(select(catalog_ref, question_code, ref_text = question_text,
+                   ref_direction = native_direction), by = "question_code") %>%
+  left_join(select(selected, question_code, live_text = question_text,
+                   live_direction = native_direction), by = "question_code") %>%
+  mutate(ok = !is.na(ref_text) & !is.na(live_text) &
+           squish_lower(ref_text) == squish_lower(live_text) &
+           ref_direction == live_direction)
+if (!all(catalog_cmp$ok)) {
+  bad <- filter(catalog_cmp, !ok)
+  stop("YRBS question catalog no longer matches ", CATALOG_REF, " for: ",
+       paste0(bad$slug, " (", bad$question_code, ": '",
+              coalesce(bad$live_text, "missing"), "')", collapse = "; "),
+       call. = FALSE)
+}
+
+# Questions whose native value is the share without the risk
+flip_codes <- setdiff(
+  catalog_cmp$question_code[catalog_cmp$live_direction == "Positive"],
+  KEEP_NATIVE
+)
 
 # -----------------------------------------------------------------------------
 # 2. Target locations: National (XX) + states + DC
@@ -223,7 +272,11 @@ sig_same  <- !is.null(disk_sig) &&
   identical(as.integer(unlist(disk_sig$years)), sig$years) &&
   identical(as.character(unlist(disk_sig$questions)), sig$questions)
 
-if (!sig_same || !file.exists(RAW_FILE)) {
+# Requests that failed in the last pull ("question|location"). They are asked
+# for again on the next run even when the signature is unchanged.
+failed_pairs <- as.character(unlist(process$raw_state$failed))
+
+if (!sig_same || !file.exists(RAW_FILE) || length(failed_pairs) > 0) {
 
   grid <- tidyr::expand_grid(
     question_code = selected$question_code,
@@ -243,6 +296,11 @@ if (!sig_same || !file.exists(RAW_FILE)) {
       filter(question_code %in% selected$question_code)
     grid <- anti_join(grid, distinct(raw_cached, question_code, LocationCode),
                       by = c("question_code", "LocationCode"))
+    # Nothing else changed: only the failed requests are outstanding
+    if (sig_same) {
+      grid <- filter(grid, paste(question_code, LocationCode, sep = "|") %in%
+                       failed_pairs)
+    }
   }
 
   message(sprintf("Downloading YRBSS ChartData: %d question-location pairs",
@@ -275,7 +333,10 @@ if (!sig_same || !file.exists(RAW_FILE)) {
       Sys.sleep(2 * attempt)
     }
     file.create(file.path(PROG_DIR, as.character(i)))  # progress marker
-    if (is.null(d) || length(d) == 0 || !is.data.frame(d) || nrow(d) == 0)
+    # The server sometimes answers with an HTML error page; keep that apart
+    # from a real empty answer (question not asked in that location).
+    if (is.null(d)) return("failed")
+    if (length(d) == 0 || !is.data.frame(d) || nrow(d) == 0)
       return(NULL)
     # Keep only the strata in scope (Total, Sex, Race, Grade); drop the
     # sexual-identity / transgender / sex-of-sexual-contacts strata at the
@@ -302,8 +363,12 @@ if (!sig_same || !file.exists(RAW_FILE)) {
   }
   unlink(PROG_DIR, recursive = TRUE)  # clean up progress markers
 
+  failed <- vapply(results, identical, logical(1), "failed")
+  failed_pairs <- paste(grid$question_code, grid$LocationCode, sep = "|")[failed]
+  results <- results[!failed]
   n_ok <- sum(!vapply(results, is.null, logical(1)))
-  message(sprintf("Got data for %d / %d question-location pairs", n_ok, n_req))
+  message(sprintf("Got data for %d / %d question-location pairs (%d requests failed)",
+                  n_ok, n_req, sum(failed)))
 
   # Cached rows are all character; match before binding.
   raw_new <- bind_rows(results) %>% mutate(across(everything(), as.character))
@@ -356,7 +421,28 @@ grade_to_age <- function(x) {
 #    never asked (no row at all). topic / question_code are documented only in
 #    measure_info.json and are NOT written to the data files.
 # -----------------------------------------------------------------------------
-raw_clean <- raw_all %>%
+# Current pull, keyed by the current question codes
+raw_live <- raw_all %>%
+  inner_join(select(measure_dict, question_code, slug), by = "question_code")
+
+# Archived pull, keyed by the codes in use before the 2025 release. Only
+# locations the current pull has nothing for are taken from it.
+archive_codes <- measure_dict %>%
+  transmute(question_code = coalesce(unname(CODE_PRE2025[question_code]),
+                                     question_code),
+            slug)
+raw_archive <- vroom::vroom(ARCHIVE_FILE, show_col_types = FALSE,
+                            col_types = vroom::cols(.default = "c")) %>%
+  filter(!LocationCode %in% unique(raw_live$LocationCode)) %>%
+  inner_join(archive_codes, by = "question_code")
+if (nrow(raw_archive) > 0) {
+  message("Using archived pre-2025 data for: ",
+          paste(sort(unique(raw_archive$LocationCode)), collapse = ", "))
+}
+
+flip_slugs <- measure_dict$slug[measure_dict$question_code %in% flip_codes]
+
+raw_clean <- bind_rows(raw_live, raw_archive) %>%
   filter(StratType %in% c("Total", "Sex", "Race", "Grade")) %>%
   mutate(
     Year      = suppressWarnings(as.integer(Year)),
@@ -367,8 +453,13 @@ raw_clean <- raw_all %>%
   filter(Year >= MIN_YEAR) %>%
   left_join(loc_fips, by = "LocationCode") %>%
   filter(!is.na(geography)) %>%
-  inner_join(select(measure_dict, question_code, slug), by = "question_code") %>%
   mutate(
+    # Express every measure as the share with the risk behavior
+    flip      = slug %in% flip_slugs,
+    lcl_native = value_lcl,
+    value     = if_else(flip, round(100 - value, 1), value),
+    value_lcl = if_else(flip, round(100 - value_ucl, 1), value_lcl),
+    value_ucl = if_else(flip, round(100 - lcl_native, 1), value_ucl),
     sex            = if_else(StratType == "Sex", Strat, "Overall"),
     race_ethnicity = if_else(StratType == "Race", recode_race(Strat), "Overall"),
     age            = if_else(StratType == "Grade", grade_to_age(Strat), "Overall"),
@@ -594,7 +685,7 @@ measure_info[["_sources"]] <- list(
   yrbss = list(
     name             = "CDC Youth Risk Behavior Surveillance System (YRBSS)",
     url              = "https://yrbs-explorer.services.cdc.gov/",
-    date_accessed    = 2025,
+    date_accessed    = 2026,
     organization     = "Centers for Disease Control and Prevention",
     organization_url = "https://www.cdc.gov/yrbs/",
     description      = paste0(
@@ -605,10 +696,13 @@ measure_info[["_sources"]] <- list(
       "behaviors contributing to the leading causes of death and disability. ",
       "Data were accessed via the YRBS Explorer API. Estimates are provided ",
       "overall and stratified (separately, not crossed) by sex, race/ethnicity, ",
-      "and grade. Estimates that CDC suppressed (e.g., small sample sizes) are ",
-      "omitted rather than imputed. State estimates are available only for ",
+      "and grade. Estimates that CDC suppressed (e.g., small sample sizes) ",
+      "are set to 0 and flagged. State estimates are available only for ",
       "jurisdictions that share data with CDC; Minnesota, Oregon, and ",
-      "Washington are not included, and New York state excludes New York City."
+      "Washington are not included, and New York state excludes New York City. ",
+      "Alabama, Alaska, California, Colorado, Florida, Georgia, Idaho, Iowa, ",
+      "Kansas, Nebraska, Pennsylvania, Tennessee, Texas, and Wyoming are not ",
+      "in the 2025 release, so their estimates end in 2023 or earlier."
     ),
     restrictions     = "Public domain. Suggested attribution: Centers for Disease Control and Prevention (CDC). Youth Risk Behavior Surveillance System (YRBSS)."
   )
@@ -631,5 +725,6 @@ jsonlite::write_json(measure_info, "measure_info.json",
 # -----------------------------------------------------------------------------
 # 7. Update process record
 # -----------------------------------------------------------------------------
-process$raw_state <- list(sig = sig, hash = unname(tools::md5sum(RAW_FILE)))
+process$raw_state <- list(sig = sig, failed = as.list(failed_pairs),
+                          hash = unname(tools::md5sum(RAW_FILE)))
 dcf::dcf_process_record(updated = process)
