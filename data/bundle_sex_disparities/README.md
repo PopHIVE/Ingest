@@ -31,6 +31,11 @@ Each measure's unit and definition are on the `measure` column's levels in
 Where a file combines several source files (`neiss_*`, `nhtsa_fatalities`), a
 `dataset` column says which one a row came from.
 
+Strata columns that hold a single value in a file are left out: `age`,
+`race_ethnicity` and `onset` in `abcs_strep` (all `Total`), `age` in
+`yrbss_behavior` (all `Overall`), and CMS `geography_level` (use the length of
+`geography`: 2 = state, 5 = county, `00` = national).
+
 ## Reading the values
 
 - `value` is as reported in the source's standardized file, never altered.
@@ -57,6 +62,9 @@ Where a file combines several source files (`neiss_*`, `nhtsa_fatalities`), a
   `build.R` once documented. (`pct_no_birth_control_pills` is answered from a
   single-choice question about what "you or your partner" used, so "no pills"
   also includes students who used condoms or no method.)
+- Epic concussion rows where the rate is missing: Utah (`49`), age `<1 Years`,
+  Female, has a count of 5 for four periods but no rate because both the
+  concussion count and the ED encounter count are suppressed in the source.
 - `nis_teen` `survey_years` (a single year that duplicates `time`).
 
 ## Known issues in the source data

@@ -18,14 +18,15 @@ library(arrow)
 # `out` is the output file stem. `values` selects the value columns of the file
 # by name. `flag_alias` maps a value column onto the column whose suppression
 # flag it shares. `known_geography` drops rows whose geography is not in
-# resources/all_fips.csv.gz.
+# resources/all_fips.csv.gz. `drop_constant` removes strata columns that hold a
+# single value in the whole output (checked). `drop_cols` removes columns outright.
 specs <- list(
   list(file = "abcs/standard/strep_rates.csv.gz", out = "abcs_strep",
-       values = "^abcs_rate_"),
+       values = "^abcs_rate_", drop_constant = c("age", "race_ethnicity", "onset")),
   list(file = "brfss/standard/data_survey.csv.gz", out = "brfss_prevalence",
        values = "^prev_(diabetes|obesity|insured)_survey$"),
   list(file = "cms_mmd/standard/data_state_county_age_by_sex.csv.gz",
-       out = "cms_prevalence", values = "^cms_"),
+       out = "cms_prevalence", values = "^cms_", drop_cols = "geography_level"),
   list(file = "epic_concussions/standard/data.csv.gz",
        out = "epic_concussion_rate", values = "^epic_pct_concussion$",
        flag_alias = c(epic_pct_concussion = "epic_n_concussion")),
@@ -62,6 +63,7 @@ specs <- list(
   list(file = "wisqars/standard/data.csv.gz", out = "wisqars_death_count",
        values = "^wisqars_deaths_"),
   list(file = "yrbss/standard/data_age_sex.csv.gz", out = "yrbss_behavior",
+       drop_constant = "age",
        values = "^pct_(?!no_pe_classes$|no_condom_last_sex$|no_birth_control_pills$|never_tested_hiv$|not_tested_std$)")
 )
 
@@ -83,6 +85,7 @@ read_tall <- function(spec) {
   )
   if (nrow(vroom::problems(df))) stop(spec$file, ": parsing problems")
   df <- df[df$sex %in% sex_levels, ]
+  df <- df[setdiff(names(df), spec$drop_cols)]
   if (isTRUE(spec$known_geography)) df <- df[df$geography %in% all_fips$geography, ]
 
   vals <- names(df)[grepl(spec$values, names(df), perl = TRUE) &
@@ -124,6 +127,10 @@ for (out in outs) {
   members <- Filter(function(s) s$out == out, specs)
   tall <- bind_rows(lapply(members, read_tall))
   if (length(members) == 1) tall$dataset <- NULL
+  for (col in unlist(lapply(members, `[[`, "drop_constant"))) {
+    if (n_distinct(tall[[col]]) != 1) stop(out, ": ", col, " is not constant")
+    tall[[col]] <- NULL
+  }
 
   strata <- setdiff(names(tall), c("sex", "measure", "value", "suppressed_flag"))
   keys <- c(strata, "measure")
