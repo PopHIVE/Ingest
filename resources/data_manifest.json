@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-05T15:32:37Z",
+  "generated": "2026-10-05T14:38:57Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -15935,130 +15935,6 @@
       "description": "The Behavioral Risk Factor Surveillance System (BRFSS) is the nation's premier system of health-related telephone surveys that collect state data about U.S. residents regarding their health-related risk behaviors, chronic health conditions, and use of preventive services. Established in 1984 with 15 states, BRFSS now collects data in all 50 states, the District of Columbia, and three U.S. territories, completing more than 400,000 adult interviews each year. BRFSS provides state-specific data on health conditions including obesity, diabetes, depression, and health behaviors such as heavy drinking, physical activity, and tobacco use. Data are available by age, sex, race/ethnicity, and education level. BRFSS is a critical resource for public health surveillance and policy-making at both state and national levels.",
       "standard_files": [
         {
-          "filename": "data_survey.csv.gz",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
-              "measure_type": "identifier",
-              "unit": "FIPS code"
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
-              "measure_type": "date",
-              "unit": "date"
-            },
-            {
-              "name": "age",
-              "short_name": "Age",
-              "description": "Age group.",
-              "measure_type": "integer",
-              "unit": "years"
-            },
-            {
-              "name": "sex",
-              "short_name": "Sex",
-              "description": "Sex category (Male, Female, Overall)",
-              "measure_type": "category",
-              "unit": ""
-            },
-            {
-              "name": "race_ethnicity",
-              "short_name": "Race/Ethnicity",
-              "description": "Race/ethnicity category",
-              "measure_type": "category",
-              "unit": ""
-            },
-            {
-              "name": "prev_diabetes_survey",
-              "short_name": "Diabetes Prevalence (Survey)",
-              "description": "Estimated diabetes prevalence from BRFSS survey data.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_diabetes_survey_lcl",
-              "short_name": "Diabetes Prevalence Lower CI",
-              "description": "Lower bound of 95% confidence interval for diabetes prevalence.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_diabetes_survey_ucl",
-              "short_name": "Diabetes Prevalence Upper CI",
-              "description": "Upper bound of 95% confidence interval for diabetes prevalence.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_obesity_survey",
-              "short_name": "Obesity Prevalence (Survey)",
-              "description": "Estimated obesity prevalence (BMI >= 30) from BRFSS survey data.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_obesity_survey_lcl",
-              "short_name": "Obesity Prevalence Lower CI",
-              "description": "Lower bound of 95% confidence interval for obesity prevalence.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_obesity_survey_ucl",
-              "short_name": "Obesity Prevalence Upper CI",
-              "description": "Upper bound of 95% confidence interval for obesity prevalence.",
-              "measure_type": "percent",
-              "unit": "percent"
-            },
-            {
-              "name": "prev_insured_survey",
-              "short_name": "prev_insured_survey",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "prev_insured_survey_lcl",
-              "short_name": "prev_insured_survey_lcl",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "prev_insured_survey_ucl",
-              "short_name": "prev_insured_survey_ucl",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "sample_size_diab",
-              "short_name": "Sample Size (Diabetes)",
-              "description": "Number of survey respondents used to estimate diabetes prevalence.",
-              "measure_type": "integer",
-              "unit": "count"
-            },
-            {
-              "name": "sample_size_obesity",
-              "short_name": "Sample Size (Obesity)",
-              "description": "Number of survey respondents used to estimate obesity prevalence.",
-              "measure_type": "integer",
-              "unit": "count"
-            },
-            {
-              "name": "sample_size_insured",
-              "short_name": "sample_size_insured",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            }
-          ]
-        },
-        {
           "filename": "data.csv.gz",
           "columns": [
             {
@@ -16388,6 +16264,53 @@
       "display_name": "CDC Wonder Natality",
       "description": "Counts of live births from the National Vital Statistics System birth certificate file, as compiled from data provided by the 57 vital statistics jurisdictions through the Vital Statistics Cooperative Program and published through CDC WONDER. Coverage is national, state and county level. County data is published by CDC only for counties of 100,000 or more people; within each state every smaller county is pooled into a single \"Unidentified Counties\" row under the pseudo-FIPS code SS999, which is retained in the county file but is not a joinable FIPS code. CDC WONDER provides no API for sub-national data (its official API is national-only by policy) so these files are produced by driving the live query form with the Selenium scraper in PopHIVE/wonder-scraper-drowning (scraper/natality_scraper.py), one query per year x geography level x demographic breakdown. Every download is validated against the 'Query Parameters:' footer of the export before it is kept. WONDER's non-informative category rows (\"Unknown or Not Stated\", \"Not Available\", \"Not Reported\", \"Not Stated\") are collapsed into a single \"Unknown\" level rather than dropped. Limitations: cells representing 1-9 births are suppressed for confidentiality; breakdowns are single-dimension, not cross-tabulated; and the pull requests counts only, so no birth or fertility rate is included.",
       "standard_files": [
+        {
+          "filename": "data_county_detail.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "dimension",
+              "short_name": "Dimension",
+              "description": "Which of eight detail breakdowns (data_state_detail.csv.gz only) this row's `category` value is a level of: birth_weight, gestational_age, delivery_method, plurality, prenatal_care_trimester, tobacco_use, mothers_education, or marital_status.",
+              "measure_type": "category",
+              "unit": "category"
+            },
+            {
+              "name": "category",
+              "short_name": "Category",
+              "description": "The specific level of whichever `dimension` this row is (data_state_detail.csv.gz only), e.g. \"Cesarean\" when dimension is delivery_method.",
+              "measure_type": "category",
+              "unit": "category"
+            },
+            {
+              "name": "natality_births",
+              "short_name": "Live births",
+              "description": "Count of live births to residents of the area.",
+              "measure_type": "Count",
+              "unit": "Live births"
+            },
+            {
+              "name": "natality_suppressed_flag",
+              "short_name": "Suppressed flag",
+              "description": "1 if CDC WONDER suppressed the birth count for this row, 0 otherwise.",
+              "measure_type": "Count",
+              "unit": "Indicator (0/1)"
+            }
+          ]
+        },
         {
           "filename": "data_county.csv.gz",
           "columns": [
@@ -29198,6 +29121,1125 @@
               "description": "Survey-weighted national estimate of ED injury visits whose primary product was general household appliances in the stratum.",
               "measure_type": "Count",
               "unit": "visits"
+            }
+          ]
+        }
+      ]
+    },
+    "nhsn_hospital_capacity": {
+      "name": "nhsn_hospital_capacity",
+      "display_name": "NHSN Hospital Capacity",
+      "description": "Acute care and critical access hospitals report bed capacity, bed occupancy, and the number of patients and new admissions with COVID-19, influenza, and RSV to CDC's National Healthcare Safety Network (NHSN). CDC publishes weekly totals for the nation, HHS regions, states, and territories, starting in August 2020. Through the week ending October 5, 2024, bed and patient values are weekly averages of daily reports; from October 12, 2024, they are values for the Wednesday of the week. Admissions are weekly totals. Reporting was voluntary from May 1 to October 31, 2024, so far fewer hospitals are included in those weeks. RSV reporting was voluntary before November 1, 2024. Earlier weeks can change as hospitals submit late or corrected reports.",
+      "standard_files": [
+        {
+          "filename": "data_age.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group of the patients admitted.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "nhsn_adm_covid",
+              "short_name": "COVID-19",
+              "description": "Number of new hospital admissions of patients with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_covid",
+              "short_name": "COVID-19",
+              "description": "New hospital admissions of patients with confirmed COVID-19 per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_flu",
+              "short_name": "Influenza",
+              "description": "Number of new hospital admissions of patients with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_flu",
+              "short_name": "Influenza",
+              "description": "New hospital admissions of patients with confirmed influenza per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rsv",
+              "short_name": "RSV",
+              "description": "Number of new hospital admissions of patients with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_rsv",
+              "short_name": "RSV",
+              "description": "New hospital admissions of patients with confirmed RSV per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            }
+          ]
+        },
+        {
+          "filename": "data_region_age.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group of the patients admitted.",
+              "measure_type": "Category",
+              "unit": ""
+            },
+            {
+              "name": "nhsn_adm_covid",
+              "short_name": "COVID-19",
+              "description": "Number of new hospital admissions of patients with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_covid",
+              "short_name": "COVID-19",
+              "description": "New hospital admissions of patients with confirmed COVID-19 per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_flu",
+              "short_name": "Influenza",
+              "description": "Number of new hospital admissions of patients with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_flu",
+              "short_name": "Influenza",
+              "description": "New hospital admissions of patients with confirmed influenza per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rsv",
+              "short_name": "RSV",
+              "description": "Number of new hospital admissions of patients with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_rsv",
+              "short_name": "RSV",
+              "description": "New hospital admissions of patients with confirmed RSV per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            }
+          ]
+        },
+        {
+          "filename": "data_region.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "nhsn_inpt_beds",
+              "short_name": "all patients",
+              "description": "Number of inpatient beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_adult",
+              "short_name": "adult",
+              "description": "Number of adult inpatient beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_ped",
+              "short_name": "pediatric",
+              "description": "Number of pediatric inpatient beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_occ",
+              "short_name": "all patients",
+              "description": "Number of inpatient beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_occ_adult",
+              "short_name": "adult",
+              "description": "Number of adult inpatient beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_occ_ped",
+              "short_name": "pediatric",
+              "description": "Number of pediatric inpatient beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds",
+              "short_name": "all patients",
+              "description": "Number of ICU beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_adult",
+              "short_name": "adult",
+              "description": "Number of adult ICU beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_ped",
+              "short_name": "pediatric",
+              "description": "Number of pediatric ICU beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_occ",
+              "short_name": "all patients",
+              "description": "Number of ICU beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_occ_adult",
+              "short_name": "adult",
+              "description": "Number of adult ICU beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_occ_ped",
+              "short_name": "pediatric",
+              "description": "Number of pediatric ICU beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_occ",
+              "short_name": "all patients",
+              "description": "Percent of inpatient beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_occ_adult",
+              "short_name": "adult",
+              "description": "Percent of adult inpatient beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_occ_ped",
+              "short_name": "pediatric",
+              "description": "Percent of pediatric inpatient beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_occ",
+              "short_name": "all patients",
+              "description": "Percent of ICU beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_occ_adult",
+              "short_name": "adult",
+              "description": "Percent of adult ICU beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_occ_ped",
+              "short_name": "pediatric",
+              "description": "Percent of pediatric ICU beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_inpt_beds",
+              "short_name": "Percent hospitals reporting inpatient beds",
+              "description": "Percent of hospitals that reported the number of inpatient beds.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_inpt_beds_occ",
+              "short_name": "Percent hospitals reporting inpatient beds occupied",
+              "description": "Percent of hospitals that reported the number of inpatient beds occupied.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_beds",
+              "short_name": "Percent hospitals reporting ICU beds",
+              "description": "Percent of hospitals that reported the number of ICU beds.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_beds_occ",
+              "short_name": "Percent hospitals reporting ICU beds occupied",
+              "description": "Percent of hospitals that reported the number of ICU beds occupied.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of inpatient beds occupied by patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_flu",
+              "short_name": "Influenza",
+              "description": "Percent of inpatient beds occupied by patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_rsv",
+              "short_name": "RSV",
+              "description": "Percent of inpatient beds occupied by patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of ICU beds occupied by patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_flu",
+              "short_name": "Influenza",
+              "description": "Percent of ICU beds occupied by patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_rsv",
+              "short_name": "RSV",
+              "description": "Percent of ICU beds occupied by patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_hosp_pats_covid",
+              "short_name": "COVID-19",
+              "description": "Number of patients hospitalized with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_hosp_pats_flu",
+              "short_name": "Influenza",
+              "description": "Number of patients hospitalized with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_hosp_pats_rsv",
+              "short_name": "RSV",
+              "description": "Number of patients hospitalized with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_icu_pats_covid",
+              "short_name": "COVID-19",
+              "description": "Number of patients hospitalized in an ICU with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_icu_pats_flu",
+              "short_name": "Influenza",
+              "description": "Number of patients hospitalized in an ICU with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_icu_pats_rsv",
+              "short_name": "RSV",
+              "description": "Number of patients hospitalized in an ICU with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_hosp_pats_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported the number of patients hospitalized with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_hosp_pats_flu",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported the number of patients hospitalized with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_hosp_pats_rsv",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported the number of patients hospitalized with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_pats_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported the number of patients hospitalized in an ICU with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_pats_flu",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported the number of patients hospitalized in an ICU with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_pats_rsv",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported the number of patients hospitalized in an ICU with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_adm_covid",
+              "short_name": "COVID-19",
+              "description": "Number of new hospital admissions of patients with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_covid_adult",
+              "short_name": "COVID-19",
+              "description": "Number of new hospital admissions of adult patients with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_covid_ped",
+              "short_name": "COVID-19",
+              "description": "Number of new hospital admissions of pediatric patients with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_covid",
+              "short_name": "COVID-19",
+              "description": "New hospital admissions of patients with confirmed COVID-19 per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_covid_adult",
+              "short_name": "COVID-19",
+              "description": "New hospital admissions of adult patients with confirmed COVID-19 per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_covid_ped",
+              "short_name": "COVID-19",
+              "description": "New hospital admissions of pediatric patients with confirmed COVID-19 per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported new admissions of patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_covid_adult",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported new admissions of adult patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_covid_ped",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported new admissions of pediatric patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_adm_flu",
+              "short_name": "Influenza",
+              "description": "Number of new hospital admissions of patients with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_flu_adult",
+              "short_name": "Influenza",
+              "description": "Number of new hospital admissions of adult patients with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_flu_ped",
+              "short_name": "Influenza",
+              "description": "Number of new hospital admissions of pediatric patients with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_flu",
+              "short_name": "Influenza",
+              "description": "New hospital admissions of patients with confirmed influenza per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_flu_adult",
+              "short_name": "Influenza",
+              "description": "New hospital admissions of adult patients with confirmed influenza per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_flu_ped",
+              "short_name": "Influenza",
+              "description": "New hospital admissions of pediatric patients with confirmed influenza per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_flu",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported new admissions of patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_flu_adult",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported new admissions of adult patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_flu_ped",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported new admissions of pediatric patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_adm_rsv",
+              "short_name": "RSV",
+              "description": "Number of new hospital admissions of patients with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rsv_adult",
+              "short_name": "RSV",
+              "description": "Number of new hospital admissions of adult patients with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rsv_ped",
+              "short_name": "RSV",
+              "description": "Number of new hospital admissions of pediatric patients with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_rsv",
+              "short_name": "RSV",
+              "description": "New hospital admissions of patients with confirmed RSV per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_rsv_adult",
+              "short_name": "RSV",
+              "description": "New hospital admissions of adult patients with confirmed RSV per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_rsv_ped",
+              "short_name": "RSV",
+              "description": "New hospital admissions of pediatric patients with confirmed RSV per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_rsv",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported new admissions of patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_rsv_adult",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported new admissions of adult patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_rsv_ped",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported new admissions of pediatric patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            }
+          ]
+        },
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "nhsn_inpt_beds",
+              "short_name": "all patients",
+              "description": "Number of inpatient beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_adult",
+              "short_name": "adult",
+              "description": "Number of adult inpatient beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_ped",
+              "short_name": "pediatric",
+              "description": "Number of pediatric inpatient beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_occ",
+              "short_name": "all patients",
+              "description": "Number of inpatient beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_occ_adult",
+              "short_name": "adult",
+              "description": "Number of adult inpatient beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_inpt_beds_occ_ped",
+              "short_name": "pediatric",
+              "description": "Number of pediatric inpatient beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds",
+              "short_name": "all patients",
+              "description": "Number of ICU beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_adult",
+              "short_name": "adult",
+              "description": "Number of adult ICU beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_ped",
+              "short_name": "pediatric",
+              "description": "Number of pediatric ICU beds reported by hospitals.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_occ",
+              "short_name": "all patients",
+              "description": "Number of ICU beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_occ_adult",
+              "short_name": "adult",
+              "description": "Number of adult ICU beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_icu_beds_occ_ped",
+              "short_name": "pediatric",
+              "description": "Number of pediatric ICU beds occupied by a patient.",
+              "measure_type": "Count",
+              "unit": "Beds"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_occ",
+              "short_name": "all patients",
+              "description": "Percent of inpatient beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_occ_adult",
+              "short_name": "adult",
+              "description": "Percent of adult inpatient beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_occ_ped",
+              "short_name": "pediatric",
+              "description": "Percent of pediatric inpatient beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_occ",
+              "short_name": "all patients",
+              "description": "Percent of ICU beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_occ_adult",
+              "short_name": "adult",
+              "description": "Percent of adult ICU beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_occ_ped",
+              "short_name": "pediatric",
+              "description": "Percent of pediatric ICU beds occupied by a patient.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_inpt_beds",
+              "short_name": "Percent hospitals reporting inpatient beds",
+              "description": "Percent of hospitals that reported the number of inpatient beds.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_inpt_beds_occ",
+              "short_name": "Percent hospitals reporting inpatient beds occupied",
+              "description": "Percent of hospitals that reported the number of inpatient beds occupied.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_beds",
+              "short_name": "Percent hospitals reporting ICU beds",
+              "description": "Percent of hospitals that reported the number of ICU beds.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_beds_occ",
+              "short_name": "Percent hospitals reporting ICU beds occupied",
+              "description": "Percent of hospitals that reported the number of ICU beds occupied.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of inpatient beds occupied by patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_flu",
+              "short_name": "Influenza",
+              "description": "Percent of inpatient beds occupied by patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_inpt_beds_rsv",
+              "short_name": "RSV",
+              "description": "Percent of inpatient beds occupied by patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of ICU beds occupied by patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_flu",
+              "short_name": "Influenza",
+              "description": "Percent of ICU beds occupied by patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_icu_beds_rsv",
+              "short_name": "RSV",
+              "description": "Percent of ICU beds occupied by patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_hosp_pats_covid",
+              "short_name": "COVID-19",
+              "description": "Number of patients hospitalized with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_hosp_pats_flu",
+              "short_name": "Influenza",
+              "description": "Number of patients hospitalized with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_hosp_pats_rsv",
+              "short_name": "RSV",
+              "description": "Number of patients hospitalized with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_icu_pats_covid",
+              "short_name": "COVID-19",
+              "description": "Number of patients hospitalized in an ICU with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_icu_pats_flu",
+              "short_name": "Influenza",
+              "description": "Number of patients hospitalized in an ICU with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_icu_pats_rsv",
+              "short_name": "RSV",
+              "description": "Number of patients hospitalized in an ICU with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Patients"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_hosp_pats_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported the number of patients hospitalized with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_hosp_pats_flu",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported the number of patients hospitalized with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_hosp_pats_rsv",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported the number of patients hospitalized with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_pats_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported the number of patients hospitalized in an ICU with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_pats_flu",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported the number of patients hospitalized in an ICU with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_icu_pats_rsv",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported the number of patients hospitalized in an ICU with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_adm_covid",
+              "short_name": "COVID-19",
+              "description": "Number of new hospital admissions of patients with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_covid_adult",
+              "short_name": "COVID-19",
+              "description": "Number of new hospital admissions of adult patients with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_covid_ped",
+              "short_name": "COVID-19",
+              "description": "Number of new hospital admissions of pediatric patients with confirmed COVID-19.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_covid",
+              "short_name": "COVID-19",
+              "description": "New hospital admissions of patients with confirmed COVID-19 per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_covid_adult",
+              "short_name": "COVID-19",
+              "description": "New hospital admissions of adult patients with confirmed COVID-19 per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_covid_ped",
+              "short_name": "COVID-19",
+              "description": "New hospital admissions of pediatric patients with confirmed COVID-19 per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_covid",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported new admissions of patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_covid_adult",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported new admissions of adult patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_covid_ped",
+              "short_name": "COVID-19",
+              "description": "Percent of hospitals that reported new admissions of pediatric patients with confirmed COVID-19.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_adm_flu",
+              "short_name": "Influenza",
+              "description": "Number of new hospital admissions of patients with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_flu_adult",
+              "short_name": "Influenza",
+              "description": "Number of new hospital admissions of adult patients with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_flu_ped",
+              "short_name": "Influenza",
+              "description": "Number of new hospital admissions of pediatric patients with confirmed influenza.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_flu",
+              "short_name": "Influenza",
+              "description": "New hospital admissions of patients with confirmed influenza per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_flu_adult",
+              "short_name": "Influenza",
+              "description": "New hospital admissions of adult patients with confirmed influenza per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_flu_ped",
+              "short_name": "Influenza",
+              "description": "New hospital admissions of pediatric patients with confirmed influenza per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_flu",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported new admissions of patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_flu_adult",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported new admissions of adult patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_flu_ped",
+              "short_name": "Influenza",
+              "description": "Percent of hospitals that reported new admissions of pediatric patients with confirmed influenza.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_adm_rsv",
+              "short_name": "RSV",
+              "description": "Number of new hospital admissions of patients with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rsv_adult",
+              "short_name": "RSV",
+              "description": "Number of new hospital admissions of adult patients with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rsv_ped",
+              "short_name": "RSV",
+              "description": "Number of new hospital admissions of pediatric patients with confirmed RSV.",
+              "measure_type": "Count",
+              "unit": "Admissions"
+            },
+            {
+              "name": "nhsn_adm_rate_rsv",
+              "short_name": "RSV",
+              "description": "New hospital admissions of patients with confirmed RSV per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_rsv_adult",
+              "short_name": "RSV",
+              "description": "New hospital admissions of adult patients with confirmed RSV per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_adm_rate_rsv_ped",
+              "short_name": "RSV",
+              "description": "New hospital admissions of pediatric patients with confirmed RSV per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Admissions per 100,000"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_rsv",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported new admissions of patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_rsv_adult",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported new admissions of adult patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nhsn_pct_hosp_reporting_adm_rsv_ped",
+              "short_name": "RSV",
+              "description": "Percent of hospitals that reported new admissions of pediatric patients with confirmed RSV.",
+              "measure_type": "Percent",
+              "unit": "Percent"
             }
           ]
         }
