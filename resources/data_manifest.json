@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-05T16:54:55Z",
+  "generated": "2026-10-05T17:14:29Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -23,7 +23,7 @@
             {
               "name": "time",
               "short_name": "School year",
-              "description": "Year end date of the year the school year starts.",
+              "description": "Year end (YYYY-12-31) of the year the school year starts. 2024-12-31 is the 2024-25 school year.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -121,7 +121,7 @@
             {
               "name": "time",
               "short_name": "Year",
-              "description": "Year end date. Pooled 2018-2022 estimates are dated 2022-12-31.",
+              "description": "Year end (YYYY-12-31). Pooled 2018-2022 estimates are dated 2022-12-31.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -137,7 +137,7 @@
             {
               "name": "stratum_type",
               "short_name": "Stratum type",
-              "description": "Dimension the row is stratified by: age, insurance, poverty, race_ethnicity, or urban.",
+              "description": "Dimension the row is stratified by: age, insurance, poverty, race_ethnicity, or urban. Strata are marginal, not crossed.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -299,7 +299,7 @@
             {
               "name": "geography",
               "short_name": "Geography",
-              "description": "2-digit state FIPS code. 00 is national.",
+              "description": "2-digit state FIPS code. 00 is national. NIS-Teen rows also include Puerto Rico, Guam, and the U.S. Virgin Islands.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -307,7 +307,7 @@
             {
               "name": "time",
               "short_name": "Year",
-              "description": "Year end date. School assessment rows use the year the school year starts and Medicaid rows use the federal fiscal year.",
+              "description": "Year end (YYYY-12-31). School assessment rows use the year the school year starts and Medicaid rows use the federal fiscal year.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -325,11 +325,11 @@
                 },
                 "medicaid_ima_ch_pct_25": {
                   "short_name": "IMA: MenACWY and Tdap by age 13, 25th percentile",
-                  "short_description": "25th percentile of the MenACWY and Tdap by age 13 rate across reporting states."
+                  "short_description": "25th percentile of the MenACWY and Tdap by age 13 rate across reporting states. The same value is repeated on every state row for the year."
                 },
                 "medicaid_ima_ch_pct_75": {
                   "short_name": "IMA: MenACWY and Tdap by age 13, 75th percentile",
-                  "short_description": "75th percentile of the MenACWY and Tdap by age 13 rate across reporting states."
+                  "short_description": "75th percentile of the MenACWY and Tdap by age 13 rate across reporting states. The same value is repeated on every state row for the year."
                 },
                 "medicaid_ima_ch_hpv_rate": {
                   "short_name": "IMA: HPV series by age 13",
@@ -337,11 +337,11 @@
                 },
                 "medicaid_ima_ch_hpv_pct_25": {
                   "short_name": "IMA: HPV series by age 13, 25th percentile",
-                  "short_description": "25th percentile of the HPV series by age 13 rate across reporting states."
+                  "short_description": "25th percentile of the HPV series by age 13 rate across reporting states. The same value is repeated on every state row for the year."
                 },
                 "medicaid_ima_ch_hpv_pct_75": {
                   "short_name": "IMA: HPV series by age 13, 75th percentile",
-                  "short_description": "75th percentile of the HPV series by age 13 rate across reporting states."
+                  "short_description": "75th percentile of the HPV series by age 13 rate across reporting states. The same value is repeated on every state row for the year."
                 },
                 "medicaid_hpv_ch_rate": {
                   "short_name": "HPV vaccine, females, FFY 2014-2016",
@@ -349,11 +349,11 @@
                 },
                 "medicaid_hpv_ch_pct_25": {
                   "short_name": "HPV vaccine, females, FFY 2014-2016, 25th percentile",
-                  "short_description": "25th percentile of the three-dose HPV rate among females across reporting states."
+                  "short_description": "25th percentile of the three-dose HPV rate among females across reporting states. The same value is repeated on every state row for the year."
                 },
                 "medicaid_hpv_ch_pct_75": {
                   "short_name": "HPV vaccine, females, FFY 2014-2016, 75th percentile",
-                  "short_description": "75th percentile of the three-dose HPV rate among females across reporting states."
+                  "short_description": "75th percentile of the three-dose HPV rate among females across reporting states. The same value is repeated on every state row for the year."
                 },
                 "nis_teen_hepa_2_dose": {
                   "short_name": "NIS-Teen: hepatitis A >=2 doses",
@@ -3990,7 +3990,7 @@
             {
               "name": "condition",
               "short_name": "Alerted condition",
-              "description": "Condition for which Epic Research flagged the geography with an active health alert.",
+              "description": "Condition for which Epic Research flagged the geography with an active health alert. All conditions published on the page are kept, not only enteric ones.",
               "measure_type": "",
               "unit": "",
               "levels": {
@@ -13508,7 +13508,7 @@
             {
               "name": "time",
               "short_name": "Year",
-              "description": "Year end date of the annual observation.",
+              "description": "Year end (YYYY-12-31) of the annual observation.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -13532,7 +13532,8 @@
                 },
                 "cms_scrn_prvnt_sti": {
                   "short_name": "STI screening, Medicare FFS",
-                  "source_id": "cms_scrn_prvnt_sti"
+                  "source_id": "cms_scrn_prvnt_sti",
+                  "short_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for sexually transmitted infection screening during the year. Medicare FFS is mostly people 65 and older, so this is not comparable with the Medicaid or NNDSS measures."
                 }
               }
             },
@@ -13627,7 +13628,7 @@
             {
               "name": "time",
               "short_name": "Year",
-              "description": "Year end date of the annual observation.",
+              "description": "Year end (YYYY-12-31) of the annual observation.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -13655,11 +13656,11 @@
                 },
                 "medicaid_chl_ch_pct_25": {
                   "short_name": "Chlamydia screening (Adolescent), 25th percentile",
-                  "short_description": "25th percentile of the adolescent chlamydia screening rate across reporting states."
+                  "short_description": "25th percentile of the adolescent chlamydia screening rate across reporting states. The same value is repeated on every state row for the year."
                 },
                 "medicaid_chl_ch_pct_75": {
                   "short_name": "Chlamydia screening (Adolescent), 75th percentile",
-                  "short_description": "75th percentile of the adolescent chlamydia screening rate across reporting states."
+                  "short_description": "75th percentile of the adolescent chlamydia screening rate across reporting states. The same value is repeated on every state row for the year."
                 },
                 "medicaid_chl_ad_rate": {
                   "short_name": "CHL: Chlamydia Screening in Women (Adult)",
@@ -13667,15 +13668,16 @@
                 },
                 "medicaid_chl_ad_pct_25": {
                   "short_name": "Chlamydia screening (Adult), 25th percentile",
-                  "short_description": "25th percentile of the adult chlamydia screening rate across reporting states."
+                  "short_description": "25th percentile of the adult chlamydia screening rate across reporting states. The same value is repeated on every state row for the year."
                 },
                 "medicaid_chl_ad_pct_75": {
                   "short_name": "Chlamydia screening (Adult), 75th percentile",
-                  "short_description": "75th percentile of the adult chlamydia screening rate across reporting states."
+                  "short_description": "75th percentile of the adult chlamydia screening rate across reporting states. The same value is repeated on every state row for the year."
                 },
                 "cms_scrn_prvnt_sti": {
                   "short_name": "STI screening, Medicare FFS",
-                  "source_id": "cms_scrn_prvnt_sti"
+                  "source_id": "cms_scrn_prvnt_sti",
+                  "short_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for sexually transmitted infection screening during the year. Medicare FFS is mostly people 65 and older, so this is not comparable with the Medicaid or NNDSS measures."
                 }
               }
             },
@@ -13717,7 +13719,7 @@
             {
               "name": "time",
               "short_name": "Week",
-              "description": "Week ending date, a Saturday.",
+              "description": "MMWR week-ending date (Saturday).",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -13810,7 +13812,7 @@
             {
               "name": "value",
               "short_name": "Value",
-              "description": "Weekly case count for the measure named in the measure column. Negative values are downward revisions by CDC.",
+              "description": "Weekly case count for the measure named in the measure column, derived by differencing CDC's cumulative year-to-date counts. Negative values are downward revisions by CDC. Measure-years with no national reporting are omitted.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -13851,7 +13853,7 @@
             {
               "name": "age",
               "short_name": "Age",
-              "description": "Modal age for grade, from 14 for 9th grade to 17 for 12th grade, or Overall.",
+              "description": "Modal age for grade, from 14 for 9th grade to 17 for 12th grade, or Overall. Age rows have sex and race_ethnicity set to Overall.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -13892,7 +13894,7 @@
             {
               "name": "value",
               "short_name": "Value",
-              "description": "Weighted percent of high school students for the measure named in the measure column.",
+              "description": "Weighted percent of high school students for the measure named in the measure column. NA when CDC suppressed the estimate. Jurisdiction-years where the question was not asked are omitted.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -13916,7 +13918,7 @@
             {
               "name": "suppressed_flag",
               "short_name": "Suppressed flag",
-              "description": "1 if CDC suppressed the estimate, 0 otherwise.",
+              "description": "1 if CDC suppressed the estimate (value and CI are NA), 0 otherwise.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -35179,7 +35181,7 @@
     "nis_teen": {
       "name": "nis_teen",
       "display_name": "NIS Teen",
-      "description": "The National Immunization Surveys (NIS) are a group of telephone surveys sponsored and conducted by CDC's National Center for Immunization and Respiratory Diseases to monitor vaccination coverage. Cell phone numbers are randomly selected and called to enroll age-eligible children, and with parental permission vaccination providers are contacted to verify immunization records. NIS-Teen covers adolescents ages 13-17 and reports coverage for HPV, Tdap, MenACWY, MMR, hepatitis A and B, and varicella vaccines by survey year for states, the District of Columbia, Puerto Rico, Guam, and the U.S. Virgin Islands, and pooled 2018-2022 estimates by insurance, poverty, race and ethnicity, and urbanicity.",
+      "description": "The National Immunization Surveys (NIS) are a group of telephone surveys sponsored and conducted by CDC's National Center for Immunization and Respiratory Diseases to monitor vaccination coverage. Cell phone numbers are randomly selected and called to enroll age-eligible children, and with parental permission vaccination providers are contacted to verify immunization records. NIS-Teen covers adolescents ages 13-17 and reports coverage for HPV, Tdap, MenACWY, MMR, hepatitis A and B, and varicella vaccines by survey year for states, the District of Columbia, Puerto Rico, Guam, and the U.S. Virgin Islands, and pooled 2018-2022 estimates by insurance, poverty, race and ethnicity, and urbanicity. HHS regions and sub-state local areas published by CDC are not included.",
       "standard_files": [
         {
           "filename": "data_insurance.csv.gz",

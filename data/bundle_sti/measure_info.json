@@ -7,7 +7,7 @@
   "bundle_sti/dist/sti_state.parquet|time": {
     "id": "bundle_sti/dist/sti_state.parquet|time",
     "short_name": "Year",
-    "short_description": "Year end date of the annual observation."
+    "short_description": "Year end (YYYY-12-31) of the annual observation."
   },
   "bundle_sti/dist/sti_state.parquet|measure": {
     "id": "bundle_sti/dist/sti_state.parquet|measure",
@@ -27,22 +27,26 @@
       "medicaid_chl_ch_rate": { "short_name": "CHL: Chlamydia Screening in Women (Child/Adolescent)", "source_id": "medicaid_chl_ch_rate" },
       "medicaid_chl_ch_pct_25": {
         "short_name": "Chlamydia screening (Adolescent), 25th percentile",
-        "short_description": "25th percentile of the adolescent chlamydia screening rate across reporting states."
+        "short_description": "25th percentile of the adolescent chlamydia screening rate across reporting states. The same value is repeated on every state row for the year."
       },
       "medicaid_chl_ch_pct_75": {
         "short_name": "Chlamydia screening (Adolescent), 75th percentile",
-        "short_description": "75th percentile of the adolescent chlamydia screening rate across reporting states."
+        "short_description": "75th percentile of the adolescent chlamydia screening rate across reporting states. The same value is repeated on every state row for the year."
       },
       "medicaid_chl_ad_rate": { "short_name": "CHL: Chlamydia Screening in Women (Adult)", "source_id": "medicaid_chl_ad_rate" },
       "medicaid_chl_ad_pct_25": {
         "short_name": "Chlamydia screening (Adult), 25th percentile",
-        "short_description": "25th percentile of the adult chlamydia screening rate across reporting states."
+        "short_description": "25th percentile of the adult chlamydia screening rate across reporting states. The same value is repeated on every state row for the year."
       },
       "medicaid_chl_ad_pct_75": {
         "short_name": "Chlamydia screening (Adult), 75th percentile",
-        "short_description": "75th percentile of the adult chlamydia screening rate across reporting states."
+        "short_description": "75th percentile of the adult chlamydia screening rate across reporting states. The same value is repeated on every state row for the year."
       },
-      "cms_scrn_prvnt_sti": { "short_name": "STI screening, Medicare FFS", "source_id": "cms_scrn_prvnt_sti" }
+      "cms_scrn_prvnt_sti": {
+        "short_name": "STI screening, Medicare FFS",
+        "source_id": "cms_scrn_prvnt_sti",
+        "short_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for sexually transmitted infection screening during the year. Medicare FFS is mostly people 65 and older, so this is not comparable with the Medicaid or NNDSS measures."
+      }
     }
   },
   "bundle_sti/dist/sti_state.parquet|value": {
@@ -69,7 +73,7 @@
   "bundle_sti/dist/sti_county.parquet|time": {
     "id": "bundle_sti/dist/sti_county.parquet|time",
     "short_name": "Year",
-    "short_description": "Year end date of the annual observation."
+    "short_description": "Year end (YYYY-12-31) of the annual observation."
   },
   "bundle_sti/dist/sti_county.parquet|measure": {
     "id": "bundle_sti/dist/sti_county.parquet|measure",
@@ -86,7 +90,11 @@
         "source_id": "chr_hiv_prevalence",
         "short_description": "People aged 13+ living with diagnosed HIV per 100,000 population."
       },
-      "cms_scrn_prvnt_sti": { "short_name": "STI screening, Medicare FFS", "source_id": "cms_scrn_prvnt_sti" }
+      "cms_scrn_prvnt_sti": {
+        "short_name": "STI screening, Medicare FFS",
+        "source_id": "cms_scrn_prvnt_sti",
+        "short_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for sexually transmitted infection screening during the year. Medicare FFS is mostly people 65 and older, so this is not comparable with the Medicaid or NNDSS measures."
+      }
     }
   },
   "bundle_sti/dist/sti_county.parquet|value": {
@@ -144,7 +152,7 @@
   "bundle_sti/dist/sti_weekly.parquet|time": {
     "id": "bundle_sti/dist/sti_weekly.parquet|time",
     "short_name": "Week",
-    "short_description": "Week ending date, a Saturday."
+    "short_description": "MMWR week-ending date (Saturday)."
   },
   "bundle_sti/dist/sti_weekly.parquet|measure": {
     "id": "bundle_sti/dist/sti_weekly.parquet|measure",
@@ -233,7 +241,7 @@
     "id": "bundle_sti/dist/sti_weekly.parquet|value",
     "measure_column": "bundle_sti/dist/sti_weekly.parquet|measure",
     "short_name": "Value",
-    "short_description": "Weekly case count for the measure named in the measure column. Negative values are downward revisions by CDC."
+    "short_description": "Weekly case count for the measure named in the measure column, derived by differencing CDC's cumulative year-to-date counts. Negative values are downward revisions by CDC. Measure-years with no national reporting are omitted."
   },
   "bundle_sti/dist/sti_weekly.parquet|source": {
     "id": "bundle_sti/dist/sti_weekly.parquet|source",
@@ -256,7 +264,7 @@
   "bundle_sti/dist/sti_youth.parquet|age": {
     "id": "bundle_sti/dist/sti_youth.parquet|age",
     "short_name": "Age",
-    "short_description": "Modal age for grade, from 14 for 9th grade to 17 for 12th grade, or Overall."
+    "short_description": "Modal age for grade, from 14 for 9th grade to 17 for 12th grade, or Overall. Age rows have sex and race_ethnicity set to Overall."
   },
   "bundle_sti/dist/sti_youth.parquet|sex": {
     "id": "bundle_sti/dist/sti_youth.parquet|sex",
@@ -281,7 +289,7 @@
   "bundle_sti/dist/sti_youth.parquet|suppressed_flag": {
     "id": "bundle_sti/dist/sti_youth.parquet|suppressed_flag",
     "short_name": "Suppressed flag",
-    "short_description": "1 if CDC suppressed the estimate, 0 otherwise."
+    "short_description": "1 if CDC suppressed the estimate (value and CI are NA), 0 otherwise."
   },
   "bundle_sti/dist/sti_youth.parquet|measure": {
     "id": "bundle_sti/dist/sti_youth.parquet|measure",
@@ -296,7 +304,7 @@
     "id": "bundle_sti/dist/sti_youth.parquet|value",
     "measure_column": "bundle_sti/dist/sti_youth.parquet|measure",
     "short_name": "Value",
-    "short_description": "Weighted percent of high school students for the measure named in the measure column."
+    "short_description": "Weighted percent of high school students for the measure named in the measure column. NA when CDC suppressed the estimate. Jurisdiction-years where the question was not asked are omitted."
   },
   "bundle_sti/dist/sti_youth.parquet|source": {
     "id": "bundle_sti/dist/sti_youth.parquet|source",
