@@ -30,12 +30,16 @@ read_raw <- function(id, needed) {
   if (length(absent) > 0) stop(id, " columns not found: ", paste(absent, collapse = ", "))
   d
 }
+# CDC date columns arrive as "YYYY-MM-DD ...", "MM/DD/YYYY ...", or
+# "YYYY Mon DD ...", depending on how the file was exported
 parse_cdc_date <- function(x) {
-  x <- substr(x, 1, 10)
-  out <- as.Date(x, format = "%Y-%m-%d")
-  i <- is.na(out)
-  out[i] <- as.Date(x[i], format = "%m/%d/%Y")
-  if (any(is.na(out) & !is.na(x))) stop("unparsed dates")
+  out <- as.Date(rep(NA_character_, length(x)))
+  for (fmt in c("%Y-%m-%d", "%m/%d/%Y", "%Y %b %d")) {
+    i <- is.na(out) & !is.na(x)
+    out[i] <- as.Date(x[i], format = fmt)
+  }
+  bad <- is.na(out) & !is.na(x)
+  if (any(bad)) stop("unparsed dates: ", paste(head(unique(x[bad])), collapse = ", "))
   out
 }
 

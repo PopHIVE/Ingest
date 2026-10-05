@@ -9,10 +9,12 @@
 #   - county_health_rankings/standard/data_{state,county}.csv.gz (CHR&R)
 #   - medicaid_quality/standard/data.csv.gz               (CMS Core Set,
 #                                                          state-level only)
-#   - cdc_wonder_natality/standard/data_state.csv.gz      (CDC WONDER natality
-#                                                          counts, state +
-#                                                          national, Overall
-#                                                          only; county pending)
+#   - cdc_wonder_natality/standard/data_{state,county}.csv.gz (CDC WONDER
+#                                                          natality counts,
+#                                                          state + national +
+#                                                          county, Overall
+#                                                          demographic total
+#                                                          only)
 #   - cdc_vssr/standard/data.csv.gz                       (NCHS VSRR maternal
 #                                                          mortality, national
 #                                                          only, monthly, by
@@ -168,23 +170,32 @@ medicaid_long <- medicaid_raw %>%
   pivot_measures(MEDICAID_MEASURES)
 
 # -----------------------------------------------------------------------------
-# 5. CDC WONDER natality — state + national; Overall demographic totals only.
-#    The source table (data_state.csv.gz) carries age/sex/race_ethnicity
-#    breakdowns too, but maternal_state has no demographic columns (unlike
+# 5. CDC WONDER natality — state + national + county; Overall demographic
+#    totals only. The source tables carry age/sex/race_ethnicity breakdowns
+#    too (plus eight more detail dimensions in a separate file), but
+#    maternal_state/maternal_county have no demographic columns (unlike
 #    maternal_mortality below), so only the Overall row is kept here.
-#    County not yet wired in -- data_county.csv.gz doesn't exist for this
-#    source until the county-level scrape finishes; add it alongside
-#    maternal_county below once it lands.
+#    data_county.csv.gz pools small counties (<100k population) into
+#    "Unidentified Counties" pseudo-FIPS codes ending in 999 (see that
+#    source's README.md); those are not real FIPS codes, so they are dropped
+#    via the all_fips join below rather than left to confuse a geography join
+#    downstream.
 # -----------------------------------------------------------------------------
 
 WONDER_NATALITY_MEASURES <- c(
   natality_births = "total_births"
 )
 
-wonder_natality_raw <- read_chr("../cdc_wonder_natality/standard/data_state.csv.gz")
+wonder_natality_state_raw  <- read_chr("../cdc_wonder_natality/standard/data_state.csv.gz")
+wonder_natality_county_raw <- read_chr("../cdc_wonder_natality/standard/data_county.csv.gz")
 
-wonder_natality_long <- wonder_natality_raw %>%
+wonder_natality_long <- wonder_natality_state_raw %>%
   filter(age == "Overall", sex == "Overall", race_ethnicity == "Overall") %>%
+  pivot_measures(WONDER_NATALITY_MEASURES)
+
+wonder_natality_county_long <- wonder_natality_county_raw %>%
+  filter(age == "Overall", sex == "Overall", race_ethnicity == "Overall",
+         geography %in% all_fips$geography) %>%
   pivot_measures(WONDER_NATALITY_MEASURES)
 
 # -----------------------------------------------------------------------------
@@ -202,7 +213,8 @@ maternal_state <- bind_rows(
 
 maternal_county <- bind_rows(
   census_county_long,
-  chr_county_long
+  chr_county_long,
+  wonder_natality_county_long
 ) %>%
   mutate(
     geography = formatC(as.integer(geography), width = 5, flag = "0"),
