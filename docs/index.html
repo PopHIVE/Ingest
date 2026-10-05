@@ -26,7 +26,7 @@
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
         <div class="d-flex align-items-center">
           <a class="btn btn-outline-light btn-sm me-3" href="data-table.html">Data Table →</a>
-          <span class="navbar-text text-light">Last updated: October 04, 2026</span>
+          <span class="navbar-text text-light">Last updated: October 05, 2026</span>
         </div>
       </div>
     </nav>
@@ -276,6 +276,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#bundle-respiratory">Bundle: Respiratory</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#bundle-sex-disparities">Bundle: Sex Disparities</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#bundle-sti">Bundle: STI</a>
@@ -46218,6 +46221,1747 @@ VAERS data have important limitations: the number of reports alone cannot establ
                       <td>Equals 1 when the underlying Epic Cosmos count for this age group was suppressed (small cell) and imputed; 0 otherwise.</td>
                       <td>Flag</td>
                       <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="bundle-sex-disparities" class="mb-5">
+              <h2 class="border-bottom pb-2">Bundle: Sex Disparities</h2>
+              <p class="text-muted">
+                <em>Combined output bundle. Dist files: 13 parquet file(s).</em>
+              </p>
+              <p class="mb-3">
+                <strong>Data sources: </strong>
+                <a href="#abcs" class="bundle-source-link">Abcs</a>
+                ; 
+                <a href="#brfss" class="bundle-source-link">BRFSS</a>
+                ; 
+                <a href="#cms-mmd" class="bundle-source-link">CMS Mmd</a>
+                ; 
+                <a href="#epic-concussions" class="bundle-source-link">Epic Concussions</a>
+                ; 
+                <a href="#nccr" class="bundle-source-link">Nccr</a>
+                ; 
+                <a href="#neiss" class="bundle-source-link">Neiss</a>
+                ; 
+                <a href="#nhtsa-crash" class="bundle-source-link">Nhtsa Crash</a>
+                ; 
+                <a href="#nis-teen" class="bundle-source-link">NIS Teen</a>
+                ; 
+                <a href="#wisqars" class="bundle-source-link">Wisqars</a>
+                ; 
+                <a href="#yrbss" class="bundle-source-link">Yrbss</a>
+              </p>
+              <h4 class="mt-4">Output Files (dist/)</h4>
+              <h5 class="mt-3">
+                <code>abcs_strep_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/abcs/standard/strep_rates.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>abcs/standard/strep_rates.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>pathogen</code>
+                      </td>
+                      <td>Pathogen</td>
+                      <td>Pathogen for ABCs strep rates (Group A or Group B Streptococcus).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race_ethnicity</code>
+                      </td>
+                      <td>Race/ethnicity</td>
+                      <td>Race/ethnicity of the stratum, as labelled by the source.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>onset</code>
+                      </td>
+                      <td>Onset</td>
+                      <td>ABCs onset category (Early-onset, Late-onset, Total).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>rate_denominator</code>
+                      </td>
+                      <td>Rate denominator</td>
+                      <td>ABCs population used as the rate denominator (Population or Stratum population).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">abcs_rate_cases</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>brfss_prevalence_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/brfss/standard/data_survey.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>brfss/standard/data_survey.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race_ethnicity</code>
+                      </td>
+                      <td>Race/ethnicity</td>
+                      <td>Race/ethnicity of the stratum, as labelled by the source.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">prev_diabetes_survey</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">prev_insured_survey</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">prev_obesity_survey</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>cms_prevalence_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/cms_mmd/standard/data_state_county_age_by_sex.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>cms_mmd/standard/data_state_county_age_by_sex.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_level</code>
+                      </td>
+                      <td>Geography level</td>
+                      <td>CMS geography level: n = national, s = state, c = county.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race_ethnicity</code>
+                      </td>
+                      <td>Race/ethnicity</td>
+                      <td>Race/ethnicity of the stratum, as labelled by the source.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_acute_myocardial_infarction</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_adhd</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_alcohol_use_disorder</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_alzheimers</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_anemia</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_anxiety</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_asthma</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_atrial_fibrilation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_bipolar</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_chronic_kidney</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_colorectal_breast_prostate_lung_cancer</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_copd</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_depression</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_depressive_disorder</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_diabetes</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_drug_use_disorder</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_glaucoma</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_heart_failure_non_ischemic</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_hip_pelvic_fracture</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_hyperlidipemia</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_hypertension</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_ischemic_heart_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_obesity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_opioid_use_disorder_dx_px_based</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_opioid_use_disorder_overarching</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_osteoporosis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_parkinsons</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_ptsd</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_rheumoatoid_arthritis</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_schizophrenia</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_schizophrenia_other_psychotic</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_annual_wellness</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_cardiovascular_disease</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_colorectal_cancer</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_depression</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_diabetes</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_influenza_vaccine</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_mammogram</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_pap_test</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_pelvic_exam</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_pneumococcal_vaccine</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_prostate_cancer</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_scrn_prvnt_sti</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_stroke_ischemic_attack</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">cms_tobacco_use_disorder</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>epic_concussion_count_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_concussions/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>epic_concussions/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_n_concussion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_n_ed_encounters</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>epic_concussion_rate_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/epic_concussions/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>epic_concussions/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_pct_concussion</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>nccr_incidence_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nccr/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nccr/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race_ethnicity</code>
+                      </td>
+                      <td>Race/ethnicity</td>
+                      <td>Race/ethnicity of the stratum, as labelled by the source.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_all_iccc_sites</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_bone_tumors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_cns_neoplasms_malignant</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_cns_neoplasms_non_malignant</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_epithelial_neoplasms_and_melanomas</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_germ_cell_tumors_malignant</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_germ_cell_tumors_non_malignant</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_hepatic_tumors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_leukemias</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_lymphomas</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_neoplasms_other_and_nos</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_neuroblastoma_and_pns_tumors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_renal_tumors</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_retinoblastoma</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nccr_soft_tissue_sarcomas</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>neiss_count_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/neiss/standard/data_agegroup_diagnosis.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>neiss/standard/data_agegroup_diagnosis.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/neiss/standard/data_agegroup_product.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>neiss/standard/data_agegroup_product.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/neiss/standard/data_infant_diagnosis.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>neiss/standard/data_infant_diagnosis.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/neiss/standard/data_infant_product.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>neiss/standard/data_infant_product.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>dataset</code>
+                      </td>
+                      <td>Source dataset</td>
+                      <td>Folder and standardized file the row came from (for example `neiss/agegroup_product`).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race</code>
+                      </td>
+                      <td>Race</td>
+                      <td>Race of the stratum, as labelled by the source (NEISS, WISQARS).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>hispanic</code>
+                      </td>
+                      <td>Hispanic origin</td>
+                      <td>Hispanic origin of the stratum (NEISS: Hispanic, Non-Hispanic, Unknown).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_amputation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_anoxia</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_aspirated_object</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_avulsion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_burns_chemical</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_burns_elec</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_burns_not_spec</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_burns_radiation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_burns_scald</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_burns_thermal</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_chemicals</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_child_nursery_equipment</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_concussion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_contusion_or_abrasion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_crushing</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_dental_injury</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_dermat_or_conj</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_dislocation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_electric_shock</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_foreign_body</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_fracture</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_general_household_appliances</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_heating_cooling_ventilation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_hematoma</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_hemorrhage</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_home_communication_entertainment_hobby</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_home_furnishings_fixtures</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_home_structures_construction_materials</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_home_workshop_equipment_tools</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_housewares</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_ingested_object</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_inter_organ_injury</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_kitchen_appliances</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_laceration</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_nerve_damage</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_other_or_not_stated</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_other_unspecified</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_packaging_containers</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_personal_use_drugs_misc</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_poisoning</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_puncture</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_sports_recreation_activities</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_sports_recreation_equipment_toys</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_strain_sprain</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_submersion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_n_yard_garden_equipment</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>neiss_rate_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/neiss/standard/data_agegroup_diagnosis_rate.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>neiss/standard/data_agegroup_diagnosis_rate.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/neiss/standard/data_agegroup_product_rate.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>neiss/standard/data_agegroup_product_rate.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/neiss/standard/data_infant_diagnosis_rate.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>neiss/standard/data_infant_diagnosis_rate.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/neiss/standard/data_infant_product_rate.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>neiss/standard/data_infant_product_rate.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>dataset</code>
+                      </td>
+                      <td>Source dataset</td>
+                      <td>Folder and standardized file the row came from (for example `neiss/agegroup_product`).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_amputation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_anoxia</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_aspirated_object</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_avulsion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_burns_chemical</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_burns_elec</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_burns_not_spec</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_burns_radiation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_burns_scald</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_burns_thermal</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_chemicals</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_child_nursery_equipment</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_concussion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_contusion_or_abrasion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_crushing</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_dental_injury</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_dermat_or_conj</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_dislocation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_electric_shock</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_foreign_body</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_fracture</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_general_household_appliances</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_heating_cooling_ventilation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_hematoma</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_hemorrhage</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_home_communication_entertainment_hobby</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_home_furnishings_fixtures</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_home_structures_construction_materials</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_home_workshop_equipment_tools</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_housewares</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_ingested_object</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_inter_organ_injury</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_kitchen_appliances</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_laceration</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_nerve_damage</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_other_or_not_stated</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_other_unspecified</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_packaging_containers</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_personal_use_drugs_misc</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_poisoning</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_puncture</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_sports_recreation_activities</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_sports_recreation_equipment_toys</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_strain_sprain</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_submersion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">neiss_rate_yard_garden_equipment</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>nhtsa_fatalities_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nhtsa_crash/standard/data_age_sex.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nhtsa_crash/standard/data_age_sex.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nhtsa_crash/standard/data_crash_type.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nhtsa_crash/standard/data_crash_type.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>dataset</code>
+                      </td>
+                      <td>Source dataset</td>
+                      <td>Folder and standardized file the row came from (for example `neiss/agegroup_product`).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nhtsa_cyclist_involved</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nhtsa_fatal_crashes</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nhtsa_fatalities</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nhtsa_pedestrian_involved</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nhtsa_rural</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nhtsa_single_vehicle</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nhtsa_urban</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>nis_teen_coverage_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nis_teen/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nis_teen/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>vaccine</code>
+                      </td>
+                      <td>Vaccine</td>
+                      <td>NIS-Teen vaccine.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>dose</code>
+                      </td>
+                      <td>Dose</td>
+                      <td>NIS-Teen dose category.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">nis_teen_coverage</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>wisqars_death_count_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/wisqars/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>wisqars/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race</code>
+                      </td>
+                      <td>Race</td>
+                      <td>Race of the stratum, as labelled by the source (NEISS, WISQARS).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ethnicity</code>
+                      </td>
+                      <td>Ethnicity</td>
+                      <td>Ethnicity of the stratum (WISQARS: Hispanic, Non-Hispanic, Unknown, All).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_cut_pierce</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_drowning_includes_water_transport_</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_drug_poisoning</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_fall</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_fire_flame</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_firearm_accident</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_firearm_homicide</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_firearm_intentional</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_firearm_legal_intervention</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_firearm_suicide</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_machinery</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_motor_vehicle_traffic</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_natural_environmental</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_non_drug_poisoning</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_other_specified_and_classifiable</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_other_specified_nec</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_pedal_cyclist_other</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_pedestrian_other</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_struck_by_against</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_suffocation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_transport_other_excl_drown_by_water_transp_</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_transport_other_land</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_deaths_unspecified</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>wisqars_death_rate_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/wisqars/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>wisqars/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>race</code>
+                      </td>
+                      <td>Race</td>
+                      <td>Race of the stratum, as labelled by the source (NEISS, WISQARS).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ethnicity</code>
+                      </td>
+                      <td>Ethnicity</td>
+                      <td>Ethnicity of the stratum (WISQARS: Hispanic, Non-Hispanic, Unknown, All).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_cut_pierce</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_drowning_includes_water_transport_</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_drug_poisoning</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_fall</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_fire_flame</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_firearm_accident</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_firearm_homicide</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_firearm_intentional</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_firearm_legal_intervention</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_firearm_suicide</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_machinery</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_motor_vehicle_traffic</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_natural_environmental</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_non_drug_poisoning</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_other_specified_and_classifiable</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_other_specified_nec</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_pedal_cyclist_other</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_pedestrian_other</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_struck_by_against</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_suffocation</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_transport_other_excl_drown_by_water_transp_</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_transport_other_land</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">wisqars_rate_unspecified</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>yrbss_behavior_by_sex.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/yrbss/standard/data_age_sex.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>yrbss/standard/data_age_sex.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)</td>
+                      <td>identifier</td>
+                      <td>name or FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the stratum, as labelled by the source (labels differ between sources).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>sex</code>
+                      </td>
+                      <td>Sex</td>
+                      <td>Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Measure name as in the source; each level carries the source's own definition and unit.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_alcohol_drugs_before_sex</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_attempted_suicide</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_binge_drinking</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_bullied_at_school</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_bullied_electronic</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_carried_gun</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_carried_weapon_school</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_considered_suicide</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_current_alcohol</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_current_cigarette</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_current_marijuana</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_current_rx_opioid_misuse</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_current_smokeless_tobacco</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_current_vape</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_currently_sexually_active</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_drove_drinking</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_early_marijuana</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_cigarette</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_cocaine</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_ecstasy</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_hallucinogens</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_heroin</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_illicit_drug</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_inhalants</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_inject_drug</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_marijuana</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_methamphetamines</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_rx_opioid_misuse</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_sex</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_ever_vape</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_four_plus_partners</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_inactive_60min_5days</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_inactive_60min_7days</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_inactive_all_days</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_injurious_suicide_attempt</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_insufficient_sleep</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_breakfast</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_breakfast_7days</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_daily_pe</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_fruit</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_hormonal_contraception</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_iud_implant</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_muscle_strengthening</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_pregnancy_prevention</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_seatbelt</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_sports_team</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_vegetables</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_no_verbal_consent</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_not_close_at_school</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_planned_suicide</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_poor_mental_health</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_rode_drinking_driver</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_sex_before_13</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_social_media_daily</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_sports_concussion</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_text_while_driving</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_threatened_weapon_school</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_unsafe_at_school</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_unstable_housing</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the row's measure for the row's sex, in the unit given on the measure level.</td>
+                      <td>Number</td>
+                      <td>See the measure column's levels</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed_flag</code>
+                      </td>
+                      <td>Suppressed or unavailable</td>
+                      <td>1 if the source suppressed the value or did not ask or collect it; 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
                     </tr>
                   </tbody>
                 </table>
