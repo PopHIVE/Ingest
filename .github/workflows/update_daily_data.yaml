@@ -14,6 +14,10 @@ jobs:
       KINSA_EMAIL: ${{ secrets.KINSA_EMAIL }}
       KINSA_PASSWORD: ${{ secrets.KINSA_PASSWORD }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    # bash with pipefail, so a step piped through tee still fails when R does
+    defaults:
+      run:
+        shell: bash
     steps:
       - run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libudunits2-dev libproj-dev libgdal-dev libgeos-dev
       - uses: actions/checkout@v4
@@ -45,14 +49,19 @@ jobs:
             any::tidycensus
             any::zoo
             any::slider
+            any::cdlTools
+            any::MMWRweek
+            any::janitor
             github::dissc-yale/dcf
           cache-version: 1
-      - run: Rscript -e "dcf::dcf_process('noaa_heat_risk')"
-      - run: Rscript -e "dcf::dcf_process('kinsa_ili')"
-      - run: Rscript -e "dcf::dcf_process('epic_health_alerts')"
-      - run: Rscript -e "dcf::dcf_process('nnds')"
-      - run: Rscript -e "dcf::dcf_process('bundle_respiratory', '.')"
-      - run: Rscript -e "dcf::dcf_process('bundle_sti', '.')"
+      # Output is also kept in a log so the last step can tell whether anything
+      # failed: dcf_process() exits 0 even when the script it runs errors.
+      - run: Rscript -e "dcf::dcf_process('noaa_heat_risk')" 2>&1 | tee -a "$RUNNER_TEMP/process.log"
+      - run: Rscript -e "dcf::dcf_process('kinsa_ili')" 2>&1 | tee -a "$RUNNER_TEMP/process.log"
+      - run: Rscript -e "dcf::dcf_process('epic_health_alerts')" 2>&1 | tee -a "$RUNNER_TEMP/process.log"
+      - run: Rscript -e "dcf::dcf_process('nnds')" 2>&1 | tee -a "$RUNNER_TEMP/process.log"
+      - run: Rscript -e "dcf::dcf_process('bundle_respiratory', '.')" 2>&1 | tee -a "$RUNNER_TEMP/process.log"
+      - run: Rscript -e "dcf::dcf_process('bundle_sti', '.')" 2>&1 | tee -a "$RUNNER_TEMP/process.log"
 
       - id: diff
         run: |
@@ -89,3 +98,9 @@ jobs:
           done
           echo "::error::could not push daily data update after 3 attempts"
           exit 1
+
+      # Runs after the commit so data that did build is still published, then
+      # turns the run red if any source or bundle failed.
+      - if: ${{ always() }}
+        name: Check for failed sources
+        run: Rscript scripts/check_build_status.R "$RUNNER_TEMP/process.log"

@@ -27,14 +27,17 @@ if (!identical(process$raw_state, raw_state)) {
 
   # Read raw data - site-level, all pathogens in one file
   # Column names use Title_Case in the CDC export (e.g. Pathogen_Target, Site_WVAL)
+  # Site_WVAL and Population_Served are read as text: the export sometimes
+  # writes them with thousands separators ("22,600"), which a numeric column
+  # type turns into NA. That left most sites with a weight of 1 below.
   data_raw <- vroom::vroom(
     "raw/atcp-73re.csv.xz",
     col_types = list(
       `State/Territory` = "c",
       Week_End           = "c",
       Pathogen_Target    = "c",
-      Site_WVAL          = "d",
-      Population_Served  = "d"
+      Site_WVAL          = "c",
+      Population_Served  = "c"
     ),
     col_select = c("State/Territory", "Week_End", "Pathogen_Target", "Site_WVAL", "Population_Served"),
     show_col_types = FALSE
@@ -45,6 +48,10 @@ if (!identical(process$raw_state, raw_state)) {
       pathogen_target   = Pathogen_Target,
       site_wval         = Site_WVAL,
       population_served = Population_Served
+    ) %>%
+    mutate(
+      site_wval         = as.numeric(gsub(",", "", site_wval)),
+      population_served = as.numeric(gsub(",", "", population_served))
     )
 
   # Map pathogen names to variable names used in standard output
@@ -114,10 +121,13 @@ if (!identical(process$raw_state, raw_state)) {
       wgt_check_flua      = sum(wgt_flua,  na.rm = TRUE),
       wgt_check_covid     = sum(wgt_covid, na.rm = TRUE)
     ) %>%
+    # Weights sum to 1 when any state reported and to 0 otherwise. Compare with
+    # a tolerance: the sum is often 0.9999999999999999, and an exact == 1 then
+    # blanks the national value on machines without extended-precision sums.
     mutate(
-      wastewater_covid = if_else(wgt_check_covid == 1, wastewater_covid, NA_real_),
-      wastewater_flua  = if_else(wgt_check_flua  == 1, wastewater_flua,  NA_real_),
-      wastewater_rsv   = if_else(wgt_check_rsv   == 1, wastewater_rsv,   NA_real_)
+      wastewater_covid = if_else(abs(wgt_check_covid - 1) < 1e-8, wastewater_covid, NA_real_),
+      wastewater_flua  = if_else(abs(wgt_check_flua  - 1) < 1e-8, wastewater_flua,  NA_real_),
+      wastewater_rsv   = if_else(abs(wgt_check_rsv   - 1) < 1e-8, wastewater_rsv,   NA_real_)
     ) %>%
     select(time, wastewater_covid, wastewater_flua, wastewater_rsv) %>%
     mutate(geography = "00")
