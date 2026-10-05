@@ -15,7 +15,6 @@ Each measure's unit and definition are on the `measure` column's levels in
 | `<name>_by_sex` | Source | Contents | Geography |
 |----------|--------|----------|-----------|
 | `abcs_strep` | `abcs` | Group A/B strep case rate | national |
-| `brfss_prevalence` | `brfss` | Diabetes and obesity prevalence, health coverage | national, state |
 | `cms_prevalence` | `cms_mmd` | 45 Medicare FFS chronic conditions | national, state, county |
 | `epic_concussion_rate` | `epic_concussions` | Concussion percent of ED encounters | national, state |
 | `epic_concussion_count` | `epic_concussions` | Concussion and ED encounter counts | national, state |
@@ -53,6 +52,7 @@ Strata columns that hold a single value in a file are left out: `age`,
 ## Not included
 
 - `cdc_wonder_natality`: `sex` there is the infant's sex, and values are birth counts.
+- `brfss`: the sex-stratified survey data is no longer in this repository.
 - Confidence bounds (`_lcl`/`_ucl`) and sample sizes.
 - `yrbss` `pct_no_pe_classes`, `pct_no_condom_last_sex`,
   `pct_no_birth_control_pills`, `pct_never_tested_hiv` and `pct_not_tested_std`:
@@ -69,11 +69,6 @@ Strata columns that hold a single value in a file are left out: `age`,
 
 ## Known issues in the source data
 
-- `brfss` `prev_insured_survey` (percent with health coverage; higher is better,
-  unlike the other BRFSS measures) has no entry in the source's
-  `measure_info.json`. Its definition here comes from `brfss/ingest_survey.R`.
-  In 44 fully insured groups the value is `100.00000000000004` (floating-point
-  rounding in the source's calculation); it is not altered here.
 - Some CMS geography codes are not in `resources/all_fips.csv.gz`: 31 codes of
   the form `xx990` in `cms_mmd` (36 in the raw file, labelled only "County").
   Their meaning is not confirmed with CMS, and they are passed through unchanged.

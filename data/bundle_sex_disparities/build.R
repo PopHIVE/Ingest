@@ -1,6 +1,6 @@
 # =============================================================================
 # Bundle: bundle_sex_disparities
-# Combines: abcs, brfss, cms_mmd, epic_concussions, nccr, neiss, nhtsa_crash,
+# Combines: abcs, cms_mmd, epic_concussions, nccr, neiss, nhtsa_crash,
 #           nis_teen, wisqars, yrbss
 #
 # For every sex-stratified measure writes one tall file per source,
@@ -23,8 +23,6 @@ library(arrow)
 specs <- list(
   list(file = "abcs/standard/strep_rates.csv.gz", out = "abcs_strep",
        values = "^abcs_rate_", drop_constant = c("age", "race_ethnicity", "onset")),
-  list(file = "brfss/standard/data_survey.csv.gz", out = "brfss_prevalence",
-       values = "^prev_(diabetes|obesity|insured)_survey$"),
   list(file = "cms_mmd/standard/data_state_county_age_by_sex.csv.gz",
        out = "cms_prevalence", values = "^cms_", drop_cols = "geography_level"),
   list(file = "epic_concussions/standard/data.csv.gz",

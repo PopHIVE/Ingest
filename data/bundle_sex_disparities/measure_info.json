@@ -55,87 +55,6 @@
     "unit": "0/1",
     "time_resolution": "Year"
   },
-  "bundle_sex_disparities/dist/brfss_prevalence_by_sex.parquet|age": {
-    "short_name": "Age group",
-    "short_description": "Age group of the stratum, as labelled by the source (labels differ between sources)."
-  },
-  "bundle_sex_disparities/dist/brfss_prevalence_by_sex.parquet|race_ethnicity": {
-    "short_name": "Race/ethnicity",
-    "short_description": "Race/ethnicity of the stratum, as labelled by the source."
-  },
-  "bundle_sex_disparities/dist/brfss_prevalence_by_sex.parquet|sex": {
-    "short_name": "Sex",
-    "short_description": "Female or Male, as labelled by the source. Rows for other categories (Overall, Total, All, Unknown) are excluded."
-  },
-  "bundle_sex_disparities/dist/brfss_prevalence_by_sex.parquet|measure": {
-    "short_name": "Measure",
-    "long_name": "Health measure compared between female and male",
-    "short_description": "Measure name as in the source; each level carries the source's own definition and unit.",
-    "levels": {
-      "prev_diabetes_survey": {
-        "short_name": "Diabetes Prevalence (Survey)",
-        "long_name": "Diabetes Prevalence from BRFSS Survey",
-        "short_description": "Estimated diabetes prevalence from BRFSS survey data.",
-        "measure_type": "percent",
-        "unit": "percent",
-        "time_resolution": "year",
-        "sources": [
-          {
-            "id": "brfss"
-          }
-        ],
-        "id": "bundle_sex_disparities/dist/brfss_prevalence_by_sex.parquet|measure=prev_diabetes_survey"
-      },
-      "prev_insured_survey": {
-        "short_name": "Health coverage",
-        "long_name": "Percent of adults with health care coverage",
-        "category": "access",
-        "short_description": "Percent of BRFSS respondents who report having health care coverage.",
-        "long_description": "Survey-weighted percent of BRFSS respondents who report having health care coverage (BRFSS calculated coverage variable, coded 1 = has coverage, 2 = does not). Higher values mean more coverage, unlike the diabetes and obesity prevalence measures. This definition is taken from brfss/ingest_survey.R; the BRFSS measure_info.json has no entry for this measure.",
-        "measure_type": "Percent",
-        "unit": "Percent",
-        "time_resolution": "Year",
-        "sources": [
-          {
-            "id": "brfss"
-          }
-        ],
-        "id": "bundle_sex_disparities/dist/brfss_prevalence_by_sex.parquet|measure=prev_insured_survey"
-      },
-      "prev_obesity_survey": {
-        "short_name": "Obesity Prevalence (Survey)",
-        "long_name": "Obesity Prevalence from BRFSS Survey",
-        "short_description": "Estimated obesity prevalence (BMI >= 30) from BRFSS survey data.",
-        "measure_type": "percent",
-        "unit": "percent",
-        "time_resolution": "year",
-        "sources": [
-          {
-            "id": "brfss"
-          }
-        ],
-        "id": "bundle_sex_disparities/dist/brfss_prevalence_by_sex.parquet|measure=prev_obesity_survey"
-      }
-    }
-  },
-  "bundle_sex_disparities/dist/brfss_prevalence_by_sex.parquet|value": {
-    "short_name": "Value",
-    "long_name": "Value of the measure for the row's sex",
-    "short_description": "Value of the row's measure for the row's sex, in the unit given on the measure level.",
-    "long_description": "As reported in the source's standardized file, unchanged. Suppressed or not-asked source values appear as the source stored them (often 0); see suppressed_flag. Rows with no value are omitted.",
-    "measure_type": "Number",
-    "unit": "See the measure column's levels",
-    "time_resolution": "Year"
-  },
-  "bundle_sex_disparities/dist/brfss_prevalence_by_sex.parquet|suppressed_flag": {
-    "short_name": "Suppressed or unavailable",
-    "long_name": "Value suppressed, not asked, or not collected",
-    "short_description": "1 if the source suppressed the value or did not ask or collect it; 0 otherwise.",
-    "long_description": "Taken from the source's own flags (suppressed, not asked, not collected, suppressed_flag). Sources without such flags always show 0.",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Year"
-  },
   "bundle_sex_disparities/dist/cms_prevalence_by_sex.parquet|age": {
     "short_name": "Age group",
     "short_description": "Age group of the stratum, as labelled by the source (labels differ between sources)."
@@ -4996,17 +4915,6 @@
       "description": "Active Bacterial Core surveillance (ABCs) is a collaboration between CDC, state health departments and universities running active, population-based, laboratory-confirmed surveillance for invasive bacterial disease since 1997. CDC publishes one dataset per pathogen; this is the Group B Streptococcus. ABCs covers a catchment of selected US counties, roughly 35 million people, not the whole country. Rates are observed within that catchment and counts labelled national are CDC's population-weighted extrapolations. Values are national only, with no state or county breakdown. Invasive isolates are characterized at CDC's reference laboratory. Serotype and ALPH percentages carry a per-population-group isolate count; the resistance percentages have a single overall count published from 2006 on, and none for the individual population groups. A blank value is a cell CDC did not publish for that row, so a 0 is always a measured zero. CDC's case definition: invasive disease is isolation of group B Streptococcus from a normally sterile site in a resident of a surveillance area.",
       "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
     },
-    "brfss": {
-      "name": "Behavioral Risk Factor Surveillance System (BRFSS)",
-      "url": "https://www.cdc.gov/brfss/index.html",
-      "location": "Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)",
-      "location_url": "https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data",
-      "date_accessed": 2025,
-      "organization": "Centers for Disease Control and Prevention",
-      "organization_url": "https://data.cdc.gov",
-      "description": "The Behavioral Risk Factor Surveillance System (BRFSS) is the nation's premier system of health-related telephone surveys that collect state data about U.S. residents regarding their health-related risk behaviors, chronic health conditions, and use of preventive services. Established in 1984 with 15 states, BRFSS now collects data in all 50 states, the District of Columbia, and three U.S. territories, completing more than 400,000 adult interviews each year. BRFSS provides state-specific data on health conditions including obesity, diabetes, depression, and health behaviors such as heavy drinking, physical activity, and tobacco use. Data are available by age, sex, race/ethnicity, and education level. BRFSS is a critical resource for public health surveillance and policy-making at both state and national levels.",
-      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
-    },
     "cms_mmd": {
       "name": "Mapping Medicare Disparities by Population Tool",
       "url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
@@ -5090,7 +4998,6 @@
     "name": "bundle_sex_disparities",
     "sources": [
       "abcs",
-      "brfss",
       "cms_mmd",
       "epic_concussions",
       "nccr",
@@ -5107,14 +5014,6 @@
         ],
         "source_files": [
           "abcs/standard/strep_rates.csv.gz"
-        ]
-      },
-      "brfss_prevalence_by_sex.parquet": {
-        "sources": [
-          "brfss"
-        ],
-        "source_files": [
-          "brfss/standard/data_survey.csv.gz"
         ]
       },
       "cms_prevalence_by_sex.parquet": {
