@@ -25,7 +25,8 @@ resolution so each has a single grain.
 
 All files are long format with a `measure` column naming the source variable
 (names match the source `standard/` columns) and a `source` column naming the
-dataset. See `measure_info.json` for definitions and units.
+dataset. `measure_info.json` lists the measures; most point to their
+definition in the source's own `measure_info.json`.
 
 ### sti_state.parquet, sti_county.parquet
 
