@@ -16,7 +16,7 @@
 # =============================================================================
 
 # Sources that are expected to fail everywhere (no standard files yet)
-KNOWN_FAILURES <- c("atlas_amr", "vaers")
+KNOWN_FAILURES <- c("atlas_amr")
 
 args      <- commandArgs(trailingOnly = TRUE)
 allow_arg <- grep("^--allow=", args, value = TRUE)
