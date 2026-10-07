@@ -1,255 +1,488 @@
 {
-  "epic_median_ed_los_suicidal_behavior": {
-    "id": "epic_median_ed_los_suicidal_behavior",
-    "short_name": "Median ED LOS: Suicidal Behavior",
-    "long_name": "Median ED Length of Stay for Encounters with a Suicidal Behavior Diagnosis",
-    "category": "chronic",
-    "short_description": "Monthly median ED length of stay, in minutes, for encounters with a suicidal behavior diagnosis.",
-    "long_description": "Monthly median emergency department length of stay (minutes) for ED encounters carrying Epic's \"Suicidal behavior\" ED Diagnoses grouping. Data from Epic Cosmos SlicerDicer session 2853325 (\"Median ED Length of Stay (mins) and Percentage of Sliced Population by ED Diagnoses and State of Residence and Age at Time of Visit Range\"), a 2026-08-31 re-export replacing session 2852625: data model ED Encounters, population base All ED Encounters, criteria Country of Residence = United States of America, date range 7/1/2022-6/30/2026. Stratified by state of residence, month, and Epic's own \"Age at Time of Visit\" buckets (not the PopHIVE standard age bands). As of this 2026-08-31 re-export, the session's age dimension only includes ages under 25 (<5, 5-9, 10-14, 15-19, 20-24 Years, plus Overall) - the 25-44/45-64/65-84/85+ buckets are absent from the source grid entirely (not merely suppressed), so this measure is NA for those age groups across every state and month, including retroactively over the full 7/1/2022-6/30/2026 history. This is a deliberate scope narrowing of the source session, not a data-quality issue; the pre-2026-08-31 export (session 2852625) covered all ages. Mood's age coverage is unaffected and still includes all ages. A median computed from a small underlying encounter count cannot be recovered from a denominator the way a suppressed count can, so a suppressed cell is left missing rather than imputed; see epic_median_ed_los_suicidal_behavior_suppressed_flag.",
-    "statement": "In {location}, the median ED length of stay for encounters with a suicidal behavior diagnosis was {value} minutes.",
-    "measure_type": "Rate",
-    "unit": "Minutes",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_median_ed_los_suicidal_behavior_suppressed_flag": {
-    "id": "epic_median_ed_los_suicidal_behavior_suppressed_flag",
-    "short_name": "Suppressed flag: median ED LOS, suicidal behavior",
-    "long_name": "Suppression flag for the suicidal-behavior median ED length of stay",
-    "category": "chronic",
-    "short_description": "Indicates the median ED length of stay cell was suppressed by Epic and left missing (no denominator available to impute from).",
-    "long_description": "1 when Epic Cosmos left the cell blank (a small-cell suppression, since the underlying encounter count was too small to report a median); 0 otherwise. Unlike a simple count, a median duration statistic cannot be reconstructed from a denominator, so epic_median_ed_los_suicidal_behavior is left NA wherever this flag is 1, rather than imputed. The flag is computed before this decision, so it records what Epic withheld.",
-    "statement": "",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_pct_sliced_population_suicidal_behavior": {
-    "id": "epic_pct_sliced_population_suicidal_behavior",
-    "short_name": "% of Suicidal Behavior Encounters",
-    "long_name": "Share of Suicidal-Behavior ED Encounters in this State/Age/Month Cell",
-    "category": "chronic",
-    "short_description": "This cell's share of that month's total US suicidal-behavior ED encounters, NOT a prevalence rate.",
-    "long_description": "Epic Cosmos's own \"Percentage of Sliced Population\" measure, from SlicerDicer session 2853325, a 2026-08-31 re-export replacing session 2852625. IMPORTANT: this is a compositional share, not a prevalence rate. Verified empirically against the exported grid: summed across every age bucket at the national level it equals ~100% for a given month, and summed across every state at age \"Overall\" it also equals ~100% - consistent with (this cell's suicidal-behavior encounter count) / (total US suicidal-behavior encounters that month, across all states and ages) x 100. It is NOT the share of all ED encounters (any diagnosis) that carry a suicidal behavior diagnosis - that would require a denominator (a total ED encounter count) that this export does not contain. A populous state will show a large share here purely from encounter volume, independent of its actual rate of this diagnosis; do not compare this measure across geographies as if it were a rate. As of the 2026-08-31 re-export, the session's age dimension only includes ages under 25 - the 25-44/45-64/65-84/85+ buckets are absent from the source grid entirely (a deliberate scope narrowing, not suppression), so this measure is NA for those age groups across the full history; see the identical note on epic_median_ed_los_suicidal_behavior. Bounded values reported by Epic as \"<0.01%\" are imputed at half the bound (0.005) and flagged suppressed, same as a fully blank cell (see epic_pct_sliced_population_suicidal_behavior_suppressed_flag).",
-    "statement": "In {location}, {value}% of that month's US suicidal-behavior ED encounters were in this age group.",
-    "measure_type": "Percent",
-    "unit": "Percent",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_pct_sliced_population_suicidal_behavior_suppressed_flag": {
-    "id": "epic_pct_sliced_population_suicidal_behavior_suppressed_flag",
-    "short_name": "Suppressed flag: % sliced population, suicidal behavior",
-    "long_name": "Suppression flag for the suicidal-behavior sliced-population percentage",
-    "category": "chronic",
-    "short_description": "Indicates the percentage cell was suppressed: either left blank by Epic, or reported as a bounded value like \"<0.01%\".",
-    "long_description": "1 when Epic Cosmos reported the cell as blank (left NA in epic_pct_sliced_population_suicidal_behavior, since there is no denominator to impute a missing percentage from) or as a bounded value such as \"<0.01%\" (imputed at half the bound, e.g. 0.005); 0 when Epic reported an exact value. The flag is computed before any imputation.",
-    "statement": "",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_q1_ed_los_suicidal_behavior": {
-    "id": "epic_q1_ed_los_suicidal_behavior",
-    "short_name": "Q1 ED LOS: Suicidal Behavior",
-    "long_name": "25th Percentile ED Length of Stay for Encounters with a Suicidal Behavior Diagnosis",
-    "category": "chronic",
-    "short_description": "Monthly first-quartile (25th percentile) ED length of stay, in minutes, for encounters with a suicidal behavior diagnosis.",
-    "long_description": "Monthly first-quartile (Q1) emergency department length of stay (minutes) for ED encounters carrying Epic's \"Suicidal behavior\" ED Diagnoses grouping. Data from Epic Cosmos SlicerDicer session 2853329 (\"Q3 ED length of stay and Q1 ED length of stay by ED Diagnoses and State of Residence and Age at Time of Visit Range\"), a 2026-08-31 re-export replacing session 2852630: data model ED Encounters, population base All ED Encounters, criteria Country of Residence = United States of America, date range 7/1/2022-6/30/2026. Stratified by state of residence, month, and Epic's own \"Age at Time of Visit\" buckets. As of this 2026-08-31 re-export, the session's age dimension only includes ages under 25 - the 25-44/45-64/65-84/85+ buckets are absent from the source grid entirely (a deliberate scope narrowing, not suppression), so this measure is NA for those age groups across the full history; see the identical note on epic_median_ed_los_suicidal_behavior. As with the median, a suppressed cell cannot be imputed from a denominator and is left missing; see epic_q1_ed_los_suicidal_behavior_suppressed_flag.",
-    "statement": "In {location}, the 25th-percentile ED length of stay for encounters with a suicidal behavior diagnosis was {value} minutes.",
-    "measure_type": "Rate",
-    "unit": "Minutes",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_q1_ed_los_suicidal_behavior_suppressed_flag": {
-    "id": "epic_q1_ed_los_suicidal_behavior_suppressed_flag",
-    "short_name": "Suppressed flag: Q1 ED LOS, suicidal behavior",
-    "long_name": "Suppression flag for the suicidal-behavior Q1 ED length of stay",
-    "category": "chronic",
-    "short_description": "Indicates the Q1 ED length of stay cell was suppressed by Epic and left missing.",
-    "long_description": "1 when Epic Cosmos left the cell blank (small-cell suppression); 0 otherwise. epic_q1_ed_los_suicidal_behavior is left NA wherever this flag is 1, since a quartile statistic cannot be imputed from a denominator.",
-    "statement": "",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_q3_ed_los_suicidal_behavior": {
-    "id": "epic_q3_ed_los_suicidal_behavior",
-    "short_name": "Q3 ED LOS: Suicidal Behavior",
-    "long_name": "75th Percentile ED Length of Stay for Encounters with a Suicidal Behavior Diagnosis",
-    "category": "chronic",
-    "short_description": "Monthly third-quartile (75th percentile) ED length of stay, in minutes, for encounters with a suicidal behavior diagnosis.",
-    "long_description": "Monthly third-quartile (Q3) emergency department length of stay (minutes) for ED encounters carrying Epic's \"Suicidal behavior\" ED Diagnoses grouping. Data from Epic Cosmos SlicerDicer session 2853329 (same export as epic_q1_ed_los_suicidal_behavior). Stratified by state of residence, month, and Epic's own \"Age at Time of Visit\" buckets. As of this 2026-08-31 re-export, the session's age dimension only includes ages under 25 - the 25-44/45-64/65-84/85+ buckets are absent from the source grid entirely (a deliberate scope narrowing, not suppression); see the identical note on epic_median_ed_los_suicidal_behavior. A suppressed cell is left missing rather than imputed; see epic_q3_ed_los_suicidal_behavior_suppressed_flag.",
-    "statement": "In {location}, the 75th-percentile ED length of stay for encounters with a suicidal behavior diagnosis was {value} minutes.",
-    "measure_type": "Rate",
-    "unit": "Minutes",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_q3_ed_los_suicidal_behavior_suppressed_flag": {
-    "id": "epic_q3_ed_los_suicidal_behavior_suppressed_flag",
-    "short_name": "Suppressed flag: Q3 ED LOS, suicidal behavior",
-    "long_name": "Suppression flag for the suicidal-behavior Q3 ED length of stay",
-    "category": "chronic",
-    "short_description": "Indicates the Q3 ED length of stay cell was suppressed by Epic and left missing.",
-    "long_description": "1 when Epic Cosmos left the cell blank (small-cell suppression); 0 otherwise. epic_q3_ed_los_suicidal_behavior is left NA wherever this flag is 1, since a quartile statistic cannot be imputed from a denominator.",
-    "statement": "",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_median_ed_los_mood": {
-    "id": "epic_median_ed_los_mood",
-    "short_name": "Median ED LOS: Mood",
-    "long_name": "Median ED Length of Stay for Encounters with a Mood Diagnosis",
-    "category": "chronic",
-    "short_description": "Monthly median ED length of stay, in minutes, for encounters with a mood diagnosis.",
-    "long_description": "Monthly median emergency department length of stay (minutes) for ED encounters carrying Epic's \"Mood\" ED Diagnoses grouping. Data from Epic Cosmos SlicerDicer session 2852830 (\"Percentage of Sliced Population and Median Length of Stay by ED Diagnoses and State of Residence and Age at Time of Visit Range\"), the third export of this diagnosis after two earlier ones (2852663, 2852768) had a corrupted age-bucket label and/or a shorter date range: data model ED Encounters, population base All ED Encounters, criteria Country of Residence = United States of America, date range 1/1/2022-6/30/2026 (starts earlier than the suicidal-behavior export's 7/1/2022). Stratified by state of residence, month, and Epic's own \"Age at Time of Visit\" buckets, which match the suicidal-behavior session's age buckets. A suppressed cell is left missing rather than imputed; see epic_median_ed_los_mood_suppressed_flag.",
-    "statement": "In {location}, the median ED length of stay for encounters with a mood diagnosis was {value} minutes.",
-    "measure_type": "Rate",
-    "unit": "Minutes",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_median_ed_los_mood_suppressed_flag": {
-    "id": "epic_median_ed_los_mood_suppressed_flag",
-    "short_name": "Suppressed flag: median ED LOS, mood",
-    "long_name": "Suppression flag for the mood median ED length of stay",
-    "category": "chronic",
-    "short_description": "Indicates the median ED length of stay cell was suppressed by Epic and left missing.",
-    "long_description": "1 when Epic Cosmos left the cell blank (small-cell suppression); 0 otherwise. epic_median_ed_los_mood is left NA wherever this flag is 1, since a median duration statistic cannot be imputed from a denominator.",
-    "statement": "",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_pct_sliced_population_mood": {
-    "id": "epic_pct_sliced_population_mood",
-    "short_name": "% of Mood Diagnosis Encounters",
-    "long_name": "Share of Mood-Diagnosis ED Encounters in this State/Age/Month Cell",
-    "category": "chronic",
-    "short_description": "This cell's share of that month's total US mood-diagnosis ED encounters, NOT a prevalence rate.",
-    "long_description": "Epic Cosmos's own \"Percentage of Sliced Population\" measure, from SlicerDicer session 2852830 (the third export of this diagnosis; see epic_median_ed_los_mood for the export history). As with epic_pct_sliced_population_suicidal_behavior, this is a compositional share (this cell's mood-diagnosis encounter count / total US mood-diagnosis encounters that month, across all states and ages), NOT the share of all ED encounters that carry a mood diagnosis - see the identically-named field on epic_pct_sliced_population_suicidal_behavior for the full explanation and the empirical check that established this. Do not compare this measure across geographies as if it were a rate. Bounded values reported by Epic as \"<0.01%\" are imputed at half the bound (0.005) and flagged suppressed, same as a fully blank cell.",
-    "statement": "In {location}, {value}% of that month's US mood-diagnosis ED encounters were in this age group.",
-    "measure_type": "Percent",
-    "unit": "Percent",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_pct_sliced_population_mood_suppressed_flag": {
-    "id": "epic_pct_sliced_population_mood_suppressed_flag",
-    "short_name": "Suppressed flag: % sliced population, mood",
-    "long_name": "Suppression flag for the mood sliced-population percentage",
-    "category": "chronic",
-    "short_description": "Indicates the percentage cell was suppressed: either left blank by Epic, or reported as a bounded value like \"<0.01%\".",
-    "long_description": "1 when Epic Cosmos reported the cell as blank (left NA in epic_pct_sliced_population_mood) or as a bounded value such as \"<0.01%\" (imputed at half the bound); 0 when Epic reported an exact value.",
-    "statement": "",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_q1_ed_los_mood": {
-    "id": "epic_q1_ed_los_mood",
-    "short_name": "Q1 ED LOS: Mood",
-    "long_name": "25th Percentile ED Length of Stay for Encounters with a Mood Diagnosis",
-    "category": "chronic",
-    "short_description": "Monthly first-quartile (25th percentile) ED length of stay, in minutes, for encounters with a mood diagnosis.",
-    "long_description": "Monthly first-quartile (Q1) emergency department length of stay (minutes) for ED encounters carrying Epic's \"Mood\" ED Diagnoses grouping. Data from Epic Cosmos SlicerDicer session 2852828 (\"Q1 Length of Stay and Q3 Length of Stay by ED Diagnoses and State of Residence and Age at Time of Visit Range\"), the third export of this diagnosis (see epic_median_ed_los_mood for the export history): data model ED Encounters, population base All ED Encounters, criteria Country of Residence = United States of America, date range 1/1/2022-6/30/2026. Stratified by state of residence, month, and Epic's own \"Age at Time of Visit\" buckets, which match the suicidal-behavior session's age buckets. A small number of cells (~1,700, spread across the date range) are absent from this export even though the corresponding median/percentage cell is present - see the cosmos_mental_health README. A suppressed cell is left missing rather than imputed; see epic_q1_ed_los_mood_suppressed_flag.",
-    "statement": "In {location}, the 25th-percentile ED length of stay for encounters with a mood diagnosis was {value} minutes.",
-    "measure_type": "Rate",
-    "unit": "Minutes",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_q1_ed_los_mood_suppressed_flag": {
-    "id": "epic_q1_ed_los_mood_suppressed_flag",
-    "short_name": "Suppressed flag: Q1 ED LOS, mood",
-    "long_name": "Suppression flag for the mood Q1 ED length of stay",
-    "category": "chronic",
-    "short_description": "Indicates the Q1 ED length of stay cell was suppressed by Epic and left missing.",
-    "long_description": "1 when Epic Cosmos left the cell blank (small-cell suppression); 0 otherwise. epic_q1_ed_los_mood is left NA wherever this flag is 1, since a quartile statistic cannot be imputed from a denominator.",
-    "statement": "",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_q3_ed_los_mood": {
-    "id": "epic_q3_ed_los_mood",
-    "short_name": "Q3 ED LOS: Mood",
-    "long_name": "75th Percentile ED Length of Stay for Encounters with a Mood Diagnosis",
-    "category": "chronic",
-    "short_description": "Monthly third-quartile (75th percentile) ED length of stay, in minutes, for encounters with a mood diagnosis.",
-    "long_description": "Monthly third-quartile (Q3) emergency department length of stay (minutes) for ED encounters carrying Epic's \"Mood\" ED Diagnoses grouping. Data from Epic Cosmos SlicerDicer session 2852828 (same export as epic_q1_ed_los_mood; see that field for the export history). Stratified by state of residence, month, and Epic's own \"Age at Time of Visit\" buckets. A suppressed cell is left missing rather than imputed; see epic_q3_ed_los_mood_suppressed_flag.",
-    "statement": "In {location}, the 75th-percentile ED length of stay for encounters with a mood diagnosis was {value} minutes.",
-    "measure_type": "Rate",
-    "unit": "Minutes",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "epic_q3_ed_los_mood_suppressed_flag": {
-    "id": "epic_q3_ed_los_mood_suppressed_flag",
-    "short_name": "Suppressed flag: Q3 ED LOS, mood",
-    "long_name": "Suppression flag for the mood Q3 ED length of stay",
-    "category": "chronic",
-    "short_description": "Indicates the Q3 ED length of stay cell was suppressed by Epic and left missing.",
-    "long_description": "1 when Epic Cosmos left the cell blank (small-cell suppression); 0 otherwise. epic_q3_ed_los_mood is left NA wherever this flag is 1, since a quartile statistic cannot be imputed from a denominator.",
-    "statement": "",
-    "measure_type": "Binary",
-    "unit": "0/1",
-    "time_resolution": "Month",
-    "sources": [{ "id": "epic_cosmos" }],
-    "citations": []
-  },
-  "_sources": {
-    "epic_cosmos": {
-      "name": "Epic Cosmos",
-      "url": "https://cosmos.epic.com/",
-      "date_accessed": 2026,
-      "organization": "Epic Systems",
-      "organization_url": "https://www.epic.com/",
-      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
-      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+    "epic_ed_los_median_{variant}": {
+        "id": "epic_ed_los_median_{variant}",
+        "short_name": "Median ED length of stay: {variant.short_name}",
+        "long_name": "Median emergency department length of stay for {variant.short_name} encounters",
+        "category": "behavioral_health",
+        "short_description": "Median time in minutes from ED arrival to ED departure for {variant.short_name} encounters.",
+        "long_description": "Median emergency department length of stay in minutes for {variant.short_name}. Encounters are Epic Cosmos ED encounters with a United States country of residence, attributed to the patient's state of residence and to the calendar month of arrival, and assigned to the {variant.short_name} bucket of the ED Diagnoses grouper. Length of stay runs from arrival to ED departure, so it includes boarding time for patients awaiting an inpatient or psychiatric bed. This is the most robust of the length-of-stay statistics in this source: unlike the mean, standard deviation, minimum and maximum, it is not distorted by the small number of encounters with corrupted arrival or departure timestamps, and it is the recommended default for trend and cross-state comparison. It is published for the 'Overall' age row and for each five-year age band at the state level (see the age variable). It runs well below the mean for every mental health bucket, which is the signature of a long right tail of boarded patients. Cells built on 10 or fewer encounters are suppressed at source and left missing; a missing value and a suppression flag of 1 mean the same thing, because every value the source published is carried through as published. A flag that is itself missing means the exports do not report this statistic for that row (outside the months they cover, or not a stratum the column describes). Note that the 'All ED encounters' variant is the total row of the ED Diagnoses grouper: it covers every ED encounter, including the non-mental-health diagnoses not displayed as their own columns, and is not a total of the mental health buckets.",
+        "statement": "In {location}, the median {variant.short_name} ED encounter lasted {value} minutes.",
+        "measure_type": "Rate",
+        "unit": "Minutes",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            },
+            "all_cause": {
+                "short_name": "All ED encounters"
+            }
+        }
+    },
+    "epic_ed_los_median_{variant}_suppressed_flag": {
+        "id": "epic_ed_los_median_{variant}_suppressed_flag",
+        "short_name": "Suppressed flag: median ED length of stay, {variant.short_name}",
+        "long_name": "Suppression flag for the {variant.short_name} median ED length of stay",
+        "category": "behavioral_health",
+        "short_description": "Indicates whether the {variant.short_name} median ED length of stay was suppressed at source.",
+        "long_description": "This flag is 1 when Epic Cosmos suppressed the {variant.short_name} median ED length of stay because the cell was built on 10 or fewer encounters, and 0 otherwise. These statistics are not counts, so a suppressed value cannot be imputed - there is no published denominator to impute a numerator against - and epic_ed_los_median_{variant} is left missing wherever this flag is 1. Within the months the exports cover, a flag of 1 and a missing value coincide exactly. Epic omits suppressed rows from these exports entirely, so a flag of 1 can also mean the row was not returned. The flag is missing where the exports do not report the median for the row at all (outside the months they cover, or all-cause on a state or age-band row). Check it before comparing across geographies: suppression is heavy in the sparser diagnosis buckets, reaching roughly four in five cells for eating disorders.",
+        "measure_type": "Binary",
+        "unit": "0/1",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            },
+            "all_cause": {
+                "short_name": "All ED encounters"
+            }
+        }
+    },
+    "epic_ed_pct_visits_{variant}": {
+        "id": "epic_ed_pct_visits_{variant}",
+        "short_name": "Percent of ED encounters: {variant.short_name}",
+        "long_name": "Percentage of emergency department encounters with a {variant.short_name} diagnosis",
+        "category": "behavioral_health",
+        "short_description": "Percent of all ED encounters in the geography, month and age group that carried a {variant.short_name} diagnosis.",
+        "long_description": "Share of emergency department encounters accounted for by {variant.short_name}, as a percentage of all ED encounters in the same geography, month and age group. Encounters are Epic Cosmos ED encounters with a United States country of residence, attributed to the patient's state of residence and to the calendar month of arrival, and assigned to the {variant.short_name} bucket of the ED Diagnoses grouper. NATIONAL rows are read directly from the source's 'Percentage of Sliced Population' field on the national diagnosis row, where its denominator is all ED encounters. STATE rows are DERIVED. At state level the same field is the state's share of the national diagnosis volume, and for an age band it is the band's share of the state's diagnosis encounters; neither is a case mix. They are converted with ED visit counts: the state's diagnosis count is the state's share, times the national diagnosis share, times the national visit count; the all-ages case mix divides that by the state's visit count, and the age-band case mix multiplies it by the band's share and divides by the state's visit count in that band (epic_ed_n_visits). Checked against an earlier, independent derivation from a state-by-sex crosstab, the median state ratio is 0.99-1.00 for six of the seven diagnoses; the seven buckets together account for a median 6.6% of state ED encounters. Caveats. The source percentages carry about three significant digits, so for rare buckets - eating disorders in particular, at roughly 0.01% nationally, where the national share itself rests on one significant digit - the derived share carries substantial relative rounding error (the earlier derivation, which pinned the national eating disorder share at 0.01, ran about 10% higher). The diagnosis buckets are not guaranteed to be mutually exclusive, so the buckets should not be assumed to sum exactly to a total. Missing where an input was suppressed at source. The all-cause variant is omitted: it is 100% by construction.",
+        "statement": "In {location}, {value}% of ED encounters were for {variant.short_name}.",
+        "measure_type": "Percent",
+        "unit": "Percent",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            }
+        }
+    },
+    "epic_ed_pct_visits_{variant}_suppressed_flag": {
+        "id": "epic_ed_pct_visits_{variant}_suppressed_flag",
+        "short_name": "Suppressed flag: percent of ED encounters, {variant.short_name}",
+        "long_name": "Suppression flag for the {variant.short_name} percent of ED encounters",
+        "category": "behavioral_health",
+        "short_description": "Indicates whether the {variant.short_name} percent of ED encounters was suppressed at source.",
+        "long_description": "This flag is 1 when the {variant.short_name} percent of ED encounters could not be computed because an input was suppressed at source (the state's diagnosis share, the band's share, or the diagnosis cell itself having 10 or fewer encounters), and 0 when a value is published. These statistics are not counts, so a suppressed value cannot be imputed and epic_ed_pct_visits_{variant} is left missing wherever this flag is 1. The flag is also missing where the column is not reported for the row (national age-band rows, and any month the exports do not cover) or where the visit-count denominator was itself suppressed.",
+        "measure_type": "Binary",
+        "unit": "0/1",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            }
+        }
+    },
+    "age": {
+        "id": "age",
+        "short_name": "Age group",
+        "long_name": "Age at time of ED visit",
+        "category": "demographic",
+        "short_description": "Five-year age band of the patient at the time of the emergency department visit.",
+        "long_description": "Age at the time of the visit, in five-year bands: 0-4, 5-9, 10-14, 15-19 and 20-24. 'Overall' is the unstratified row covering all ages. The Epic Cosmos exports stop at age 25, so the bands do not add up to 'Overall'. Median, quartile, age-share and case-mix (epic_ed_pct_visits_*) columns are populated on state age-band rows; the national row (geography 00) has age bands for the visit count (epic_ed_n_visits) only, and 'Overall' age for every other column.",
+        "measure_type": "Categorical",
+        "unit": "",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": []
+    },
+    "epic_ed_los_q1_{variant}": {
+        "id": "epic_ed_los_q1_{variant}",
+        "short_name": "First-quartile ED length of stay: {variant.short_name}",
+        "long_name": "First-quartile (25th percentile) emergency department length of stay for {variant.short_name} encounters",
+        "category": "behavioral_health",
+        "short_description": "Time in minutes from ED arrival to ED departure that 25% of {variant.short_name} encounters fall under.",
+        "long_description": "First quartile (25th percentile) of emergency department length of stay in minutes for {variant.short_name}: one quarter of encounters ended in less time than this. Encounters are Epic Cosmos ED encounters with a United States country of residence, attributed to the patient's state of residence and to the calendar month of arrival, and assigned to the {variant.short_name} bucket of the ED Diagnoses grouper. Length of stay runs from arrival to ED departure, so it includes boarding time for patients awaiting an inpatient or psychiatric bed. Read with epic_ed_los_median_{variant} and epic_ed_los_q3_{variant} it describes the spread of stays, and the Q3 - Q1 gap is a measure of boarding that, like the median, is not distorted by the small number of encounters with corrupted timestamps. Published for the 'Overall' age row and for each five-year age band at the state level (see the age variable); the national row is Overall age only. Eating disorders are included but are the most heavily suppressed bucket, so most state-months are missing. The all-cause variant covers every ED encounter, including the non-mental-health diagnoses, and is published nationally for all ages only. Cells built on 10 or fewer encounters are suppressed at source and left missing; a flag of 1 means suppressed or not returned, and a flag that is itself missing means the export did not report this statistic for that row.",
+        "statement": "In {location}, one quarter of {variant.short_name} ED encounters lasted under {value} minutes.",
+        "measure_type": "Rate",
+        "unit": "Minutes",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            },
+            "all_cause": {
+                "short_name": "All ED encounters"
+            }
+        }
+    },
+    "epic_ed_los_q1_{variant}_suppressed_flag": {
+        "id": "epic_ed_los_q1_{variant}_suppressed_flag",
+        "short_name": "Suppressed flag: first-quartile ED length of stay, {variant.short_name}",
+        "long_name": "Suppression flag for the {variant.short_name} first-quartile ED length of stay",
+        "category": "behavioral_health",
+        "short_description": "Indicates whether the {variant.short_name} first-quartile ED length of stay was suppressed at source.",
+        "long_description": "This flag is 1 when Epic Cosmos did not publish the {variant.short_name} first-quartile ED length of stay because the cell was built on 10 or fewer encounters, and 0 when a value was published. It is missing when the age-sliced export does not report this statistic for the row (for example outside the months the export covers, or for a row that is not a stratum the column describes). These statistics are not counts, so a suppressed value cannot be imputed and epic_ed_los_q1_{variant} is left missing wherever this flag is 1. Because Epic omits suppressed rows from the age-sliced exports entirely, a flag of 1 can also mean the row was not returned.",
+        "measure_type": "Binary",
+        "unit": "0/1",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            },
+            "all_cause": {
+                "short_name": "All ED encounters"
+            }
+        }
+    },
+    "epic_ed_los_q3_{variant}": {
+        "id": "epic_ed_los_q3_{variant}",
+        "short_name": "Third-quartile ED length of stay: {variant.short_name}",
+        "long_name": "Third-quartile (75th percentile) emergency department length of stay for {variant.short_name} encounters",
+        "category": "behavioral_health",
+        "short_description": "Time in minutes from ED arrival to ED departure that 75% of {variant.short_name} encounters fall under.",
+        "long_description": "Third quartile (75th percentile) of emergency department length of stay in minutes for {variant.short_name}: three quarters of encounters ended in less time than this, so the longest quarter of stays - the boarders - sit above it. Encounters are Epic Cosmos ED encounters with a United States country of residence, attributed to the patient's state of residence and to the calendar month of arrival, and assigned to the {variant.short_name} bucket of the ED Diagnoses grouper. Length of stay runs from arrival to ED departure, so it includes boarding time for patients awaiting an inpatient or psychiatric bed. Unlike the maximum it is robust to corrupted timestamps, which makes it the usable upper-tail statistic in this source. Published for the 'Overall' age row and for each five-year age band at the state level (see the age variable); the national row is Overall age only. Eating disorders are included but are the most heavily suppressed bucket, so most state-months are missing. The all-cause variant covers every ED encounter, including the non-mental-health diagnoses, and is published nationally for all ages only. Cells built on 10 or fewer encounters are suppressed at source and left missing; a flag of 1 means suppressed or not returned, and a flag that is itself missing means the export did not report this statistic for that row.",
+        "statement": "In {location}, three quarters of {variant.short_name} ED encounters lasted under {value} minutes.",
+        "measure_type": "Rate",
+        "unit": "Minutes",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            },
+            "all_cause": {
+                "short_name": "All ED encounters"
+            }
+        }
+    },
+    "epic_ed_los_q3_{variant}_suppressed_flag": {
+        "id": "epic_ed_los_q3_{variant}_suppressed_flag",
+        "short_name": "Suppressed flag: third-quartile ED length of stay, {variant.short_name}",
+        "long_name": "Suppression flag for the {variant.short_name} third-quartile ED length of stay",
+        "category": "behavioral_health",
+        "short_description": "Indicates whether the {variant.short_name} third-quartile ED length of stay was suppressed at source.",
+        "long_description": "This flag is 1 when Epic Cosmos did not publish the {variant.short_name} third-quartile ED length of stay because the cell was built on 10 or fewer encounters, and 0 when a value was published. It is missing when the age-sliced export does not report this statistic for the row (for example outside the months the export covers, or for a row that is not a stratum the column describes). These statistics are not counts, so a suppressed value cannot be imputed and epic_ed_los_q3_{variant} is left missing wherever this flag is 1. Because Epic omits suppressed rows from the age-sliced exports entirely, a flag of 1 can also mean the row was not returned.",
+        "measure_type": "Binary",
+        "unit": "0/1",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            },
+            "all_cause": {
+                "short_name": "All ED encounters"
+            }
+        }
+    },
+    "epic_ed_pct_age_{variant}": {
+        "id": "epic_ed_pct_age_{variant}",
+        "short_name": "Age share of {variant.short_name} ED encounters",
+        "long_name": "Percentage of a state's {variant.short_name} emergency department encounters that were in the age band",
+        "category": "behavioral_health",
+        "short_description": "Percent of the state's {variant.short_name} ED encounters in the month that fell in the age band.",
+        "long_description": "Age distribution of {variant.short_name} emergency department encounters: of all of a state's ED encounters in the month with a {variant.short_name} diagnosis, the percent that were in the row's five-year age band. The source field is 'Percentage of Sliced Population' for the age slice, whose denominator is the state's {variant.short_name} encounters at every age. The age-sliced exports stop at age 25, so the five bands together sum to less than 100 (the remainder is age 25 and over, plus any band suppressed or not returned). It is a share of the diagnosis, not a share of all ED encounters, so it describes who the {variant.short_name} patients are rather than how common the diagnosis is in each age group. Published for age-band rows at the state level only; it is missing on the 'Overall' age row and nationally. Percentages carry three significant digits at source, so small shares are rounded coarsely. Missing where the cell was suppressed at source.",
+        "statement": "In {location}, {value}% of {variant.short_name} ED encounters were in this age group.",
+        "measure_type": "Percent",
+        "unit": "Percent",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            }
+        }
+    },
+    "epic_ed_pct_age_{variant}_suppressed_flag": {
+        "id": "epic_ed_pct_age_{variant}_suppressed_flag",
+        "short_name": "Suppressed flag: age share of {variant.short_name} ED encounters",
+        "long_name": "Suppression flag for the age share of {variant.short_name} ED encounters",
+        "category": "behavioral_health",
+        "short_description": "Indicates whether the age share of {variant.short_name} ED encounters was suppressed at source.",
+        "long_description": "This flag is 1 when Epic Cosmos did not publish the age share of {variant.short_name} ED encounters because the cell was built on 10 or fewer encounters, and 0 when a value was published. It is missing on rows where the column does not apply (the 'Overall' age row, national rows) and outside the months the export covers. Because Epic omits suppressed rows from the age-sliced exports entirely, a flag of 1 can also mean the row was not returned.",
+        "measure_type": "Binary",
+        "unit": "0/1",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": [],
+        "variants": {
+            "suicidal_behavior": {
+                "short_name": "Suicidal behavior"
+            },
+            "mood": {
+                "short_name": "Mood disorders"
+            },
+            "behavioral": {
+                "short_name": "Behavioral disorders"
+            },
+            "substance_use": {
+                "short_name": "Substance use"
+            },
+            "psychosis": {
+                "short_name": "Psychosis"
+            },
+            "eating_disorders": {
+                "short_name": "Eating disorders"
+            },
+            "other": {
+                "short_name": "Other mental health"
+            }
+        }
+    },
+    "epic_ed_n_visits": {
+        "id": "epic_ed_n_visits",
+        "short_name": "ED visits",
+        "long_name": "Number of emergency department visits (all causes)",
+        "category": "behavioral_health",
+        "short_description": "Number of Epic Cosmos ED encounters in the geography and month, for any diagnosis.",
+        "long_description": "Monthly count of all Epic Cosmos ED encounters, regardless of diagnosis, by the patient's state of residence (Country of Residence = United States of America). It is the denominator behind the mental health measures in this file: the encounters in the all-cause variant of the length-of-stay columns. On the 'Overall' age row it counts all ages, for each state and nationally (geography 00); the national count matches the sum of the states to within 0.1%, the remainder being territories and unknown state of residence. On the age-band rows it counts the encounters in that five-year band, for each state and nationally; the bands stop at age 25, so they cover only about 57% of all-ages visits. Counts of 10 or fewer are suppressed at source and imputed as 5; see epic_ed_n_visits_suppressed_flag. These counts are what turn the source's percentages into a case mix (see epic_ed_pct_visits_{variant}).",
+        "statement": "In {location}, there were {value} ED visits.",
+        "measure_type": "Count",
+        "unit": "Count",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": []
+    },
+    "epic_ed_n_visits_suppressed_flag": {
+        "id": "epic_ed_n_visits_suppressed_flag",
+        "short_name": "Suppressed flag: ED visits",
+        "long_name": "Suppression flag for the number of ED visits",
+        "category": "behavioral_health",
+        "short_description": "Indicates whether the ED visit count was suppressed and imputed as 5 at source.",
+        "long_description": "This flag is 1 when the ED visit count was built on 10 or fewer encounters, so Epic Cosmos suppressed it and it was imputed as 5, and 0 otherwise. Unlike the length-of-stay flags the value is kept, not left missing, because a count can be imputed. The flag is missing where no count is reported for the row.",
+        "measure_type": "Binary",
+        "unit": "0/1",
+        "time_resolution": "Month",
+        "sources": [
+            {
+                "id": "epic_cosmos"
+            }
+        ],
+        "citations": []
+    },
+    "_sources": {
+        "epic_cosmos": {
+            "name": "Epic Cosmos",
+            "url": "https://cosmos.epic.com/",
+            "date_accessed": 2026,
+            "organization": "Epic Systems",
+            "organization_url": "https://www.epic.com/",
+            "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
+            "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+        }
     }
-  },
-  "_catalog": {
-    "name": "Epic Cosmos Mental Health ED Visits",
-    "summary": "Emergency department length-of-stay and visit-share measures for suicidal behavior and mood diagnoses from Epic Cosmos, a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems.",
-    "search_terms": [
-      "Mental health",
-      "suicide",
-      "suicidal behavior",
-      "mood disorder",
-      "emergency department",
-      "length of stay"
-    ],
-    "bucket": [
-      "Youth well-being"
-    ],
-    "files": {
-      "data.csv.gz": "Monthly ED length-of-stay and visit-share measures by state and age, for suicidal behavior and mood diagnoses"
-    }
-  }
 }

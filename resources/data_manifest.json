@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-02T10:32:56Z",
+  "generated": "2026-10-07T14:20:37Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -18087,6 +18087,81 @@
         }
       ]
     },
+    "epic_concussions": {
+      "name": "epic_concussions",
+      "display_name": "Epic Concussions",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age Group",
+              "description": "Age group category",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex category (Male, Female, Overall)",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "epic_n_concussion",
+              "short_name": "Concussion ED Encounters",
+              "description": "Monthly count of ED encounters with a concussion diagnosis (ICD-10-CA S06.0).",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_concussion_suppressed_flag",
+              "short_name": "Suppressed flag: concussion",
+              "description": "Indicates whether the concussion numerator was suppressed and imputed; applies to both epic_n_concussion and epic_pct_concussion.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_pct_concussion",
+              "short_name": "Concussion Percentage",
+              "description": "Monthly percent of ED encounters with a concussion diagnosis (ICD-10-CA S06.0).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_n_ed_encounters",
+              "short_name": "Total ED Encounters",
+              "description": "Monthly total ED encounter count (any diagnosis), used as the denominator for the concussion percentage.",
+              "measure_type": "Count",
+              "unit": "encounters"
+            },
+            {
+              "name": "epic_n_ed_encounters_suppressed_flag",
+              "short_name": "Suppressed flag: total ED encounters",
+              "description": "Indicates whether the total ED encounter count was suppressed and imputed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            }
+          ]
+        }
+      ]
+    },
     "epic_diarrhea": {
       "name": "epic_diarrhea",
       "display_name": "Epic Diarrhea",
@@ -18685,120 +18760,554 @@
             },
             {
               "name": "age",
-              "short_name": "Age Group",
-              "description": "Age group category",
-              "measure_type": "category",
+              "short_name": "Age group",
+              "description": "Five-year age band of the patient at the time of the emergency department visit.",
+              "measure_type": "Categorical",
               "unit": ""
             },
             {
-              "name": "epic_median_ed_los_suicidal_behavior",
-              "short_name": "Median ED LOS: Suicidal Behavior",
-              "description": "Monthly median ED length of stay, in minutes, for encounters with a suicidal behavior diagnosis.",
+              "name": "epic_ed_los_median_suicidal_behavior",
+              "short_name": "Suicidal behavior",
+              "description": "Median time in minutes from ED arrival to ED departure for Suicidal behavior encounters.",
               "measure_type": "Rate",
               "unit": "Minutes"
             },
             {
-              "name": "epic_median_ed_los_suicidal_behavior_suppressed_flag",
-              "short_name": "Suppressed flag: median ED LOS, suicidal behavior",
-              "description": "Indicates the median ED length of stay cell was suppressed by Epic and left missing (no denominator available to impute from).",
+              "name": "epic_ed_los_median_suicidal_behavior_suppressed_flag",
+              "short_name": "Suicidal behavior",
+              "description": "Indicates whether the Suicidal behavior median ED length of stay was suppressed at source.",
               "measure_type": "Binary",
               "unit": "0/1"
             },
             {
-              "name": "epic_pct_sliced_population_suicidal_behavior",
-              "short_name": "% of Suicidal Behavior Encounters",
-              "description": "This cell's share of that month's total US suicidal-behavior ED encounters, NOT a prevalence rate.",
+              "name": "epic_ed_los_median_mood",
+              "short_name": "Mood disorders",
+              "description": "Median time in minutes from ED arrival to ED departure for Mood disorders encounters.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_median_mood_suppressed_flag",
+              "short_name": "Mood disorders",
+              "description": "Indicates whether the Mood disorders median ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_median_behavioral",
+              "short_name": "Behavioral disorders",
+              "description": "Median time in minutes from ED arrival to ED departure for Behavioral disorders encounters.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_median_behavioral_suppressed_flag",
+              "short_name": "Behavioral disorders",
+              "description": "Indicates whether the Behavioral disorders median ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_median_substance_use",
+              "short_name": "Substance use",
+              "description": "Median time in minutes from ED arrival to ED departure for Substance use encounters.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_median_substance_use_suppressed_flag",
+              "short_name": "Substance use",
+              "description": "Indicates whether the Substance use median ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_median_psychosis",
+              "short_name": "Psychosis",
+              "description": "Median time in minutes from ED arrival to ED departure for Psychosis encounters.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_median_psychosis_suppressed_flag",
+              "short_name": "Psychosis",
+              "description": "Indicates whether the Psychosis median ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_median_eating_disorders",
+              "short_name": "Eating disorders",
+              "description": "Median time in minutes from ED arrival to ED departure for Eating disorders encounters.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_median_eating_disorders_suppressed_flag",
+              "short_name": "Eating disorders",
+              "description": "Indicates whether the Eating disorders median ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_median_other",
+              "short_name": "Other mental health",
+              "description": "Median time in minutes from ED arrival to ED departure for Other mental health encounters.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_median_other_suppressed_flag",
+              "short_name": "Other mental health",
+              "description": "Indicates whether the Other mental health median ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_median_all_cause",
+              "short_name": "All ED encounters",
+              "description": "Median time in minutes from ED arrival to ED departure for All ED encounters encounters.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_median_all_cause_suppressed_flag",
+              "short_name": "All ED encounters",
+              "description": "Indicates whether the All ED encounters median ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q1_suicidal_behavior",
+              "short_name": "Suicidal behavior",
+              "description": "Time in minutes from ED arrival to ED departure that 25% of Suicidal behavior encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q1_suicidal_behavior_suppressed_flag",
+              "short_name": "Suicidal behavior",
+              "description": "Indicates whether the Suicidal behavior first-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q1_mood",
+              "short_name": "Mood disorders",
+              "description": "Time in minutes from ED arrival to ED departure that 25% of Mood disorders encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q1_mood_suppressed_flag",
+              "short_name": "Mood disorders",
+              "description": "Indicates whether the Mood disorders first-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q1_behavioral",
+              "short_name": "Behavioral disorders",
+              "description": "Time in minutes from ED arrival to ED departure that 25% of Behavioral disorders encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q1_behavioral_suppressed_flag",
+              "short_name": "Behavioral disorders",
+              "description": "Indicates whether the Behavioral disorders first-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q1_substance_use",
+              "short_name": "Substance use",
+              "description": "Time in minutes from ED arrival to ED departure that 25% of Substance use encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q1_substance_use_suppressed_flag",
+              "short_name": "Substance use",
+              "description": "Indicates whether the Substance use first-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q1_psychosis",
+              "short_name": "Psychosis",
+              "description": "Time in minutes from ED arrival to ED departure that 25% of Psychosis encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q1_psychosis_suppressed_flag",
+              "short_name": "Psychosis",
+              "description": "Indicates whether the Psychosis first-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q1_eating_disorders",
+              "short_name": "Eating disorders",
+              "description": "Time in minutes from ED arrival to ED departure that 25% of Eating disorders encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q1_eating_disorders_suppressed_flag",
+              "short_name": "Eating disorders",
+              "description": "Indicates whether the Eating disorders first-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q1_other",
+              "short_name": "Other mental health",
+              "description": "Time in minutes from ED arrival to ED departure that 25% of Other mental health encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q1_other_suppressed_flag",
+              "short_name": "Other mental health",
+              "description": "Indicates whether the Other mental health first-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q1_all_cause",
+              "short_name": "All ED encounters",
+              "description": "Time in minutes from ED arrival to ED departure that 25% of All ED encounters encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q1_all_cause_suppressed_flag",
+              "short_name": "All ED encounters",
+              "description": "Indicates whether the All ED encounters first-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q3_suicidal_behavior",
+              "short_name": "Suicidal behavior",
+              "description": "Time in minutes from ED arrival to ED departure that 75% of Suicidal behavior encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q3_suicidal_behavior_suppressed_flag",
+              "short_name": "Suicidal behavior",
+              "description": "Indicates whether the Suicidal behavior third-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q3_mood",
+              "short_name": "Mood disorders",
+              "description": "Time in minutes from ED arrival to ED departure that 75% of Mood disorders encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q3_mood_suppressed_flag",
+              "short_name": "Mood disorders",
+              "description": "Indicates whether the Mood disorders third-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q3_behavioral",
+              "short_name": "Behavioral disorders",
+              "description": "Time in minutes from ED arrival to ED departure that 75% of Behavioral disorders encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q3_behavioral_suppressed_flag",
+              "short_name": "Behavioral disorders",
+              "description": "Indicates whether the Behavioral disorders third-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q3_substance_use",
+              "short_name": "Substance use",
+              "description": "Time in minutes from ED arrival to ED departure that 75% of Substance use encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q3_substance_use_suppressed_flag",
+              "short_name": "Substance use",
+              "description": "Indicates whether the Substance use third-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q3_psychosis",
+              "short_name": "Psychosis",
+              "description": "Time in minutes from ED arrival to ED departure that 75% of Psychosis encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q3_psychosis_suppressed_flag",
+              "short_name": "Psychosis",
+              "description": "Indicates whether the Psychosis third-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q3_eating_disorders",
+              "short_name": "Eating disorders",
+              "description": "Time in minutes from ED arrival to ED departure that 75% of Eating disorders encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q3_eating_disorders_suppressed_flag",
+              "short_name": "Eating disorders",
+              "description": "Indicates whether the Eating disorders third-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q3_other",
+              "short_name": "Other mental health",
+              "description": "Time in minutes from ED arrival to ED departure that 75% of Other mental health encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q3_other_suppressed_flag",
+              "short_name": "Other mental health",
+              "description": "Indicates whether the Other mental health third-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_los_q3_all_cause",
+              "short_name": "All ED encounters",
+              "description": "Time in minutes from ED arrival to ED departure that 75% of All ED encounters encounters fall under.",
+              "measure_type": "Rate",
+              "unit": "Minutes"
+            },
+            {
+              "name": "epic_ed_los_q3_all_cause_suppressed_flag",
+              "short_name": "All ED encounters",
+              "description": "Indicates whether the All ED encounters third-quartile ED length of stay was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_visits_suicidal_behavior",
+              "short_name": "Suicidal behavior",
+              "description": "Percent of all ED encounters in the geography, month and age group that carried a Suicidal behavior diagnosis.",
               "measure_type": "Percent",
               "unit": "Percent"
             },
             {
-              "name": "epic_pct_sliced_population_suicidal_behavior_suppressed_flag",
-              "short_name": "Suppressed flag: % sliced population, suicidal behavior",
-              "description": "Indicates the percentage cell was suppressed: either left blank by Epic, or reported as a bounded value like \"<0.01%\".",
+              "name": "epic_ed_pct_visits_suicidal_behavior_suppressed_flag",
+              "short_name": "Suicidal behavior",
+              "description": "Indicates whether the Suicidal behavior percent of ED encounters was suppressed at source.",
               "measure_type": "Binary",
               "unit": "0/1"
             },
             {
-              "name": "epic_q1_ed_los_suicidal_behavior",
-              "short_name": "Q1 ED LOS: Suicidal Behavior",
-              "description": "Monthly first-quartile (25th percentile) ED length of stay, in minutes, for encounters with a suicidal behavior diagnosis.",
-              "measure_type": "Rate",
-              "unit": "Minutes"
-            },
-            {
-              "name": "epic_q1_ed_los_suicidal_behavior_suppressed_flag",
-              "short_name": "Suppressed flag: Q1 ED LOS, suicidal behavior",
-              "description": "Indicates the Q1 ED length of stay cell was suppressed by Epic and left missing.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "epic_q3_ed_los_suicidal_behavior",
-              "short_name": "Q3 ED LOS: Suicidal Behavior",
-              "description": "Monthly third-quartile (75th percentile) ED length of stay, in minutes, for encounters with a suicidal behavior diagnosis.",
-              "measure_type": "Rate",
-              "unit": "Minutes"
-            },
-            {
-              "name": "epic_q3_ed_los_suicidal_behavior_suppressed_flag",
-              "short_name": "Suppressed flag: Q3 ED LOS, suicidal behavior",
-              "description": "Indicates the Q3 ED length of stay cell was suppressed by Epic and left missing.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "epic_median_ed_los_mood",
-              "short_name": "Median ED LOS: Mood",
-              "description": "Monthly median ED length of stay, in minutes, for encounters with a mood diagnosis.",
-              "measure_type": "Rate",
-              "unit": "Minutes"
-            },
-            {
-              "name": "epic_median_ed_los_mood_suppressed_flag",
-              "short_name": "Suppressed flag: median ED LOS, mood",
-              "description": "Indicates the median ED length of stay cell was suppressed by Epic and left missing.",
-              "measure_type": "Binary",
-              "unit": "0/1"
-            },
-            {
-              "name": "epic_pct_sliced_population_mood",
-              "short_name": "% of Mood Diagnosis Encounters",
-              "description": "This cell's share of that month's total US mood-diagnosis ED encounters, NOT a prevalence rate.",
+              "name": "epic_ed_pct_visits_mood",
+              "short_name": "Mood disorders",
+              "description": "Percent of all ED encounters in the geography, month and age group that carried a Mood disorders diagnosis.",
               "measure_type": "Percent",
               "unit": "Percent"
             },
             {
-              "name": "epic_pct_sliced_population_mood_suppressed_flag",
-              "short_name": "Suppressed flag: % sliced population, mood",
-              "description": "Indicates the percentage cell was suppressed: either left blank by Epic, or reported as a bounded value like \"<0.01%\".",
+              "name": "epic_ed_pct_visits_mood_suppressed_flag",
+              "short_name": "Mood disorders",
+              "description": "Indicates whether the Mood disorders percent of ED encounters was suppressed at source.",
               "measure_type": "Binary",
               "unit": "0/1"
             },
             {
-              "name": "epic_q1_ed_los_mood",
-              "short_name": "Q1 ED LOS: Mood",
-              "description": "Monthly first-quartile (25th percentile) ED length of stay, in minutes, for encounters with a mood diagnosis.",
-              "measure_type": "Rate",
-              "unit": "Minutes"
+              "name": "epic_ed_pct_visits_behavioral",
+              "short_name": "Behavioral disorders",
+              "description": "Percent of all ED encounters in the geography, month and age group that carried a Behavioral disorders diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
             },
             {
-              "name": "epic_q1_ed_los_mood_suppressed_flag",
-              "short_name": "Suppressed flag: Q1 ED LOS, mood",
-              "description": "Indicates the Q1 ED length of stay cell was suppressed by Epic and left missing.",
+              "name": "epic_ed_pct_visits_behavioral_suppressed_flag",
+              "short_name": "Behavioral disorders",
+              "description": "Indicates whether the Behavioral disorders percent of ED encounters was suppressed at source.",
               "measure_type": "Binary",
               "unit": "0/1"
             },
             {
-              "name": "epic_q3_ed_los_mood",
-              "short_name": "Q3 ED LOS: Mood",
-              "description": "Monthly third-quartile (75th percentile) ED length of stay, in minutes, for encounters with a mood diagnosis.",
-              "measure_type": "Rate",
-              "unit": "Minutes"
+              "name": "epic_ed_pct_visits_substance_use",
+              "short_name": "Substance use",
+              "description": "Percent of all ED encounters in the geography, month and age group that carried a Substance use diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
             },
             {
-              "name": "epic_q3_ed_los_mood_suppressed_flag",
-              "short_name": "Suppressed flag: Q3 ED LOS, mood",
-              "description": "Indicates the Q3 ED length of stay cell was suppressed by Epic and left missing.",
+              "name": "epic_ed_pct_visits_substance_use_suppressed_flag",
+              "short_name": "Substance use",
+              "description": "Indicates whether the Substance use percent of ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_visits_psychosis",
+              "short_name": "Psychosis",
+              "description": "Percent of all ED encounters in the geography, month and age group that carried a Psychosis diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_visits_psychosis_suppressed_flag",
+              "short_name": "Psychosis",
+              "description": "Indicates whether the Psychosis percent of ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_visits_eating_disorders",
+              "short_name": "Eating disorders",
+              "description": "Percent of all ED encounters in the geography, month and age group that carried a Eating disorders diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_visits_eating_disorders_suppressed_flag",
+              "short_name": "Eating disorders",
+              "description": "Indicates whether the Eating disorders percent of ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_visits_other",
+              "short_name": "Other mental health",
+              "description": "Percent of all ED encounters in the geography, month and age group that carried a Other mental health diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_visits_other_suppressed_flag",
+              "short_name": "Other mental health",
+              "description": "Indicates whether the Other mental health percent of ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_age_suicidal_behavior",
+              "short_name": "Suicidal behavior",
+              "description": "Percent of the state's Suicidal behavior ED encounters in the month that fell in the age band.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_age_suicidal_behavior_suppressed_flag",
+              "short_name": "Suicidal behavior",
+              "description": "Indicates whether the age share of Suicidal behavior ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_age_mood",
+              "short_name": "Mood disorders",
+              "description": "Percent of the state's Mood disorders ED encounters in the month that fell in the age band.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_age_mood_suppressed_flag",
+              "short_name": "Mood disorders",
+              "description": "Indicates whether the age share of Mood disorders ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_age_behavioral",
+              "short_name": "Behavioral disorders",
+              "description": "Percent of the state's Behavioral disorders ED encounters in the month that fell in the age band.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_age_behavioral_suppressed_flag",
+              "short_name": "Behavioral disorders",
+              "description": "Indicates whether the age share of Behavioral disorders ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_age_substance_use",
+              "short_name": "Substance use",
+              "description": "Percent of the state's Substance use ED encounters in the month that fell in the age band.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_age_substance_use_suppressed_flag",
+              "short_name": "Substance use",
+              "description": "Indicates whether the age share of Substance use ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_age_psychosis",
+              "short_name": "Psychosis",
+              "description": "Percent of the state's Psychosis ED encounters in the month that fell in the age band.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_age_psychosis_suppressed_flag",
+              "short_name": "Psychosis",
+              "description": "Indicates whether the age share of Psychosis ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_age_eating_disorders",
+              "short_name": "Eating disorders",
+              "description": "Percent of the state's Eating disorders ED encounters in the month that fell in the age band.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_age_eating_disorders_suppressed_flag",
+              "short_name": "Eating disorders",
+              "description": "Indicates whether the age share of Eating disorders ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_pct_age_other",
+              "short_name": "Other mental health",
+              "description": "Percent of the state's Other mental health ED encounters in the month that fell in the age band.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_ed_pct_age_other_suppressed_flag",
+              "short_name": "Other mental health",
+              "description": "Indicates whether the age share of Other mental health ED encounters was suppressed at source.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_ed_n_visits",
+              "short_name": "ED visits",
+              "description": "Number of Epic Cosmos ED encounters in the geography and month, for any diagnosis.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "epic_ed_n_visits_suppressed_flag",
+              "short_name": "Suppressed flag: ED visits",
+              "description": "Indicates whether the ED visit count was suppressed and imputed as 5 at source.",
               "measure_type": "Binary",
               "unit": "0/1"
             }

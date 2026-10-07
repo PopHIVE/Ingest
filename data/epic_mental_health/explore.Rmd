@@ -1,0 +1,372 @@
+---
+title: "Epic Cosmos mental health ED visits"
+subtitle: "`epic_mental_health` standardized output"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    fig_width: 8
+    fig_height: 4.6
+    df_print: kable
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, message = FALSE, warning = FALSE,
+  dpi = 140, fig.retina = 2, out.width = "100%"
+)
+```
+
+```{r libs, include = FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(sf)
+```
+
+```{r palette, include = FALSE}
+# Palette: slots 1-3 of the validated categorical set, plus neutral ink. Magnitude
+# is carried by position everywhere except the choropleth, which uses the
+# single-hue blue sequential ramp.
+blue   <- "#2a78d6"
+orange <- "#eb6834"
+aqua   <- "#1baf7a"
+ink    <- "#0b0b0b"
+ink2   <- "#52514e"
+muted  <- "#898781"
+grid_c <- "#e1e0d9"
+axis_c <- "#c3c2b7"
+surf   <- "#fcfcfb"
+
+seq_blue <- c("#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5",
+              "#256abf", "#184f95", "#0d366b")
+
+theme_pop <- function(base_size = 11) {
+  theme_minimal(base_size = base_size) +
+    theme(
+      plot.background   = element_rect(fill = surf, colour = NA),
+      panel.background  = element_rect(fill = surf, colour = NA),
+      panel.grid.major  = element_line(colour = grid_c, linewidth = 0.3),
+      panel.grid.minor  = element_blank(),
+      axis.line.x       = element_line(colour = axis_c, linewidth = 0.4),
+      axis.ticks        = element_blank(),
+      axis.text         = element_text(colour = muted, size = rel(0.85)),
+      axis.title        = element_text(colour = ink2, size = rel(0.9)),
+      plot.title        = element_text(colour = ink, face = "bold", size = rel(1.05)),
+      plot.subtitle     = element_text(colour = ink2, size = rel(0.9)),
+      plot.caption      = element_text(colour = muted, size = rel(0.8), hjust = 0),
+      strip.text        = element_text(colour = ink, face = "bold",
+                                       size = rel(0.85), hjust = 0),
+      legend.position   = "top",
+      legend.justification = "left",
+      legend.title      = element_blank(),
+      legend.text       = element_text(colour = ink2, size = rel(0.85)),
+      plot.margin       = margin(10, 14, 10, 10)
+    )
+}
+theme_set(theme_pop())
+
+theme_map <- function() {
+  theme_pop() +
+    theme(
+      panel.grid.major = element_blank(),
+      axis.line.x      = element_blank(),
+      axis.text        = element_blank(),
+      axis.title       = element_blank(),
+      legend.position  = "right",
+      legend.title     = element_text(colour = ink2, size = rel(0.85))
+    )
+}
+```
+
+```{r load, include = FALSE}
+raw <- vroom::vroom(
+  "standard/data.csv.gz",
+  col_types = vroom::cols(geography = "c", time = "c", sex = "c", .default = "d")
+)
+
+dx_lab <- c(
+  suicidal_behavior = "Suicidal behavior",
+  mood              = "Mood",
+  substance_use     = "Substance use",
+  psychosis         = "Psychosis",
+  behavioral        = "Behavioral",
+  eating_disorders  = "Eating disorders",
+  other             = "Other MH",
+  all_cause         = "All ED encounters"
+)
+
+d_all <- raw %>%
+  pivot_longer(starts_with("epic_"), names_to = "col", values_to = "v") %>%
+  mutate(
+    kind = if_else(grepl("_suppressed_flag$", col), "flag", "value"),
+    base = sub("_suppressed_flag$", "", col)
+  ) %>%
+  select(-col) %>%
+  pivot_wider(names_from = kind, values_from = v) %>%
+  mutate(
+    stat = if_else(
+      grepl("^epic_ed_pct_visits_", base),
+      "pct_visits",
+      sub("^epic_ed_los_([a-z]+)_.*$", "\\1", base)
+    ),
+    dx = if_else(
+      grepl("^epic_ed_pct_visits_", base),
+      sub("^epic_ed_pct_visits_", "", base),
+      sub("^epic_ed_los_[a-z]+_", "", base)
+    ),
+    dx    = factor(dx, levels = names(dx_lab), labels = dx_lab),
+    date  = as.Date(time),
+    is_mh = dx != "All ED encounters"
+  ) %>%
+  select(geography, date, sex, dx, stat, value, flag, is_mh)
+
+# -- Suppressed cells are excluded from every analysis in this document. --------
+# A flag of 1 means the source withheld the cell (10 or fewer encounters). The
+# ingest drops nothing, so a flag of 1 and a missing value coincide exactly and
+# this one filter is the whole exclusion rule.
+#
+# Negative durations are NOT excluded: they are what the source published and are
+# retained here as such. They are confined to the min statistic (~17% of cells)
+# and four avg cells, none of them national, so no figure below is materially
+# affected - but the negatives are counted in the note that follows so the
+# decision is visible rather than implicit.
+n_before <- nrow(d_all)
+d <- d_all %>% filter(flag == 0, !is.na(value))
+excluded <- n_before - nrow(d)
+n_neg <- sum(d$value < 0)
+
+all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE) %>%
+  filter(nchar(geography) == 2) %>%
+  select(geography, geography_name)
+
+d <- left_join(d, all_fips, by = "geography")
+
+win_start <- max(d$date) - 365
+```
+
+```{r pool-mh, include = FALSE}
+# -- "All mental health visits" -------------------------------------------------
+# The source publishes no encounter counts, so the seven diagnosis buckets cannot
+# be pooled directly. But epic_ed_pct_visits_* is each bucket's share of the same
+# denominator (all ED encounters in that geography/month/sex), so it is
+# proportional to the bucket's encounter count and can serve as the weight.
+#
+#   pooled statistic = sum(w_i * stat_i) / sum(w_i),   w_i = pct_visits_i
+#
+# This is exact for the mean. For the median it is an approximation - a weighted
+# average of bucket medians is not the median of the pooled distribution - and is
+# labelled as such wherever it appears.
+#
+# Pooling runs over observed buckets only, and a cell is emitted only if the four
+# well-observed diagnoses are all present. Those four carry ~98% of national
+# mental health volume, so the estimate is stable even where the sparse buckets
+# (eating disorders, behavioral, other) are suppressed and drop out.
+CORE <- c("Suicidal behavior", "Mood", "Substance use", "Psychosis")
+
+wts <- d %>%
+  filter(stat == "pct_visits") %>%
+  select(geography, date, sex, dx, w = value)
+
+mh_pool <- d %>%
+  filter(is_mh, stat %in% c("avg", "median", "sd")) %>%
+  inner_join(wts, by = c("geography", "date", "sex", "dx")) %>%
+  group_by(geography, geography_name, date, sex, stat) %>%
+  filter(all(CORE %in% as.character(dx))) %>%
+  summarize(value = sum(value * w) / sum(w), n_dx = n(), .groups = "drop") %>%
+  mutate(dx = "All mental health", is_mh = TRUE)
+
+# Analysis frame: the seven diagnosis buckets plus the pooled mental health total
+lev <- c(setdiff(unname(dx_lab), "All ED encounters"), "All mental health")
+
+mh <- bind_rows(
+  d %>% filter(is_mh, stat %in% c("avg", "median", "sd")) %>%
+    select(geography, geography_name, date, sex, dx, stat, value),
+  mh_pool %>% select(geography, geography_name, date, sex, dx, stat, value)
+) %>%
+  mutate(dx = factor(as.character(dx), levels = lev))
+```
+
+**Suppressed cells are excluded from every figure and table below.**
+`r format(excluded, big.mark = ",")` of `r format(n_before, big.mark = ",")` measure
+cells (`r sprintf("%.0f%%", 100 * excluded / n_before)`) are suppressed.
+
+Some values are negative in Epic Cosmos: 9,513 in min, 4 in avg
+
+
+# 1. Length of stays
+
+```{r fig-dist, fig.height = 6.6}
+# Each point is the unweighted mean of that year's monthly values. Months cannot
+# be volume-weighted: the source publishes no encounter counts.
+dist <- mh %>%
+  filter(sex == "Overall", geography == "00", stat %in% c("median", "avg"),
+         dx != "All mental health") %>%
+  mutate(year = as.integer(format(date, "%Y"))) %>%
+  group_by(dx, stat, year) %>%
+  summarize(value = mean(value), .groups = "drop") %>%
+  mutate(stat = factor(stat, c("median", "avg"), c("Median", "Mean")))
+
+# One y order for every panel, from the all-year median, so panels are comparable
+ord <- dist %>%
+  filter(stat == "Median") %>%
+  group_by(dx) %>%
+  summarize(v = mean(value), .groups = "drop") %>%
+  arrange(v) %>%
+  pull(dx)
+
+yr_lab <- c("2022" = "2022 (Jul-Dec)", "2026" = "2026 (Jan-Jun)")
+dist <- dist %>%
+  mutate(year_lab = ifelse(as.character(year) %in% names(yr_lab),
+                           yr_lab[as.character(year)], as.character(year)))
+
+ggplot(dist, aes(x = value, y = factor(dx, levels = ord), colour = stat)) +
+  geom_point(size = 2.4) +
+  facet_wrap(~ year_lab, ncol = 3) +
+  scale_colour_manual(values = c(Median = blue, Mean = orange)) +
+  scale_x_continuous(expand = expansion(mult = c(0.08, 0.12)),
+                     breaks = scales::breaks_pretty(4)) +
+  labs(
+    title = "Mean and median ED stay by mental health diagnosis and year",
+    subtitle = "National, all sexes. Each point averages that year's monthly values",
+    x = "Minutes from ED arrival to departure", y = NULL
+  )
+```
+
+# 2. Trends over time
+
+```{r fig-trend, fig.height = 5.4}
+trend <- mh %>% filter(sex == "Overall", geography == "00", stat == "median")
+
+ggplot(trend, aes(date, value)) +
+  geom_line(colour = blue, linewidth = 0.7) +
+  facet_wrap(~ dx, ncol = 4, scales = "free_y") +
+  scale_x_date(date_labels = "'%y", date_breaks = "1 year") +
+  labs(
+    title = "Median stay by diagnosis",
+    x = NULL, y = "Median minutes"  )
+```
+
+
+## Stratified by sex
+
+```{r fig-trend-sex, fig.height = 5.4}
+trend_sex <- mh %>%
+  filter(geography == "00", stat == "median", sex %in% c("Female", "Male"))
+
+ggplot(trend_sex, aes(date, value, colour = sex)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~ dx, ncol = 4, scales = "free_y") +
+  scale_colour_manual(values = c(Female = blue, Male = orange)) +
+  scale_x_date(date_labels = "'%y", date_breaks = "1 year") +
+  labs(
+    title = "Median stay by diagnosis and sex",
+    subtitle = "Ambiguous stratum is omitted, it is heavily suppressed",
+    x = NULL, y = "Median minutes",
+  )
+```
+
+
+## Stratified by age
+
+
+
+# 3. Median stay by state and diagnosis
+
+```{r fig-map-dx, fig.height = 7.5}
+# Puerto Rico ships with the usmap polygons but never appears in this source, so it
+# is dropped rather than drawn as an unexplained grey shape.
+us <- usmap::us_map(regions = "states") %>% filter(fips != "72")
+
+yr_lab <- c("2022" = "2022 (Jul-Dec)", "2026" = "2026 (Jan-Jun)")
+
+map_dx <- d %>%
+  filter(is_mh, stat == "median", sex == "Overall", geography != "00") %>%
+  mutate(year = as.integer(format(date, "%Y")), dx = as.character(dx)) %>%
+  group_by(dx, geography, geography_name, year) %>%
+  summarize(median_min = mean(value), .groups = "drop")
+
+dx_order <- map_dx %>%
+  group_by(dx) %>%
+  summarize(m = median(median_min), .groups = "drop") %>%
+  arrange(m) %>%
+  pull(dx)
+
+map_dx_sf <- tidyr::expand_grid(
+    fips = us$fips,
+    year = sort(unique(map_dx$year)),
+    dx   = dx_order
+  ) %>%
+  left_join(map_dx, by = c("fips" = "geography", "year", "dx")) %>%
+  left_join(us, by = "fips") %>%
+  mutate(
+    year_lab = ifelse(as.character(year) %in% names(yr_lab),
+                      yr_lab[as.character(year)], as.character(year)),
+    dx = factor(dx, levels = dx_order)
+  ) %>%
+  st_as_sf()
+
+# One shared scale so rows are comparable. It is capped at 900 minutes because a
+# handful of state-years (mostly psychosis and behavioral) run to ~2,600 and an
+# uncapped scale would flatten every other row to near-white; values above the cap
+# are drawn at the cap.
+ggplot(map_dx_sf) +
+  geom_sf(aes(fill = median_min), colour = surf, linewidth = 0.1) +
+  facet_grid(dx ~ year_lab, switch = "y") +
+  scale_fill_gradientn(
+    colours = seq_blue, na.value = grid_c, labels = label_number(),
+    limits = c(150, 900), oob = scales::squish,
+    guide = guide_colourbar(barheight = 10, barwidth = 0.8, ticks = FALSE)
+  ) +
+  labs(
+    title = "Median ED stay by state, year and mental health diagnosis",
+    subtitle = paste(
+      "All sexes, monthly medians averaged within each year.",
+      "Rows share one colour scale, so they are comparable to each other",
+      sep = "\n"
+    ),
+    fill = "Median\nminutes",
+    caption = paste(
+      "Grey = no admissible value: suppressed at source (10 or fewer encounters), or a state absent from the export.",
+      "Eating disorders is mappable in only 46% of state-years and behavioral in 90%; the other five are near-complete.",
+      "Scale capped at 900 minutes; a few psychosis and behavioral state-years exceed it and are drawn at the cap.",
+      sep = "\n"
+    )
+  ) +
+  theme_map() +
+  theme(
+    strip.text.y.left = element_text(angle = 0, hjust = 1),
+    strip.placement   = "outside",
+    panel.spacing     = unit(2, "pt")
+  )
+```
+
+Rows are ordered by overall median, shortest at the top. Three things the grid shows that a
+single combined map could not:
+
+- **The geography is not the same for every diagnosis.** Psychosis and behavioral run long
+  in a different set of states than substance use does, so any single mental health map
+  averages away real variation.
+- **Psychosis is both the longest row and the widest**, with far more spread between states
+  than the other diagnoses — it would dominate any combined measure.
+- **Eating disorders is mostly grey**, and behavioral is patchy in the sparser states. Those
+  two rows should not be read as geographic patterns; they are closer to a map of where
+  Epic's footprint is large enough to clear the suppression threshold.
+
+```{r map-dx-table}
+map_dx %>%
+  filter(year == 2025) %>%
+  select(geography_name, dx, median_min) %>%
+  mutate(dx = factor(dx, levels = dx_order)) %>%
+  pivot_wider(names_from = dx, values_from = median_min) %>%
+  mutate(across(where(is.numeric), ~ round(.x))) %>%
+  arrange(geography_name) %>%
+  rename(State = geography_name)
+```
+
+The table gives 2025, the most recent complete year, so every mapped value is readable
+without the colour scale. Blank cells are suppressed.
+
