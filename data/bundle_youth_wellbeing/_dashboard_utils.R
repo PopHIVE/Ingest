@@ -69,34 +69,61 @@ yrbss        <- read_parquet("dist/yrbss_state_age_demographics.parquet")
 # epic_preprocessing pipeline that hasn't yet been formally ingested into
 # PopHIVE/Ingest as its own data/{source} folder, so for now it's read
 # directly from its absolute path on this machine rather than from dist/.
-epic_concussion_path <- "C:/Users/as5325/Desktop/epic_preprocessing/data/cosmos_concussions/standard/data.csv.gz"
+epic_concussion_path <- "../epic_concussions/standard/data.csv.gz"
 epic_concussion <- vroom::vroom(epic_concussion_path, show_col_types = FALSE) %>%
   mutate(geography_name = if_else(geography == "00", "United States", fips2name[geography])) %>%
   filter(!is.na(geography_name))
 
-# Epic Cosmos mental-health ED length-of-stay data -- two ED-diagnosis
-# buckets (Suicidal behavior, Mood), reshaped long on `diagnosis` so the
-# dashboard can offer both as a dropdown/filter rather than hard-coding one.
-# Now formally ingested at data/epic_mental_health (unlike epic_concussion
-# above, which is still a stopgap absolute-path read).
+# Epic Cosmos mental-health ED data (October 2026 rebuild) -- seven
+# ED-diagnosis groups, reshaped long on `diagnosis` so the dashboard can offer
+# them as a dropdown/filter. Read from data/epic_mental_health, which now holds
+# the cosmos_mental_health standard output (replacing the older two-diagnosis
+# ingest with different columns).
 # Median/Q1/Q3 ED length-of-stay cells are suppressed-to-NA at source (no
 # imputation, unlike count-based Epic measures), so no suppressed_flag
-# handling is needed downstream for those three. `pct_share` is a
-# compositional share of THIS diagnosis's own encounters across state/age --
-# not a rate or a visit count -- see the chart's "About this chart" caveat.
+# handling is needed downstream for those three. `pct_visits` is the percent
+# of ED encounters in the geography/age slice that carry the diagnosis (case
+# mix); state values are derived in the source ingest. The `all_cause`
+# diagnosis (national, all ages only) is left out of the long table.
 epic_mh_path <- "../epic_mental_health/standard/data.csv.gz"
-epic_mh <- vroom::vroom(epic_mh_path, show_col_types = FALSE) %>%
+mh_dx_labels <- c(
+  suicidal_behavior = "Suicidal behavior", mood = "Mood", behavioral = "Behavioral",
+  substance_use = "Substance use", psychosis = "Psychosis",
+  eating_disorders = "Eating disorders", other = "Other"
+)
+mh_dx_re <- paste0("^epic_ed_(los_median|los_q1|los_q3|pct_visits)_(",
+                   paste(names(mh_dx_labels), collapse = "|"), ")$")
+# Explicit col_types: the file opens with all-NA rows, so vroom's guess would
+# type sparse columns (behavioral, eating disorders, other) as logical and
+# silently drop their values.
+epic_mh <- vroom::vroom(
+  epic_mh_path, show_col_types = FALSE,
+  col_types = vroom::cols(geography = "c", time = "D", age = "c", .default = "d")
+) %>%
   mutate(geography_name = if_else(geography == "00", "United States", fips2name[geography])) %>%
   filter(!is.na(geography_name)) %>%
   pivot_longer(
-    cols = matches("^epic_(median_ed_los|q1_ed_los|q3_ed_los|pct_sliced_population)_(suicidal_behavior|mood)$"),
-    names_pattern = "^epic_(median_ed_los|q1_ed_los|q3_ed_los|pct_sliced_population)_(suicidal_behavior|mood)$",
+    cols = matches(mh_dx_re),
+    names_pattern = mh_dx_re,
     names_to = c(".value", "diagnosis")
   ) %>%
   transmute(
     geography, time, age, geography_name,
-    diagnosis = if_else(diagnosis == "suicidal_behavior", "Suicidal behavior", "Mood"),
-    median_los = median_ed_los, q1_los = q1_ed_los, q3_los = q3_ed_los, pct_share = pct_sliced_population
+    diagnosis = unname(mh_dx_labels[diagnosis]),
+    median_los = los_median, q1_los = los_q1, q3_los = los_q3, pct_visits,
+    n_visits = epic_ed_n_visits
+  ) %>%
+  # Hover text: denominator = all ED visits in the slice (epic_ed_n_visits);
+  # numerator = visits with the diagnosis, back-calculated as pct_visits x
+  # denominator (the source publishes the percent, not the diagnosis count, so
+  # it is approximate). Blank where either input is missing.
+  mutate(
+    hover_n = if_else(
+      is.na(pct_visits) | is.na(n_visits), "",
+      paste0("<br>Visits with diagnosis: ~",
+             format(round(pct_visits / 100 * n_visits), big.mark = ",", trim = TRUE),
+             "<br>All ED visits: ", format(round(n_visits), big.mark = ",", trim = TRUE))
+    )
   )
 
 # Crisis Text Line "Crisis Trends" (crisistrends.org) conversation-topic
