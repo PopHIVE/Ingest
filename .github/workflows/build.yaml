@@ -70,11 +70,14 @@ jobs:
         # install from GitHub. cmu-delphi/epidatr has no "main" branch -- its
         # default branch is "dev" -- so @main 404s every time (not a transient
         # rate limit; renv's curl wraps the 404 as generic "error code 22").
+        # Pinned to a commit rather than @dev so a change upstream can't alter
+        # what the Delphi sources receive without a commit here (f8951bbe was
+        # dev's head on 2026-09-25, the version behind the last good builds).
         # Also retry, since api.github.com calls can still hit GitHub's
         # secondary rate limit on shared Actions runners (rstudio/renv#324).
         run: |
           for attempt in 1 2 3; do
-            Rscript -e "renv::install('dissc-yale/dcf'); renv::install('cmu-delphi/epidatr@dev')" && exit 0
+            Rscript -e "renv::install('dissc-yale/dcf'); renv::install('cmu-delphi/epidatr@f8951bbe36a88591af0c0ace5978b8378ad14a0b')" && exit 0
             echo "install failed (attempt $attempt); retrying after backoff"
             sleep $((attempt * 15))
           done
