@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-07T14:20:37Z",
+  "generated": "2026-10-09T09:21:48Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -7054,6 +7054,156 @@
               "name": "value",
               "short_name": "Value",
               "description": "Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "chr_disconnected_county.parquet",
+          "path": "data/bundle_youth_wellbeing/dist/chr_disconnected_county.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_youth_wellbeing/dist/chr_disconnected_county.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)",
+              "measure_type": "identifier",
+              "unit": "name or FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "fips",
+              "short_name": "FIPS Code",
+              "description": "FIPS geographic identifier",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "state",
+              "short_name": "state",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year",
+              "measure_type": "date",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age Group",
+              "description": "Age group category",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Source",
+              "description": "Data source identifier for tall-format files",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "value",
+              "short_name": "value",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "chr_disconnected_state.parquet",
+          "path": "data/bundle_youth_wellbeing/dist/chr_disconnected_state.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_youth_wellbeing/dist/chr_disconnected_state.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "Geographic area name (state or country name for state/national files; 5-digit FIPS code for county-level files)",
+              "measure_type": "identifier",
+              "unit": "name or FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "fips",
+              "short_name": "FIPS Code",
+              "description": "FIPS geographic identifier",
+              "measure_type": "identifier",
+              "unit": "FIPS code",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year",
+              "measure_type": "date",
+              "unit": "year",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age Group",
+              "description": "Age group category",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Source",
+              "description": "Data source identifier for tall-format files",
+              "measure_type": "category",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "measure",
+              "description": "",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "value",
+              "short_name": "value",
+              "description": "",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -17747,6 +17897,191 @@
               "description": "Weekly count of RSV-associated hospital admissions reported to CDC's NHSN.",
               "measure_type": "count",
               "unit": "hospitalizations"
+            }
+          ]
+        }
+      ]
+    },
+    "drowning": {
+      "name": "drowning",
+      "display_name": "Drowning",
+      "description": "Mortality data from death certificates filed in the 50 states and the District of Columbia, queried through CDC WONDER's Underlying Cause of Death (ICD-10, expanded) database and restricted to unintentional drowning: ICD-10 codes W65 (bathtub), W66 (swimming pool fall), W67 (in swimming pool), W68 (fall into swimming pool), W69 (natural water), W70 (fall into natural water), W73 (other specified drowning/submersion), and W74 (unspecified drowning/submersion). Data are broken out separately by age group, sex, single race, and Hispanic origin (each queried independently, not cross-tabulated), at both the state and county level, for years 2018-2024. State and county both use CDC WONDER's Ten-Year Age Groups (<1, 1-4, 5-14, 15-24, ..., 85+), but the two levels differ in how population is sourced. At the state level, CDC WONDER reports Population and Crude Rate directly for Ten-Year Age Groups. At the county level, CDC WONDER reports Deaths only for this age variable -- Population and Crude Rate remain checked (mandatory) in the query form but the server omits them from the export regardless, for every state and year. County-level population is therefore derived here by summing CDC's Five-Year Age Groups county population export into the same Ten-Year buckets (e.g. 5-9 + 10-14 = 5-14); crude_rate is then recomputed from that derived population rather than taken from CDC directly, so drowning_crude_rate_lcl/_ucl are not populated for county-level age rows (a valid confidence interval needs CDC's own interval method, which this derivation does not replicate). This also surfaces a further CDC limitation: county-level population is reported as 'Not Applicable' for the <1, 1-4, and 85+ Five-Year groups nationwide, for every county regardless of size -- so missing_denom_flag = 1 for those three Ten-Year buckets at the county level essentially always, and county-level drowning rates (though not death counts) are structurally unavailable for infants/toddlers and the oldest age group. Missing values are coded as -999, accompanied by two independent row-level indicator columns (a true zero is reported as 0, never -999). suppressed_flag = 1 where CDC withheld a cell for confidentiality (any cell representing fewer than 10 deaths); this affects the death count and the rates derived from it, never the population. missing_denom_flag = 1 where no population denominator exists for that geography and demographic combination (CDC reports 'Not Applicable' or 'Not Available', or -- for county-level age specifically -- the Five-Year population export used to derive it was itself missing); this affects the population and the rates derived from it, never the death count. The two are not mutually exclusive and are both 1 on rows carrying both markers, which is common at the county level. No national total is included: CDC WONDER does not provide one directly for this query design, and summing state totals that each contain suppressed cells of unknown magnitude would produce a biased estimate.",
+      "standard_files": [
+        {
+          "filename": "data_county.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age Group",
+              "description": "Age group category",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex category (Male, Female, Overall)",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/Ethnicity",
+              "description": "Race/ethnicity category",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "drowning_deaths",
+              "short_name": "Drowning deaths",
+              "description": "Annual count of unintentional drowning deaths.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "drowning_population",
+              "short_name": "Population (drowning denominator)",
+              "description": "Population denominator for the drowning crude rate.",
+              "measure_type": "Count",
+              "unit": "Persons"
+            },
+            {
+              "name": "drowning_crude_rate",
+              "short_name": "Drowning death rate",
+              "description": "Annual unintentional drowning death rate per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000 population"
+            },
+            {
+              "name": "drowning_crude_rate_lcl",
+              "short_name": "Drowning death rate (lower CI)",
+              "description": "Lower 95% confidence bound for the drowning death rate.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000 population"
+            },
+            {
+              "name": "drowning_crude_rate_ucl",
+              "short_name": "Drowning death rate (upper CI)",
+              "description": "Upper 95% confidence bound for the drowning death rate.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000 population"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "suppressed_flag",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
+            },
+            {
+              "name": "missing_denom_flag",
+              "short_name": "missing_denom_flag",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
+            }
+          ]
+        },
+        {
+          "filename": "data_state.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age Group",
+              "description": "Age group category",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "sex",
+              "short_name": "Sex",
+              "description": "Sex category (Male, Female, Overall)",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "race_ethnicity",
+              "short_name": "Race/Ethnicity",
+              "description": "Race/ethnicity category",
+              "measure_type": "category",
+              "unit": ""
+            },
+            {
+              "name": "drowning_deaths",
+              "short_name": "Drowning deaths",
+              "description": "Annual count of unintentional drowning deaths.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "drowning_population",
+              "short_name": "Population (drowning denominator)",
+              "description": "Population denominator for the drowning crude rate.",
+              "measure_type": "Count",
+              "unit": "Persons"
+            },
+            {
+              "name": "drowning_crude_rate",
+              "short_name": "Drowning death rate",
+              "description": "Annual unintentional drowning death rate per 100,000 population.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000 population"
+            },
+            {
+              "name": "drowning_crude_rate_lcl",
+              "short_name": "Drowning death rate (lower CI)",
+              "description": "Lower 95% confidence bound for the drowning death rate.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000 population"
+            },
+            {
+              "name": "drowning_crude_rate_ucl",
+              "short_name": "Drowning death rate (upper CI)",
+              "description": "Upper 95% confidence bound for the drowning death rate.",
+              "measure_type": "Rate",
+              "unit": "Deaths per 100,000 population"
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "suppressed_flag",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
+            },
+            {
+              "name": "missing_denom_flag",
+              "short_name": "missing_denom_flag",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
             }
           ]
         }
