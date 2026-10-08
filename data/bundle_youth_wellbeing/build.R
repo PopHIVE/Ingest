@@ -584,19 +584,30 @@ chr_label <- function(df) {
     arrange(measure, fips, time)
 }
 
-chr_read('data_state.csv.gz') %>%
+chr_state <- chr_read('data_state.csv.gz') %>%
   rename(fips = geography) %>%
   as_state() %>%
-  chr_label() %>%
-  write_parquet('dist/chr_state.parquet')
+  chr_label()
+write_parquet(chr_state, 'dist/chr_state.parquet')
 
-chr_read('data_county.csv.gz') %>%
+chr_county <- chr_read('data_county.csv.gz') %>%
   mutate(fips = formatC(as.integer(geography), width = 5, flag = '0')) %>%
   select(-geography) %>%
   inner_join(county_cw, by = 'fips') %>%
   rename(geography = geography_name) %>%
-  chr_label() %>%
-  write_parquet('dist/chr_county.parquet')
+  chr_label()
+write_parquet(chr_county, 'dist/chr_county.parquet')
+
+# Disconnected youth only, as standalone files for the dashboard page that
+# uses just this measure. These duplicate the chr_disconnected_youth rows in
+# chr_state / chr_county.
+chr_state %>%
+  filter(measure == 'chr_disconnected_youth') %>%
+  write_parquet('dist/chr_disconnected_state.parquet')
+
+chr_county %>%
+  filter(measure == 'chr_disconnected_youth') %>%
+  write_parquet('dist/chr_disconnected_county.parquet')
 
 
 # =============================================================================
