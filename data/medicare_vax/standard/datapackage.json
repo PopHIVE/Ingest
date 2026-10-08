@@ -9,13 +9,18 @@
   },
   "resources": [
     {
-      "bytes": 13531,
-      "encoding": "ISO-8859-1",
-      "md5": "dc4bf4961c85f85affe5e8d281cfbb8a",
+      "bytes": 13206,
+      "encoding": "windows-1252",
+      "md5": "ec305d2913a7bc6e3b0bcac5e3e26da4",
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
-      "versions": {},
+      "versions": {
+        "hash": ["cb26fe6c3783d3cebbfe5ab8eb46689de47d0a7d"],
+        "author": ["Madi Baltagulov <156106808+MadiBal@users.noreply.github.com>"],
+        "date": ["Thu Oct 1 18:02:15 2026 -0400"],
+        "message": ["Flu and RSV vaccination sources (#233)"]
+      },
       "source": [],
       "data_format": "wide",
       "ids": [
@@ -23,11 +28,11 @@
           "variable": "geography"
         }
       ],
-      "id_length": 1,
+      "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-10-01 17:49:18.452368",
-      "last_modified": "2026-10-01 17:49:18.452368",
+      "created": "2026-10-08 14:06:59.682792",
+      "last_modified": "2026-10-08 14:06:59.682792",
       "vintage": {},
       "row_count": 1944,
       "entity_count": 1,
@@ -38,12 +43,11 @@
             "duplicates": 1943,
             "info": [],
             "time_range": [0, 292],
-            "type": "integer",
+            "type": "string",
             "missing": 0,
-            "mean": 0,
-            "sd": 0,
-            "min": 0,
-            "max": 0
+            "table": {
+              "00": 1944
+            }
           },
           {
             "name": "time",
@@ -356,8 +360,8 @@
               "short_name": "Flu season",
               "long_name": "Influenza season",
               "category": "immunization",
-              "short_description": "Flu season the estimate belongs to, e.g. 2024-25; missing for RSV, which is cumulative since August 2023.",
-              "long_description": "Influenza season the cumulative estimate belongs to, written as the two calendar years it spans. Flu coverage restarts each August 1. The RSV series counts vaccines received at any time since August 1, 2023, so it has no season and the column is missing for those rows.",
+              "short_description": "Flu season of the estimate, written as 2024-25.",
+              "long_description": "Season the cumulative flu estimate belongs to. Missing for RSV, which counts vaccines received since August 2023.",
               "measure_type": "identifier",
               "time_resolution": "Week",
               "sources": [
@@ -368,7 +372,7 @@
             },
             "time_range": [0, 292],
             "type": "string",
-            "missing": 0,
+            "missing": 186,
             "table": {
               "2019-20": 258,
               "2020-21": 258,
@@ -376,8 +380,7 @@
               "2022-23": 258,
               "2023-24": 258,
               "2024-25": 258,
-              "2025-26": 210,
-              "NA": 186
+              "2025-26": 210
             }
           },
           {
@@ -414,8 +417,8 @@
               "short_name": "Age group",
               "long_name": "Beneficiary age group",
               "category": "immunization",
-              "short_description": "65+ (flu) or 75+ (RSV).",
-              "long_description": "Age group of the beneficiaries: 65 and older for flu, 75 and older for RSV, measured as of December 31 of the first year of the season.",
+              "short_description": "Age group of the beneficiaries: 65+ for flu, 75+ for RSV.",
+              "long_description": "Age group of the beneficiaries: 65 and older for flu, 75 and older for RSV.",
               "measure_type": "category",
               "time_resolution": "Week",
               "sources": [
@@ -440,8 +443,8 @@
               "short_name": "Race and ethnicity",
               "long_name": "Race and ethnicity",
               "category": "immunization",
-              "short_description": "Overall, White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Asian, Non-Hispanic; or Other, Non-Hispanic.",
-              "long_description": "Race and ethnicity of the beneficiaries as recorded in Medicare enrollment data: Overall (which includes people with unknown race and ethnicity), White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Asian, Non-Hispanic; Other, Non-Hispanic.",
+              "short_description": "Race and ethnicity of the beneficiaries.",
+              "long_description": "Race and ethnicity of the beneficiaries. Overall includes people with unknown race and ethnicity.",
               "measure_type": "category",
               "time_resolution": "Week",
               "sources": [
@@ -470,8 +473,8 @@
               "short_name": "Vaccination coverage, Medicare",
               "long_name": "Cumulative percent of Medicare fee-for-service beneficiaries vaccinated",
               "category": "immunization",
-              "short_description": "Percent of Medicare fee-for-service beneficiaries with a vaccine claim as of the week ending date (flu since August 1 of the season; RSV since August 2023).",
-              "long_description": "Weekly cumulative percent of Medicare fee-for-service beneficiaries with a claim for the vaccine, estimated by CDC with Kaplan-Meier survival analysis from CMS Chronic Conditions Warehouse claims among beneficiaries enrolled as of August 1. Flu coverage counts vaccines received since August 1 of the season among beneficiaries 65 and older; RSV coverage counts vaccines received since August 1, 2023 among beneficiaries 75 and older with Part D. National only. Estimates reflect claims processed by the CMS data release date and exclude Medicare Advantage enrollees, who make up about half of beneficiaries.",
+              "short_description": "Percent of Medicare fee-for-service beneficiaries who had received the vaccine as of the week ending date.",
+              "long_description": "Cumulative percent of Medicare fee-for-service beneficiaries with a claim for the vaccine, estimated by CDC from CMS claims data. Medicare Advantage enrollees are not included.",
               "statement": "{value}% of Medicare fee-for-service beneficiaries had received the vaccine as of {time}",
               "measure_type": "Percent",
               "unit": "Percent",
@@ -493,7 +496,7 @@
           }
         ]
       },
-      "sha512": "d89403fde26a804d7a4bc6eed9cc6a36ed8e3f54e64f1343ef3be02e44b982e7a40cf667a2c519856fa05dfd2d89598de6c7f8b4d137e2b799c98ee61b5e5963"
+      "sha512": "5f5f319e7f5573b736475c2dbd342e66e2f82c39509657f1ea0302571b6aeeed18c3437d657dde9fb2cabd6c9342c28c29a15e320e8952c050a3571e2797131a"
     }
   ],
   "measure_info": {
@@ -502,8 +505,8 @@
       "short_name": "Flu season",
       "long_name": "Influenza season",
       "category": "immunization",
-      "short_description": "Flu season the estimate belongs to, e.g. 2024-25; missing for RSV, which is cumulative since August 2023.",
-      "long_description": "Influenza season the cumulative estimate belongs to, written as the two calendar years it spans. Flu coverage restarts each August 1. The RSV series counts vaccines received at any time since August 1, 2023, so it has no season and the column is missing for those rows.",
+      "short_description": "Flu season of the estimate, written as 2024-25.",
+      "long_description": "Season the cumulative flu estimate belongs to. Missing for RSV, which counts vaccines received since August 2023.",
       "measure_type": "identifier",
       "time_resolution": "Week",
       "sources": [
@@ -532,8 +535,8 @@
       "short_name": "Age group",
       "long_name": "Beneficiary age group",
       "category": "immunization",
-      "short_description": "65+ (flu) or 75+ (RSV).",
-      "long_description": "Age group of the beneficiaries: 65 and older for flu, 75 and older for RSV, measured as of December 31 of the first year of the season.",
+      "short_description": "Age group of the beneficiaries: 65+ for flu, 75+ for RSV.",
+      "long_description": "Age group of the beneficiaries: 65 and older for flu, 75 and older for RSV.",
       "measure_type": "category",
       "time_resolution": "Week",
       "sources": [
@@ -547,8 +550,8 @@
       "short_name": "Race and ethnicity",
       "long_name": "Race and ethnicity",
       "category": "immunization",
-      "short_description": "Overall, White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Asian, Non-Hispanic; or Other, Non-Hispanic.",
-      "long_description": "Race and ethnicity of the beneficiaries as recorded in Medicare enrollment data: Overall (which includes people with unknown race and ethnicity), White, Non-Hispanic; Black, Non-Hispanic; Hispanic; Asian, Non-Hispanic; Other, Non-Hispanic.",
+      "short_description": "Race and ethnicity of the beneficiaries.",
+      "long_description": "Race and ethnicity of the beneficiaries. Overall includes people with unknown race and ethnicity.",
       "measure_type": "category",
       "time_resolution": "Week",
       "sources": [
@@ -562,8 +565,8 @@
       "short_name": "Vaccination coverage, Medicare",
       "long_name": "Cumulative percent of Medicare fee-for-service beneficiaries vaccinated",
       "category": "immunization",
-      "short_description": "Percent of Medicare fee-for-service beneficiaries with a vaccine claim as of the week ending date (flu since August 1 of the season; RSV since August 2023).",
-      "long_description": "Weekly cumulative percent of Medicare fee-for-service beneficiaries with a claim for the vaccine, estimated by CDC with Kaplan-Meier survival analysis from CMS Chronic Conditions Warehouse claims among beneficiaries enrolled as of August 1. Flu coverage counts vaccines received since August 1 of the season among beneficiaries 65 and older; RSV coverage counts vaccines received since August 1, 2023 among beneficiaries 75 and older with Part D. National only. Estimates reflect claims processed by the CMS data release date and exclude Medicare Advantage enrollees, who make up about half of beneficiaries.",
+      "short_description": "Percent of Medicare fee-for-service beneficiaries who had received the vaccine as of the week ending date.",
+      "long_description": "Cumulative percent of Medicare fee-for-service beneficiaries with a claim for the vaccine, estimated by CDC from CMS claims data. Medicare Advantage enrollees are not included.",
       "statement": "{value}% of Medicare fee-for-service beneficiaries had received the vaccine as of {time}",
       "measure_type": "Percent",
       "unit": "Percent",
@@ -584,14 +587,14 @@
         "organization_url": "https://www.cdc.gov/ncird/",
         "location": "Weekly Cumulative Influenza (and RSV) Vaccination Coverage, by Race and Ethnicity, Medicare Fee-For-Service Beneficiaries (FluVaxView and RSVVaxView dashboards)",
         "location_url": "https://data.cdc.gov/d/agz7-4mvg",
-        "description": "CDC's National Center for Immunization and Respiratory Diseases estimates vaccination coverage among Medicare fee-for-service beneficiaries from administrative claims in the CMS Chronic Conditions Warehouse. Weekly cumulative estimates use Kaplan-Meier survival analysis among beneficiaries enrolled as of August 1: influenza vaccines received since August 1 of each season among adults 65 and older (2019-20 season onward), and RSV vaccines received since August 1, 2023 among adults 75 and older enrolled in a Part D plan. Estimates are national, broken down by race and ethnicity, and reflect claims processed by the CMS release date noted on the dashboard. Fee-for-service claims exclude Medicare Advantage enrollees.",
+        "description": "CDC estimates vaccination coverage among Medicare fee-for-service beneficiaries from administrative claims in the CMS Chronic Conditions Warehouse. Weekly cumulative estimates are calculated with Kaplan-Meier survival analysis among beneficiaries enrolled as of August 1. They cover flu vaccines received since August 1 of each season among adults 65 and older, from the 2019-20 season, and RSV vaccines received since August 1, 2023 among adults 75 and older enrolled in a Part D plan. Estimates are national, by race and ethnicity, and reflect claims processed by the CMS data release date. Medicare Advantage enrollees are not included.",
         "restrictions": "Public domain. CDC and CMS data are generally not subject to copyright restrictions.",
         "date_accessed": 2026
       },
       "id": "_sources"
     },
     "_catalog": {
-      "summary": "Weekly share of older adults on traditional Medicare with a claim for a flu shot (65 and older) or an RSV vaccine (75 and older), by race and ethnicity.",
+      "summary": "Weekly share of older adults on traditional Medicare with a claim for a flu or RSV vaccine, by race and ethnicity.",
       "search_terms": [
         "Respiratory",
         "flu vaccine",
@@ -607,6 +610,52 @@
         "data.csv.gz": "Weekly national coverage by vaccine, age group, and race/ethnicity"
       },
       "id": "_catalog"
+    }
+  },
+  "change_report": {
+    "data.csv.gz": {
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": false,
+          "added_levels": "00"
+        },
+        "time": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "season": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": "NA"
+        },
+        "vaccine": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "age": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "race_ethnicity": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "medicare_coverage": {
+          "status": "present",
+          "same_type": true
+        }
+      }
     }
   }
 }
