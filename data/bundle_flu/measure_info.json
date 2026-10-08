@@ -1,0 +1,888 @@
+{
+  "{category}geography": {
+    "short_name": "Geography",
+    "long_name": "Geography name",
+    "short_description": "State name, \"United States\" for the national total, or the county / region / area name.",
+    "long_description": "Name of the geographic area the row describes: a state or territory name, \"United States\" for the national total, a county (\"Los Angeles County, CA\"), an HHS region (\"HHS Region 1\") or a named sub-state area. geography_fips holds the matching identifier.",
+    "measure_type": "identifier",
+    "unit": "name",
+    "categories": {
+      "bundle_flu/dist/flu_overall_trends.parquet|": {},
+      "bundle_flu/dist/flu_trends_by_age.parquet|": {},
+      "bundle_flu/dist/flu_ed_visits_by_county.parquet|": {},
+      "bundle_flu/dist/flu_hospital_capacity.parquet|": {},
+      "bundle_flu/dist/flu_rt_and_mortality.parquet|": {},
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {},
+      "bundle_flu/dist/flu_vax_doses.parquet|": {}
+    }
+  },
+  "{category}geography_fips": {
+    "short_name": "Geography FIPS",
+    "long_name": "Geography FIPS code",
+    "short_description": "FIPS code for the geography; \"00\" is national.",
+    "long_description": "FIPS code of the row's geography: \"00\" national, 2-digit state or territory, 5-digit county. In flu_hospital_capacity (HHS regions) and flu_vax_substate (HHS regions and named sub-state areas) the identifier is the source's own id, such as \"hhs_1\" or \"il_city_of_chicago\", which is not a FIPS code.",
+    "measure_type": "identifier",
+    "unit": "FIPS code",
+    "categories": {
+      "bundle_flu/dist/flu_overall_trends.parquet|": {},
+      "bundle_flu/dist/flu_trends_by_age.parquet|": {},
+      "bundle_flu/dist/flu_ed_visits_by_county.parquet|": {},
+      "bundle_flu/dist/flu_hospital_capacity.parquet|": {},
+      "bundle_flu/dist/flu_rt_and_mortality.parquet|": {},
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {},
+      "bundle_flu/dist/flu_vax_doses.parquet|": {}
+    }
+  },
+  "{category}date": {
+    "short_name": "Date",
+    "long_name": "Period end date",
+    "short_description": "End date of the reporting period, YYYY-mm-dd.",
+    "long_description": "End date of the reporting period the row covers: the Saturday ending the week for weekly series, the last day of the month for monthly ones, the first day of the quarter for NCHS mortality (as published), and December 31 for FluVaxView county estimates.",
+    "measure_type": "date",
+    "unit": "date",
+    "categories": {
+      "bundle_flu/dist/flu_overall_trends.parquet|": {},
+      "bundle_flu/dist/flu_trends_by_age.parquet|": {},
+      "bundle_flu/dist/flu_ed_visits_by_county.parquet|": {},
+      "bundle_flu/dist/flu_hospital_capacity.parquet|": {},
+      "bundle_flu/dist/flu_rt_and_mortality.parquet|": {},
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {},
+      "bundle_flu/dist/flu_vax_doses.parquet|": {}
+    }
+  },
+  "bundle_flu/dist/flu_overall_trends.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "Epic Cosmos, ED": {
+        "source_id": "epic_pct_flu"
+      },
+      "CDC NSSP": {
+        "source_id": "percent_visits_flu"
+      },
+      "CDC RespNET": {
+        "source_id": "rate_flu"
+      },
+      "CDC NWSS": {
+        "source_id": "wastewater_flua"
+      },
+      "CDC NHSN": {
+        "source_id": "delphi_nhsn_flu"
+      },
+      "Delphi Hospital Claims": {
+        "source_id": "delphi_hospital_flu_smooth"
+      },
+      "CDC ILINet": {
+        "source_id": "delphi_fluview_wili"
+      },
+      "Kinsa": {
+        "source_id": "kinsa_cough_cold_flu"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_trends_by_age.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "Epic Cosmos, ED": {
+        "source_id": "epic_pct_flu"
+      },
+      "CDC RespNET": {
+        "source_id": "rate_flu"
+      },
+      "CDC NHSN": {
+        "source_id": "nhsn_adm_rate_flu"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_ed_visits_by_county.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "CDC NSSP": {
+        "source_id": "percent_visits_flu"
+      }
+    }
+  },
+  "{category}value{variant}": {
+    "measure_column": "{category}source",
+    "categories": {
+      "bundle_flu/dist/flu_overall_trends.parquet|": {},
+      "bundle_flu/dist/flu_trends_by_age.parquet|": {}
+    },
+    "variants": {
+      "blank": {
+        "short_name": "Value",
+        "short_description": "Primary measure from the data source, in the source's own units (see the source level)."
+      },
+      "_smooth": {
+        "short_name": "Smoothed value",
+        "short_description": "3-week trailing moving average. Delphi Hospital Claims is pre-smoothed by Delphi and not smoothed again."
+      },
+      "_scale": {
+        "short_name": "Scaled value (0-100)",
+        "short_description": "Value rescaled to 0-100 between the minimum and maximum of that series (one geography, source and, in the by-age file, age group)."
+      },
+      "_smooth_scale": {
+        "short_name": "Smoothed scaled value (0-100)",
+        "short_description": "Smoothed value rescaled to 0-100 between the minimum and maximum of that series."
+      }
+    }
+  },
+  "bundle_flu/dist/flu_overall_trends.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "Equals 1 when the underlying Epic Cosmos count was suppressed (small cell) and imputed; 0 otherwise. Non-Epic sources are 0.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_flu/dist/flu_trends_by_age.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "Equals 1 when the underlying Epic Cosmos count for this age group was suppressed (small cell) and imputed; 0 otherwise. Non-Epic sources are 0.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Week"
+  },
+  "bundle_flu/dist/flu_trends_by_age.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age group, in each source's own bands.",
+    "long_description": "Age group the row describes. Epic Cosmos and RESP-NET use \"<1 Years\", \"1-4 Years\", \"5-17 Years\", \"18-49 Years\", \"50-64 Years\", \"65+ Years\" (RESP-NET also \"Total\"); NHSN uses \"0-4\", \"5-17\", \"18-49\", \"50-64\", \"65-74\", \"75+\". The bands do not line up, so ages are not comparable across sources.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_flu/dist/flu_ed_visits_by_county.parquet|value": {
+    "short_name": "Flu ED visits (%)",
+    "long_name": "Percent of emergency department visits for influenza",
+    "short_description": "Percent of ED visits in the county that are for influenza (CDC NSSP).",
+    "long_description": "Percent of emergency department visits in the county that are for influenza, from CDC NSSP. Where NSSP had no county value the state value is substituted (is_state_estimate = 1).",
+    "measure_type": "Percent",
+    "unit": "% of ED visits",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "nssp"
+      }
+    ]
+  },
+  "bundle_flu/dist/flu_ed_visits_by_county.parquet|is_state_estimate": {
+    "short_name": "State-level estimate flag",
+    "short_description": "1 when the county value was imputed from the state-level value; 0 when reported directly.",
+    "long_description": "Equals 1 when the county-level percent of ED visits was missing in NSSP and was imputed using the state-level value (so all such counties in a state share one value that week); 0 when county-level data were reported directly.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "nssp"
+      }
+    ]
+  },
+  "bundle_flu/dist/flu_hospital_capacity.parquet|geography_level": {
+    "short_name": "Geography level",
+    "short_description": "National, State, or HHS region.",
+    "long_description": "Level of the geography: \"National\", \"State\" (states, DC and territories) or \"HHS region\" (the ten HHS regions, identified by hhs_1 to hhs_10 in geography_fips).",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_flu/dist/flu_hospital_capacity.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "nhsn_hosp_pats_flu": {
+        "source_id": "nhsn_hosp_pats_flu",
+        "short_name": "Patients hospitalized with flu",
+        "short_description": "Inpatients with laboratory-confirmed influenza.",
+        "measure_type": "Count",
+        "unit": "patients"
+      },
+      "nhsn_icu_pats_flu": {
+        "source_id": "nhsn_icu_pats_flu",
+        "short_name": "Patients in ICU with flu",
+        "short_description": "ICU patients with laboratory-confirmed influenza.",
+        "measure_type": "Count",
+        "unit": "patients"
+      },
+      "nhsn_adm_flu": {
+        "source_id": "nhsn_adm_flu",
+        "short_name": "Flu admissions",
+        "short_description": "New hospital admissions with influenza in the week, all ages.",
+        "measure_type": "Count",
+        "unit": "admissions"
+      },
+      "nhsn_adm_flu_adult": {
+        "source_id": "nhsn_adm_flu_adult",
+        "short_name": "Flu admissions, adults",
+        "short_description": "New hospital admissions with influenza in the week, adults.",
+        "measure_type": "Count",
+        "unit": "admissions"
+      },
+      "nhsn_adm_flu_ped": {
+        "source_id": "nhsn_adm_flu_ped",
+        "short_name": "Flu admissions, pediatric",
+        "short_description": "New hospital admissions with influenza in the week, pediatric patients.",
+        "measure_type": "Count",
+        "unit": "admissions"
+      },
+      "nhsn_adm_rate_flu": {
+        "source_id": "nhsn_adm_rate_flu",
+        "short_name": "Flu admission rate",
+        "short_description": "Weekly influenza admissions per 100,000 population, all ages.",
+        "measure_type": "Rate",
+        "unit": "per 100,000"
+      },
+      "nhsn_adm_rate_flu_adult": {
+        "source_id": "nhsn_adm_rate_flu_adult",
+        "short_name": "Flu admission rate, adults",
+        "short_description": "Weekly influenza admissions per 100,000 adults.",
+        "measure_type": "Rate",
+        "unit": "per 100,000"
+      },
+      "nhsn_adm_rate_flu_ped": {
+        "source_id": "nhsn_adm_rate_flu_ped",
+        "short_name": "Flu admission rate, pediatric",
+        "short_description": "Weekly influenza admissions per 100,000 pediatric population.",
+        "measure_type": "Rate",
+        "unit": "per 100,000"
+      },
+      "nhsn_pct_inpt_beds_flu": {
+        "source_id": "nhsn_pct_inpt_beds_flu",
+        "short_name": "Inpatient beds with flu",
+        "short_description": "Percent of inpatient beds occupied by patients with influenza.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "nhsn_pct_icu_beds_flu": {
+        "source_id": "nhsn_pct_icu_beds_flu",
+        "short_name": "ICU beds with flu",
+        "short_description": "Percent of ICU beds occupied by patients with influenza.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "nhsn_pct_hosp_reporting_hosp_pats_flu": {
+        "source_id": "nhsn_pct_hosp_reporting_hosp_pats_flu",
+        "short_name": "Hospitals reporting flu patients",
+        "short_description": "Percent of hospitals reporting influenza patient counts.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "nhsn_pct_hosp_reporting_icu_pats_flu": {
+        "source_id": "nhsn_pct_hosp_reporting_icu_pats_flu",
+        "short_name": "Hospitals reporting flu ICU patients",
+        "short_description": "Percent of hospitals reporting influenza ICU patient counts.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "nhsn_pct_hosp_reporting_adm_flu": {
+        "source_id": "nhsn_pct_hosp_reporting_adm_flu",
+        "short_name": "Hospitals reporting flu admissions",
+        "short_description": "Percent of hospitals reporting influenza admissions, all ages.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "nhsn_pct_hosp_reporting_adm_flu_adult": {
+        "source_id": "nhsn_pct_hosp_reporting_adm_flu_adult",
+        "short_name": "Hospitals reporting adult flu admissions",
+        "short_description": "Percent of hospitals reporting adult influenza admissions.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "nhsn_pct_hosp_reporting_adm_flu_ped": {
+        "source_id": "nhsn_pct_hosp_reporting_adm_flu_ped",
+        "short_name": "Hospitals reporting pediatric flu admissions",
+        "short_description": "Percent of hospitals reporting pediatric influenza admissions.",
+        "measure_type": "Percent",
+        "unit": "%"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_hospital_capacity.parquet|value": {
+    "short_name": "Value",
+    "long_name": "Measure value",
+    "short_description": "Value of the measure named in the measure column.",
+    "long_description": "Value of the NHSN measure named in the measure column. Units differ by measure (patients, admissions, admissions per 100,000, percent of beds, percent of hospitals reporting), so filter on measure before comparing or summing. Blank rows are not carried.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "nhsn_hrd"
+      }
+    ]
+  },
+  "bundle_flu/dist/flu_rt_and_mortality.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "CDC CFA Rt": {
+        "source_id": "cdc_rt_flu"
+      },
+      "CDC NCHS Mortality": {
+        "source_id": "rate_influenza_and_pneumonia"
+      },
+      "CDC NNDSS": {
+        "source_id": "influenza_associated_pediatric_mortality"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_rt_and_mortality.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "cdc_rt_flu": {
+        "source_id": "cdc_rt_flu",
+        "short_name": "Flu Rt",
+        "short_description": "Estimated effective reproduction number for influenza.",
+        "measure_type": "Rt",
+        "unit": "Rt"
+      },
+      "cdc_rt_flu_lower": {
+        "source_id": "cdc_rt_flu_lower",
+        "short_name": "Flu Rt, lower bound",
+        "short_description": "Lower bound of the Rt interval.",
+        "measure_type": "Rt",
+        "unit": "Rt"
+      },
+      "cdc_rt_flu_upper": {
+        "source_id": "cdc_rt_flu_upper",
+        "short_name": "Flu Rt, upper bound",
+        "short_description": "Upper bound of the Rt interval.",
+        "measure_type": "Rt",
+        "unit": "Rt"
+      },
+      "cdc_rt_flu_p_growing": {
+        "source_id": "cdc_rt_flu_p_growing",
+        "short_name": "Probability flu is growing",
+        "short_description": "Probability that Rt is above 1, i.e. that influenza activity is growing.",
+        "measure_type": "Probability",
+        "unit": "probability (0-1)"
+      },
+      "rate_influenza_and_pneumonia": {
+        "source_id": "rate_influenza_and_pneumonia",
+        "short_name": "Influenza and pneumonia death rate",
+        "short_description": "Quarterly age-adjusted death rate with influenza or pneumonia as the underlying cause. Combined cause: it is not influenza alone.",
+        "measure_type": "Rate",
+        "unit": "per 100,000"
+      },
+      "influenza_associated_pediatric_mortality_cumulative": {
+        "short_name": "Pediatric flu deaths, year to date",
+        "short_description": "Influenza-associated pediatric deaths reported year to date; resets each MMWR year.",
+        "measure_type": "Count",
+        "unit": "deaths",
+        "source_id": "influenza_associated_pediatric_mortality"
+      },
+      "influenza_associated_pediatric_mortality_weekly": {
+        "short_name": "Pediatric flu deaths, weekly",
+        "short_description": "Influenza-associated pediatric deaths newly reported in the week (year-to-date count differenced). Negative where NNDSS revised a count down.",
+        "measure_type": "Count",
+        "unit": "deaths"
+      },
+      "novel_influenza_a_virus_infections_cumulative": {
+        "short_name": "Novel influenza A infections, year to date",
+        "short_description": "Novel influenza A virus infections reported year to date; resets each MMWR year.",
+        "measure_type": "Count",
+        "unit": "cases",
+        "source_id": "novel_influenza_a_virus_infections"
+      },
+      "novel_influenza_a_virus_infections_weekly": {
+        "short_name": "Novel influenza A infections, weekly",
+        "short_description": "Novel influenza A virus infections newly reported in the week (year-to-date count differenced).",
+        "measure_type": "Count",
+        "unit": "cases"
+      },
+      "novel_influenza_a_virus_infections_confirmed_cumulative": {
+        "short_name": "Novel influenza A infections (confirmed), year to date",
+        "short_description": "Confirmed novel influenza A virus infections reported year to date.",
+        "measure_type": "Count",
+        "unit": "cases",
+        "source_id": "novel_influenza_a_virus_infections_confirmed"
+      },
+      "novel_influenza_a_virus_infections_confirmed_weekly": {
+        "short_name": "Novel influenza A infections (confirmed), weekly",
+        "short_description": "Confirmed novel influenza A virus infections newly reported in the week.",
+        "measure_type": "Count",
+        "unit": "cases"
+      },
+      "novel_influenza_a_virus_infections_total_cumulative": {
+        "short_name": "Novel influenza A infections (total), year to date",
+        "short_description": "Confirmed plus probable novel influenza A virus infections reported year to date.",
+        "measure_type": "Count",
+        "unit": "cases",
+        "source_id": "novel_influenza_a_virus_infections_total"
+      },
+      "novel_influenza_a_virus_infections_total_weekly": {
+        "short_name": "Novel influenza A infections (total), weekly",
+        "short_description": "Confirmed plus probable novel influenza A virus infections newly reported in the week.",
+        "measure_type": "Count",
+        "unit": "cases"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_rt_and_mortality.parquet|value": {
+    "short_name": "Value",
+    "long_name": "Measure value",
+    "short_description": "Value of the measure named in the measure column.",
+    "long_description": "Value of the measure named in the measure column. Units differ by measure (Rt, probability, deaths per 100,000, case counts), so filter on measure first. _cumulative and _weekly NNDSS series are two forms of one count and are not additive; weekly values can be negative where NNDSS revised a count down, so cut plot y axes at 0.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "cdc_cfa_rt"
+      },
+      {
+        "id": "nchs_vsrr_state"
+      },
+      {
+        "id": "nnds"
+      }
+    ]
+  },
+  "bundle_flu/dist/flu_vax_coverage.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "CDC FluVaxView": {
+        "source_id": "fluvaxview_coverage"
+      },
+      "CDC NIS-Flu": {
+        "source_id": "nis_coverage"
+      },
+      "IIS": {
+        "source_id": "iis_coverage"
+      },
+      "CMS Medicare": {
+        "source_id": "medicare_coverage"
+      },
+      "CDC Vaccine Safety Datalink": {
+        "source_id": "vsd_coverage"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_vax_substate.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "CDC FluVaxView": {
+        "source_id": "fluvaxview_coverage"
+      },
+      "CDC NIS-Flu": {
+        "source_id": "nis_coverage"
+      },
+      "IIS": {
+        "source_id": "iis_coverage"
+      }
+    }
+  },
+  "{category}season": {
+    "short_name": "Flu season",
+    "short_description": "Flu season, e.g. \"2024-25\"; blank where the source publishes calendar years.",
+    "long_description": "Influenza season the row belongs to (August to the following July). Blank for FluVaxView county estimates, which are calendar-year.",
+    "measure_type": "category",
+    "unit": "",
+    "categories": {
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {},
+      "bundle_flu/dist/flu_vax_doses.parquet|": {}
+    }
+  },
+  "{category}age": {
+    "short_name": "Age group",
+    "short_description": "Age group, in each source's own labels; \"Total\" where not stratified by age.",
+    "long_description": "Age group the estimate applies to, in each source's own labels (\"18-49 Years\", \"65+ years\", \"6 months-17 years\"). Labels differ between sources, so match on source first. \"Total\" where the row is not stratified by age.",
+    "measure_type": "category",
+    "unit": "",
+    "categories": {
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {},
+      "bundle_flu/dist/flu_vax_doses.parquet|": {}
+    }
+  },
+  "bundle_flu/dist/flu_vax_coverage.parquet|population": {
+    "short_name": "Population",
+    "short_description": "Population qualifier beyond age: \"Pregnant\" (VSD), otherwise \"Total\".",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_flu/dist/flu_vax_substate.parquet|population": {
+    "short_name": "Population",
+    "short_description": "Population qualifier beyond age; always \"Total\" in this file.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_flu/dist/flu_vax_coverage.parquet|stratum_type": {
+    "short_name": "Stratification",
+    "short_description": "What the row is stratified by beyond age: \"Overall\", \"Race and Ethnicity\", \"Vaccination setting\", or an NIS demographic.",
+    "long_description": "Demographic or setting dimension the row is stratified on. \"Overall\" for rows not stratified, in which case stratum is \"Total\". NIS adds Disability Status, Health Insurance, Poverty Status, Sex, Sexual Orientation, Urbanicity, Mother's Education and others.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_flu/dist/flu_vax_coverage.parquet|stratum": {
+    "short_name": "Stratum",
+    "short_description": "Level within stratum_type (e.g. \"Hispanic\", \"Pharmacy/Store\"); \"Total\" when not stratified.",
+    "long_description": "Level of the stratification named in stratum_type, in each source's own labels (race labels differ: \"Black, Non-Hispanic\" in most, \"Black, NH\" in VSD). \"Total\" when stratum_type is \"Overall\".",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_flu/dist/flu_vax_coverage.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "coverage": {
+        "short_name": "Flu vaccination coverage",
+        "short_description": "Percent vaccinated against influenza.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "intent_definitely": {
+        "source_id": "nis_intent_definitely",
+        "short_name": "Definitely intend to vaccinate",
+        "short_description": "NIS: percent of unvaccinated who definitely intend to get a flu vaccine.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "intent_probably": {
+        "source_id": "nis_intent_probably",
+        "short_name": "Probably intend to vaccinate",
+        "short_description": "NIS: percent of unvaccinated who probably intend to get a flu vaccine.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "intent_no": {
+        "source_id": "nis_intent_no",
+        "short_name": "Do not intend to vaccinate",
+        "short_description": "NIS: percent of unvaccinated who do not intend to get a flu vaccine.",
+        "measure_type": "Percent",
+        "unit": "%"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_vax_substate.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "coverage": {
+        "short_name": "Flu vaccination coverage",
+        "short_description": "Percent vaccinated against influenza.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "intent_definitely": {
+        "source_id": "nis_intent_definitely",
+        "short_name": "Definitely intend to vaccinate",
+        "short_description": "NIS: percent of unvaccinated who definitely intend to get a flu vaccine.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "intent_probably": {
+        "source_id": "nis_intent_probably",
+        "short_name": "Probably intend to vaccinate",
+        "short_description": "NIS: percent of unvaccinated who probably intend to get a flu vaccine.",
+        "measure_type": "Percent",
+        "unit": "%"
+      },
+      "intent_no": {
+        "source_id": "nis_intent_no",
+        "short_name": "Do not intend to vaccinate",
+        "short_description": "NIS: percent of unvaccinated who do not intend to get a flu vaccine.",
+        "measure_type": "Percent",
+        "unit": "%"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_vax_coverage.parquet|partial_state_flag": {
+    "short_name": "Partial state",
+    "short_description": "IIS only: 1 if the state row excludes a city that reports separately, 0 otherwise; blank for other sources.",
+    "long_description": "IIS only. 1 for New York excluding New York City and Pennsylvania excluding Philadelphia County, whose counts and populations cover only the rest of the state; 0 for other IIS rows; blank for sources other than IIS.",
+    "measure_type": "Flag",
+    "unit": "",
+    "time_resolution": "Month",
+    "sources": [
+      {
+        "id": "iis"
+      }
+    ]
+  },
+  "bundle_flu/dist/flu_vax_substate.parquet|geography_level": {
+    "short_name": "Geography level",
+    "short_description": "County, HHS region, Substate, Local, City or Freely associated state.",
+    "long_description": "Kind of area the row describes. \"County\" (FluVaxView), \"HHS region\", \"Substate\" and \"Local\" (NIS and FluVaxView named areas such as city of Chicago), \"City\" and \"Freely associated state\" (IIS). \"Substate\" and \"Local\" areas overlap, e.g. Bexar County appears both inside and outside Texas-Rest of State.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_flu/dist/flu_vax_substate.parquet|state_fips": {
+    "short_name": "State FIPS",
+    "short_description": "2-digit FIPS of the containing state; blank for HHS regions and freely associated states.",
+    "measure_type": "identifier",
+    "unit": "FIPS code"
+  },
+  "{category}value": {
+    "short_name": "Value",
+    "long_name": "Measure value",
+    "short_description": "Percent for the measure named in the measure column (coverage or intent).",
+    "long_description": "Percent for the measure named in the measure column: vaccination coverage, or for NIS the share of unvaccinated who intend to vaccinate. Blank where the source suppressed the cell (suppressed_flag = 1) or did not publish it; nothing is imputed.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "time_resolution": "Week/Month",
+    "sources": [
+      {
+        "id": "fluvaxview_nis_flu"
+      },
+      {
+        "id": "nis_flu"
+      },
+      {
+        "id": "iis"
+      },
+      {
+        "id": "cms_medicare"
+      },
+      {
+        "id": "vsd"
+      }
+    ],
+    "categories": {
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {}
+    }
+  },
+  "{category}value_lcl": {
+    "short_name": "Lower confidence limit",
+    "short_description": "Lower bound of the published confidence interval for coverage.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "categories": {
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {}
+    }
+  },
+  "{category}value_ucl": {
+    "short_name": "Upper confidence limit",
+    "short_description": "Upper bound of the published confidence interval for coverage.",
+    "measure_type": "Percent",
+    "unit": "%",
+    "categories": {
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {}
+    }
+  },
+  "{category}denominator": {
+    "short_name": "Denominator",
+    "short_description": "Survey sample size (FluVaxView, NIS), IIS population, or VSD denominator behind the estimate.",
+    "long_description": "Number the estimate is based on: survey respondents for FluVaxView and NIS, the registered population for IIS, the denominator for VSD. Not comparable across sources.",
+    "measure_type": "Count",
+    "unit": "persons",
+    "categories": {
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {}
+    }
+  },
+  "{category}n_vaccinated": {
+    "short_name": "Number vaccinated",
+    "short_description": "IIS count of vaccinated people; blank for other sources.",
+    "measure_type": "Count",
+    "unit": "persons",
+    "categories": {
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {}
+    }
+  },
+  "{category}suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "short_description": "1 when the source suppressed the estimate (value is blank); 0 otherwise, including sources with no suppression.",
+    "measure_type": "Flag",
+    "unit": "",
+    "categories": {
+      "bundle_flu/dist/flu_vax_coverage.parquet|": {},
+      "bundle_flu/dist/flu_vax_substate.parquet|": {}
+    }
+  },
+  "bundle_flu/dist/flu_vax_doses.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "IQVIA": {
+        "source_id": "iqvia_doses"
+      },
+      "CDC Doses Distributed": {
+        "source_id": "flu_doses_cumulative_millions"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_vax_doses.parquet|setting": {
+    "short_name": "Setting",
+    "short_description": "Where IQVIA doses were administered: Pharmacy, Physician Medical Office, or Combined (the two together).",
+    "long_description": "Setting in which IQVIA doses were administered. \"Combined\" is pharmacy plus physician office, not every setting. \"Total\" for doses distributed.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_flu/dist/flu_vax_doses.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "doses_administered": {
+        "source_id": "iqvia_doses",
+        "short_name": "Flu doses administered (weekly)",
+        "short_description": "Flu vaccine doses administered in the week, national (IQVIA).",
+        "measure_type": "Count",
+        "unit": "doses"
+      },
+      "doses_administered_cumulative": {
+        "source_id": "iqvia_cumulative_doses",
+        "short_name": "Flu doses administered (cumulative)",
+        "short_description": "Cumulative flu vaccine doses administered since the start of the season (IQVIA).",
+        "measure_type": "Count",
+        "unit": "doses"
+      },
+      "doses_distributed_cumulative_millions": {
+        "source_id": "flu_doses_cumulative_millions",
+        "short_name": "Flu doses distributed (cumulative)",
+        "short_description": "Cumulative flu vaccine doses distributed since the start of the season, in millions (CDC).",
+        "measure_type": "Count",
+        "unit": "millions of doses"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_vax_doses.parquet|value": {
+    "short_name": "Value",
+    "long_name": "Measure value",
+    "short_description": "Value of the measure named in the measure column.",
+    "long_description": "Doses for the measure named in the measure column. Distributed doses are in millions and administered doses in single doses, so filter on measure first.",
+    "measure_type": "Count",
+    "unit": "varies by measure",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "iqvia"
+      },
+      {
+        "id": "cdc_doses_distributed"
+      }
+    ]
+  },
+  "_bundle": {
+    "name": "bundle_flu",
+    "sources": [
+      "cdc_cfa_rt",
+      "delphi_hospital_claims",
+      "delphi_ili_fluview",
+      "delphi_nhsn",
+      "epic_resp_infections",
+      "flu_doses_distributed",
+      "fluvaxview",
+      "iis_vax",
+      "iqvia_vax_administered",
+      "kinsa_ili",
+      "medicare_vax",
+      "nchs_mortality",
+      "nhsn_hospital_capacity",
+      "nis_flu_rsv",
+      "nnds",
+      "nssp",
+      "respnet",
+      "vsd_pregnancy_vax",
+      "wastewater"
+    ],
+    "dist_files": {
+      "flu_ed_visits_by_county.parquet": {
+        "sources": [
+          "nssp"
+        ],
+        "source_files": [
+          "nssp/standard/data.csv.gz"
+        ]
+      },
+      "flu_hospital_capacity.parquet": {
+        "sources": [
+          "nhsn_hospital_capacity"
+        ],
+        "source_files": [
+          "nhsn_hospital_capacity/standard/data.csv.gz",
+          "nhsn_hospital_capacity/standard/data_region.csv.gz"
+        ]
+      },
+      "flu_overall_trends.parquet": {
+        "sources": [
+          "delphi_hospital_claims",
+          "delphi_ili_fluview",
+          "delphi_nhsn",
+          "epic_resp_infections",
+          "kinsa_ili",
+          "nssp",
+          "respnet",
+          "wastewater"
+        ],
+        "source_files": [
+          "epic_resp_infections/standard/weekly.csv.gz",
+          "nssp/standard/data.csv.gz",
+          "respnet/standard/data.csv.gz",
+          "wastewater/standard/data.csv.gz",
+          "delphi_nhsn/standard/data.csv.gz",
+          "delphi_hospital_claims/standard/data.csv.gz",
+          "delphi_ili_fluview/standard/data.csv.gz",
+          "kinsa_ili/standard/data.csv.gz"
+        ]
+      },
+      "flu_rt_and_mortality.parquet": {
+        "sources": [
+          "cdc_cfa_rt",
+          "nchs_mortality",
+          "nnds"
+        ],
+        "source_files": [
+          "cdc_cfa_rt/standard/data.csv.gz",
+          "nchs_mortality/standard/data_state_21_causes.csv.gz",
+          "nnds/standard/data.csv.gz"
+        ]
+      },
+      "flu_trends_by_age.parquet": {
+        "sources": [
+          "epic_resp_infections",
+          "nhsn_hospital_capacity",
+          "respnet"
+        ],
+        "source_files": [
+          "epic_resp_infections/standard/weekly.csv.gz",
+          "respnet/standard/data.csv.gz",
+          "nhsn_hospital_capacity/standard/data_age.csv.gz"
+        ]
+      },
+      "flu_vax_coverage.parquet": {
+        "sources": [
+          "fluvaxview",
+          "iis_vax",
+          "medicare_vax",
+          "nis_flu_rsv",
+          "vsd_pregnancy_vax"
+        ],
+        "source_files": [
+          "fluvaxview/standard/data_state.csv.gz",
+          "fluvaxview/standard/data_race.csv.gz",
+          "fluvaxview/standard/data_setting.csv.gz",
+          "nis_flu_rsv/standard/data.csv.gz",
+          "nis_flu_rsv/standard/data_age.csv.gz",
+          "nis_flu_rsv/standard/data_demographics.csv.gz",
+          "iis_vax/standard/data.csv.gz",
+          "medicare_vax/standard/data.csv.gz",
+          "vsd_pregnancy_vax/standard/data.csv.gz"
+        ]
+      },
+      "flu_vax_doses.parquet": {
+        "sources": [
+          "flu_doses_distributed",
+          "iqvia_vax_administered"
+        ],
+        "source_files": [
+          "iqvia_vax_administered/standard/data.csv.gz",
+          "flu_doses_distributed/standard/data.csv.gz"
+        ]
+      },
+      "flu_vax_substate.parquet": {
+        "sources": [
+          "fluvaxview",
+          "iis_vax",
+          "nis_flu_rsv"
+        ],
+        "source_files": [
+          "fluvaxview/standard/data_county.csv.gz",
+          "fluvaxview/standard/data_region.csv.gz",
+          "fluvaxview/standard/data_substate.csv.gz",
+          "nis_flu_rsv/standard/data_region.csv.gz",
+          "nis_flu_rsv/standard/data_substate.csv.gz",
+          "iis_vax/standard/data_substate.csv.gz"
+        ]
+      }
+    }
+  }
+}
+

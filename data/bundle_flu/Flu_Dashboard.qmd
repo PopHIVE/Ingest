@@ -1,0 +1,1317 @@
+---
+title: "Influenza in the United States (Draft)"
+subtitle: "Where flu is spreading, who is getting sick, and who is vaccinated"
+format:
+  html:
+    embed-resources: true
+    page-layout: full
+    toc: false
+    grid:
+      body-width: 1500px
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| include: false
+source("_flu_dashboard_utils.R")
+```
+
+```{=html}
+<script>
+window.__phErrors = [];
+window.addEventListener('error', function (e) {
+  window.__phErrors.push((e.message || 'Unknown error') + ' (' + (e.filename || '').split('/').pop() + ':' + e.lineno + ':' + e.colno + ')');
+  var b = document.getElementById('__ph-error-banner');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = '__ph-error-banner';
+    b.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#d03b3b;color:#fff;font-family:monospace;font-size:11px;padding:8px 12px;z-index:99999;max-height:220px;overflow:auto;white-space:pre-wrap;';
+    document.body.appendChild(b);
+  }
+  b.textContent = window.__phErrors.length + ' chart script error(s) on this page:\n' + window.__phErrors.join('\n');
+});
+
+// All charts on every tab render on page load (Bootstrap tabs are just
+// display:none, not lazy), so any chart on a tab other than the initially
+// active one gets measured at zero/stale width by Plotly. Resize every
+// Plotly graph in a tab pane the moment Bootstrap reveals it.
+document.addEventListener('shown.bs.tab', function (e) {
+  var targetSel = e.target.getAttribute('data-bs-target') || e.target.getAttribute('href');
+  var pane = targetSel ? document.querySelector(targetSel) : null;
+  if (!pane || !window.Plotly) return;
+  pane.querySelectorAll('.js-plotly-plot').forEach(function (gd) { Plotly.Plots.resize(gd); });
+});
+</script>
+```
+
+```{r inject-plotly}
+#| include: false
+# Referenced below via <script src>, not injected as R text output --
+# routing a multi-MB minified bundle through cat()/knitr's text pipeline on
+# Windows corrupts it (likely CRLF translation on an embedded literal
+# newline inside the bundle). A <script src> tag lets Quarto's own
+# embed-resources machinery inline the file byte-safely instead.
+#
+# plotly-geo (cartesian + choropleth/geo traces only, no 3D/gl/mapbox) is
+# ~1.2MB vs. ~4.5MB for the full bundle -- this dashboard never uses 3D,
+# WebGL, or mapbox traces, so the full bundle was pure dead weight.
+invisible(file.exists("plotly-geo.min.js"))
+```
+
+```{r inject-geojson}
+#| include: false
+# Same rationale as above: write a byte-exact .js companion file and load
+# it via <script src> rather than cat()-ing the text into the page.
+#
+# The file is slimmed on the way through: only the feature `id` is used
+# (featureidkey = "id"), so the per-county properties block is dropped,
+# whitespace is removed, and coordinates are cut to 3 decimals (~100 m,
+# invisible at national-map scale).
+geo_con <- gzfile("us_counties_fips.geojson.gz", "rb")
+geo_raw <- readBin(geo_con, "raw", n = 50 * 1024 * 1024)
+close(geo_con)
+geo_txt <- rawToChar(geo_raw)
+geo_txt <- gsub('"properties": \\{[^}]*\\}, ', "", geo_txt)
+geo_txt <- gsub('(-?[0-9]+\\.[0-9]{3})[0-9]+', "\\1", geo_txt)
+geo_txt <- gsub('(?<=[,:]) ', "", geo_txt, perl = TRUE)
+out_con <- file("counties_geojson.js", "wb")
+writeBin(charToRaw("window.PH_COUNTIES_GEOJSON = "), out_con)
+writeBin(charToRaw(geo_txt), out_con)
+writeBin(charToRaw(";\n"), out_con)
+close(out_con)
+```
+
+```{r inject-geo-canon}
+#| results: asis
+# Emitted ONCE for the whole page. Every choropleth measure and every
+# scatter-tool measure aligns its values to these two id/label arrays
+# instead of carrying its own -- see the comment on geo_state_canon /
+# geo_county_canon in _flu_dashboard_utils.R.
+emit_json("PH_GEO_STATE", list(locs = I(geo_state_canon$loc), labels = I(geo_state_canon$loc_label)))
+emit_json("PH_GEO_COUNTY", list(locs = I(geo_county_canon$loc), labels = I(geo_county_canon$loc_label)))
+```
+
+```{=html}
+<script src="plotly-geo.min.js"></script>
+<script src="counties_geojson.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy: #00356b;
+  --navy-light: #bedeff;
+  --accent: #4e98e4;
+  --gray: #767676;
+  --ink: #26323d;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7; --s8: #e34948;
+}
+body { font-family: 'Rubik', sans-serif; color: var(--ink); background-color: #ffffff; padding-top: 2.75rem; }
+h1, h2, h3, h4, .title, .subtitle { font-family: 'Source Serif 4', serif; color: var(--navy); font-weight: 600; }
+h2 { border-bottom: 2px solid var(--navy-light); padding-bottom: .3rem; margin-top: 1.5rem; }
+h3 { margin-top: 2rem; }
+a { color: var(--navy); }
+a:hover { color: var(--accent); }
+.quarto-title-block .quarto-title-banner, .quarto-title-banner { background-color: var(--navy); }
+.quarto-title-banner .title, .quarto-title-banner .subtitle, .quarto-title-banner .quarto-title-meta { color: #ffffff !important; }
+::selection { background: var(--navy-light); }
+.source-note { font-size: .85rem; color: var(--gray); margin-top: -.5rem; margin-bottom: 1.25rem; }
+.intro { max-width: 52rem; font-size: 1.05rem; line-height: 1.6; margin: 1rem 0 1.25rem; }
+.howto { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 60rem; margin: 0 0 1.25rem; }
+@media (max-width: 800px) { .howto { grid-template-columns: 1fr; } }
+.howto div { background: #f7f9fc; border-top: 3px solid var(--navy); border-radius: 6px; padding: .75rem 1rem; font-size: .92rem; line-height: 1.45; }
+.howto b { display: block; font-family: 'Source Serif 4', serif; color: var(--navy); font-size: 1rem; margin-bottom: .2rem; }
+.glossary { max-width: 52rem; margin: 0 0 1.5rem; font-size: .92rem; }
+.glossary summary { cursor: pointer; color: var(--navy); font-weight: 500; }
+.glossary dl { margin: .75rem 0 0; }
+.glossary dt { font-weight: 600; color: var(--navy); margin-top: .6rem; }
+.glossary dd { margin: 0; color: #444; }
+.panel-tabset > .nav-tabs .nav-link { font-size: 1.05rem; padding: .7rem 1.1rem; }
+
+.pophive-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: var(--navy); padding: .7rem 1.5rem; display: flex; align-items: center;
+  justify-content: space-between; font-family: 'Rubik', sans-serif;
+}
+.pophive-nav a { color: #ffffff !important; text-decoration: none; font-size: .95rem; font-weight: 500; }
+.pophive-nav a:hover { color: var(--navy-light) !important; }
+.pophive-brand { font-family: 'Source Serif 4', serif !important; font-weight: 600 !important; font-size: 1.15rem !important; letter-spacing: .02em; }
+.pophive-nav-links { display: flex; gap: 1.75rem; }
+
+.pophive-footer {
+  width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
+  margin-top: 3rem; padding: 1.75rem 1.5rem; text-align: center; background: var(--navy); color: #dbe7f5;
+  font-family: 'Rubik', sans-serif; font-size: .85rem; line-height: 1.6;
+}
+.pophive-footer strong { font-family: 'Source Serif 4', serif; color: #ffffff; font-size: 1rem; }
+.pophive-footer a { color: var(--navy-light) !important; }
+.pophive-footer a:hover { color: #ffffff !important; }
+.pophive-footer .disclaimer { color: #a9bdd4; font-size: .8rem; margin-top: .4rem; }
+
+.chart-info { margin: .5rem 0 2rem 0; }
+.chart-info summary {
+  display: inline-block; cursor: pointer; list-style: none; font-family: 'Rubik', sans-serif;
+  font-size: .85rem; font-weight: 500; color: var(--navy); background: #ffffff; border: 1px solid var(--navy);
+  border-radius: 999px; padding: .35rem .9rem; user-select: none;
+}
+.chart-info summary::-webkit-details-marker { display: none; }
+.chart-info summary::before { content: "\24D8 "; }
+.chart-info summary:hover { background: #eaf2fc; }
+.chart-info[open] summary { background: var(--navy); color: #ffffff; }
+.chart-info + .chart-info { margin-top: -1.25rem; }
+.chart-info p, .chart-info ul {
+  margin: .75rem 0 0 0; font-size: .85rem; color: #444; max-width: 46rem;
+  background: #f7f9fc; border-left: 3px solid var(--navy-light); padding: .6rem .9rem;
+}
+
+.data-note {
+  font-size: .85rem; color: #7a4a00; background: #fff7e8; border: 1px solid #f0d69a;
+  border-radius: 6px; padding: .6rem .9rem; max-width: 46rem; margin: .5rem 0 1.25rem;
+}
+
+/* Quarto panel-tabset restyled as top navigation tabs */
+.panel-tabset > .nav-tabs { border-bottom: 2px solid var(--navy-light); margin-bottom: 1.25rem; flex-wrap: wrap; }
+.panel-tabset > .nav-tabs .nav-link {
+  font-family: 'Rubik', sans-serif; color: var(--navy); font-weight: 500; border: none;
+  border-bottom: 3px solid transparent; background: transparent;
+}
+.panel-tabset > .nav-tabs .nav-link.active { color: var(--navy); border-bottom-color: var(--navy); font-weight: 600; }
+.panel-tabset > .nav-tabs .nav-link:hover { border-bottom-color: var(--navy-light); }
+
+.ph-card { margin: 1.75rem 0 2.5rem; }
+.ph-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.5rem; margin: .5rem 0 .75rem; font-family: 'Rubik', sans-serif; }
+.ph-control { font-size: .85rem; color: var(--navy); font-weight: 500; }
+.ph-control select, .ph-control input[type=text] {
+  font-family: 'Rubik', sans-serif; font-size: .85rem; color: var(--ink); border: 1px solid var(--navy-light);
+  border-radius: 6px; padding: .3rem .5rem; margin-left: .35rem;
+}
+.ph-toggle { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--navy); border-radius: 999px; overflow: hidden; }
+.ph-toggle button { border: 0; background: #ffffff; color: var(--navy); font-family: 'Rubik', sans-serif; font-size: .8rem; font-weight: 500; padding: .35rem .85rem; cursor: pointer; }
+.ph-toggle button.active { background: var(--navy); color: #ffffff; }
+.ph-legend-toggle { display: flex; flex-wrap: wrap; gap: .35rem .6rem; margin: .5rem 0; font-family: 'Rubik', sans-serif; font-size: .8rem; }
+.ph-legend-item { display: inline-flex; align-items: center; gap: .35rem; cursor: pointer; padding: .15rem .55rem; border-radius: 5px; user-select: none; background: #f7f9fc; }
+.ph-legend-item .swatch { width: 1.4rem; height: 0; border-top-width: 3px; border-top-style: solid; }
+.ph-legend-item.off { opacity: .35; }
+.ph-slider-row { display: flex; align-items: center; gap: .75rem; margin: .5rem 0 0; font-family: 'Rubik', sans-serif; font-size: .82rem; color: var(--navy); }
+.ph-slider-row input[type=range] { flex: 1; accent-color: var(--navy); max-width: 26rem; }
+.ph-period-label { min-width: 6.5rem; font-weight: 500; }
+.ph-chart-title { font-family: 'Source Serif 4', serif; color: var(--navy); font-weight: 600; font-size: 1.1rem; margin: .5rem 0 0; }
+.ph-chart-sub { color: var(--gray); font-size: .82rem; margin: .15rem 0 .5rem; }
+.ph-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 2rem; }
+@media (max-width: 900px) { .ph-grid-2 { grid-template-columns: 1fr; } }
+.ph-stat-line { font-family: 'Rubik', sans-serif; font-size: .95rem; color: var(--navy); margin: .5rem 0; font-weight: 500; }
+.ph-stat-line .stat-num { font-family: 'Source Serif 4', serif; font-weight: 700; }
+.ph-bars { display: flex; flex-direction: column; gap: .55rem; margin-top: .5rem; }
+.ph-bar-row { display: grid; grid-template-columns: minmax(8rem, 13rem) 1fr 4rem; align-items: center; gap: .6rem; }
+.ph-bar-label { font-family: 'Rubik', sans-serif; font-size: .82rem; color: var(--ink); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ph-bar-track { background: #eef2f8; border-radius: 3px; height: 1.05rem; overflow: hidden; }
+.ph-bar-fill { display: block; height: 100%; background: var(--s1); border-radius: 3px; }
+.ph-bar-row:hover .ph-bar-fill { background: var(--accent); }
+.ph-bar-value { font-family: 'Rubik', sans-serif; font-size: .8rem; color: var(--navy); font-variant-numeric: tabular-nums; }
+.ph-tooltip {
+  display: none; position: absolute; z-index: 10000; background: var(--navy); color: #fff; font-family: 'Rubik', sans-serif;
+  font-size: .78rem; line-height: 1.4; padding: .5rem .7rem; border-radius: 6px; max-width: 18rem; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+#TOC a { white-space: normal; word-wrap: break-word; }
+</style>
+
+<nav class="pophive-nav">
+  <a href="https://www.pophive.org/" class="pophive-brand">PopHIVE</a>
+  <div class="pophive-nav-links">
+    <a href="https://www.pophive.org/">Home</a>
+    <a href="https://www.pophive.org/about">About</a>
+  </div>
+</nav>
+```
+
+<h2 class="howto-title">How to use</h2>
+
+<div class="howto">
+  <div><b>1. Pick a topic</b>Use the tabs: flu activity, age groups, hospitals, deaths, or vaccination.</div>
+  <div><b>2. Choose a place and measure</b>Each chart has dropdowns for location, data source or measure. Charts start on the United States.</div>
+  <div><b>3. Hover for exact numbers</b>Move your mouse over any point or state. On maps, drag the slider to change the week or season.</div>
+</div>
+
+<details class="glossary">
+<summary>Glossary</summary>
+<dl>
+  <dt>ED visit</dt><dd>A visit to a hospital emergency department. &ldquo;% of ED visits&rdquo; is the share of all ED visits where the diagnosis was flu.</dd>
+  <dt>Hospital admission</dt><dd>A patient admitted to the hospital for flu, as opposed to treated and sent home.</dd>
+  <dt>Per 100,000</dt><dd>A rate that adjusts for population size so a big state and a small state can be compared fairly.</dd>
+  <dt>Rt (reproduction number)</dt><dd>How many people each infected person passes flu to. Above 1 means flu is growing; below 1 means it is shrinking.</dd>
+  <dt>Scaled 0&ndash;100</dt><dd>Each source is rescaled so its own highest point is 100. This shows <em>when</em> flu peaks, not how much flu there is, so do not compare heights across sources.</dd>
+  <dt>Suppressed / imputed</dt><dd>Very small counts are hidden to protect privacy, and a placeholder value is used. Treat these points with caution.</dd>
+  <dt>Wastewater</dt><dd>Flu virus measured in sewage. It reflects infections in a community, including people who never see a doctor.</dd>
+</dl>
+</details>
+
+<p class="source-note">
+Draft dashboard for internal review. Data come from CDC surveillance systems (ILINet, NSSP, NWSS, NHSN, RESP-NET, NNDSS, NCHS, FluVaxView, NIS-Flu), CDC&rsquo;s forecasting group (Rt), Medicare, state immunization registries, the Vaccine Safety Datalink, IQVIA, and Epic Cosmos. Each chart has &ldquo;About this chart&rdquo; and &ldquo;Caveats&rdquo; drawers beneath it; see the <a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu">bundle README</a> for full source details.
+</p>
+
+```{=html}
+<script>
+window.PH = (function () {
+  "use strict";
+  var CAT = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'];
+  var DASH = ['solid','dash','dot','dashdot','longdash','longdashdot'];
+  var SEQ = [[0,'#cde2fb'],[0.16,'#9ec5f4'],[0.33,'#6da7ec'],[0.5,'#3987e5'],[0.66,'#256abf'],[0.83,'#184f95'],[1,'#0d366b']];
+
+  function colorFor(i) { return CAT[((i % CAT.length) + CAT.length) % CAT.length]; }
+  function dashFor(i) { return DASH[Math.floor(i / CAT.length) % DASH.length]; }
+  function el(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function fmtNum(v, decimals) {
+    if (v === null || v === undefined || (typeof v === 'number' && isNaN(v))) return 'N/A';
+    decimals = (decimals === undefined) ? 1 : decimals;
+    return Number(v).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: decimals });
+  }
+  // Run fn once Plotly has loaded AND the chart's container is actually
+  // visible. Charts in hidden tabs (or far down the page) are built on first
+  // view instead of all at page load, which keeps load fast and means Plotly
+  // never measures a zero-width container.
+  function onReady(rootId, fn) {
+    function start() {
+      var node = el(rootId);
+      if (!('IntersectionObserver' in window) || !node) { fn(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries.some(function (en) { return en.isIntersecting; })) { io.disconnect(); fn(); }
+      }, { rootMargin: '300px' });
+      io.observe(node);
+    }
+    function check() { if (window.Plotly) start(); else setTimeout(check, 80); }
+    check();
+  }
+  // Expand a choropleth time slice: dense array, or sparse {i: [positions], v: [values]}.
+  function denseZ(zt, n, fill) {
+    if (Array.isArray(zt)) return zt;
+    var out = new Array(n).fill(fill === undefined ? null : fill);
+    for (var k = 0; k < zt.i.length; k++) out[zt.i[k]] = zt.v[k];
+    return out;
+  }
+  // Sparse notes {position: text} -> dense array of strings of length n.
+  function denseNotes(sp, n) {
+    var out = new Array(n).fill('');
+    if (sp) for (var k in sp) out[k] = sp[k];
+    return out;
+  }
+
+  // ------------------------------------------------------------------
+  // Generic multi-series time series with dropdown filters + legend
+  // checkbox toggles. See Flu_Dashboard.qmd for the
+  // config contract produced by each R chunk.
+  // ------------------------------------------------------------------
+  function renderLineChart(root, cfg) {
+    onReady(root, function () {
+      var XS = cfg.xs || [];
+      var wrap = el(root);
+      var filters = cfg.filters || [];
+      var state = { filters: {}, visible: {}, showRange: !!(cfg.errorBand && cfg.errorBand.default) };
+      filters.forEach(function (f) { state.filters[f.key] = f.default; });
+
+      // Optional "Compare by" mode: cfg.compareBy.groups is a map of
+      // dimension-name -> {label, fixed: {otherDim: value}, seriesOrder,
+      // seriesMeta}. Whichever group is active becomes the toggleable
+      // series (read off l.dims[activeKey] at render time); every other
+      // dimension in that group's `fixed` map is held constant instead of
+      // shown as a dropdown. This is how one chart lets a single legend
+      // compare either by age or by sex without two toggle dimensions at
+      // once, which the data model doesn't otherwise support.
+      //
+      // A group can instead carry `bySource: {sourceValue: {fixed,
+      // seriesOrder, seriesMeta}}` when cfg.compareBy.sourceKey names a
+      // filter (e.g. "source") whose current value should pick which
+      // fixed/seriesOrder/seriesMeta to use -- needed when two merged
+      // datasets share a "Compare by Age/Sex" toggle but have different age
+      // bands or sex codings (e.g. YRBSS high-school ages vs. Epic Cosmos's
+      // full age range). Groups without `bySource` are unaffected.
+      var cmp = cfg.compareBy;
+      if (cmp) state.cmpBy = cmp.default;
+      function activeGroup() {
+        if (!cmp) return null;
+        var g = cmp.groups[state.cmpBy];
+        if (cmp.sourceKey && g.bySource) {
+          return g.bySource[state.filters[cmp.sourceKey]] || { fixed: {}, seriesOrder: [], seriesMeta: {} };
+        }
+        return g;
+      }
+      function curSeriesOrder() { return cmp ? activeGroup().seriesOrder : (cfg.seriesOrder || []); }
+      function curSeriesMeta() { return cmp ? activeGroup().seriesMeta : cfg.seriesMeta; }
+      function curDefaultOn() { return cmp ? (activeGroup().defaultOn || activeGroup().seriesOrder) : (cfg.defaultOn || cfg.seriesOrder); }
+      function seriesIdOf(l) { return cmp ? l.dims[state.cmpBy] : l.series; }
+
+      function resetVisible() {
+        state.visible = {};
+        var def = curDefaultOn() || [];
+        curSeriesOrder().forEach(function (s) { state.visible[s] = def.indexOf(s) > -1; });
+      }
+      resetVisible();
+
+      // A filter can declare `optionsBy: {key: parentFilterKey, map:
+      // {parentValue: [options]}}` so its dropdown only lists options that
+      // exist for the parent filter's current value.
+      function optionsFor(f) {
+        if (f.optionsBy) {
+          var o = f.optionsBy.map[state.filters[f.optionsBy.key]];
+          if (o) return [].concat(o);
+        }
+        return f.options;
+      }
+      function optionsHtml(f) {
+        var opts = optionsFor(f);
+        var vals = opts.map(function (o) { return (typeof o === 'object') ? o.value : o; });
+        if (vals.indexOf(state.filters[f.key]) < 0) state.filters[f.key] = (vals.indexOf(f.default) > -1) ? f.default : vals[0];
+        return opts.map(function (o) {
+          var val = (typeof o === 'object') ? o.value : o;
+          var lab = (typeof o === 'object') ? o.label : o;
+          return '<option value="' + esc(val) + '"' + (val === state.filters[f.key] ? ' selected' : '') + '>' + esc(lab) + '</option>';
+        }).join('');
+      }
+      function refreshDependents(changedKey) {
+        filters.forEach(function (f) {
+          if (f.optionsBy && f.optionsBy.key === changedKey) {
+            el(root + '-f-' + f.key).innerHTML = optionsHtml(f);
+            if (cmp && cmp.sourceKey === f.key) { resetVisible(); renderLegend(); }
+            refreshDependents(f.key);
+          }
+        });
+      }
+
+      var controlsHtml = '<div class="ph-controls">';
+      filters.forEach(function (f) {
+        controlsHtml += '<span class="ph-control" id="' + root + '-fw-' + f.key + '">' + esc(f.label) + ':' +
+          '<select id="' + root + '-f-' + f.key + '">' + optionsHtml(f) + '</select></span>';
+      });
+      if (cmp && !cmp.hidden) {
+        controlsHtml += '<span class="ph-control">' + esc(cmp.label || 'Compare by') + ':' +
+          '<select id="' + root + '-cmpby">' +
+          Object.keys(cmp.groups).map(function (k) {
+            return '<option value="' + esc(k) + '"' + (k === cmp.default ? ' selected' : '') + '>' + esc(cmp.groups[k].label) + '</option>';
+          }).join('') + '</select></span>';
+      }
+      if (cfg.errorBand) {
+        controlsHtml += '<span class="ph-control"><label style="display:inline-flex;align-items:center;gap:.35rem;cursor:pointer;">' +
+          '<input type="checkbox" id="' + root + '-errband"' + (state.showRange ? ' checked' : '') + '> ' +
+          esc(cfg.errorBand.label || 'Show range') + '</label></span>';
+      }
+      controlsHtml += '</div>';
+
+      wrap.innerHTML = controlsHtml +
+        '<p class="ph-chart-title">' + esc(cfg.title || '') + '</p>' +
+        '<p class="ph-chart-sub" id="' + root + '-sub">' + esc(cfg.subtitle || '') + '</p>' +
+        '<div id="' + root + '-chart" style="width:100%;height:' + (cfg.height || 440) + 'px;"></div>' +
+        '<div class="ph-legend-toggle" id="' + root + '-legend"></div>';
+
+      function renderLegend() {
+        var legendEl = el(root + '-legend');
+        if (!cfg.toggle && !cmp) { legendEl.innerHTML = ''; return; }
+        var order = curSeriesOrder(), meta = curSeriesMeta();
+        legendEl.innerHTML = order.map(function (s, i) {
+          var lab = (meta && meta[s] && meta[s].label) || s;
+          var on = state.visible[s];
+          return '<span class="ph-legend-item' + (on ? '' : ' off') + '" data-series="' + esc(s) + '">' +
+            '<span class="swatch" style="border-top-color:' + colorFor(i) + ';border-top-style:' + dashFor(i).replace('longdash', 'dashed').replace('dashdot', 'dashed') + '"></span>' +
+            esc(lab) + '</span>';
+        }).join('');
+      }
+      resetVisible();
+      renderLegend();
+
+      // A group's `fixed` value can be a literal ("Overall") or, when the
+      // fixed dimension should itself be user-selectable (e.g. picking which
+      // age band to hold fixed while comparing by sex), an object
+      // {fromFilter: "filterKey"} that reads the current value of a filter
+      // dropdown instead.
+      function resolveFixed(v) {
+        return (v && typeof v === 'object' && v.fromFilter) ? state.filters[v.fromFilter] : v;
+      }
+      // Lines with `q` hold the "smooth" and "scaled" displays together (see
+      // build_q_lines in _flu_dashboard_utils.R); decode the y values for
+      // whichever display is selected.
+      function lineY(l) {
+        if (!l.q) return l.y;
+        if (state.filters.display === 'scaled') {
+          var k = l.step / l.rng * 100;
+          return l.q.map(function (v) { return v * k; });
+        }
+        return l.q.map(function (v) { return l.lo + v * l.step; });
+      }
+      function matches(l) {
+        if (l.qModes && l.qModes.indexOf(state.filters.display) < 0) return false;
+        // Only check filter keys that are actually dimensions on this line --
+        // a filter can exist purely to feed a compareBy group's fromFilter
+        // (see resolveFixed) without being one of dim_cols itself.
+        for (var k in state.filters) { if (l.dims.hasOwnProperty(k) && l.dims[k] !== state.filters[k]) return false; }
+        if (cmp) {
+          var fixed = activeGroup().fixed || {};
+          for (var k2 in fixed) { if (l.dims[k2] !== resolveFixed(fixed[k2])) return false; }
+        }
+        return true;
+      }
+
+      // Filters can declare `showWhen: {cmpBy, otherFilterEq}` to stay hidden
+      // except when relevant (e.g. an age-picker that only matters while
+      // "Compare by Sex" is active for a specific data source).
+      function updateFilterVisibility() {
+        filters.forEach(function (f) {
+          var show = true;
+          if (f.showWhen) {
+            if (f.showWhen.cmpBy && (!cmp || state.cmpBy !== f.showWhen.cmpBy)) show = false;
+            if (show && f.showWhen.otherFilterEq) {
+              for (var k3 in f.showWhen.otherFilterEq) {
+                if (state.filters[k3] !== f.showWhen.otherFilterEq[k3]) show = false;
+              }
+            }
+          }
+          if (f.hideIfSingle && optionsFor(f).length <= 1) show = false;
+          var wEl = el(root + '-fw-' + f.key);
+          if (wEl) wEl.style.display = show ? '' : 'none';
+        });
+      }
+
+      function currentYTitle() {
+        if (cfg.unitFilterKey && cfg.yTitleMap) return cfg.yTitleMap[state.filters[cfg.unitFilterKey]] || cfg.yTitle || '';
+        return cfg.yTitle || '';
+      }
+      function currentYUnit() {
+        if (cfg.unitFilterKey && cfg.yUnitMap) return cfg.yUnitMap[state.filters[cfg.unitFilterKey]] || '';
+        return cfg.yUnit || '';
+      }
+      function currentXTitle() {
+        if (cfg.unitFilterKey && cfg.xTitleMap) return cfg.xTitleMap[state.filters[cfg.unitFilterKey]] || cfg.xTitle || '';
+        return cfg.xTitle || '';
+      }
+      function currentDecimals() {
+        if (cfg.unitFilterKey && cfg.decimalsMap) {
+          // (decimalsMap is keyed by the unitFilterKey filter's value)
+          var d = cfg.decimalsMap[state.filters[cfg.unitFilterKey]];
+          if (d !== undefined) return d;
+        }
+        return cfg.decimals === undefined ? 1 : cfg.decimals;
+      }
+
+      function render() {
+        var filtered = (cfg.lines || []).filter(matches);
+        var order = curSeriesOrder(), meta = curSeriesMeta();
+        var useToggle = cfg.toggle || !!cmp;
+        var traces = filtered
+          .filter(function (l) { return !useToggle || state.visible[seriesIdOf(l)]; })
+          .map(function (l) {
+            var sid = seriesIdOf(l);
+            var idx = order.indexOf(sid);
+            var m = (meta && meta[sid]) || {};
+            var label = m.label || sid;
+            // Per-series native units (cfg.seriesUnits) show in the hover
+            // whenever the chart isn't in a rescaled view.
+            var unit = (cfg.seriesUnits && cfg.unitFilterKey && state.filters[cfg.unitFilterKey] !== 'scaled' && cfg.seriesUnits[sid])
+              ? ' ' + cfg.seriesUnits[sid] : currentYUnit();
+            var xv = l.x.map(function (i) { return XS[i]; });
+            var notes = denseNotes(l.note, l.x.length);
+            // The IQR line is shown in the hover text whenever the line
+            // carries Q1/Q3 offsets, independent of whether the visual
+            // error-bar toggle (cfg.errorBand) is on -- the toggle only
+            // controls the on-chart whiskers, not the hover detail.
+            var hasRange = !!(l.errUp && l.errDown);
+            var ly = lineY(l);
+            var rangeText = hasRange ? ly.map(function (yv, i) {
+              var down = l.errDown[i], up = l.errUp[i];
+              if (yv === null || yv === undefined || (!down && !up)) return '';
+              var lo = (yv - down).toFixed(currentDecimals());
+              var hi = (yv + up).toFixed(currentDecimals());
+              return '<br>IQR: ' + lo + '–' + hi + unit;
+            }) : notes.map(function () { return ''; });
+            var customdata = notes.map(function (n, i) { return [n, rangeText[i]]; });
+            var trace = {
+              // cfg.zeroAsGap: zeros are not plotted and the line is interrupted there
+              x: xv, y: cfg.zeroAsGap ? ly.map(function (v) { return v === 0 ? null : v; }) : ly, connectgaps: false, customdata: customdata, type: 'scatter', mode: 'lines+markers',
+              name: label, legendgroup: sid,
+              line: { color: colorFor(idx), dash: dashFor(idx), width: 2.25 },
+              marker: { color: colorFor(idx), size: 6 },
+              hovertemplate: '<b>' + esc(label) + '</b><br>%{x}: %{y:.' + currentDecimals() + 'f}' + unit + '%{customdata[0]}%{customdata[1]}<extra></extra>'
+            };
+            if (cfg.errorBand && state.showRange && hasRange) {
+              trace.error_y = { type: 'data', symmetric: false, array: l.errUp, arrayminus: l.errDown, thickness: 1.25, width: 3, color: colorFor(idx) };
+            }
+            return trace;
+          });
+        var layout = {
+          margin: { t: 10, b: 45, l: 60, r: 20 }, paper_bgcolor: 'white', plot_bgcolor: 'white',
+          font: { family: 'Rubik, sans-serif', color: '#00356b', size: 11 }, hovermode: 'closest',
+          xaxis: { title: currentXTitle(), gridcolor: 'white', zeroline: false, type: 'category', categoryorder: 'category ascending', nticks: 12, tickangle: 0, automargin: true },
+          yaxis: { title: currentYTitle(), gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false, rangemode: 'tozero' },
+          showlegend: !useToggle && order.length > 1,  // no legend when it would only name one category
+          legend: { orientation: 'h', x: 0.01, y: 1.12, yanchor: 'bottom' }
+        };
+        Plotly.react(root + '-chart', traces, layout, { displayModeBar: false, responsive: true });
+      }
+
+      filters.forEach(function (f) {
+        el(root + '-f-' + f.key).addEventListener('change', function (e) {
+          state.filters[f.key] = e.target.value;
+          if (cmp && cmp.sourceKey === f.key) { resetVisible(); renderLegend(); }
+          refreshDependents(f.key);
+          updateFilterVisibility();
+          render();
+        });
+      });
+      if (cmp && !cmp.hidden) {
+        el(root + '-cmpby').addEventListener('change', function (e) {
+          state.cmpBy = e.target.value; resetVisible(); renderLegend(); updateFilterVisibility(); render();
+        });
+      }
+      if (cfg.errorBand) {
+        el(root + '-errband').addEventListener('change', function (e) {
+          state.showRange = e.target.checked; render();
+        });
+      }
+      var legendEl = el(root + '-legend');
+      legendEl.addEventListener('click', function (e) {
+        var item = e.target.closest('.ph-legend-item');
+        if (!item) return;
+        var s = item.getAttribute('data-series');
+        state.visible[s] = !state.visible[s];
+        item.classList.toggle('off', !state.visible[s]);
+        render();
+      });
+      updateFilterVisibility();
+      render();
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // Choropleth (state or county) with a measure dropdown + time slider.
+  // ------------------------------------------------------------------
+  function renderChoropleth(root, cfg) {
+    onReady(root, function () {
+      var wrap = el(root);
+      var byId = {}; (cfg.measures || []).forEach(function (m) { byId[m.id] = m; });
+      var extraFilters = cfg.filters || [];
+      var stateF = {}; extraFilters.forEach(function (f) { stateF[f.key] = f.default; });
+      var curIdx = 0;
+      // cfg.levelToggle adds a State | County switch; measures are then
+      // limited to the chosen level and the other dropdown filters (which
+      // only describe the state-level measures) are hidden for counties.
+      var curLevel = cfg.levelToggle ? 'state' : null;
+
+      function visibleMeasures() {
+        return cfg.measures.filter(function (m) {
+          if (curLevel && m.level !== curLevel) return false;
+          if (curLevel === 'county') return true;
+          var tags = m.tags || {};
+          for (var k in stateF) { if (tags[k] !== undefined && String(tags[k]) !== String(stateF[k])) return false; }
+          return true;
+        });
+      }
+      var curMeasure = cfg.defaultMeasure || visibleMeasures()[0].id;
+
+      var controlsHtml = '<div class="ph-controls">';
+      if (cfg.levelToggle) {
+        controlsHtml += '<div class="ph-toggle" id="' + root + '-level">' +
+          '<button type="button" data-level="state" class="active">State</button>' +
+          '<button type="button" data-level="county">County</button></div>';
+      }
+      extraFilters.forEach(function (f) {
+        controlsHtml += '<span class="ph-control" id="' + root + '-fw-' + f.key + '">' + esc(f.label) + ':' +
+          '<select id="' + root + '-f-' + f.key + '">' +
+          f.options.map(function (o) {
+            var val = (typeof o === 'object') ? o.value : o;
+            var lab = (typeof o === 'object') ? o.label : o;
+            return '<option value="' + esc(val) + '"' + (val === f.default ? ' selected' : '') + '>' + esc(lab) + '</option>';
+          }).join('') +
+          '</select></span>';
+      });
+      controlsHtml += '<span class="ph-control" id="' + root + '-measurewrap">' + esc(cfg.measureLabel || 'Measure') + ':<select id="' + root + '-measure"></select></span>';
+      controlsHtml += '</div>';
+
+      wrap.innerHTML = controlsHtml +
+        '<p class="ph-chart-title" id="' + root + '-title"></p>' +
+        '<p class="ph-chart-sub" id="' + root + '-sub"></p>' +
+        '<div id="' + root + '-map" style="width:100%;height:' + (cfg.height || 480) + 'px;"></div>' +
+        '<p class="ph-chart-sub">Grey = no data available for this selection.</p>' +
+        '<div class="ph-slider-row" id="' + root + '-sliderrow">' +
+        '<span class="ph-period-label" id="' + root + '-period"></span>' +
+        '<input type="range" id="' + root + '-slider" min="0" max="1" value="0" step="1" aria-label="time period"></div>';
+
+      function currentMeasure() { return byId[curMeasure]; }
+
+      function rebuildMeasureOptions() {
+        var vis = visibleMeasures();
+        if (!vis.length) return;
+        if (!vis.some(function (m) { return m.id === curMeasure; })) curMeasure = vis[0].id;
+        el(root + '-measure').innerHTML = vis.map(function (m) {
+          return '<option value="' + esc(m.id) + '"' + (m.id === curMeasure ? ' selected' : '') + '>' + esc(m.label) + '</option>';
+        }).join('');
+        el(root + '-measurewrap').style.display = (vis.length > 1 || (!curLevel && cfg.measures.length > 1)) ? 'inline' : 'none';
+        extraFilters.forEach(function (f) {
+          el(root + '-fw-' + f.key).style.display = (curLevel === 'county') ? 'none' : '';
+        });
+      }
+
+      function render() {
+        var m = currentMeasure();
+        if (curIdx > m.times.length - 1) curIdx = m.times.length - 1;
+        el(root + '-slider').max = Math.max(0, m.times.length - 1);
+        el(root + '-slider').value = curIdx;
+        el(root + '-sliderrow').style.display = m.times.length > 1 ? 'flex' : 'none';
+        el(root + '-period').textContent = String(m.times[curIdx]);
+        el(root + '-title').textContent = m.label;
+        el(root + '-sub').textContent = m.sub || '';
+
+        var geo = (m.level === 'county') ? window.PH_GEO_COUNTY : window.PH_GEO_STATE;
+        var z = denseZ(m.z[curIdx], geo.locs.length);
+        var notes = m.extra
+          ? denseZ(m.extra[curIdx], geo.locs.length, 0).map(function (k) { return k ? m.noteTbl[k - 1] : ''; })
+          : z.map(function () { return ''; });
+
+        // Two layers: a flat grey base covering every location (so "no
+        // data" reads as a deliberate grey, not blank white, and still
+        // gets its own hover), then the real choropleth on top wherever a
+        // value exists.
+        var baseTrace = {
+          type: 'choropleth', locations: geo.locs, z: geo.locs.map(function () { return 1; }),
+          customdata: geo.labels, showscale: false, colorscale: [[0, '#cfcfcf'], [1, '#cfcfcf']],
+          marker: { line: { color: '#ffffff', width: 0.5 } },
+          hovertemplate: '<b>%{customdata}</b><br>No data available<extra></extra>'
+        };
+        var validIdx = [];
+        for (var i = 0; i < z.length; i++) { if (z[i] !== null && z[i] !== undefined) validIdx.push(i); }
+        var dataTrace = {
+          type: 'choropleth',
+          locations: validIdx.map(function (i) { return geo.locs[i]; }),
+          z: validIdx.map(function (i) { return z[i]; }),
+          customdata: validIdx.map(function (i) { return [geo.labels[i], notes[i]]; }),
+          colorscale: SEQ, reversescale: !!m.reverse, marker: { line: { color: '#ffffff', width: 0.5 } },
+          colorbar: { title: { text: m.unit || '', font: { size: 10 } }, thickness: 14 },
+          hovertemplate: '<b>%{customdata[0]}</b><br>' + esc(m.label) + ': %{z:.' + (m.decimals === undefined ? 1 : m.decimals) + 'f}' + (m.unit ? ' ' + m.unit : '') + '%{customdata[1]}<extra></extra>'
+        };
+        [baseTrace, dataTrace].forEach(function (t) {
+          if (m.level === 'county') { t.geojson = window.PH_COUNTIES_GEOJSON; t.featureidkey = 'id'; }
+          else { t.locationmode = 'USA-states'; }
+        });
+        var layout = {
+          margin: { t: 0, b: 0, l: 0, r: 0 }, paper_bgcolor: 'white',
+          font: { family: 'Rubik, sans-serif', color: '#00356b', size: 11 },
+          geo: { scope: 'usa', projection: { type: 'albers usa' }, showlakes: false, lakecolor: 'white' }
+        };
+        Plotly.react(root + '-map', [baseTrace, dataTrace], layout, { displayModeBar: false, responsive: true });
+      }
+
+      el(root + '-measure').addEventListener('change', function (e) { curMeasure = e.target.value; curIdx = currentMeasure().times.length - 1; render(); });
+      el(root + '-slider').addEventListener('input', function (e) { curIdx = +e.target.value; render(); });
+      extraFilters.forEach(function (f) {
+        el(root + '-f-' + f.key).addEventListener('change', function (e) {
+          stateF[f.key] = e.target.value; rebuildMeasureOptions(); curIdx = currentMeasure().times.length - 1; render();
+        });
+      });
+      if (cfg.levelToggle) {
+        el(root + '-level').addEventListener('click', function (e) {
+          var b = e.target.closest('button'); if (!b) return;
+          curLevel = b.getAttribute('data-level');
+          el(root + '-level').querySelectorAll('button').forEach(function (btn) { btn.classList.toggle('active', btn === b); });
+          rebuildMeasureOptions(); curIdx = currentMeasure().times.length - 1; render();
+        });
+      }
+      rebuildMeasureOptions();
+      curIdx = currentMeasure().times.length - 1;
+      render();
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // Small-multiple horizontal bar grid (e.g., top-5 causes of injury).
+  // Hand-rolled HTML/CSS bars rather than a Plotly bar trace: this is the
+  // only chart in the dashboard that would need Plotly's cartesian "bar"
+  // module, and every other chart only needs "choropleth" (maps) or plain
+  // "scatter" (lines/points) -- pulling in bar support would mean shipping
+  // the full ~4.5MB Plotly bundle instead of the ~1.2MB geo-only one, for
+  // the sake of one chart. A plain div-based bar is lighter anyway.
+  // ------------------------------------------------------------------
+  function renderBarGrid(root, cfg) {
+    var wrap = el(root);
+    var filters = cfg.filters || [];
+    var stateF = {}; filters.forEach(function (f) { stateF[f.key] = f.default; });
+
+    var controlsHtml = '<div class="ph-controls">';
+    filters.forEach(function (f) {
+      controlsHtml += '<span class="ph-control">' + esc(f.label) + ':' +
+        '<select id="' + root + '-f-' + f.key + '">' +
+        f.options.map(function (o) {
+          var val = (typeof o === 'object') ? o.value : o;
+          var lab = (typeof o === 'object') ? o.label : o;
+          return '<option value="' + esc(val) + '"' + (val === f.default ? ' selected' : '') + '>' + esc(lab) + '</option>';
+        }).join('') +
+        '</select></span>';
+    });
+    controlsHtml += '</div>';
+    var gridHtml = '<div class="ph-grid-2">' + cfg.panels.map(function (p) {
+      return '<div><p class="ph-chart-title">' + esc(p.title) + '</p><div class="ph-bars" id="' + root + '-' + p.id + '"></div></div>';
+    }).join('') + '</div>';
+    wrap.innerHTML = controlsHtml + gridHtml + '<div class="ph-tooltip" id="' + root + '-tip"></div>';
+    var tip = el(root + '-tip');
+
+    function render() {
+      cfg.panels.forEach(function (p) {
+        var rows = p.rows.filter(function (r) {
+          for (var k in stateF) { if (String(r[k]) !== String(stateF[k])) return false; }
+          return r.rank <= (cfg.topN || 5);
+        }).sort(function (a, b) { return a.rank - b.rank; });
+        var maxVal = Math.max.apply(null, rows.map(function (r) { return r.value; }).concat([1]));
+        el(root + '-' + p.id).innerHTML = rows.map(function (r) {
+          var pct = maxVal ? (100 * r.value / maxVal) : 0;
+          var tipText = '<b>' + esc(r.rank + '. ' + r.label) + '</b><br>Estimated ' + esc(cfg.valueLabel || 'count') + ': ' +
+            fmtNum(r.value, 0) + '<br>' + fmtNum(r.pct_of_all, 1) + '% of all cases<br>n sampled: ' + fmtNum(r.n_sampled, 0) +
+            (r.unstable ? ' (suppressed / small sample - interpret with caution)' : '');
+          return '<div class="ph-bar-row" data-tip="' + esc(tipText) + '">' +
+            '<span class="ph-bar-label">' + r.rank + '. ' + esc(r.label) + '</span>' +
+            '<span class="ph-bar-track"><span class="ph-bar-fill" style="width:' + pct.toFixed(1) + '%"></span></span>' +
+            '<span class="ph-bar-value">' + fmtNum(r.value, 0) + '</span></div>';
+        }).join('') || '<p class="ph-chart-sub">No data for this selection.</p>';
+      });
+    }
+
+    wrap.addEventListener('mouseover', function (e) {
+      var row = e.target.closest('.ph-bar-row');
+      if (!row) return;
+      tip.innerHTML = row.getAttribute('data-tip');
+      tip.style.display = 'block';
+    });
+    wrap.addEventListener('mousemove', function (e) {
+      if (tip.style.display === 'block') { tip.style.left = (e.pageX + 14) + 'px'; tip.style.top = (e.pageY + 14) + 'px'; }
+    });
+    wrap.addEventListener('mouseout', function (e) {
+      if (!e.relatedTarget || !e.relatedTarget.closest('.ph-bar-row')) tip.style.display = 'none';
+    });
+
+    filters.forEach(function (f) {
+      el(root + '-f-' + f.key).addEventListener('change', function (e) { stateF[f.key] = e.target.value; render(); });
+    });
+    render();
+  }
+
+  // ------------------------------------------------------------------
+  // Scatter explorer with client-side Pearson correlation + p-value.
+  // ------------------------------------------------------------------
+  function logGamma(x) {
+    var cof = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+    var y = x, tmp = x + 5.5; tmp -= (x + 0.5) * Math.log(tmp);
+    var ser = 1.000000000190015;
+    for (var j = 0; j < 6; j++) { y += 1; ser += cof[j] / y; }
+    return -tmp + Math.log(2.5066282746310005 * ser / x);
+  }
+  function betacf(x, a, b) {
+    var MAXIT = 100, EPS = 3e-7, FPMIN = 1e-30;
+    var qab = a + b, qap = a + 1, qam = a - 1;
+    var c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < FPMIN) d = FPMIN;
+    d = 1 / d; var h = d;
+    for (var m = 1; m <= MAXIT; m++) {
+      var m2 = 2 * m;
+      var aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d; h *= d * c;
+      aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d; var del = d * c; h *= del;
+      if (Math.abs(del - 1) < EPS) break;
+    }
+    return h;
+  }
+  function betai(a, b, x) {
+    if (x <= 0) return 0; if (x >= 1) return 1;
+    var bt = Math.exp(logGamma(a + b) - logGamma(a) - logGamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+    if (x < (a + 1) / (a + b + 2)) return bt * betacf(x, a, b) / a;
+    return 1 - bt * betacf(1 - x, b, a) / b;
+  }
+  function pearson(xs, ys) {
+    var n = xs.length, mx = 0, my = 0, i;
+    for (i = 0; i < n; i++) { mx += xs[i]; my += ys[i]; }
+    mx /= n; my /= n;
+    var sxy = 0, sxx = 0, syy = 0;
+    for (i = 0; i < n; i++) { var dx = xs[i] - mx, dy = ys[i] - my; sxy += dx * dy; sxx += dx * dx; syy += dy * dy; }
+    var r = sxy / Math.sqrt(sxx * syy);
+    var df = n - 2;
+    var t = r * Math.sqrt(df / (1 - r * r));
+    var p = (df > 0) ? betai(df / 2, 0.5, df / (df + t * t)) : NaN;
+    return { r: r, p: p, n: n };
+  }
+
+  function renderScatter(root, cfg) {
+    onReady(root, function () {
+      var wrap = el(root);
+      var levels = Object.keys(cfg.measuresByLevel);
+      var curLevel = cfg.defaultLevel || levels[0];
+      var opts = function () { return cfg.measuresByLevel[curLevel]; };
+      var curX = cfg.defaultX || opts()[0].id;
+      var curY = cfg.defaultY || (opts()[1] ? opts()[1].id : opts()[0].id);
+
+      function measureOptionsHtml(selId) {
+        return opts().map(function (m) { return '<option value="' + esc(m.id) + '"' + (m.id === selId ? ' selected' : '') + '>' + esc(m.label) + '</option>'; }).join('');
+      }
+
+      var levelHtml = '';
+      if (levels.length > 1) {
+        levelHtml = '<div class="ph-toggle" id="' + root + '-level">' +
+          levels.map(function (lv) { return '<button data-level="' + lv + '" type="button" class="' + (lv === curLevel ? 'active' : '') + '">' + esc(cfg.levelLabels && cfg.levelLabels[lv] ? cfg.levelLabels[lv] : lv) + '</button>'; }).join('') + '</div>';
+      }
+
+      wrap.innerHTML =
+        '<div class="ph-controls">' + levelHtml +
+        '<span class="ph-control">X axis:<select id="' + root + '-x">' + measureOptionsHtml(curX) + '</select></span>' +
+        '<span class="ph-control">Y axis:<select id="' + root + '-y">' + measureOptionsHtml(curY) + '</select></span>' +
+        '</div>' +
+        '<p class="ph-stat-line" id="' + root + '-stat"></p>' +
+        '<div id="' + root + '-chart" style="width:100%;height:' + (cfg.height || 480) + 'px;"></div>';
+
+      function render() {
+        var mx = opts().filter(function (m) { return m.id === curX; })[0];
+        var my = opts().filter(function (m) { return m.id === curY; })[0];
+        if (!mx || !my) return;
+        var geo = (curLevel === 'county') ? window.PH_GEO_COUNTY : window.PH_GEO_STATE;
+        var xs = [], ys = [], labels = [];
+        for (var i = 0; i < mx.values.length; i++) {
+          var xv = mx.values[i], yv = my.values[i];
+          if (xv === null || yv === null || xv === undefined || yv === undefined) continue;
+          xs.push(xv); ys.push(yv); labels.push(geo.labels[i]);
+        }
+        var trace = {
+          type: 'scatter', mode: 'markers', x: xs, y: ys, text: labels,
+          marker: { color: '#2a78d6', size: 8, opacity: 0.7, line: { color: '#ffffff', width: 0.5 } },
+          hovertemplate: '<b>%{text}</b><br>' + esc(mx.label) + ': %{x:,.1f}<br>' + esc(my.label) + ': %{y:,.1f}<extra></extra>'
+        };
+        var layout = {
+          margin: { t: 10, b: 55, l: 65, r: 20 }, paper_bgcolor: 'white', plot_bgcolor: 'white',
+          font: { family: 'Rubik, sans-serif', color: '#00356b', size: 11 },
+          xaxis: { title: mx.label, gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false },
+          yaxis: { title: my.label, gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false }
+        };
+        Plotly.react(root + '-chart', [trace], layout, { displayModeBar: false, responsive: true });
+        if (xs.length > 2) {
+          var res = pearson(xs, ys);
+          var sig = res.p < 0.001 ? 'p &lt; 0.001' : ('p = ' + res.p.toFixed(3));
+          el(root + '-stat').innerHTML = 'Pearson <em>r</em> = <span class="stat-num">' + res.r.toFixed(2) + '</span> (' + sig + ', n = ' + res.n.toLocaleString('en-US') + ' ' + (curLevel === 'county' ? 'counties' : 'states') + ')';
+        } else {
+          el(root + '-stat').textContent = 'Not enough overlapping data to compute a correlation.';
+        }
+      }
+
+      el(root + '-x').addEventListener('change', function (e) { curX = e.target.value; render(); });
+      el(root + '-y').addEventListener('change', function (e) { curY = e.target.value; render(); });
+      if (levels.length > 1) {
+        el(root + '-level').addEventListener('click', function (e) {
+          var b = e.target.closest('button'); if (!b) return;
+          curLevel = b.getAttribute('data-level');
+          el(root + '-level').querySelectorAll('button').forEach(function (btn) { btn.classList.toggle('active', btn === b); });
+          curX = opts()[0].id; curY = opts()[1] ? opts()[1].id : opts()[0].id;
+          el(root + '-x').innerHTML = measureOptionsHtml(curX);
+          el(root + '-y').innerHTML = measureOptionsHtml(curY);
+          render();
+        });
+      }
+      render();
+    });
+  }
+
+  return { renderLineChart: renderLineChart, renderChoropleth: renderChoropleth, renderBarGrid: renderBarGrid, renderScatter: renderScatter, colorFor: colorFor, dashFor: dashFor, fmtNum: fmtNum };
+})();
+</script>
+```
+
+
+::: {.panel-tabset}
+
+## Flu activity
+
+### Flu activity by state
+
+```{r act-map}
+#| results: asis
+src_units <- tribble(
+  ~source,            ~label,                         ~unit,                 ~dec, ~sub,
+  "CDC ILINet",       "CDC ILINet",                   "% of visits",         1, "Weighted % of outpatient visits for influenza-like illness",
+  "CDC NSSP",         "CDC NSSP (ED visits)",         "% of ED visits",      1, "% of emergency department visits with a flu diagnosis",
+  "Epic Cosmos, ED",  "Epic Cosmos (ED visits)",      "% of ED visits",      1, "% of emergency department encounters with flu, all ages",
+  "CDC NWSS",         "CDC NWSS (wastewater)",        "viral activity",      1, "Influenza A wastewater viral activity",
+  "CDC NHSN",         "CDC NHSN (hospital admissions)", "admissions",        0, "Weekly flu hospital admissions (count)",
+  "CDC RespNET",      "CDC RESP-NET (hospitalizations)", "per 100,000",      1, "Flu-associated hospitalization rate, participating states only"
+)
+
+act_state <- flu_overall %>%
+  filter(geography_fips != "00", source %in% src_units$source) %>%
+  mutate(loc = fips2abbr[geography_fips], t = chr_date(date),
+         note = if_else(suppressed_flag == 1, " (suppressed - imputed)", ""))
+
+act_map_measures <- lapply(seq_len(nrow(src_units)), function(i) {
+  u <- src_units[i, ]
+  d <- act_state %>% filter(source == u$source) %>% select(loc, t, value, note)
+  build_measure_entry(d, id = u$source, label = u$label, level = "state", unit = u$unit,
+                      decimals = u$dec, sub = u$sub)
+})
+
+cty <- flu_county %>%
+  transmute(loc = geography_fips, t = chr_date(date), value = value,
+            note = if_else(is_state_estimate == 1, " (state-level estimate)", ""))
+act_map_measures <- c(act_map_measures, list(
+  build_measure_entry(cty, id = "CDC NSSP|county", label = "CDC NSSP (ED visits)", level = "county",
+                      unit = "% of ED visits", decimals = 1,
+                      sub = "% of emergency department visits with a flu diagnosis, CDC NSSP, by county")))
+
+emit_chart("act-map", "Choropleth", list(
+  measureLabel = "Source", height = 500, defaultMeasure = "CDC NSSP", levelToggle = TRUE, measures = act_map_measures),
+  "Weekly influenza activity from each surveillance system. Choose a source from the dropdown and drag the slider to change the week. Grey areas indicate the source does not provide data for that geography. Use the <b>State | County</b> toggle to switch geography. County estimates are available for CDC NSSP ED visits only. Sources report in different units, so compare patterns within a source rather than colors across sources; grey areas have no data (RESP-NET covers only participating states). Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_overall_trends</code>).")
+```
+
+### Flu activity over time
+
+```{r act-ts}
+#| results: asis
+act_ts <- flu_overall %>% filter(source %in% src_units$source | source == "Kinsa")
+act_src_order <- c(src_units$source, "Kinsa")
+act_src_order <- act_src_order[act_src_order %in% unique(act_ts$source)]
+
+emit_chart("act-ts", "LineChart", list(
+  title = "Flu activity by source", height = 480, xTitle = "Week ending", decimals = 1,
+  unitFilterKey = "display",
+  yTitleMap = list(scaled = "Scaled 0-100 within each source", smooth = "Native units (differ by source; hover for unit)",
+                   raw = "Native units (differ by source; hover for unit)"),
+  yUnitMap = list(scaled = "", smooth = "", raw = ""),
+  seriesUnits = as.list(c(setNames(src_units$unit, src_units$source), "Kinsa" = "illness signal")),
+  toggle = TRUE, seriesOrder = act_src_order, defaultOn = act_src_order,
+  filters = list(
+    list(key = "geography", label = "Location", options = geo_options(act_ts$geography), default = "United States"),
+    list(key = "display", label = "Show", options = display_options, default = "scaled")
+  ),
+  lines = build_display_lines(act_ts, "geography", "source")
+), "Weekly flu activity for each surveillance system. Sources use different units (percent of visits, wastewater activity level, admissions counts, rates), so the default view rescales every series to 0-100 over its own history; switch <b>Show</b> to see native units. Click legend entries to hide or show a source. Kinsa is national only and RESP-NET covers only participating states. Epic Cosmos points flagged as suppressed small cells (<10) are imputed as 5. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a>.")
+```
+
+### Effective reproduction number (Rt) 
+
+```{r rt-ts}
+#| results: asis
+rt <- flu_rtm %>%
+  filter(measure %in% c("cdc_rt_flu", "cdc_rt_flu_lower", "cdc_rt_flu_upper")) %>%
+  select(geography, date, measure, value) %>%
+  pivot_wider(names_from = measure, values_from = value) %>%
+  mutate(xx = chr_date(date), series = "Rt")
+emit_chart("rt-ts", "LineChart", list(
+  title = "Flu effective reproduction number (Rt)", height = 440, xTitle = "Date", decimals = 2,
+  yTitle = "Rt (above 1 = growing)",
+  errorBand = list(label = "Show interval", default = TRUE),
+  seriesOrder = I("Rt"),
+  filters = list(list(key = "geography", label = "Location", options = geo_options(rt$geography), default = "United States")),
+  lines = build_lines(rt, "geography", "series", "xx", "cdc_rt_flu", lower_col = "cdc_rt_flu_lower", upper_col = "cdc_rt_flu_upper", digits = 3)
+), "Estimated growth of flu infections from the CDC Center for Forecasting and Outbreak Analytics. Rt above 1 means infections are increasing; below 1, decreasing. Whiskers show the lower and upper bounds. Estimates begin April 2026. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/cdc_cfa_rt\">CDC CFA Rt</a>.")
+```
+
+## By age
+
+### Hospital admissions and ED visits by age and state
+
+```{r age-map}
+#| results: asis
+age_state <- flu_age %>%
+  filter(geography_fips != "00", age != "Total") %>%
+  mutate(loc = fips2abbr[geography_fips], t = chr_date(date),
+         note = if_else(suppressed_flag == 1, " (suppressed - imputed)", ""))
+
+age_units <- c("CDC NHSN" = "admissions per 100,000", "Epic Cosmos, ED" = "% of ED visits")
+age_combos <- age_state %>% distinct(source, age) %>% arrange(source, match(age, age_sort(age)))
+
+age_map_measures <- lapply(seq_len(nrow(age_combos)), function(i) {
+  s <- age_combos$source[i]; a <- age_combos$age[i]
+  d <- age_state %>% filter(source == s, age == a) %>% select(loc, t, value, note)
+  build_measure_entry(d, id = paste(s, a, sep = "|"), label = a, level = "state",
+                      unit = age_units[[s]], decimals = 1,
+                      sub = paste0(s, ", age ", a), tags = list(source = s))
+})
+
+emit_chart("age-map", "Choropleth", list(
+  measureLabel = "Age group", height = 500,
+  filters = list(list(key = "source", label = "Source", options = I(names(age_units)), default = "CDC NHSN")),
+  defaultMeasure = "CDC NHSN|75+", measures = age_map_measures
+), "State flu burden for each age group. Choose a source, then an age group, and drag the slider to change the week. CDC NHSN is hospital admissions per 100,000 residents in the age group; Epic Cosmos is the share of ED encounters with a flu diagnosis. Age bands differ between sources. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_trends_by_age</code>).")
+```
+
+### Age trends over time
+
+```{r age-ts}
+#| results: asis
+age_ts <- flu_age
+emit_chart("age-ts", "LineChart", list(
+  title = "Flu activity by age group", height = 480, xTitle = "Week ending", decimals = 1,
+  unitFilterKey = "display",
+  yTitleMap = list(scaled = "Scaled 0-100 within each series", smooth = "Native units", raw = "Native units"),
+  yUnitMap = list(scaled = "", smooth = "", raw = ""),
+  filters = list(
+    list(key = "geography", label = "Location", options = geo_options(age_ts$geography), default = "United States"),
+    list(key = "source", label = "Source", options = I(sort(unique(age_ts$source))), default = "CDC NHSN"),
+    list(key = "display", label = "Show", options = display_options, default = "smooth")
+  ),
+  compareBy = by_source_compare(age_ts, "source", "age", "Age group", age_sort),  # dropdown hidden
+  lines = build_display_lines(age_ts, c("geography", "source", "age"), "age", variants = c("smooth", "scaled"))
+), "Flu activity for each age group. Choose a location and source; click legend entries to hide or show age groups. NHSN is admissions per 100,000; Epic Cosmos is percent of ED visits; RESP-NET reports a single total rate. Age labels are each source's own and do not line up. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a>.")
+```
+
+## Hospitalizations
+### Hospital flu measures by state
+
+```{r hosp-map}
+#| results: asis
+hosp_state <- flu_hosp %>% filter(geography_level == "State") %>%
+  mutate(loc = fips2abbr[geography_fips], t = chr_date(date))
+hosp_map_ids <- c("nhsn_adm_rate_flu", "nhsn_adm_flu", "nhsn_hosp_pats_flu", "nhsn_icu_pats_flu",
+                  "nhsn_pct_inpt_beds_flu", "nhsn_pct_icu_beds_flu")
+hosp_map_measures <- lapply(hosp_map_ids, function(m) {
+  d <- hosp_state %>% filter(measure == m) %>% select(loc, t, value)
+  build_measure_entry(d, id = m, label = hosp_label[[m]], level = "state", unit = hosp_unit[[m]],
+                      decimals = if (hosp_unit[[m]] %in% c("%", "per 100,000")) 1 else 0,
+                      sub = "CDC NHSN hospital reporting")
+})
+emit_chart("hosp-map", "Choropleth", list(
+  measureLabel = "Measure", height = 500, defaultMeasure = "nhsn_adm_rate_flu", measures = hosp_map_measures
+), "Flu hospital metrics reported to CDC NHSN, by state and week. Choose a measure and drag the slider to change the week. Counts depend on how many hospitals report; use the per-100,000 admission rate to compare states of different size. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/nhsn_hospital_capacity\">CDC NHSN</a> via <code>flu_hospital_capacity</code>.")
+```
+
+### Hospital trends
+
+```{r hosp-ts}
+#| results: asis
+hosp_ts <- flu_hosp %>%
+  filter(!is.na(value)) %>%
+  mutate(xx = chr_date(date), series = "Flu")
+hosp_geo <- c("United States",
+              sort(unique(hosp_ts$geography[hosp_ts$geography_level == "HHS region"])),
+              sort(unique(hosp_ts$geography[hosp_ts$geography_level == "State"])),
+              sort(unique(hosp_ts$geography[!hosp_ts$geography_level %in% c("National", "HHS region", "State")])))
+hosp_geo <- setdiff(unique(hosp_geo), non_us_territories)
+hosp_ids <- names(hosp_label)
+
+emit_chart("hosp-ts", "LineChart", list(
+  title = "Flu hospital measures over time", height = 460, xTitle = "Week ending", decimals = 1,
+  unitFilterKey = "measure",
+  yTitleMap = as.list(setNames(paste0(hosp_label, " (", hosp_unit, ")"), hosp_ids)),
+  yUnitMap = as.list(setNames(ifelse(hosp_unit == "%", "%", paste0(" ", hosp_unit)), hosp_ids)),
+  seriesOrder = I("Flu"),
+  filters = list(
+    list(key = "geography", label = "Location", options = hosp_geo, default = "United States"),
+    list(key = "measure", label = "Measure",
+         options = lapply(hosp_ids, function(m) list(value = m, label = hosp_label[[m]])),
+         default = "nhsn_adm_flu")
+  ),
+  lines = build_lines(hosp_ts, c("geography", "measure"), "series", "xx", "value", digits = 1)
+), "Weekly NHSN flu hospital measures for the nation, HHS regions, states and territories. Choose a location and measure. Percent-of-hospitals-reporting measures show how complete the reporting is. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/nhsn_hospital_capacity\">CDC NHSN</a>.")
+```
+
+## Deaths
+
+### Deaths and notifiable flu cases by state
+
+```{r death-map}
+#| results: asis
+death_ids <- c("rate_influenza_and_pneumonia", "influenza_associated_pediatric_mortality_weekly",
+               "influenza_associated_pediatric_mortality_cumulative",
+               "novel_influenza_a_virus_infections_weekly", "novel_influenza_a_virus_infections_cumulative")
+death_state <- flu_rtm %>% filter(measure %in% death_ids) %>%
+  mutate(loc = fips2abbr[geography_fips], t = chr_date(date))
+death_map_measures <- lapply(death_ids, function(m) {
+  d <- death_state %>% filter(measure == m) %>% select(loc, t, value)
+  build_measure_entry(d, id = m, label = rtm_label[[m]], level = "state", unit = rtm_unit[[m]],
+                      decimals = if (m == "rate_influenza_and_pneumonia") 1 else 0,
+                      sub = if (m == "rate_influenza_and_pneumonia") "NCHS quarterly rate; influenza and pneumonia combined" else "CDC NNDSS")
+})
+emit_chart("death-map", "Choropleth", list(
+  measureLabel = "Measure", height = 500, defaultMeasure = "influenza_associated_pediatric_mortality_cumulative",
+  measures = death_map_measures
+), "Flu-related deaths and novel influenza A infections by state. Choose a measure and drag the slider to change the period. The NCHS death rate is for <b>influenza and pneumonia combined</b>, not flu alone. NNDSS counts are year-to-date totals or weekly increments; grey means none reported or no data. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">NCHS and CDC NNDSS</a>.")
+```
+
+### Deaths and notifiable cases over time
+
+```{r death-ts}
+#| results: asis
+death_ts <- flu_rtm %>% filter(measure %in% death_ids, !is.na(value)) %>%
+  mutate(xx = chr_date(date), series = "Count")
+emit_chart("death-ts", "LineChart", list(
+  title = "Deaths and notifiable flu cases over time", height = 440, xTitle = "Date", decimals = 1,
+  unitFilterKey = "measure",
+  yTitleMap = as.list(setNames(paste0(rtm_label[death_ids], " (", rtm_unit[death_ids], ")"), death_ids)),
+  yUnitMap = as.list(setNames(paste0(" ", rtm_unit[death_ids]), death_ids)),
+  seriesOrder = I("Count"),
+  filters = list(
+    list(key = "geography", label = "Location", options = geo_options(death_ts$geography), default = "United States"),
+    list(key = "measure", label = "Measure",
+         options = lapply(death_ids, function(m) list(value = m, label = rtm_label[[m]])),
+         default = "influenza_associated_pediatric_mortality_weekly")
+  ),
+  lines = build_lines(death_ts, c("geography", "measure"), "series", "xx", "value", digits = 1)
+), "Weekly and year-to-date counts of pediatric flu deaths and novel influenza A infections (CDC NNDSS) and the quarterly NCHS death rate for influenza and pneumonia combined. A few weekly NNDSS values are negative where a count was revised downward; they are shown as reported. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_rt_and_mortality</code>).")
+```
+
+## Vaccination
+
+### Vaccination coverage by state
+
+```{r vax-map}
+#| results: asis
+# One end-of-season value per state x season x age group: the latest date the
+# source reports inside that season.
+vax_overall <- flu_vax %>%
+  filter(stratum_type == "Overall", measure == "coverage", population == "Total",
+         geography_fips != "00", !is.na(value), !is.na(season)) %>%
+  group_by(source, geography_fips, season, age) %>% slice_max(date, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  mutate(loc = fips2abbr[geography_fips], t = season)
+vax_map_sources <- c("CDC FluVaxView", "CDC NIS-Flu", "IIS", "CMS Medicare")
+vax_combos <- vax_overall %>% filter(source %in% vax_map_sources) %>% distinct(source, age) %>%
+  arrange(factor(source, vax_map_sources), match(age, age_sort(age)))
+vax_map_measures <- lapply(seq_len(nrow(vax_combos)), function(i) {
+  s <- vax_combos$source[i]; a <- vax_combos$age[i]
+  d <- vax_overall %>% filter(source == s, age == a) %>% select(loc, t, value)
+  build_measure_entry(d, id = paste(s, a, sep = "|"), label = a, level = "state", unit = "%", decimals = 1,
+                      sub = paste0("Flu vaccination coverage, ", s, ", ", a), tags = list(source = s))
+})
+vax_cty <- flu_vax_sub %>%
+  filter(geography_level == "County", measure == "coverage", !is.na(value)) %>%
+  transmute(loc = geography_fips, t = format(date, "%Y"), value = value)
+vax_map_measures <- c(vax_map_measures, list(
+  build_measure_entry(vax_cty, id = "vax_county", label = "Adult flu vaccination coverage", level = "county",
+                      unit = "%", decimals = 1, sub = "Adults 18 and older, CDC FluVaxView modeled county estimates, by calendar year")))
+emit_chart("vax-map", "Choropleth", list(
+  measureLabel = "Age group", height = 500, levelToggle = TRUE,
+  filters = list(list(key = "source", label = "Source", options = I(vax_map_sources), default = "CDC FluVaxView")),
+  defaultMeasure = "CDC FluVaxView|>=6 Months", measures = vax_map_measures
+), "Percent vaccinated against flu, by state and flu season (drag the slider). Each value is the last estimate the source reports in that season. Sources use different age bands and survey or administrative methods, so choose a source first. The <b>County</b> toggle shows modeled CDC FluVaxView estimates of adult (18 and older) coverage by calendar year. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_vax_coverage</code>, <code>flu_vax_substate</code>).")
+```
+
+### Coverage over seasons
+
+```{r vax-ts}
+#| results: asis
+vax_ts <- flu_vax %>%
+  filter(stratum_type == "Overall", measure == "coverage", population == "Total", !is.na(value), !is.na(season),
+         source %in% c("CDC FluVaxView", "CDC NIS-Flu", "IIS", "CMS Medicare")) %>%
+  group_by(source, geography, season, age) %>% slice_max(date, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  mutate(xx = season, series = age)
+
+# IQVIA weekly doses administered (national) live in the same chart as one more
+# "source": its lines carry measure/setting dims, which the matching filters
+# below only show (and apply) while that source is selected.
+dos_src <- "IQVIA doses"
+dos_adm <- flu_doses %>% filter(source == "IQVIA", !is.na(value)) %>%
+  mutate(source = dos_src, xx = chr_date(date), series = age)
+dos_meas <- c(doses_administered = "Weekly doses administered", doses_administered_cumulative = "Cumulative doses administered")
+
+vax_srcs <- c(sort(unique(vax_ts$source)), dos_src)
+vax_src_opts <- lapply(vax_srcs, function(s) list(value = s, label = if (s == dos_src) "IQVIA (doses administered)" else s))
+is_dos <- vax_srcs == dos_src
+vax_geo_all <- geo_options(c(vax_ts$geography, "United States"))
+vax_geo_by_src <- c(
+  lapply(split(vax_ts$geography, vax_ts$source), function(g) I(geo_options(g))),
+  setNames(list(I("United States")), dos_src))
+vax_cmp_df <-bind_rows(vax_ts %>% select(source, age), dos_adm %>% select(source, age))
+
+emit_chart("vax-ts", "LineChart", list(
+  title = "Flu vaccination over time", height = 480, zeroAsGap = TRUE, xTitle = "Flu season", yTitle = "Percent vaccinated",
+  yUnit = "%", decimals = 1,
+  unitFilterKey = "source",
+  xTitleMap = as.list(setNames(ifelse(is_dos, "Week ending", "Flu season"), vax_srcs)),
+  yTitleMap = as.list(setNames(ifelse(is_dos, "Doses administered", "Percent vaccinated"), vax_srcs)),
+  yUnitMap = as.list(setNames(ifelse(is_dos, "", "%"), vax_srcs)),
+  decimalsMap = as.list(setNames(ifelse(is_dos, 0, 1), vax_srcs)),
+  errorBand = list(label = "Show confidence interval", default = FALSE),
+  filters = list(
+    list(key = "source", label = "Source", options = vax_src_opts, default = "CDC FluVaxView"),
+    # Location only appears for sources that publish state-level estimates
+    list(key = "geography", label = "Location", options = vax_geo_all, default = "United States", hideIfSingle = TRUE,
+         optionsBy = list(key = "source", map = vax_geo_by_src)),
+    list(key = "measure", label = "Measure", showWhen = list(otherFilterEq = list(source = dos_src)),
+         options = lapply(names(dos_meas), function(m) list(value = m, label = dos_meas[[m]])), default = "doses_administered"),
+    list(key = "setting", label = "Setting", showWhen = list(otherFilterEq = list(source = dos_src)),
+         options = I(sort(unique(dos_adm$setting))), default = "Combined")
+  ),
+  # FluVaxView and NIS-Flu report many nested age bands; start with a
+  # non-overlapping set and leave the rest to the legend toggles.
+  compareBy = by_source_compare(vax_cmp_df, "source", "age", "Age group", age_sort, default_on = list(
+    "CDC FluVaxView" = c("6 Months - 17 Years", "18-64 Years", ">=65 Years", ">=6 Months"),
+    "CDC NIS-Flu" = c("6 months-17 years", "18-49 years", "50-64 years", "65+ years"))),
+  lines = c(
+    build_lines(vax_ts, c("geography", "source", "age"), "series", "xx", "value",
+                lower_col = "value_lcl", upper_col = "value_ucl"),
+    build_lines(dos_adm %>% mutate(geography = "United States"),
+                c("geography", "source", "measure", "setting", "age"), "series", "xx", "value"))
+), "Flu vaccination over time. For the coverage sources, lines are the last estimate reported in each season, by age group; choose a location and source, and click legend entries to hide or show age groups (a representative non-overlapping set is shown first because the sources publish many nested age bands). Confidence intervals are shown where the source publishes them. Choose <b>IQVIA (doses administered)</b> to see national weekly or cumulative flu vaccine doses from pharmacy and physician-office data (Combined = both), by age group; IQVIA is national only. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a>, <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/iqvia_vax_administered\">IQVIA</a>.")
+```
+
+### Coverage by race and ethnicity
+
+```{r vax-race}
+#| results: asis
+vax_race <- flu_vax %>%
+  filter(source == "CDC FluVaxView", stratum_type == "Race and Ethnicity", measure == "coverage",
+         !is.na(value), !is.na(season)) %>%
+  group_by(geography, season, age, stratum) %>% slice_max(date, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  mutate(xx = season, series = stratum)
+race_order <- sort(unique(vax_race$stratum))
+vax_race <- vax_race %>% filter(age == "Total")  # the only age group published; no age dropdown needed
+emit_chart("vax-race", "LineChart", list(
+  title = "Flu vaccination coverage by race and ethnicity", height = 460, xTitle = "Flu season",
+  yTitle = "Percent vaccinated", yUnit = "%", decimals = 1,
+  toggle = TRUE, seriesOrder = I(race_order), defaultOn = I(race_order),
+  errorBand = list(label = "Show confidence interval", default = FALSE),
+  filters = list(
+    list(key = "geography", label = "Location", options = geo_options(vax_race$geography), default = "United States")
+  ),
+  lines = build_lines(vax_race, "geography", "series", "xx", "value", lower_col = "value_lcl", upper_col = "value_ucl")
+), "Flu vaccination coverage by race and ethnicity from CDC FluVaxView, by season. Choose a location; click legend entries to hide or show groups. Not every group is published for every state and season. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/fluvaxview\">CDC FluVaxView</a>.")
+```
+
+### Coverage by demographic group (NIS-Flu)
+
+```{r vax-nis}
+#| results: asis
+vax_nis <- flu_vax %>%
+  filter(source == "CDC NIS-Flu", measure == "coverage", stratum_type != "Overall", !is.na(value), !is.na(season)) %>%
+  group_by(geography, season, age, stratum_type, stratum) %>% slice_max(date, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  mutate(xx = season, series = stratum)
+nis_types <- sort(unique(vax_nis$stratum_type))
+nis_ages <- age_sort(vax_nis$age)
+# Characteristics published for each age group (drives the dependent dropdown)
+nis_types_by_age <- setNames(lapply(nis_ages, function(a) I(sort(unique(vax_nis$stratum_type[vax_nis$age == a])))), nis_ages)
+nis_cmp <- list(label = "Compare by", default = "stratum", sourceKey = "stratum_type", hidden = TRUE, groups = list(stratum = list(
+  label = "Group", bySource = setNames(lapply(nis_types, function(s)
+    list(fixed = empty_obj(), seriesOrder = I(sort(unique(vax_nis$stratum[vax_nis$stratum_type == s]))), seriesMeta = empty_obj())), nis_types))))
+emit_chart("vax-nis", "LineChart", list(
+  title = "Flu vaccination coverage by demographic group", height = 460, xTitle = "Flu season",
+  yTitle = "Percent vaccinated", yUnit = "%", decimals = 1,
+  errorBand = list(label = "Show confidence interval", default = FALSE),
+  filters = list(
+    list(key = "geography", label = "Location", options = geo_options(vax_nis$geography), default = "United States"),
+    list(key = "age", label = "Age group", options = I(nis_ages), default = nis_ages[1]),
+    list(key = "stratum_type", label = "Characteristic", options = I(nis_types),
+         default = if ("Sex" %in% nis_types) "Sex" else nis_types[1],
+         optionsBy = list(key = "age", map = nis_types_by_age))
+  ),
+  compareBy = nis_cmp,
+  lines = build_lines(vax_nis, c("geography", "stratum_type", "age", "stratum"), "series", "xx", "value",
+                      lower_col = "value_lcl", upper_col = "value_ucl")
+), "Flu vaccination coverage from the CDC National Immunization Survey by demographic characteristic (sex, poverty status, insurance, urbanicity and others). Choose a location and age group, then a characteristic (only characteristics published for that age group are listed); click legend entries to hide or show groups. State-level survey estimates for small groups can be noisy; turn on confidence intervals to see the uncertainty. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/nis_flu_rsv\">CDC NIS-Flu</a>.")
+```
+
+:::
+
+```{=html}
+<div class="pophive-footer">
+  <strong>PopHIVE</strong> &mdash; Population Health Information & Visualization Explorer<br>
+  A project of the Yale School of Public Health, Data-Intensive Social Science Center.<br>
+  <a href="https://github.com/PopHIVE/Ingest">Data & code on GitHub</a> &middot;
+  <a href="https://pophive.github.io/processing-documentation/">Documentation</a>
+  <div class="disclaimer">Draft dashboard for internal review &mdash; not for public distribution. Some measures are suppressed or imputed at small sample sizes; see each chart's "About this chart" and "Caveats" notes.</div>
+</div>
+```
