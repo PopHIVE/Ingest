@@ -25,7 +25,8 @@ current_hashes <- list()
 
 for (f in standard_files) {
   url <- paste0(base_url, "/standard/", f)
-  dest <- file.path("standard", f)
+  # data_weekly.csv.gz is split below, so keep the upstream copy in raw/
+  dest <- file.path(if (f == "data_weekly.csv.gz") "raw" else "standard", f)
 
   tryCatch({
     download.file(url, dest, mode = "wb", quiet = TRUE)
@@ -34,6 +35,22 @@ for (f in standard_files) {
     message("Warning: failed to download ", f, ": ", e$message)
   })
 }
+
+# Split data_weekly into emergency department (ED) and all-encounter files
+weekly <- vroom::vroom("raw/data_weekly.csv.gz", show_col_types = FALSE, altrep = FALSE)
+id_cols <- c("geography", "age", "time")
+ed_cols <- grep("_ed_", names(weekly), value = TRUE)
+vroom::vroom_write(
+  weekly[, c(id_cols, ed_cols)],
+  "standard/data_ed.csv.gz",
+  delim = ","
+)
+vroom::vroom_write(
+  weekly[, setdiff(names(weekly), ed_cols)],
+  "standard/data_encounters.csv.gz",
+  delim = ","
+)
+unlink("standard/data_weekly.csv.gz")
 
 # Download measure_info.json, preserving the local `_catalog` block (drives
 # the website data-sources index) across re-downloads: the upstream file
@@ -60,6 +77,16 @@ tryCatch({
 }, error = function(e) {
   message("Warning: failed to download measure_info.json: ", e$message)
 })
+
+# Re-apply the discontinuation note (the download above overwrites local edits)
+discontinued_note <- "NOTE: as of 10/08/2026, we are no longer updating this measure."
+mi <- jsonlite::fromJSON("measure_info.json", simplifyVector = FALSE)
+for (nm in setdiff(names(mi), c("age", "_sources", "_catalog"))) {
+  if (!grepl(discontinued_note, mi[[nm]]$long_description, fixed = TRUE)) {
+    mi[[nm]]$long_description <- paste(mi[[nm]]$long_description, discontinued_note)
+  }
+}
+jsonlite::write_json(mi, "measure_info.json", auto_unbox = TRUE, pretty = TRUE)
 
 # Update process record only if files have changed
 if (!identical(process$raw_state, current_hashes)) {

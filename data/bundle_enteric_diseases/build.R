@@ -196,7 +196,7 @@ message(sprintf("Wrote %d rows to dist/resistance_by_pattern.parquet", nrow(resi
 # -----------------------------------------------------------------------------
 # 3. Epic Cosmos: weekly all-cause diarrhea encounters, by state and age
 #    Kept in a separate dist file from enteric_diseases.parquet because it is
-#    age-stratified. Only data_weekly.csv.gz is bundled; the cyclospora lab
+#    age-stratified. Only data_ed.csv.gz and data_encounters.csv.gz are bundled; the cyclospora lab
 #    testing file (weekly_tests.csv.gz) is not included.
 # -----------------------------------------------------------------------------
 # Each value measure is paired with the suppression flag that applies to it.
@@ -211,9 +211,10 @@ epic_flag_map <- c(
   epic_pct_all_diarrhea          = "epic_suppressed_flag_pct_all_diarrhea"
 )
 
-epic_wide <- vroom::vroom(
-  '../epic_diarrhea/standard/data_weekly.csv.gz',
-  show_col_types = FALSE
+epic_wide <- dplyr::full_join(
+  vroom::vroom('../epic_diarrhea/standard/data_ed.csv.gz', show_col_types = FALSE),
+  vroom::vroom('../epic_diarrhea/standard/data_encounters.csv.gz', show_col_types = FALSE),
+  by = c('geography', 'age', 'time')
 ) %>%
   filter(!is.na(geography)) %>%
   rename(fips = geography) %>%
