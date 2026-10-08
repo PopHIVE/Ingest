@@ -53,22 +53,18 @@ all <- tidyr::expand_grid(
   # fill_method and report_time break ties between the variants of one value
   arrange(signal, geo_type, geo_value, reference_time, fill_method, report_time)
 
-# One raw file per reference year. A single file passed GitHub's 50 MB limit,
-# and the whole of it was rewritten on every update; with sorted, per-year
-# files only the years that actually changed produce a new blob. No rows are
-# dropped. Clear the old files first so a retired layout can't be read twice.
-unlink(list.files("raw", "^data(_[0-9]{4})?\\.csv\\.xz$", full.names = TRUE))
+# Keep only the latest vintage (report_time batch) to reduce raw file size.
+# snapshot() pulls all historical report_times; filter to newest batch only.
 all %>%
-  split(format(.$reference_time, "%Y")) %>%
-  purrr::iwalk(function(d, year) {
-    vroom::vroom_write(d, sprintf("raw/data_%s.csv.xz", year), ",")
-  })
+  filter(report_time == max(report_time)) %>%
+  arrange(signal, geo_type, geo_value, reference_time, fill_method, report_time) %>%
+  vroom::vroom_write(., "raw/data.csv.xz", ",")
 
 
 # check raw state
 raw_state <- as.list(tools::md5sum(list.files(
   "raw",
-  "csv.xz",
+  "^data\\.csv\\.xz$",
   recursive = TRUE,
   full.names = TRUE
 )))
@@ -84,7 +80,7 @@ state_fips_lookup <- all_fips %>%
   select(geography, state)
 
   data <- vroom::vroom(
-      list.files("raw", "^data_[0-9]{4}\\.csv\\.xz$", full.names = TRUE),
+      './raw/data.csv.xz',
       col_types = vroom::cols(geo_value = "c", fill_method = "c"),
       show_col_types = FALSE
     ) %>%
