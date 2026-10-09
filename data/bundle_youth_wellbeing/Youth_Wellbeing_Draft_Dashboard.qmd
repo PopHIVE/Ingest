@@ -1404,14 +1404,15 @@ emit_json("MH_SUICIDE", list(
 
 ```{r mh-ed-los}
 #| results: asis
-mh_ed_age_order <- c("0-4", "5-9", "10-14", "15-19", "20-24", "Overall")
+# "Overall" and bands above 25 are excluded: they include adults, so they are not youth strata.
+mh_ed_age_order <- c("0-24", "0-9", "10-14", "15-19", "20-24")
 mh_ed_diagnoses <- unname(mh_dx_labels)
 
 # ---- Map: median ED length of stay vs. share of ED visits for the selected
-# diagnosis, by state, age (dropdown), diagnosis (dropdown), and month
-# (slider) ----
+# diagnosis, by state, age (dropdown), diagnosis (dropdown), and quarter
+# (slider). "All ED encounters" has no percent-of-visits map. ----
 mh_ed_map_base <- epic_mh %>%
-  filter(geography != "00") %>%
+  filter(geography != "00", age %in% mh_ed_age_order) %>%
   mutate(loc = fips2abbr[geography], t = time)
 
 mh_ed_metrics <- list(
@@ -1428,6 +1429,7 @@ for (dx in mh_ed_diagnoses) {
   for (ag in mh_ed_age_order) {
     for (mkey in names(mh_ed_metrics)) {
       m <- mh_ed_metrics[[mkey]]
+      if (mkey == "pct" && dx == "All ED encounters") next
       d <- mh_ed_map_base %>%
         filter(age == ag, diagnosis == dx) %>%
         transmute(loc, t, value = .data[[m$col]], note = hover_n)
@@ -1440,9 +1442,9 @@ for (dx in mh_ed_diagnoses) {
 }
 
 emit_json("MH_ED_MAP", list(
-  measureLabel = "Metric", height = 520, defaultMeasure = "pct__Overall__Suicidal behavior",
+  measureLabel = "Metric", height = 520, defaultMeasure = "pct__0-24__Suicidal behavior",
   filters = list(
-    list(key = "age", label = "Age", options = mh_ed_age_order, default = "Overall"),
+    list(key = "age", label = "Age", options = mh_ed_age_order, default = "0-24"),
     list(key = "diagnosis", label = "Diagnosis", options = mh_ed_diagnoses, default = "Suicidal behavior")
   ),
   measures = mh_ed_measures
@@ -1450,10 +1452,20 @@ emit_json("MH_ED_MAP", list(
 
 # ---- Time series: median ED length of stay, state + diagnosis dropdowns,
 # age legend toggle, optional Q1-Q3 error bars ----
-mh_ed_ts_data <- epic_mh %>%
-  filter(!is.na(median_los)) %>%
+# Each age series is also offered as an "<age> (all ED encounters)" comparison
+# series, copied into every diagnosis view from the all-encounters baseline,
+# so it can be toggled on next to the diagnosis line via the legend.
+mh_ed_cmp_suffix <- " (all ED encounters)"
+mh_ed_ts_base <- epic_mh %>%
+  filter(!is.na(median_los), age %in% mh_ed_age_order) %>%
   transmute(geography = geography_name, age, diagnosis, period = as.character(time),
             median_los, q1_los, q3_los, note = hover_n)
+mh_ed_ts_cmp <- bind_rows(lapply(setdiff(mh_ed_diagnoses, "All ED encounters"), function(dx) {
+  mh_ed_ts_base %>%
+    filter(diagnosis == "All ED encounters") %>%
+    mutate(diagnosis = dx, age = paste0(age, mh_ed_cmp_suffix))
+}))
+mh_ed_ts_data <- bind_rows(mh_ed_ts_base, mh_ed_ts_cmp)
 
 mh_ed_ts_lines <- build_lines(mh_ed_ts_data, dim_cols = c("geography", "diagnosis"), series_col = "age",
                                x_col = "period", y_col = "median_los",
@@ -1461,17 +1473,18 @@ mh_ed_ts_lines <- build_lines(mh_ed_ts_data, dim_cols = c("geography", "diagnosi
                                lower_col = "q1_los", upper_col = "q3_los")
 state_opts_mh_ed <- c("United States", sort(setdiff(unique(mh_ed_ts_data$geography), "United States")))
 age_opts_mh_ed <- mh_ed_age_order[mh_ed_age_order %in% unique(mh_ed_ts_data$age)]
+age_opts_mh_ed <- c(age_opts_mh_ed, paste0(age_opts_mh_ed, mh_ed_cmp_suffix))
 
 emit_json("MH_ED_TS", list(
   title = "Emergency department length of stay by diagnosis", height = 460, toggle = TRUE,
-  xTitle = "Month", yTitle = "Median ED length of stay (minutes)", yUnit = " min", decimals = 0,
+  xTitle = "Quarter", yTitle = "Median ED length of stay (minutes)", yUnit = " min", decimals = 0,
   filters = list(
     list(key = "geography", label = "State", options = state_opts_mh_ed, default = "United States"),
     list(key = "diagnosis", label = "Diagnosis", options = mh_ed_diagnoses, default = "Suicidal behavior")
   ),
   seriesOrder = age_opts_mh_ed,
   seriesMeta = setNames(lapply(age_opts_mh_ed, function(a) list(label = a)), age_opts_mh_ed),
-  defaultOn = c("Overall"),
+  defaultOn = c("0-24"),
   errorBand = list(key = "q1q3", label = "Show interquartile range (Q1-Q3)", default = FALSE),
   lines = mh_ed_ts_lines
 ))
@@ -1482,7 +1495,7 @@ emit_json("MH_ED_TS", list(
 <script>PH.renderChoropleth('mh-ed-los-map', window.MH_ED_MAP);</script>
 <details class="chart-info">
 <summary>About this chart</summary>
-<p>Emergency department visits by mental health diagnosis group (Epic Cosmos ED Diagnoses: suicidal behavior, mood, behavioral, substance use, psychosis, eating disorders, other), by state, age at time of visit, and month. Use the Diagnosis dropdown to pick a group, and the Metric dropdown to switch between the percent of ED encounters that carry the diagnosis (the default) and median ED length of stay (minutes). State percentages are derived from Epic's published shares and visit counts, and the diagnosis groups are not mutually exclusive, so they need not sum to a total. Hovering shows the denominator (all ED visits in that state, age and month) and the approximate numerator (visits with the diagnosis, calculated as the percent times the denominator). Percentages for rare groups (e.g. eating disorders) carry large relative rounding error. Age bands stop at 24, so they do not sum to Overall, and age-band percentages are available at the state level only. Length of stay runs to ED departure, so it includes boarding time for patients awaiting an inpatient or psychiatric bed. Use the Age dropdown and the slider to change age group and month; suppressed cells (too few visits for a reliable estimate) show as no data. Data: Epic Cosmos, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
+<p>Emergency department visits by mental health diagnosis group (Epic Cosmos ED Diagnoses: suicidal behavior, other mental health, and all ED encounters as a baseline), by state, age at time of visit, and quarter. Use the Diagnosis dropdown to pick a group, and the Metric dropdown to switch between the percent of ED encounters that carry the diagnosis (the default; not available for the all-encounters baseline) and median ED length of stay (minutes). Percentages are calculated as visits with the diagnosis divided by all ED visits in the same state, age and quarter. Hovering shows both counts. Counts of 10 or fewer are suppressed at source and imputed as 5, so small percentages are approximate. The diagnosis groups are not guaranteed to be mutually exclusive. The 0-24 band is the exported under-25 total and overlaps the narrower bands below it. Length of stay runs to ED departure, so it includes boarding time for patients awaiting an inpatient or psychiatric bed. Use the Age dropdown and the slider to change age group and quarter; suppressed cells (too few visits for a reliable estimate) show as no data. Data: Epic Cosmos, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
 </details>
 ```
 
@@ -1491,7 +1504,7 @@ emit_json("MH_ED_TS", list(
 <script>PH.renderLineChart('mh-ed-los-ts', window.MH_ED_TS);</script>
 <details class="chart-info">
 <summary>About this chart</summary>
-<p>Median emergency department length of stay (minutes) for visits in each mental health diagnosis group (Epic Cosmos), by state, age at time of visit, and month. Defaults to the national total for Suicidal behavior; use the Diagnosis dropdown to switch groups and the State dropdown to change geography. Toggle age-band lines on/off via the legend below the chart. Hovering any point always shows its interquartile range (Q1-Q3) in the tooltip; check "Show interquartile range (Q1-Q3)" to also draw it as whiskers on the chart itself. Data: Epic Cosmos, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
+<p>Median emergency department length of stay (minutes) for visits in each mental health diagnosis group (Epic Cosmos), by state, age at time of visit, and quarter. Defaults to the national total for Suicidal behavior; use the Diagnosis dropdown to switch groups and the State dropdown to change geography. Toggle age-band lines on/off via the legend below the chart; each age band also has an "(all ED encounters)" line (median length of stay for all ED visits in that age band) that you can switch on as a comparison. The all-encounters comparison is not shown when All ED encounters is the selected diagnosis. Hovering any point always shows its interquartile range (Q1-Q3) in the tooltip; check "Show interquartile range (Q1-Q3)" to also draw it as whiskers on the chart itself. Data: Epic Cosmos, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
 </details>
 ```
 

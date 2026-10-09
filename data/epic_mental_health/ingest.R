@@ -1,9 +1,7 @@
 # =============================================================================
 # Cosmos Mental Health ED Data Ingestion
-# Source: https://github.com/PopHIVE/epic_preprocessing/tree/add-MH/data/cosmos_mental_health
+# Source: https://github.com/PopHIVE/epic_preprocessing/tree/main/data/cosmos_mental_health
 # Pulls pre-processed standard files from the epic_preprocessing repository.
-# NOTE: points at the `add-MH` branch until it is merged; switch `branch`
-# to "main" afterwards.
 # Includes: monthly ED length of stay and mental health diagnosis measures by
 # state and age band.
 # =============================================================================
@@ -13,7 +11,7 @@ library(dplyr)
 process <- dcf::dcf_process_record()
 
 # GitHub raw base URL
-branch <- "add-MH"
+branch <- "main"
 base_url <- paste0(
   "https://raw.githubusercontent.com/PopHIVE/epic_preprocessing/", branch,
   "/data/cosmos_mental_health"

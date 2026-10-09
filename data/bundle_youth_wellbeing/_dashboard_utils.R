@@ -74,58 +74,52 @@ epic_concussion <- vroom::vroom(epic_concussion_path, show_col_types = FALSE) %>
   mutate(geography_name = if_else(geography == "00", "United States", fips2name[geography])) %>%
   filter(!is.na(geography_name))
 
-# Epic Cosmos mental-health ED data (October 2026 rebuild) -- seven
-# ED-diagnosis groups, reshaped long on `diagnosis` so the dashboard can offer
-# them as a dropdown/filter. Read from data/epic_mental_health, which now holds
-# the cosmos_mental_health standard output (replacing the older two-diagnosis
-# ingest with different columns).
+# Epic Cosmos mental-health ED data (quarterly rebuild) -- three ED-diagnosis
+# groups (suicidal behavior, other mental health, all ED encounters), reshaped
+# long on `diagnosis` so the dashboard can offer them as a dropdown/filter.
+# Read from data/epic_mental_health, which holds the cosmos_mental_health
+# standard output from epic_preprocessing.
 # Median/Q1/Q3 ED length-of-stay cells are suppressed-to-NA at source (no
-# imputation, unlike count-based Epic measures), so no suppressed_flag
-# handling is needed downstream for those three. `pct_visits` is the percent
-# of ED encounters in the geography/age slice that carry the diagnosis (case
-# mix); state values are derived in the source ingest. The `all_cause`
-# diagnosis (national, all ages only) is left out of the long table.
+# imputation, unlike count-based Epic measures). Visit counts of 10 or fewer
+# are imputed as 5 at source (flagged), so small shares are approximate.
+# `pct_visits` is derived here: visits with the diagnosis / all ED visits in
+# the same geography x quarter x age slice. The "all" group is the baseline
+# (100% by construction), so it is left out of pct_visits.
 epic_mh_path <- "../epic_mental_health/standard/data.csv.gz"
 mh_dx_labels <- c(
-  suicidal_behavior = "Suicidal behavior", mood = "Mood", behavioral = "Behavioral",
-  substance_use = "Substance use", psychosis = "Psychosis",
-  eating_disorders = "Eating disorders", other = "Other"
+  suicidal_behavior = "Suicidal behavior", other = "Other mental health",
+  all = "All ED encounters"
 )
-mh_dx_re <- paste0("^epic_ed_(los_median|los_q1|los_q3|pct_visits)_(",
-                   paste(names(mh_dx_labels), collapse = "|"), ")$")
-# Explicit col_types: the file opens with all-NA rows, so vroom's guess would
-# type sparse columns (behavioral, eating disorders, other) as logical and
-# silently drop their values.
-epic_mh <- vroom::vroom(
+# Explicit col_types so sparse columns are never guessed as logical.
+epic_mh_wide <- vroom::vroom(
   epic_mh_path, show_col_types = FALSE,
   col_types = vroom::cols(geography = "c", time = "D", age = "c", .default = "d")
 ) %>%
   mutate(geography_name = if_else(geography == "00", "United States", fips2name[geography])) %>%
-  filter(!is.na(geography_name)) %>%
-  pivot_longer(
-    cols = matches(mh_dx_re),
-    names_pattern = mh_dx_re,
-    names_to = c(".value", "diagnosis")
-  ) %>%
-  transmute(
-    geography, time, age, geography_name,
-    diagnosis = unname(mh_dx_labels[diagnosis]),
-    median_los = los_median, q1_los = los_q1, q3_los = los_q3, pct_visits,
-    n_visits = epic_ed_n_visits
-  ) %>%
-  # Hover text: denominator = all ED visits in the slice (epic_ed_n_visits);
-  # numerator = visits with the diagnosis, back-calculated as pct_visits x
-  # denominator (the source publishes the percent, not the diagnosis count, so
-  # it is approximate). Blank where either input is missing.
+  filter(!is.na(geography_name), age %in% c("0-24", "0-9", "10-14", "15-19", "20-24"))
+epic_mh <- bind_rows(lapply(names(mh_dx_labels), function(dx) {
+  epic_mh_wide %>%
+    transmute(
+      geography, time, age, geography_name,
+      diagnosis = unname(mh_dx_labels[dx]),
+      median_los = .data[[paste0("epic_ed_los_median_", dx)]],
+      q1_los = .data[[paste0("epic_ed_los_q1_", dx)]],
+      q3_los = .data[[paste0("epic_ed_los_q3_", dx)]],
+      n_dx = if (dx == "all") epic_ed_n_visits else .data[[paste0("epic_ed_n_visits_", dx)]],
+      n_visits = epic_ed_n_visits,
+      pct_visits = if (dx == "all") NA_real_ else 100 * n_dx / n_visits
+    )
+})) %>%
+  # Hover text: numerator = visits with the diagnosis; denominator = all ED
+  # visits in the slice. Blank where either is missing.
   mutate(
     hover_n = if_else(
-      is.na(pct_visits) | is.na(n_visits), "",
-      paste0("<br>Visits with diagnosis: ~",
-             format(round(pct_visits / 100 * n_visits), big.mark = ",", trim = TRUE),
+      is.na(n_dx) | is.na(n_visits), "",
+      paste0("<br>Visits with diagnosis: ",
+             format(round(n_dx), big.mark = ",", trim = TRUE),
              "<br>All ED visits: ", format(round(n_visits), big.mark = ",", trim = TRUE))
     )
   )
-
 # Crisis Text Line "Crisis Trends" (crisistrends.org) conversation-topic
 # data, year-grain aggregate. Same stopgap as epic_concussion above: lives
 # in a separate crisis-text-line repo that
