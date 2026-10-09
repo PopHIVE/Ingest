@@ -358,12 +358,11 @@ chart_sources <- list(
   "act-map" = c("nssp", "epic", "respnet", "nhsn", "ilinet", "nwss"),
   "act-ts" = c("nssp", "epic", "respnet", "nhsn", "ilinet", "nwss", "kinsa"),
   "rt-ts" = "rt",
-  "age-map" = c("nhsn", "epic"),
-  "age-ts" = c("nhsn", "epic", "respnet"),
-  "hosp-map" = "nhsn", "hosp-ts" = "nhsn",
-  "death-map" = c("nchs", "nndss"), "death-ts" = c("nchs", "nndss"),
+  "hd-map" = c("nhsn", "nchs", "nndss"), "hd-ts" = c("nhsn", "nchs", "nndss"),
   "vax-map" = c("fluvaxview", "nis", "iis", "medicare"),
   "vax-ts" = c("fluvaxview", "nis", "iis", "medicare", "iqvia"),
+  "vax-dumbbell" = c("fluvaxview", "nis", "iis", "medicare"),
+  "vax-scatter" = c("fluvaxview", "nhsn"),
   "vax-race" = "fluvaxview",
   "vax-nis" = "nis"
 )
@@ -377,7 +376,7 @@ caveats_html <- function(id) {
   sprintf("<ul>%s</ul>", paste(items, collapse = ""))
 }
 
-emit_chart <- function(id, kind = c("Choropleth", "LineChart"), cfg, about) {
+emit_chart <- function(id, kind = c("Choropleth", "LineChart", "Dumbbell", "Scatter"), cfg, about) {
   kind <- match.arg(kind)
   nm <- toupper(gsub("-", "_", id))
   force(cfg)  # evaluates build_lines() calls, which fill .xreg

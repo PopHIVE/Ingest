@@ -232,11 +232,7 @@ a:hover { color: var(--accent); }
 
 <h2 class="howto-title">How to use</h2>
 
-<div class="howto">
-  <div><b>1. Pick a topic</b>Use the tabs: flu activity, age groups, hospitals, deaths, or vaccination.</div>
-  <div><b>2. Choose a place and measure</b>Each chart has dropdowns for location, data source or measure. Charts start on the United States.</div>
-  <div><b>3. Hover for exact numbers</b>Move your mouse over any point or state. On maps, drag the slider to change the week or season.</div>
-</div>
+<p class="howto-text">Pick a topic from the tabs, then use each chart&rsquo;s dropdowns to choose a place, data source or measure. Hover over any point or state for exact numbers, and drag the slider on maps to change the week or season.</p>
 
 <details class="glossary">
 <summary>Glossary</summary>
@@ -400,6 +396,12 @@ window.PH = (function () {
           '<input type="checkbox" id="' + root + '-errband"' + (state.showRange ? ' checked' : '') + '> ' +
           esc(cfg.errorBand.label || 'Show range') + '</label></span>';
       }
+      if (cfg.views) {
+        controlsHtml += '<div class="ph-toggle" id="' + root + '-view">' +
+          '<button type="button" data-view="timeline" class="active">Timeline</button>' +
+          ((cmp || (cfg.seriesOrder || []).length > 1) ? '<button type="button" data-view="facet" title="One panel per series">Faceted</button>' : '') +
+          '<button type="button" data-view="season" title="One line per flu season, starting in October">Season overlay</button></div>';
+      }
       controlsHtml += '</div>';
 
       wrap.innerHTML = controlsHtml +
@@ -500,6 +502,7 @@ window.PH = (function () {
         var filtered = (cfg.lines || []).filter(matches);
         var order = curSeriesOrder(), meta = curSeriesMeta();
         var useToggle = cfg.toggle || !!cmp;
+        var traceUnits = [];
         var traces = filtered
           .filter(function (l) { return !useToggle || state.visible[seriesIdOf(l)]; })
           .map(function (l) {
@@ -511,6 +514,7 @@ window.PH = (function () {
             // whenever the chart isn't in a rescaled view.
             var unit = (cfg.seriesUnits && cfg.unitFilterKey && state.filters[cfg.unitFilterKey] !== 'scaled' && cfg.seriesUnits[sid])
               ? ' ' + cfg.seriesUnits[sid] : currentYUnit();
+            traceUnits.push(unit);
             var xv = l.x.map(function (i) { return XS[i]; });
             var notes = denseNotes(l.note, l.x.length);
             // The IQR line is shown in the hover text whenever the line
@@ -548,7 +552,77 @@ window.PH = (function () {
           showlegend: !useToggle && order.length > 1,  // no legend when it would only name one category
           legend: { orientation: 'h', x: 0.01, y: 1.12, yanchor: 'bottom' }
         };
-        Plotly.react(root + '-chart', traces, layout, { displayModeBar: false, responsive: true });
+        var chartDiv = el(root + '-chart');
+        var view = state.view || 'timeline';
+        var hgt = cfg.height || 440;
+        var sub = el(root + '-sub'); sub.textContent = cfg.subtitle || '';
+        if (view === 'facet' && traces.length < 2) view = 'timeline';
+        if (view === 'season') {
+          // One line per flu season (starting 1 October) for the first visible series.
+          var src = traces[0], seasonTr = [];
+          if (src) {
+            var k0 = Date.UTC(2001, 9, 1), bySeason = {}, seasons = [];
+            src.x.forEach(function (xs, i) {
+              var yv = src.y[i], m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(xs);
+              if (yv === null || yv === undefined || !m) return;
+              var yr = +m[1], mo = +m[2] - 1, dy = +m[3], s = mo >= 9 ? yr : yr - 1;
+              var days = (Date.UTC(yr, mo, dy) - Date.UTC(s, 9, 1)) / 864e5;
+              var lab = s + '-' + String((s + 1) % 100).padStart(2, '0');
+              if (!bySeason[lab]) { bySeason[lab] = { x: [], y: [], c: [] }; seasons.push(lab); }
+              bySeason[lab].x.push(new Date(k0 + days * 864e5).toISOString().slice(0, 10));
+              bySeason[lab].y.push(yv); bySeason[lab].c.push(src.customdata[i]);
+            });
+            seasons.sort();
+            seasons = seasons.filter(function (s) { return bySeason[s].x.length >= 3; });
+            seasons.forEach(function (s, k) {
+              var latest = (k === seasons.length - 1), b = bySeason[s];
+              seasonTr.push({
+                x: b.x, y: b.y, customdata: b.c, type: 'scatter', mode: 'lines', connectgaps: false, name: s,
+                line: { color: latest ? '#00356b' : colorFor(k), width: latest ? 3.5 : 1.75 },
+                hovertemplate: '<b>' + esc(src.name) + ', ' + s + '</b><br>%{x|%b %d}: %{y:.' + currentDecimals() + 'f}' + traceUnits[0] + '%{customdata[0]}<extra></extra>'
+              });
+            });
+            sub.textContent = (cfg.subtitle ? cfg.subtitle + ' ' : '') + 'Showing ' + src.name + ' by flu season (latest season in dark blue). Click a legend entry to choose a different series.';
+          }
+          traces = seasonTr;
+          layout.xaxis = { title: 'Month of flu season (starting October)', type: 'date', tickformat: '%b', tick0: '2001-10-01', dtick: 'M1',
+                           range: ['2001-10-01', '2002-09-30'], gridcolor: '#f0f0f0', zeroline: false };
+          layout.showlegend = true;
+          layout.legend = { orientation: 'h', x: 0.01, y: 1.12, yanchor: 'bottom' };
+        } else if (view === 'facet') {
+          // One stacked panel per visible series, sharing the time axis.
+          var n = traces.length, gap = 0.035, ph = (1 - gap * (n - 1)) / n, anns = [];
+          hgt = Math.max(hgt, n * 150);
+          traces.forEach(function (t, i) {
+            var sfx = i ? String(i + 1) : '', top = 1 - i * (ph + gap);
+            t.xaxis = 'x' + sfx; t.yaxis = 'y' + sfx;
+            layout['yaxis' + sfx] = { domain: [top - ph, top], gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false, rangemode: 'tozero' };
+            layout['xaxis' + sfx] = { type: 'date', anchor: 'y' + sfx, matches: i ? 'x' : undefined, showticklabels: i === n - 1,
+                                      gridcolor: '#f5f5f5', zeroline: false };
+            anns.push({ text: '<b>' + esc(t.name) + '</b>', xref: 'paper', yref: 'paper', x: 0, y: top, xanchor: 'left', yanchor: 'bottom',
+                        showarrow: false, font: { size: 11, color: colorFor(i) } });
+          });
+          layout.annotations = anns; layout.showlegend = false;
+          layout.margin = { t: 10, b: 45, l: 60, r: 20 };
+        }
+        if (state.lastView !== view) { try { Plotly.purge(chartDiv); } catch (err) {} state.lastView = view; }
+        chartDiv.style.height = hgt + 'px';
+        Plotly.react(chartDiv, traces, layout, { displayModeBar: false, responsive: true });
+      }
+
+      if (cfg.views) {
+        el(root + '-view').addEventListener('click', function (e) {
+          var b = e.target.closest('button'); if (!b) return;
+          state.view = b.getAttribute('data-view');
+          el(root + '-view').querySelectorAll('button').forEach(function (btn) { btn.classList.toggle('active', btn === b); });
+          if (state.view === 'season') {  // season overlay shows a single series: keep the first visible one
+            var firstOn = null;
+            curSeriesOrder().forEach(function (s) { if (state.visible[s] && firstOn === null) firstOn = s; });
+            curSeriesOrder().forEach(function (s) { state.visible[s] = (s === firstOn); });
+            renderLegend();
+          }
+          render();
+        });
       }
 
       filters.forEach(function (f) {
@@ -575,8 +649,13 @@ window.PH = (function () {
         var item = e.target.closest('.ph-legend-item');
         if (!item) return;
         var s = item.getAttribute('data-series');
-        state.visible[s] = !state.visible[s];
-        item.classList.toggle('off', !state.visible[s]);
+        if (state.view === 'season') {  // single-select in season overlay
+          curSeriesOrder().forEach(function (o) { state.visible[o] = (o === s); });
+          renderLegend();
+        } else {
+          state.visible[s] = !state.visible[s];
+          item.classList.toggle('off', !state.visible[s]);
+        }
         render();
       });
       updateFilterVisibility();
@@ -627,13 +706,23 @@ window.PH = (function () {
           '</select></span>';
       });
       controlsHtml += '<span class="ph-control" id="' + root + '-measurewrap">' + esc(cfg.measureLabel || 'Measure') + ':<select id="' + root + '-measure"></select></span>';
+      var swarmOk = cfg.beeswarm !== false, curView = 'map', curStateFips = cfg.stateOptions ? cfg.stateOptions[0].value : null;
+      if (cfg.stateOptions) {  // county beeswarm: one state at a time
+        controlsHtml += '<span class="ph-control" id="' + root + '-stwrap" style="display:none">State:<select id="' + root + '-st">' +
+          cfg.stateOptions.map(function (o) { return '<option value="' + esc(o.value) + '">' + esc(o.label) + '</option>'; }).join('') + '</select></span>';
+      }
+      if (swarmOk) {
+        controlsHtml += '<div class="ph-toggle" id="' + root + '-viewtog">' +
+          '<button type="button" data-view="map" class="active">Map</button>' +
+          '<button type="button" data-view="swarm" title="One dot per state on a single value axis">Beeswarm</button></div>';
+      }
       controlsHtml += '</div>';
 
       wrap.innerHTML = controlsHtml +
         '<p class="ph-chart-title" id="' + root + '-title"></p>' +
         '<p class="ph-chart-sub" id="' + root + '-sub"></p>' +
         '<div id="' + root + '-map" style="width:100%;height:' + (cfg.height || 480) + 'px;"></div>' +
-        '<p class="ph-chart-sub">Grey = no data available for this selection.</p>' +
+        '<p class="ph-chart-sub" id="' + root + '-greynote">Grey = no data available for this selection.</p>' +
         '<div class="ph-slider-row" id="' + root + '-sliderrow">' +
         '<span class="ph-period-label" id="' + root + '-period"></span>' +
         '<input type="range" id="' + root + '-slider" min="0" max="1" value="0" step="1" aria-label="time period"></div>';
@@ -660,7 +749,7 @@ window.PH = (function () {
         el(root + '-slider').value = curIdx;
         el(root + '-sliderrow').style.display = m.times.length > 1 ? 'flex' : 'none';
         el(root + '-period').textContent = String(m.times[curIdx]);
-        el(root + '-title').textContent = m.label;
+        el(root + '-title').textContent = m.title || m.label;
         el(root + '-sub').textContent = m.sub || '';
 
         var geo = (m.level === 'county') ? window.PH_GEO_COUNTY : window.PH_GEO_STATE;
@@ -668,6 +757,66 @@ window.PH = (function () {
         var notes = m.extra
           ? denseZ(m.extra[curIdx], geo.locs.length, 0).map(function (k) { return k ? m.noteTbl[k - 1] : ''; })
           : z.map(function () { return ''; });
+
+        var isCty = (m.level === 'county');
+        var swarmAvail = swarmOk && (!isCty || !!cfg.stateOptions);
+        var useSwarm = swarmAvail && curView === 'swarm';
+        if (swarmOk) el(root + '-viewtog').style.display = swarmAvail ? '' : 'none';
+        if (cfg.stateOptions) el(root + '-stwrap').style.display = (useSwarm && isCty) ? '' : 'none';
+        el(root + '-greynote').style.display = useSwarm ? 'none' : '';
+        var mapDiv = el(root + '-map');
+        if (mapDiv._phSwarm !== useSwarm) { try { Plotly.purge(mapDiv); } catch (err) {} mapDiv._phSwarm = useSwarm; }
+        if (useSwarm) {
+          // Beeswarm: x = value, y = packed offset so dots never overlap (computed in pixel space).
+          var pts = [];
+          for (var q = 0; q < z.length; q++) {
+            if (z[q] === null || z[q] === undefined) continue;
+            if (isCty && String(geo.locs[q]).substr(0, 2) !== curStateFips) continue;
+            pts.push({ v: z[q], loc: geo.locs[q], lab: geo.labels[q], note: notes[q] });
+          }
+          pts.sort(function (a, b) { return a.v - b.v; });
+          var W = Math.max(mapDiv.clientWidth - 90, 300), D = isCty ? 13 : 24;
+          var vmin = pts.length ? pts[0].v : 0, vmax = pts.length ? pts[pts.length - 1].v : 1;
+          var span = (vmax - vmin) || 1, placed = [];
+          pts.forEach(function (p) {
+            p.px = (p.v - vmin) / span * W;
+            var cands = [0];
+            placed.forEach(function (o) {
+              var dx = Math.abs(o.px - p.px);
+              if (dx < D) { var dy = Math.sqrt(D * D - dx * dx); cands.push(o.py + dy, o.py - dy); }
+            });
+            cands.sort(function (a, b) { return Math.abs(a) - Math.abs(b); });
+            for (var c = 0; c < cands.length; c++) {
+              var ok = placed.every(function (o) { var dx = o.px - p.px, dy = o.py - cands[c]; return dx * dx + dy * dy >= D * D - 1e-6; });
+              if (ok) { p.py = cands[c]; break; }
+            }
+            if (p.py === undefined) p.py = 0;
+            placed.push(p);
+          });
+          var sorted = pts.map(function (p) { return p.v; }), med = sorted.length ? (sorted[Math.floor((sorted.length - 1) / 2)] + sorted[Math.ceil((sorted.length - 1) / 2)]) / 2 : 0;
+          var maxOff = Math.max.apply(null, pts.map(function (p) { return Math.abs(p.py); }).concat([D]));
+          var dec = (m.decimals === undefined ? 1 : m.decimals);
+          var swarm = {
+            type: 'scatter', mode: 'markers+text', x: pts.map(function (p) { return p.v; }), y: pts.map(function (p) { return p.py; }),
+            text: pts.map(function (p) { return isCty ? '' : p.loc; }), textposition: 'middle center', textfont: { size: 8, color: '#ffffff' },
+            customdata: pts.map(function (p) { return [p.lab, p.note]; }),
+            marker: { size: D - 2, color: '#2a78d6', line: { color: '#ffffff', width: 1 } },
+            hovertemplate: '<b>%{customdata[0]}</b><br>' + esc(m.label) + ': %{x:.' + dec + 'f}' + (m.unit ? ' ' + m.unit : '') + '%{customdata[1]}<extra></extra>'
+          };
+          var medLine = { type: 'line', xref: 'x', yref: 'paper', x0: med, x1: med, y0: 0, y1: 1, line: { color: '#eb6834', width: 1.5, dash: 'dash' } };
+          var swarmLayout = {
+            margin: { t: 20, b: 55, l: 20, r: 20 }, paper_bgcolor: 'white', plot_bgcolor: 'white',
+            font: { family: 'Rubik, sans-serif', color: '#00356b', size: 11 }, showlegend: false, hovermode: 'closest',
+            xaxis: { title: (m.unit || m.label), gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false },
+            yaxis: { visible: false, range: [-(maxOff + D), maxOff + D], fixedrange: true },
+            shapes: [medLine],
+            annotations: [{ xref: 'x', yref: 'paper', x: med, y: 1, text: 'Median of ' + (isCty ? 'counties' : 'states') + ': ' + fmtNum(med, dec), showarrow: false, yanchor: 'bottom', font: { size: 10, color: '#eb6834' } }]
+          };
+          mapDiv.style.height = Math.max(260, 2 * (maxOff + D) + 90) + 'px';
+          Plotly.react(mapDiv, [swarm], swarmLayout, { displayModeBar: false, responsive: true });
+          return;
+        }
+        mapDiv.style.height = (cfg.height || 480) + 'px';
 
         // Two layers: a flat grey base covering every location (so "no
         // data" reads as a deliberate grey, not blank white, and still
@@ -704,6 +853,17 @@ window.PH = (function () {
 
       el(root + '-measure').addEventListener('change', function (e) { curMeasure = e.target.value; curIdx = currentMeasure().times.length - 1; render(); });
       el(root + '-slider').addEventListener('input', function (e) { curIdx = +e.target.value; render(); });
+      if (cfg.stateOptions) {
+        el(root + '-st').addEventListener('change', function (e) { curStateFips = e.target.value; render(); });
+      }
+      if (swarmOk) {
+        el(root + '-viewtog').addEventListener('click', function (e) {
+          var b = e.target.closest('button'); if (!b) return;
+          curView = b.getAttribute('data-view');
+          el(root + '-viewtog').querySelectorAll('button').forEach(function (btn) { btn.classList.toggle('active', btn === b); });
+          render();
+        });
+      }
       extraFilters.forEach(function (f) {
         el(root + '-f-' + f.key).addEventListener('change', function (e) {
           stateF[f.key] = e.target.value; rebuildMeasureOptions(); curIdx = currentMeasure().times.length - 1; render();
@@ -868,6 +1028,7 @@ window.PH = (function () {
         '<span class="ph-control">Y axis:<select id="' + root + '-y">' + measureOptionsHtml(curY) + '</select></span>' +
         '</div>' +
         '<p class="ph-stat-line" id="' + root + '-stat"></p>' +
+        (cfg.explainStats ? '<p class="ph-chart-sub" id="' + root + '-help"></p>' : '') +
         '<div id="' + root + '-chart" style="width:100%;height:' + (cfg.height || 480) + 'px;"></div>';
 
       function render() {
@@ -897,8 +1058,23 @@ window.PH = (function () {
           var res = pearson(xs, ys);
           var sig = res.p < 0.001 ? 'p &lt; 0.001' : ('p = ' + res.p.toFixed(3));
           el(root + '-stat').innerHTML = 'Pearson <em>r</em> = <span class="stat-num">' + res.r.toFixed(2) + '</span> (' + sig + ', n = ' + res.n.toLocaleString('en-US') + ' ' + (curLevel === 'county' ? 'counties' : 'states') + ')';
+          if (cfg.explainStats) {
+            var ar = Math.abs(res.r);
+            var strength = ar < 0.1 ? 'little to no' : ar < 0.3 ? 'a weak' : ar < 0.5 ? 'a moderate' : ar < 0.7 ? 'a strong' : 'a very strong';
+            var dir = ar < 0.1 ? '' : (res.r > 0 ? ' positive' : ' negative');
+            var meaning = ar < 0.1 ? 'there is essentially no straight-line relationship between the two measures across states'
+              : (res.r > 0 ? 'states with higher values on the x axis tend to also have higher values on the y axis'
+                           : 'states with higher values on the x axis tend to have lower values on the y axis');
+            el(root + '-help').innerHTML = '<b>How to read this.</b> <em>r</em> is the correlation, from &minus;1 to +1: +1 means the dots fall on a rising straight line, &minus;1 on a falling one, and 0 means no straight-line pattern. ' +
+              'The <em>p</em>-value is the chance of seeing a correlation at least this far from zero in this many states if the two measures were truly unrelated. ' +
+              'A small <em>p</em> says the pattern is unlikely to be chance, not that it is large or that one measure causes the other. ' +
+              '<b>Here:</b> <em>r</em> = ' + res.r.toFixed(2) + ' is ' + strength + dir + ' correlation, so ' + meaning + '. ' +
+              (res.p < 0.05 ? 'With <em>p</em> ' + (res.p < 0.001 ? '&lt; 0.001' : '= ' + res.p.toFixed(3)) + ', that pattern is unlikely to be due to chance alone.'
+                            : 'With <em>p</em> = ' + res.p.toFixed(3) + ', the pattern could plausibly be chance with this many states.');
+          }
         } else {
           el(root + '-stat').textContent = 'Not enough overlapping data to compute a correlation.';
+          if (cfg.explainStats) el(root + '-help').textContent = '';
         }
       }
 
@@ -919,7 +1095,127 @@ window.PH = (function () {
     });
   }
 
-  return { renderLineChart: renderLineChart, renderChoropleth: renderChoropleth, renderBarGrid: renderBarGrid, renderScatter: renderScatter, colorFor: colorFor, dashFor: dashFor, fmtNum: fmtNum };
+  // ------------------------------------------------------------------
+  // Dumbbell: one row per state / age group / race group, a dot for season A
+  // and a dot for season B joined by a line, so the change is the gap.
+  // Data are dictionary-coded columns (cfg.dict / cfg.cols), see R chunk.
+  // ------------------------------------------------------------------
+  function renderDumbbell(root, cfg) {
+    onReady(root, function () {
+      var wrap = el(root), D = cfg.dict, C = cfg.cols, N = C.v.length;
+      var views = cfg.views;  // [{id, label, rowLabel, rowCol: 'loc'|'age'|'group', splitBy: 'age'|'loc', data: dict.view value}]
+      var st = { view: views[0].id, source: null, age: null, loc: null, a: null, b: null };
+      function distinct(rows, col) {
+        var seen = {}, out = [];
+        rows.forEach(function (i) { var k = C[col][i]; if (!seen[k]) { seen[k] = 1; out.push(k); } });
+        return out;
+      }
+      function viewIdx() { return D.view.indexOf(vdef().data); }
+      function rowsFor(extra) {
+        var vi = viewIdx(), out = [];
+        for (var i = 0; i < N; i++) {
+          if (C.view[i] !== vi || C.v[i] === null) continue;
+          if (extra.source !== undefined && C.source[i] !== extra.source) continue;
+          if (extra.age !== undefined && C.age[i] !== extra.age) continue;
+          if (extra.loc !== undefined && C.loc[i] !== extra.loc) continue;
+          out.push(i);
+        }
+        return out;
+      }
+      function vdef() { return views.filter(function (v) { return v.id === st.view; })[0]; }
+      function lbl(col, k) { return D[col][k]; }
+      function opts(col, ks, sel, sorter) {
+        var arr = ks.slice();
+        if (sorter) arr.sort(sorter);
+        return arr.map(function (k) { return '<option value="' + k + '"' + (k === sel ? ' selected' : '') + '>' + esc(lbl(col, k)) + '</option>'; }).join('');
+      }
+      // Re-derive the dropdown options that depend on the others; keep selections when still valid.
+      function sync() {
+        var v = vdef();
+        var srcs = distinct(rowsFor({}), 'source');
+        if (srcs.indexOf(st.source) < 0) st.source = srcs[0];
+        var base = rowsFor({ source: st.source });
+        st.ageOpts = distinct(base, 'age'); st.locOpts = distinct(base, 'loc');
+        if (st.ageOpts.indexOf(st.age) < 0) st.age = st.ageOpts[0];
+        if (st.locOpts.indexOf(st.loc) < 0) {
+          var us = st.locOpts.filter(function (k) { return D.loc[k] === 'United States'; });
+          st.loc = us.length ? us[0] : st.locOpts[0];
+        }
+        var f = { source: st.source };
+        if (v.splitBy === 'age') f.age = st.age; else if (v.splitBy === 'loc') f.loc = st.loc;
+        st.rows = rowsFor(f);
+        st.seasonOpts = distinct(st.rows, 'season');
+        st.seasonOpts.sort(function (x, y) { return D.season[x] < D.season[y] ? -1 : 1; });
+        if (st.seasonOpts.indexOf(st.b) < 0) st.b = st.seasonOpts[st.seasonOpts.length - 1];
+        if (st.seasonOpts.indexOf(st.a) < 0 || st.a === st.b) st.a = st.seasonOpts.length > 1 ? st.seasonOpts[st.seasonOpts.length - 2] : st.b;
+      }
+      function controls() {
+        var v = vdef(), h = '<div class="ph-controls">';
+        h += '<span class="ph-control">Compare across:<select id="' + root + '-view">' + views.map(function (x) {
+          return '<option value="' + x.id + '"' + (x.id === st.view ? ' selected' : '') + '>' + esc(x.label) + '</option>'; }).join('') + '</select></span>';
+        var srcs = distinct(rowsFor({}), 'source');
+        h += '<span class="ph-control">Source:<select id="' + root + '-source">' + opts('source', srcs, st.source) + '</select></span>';
+        if (v.splitBy === 'age') h += '<span class="ph-control">Age group:<select id="' + root + '-age">' + opts('age', st.ageOpts, st.age) + '</select></span>';
+        if (v.splitBy === 'loc') h += '<span class="ph-control">Location:<select id="' + root + '-loc">' + opts('loc', st.locOpts, st.loc, function (x, y) { return D.loc[x] === 'United States' ? -1 : D.loc[y] === 'United States' ? 1 : (D.loc[x] < D.loc[y] ? -1 : 1); }) + '</select></span>';
+        h += '<span class="ph-control">From season:<select id="' + root + '-a">' + opts('season', st.seasonOpts, st.a) + '</select></span>';
+        h += '<span class="ph-control">To season:<select id="' + root + '-b">' + opts('season', st.seasonOpts, st.b) + '</select></span></div>';
+        return h;
+      }
+      function draw() {
+        var v = vdef(), rows = {}, order = [];
+        st.rows.forEach(function (i) {
+          var cat = D[v.rowCol][C[v.rowCol][i]];
+          if (v.rowCol === 'loc' && cat === 'United States') return;
+          if (!rows[cat]) { rows[cat] = {}; order.push(cat); }
+          if (C.season[i] === st.a) rows[cat].a = C.v[i];
+          if (C.season[i] === st.b) rows[cat].b = C.v[i];
+        });
+        var cats = order.filter(function (c) { return rows[c].a !== undefined && rows[c].b !== undefined; });
+        cats.sort(function (x, y) { return rows[y].b - rows[x].b; });
+        var A = lbl('season', st.a), B = lbl('season', st.b);
+        var lx = [], ly = [];
+        cats.forEach(function (c) { lx.push(rows[c].a, rows[c].b, null); ly.push(c, c, null); });
+        var line = { type: 'scatter', mode: 'lines', x: lx, y: ly, hoverinfo: 'skip', line: { color: '#b8c4d6', width: 3 }, showlegend: false };
+        function dots(key, name, color, fill) {
+          return { type: 'scatter', mode: 'markers', name: name, x: cats.map(function (c) { return rows[c][key]; }), y: cats,
+                   marker: { size: 10, color: fill ? color : 'white', line: { color: color, width: 2 } },
+                   hovertemplate: '<b>%{y}</b><br>' + esc(name) + ': %{x:.1f}%<extra></extra>' };
+        }
+        var layout = {
+          margin: { t: 30, b: 50, l: 200, r: 20 }, paper_bgcolor: 'white', plot_bgcolor: 'white',
+          font: { family: 'Rubik, sans-serif', color: '#00356b', size: 11 }, hovermode: 'closest',
+          xaxis: { title: 'Percent vaccinated', gridcolor: '#e5e5e5', griddash: 'dash', zeroline: false, rangemode: 'tozero' },
+          yaxis: { type: 'category', categoryorder: 'array', categoryarray: cats.slice().reverse(), automargin: true, tickfont: { size: 10 } },
+          legend: { orientation: 'h', x: 0.01, y: 1.08, yanchor: 'bottom' }
+        };
+        var diffs = cats.map(function (c) { return rows[c].b - rows[c].a; }).sort(function (x, y) { return x - y; });
+        var med = diffs.length ? (diffs[Math.floor((diffs.length - 1) / 2)] + diffs[Math.ceil((diffs.length - 1) / 2)]) / 2 : null;
+        var up = diffs.filter(function (d) { return d > 0; }).length;
+        el(root + '-stat').innerHTML = diffs.length
+          ? 'Median change <span class="stat-num">' + (med >= 0 ? '+' : '') + med.toFixed(1) + '</span> percentage points; coverage rose in ' + up + ' of ' + diffs.length + ' ' + esc(v.rowLabel.toLowerCase()) + ' groups.'
+          : 'No rows have data in both seasons. Choose different seasons.';
+        var d = el(root + '-chart');
+        d.style.height = Math.max(320, cats.length * 20 + 110) + 'px';
+        Plotly.react(d, [line, dots('a', A, '#6da7ec', false), dots('b', B, '#184f95', true)], layout, { displayModeBar: false, responsive: true });
+      }
+      function build() {
+        sync();
+        wrap.innerHTML = controls() + '<p class="ph-chart-title">' + esc(cfg.title || '') + '</p>' +
+          '<p class="ph-stat-line" id="' + root + '-stat"></p><div id="' + root + '-chart" style="width:100%;"></div>';
+        function on(id, fn) { el(root + '-' + id).addEventListener('change', function (e) { fn(e.target.value); }); }
+        on('view', function (x) { st.view = x; st.source = null; st.age = null; st.loc = null; st.a = null; st.b = null; build(); });
+        on('source', function (x) { st.source = +x; build(); });
+        if (el(root + '-age')) on('age', function (x) { st.age = +x; build(); });
+        if (el(root + '-loc')) on('loc', function (x) { st.loc = +x; build(); });
+        on('a', function (x) { st.a = +x; build(); });
+        on('b', function (x) { st.b = +x; build(); });
+        draw();
+      }
+      build();
+    });
+  }
+
+  return { renderLineChart: renderLineChart, renderDumbbell: renderDumbbell, renderChoropleth: renderChoropleth, renderBarGrid: renderBarGrid, renderScatter: renderScatter, colorFor: colorFor, dashFor: dashFor, fmtNum: fmtNum };
 })();
 </script>
 ```
@@ -948,12 +1244,33 @@ act_state <- flu_overall %>%
   mutate(loc = fips2abbr[geography_fips], t = chr_date(date),
          note = if_else(suppressed_flag == 1, " (suppressed - imputed)", ""))
 
+# "Overall" first for every source, then that source's age groups (only NHSN and
+# Epic Cosmos publish age-specific state data); the dropdowns are Source -> Age group.
 act_map_measures <- lapply(seq_len(nrow(src_units)), function(i) {
   u <- src_units[i, ]
   d <- act_state %>% filter(source == u$source) %>% select(loc, t, value, note)
-  build_measure_entry(d, id = u$source, label = u$label, level = "state", unit = u$unit,
-                      decimals = u$dec, sub = u$sub)
+  e <- build_measure_entry(d, id = paste(u$source, "Overall", sep = "|"), label = "Overall", level = "state",
+                           unit = u$unit, decimals = u$dec, sub = u$sub, tags = list(source = u$source))
+  e$title <- paste0(u$label, ", all ages")
+  e
 })
+
+age_state <- flu_age %>%
+  filter(geography_fips != "00", age != "Total") %>%
+  mutate(loc = fips2abbr[geography_fips], t = chr_date(date),
+         note = if_else(suppressed_flag == 1, " (suppressed - imputed)", ""))
+age_units <- c("CDC NHSN" = "admissions per 100,000", "Epic Cosmos, ED" = "% of ED visits")
+age_combos <- age_state %>% distinct(source, age) %>% arrange(source, match(age, age_sort(age)))
+age_map_measures <- lapply(seq_len(nrow(age_combos)), function(i) {
+  s <- age_combos$source[i]; a <- age_combos$age[i]
+  d <- age_state %>% filter(source == s, age == a) %>% select(loc, t, value, note)
+  e <- build_measure_entry(d, id = paste(s, a, sep = "|"), label = a, level = "state",
+                           unit = age_units[[s]], decimals = 1,
+                           sub = paste0(s, ", age ", a), tags = list(source = s))
+  e$title <- paste0(s, ", age ", a)
+  e
+})
+act_map_measures <- c(act_map_measures, age_map_measures)
 
 cty <- flu_county %>%
   transmute(loc = geography_fips, t = chr_date(date), value = value,
@@ -964,32 +1281,53 @@ act_map_measures <- c(act_map_measures, list(
                       sub = "% of emergency department visits with a flu diagnosis, CDC NSSP, by county")))
 
 emit_chart("act-map", "Choropleth", list(
-  measureLabel = "Source", height = 500, defaultMeasure = "CDC NSSP", levelToggle = TRUE, measures = act_map_measures),
-  "Weekly influenza activity from each surveillance system. Choose a source from the dropdown and drag the slider to change the week. Grey areas indicate the source does not provide data for that geography. Use the <b>State | County</b> toggle to switch geography. County estimates are available for CDC NSSP ED visits only. Sources report in different units, so compare patterns within a source rather than colors across sources; grey areas have no data (RESP-NET covers only participating states). Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_overall_trends</code>).")
+  measureLabel = "Age group", height = 500, defaultMeasure = "CDC NSSP|Overall", levelToggle = TRUE,
+  stateOptions = lapply(sort(unique(substr(cty$loc, 1, 2))), function(f) list(value = f, label = unname(fips2name[f]))),
+  filters = list(list(key = "source", label = "Source",
+                      options = lapply(seq_len(nrow(src_units)), function(i) list(value = src_units$source[i], label = src_units$label[i])),
+                      default = "CDC NSSP")),
+  measures = act_map_measures),
+  "Weekly influenza activity from each surveillance system, overall or by age group. Choose a <b>source</b>, then an <b>age group</b> (Overall is the default; only CDC NHSN and Epic Cosmos publish age-specific state data) and drag the slider to change the week. Switch <b>Map | Beeswarm</b> to see every state as one dot on a single value axis, with the median of states marked. Grey areas indicate the source does not provide data for that geography. Use the <b>State | County</b> toggle to switch geography; county estimates are available for CDC NSSP ED visits only, and with Beeswarm selected you can pick a state to see each of its counties as one dot. Sources report in different units (NHSN is admissions per 100,000 residents in the age group; Epic Cosmos is the share of ED encounters with a flu diagnosis), so compare patterns within a source rather than colors across sources. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_overall_trends</code>, <code>flu_trends_by_age</code>).")
 ```
 
 ### Flu activity over time
 
 ```{r act-ts}
 #| results: asis
-act_ts <- flu_overall %>% filter(source %in% src_units$source | source == "Kinsa")
+act_ts <- flu_overall %>% filter(source %in% src_units$source | source == "Kinsa") %>% mutate(age = "Overall")
 act_src_order <- c(src_units$source, "Kinsa")
 act_src_order <- act_src_order[act_src_order %in% unique(act_ts$source)]
+act_src_label <- c(setNames(src_units$label, src_units$source), "Kinsa" = "Kinsa")
+
+age_ts <- flu_age
+age_srcs <- sort(unique(age_ts$source))
+age_by_src <- setNames(lapply(age_srcs, function(s) list(
+  fixed = list(source = s), seriesOrder = I(as.character(age_sort(age_ts$age[age_ts$source == s]))), seriesMeta = empty_obj())), age_srcs)
+
+act_cmp <- list(
+  label = "Show", default = "source", sourceKey = "src_pick",
+  groups = list(
+    source = list(label = "Overall (compare sources)", fixed = list(age = "Overall"), seriesOrder = I(act_src_order),
+                  seriesMeta = lapply(act_src_label[act_src_order], function(l) list(label = l))),
+    age = list(label = "By age group", bySource = age_by_src)))
 
 emit_chart("act-ts", "LineChart", list(
-  title = "Flu activity by source", height = 480, xTitle = "Week ending", decimals = 1,
+  title = "Flu activity over time", height = 480, xTitle = "Week ending", decimals = 1, views = TRUE,
   unitFilterKey = "display",
-  yTitleMap = list(scaled = "Scaled 0-100 within each source", smooth = "Native units (differ by source; hover for unit)",
+  yTitleMap = list(scaled = "Scaled 0-100 within each series", smooth = "Native units (differ by source; hover for unit)",
                    raw = "Native units (differ by source; hover for unit)"),
   yUnitMap = list(scaled = "", smooth = "", raw = ""),
   seriesUnits = as.list(c(setNames(src_units$unit, src_units$source), "Kinsa" = "illness signal")),
-  toggle = TRUE, seriesOrder = act_src_order, defaultOn = act_src_order,
   filters = list(
-    list(key = "geography", label = "Location", options = geo_options(act_ts$geography), default = "United States"),
-    list(key = "display", label = "Show", options = display_options, default = "scaled")
+    list(key = "geography", label = "Location", options = geo_options(c(act_ts$geography, age_ts$geography)), default = "United States"),
+    list(key = "display", label = "Units", options = display_options, default = "scaled"),
+    list(key = "src_pick", label = "Source", showWhen = list(cmpBy = "age"),
+         options = lapply(age_srcs, function(s) list(value = s, label = unname(act_src_label[s]))), default = "CDC NHSN")
   ),
-  lines = build_display_lines(act_ts, "geography", "source")
-), "Weekly flu activity for each surveillance system. Sources use different units (percent of visits, wastewater activity level, admissions counts, rates), so the default view rescales every series to 0-100 over its own history; switch <b>Show</b> to see native units. Click legend entries to hide or show a source. Kinsa is national only and RESP-NET covers only participating states. Epic Cosmos points flagged as suppressed small cells (<10) are imputed as 5. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a>.")
+  compareBy = act_cmp,
+  lines = c(build_display_lines(act_ts, c("geography", "source", "age"), "source"),
+            build_display_lines(age_ts %>% mutate(age = as.character(age)), c("geography", "source", "age"), "age"))
+), "Weekly flu activity, overall or by age group. With <b>Show: Overall</b> each line is a surveillance system; with <b>Show: By age group</b> pick a source and each line is an age group. Sources use different units, so the default view rescales every series to 0-100 over its own history; switch <b>Units</b> to see native units. Click legend entries to hide or show a line. <b>Faceted</b> gives each line its own panel on a shared time axis, so peaks can be compared by timing; <b>Season overlay</b> draws one line per flu season (starting October) for a single series, so you can see whether this season is early, late or large. Kinsa is national only and RESP-NET covers only participating states. Age labels are each source's own and do not line up. Epic Cosmos points flagged as suppressed small cells (<10) are imputed as 5. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a>.")
 ```
 
 ### Effective reproduction number (Rt) 
@@ -1011,59 +1349,11 @@ emit_chart("rt-ts", "LineChart", list(
 ), "Estimated growth of flu infections from the CDC Center for Forecasting and Outbreak Analytics. Rt above 1 means infections are increasing; below 1, decreasing. Whiskers show the lower and upper bounds. Estimates begin April 2026. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/cdc_cfa_rt\">CDC CFA Rt</a>.")
 ```
 
-## By age
+## Hospitalizations & deaths
 
-### Hospital admissions and ED visits by age and state
+### Hospital and death measures by state
 
-```{r age-map}
-#| results: asis
-age_state <- flu_age %>%
-  filter(geography_fips != "00", age != "Total") %>%
-  mutate(loc = fips2abbr[geography_fips], t = chr_date(date),
-         note = if_else(suppressed_flag == 1, " (suppressed - imputed)", ""))
-
-age_units <- c("CDC NHSN" = "admissions per 100,000", "Epic Cosmos, ED" = "% of ED visits")
-age_combos <- age_state %>% distinct(source, age) %>% arrange(source, match(age, age_sort(age)))
-
-age_map_measures <- lapply(seq_len(nrow(age_combos)), function(i) {
-  s <- age_combos$source[i]; a <- age_combos$age[i]
-  d <- age_state %>% filter(source == s, age == a) %>% select(loc, t, value, note)
-  build_measure_entry(d, id = paste(s, a, sep = "|"), label = a, level = "state",
-                      unit = age_units[[s]], decimals = 1,
-                      sub = paste0(s, ", age ", a), tags = list(source = s))
-})
-
-emit_chart("age-map", "Choropleth", list(
-  measureLabel = "Age group", height = 500,
-  filters = list(list(key = "source", label = "Source", options = I(names(age_units)), default = "CDC NHSN")),
-  defaultMeasure = "CDC NHSN|75+", measures = age_map_measures
-), "State flu burden for each age group. Choose a source, then an age group, and drag the slider to change the week. CDC NHSN is hospital admissions per 100,000 residents in the age group; Epic Cosmos is the share of ED encounters with a flu diagnosis. Age bands differ between sources. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_trends_by_age</code>).")
-```
-
-### Age trends over time
-
-```{r age-ts}
-#| results: asis
-age_ts <- flu_age
-emit_chart("age-ts", "LineChart", list(
-  title = "Flu activity by age group", height = 480, xTitle = "Week ending", decimals = 1,
-  unitFilterKey = "display",
-  yTitleMap = list(scaled = "Scaled 0-100 within each series", smooth = "Native units", raw = "Native units"),
-  yUnitMap = list(scaled = "", smooth = "", raw = ""),
-  filters = list(
-    list(key = "geography", label = "Location", options = geo_options(age_ts$geography), default = "United States"),
-    list(key = "source", label = "Source", options = I(sort(unique(age_ts$source))), default = "CDC NHSN"),
-    list(key = "display", label = "Show", options = display_options, default = "smooth")
-  ),
-  compareBy = by_source_compare(age_ts, "source", "age", "Age group", age_sort),  # dropdown hidden
-  lines = build_display_lines(age_ts, c("geography", "source", "age"), "age", variants = c("smooth", "scaled"))
-), "Flu activity for each age group. Choose a location and source; click legend entries to hide or show age groups. NHSN is admissions per 100,000; Epic Cosmos is percent of ED visits; RESP-NET reports a single total rate. Age labels are each source's own and do not line up. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a>.")
-```
-
-## Hospitalizations
-### Hospital flu measures by state
-
-```{r hosp-map}
+```{r hd-map}
 #| results: asis
 hosp_state <- flu_hosp %>% filter(geography_level == "State") %>%
   mutate(loc = fips2abbr[geography_fips], t = chr_date(date))
@@ -1075,50 +1365,8 @@ hosp_map_measures <- lapply(hosp_map_ids, function(m) {
                       decimals = if (hosp_unit[[m]] %in% c("%", "per 100,000")) 1 else 0,
                       sub = "CDC NHSN hospital reporting")
 })
-emit_chart("hosp-map", "Choropleth", list(
-  measureLabel = "Measure", height = 500, defaultMeasure = "nhsn_adm_rate_flu", measures = hosp_map_measures
-), "Flu hospital metrics reported to CDC NHSN, by state and week. Choose a measure and drag the slider to change the week. Counts depend on how many hospitals report; use the per-100,000 admission rate to compare states of different size. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/nhsn_hospital_capacity\">CDC NHSN</a> via <code>flu_hospital_capacity</code>.")
-```
-
-### Hospital trends
-
-```{r hosp-ts}
-#| results: asis
-hosp_ts <- flu_hosp %>%
-  filter(!is.na(value)) %>%
-  mutate(xx = chr_date(date), series = "Flu")
-hosp_geo <- c("United States",
-              sort(unique(hosp_ts$geography[hosp_ts$geography_level == "HHS region"])),
-              sort(unique(hosp_ts$geography[hosp_ts$geography_level == "State"])),
-              sort(unique(hosp_ts$geography[!hosp_ts$geography_level %in% c("National", "HHS region", "State")])))
-hosp_geo <- setdiff(unique(hosp_geo), non_us_territories)
-hosp_ids <- names(hosp_label)
-
-emit_chart("hosp-ts", "LineChart", list(
-  title = "Flu hospital measures over time", height = 460, xTitle = "Week ending", decimals = 1,
-  unitFilterKey = "measure",
-  yTitleMap = as.list(setNames(paste0(hosp_label, " (", hosp_unit, ")"), hosp_ids)),
-  yUnitMap = as.list(setNames(ifelse(hosp_unit == "%", "%", paste0(" ", hosp_unit)), hosp_ids)),
-  seriesOrder = I("Flu"),
-  filters = list(
-    list(key = "geography", label = "Location", options = hosp_geo, default = "United States"),
-    list(key = "measure", label = "Measure",
-         options = lapply(hosp_ids, function(m) list(value = m, label = hosp_label[[m]])),
-         default = "nhsn_adm_flu")
-  ),
-  lines = build_lines(hosp_ts, c("geography", "measure"), "series", "xx", "value", digits = 1)
-), "Weekly NHSN flu hospital measures for the nation, HHS regions, states and territories. Choose a location and measure. Percent-of-hospitals-reporting measures show how complete the reporting is. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/nhsn_hospital_capacity\">CDC NHSN</a>.")
-```
-
-## Deaths
-
-### Deaths and notifiable flu cases by state
-
-```{r death-map}
-#| results: asis
 death_ids <- c("rate_influenza_and_pneumonia", "influenza_associated_pediatric_mortality_weekly",
-               "influenza_associated_pediatric_mortality_cumulative",
-               "novel_influenza_a_virus_infections_weekly", "novel_influenza_a_virus_infections_cumulative")
+               "influenza_associated_pediatric_mortality_cumulative")
 death_state <- flu_rtm %>% filter(measure %in% death_ids) %>%
   mutate(loc = fips2abbr[geography_fips], t = chr_date(date))
 death_map_measures <- lapply(death_ids, function(m) {
@@ -1127,32 +1375,50 @@ death_map_measures <- lapply(death_ids, function(m) {
                       decimals = if (m == "rate_influenza_and_pneumonia") 1 else 0,
                       sub = if (m == "rate_influenza_and_pneumonia") "NCHS quarterly rate; influenza and pneumonia combined" else "CDC NNDSS")
 })
-emit_chart("death-map", "Choropleth", list(
-  measureLabel = "Measure", height = 500, defaultMeasure = "influenza_associated_pediatric_mortality_cumulative",
-  measures = death_map_measures
-), "Flu-related deaths and novel influenza A infections by state. Choose a measure and drag the slider to change the period. The NCHS death rate is for <b>influenza and pneumonia combined</b>, not flu alone. NNDSS counts are year-to-date totals or weekly increments; grey means none reported or no data. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">NCHS and CDC NNDSS</a>.")
+emit_chart("hd-map", "Choropleth", list(
+  measureLabel = "Measure", height = 500, defaultMeasure = "nhsn_adm_rate_flu",
+  measures = c(hosp_map_measures, death_map_measures)
+), "Flu hospital metrics (CDC NHSN) and flu-related deaths by state. Choose a measure and drag the slider to change the week or period; switch <b>Map | Beeswarm</b> to see every state as one dot. Hospital counts depend on how many hospitals report; use the per-100,000 admission rate to compare states of different size. The NCHS death rate is for <b>influenza and pneumonia combined</b>, not flu alone. Pediatric death counts (CDC NNDSS) are weekly or year-to-date totals; grey means none reported or no data. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/nhsn_hospital_capacity\">CDC NHSN</a> and <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">NCHS and CDC NNDSS</a>.")
 ```
 
-### Deaths and notifiable cases over time
+### Hospital and death trends
 
-```{r death-ts}
+```{r hd-ts}
 #| results: asis
-death_ts <- flu_rtm %>% filter(measure %in% death_ids, !is.na(value)) %>%
-  mutate(xx = chr_date(date), series = "Count")
-emit_chart("death-ts", "LineChart", list(
-  title = "Deaths and notifiable flu cases over time", height = 440, xTitle = "Date", decimals = 1,
+hosp_ts <- flu_hosp %>% filter(!is.na(value))
+hosp_geo <- c("United States",
+              sort(unique(hosp_ts$geography[hosp_ts$geography_level == "HHS region"])),
+              sort(unique(hosp_ts$geography[hosp_ts$geography_level == "State"])),
+              sort(unique(hosp_ts$geography[!hosp_ts$geography_level %in% c("National", "HHS region", "State")])))
+hosp_geo <- setdiff(unique(hosp_geo), non_us_territories)
+hosp_ids <- names(hosp_label)
+death_ts <- flu_rtm %>% filter(measure %in% death_ids, !is.na(value))
+death_geo <- geo_options(death_ts$geography)
+
+hd_ts <- bind_rows(hosp_ts %>% select(geography, date, measure, value),
+                   death_ts %>% select(geography, date, measure, value)) %>%
+  mutate(xx = chr_date(date), series = "Value")
+hd_ids <- c(hosp_ids, death_ids)
+hd_label <- c(unlist(hosp_label), unlist(rtm_label[death_ids]))
+hd_unit <- c(unlist(hosp_unit), unlist(rtm_unit[death_ids]))
+hd_label <- setNames(hd_label, hd_ids); hd_unit <- setNames(hd_unit, hd_ids)
+
+emit_chart("hd-ts", "LineChart", list(
+  title = "Flu hospital and death measures over time", height = 460, xTitle = "Date", decimals = 1, views = TRUE,
   unitFilterKey = "measure",
-  yTitleMap = as.list(setNames(paste0(rtm_label[death_ids], " (", rtm_unit[death_ids], ")"), death_ids)),
-  yUnitMap = as.list(setNames(paste0(" ", rtm_unit[death_ids]), death_ids)),
-  seriesOrder = I("Count"),
+  yTitleMap = as.list(setNames(paste0(hd_label, " (", hd_unit, ")"), hd_ids)),
+  yUnitMap = as.list(setNames(ifelse(hd_unit == "%", "%", paste0(" ", hd_unit)), hd_ids)),
+  seriesOrder = I("Value"),
   filters = list(
-    list(key = "geography", label = "Location", options = geo_options(death_ts$geography), default = "United States"),
     list(key = "measure", label = "Measure",
-         options = lapply(death_ids, function(m) list(value = m, label = rtm_label[[m]])),
-         default = "influenza_associated_pediatric_mortality_weekly")
+         options = lapply(hd_ids, function(m) list(value = m, label = hd_label[[m]])), default = "nhsn_adm_flu"),
+    list(key = "geography", label = "Location", options = hosp_geo, default = "United States",
+         optionsBy = list(key = "measure", map = c(
+           setNames(lapply(hosp_ids, function(m) I(hosp_geo)), hosp_ids),
+           setNames(lapply(death_ids, function(m) I(death_geo)), death_ids))))
   ),
-  lines = build_lines(death_ts, c("geography", "measure"), "series", "xx", "value", digits = 1)
-), "Weekly and year-to-date counts of pediatric flu deaths and novel influenza A infections (CDC NNDSS) and the quarterly NCHS death rate for influenza and pneumonia combined. A few weekly NNDSS values are negative where a count was revised downward; they are shown as reported. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_rt_and_mortality</code>).")
+  lines = build_lines(hd_ts, c("geography", "measure"), "series", "xx", "value", digits = 1)
+), "Weekly NHSN flu hospital measures for the nation, HHS regions, states and territories, plus pediatric flu deaths and the quarterly NCHS death rate for influenza and pneumonia combined (nation and states). Choose a measure and a location; locations without data for the measure are not listed. Percent-of-hospitals-reporting measures show how complete the reporting is. <b>Season overlay</b> draws one line per flu season (starting October) so the current season can be compared with earlier ones. A few weekly NNDSS values are negative where a count was revised downward; they are shown as reported. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/nhsn_hospital_capacity\">CDC NHSN</a>, <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_rt_and_mortality</code>).")
 ```
 
 ## Vaccination
@@ -1185,9 +1451,10 @@ vax_map_measures <- c(vax_map_measures, list(
                       unit = "%", decimals = 1, sub = "Adults 18 and older, CDC FluVaxView modeled county estimates, by calendar year")))
 emit_chart("vax-map", "Choropleth", list(
   measureLabel = "Age group", height = 500, levelToggle = TRUE,
+  stateOptions = lapply(sort(unique(substr(vax_cty$loc, 1, 2))), function(f) list(value = f, label = unname(fips2name[f]))),
   filters = list(list(key = "source", label = "Source", options = I(vax_map_sources), default = "CDC FluVaxView")),
   defaultMeasure = "CDC FluVaxView|>=6 Months", measures = vax_map_measures
-), "Percent vaccinated against flu, by state and flu season (drag the slider). Each value is the last estimate the source reports in that season. Sources use different age bands and survey or administrative methods, so choose a source first. The <b>County</b> toggle shows modeled CDC FluVaxView estimates of adult (18 and older) coverage by calendar year. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_vax_coverage</code>, <code>flu_vax_substate</code>).")
+), "Percent vaccinated against flu, by state and flu season (drag the slider). Each value is the last estimate the source reports in that season. Sources use different age bands and survey or administrative methods, so choose a source first. The <b>County</b> toggle shows modeled CDC FluVaxView estimates of adult (18 and older) coverage by calendar year; with <b>Map | Beeswarm</b> set to Beeswarm, pick a state to see each of its counties as one dot. Switch to Beeswarm on the state view to compare states instead. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_vax_coverage</code>, <code>flu_vax_substate</code>).")
 ```
 
 ### Coverage over seasons
@@ -1247,6 +1514,72 @@ emit_chart("vax-ts", "LineChart", list(
     build_lines(dos_adm %>% mutate(geography = "United States"),
                 c("geography", "source", "measure", "setting", "age"), "series", "xx", "value"))
 ), "Flu vaccination over time. For the coverage sources, lines are the last estimate reported in each season, by age group; choose a location and source, and click legend entries to hide or show age groups (a representative non-overlapping set is shown first because the sources publish many nested age bands). Confidence intervals are shown where the source publishes them. Choose <b>IQVIA (doses administered)</b> to see national weekly or cumulative flu vaccine doses from pharmacy and physician-office data (Combined = both), by age group; IQVIA is national only. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a>, <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/iqvia_vax_administered\">IQVIA</a>.")
+```
+
+### Change in coverage between seasons
+
+```{r vax-dumbbell}
+#| results: asis
+# End-of-season coverage: the latest estimate each source reports inside the season.
+db_main <- flu_vax %>%
+  filter(stratum_type == "Overall", measure == "coverage", population == "Total", !is.na(value), !is.na(season),
+         source %in% vax_map_sources) %>%
+  group_by(source, geography, season, age) %>% slice_max(date, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  transmute(view = "main", source, loc = geography, age, group = "", season, v = value)
+db_race <- flu_vax %>%
+  filter(source == "CDC FluVaxView", stratum_type == "Race and Ethnicity", measure == "coverage",
+         age == "Total", !is.na(value), !is.na(season)) %>%
+  group_by(geography, season, stratum) %>% slice_max(date, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  transmute(view = "race", source, loc = geography, age, group = stratum, season, v = value)
+db <- bind_rows(db_main, db_race) %>% filter(!loc %in% non_us_territories)
+db_dict <- lapply(db[c("view", "source", "loc", "age", "group", "season")], function(x) sort(unique(x)))
+db_dict$age <- as.character(age_sort(db_dict$age))
+db_cols <- c(lapply(names(db_dict), function(n) I(match(db[[n]], db_dict[[n]]) - 1L)) %>% setNames(names(db_dict)),
+             list(v = I(rnd(db$v, 1))))
+db_dict <- lapply(db_dict, I)
+db_cols$age <- I(match(db$age, db_dict$age) - 1L)
+emit_chart("vax-dumbbell", "Dumbbell", list(
+  title = "Flu vaccination coverage: one season against another",
+  dict = db_dict, cols = db_cols,
+  views = list(
+    list(id = "state", label = "States", rowLabel = "State", rowCol = "loc", splitBy = "age", data = "main"),
+    list(id = "age", label = "Age groups", rowLabel = "Age group", rowCol = "age", splitBy = "loc", data = "main"),
+    list(id = "race", label = "Race and ethnicity", rowLabel = "Race and ethnicity", rowCol = "group", splitBy = "loc", data = "race"))
+), "Each row is a state, an age group or a race and ethnicity group; the open dot is coverage in the earlier season and the filled dot is the later season, so the length of the line is the change. Rows are sorted by the later season. <b>States</b> compares every state for one age group; <b>Age groups</b> and <b>Race and ethnicity</b> compare groups within one location (race and ethnicity is published by CDC FluVaxView only). Values are each source's last estimate in the season, so seasons still in progress reflect the data collected so far. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a> (<code>flu_vax_coverage</code>).")
+```
+
+### Vaccination and hospitalization
+
+```{r vax-scatter}
+#| results: asis
+season_of <- function(d) {
+  d <- as.Date(d); y <- as.integer(format(d, "%Y")); m <- as.integer(format(d, "%m"))
+  s <- ifelse(m >= 10, y, y - 1)
+  sprintf("%d-%02d", s, (s + 1) %% 100)
+}
+# Severity: season total of NHSN weekly admissions per 100,000 (complete seasons only)
+sc_hosp <- flu_hosp %>%
+  filter(geography_level == "State", measure == "nhsn_adm_rate_flu", !is.na(value)) %>%
+  mutate(loc = fips2abbr[geography_fips], season = season_of(date)) %>%
+  group_by(season, loc) %>% summarise(v = sum(value), n = n(), .groups = "drop") %>% filter(n >= 26)
+sc_vax <- flu_vax %>%
+  filter(source == "CDC FluVaxView", stratum_type == "Overall", measure == "coverage", population == "Total",
+         age == ">=6 Months", geography_fips != "00", !is.na(value), !is.na(season)) %>%
+  group_by(season, geography_fips) %>% slice_max(date, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  transmute(season, loc = fips2abbr[geography_fips], v = value)
+sc_seasons <- sort(intersect(unique(sc_hosp$season), unique(sc_vax$season)))
+align_state <- function(df) rnd(df$v[match(geo_state_canon$loc, df$loc)], 1)
+sc_measures <- c(
+  lapply(sc_seasons, function(s) list(id = paste0("vax_", s), label = paste0("Flu vaccination coverage, ages 6 months and older, ", s, " (%)"),
+                                      values = I(align_state(sc_vax[sc_vax$season == s, ])))),
+  lapply(sc_seasons, function(s) list(id = paste0("hosp_", s), label = paste0("Flu hospital admissions per 100,000, ", s, " season total"),
+                                      values = I(align_state(sc_hosp[sc_hosp$season == s, ])))))
+sc_latest <- sc_seasons[length(sc_seasons)]
+emit_chart("vax-scatter", "Scatter", list(
+  height = 500, defaultLevel = "state", levelLabels = list(state = "State"), explainStats = TRUE,
+  defaultX = paste0("vax_", sc_latest), defaultY = paste0("hosp_", sc_latest),
+  measuresByLevel = list(state = sc_measures)
+), "Each dot is a state. By default the x axis is end-of-season flu vaccination coverage (CDC FluVaxView, everyone 6 months and older) and the y axis is total flu hospital admissions per 100,000 residents over the same season (CDC NHSN weekly admissions, summed from October to September). Change either axis to compare other seasons, for example last season's coverage against this season's hospitalizations. The correlation is across states and is <b>not</b> evidence that vaccination caused the difference: states also differ in age, population density, testing, hospital reporting and which flu strain circulated. Seasons shown have a complete NHSN reporting year. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a>.")
 ```
 
 ### Coverage by race and ethnicity
