@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-08T14:32:35Z",
+  "generated": "2026-10-09T14:38:52Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -24347,6 +24347,39 @@
       "description": "The Delphi outpatient claims signal estimates the percentage of outpatient doctor visits with COVID-19 diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal tracks outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of service. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile and a lag-1 autocorrelation of 0.998), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. This signal replaces the retired COVIDcast doctor-visits signal (smoothed_cli), which was smoothed with a Gaussian linear smoother.",
       "standard_files": [
         {
+          "filename": "data_fill_method.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "delphi_doc_covid_smooth_fill_method",
+              "short_name": "COVID Doctor Visits: null handling",
+              "description": "How Delphi handled missing values in the value reported in delphi_doc_covid_smooth: source (raw, no imputation), zero (nulls filled with zero) or unlabeled (older series published before Delphi labeled variants, through 2026-09-30)",
+              "measure_type": "category",
+              "unit": "category"
+            },
+            {
+              "name": "delphi_doc_covid_smooth_unlabeled",
+              "short_name": "COVID Doctor Visits: earlier unlabeled value",
+              "description": "Value for the same geography and week from the older Delphi series that carries no fill_method label, where one exists; delphi_doc_covid_smooth may differ because it takes the labeled variant when available",
+              "measure_type": "percent",
+              "unit": "Percent, 7-day average ending Saturday"
+            }
+          ]
+        },
+        {
           "filename": "data.csv.gz",
           "columns": [
             {
@@ -24379,6 +24412,53 @@
       "display_name": "Delphi Hospital Claims",
       "description": "The Delphi inpatient claims signals estimate the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of admission. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile, and runs of non-zero days bottom out at exactly seven), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. Geography-weeks with no Saturday observation are therefore absent, which affects about 11% of county-weeks. These signals replace the retired COVIDcast hospital-admissions signals (smoothed_covid19_from_claims and smoothed_flu_from_claims), which were smoothed with a Gaussian linear smoother.",
       "standard_files": [
+        {
+          "filename": "data_fill_method.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "delphi_hospital_covid_smooth_fill_method",
+              "short_name": "COVID Hospital Admissions: null handling",
+              "description": "How Delphi handled missing values in the value reported in delphi_hospital_covid_smooth: source (raw, no imputation), zero (nulls filled with zero) or unlabeled (older series published before Delphi labeled variants, through 2026-09-30)",
+              "measure_type": "category",
+              "unit": "category"
+            },
+            {
+              "name": "delphi_hospital_flu_smooth_fill_method",
+              "short_name": "Flu Hospital Admissions: null handling",
+              "description": "How Delphi handled missing values in the value reported in delphi_hospital_flu_smooth: source (raw, no imputation), zero (nulls filled with zero) or unlabeled (older series published before Delphi labeled variants, through 2026-09-30)",
+              "measure_type": "category",
+              "unit": "category"
+            },
+            {
+              "name": "delphi_hospital_covid_smooth_unlabeled",
+              "short_name": "COVID Hospital Admissions: earlier unlabeled value",
+              "description": "Value for the same geography and week from the older Delphi series that carries no fill_method label, where one exists; delphi_hospital_covid_smooth may differ because it takes the labeled variant when available",
+              "measure_type": "percent",
+              "unit": "Percent, 7-day average ending Saturday"
+            },
+            {
+              "name": "delphi_hospital_flu_smooth_unlabeled",
+              "short_name": "Flu Hospital Admissions: earlier unlabeled value",
+              "description": "Value for the same geography and week from the older Delphi series that carries no fill_method label, where one exists; delphi_hospital_flu_smooth may differ because it takes the labeled variant when available",
+              "measure_type": "percent",
+              "unit": "Percent, 7-day average ending Saturday"
+            }
+          ]
+        },
         {
           "filename": "data.csv.gz",
           "columns": [
