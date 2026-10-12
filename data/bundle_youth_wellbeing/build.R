@@ -296,7 +296,8 @@ stopifnot(!anyDuplicated(SPEC[c('dataset', 'section', 'focus_area', 'measure')])
 
 wisqars_measures <- SPEC %>% filter(dataset == 'wisqars') %>% pull(measure) %>% unique()
 
-vroom::vroom('../wisqars/standard/data.csv.gz', show_col_types = FALSE) %>%
+vroom::vroom('../wisqars/standard/data.csv.gz', show_col_types = FALSE,
+             guess_max = Inf) %>%
   filter(age %in% names(AGE_WISQARS)) %>%
   mutate(age = unname(AGE_WISQARS[age])) %>%
   tall_simple(wisqars_measures, c('geography', 'time', 'age', 'sex', 'race', 'ethnicity')) %>%
@@ -555,7 +556,8 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 medicaid_measures <- SPEC %>% filter(dataset == 'medicaid') %>% pull(measure) %>% unique()
 medicaid_stems <- sub('_rate$', '', medicaid_measures)
 
-vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE) %>%
+vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE,
+             guess_max = Inf) %>%
   filter(geography_level == 's') %>%
   mutate(geography = if_else(geography == 'Dist. of Col.', 'District of Columbia', geography)) %>%
   rename_with(~ sub('_rate$', '_value', .x), all_of(medicaid_measures)) %>%
@@ -598,18 +600,24 @@ vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE)
 # ~214. That is an upstream inconsistency, left as-is here.
 #
 # Two requested measures, chr_lead_poisoned_children and
-# chr_contaminants_in_municipal_water_wi, are present as columns but completely
-# empty at source (0 non-missing values in either the state or county file), so
-# they produce no rows.
+# chr_contaminants_in_municipal_water_wi, are present as columns but hold no
+# numbers at source (only NA and a few literal TRUE/FALSE placeholders, in
+# either the state or county file), so they produce no rows. The placeholders
+# are blanked in chr_read() below. chr_adverse_climate_events has the same
+# placeholder at state level (one FALSE row) but real county values.
+# The placeholders originate upstream (PopHIVE/county_health_rankings).
 # =============================================================================
 
 chr_measures <- SPEC %>% filter(dataset == 'chr') %>% pull(measure) %>% unique()
 
 # Read every column as character so sparse measure columns aren't mistyped;
-# tall_simple coerces value to numeric.
+# tall_simple coerces value to numeric. Literal TRUE/FALSE cells are upstream
+# placeholders, not values, so blank them first (as.numeric('FALSE') is NA with
+# a warning).
 chr_read <- function(file) {
   vroom::vroom(file.path('../county_health_rankings/standard', file),
                col_types = vroom::cols(.default = 'c'), show_col_types = FALSE) %>%
+    mutate(across(any_of(chr_measures), ~ na_if(na_if(.x, 'TRUE'), 'FALSE'))) %>%
     tall_simple(chr_measures, c('geography', 'time')) %>%
     mutate(time = as.Date(time), age = 'Not stratified') %>%
     filter(!is.na(value))
