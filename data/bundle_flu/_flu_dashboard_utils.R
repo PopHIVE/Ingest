@@ -357,7 +357,7 @@ source_caveats <- list(
 chart_sources <- list(
   "act-map" = c("nssp", "epic", "respnet", "nhsn", "ilinet", "nwss"),
   "act-ts" = c("nssp", "epic", "respnet", "nhsn", "ilinet", "nwss", "kinsa"),
-  "rt-ts" = "rt",
+  "rt-map" = "rt", "rt-ts" = "rt",
   "hd-map" = c("nhsn", "nchs", "nndss"), "hd-ts" = c("nhsn", "nchs", "nndss"),
   "vax-map" = c("fluvaxview", "nis", "iis", "medicare"),
   "vax-ts" = c("fluvaxview", "nis", "iis", "medicare", "iqvia"),
@@ -374,6 +374,48 @@ caveats_html <- function(id) {
     sprintf("<li><b>%s.</b> %s <em>Data lag: %s.</em></li>", s$name, s$text, s$lag)
   }, character(1))
   sprintf("<ul>%s</ul>", paste(items, collapse = ""))
+}
+
+# ---------------------------------------------------------------------------
+# Overview tab helpers (static HTML, no JS)
+# ---------------------------------------------------------------------------
+ov_date <- function(x) format(as.Date(x), "%b %e, %Y") %>% sub("  ", " ", ., fixed = TRUE)
+ov_num <- function(v, dec = 1) format(round(v, dec), big.mark = ",", nsmall = dec, trim = TRUE)
+
+# Inline-SVG sparkline of a numeric vector (oldest first); last point marked.
+ov_spark <- function(x, w = 180, h = 40) {
+  ok <- !is.na(x)
+  if (sum(ok) < 2) return("")
+  n <- length(x)
+  rng <- range(x, na.rm = TRUE)
+  span <- if (diff(rng) > 0) diff(rng) else 1
+  px <- (seq_len(n) - 1) / (n - 1) * (w - 8) + 4
+  py <- h - 4 - (x - rng[1]) / span * (h - 8)
+  last <- tail(which(ok), 1)
+  sprintf('<svg class="ov-spark" viewBox="0 0 %d %d" role="img" aria-label="Past year trend"><polyline points="%s" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"/><circle cx="%.1f" cy="%.1f" r="3" fill="#00356b"/></svg>',
+          w, h, paste(sprintf("%.1f,%.1f", px[ok], py[ok]), collapse = " "), px[last], py[last])
+}
+
+# One national indicator -> list(html, dir). `d` has columns date, value
+# (oldest first, one row per week). Direction compares the mean of the latest
+# two weeks with the two before (+/-10%), so a single noisy week does not flip it.
+ov_card <- function(label, d, unit, dec = 1, foot = "", date_label = "Week ending") {
+  d <- d %>% filter(!is.na(value)) %>% arrange(date) %>% distinct(date, .keep_all = TRUE)
+  if (nrow(d) < 5) return(NULL)
+  n <- nrow(d)
+  cur <- d$value[n]; prev <- d$value[n - 1]
+  recent <- mean(d$value[(n - 1):n]); before <- mean(d$value[(n - 3):(n - 2)])
+  rel <- if (before > 0) (recent - before) / before else NA_real_
+  dir <- if (is.na(rel) || abs(rel) < 0.10) "steady" else if (rel > 0) "rising" else "falling"
+  wow <- if (prev > 0) sprintf("%+.0f%% vs prior week", (cur - prev) / prev * 100) else "prior week was 0"
+  yr <- tail(d$value, 52)
+  pk <- if (max(yr) > 0) sprintf("%.0f%% of past-year peak", cur / max(yr) * 100) else ""
+  badge <- c(rising = "Rising", falling = "Falling", steady = "Steady")[[dir]]
+  list(dir = dir, pct_peak = if (max(yr) > 0) cur / max(yr) * 100 else NA_real_, html = sprintf(
+    '<div class="ov-row"><div class="ov-label">%s</div><div class="ov-val">%s<span class="ov-unit"> %s</span></div><div class="ov-meta"><span class="ov-badge %s">%s</span> %s</div><div class="ov-sparkwrap">%s</div><div class="ov-foot">%s %s%s%s</div></div>',
+    label, ov_num(cur, dec), unit, dir, badge, wow, ov_spark(tail(d$value, 52), w = 160, h = 34),
+    date_label, ov_date(d$date[n]), if (nzchar(pk)) paste0("<br>", pk) else "",
+    if (nzchar(foot)) paste0("<br>", foot) else ""))
 }
 
 emit_chart <- function(id, kind = c("Choropleth", "LineChart", "Dumbbell", "Scatter"), cfg, about) {

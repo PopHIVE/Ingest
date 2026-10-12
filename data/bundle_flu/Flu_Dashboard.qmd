@@ -127,6 +127,8 @@ a:hover { color: var(--accent); }
 .howto div { background: #f7f9fc; border-top: 3px solid var(--navy); border-radius: 6px; padding: .75rem 1rem; font-size: .92rem; line-height: 1.45; }
 .howto b { display: block; font-family: 'Source Serif 4', serif; color: var(--navy); font-size: 1rem; margin-bottom: .2rem; }
 .glossary { max-width: 52rem; margin: 0 0 1.5rem; font-size: .92rem; }
+.howto-sub { font-size: 1.1rem; margin: 1.25rem 0 .25rem; }
+.glossary.controls { max-width: 52rem; }
 .glossary summary { cursor: pointer; color: var(--navy); font-weight: 500; }
 .glossary dl { margin: .75rem 0 0; }
 .glossary dt { font-weight: 600; color: var(--navy); margin-top: .6rem; }
@@ -218,6 +220,27 @@ a:hover { color: var(--accent); }
   font-size: .78rem; line-height: 1.4; padding: .5rem .7rem; border-radius: 6px; max-width: 18rem; pointer-events: none;
   box-shadow: 0 2px 8px rgba(0,0,0,.25);
 }
+.ov-headline { font-size: 1.1rem; line-height: 1.55; max-width: 60rem; margin: .5rem 0 1.25rem; padding: .9rem 1.1rem; background: #f7f9fc; border-left: 4px solid var(--navy); border-radius: 0 6px 6px 0; }
+.ov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 1rem; margin: .75rem 0 1.5rem; }
+.ov-card { border: 1px solid var(--navy-light); border-top: 3px solid var(--navy); border-radius: 6px; padding: .8rem 1rem .7rem; background: #fff; }
+.ov-list { margin: .75rem 0 1rem; border-top: 1px solid #e6ecf4; }
+.ov-row { display: grid; grid-template-columns: minmax(12rem, 1.6fr) minmax(8rem, 1fr) minmax(11rem, 1.2fr) 10rem minmax(9rem, 1fr); align-items: center; gap: .5rem 1.25rem; padding: .65rem .25rem; border-bottom: 1px solid #e6ecf4; }
+.ov-row .ov-val { font-size: 1.4rem; }
+.ov-row .ov-spark { height: 2.2rem; }
+@media (max-width: 900px) { .ov-row { grid-template-columns: 1fr 1fr; } .ov-sparkwrap { grid-column: 1 / -1; } }
+.ov-label { font-size: .85rem; font-weight: 500; color: var(--navy); }
+.ov-val { font-family: 'Source Serif 4', serif; font-size: 1.9rem; font-weight: 700; color: var(--navy); line-height: 1.2; }
+.ov-unit { font-family: 'Rubik', sans-serif; font-size: .78rem; font-weight: 400; color: var(--gray); }
+.ov-meta { font-size: .8rem; color: #444; margin: .15rem 0 .3rem; }
+.ov-badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: .08rem .5rem; border-radius: 999px; margin-right: .3rem; }
+.ov-badge.rising { background: #fde9e0; color: #a8430f; }
+.ov-badge.falling { background: #def5ec; color: #11704d; }
+.ov-badge.steady { background: #eef2f8; color: #4a5565; }
+.ov-spark { width: 100%; height: auto; display: block; margin: .2rem 0; }
+.ov-foot { font-size: .75rem; color: var(--gray); }
+.ov-table { border-collapse: collapse; font-size: .85rem; max-width: 52rem; width: 100%; }
+.ov-table th, .ov-table td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid #e6ecf4; }
+.ov-table th { color: var(--navy); font-weight: 600; }
 #TOC a { white-space: normal; word-wrap: break-word; }
 </style>
 
@@ -233,6 +256,18 @@ a:hover { color: var(--accent); }
 <h2 class="howto-title">How to use</h2>
 
 <p class="howto-text">Pick a topic from the tabs, then use each chart&rsquo;s dropdowns to choose a place, data source or measure. Hover over any point or state for exact numbers, and drag the slider on maps to change the week or season.</p>
+
+<details class="glossary">
+<summary>How to explore the data</summary>
+<dl>
+  <dt>Map | Beeswarm</dt><dd><b>Map</b> colors each state. <b>Beeswarm</b> shows every state as one dot on a single number line, with the median of all states marked, so you can see how spread out the states are and which stand out.</dd>
+  <dt>State | County</dt><dd>Switches a map between states and counties (counties are available for emergency department visits only).</dd>
+  <dt>Slider</dt><dd>Moves a map to a different week, day or season.</dd>
+  <dt>Faceted</dt><dd>Gives each line its own small chart on a shared time axis, so you can compare when lines peak without them overlapping.</dd>
+  <dt>Season overlay</dt><dd>Draws one line per flu season (October to September) on top of each other, so you can see whether this season is earlier, later or bigger than past ones.</dd>
+  <dt>Legend</dt><dd>Click a name in the legend to hide or show that line.</dd>
+</dl>
+</details>
 
 <details class="glossary">
 <summary>Glossary</summary>
@@ -257,6 +292,7 @@ window.PH = (function () {
   "use strict";
   var CAT = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'];
   var DASH = ['solid','dash','dot','dashdot','longdash','longdashdot'];
+  var DIV = [[0,'#2a78d6'],[0.25,'#9ec5f4'],[0.5,'#f2f2f2'],[0.75,'#f4a37f'],[1,'#c2410c']];
   var SEQ = [[0,'#cde2fb'],[0.16,'#9ec5f4'],[0.33,'#6da7ec'],[0.5,'#3987e5'],[0.66,'#256abf'],[0.83,'#184f95'],[1,'#0d366b']];
 
   function colorFor(i) { return CAT[((i % CAT.length) + CAT.length) % CAT.length]; }
@@ -835,7 +871,8 @@ window.PH = (function () {
           locations: validIdx.map(function (i) { return geo.locs[i]; }),
           z: validIdx.map(function (i) { return z[i]; }),
           customdata: validIdx.map(function (i) { return [geo.labels[i], notes[i]]; }),
-          colorscale: SEQ, reversescale: !!m.reverse, marker: { line: { color: '#ffffff', width: 0.5 } },
+          colorscale: m.diverging ? DIV : SEQ, reversescale: !!m.reverse, marker: { line: { color: '#ffffff', width: 0.5 } },
+          zmin: m.diverging ? m.diverging.min : undefined, zmax: m.diverging ? m.diverging.max : undefined,
           colorbar: { title: { text: m.unit || '', font: { size: 10 } }, thickness: 14 },
           hovertemplate: '<b>%{customdata[0]}</b><br>' + esc(m.label) + ': %{z:.' + (m.decimals === undefined ? 1 : m.decimals) + 'f}' + (m.unit ? ' ' + m.unit : '') + '%{customdata[1]}<extra></extra>'
         };
@@ -1223,6 +1260,69 @@ window.PH = (function () {
 
 ::: {.panel-tabset}
 
+## Overview
+
+### Where flu stands now
+
+```{r ov-main}
+#| results: asis
+nat <- function(df, src) df %>% filter(geography_fips == "00", source == src) %>% select(date, value)
+nat_hosp <- function(m) flu_hosp %>% filter(geography_fips == "00", measure == m) %>% select(date, value)
+
+cards <- list(
+  ov_card("ED visits for flu (CDC NSSP)", nat(flu_overall, "CDC NSSP"), "% of ED visits", 2),
+  ov_card("Hospital admissions for flu (CDC NHSN)", nat_hosp("nhsn_adm_flu"), "admissions", 0),
+  ov_card("Patients in hospital with flu (CDC NHSN)", nat_hosp("nhsn_hosp_pats_flu"), "patients", 0),
+  ov_card("Patients in ICU with flu (CDC NHSN)", nat_hosp("nhsn_icu_pats_flu"), "patients", 0),
+  ov_card("Outpatient flu-like illness (CDC ILINet)", nat(flu_overall, "CDC ILINet"), "% of visits", 2),
+  ov_card("Flu in wastewater (CDC NWSS)", nat(flu_overall, "CDC NWSS"), "viral activity", 2),
+  ov_card("Flu hospitalization rate (CDC RESP-NET)", nat(flu_overall, "CDC RespNET"), "per 100,000", 2),
+  ov_card("ED visits for flu (Epic Cosmos)", nat(flu_overall, "Epic Cosmos, ED"), "% of ED visits", 2,
+          foot = "Epic data arrive in batches, so this lags the others.", date_label = "Refreshed through"),
+  ov_card("Illness signal (Kinsa thermometers)", nat(flu_overall, "Kinsa"), "illness signal", 2)
+)
+cards <- Filter(Negate(is.null), cards)
+dirs <- vapply(cards, `[[`, character(1), "dir")
+pct_peak <- median(vapply(cards, `[[`, numeric(1), "pct_peak"), na.rm = TRUE)
+
+# Rt: latest estimate per state (CDC publishes state estimates only).
+rt_state <- flu_rtm %>% filter(measure == "cdc_rt_flu", geography_fips != "00") %>%
+  group_by(geography_fips) %>% filter(date == max(date)) %>% ungroup()
+rt_date <- max(rt_state$date)
+rt_state <- rt_state %>% filter(date >= rt_date - 14)
+n_grow <- sum(rt_state$value > 1)
+
+week_txt <- ov_date(max(flu_overall$date[flu_overall$source == "CDC NSSP"]))
+cat(sprintf(
+  '<p class="ov-headline">Latest national data (most sources through the week ending <b>%s</b>): of <b>%d</b> indicators, <b>%d</b> are rising, <b>%d</b> falling and <b>%d</b> steady over the past two weeks. Typical indicator is at <b>%.0f%%</b> of its past-year peak. CDC&rsquo;s state models estimate flu is growing (Rt above 1) in <b>%d of %d</b> states as of %s.</p>\n',
+  week_txt, length(dirs), sum(dirs == "rising"), sum(dirs == "falling"), sum(dirs == "steady"),
+  pct_peak, n_grow, nrow(rt_state), ov_date(rt_date)))
+
+cat('<div class="ov-list">\n', paste(vapply(cards, `[[`, character(1), "html"), collapse = "\n"), '\n</div>\n')
+```
+
+<p class="source-note">Each row is national. &ldquo;Rising&rdquo; or &ldquo;falling&rdquo; compares the latest two weeks with the two before, with a 10% band for &ldquo;steady&rdquo;. The line shows the past 52 weeks; the dot is the latest week. Sources report on different schedules, so the date is shown on each row.</p>
+
+```{r ov-fresh}
+#| results: asis
+lat <- function(df, src) max(df$date[df$source == src])
+fresh <- tibble::tribble(
+  ~name, ~date, ~lag,
+  "CDC NSSP emergency department visits", lat(flu_overall, "CDC NSSP"), source_caveats$nssp$lag,
+  "CDC NHSN hospital admissions", max(flu_hosp$date), source_caveats$nhsn$lag,
+  "CDC ILINet outpatient visits", lat(flu_overall, "CDC ILINet"), source_caveats$ilinet$lag,
+  "CDC NWSS wastewater", lat(flu_overall, "CDC NWSS"), source_caveats$nwss$lag,
+  "CDC RESP-NET hospitalizations", lat(flu_overall, "CDC RespNET"), source_caveats$respnet$lag,
+  "Epic Cosmos ED visits", lat(flu_overall, "Epic Cosmos, ED"), "Usually 3 to 5 weeks",
+  "Kinsa illness signal", lat(flu_overall, "Kinsa"), source_caveats$kinsa$lag,
+  "CDC Rt, states", rt_date, source_caveats$rt$lag
+)
+cat('<details class="chart-info"><summary>Data freshness</summary>\n<table class="ov-table"><tr><th>Source</th><th>Latest data</th><th>Typical lag</th></tr>\n')
+for (i in seq_len(nrow(fresh))) cat(sprintf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n',
+  fresh$name[i], ov_date(fresh$date[i]), sub("\\. .*$", "", fresh$lag[i])))
+cat('</table></details>\n')
+```
+
 ## Flu activity
 
 ### Flu activity by state
@@ -1330,12 +1430,34 @@ emit_chart("act-ts", "LineChart", list(
 ), "Weekly flu activity, overall or by age group. With <b>Show: Overall</b> each line is a surveillance system; with <b>Show: By age group</b> pick a source and each line is an age group. Sources use different units, so the default view rescales every series to 0-100 over its own history; switch <b>Units</b> to see native units. Click legend entries to hide or show a line. <b>Faceted</b> gives each line its own panel on a shared time axis, so peaks can be compared by timing; <b>Season overlay</b> draws one line per flu season (starting October) for a single series, so you can see whether this season is early, late or large. Kinsa is national only and RESP-NET covers only participating states. Age labels are each source's own and do not line up. Epic Cosmos points flagged as suppressed small cells (<10) are imputed as 5. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu\">bundle_flu</a>.")
 ```
 
-### Effective reproduction number (Rt) 
+### Effective reproduction number (Rt) by state
+
+```{r rt-map}
+#| results: asis
+rt_state_all <- flu_rtm %>%
+  filter(geography_fips != "00", measure %in% c("cdc_rt_flu", "cdc_rt_flu_p_growing")) %>%
+  mutate(loc = fips2abbr[geography_fips], t = chr_date(date))
+rt_map_entry <- function(m, label, unit, dec, sub, scale, rng) {
+  d <- rt_state_all %>% filter(measure == m) %>% mutate(value = value * scale) %>% select(loc, t, value)
+  e <- build_measure_entry(d, id = m, label = label, level = "state", unit = unit, decimals = dec, sub = sub)
+  e$diverging <- list(min = rng[1], max = rng[2])
+  e
+}
+emit_chart("rt-map", "Choropleth", list(
+  measureLabel = "Measure", height = 500, defaultMeasure = "cdc_rt_flu",
+  measures = list(
+    rt_map_entry("cdc_rt_flu", "Rt (above 1 = growing)", "Rt", 2, "CDC CFA estimate of the flu reproduction number", 1, c(0.6, 1.4)),
+    rt_map_entry("cdc_rt_flu_p_growing", "Probability flu is growing", "%", 0, "CDC CFA probability that Rt is above 1", 100, c(0, 100))
+  )
+), "Estimated growth of flu infections in each state, from the CDC Center for Forecasting and Outbreak Analytics. <b>Orange</b> states have Rt above 1 (flu growing); <b>blue</b> states have Rt below 1 (shrinking); pale means near 1. Drag the slider to see how each state changed day by day, or switch the measure to the probability that flu is growing. Grey means no estimate. CDC publishes state estimates only; there is no current national estimate. PopHIVE keeps only each state&rsquo;s latest model run, so the history is short. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/cdc_cfa_rt\">CDC CFA Rt</a>.")
+```
+
+### Rt over time
 
 ```{r rt-ts}
 #| results: asis
 rt <- flu_rtm %>%
-  filter(measure %in% c("cdc_rt_flu", "cdc_rt_flu_lower", "cdc_rt_flu_upper")) %>%
+  filter(geography != "United States", measure %in% c("cdc_rt_flu", "cdc_rt_flu_lower", "cdc_rt_flu_upper")) %>%
   select(geography, date, measure, value) %>%
   pivot_wider(names_from = measure, values_from = value) %>%
   mutate(xx = chr_date(date), series = "Rt")
@@ -1344,9 +1466,9 @@ emit_chart("rt-ts", "LineChart", list(
   yTitle = "Rt (above 1 = growing)",
   errorBand = list(label = "Show interval", default = TRUE),
   seriesOrder = I("Rt"),
-  filters = list(list(key = "geography", label = "Location", options = geo_options(rt$geography), default = "United States")),
+  filters = list(list(key = "geography", label = "State", options = geo_options(rt$geography), default = "California")),
   lines = build_lines(rt, "geography", "series", "xx", "cdc_rt_flu", lower_col = "cdc_rt_flu_lower", upper_col = "cdc_rt_flu_upper", digits = 3)
-), "Estimated growth of flu infections from the CDC Center for Forecasting and Outbreak Analytics. Rt above 1 means infections are increasing; below 1, decreasing. Whiskers show the lower and upper bounds. Estimates begin April 2026. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/cdc_cfa_rt\">CDC CFA Rt</a>.")
+), "Estimated growth of flu infections for the selected state, from the CDC Center for Forecasting and Outbreak Analytics. Rt above 1 means infections are increasing; below 1, decreasing. Whiskers show the lower and upper bounds. CDC publishes state estimates only. PopHIVE keeps only each state&rsquo;s latest model run. Data: <a href=\"https://github.com/PopHIVE/Ingest/tree/main/data/cdc_cfa_rt\">CDC CFA Rt</a>.")
 ```
 
 ## Hospitalizations & deaths
