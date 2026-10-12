@@ -64,6 +64,8 @@ AGE_EPIC_I  <- c('<15 Years'  = '0-14 years', '15-25 Years' = '15-25 years')
 AGE_EPIC_C  <- c('<18 Years'  = '0-17 years')
 AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' = '5-9 years',
                  '10-13 Years' = '10-13 years', '14-17 Years' = '14-17 years')
+AGE_DROWN   <- c('<1' = '<1 year', '1-4' = '1-4 years', '5-14' = '5-14 years',
+                 '15-24' = '15-24 years')
 AGE_YRBSS   <- c('14' = '14 years', '15' = '15 years', '16' = '16 years',
                  '17' = '17 years', 'Overall' = 'Overall')
 
@@ -174,6 +176,10 @@ SPEC <- bind_rows(
      'neiss_injuries_weighted'),
   sp('neiss_diagnosis', 'Injury and violence', 'Injury diagnoses',
      'neiss_injuries_weighted'),
+
+  # ---- Drowning (CDC WONDER underlying cause of death) ----
+  sp('drowning', 'Injury and violence', 'Drowning',
+     c('drowning_deaths', 'drowning_crude_rate')),
 
   # ---- YRBSS ----
   sp('yrbss', 'Injury and violence', 'Dangerous driving',
@@ -928,7 +934,56 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 
 
 # =============================================================================
-# 12. MAIN PAGE -- PLACEHOLDER
+# 12. Drowning -- CDC WONDER deaths, state + county, age
+#
+#   dist/drowning_state_age.parquet
+#   dist/drowning_county_age.parquet
+#
+# Age bands are <1, 1-4, 5-14 and 15-24 (15-24 straddles 18, as in WISQARS);
+# older bands are dropped. At these ages the source carries only the
+# sex = 'Overall' / race_ethnicity = 'Overall' stratum, so those columns are
+# not carried. Years are 2018-2024.
+#
+# The source writes -999 for suppressed cells (WONDER suppresses counts under
+# 10, and rates on counts under 20 are 'unreliable'). Those become NA and are
+# dropped; suppressed = 1 marks the rows the source flagged where a value was
+# still published (e.g. a count with a suppressed rate). Rate lcl/ucl are
+# carried on the rate measure only. The state file has no national row.
+# =============================================================================
+
+drowning_read <- function(file) {
+  vroom::vroom(file.path('../drowning/standard', file), show_col_types = FALSE) %>%
+    filter(age %in% names(AGE_DROWN), sex == 'Overall', race_ethnicity == 'Overall') %>%
+    mutate(age = unname(AGE_DROWN[age]),
+           across(c(drowning_deaths, drowning_crude_rate,
+                    drowning_crude_rate_lcl, drowning_crude_rate_ucl),
+                  ~ if_else(.x == -999, NA_real_, .x))) %>%
+    transmute(fips = geography, time, age,
+              suppressed = as.integer(suppressed_flag),
+              drowning_deaths, drowning_crude_rate,
+              lcl_rate = drowning_crude_rate_lcl, ucl_rate = drowning_crude_rate_ucl) %>%
+    pivot_longer(c(drowning_deaths, drowning_crude_rate), names_to = 'measure',
+                 values_to = 'value') %>%
+    mutate(lcl = if_else(measure == 'drowning_crude_rate', lcl_rate, NA_real_),
+           ucl = if_else(measure == 'drowning_crude_rate', ucl_rate, NA_real_)) %>%
+    select(-lcl_rate, -ucl_rate) %>%
+    filter(!is.na(value))
+}
+
+drowning_read('data_state.csv.gz') %>%
+  as_state() %>%
+  label('drowning', 'CDC WONDER') %>%
+  write_parquet('dist/drowning_state_age.parquet')
+
+drowning_read('data_county.csv.gz') %>%
+  inner_join(county_cw, by = 'fips') %>%
+  rename(geography = geography_name) %>%
+  label('drowning', 'CDC WONDER') %>%
+  write_parquet('dist/drowning_county_age.parquet')
+
+
+# =============================================================================
+# 13. MAIN PAGE -- PLACEHOLDER
 # =============================================================================
 # TODO: to be defined; see the 'Main page' tab of the workbook.
 # Expected output: dist/main_*.parquet

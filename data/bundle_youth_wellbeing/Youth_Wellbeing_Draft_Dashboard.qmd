@@ -209,7 +209,7 @@ a:hover { color: var(--accent); }
 ```
 
 <p class="source-note">
-Draft dashboard for internal review. Data are combined from CDC/NEISS, CDC/WISQARS, CDC/YRBSS, Epic Cosmos, Medicaid/CHIP Child Core Set, County Health Rankings &amp; Roadmaps, NHTSA FARS, and NOAA/NWS HeatRisk &mdash; see the <a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_youth_wellbeing">bundle README</a> for full source details. Hover any chart for exact values.
+Draft dashboard for internal review. Data are combined from CDC/NEISS, CDC/WISQARS, CDC/YRBSS, Epic Cosmos, Medicaid/CHIP Child Core Set, County Health Rankings &amp; Roadmaps, NHTSA FARS, CDC WONDER, and NOAA/NWS HeatRisk &mdash; see the <a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_youth_wellbeing">bundle README</a> for full source details. Hover any chart for exact values.
 </p>
 
 ```{=html}
@@ -1343,6 +1343,88 @@ emit_json("IV_FIREARM_BEHAVIOR", list(
 </details>
 ```
 
+### Drowning deaths
+
+```{r iv-drowning}
+#| results: asis
+dr_age_opts <- c("<1 year", "1-4 years", "5-14 years", "15-24 years")
+dr_metrics <- list(
+  rate  = list(measure = "drowning_crude_rate", label = "Drowning death rate (per 100,000)",
+               unit = "per 100k", decimals = 1),
+  count = list(measure = "drowning_deaths", label = "Drowning deaths (count)",
+               unit = "deaths", decimals = 0)
+)
+
+# ---- Map: state, rate or count, by age and year ----
+dr_entries <- list()
+for (mk in names(dr_metrics)) for (ag in dr_age_opts) {
+  m <- dr_metrics[[mk]]
+  d <- drowning_state %>%
+    filter(measure == m$measure, age == ag) %>%
+    mutate(loc = fips2abbr[fips], t = year,
+           note = if_else(suppressed == 1, " (unreliable - small count)", "")) %>%
+    select(loc, t, value, note)
+  if (nrow(d) == 0) next
+  eid <- paste(mk, ag, sep = "|")
+  dr_entries[[eid]] <- build_measure_entry(
+    d, id = eid, label = paste0(m$label, " — ", ag), level = "state",
+    unit = m$unit, decimals = m$decimals,
+    sub = "CDC WONDER underlying cause of death: unintentional, intentional and undetermined drowning",
+    tags = list(metric = tools::toTitleCase(mk), age = ag)
+  )
+}
+
+emit_json("IV_DROWNING_MAP", list(
+  measureLabel = "Measure", height = 500,
+  filters = list(
+    list(key = "metric", label = "Metric", options = c("Rate", "Count"), default = "Rate"),
+    list(key = "age", label = "Age", options = dr_age_opts, default = "1-4 years")
+  ),
+  defaultMeasure = "rate|1-4 years",
+  measures = unname(dr_entries)
+))
+
+# ---- Time series: state dropdown, age legend ----
+dr_ts <- drowning_state %>%
+  filter(measure == "drowning_crude_rate") %>%
+  mutate(note = if_else(suppressed == 1, " (unreliable - small count)", ""))
+dr_lines <- build_lines(dr_ts, dim_cols = "geography", series_col = "age",
+                         x_col = "year", y_col = "value", note_col = "note",
+                         lower_col = "lcl", upper_col = "ucl")
+state_opts_dr <- sort(unique(dr_ts$geography))
+age_opts_dr <- dr_age_opts[dr_age_opts %in% unique(dr_ts$age)]
+
+emit_json("IV_DROWNING_TS", list(
+  title = "Drowning death rate by age", height = 420, toggle = TRUE,
+  xTitle = "Year", yTitle = "Deaths per 100,000 population", decimals = 1,
+  filters = list(
+    list(key = "geography", label = "State", options = state_opts_dr, default = state_opts_dr[1])
+  ),
+  seriesOrder = age_opts_dr,
+  seriesMeta = setNames(lapply(age_opts_dr, function(a) list(label = a)), age_opts_dr),
+  defaultOn = age_opts_dr,
+  errorBand = list(key = "ci", label = "Show 95% confidence interval", default = FALSE),
+  lines = dr_lines
+))
+```
+
+```{=html}
+<div class="ph-card" id="iv-drowning-map"></div>
+<script>PH.renderChoropleth('iv-drowning-map', window.IV_DROWNING_MAP);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Drowning deaths among children and young people, by state, age group and year (2018&ndash;2024), from CDC WONDER underlying-cause-of-death records (all drowning, whether unintentional, intentional or undetermined). Switch Metric between the crude death rate per 100,000 residents in the age group and the raw count. Counts under 10 are suppressed by CDC and shown as no data, and rates built on small counts are flagged as unreliable in the hover; small states will often show no data. The 15&ndash;24 band includes adults aged 18&ndash;24. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/drowning">CDC WONDER</a>.</p>
+</details>
+```
+
+```{=html}
+<div class="ph-card" id="iv-drowning-ts"></div>
+<script>PH.renderLineChart('iv-drowning-ts', window.IV_DROWNING_TS);</script>
+<details class="chart-info">
+<summary>About this chart</summary>
+<p>Annual drowning death rate per 100,000 by state, one line per age group; toggle age groups on/off with the legend chips. Years and ages with suppressed counts are missing, so lines for small states have gaps. Rates built on small counts are unreliable and noted in the hover. Check "Show 95% confidence interval" to draw the CDC WONDER confidence bounds. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/drowning">CDC WONDER</a>.</p>
+</details>
+```
 ## Mental Health
 
 ```{r mh-shared}
