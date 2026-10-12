@@ -127,7 +127,7 @@ flowchart LR
     end
     subgraph cdc_cfa_rt["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cdc_cfa_rt" target="_blank" rel="noreferrer">cdc_cfa_rt</a></strong>`"]
         direction LR
-        n20["`data.csv.gz<br/><br/><ul><li><code>type_changed: cdc_rt_rsv_p_growing</code></li></ul>`"]:::warn
+        n20["`data.csv.gz`"]:::pass
     end
     subgraph cdc_vssr["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cdc_vssr" target="_blank" rel="noreferrer">cdc_vssr</a></strong>`"]
         direction LR
@@ -167,13 +167,13 @@ flowchart LR
     end
     subgraph delphi_doctors_claims["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/delphi_doctors_claims" target="_blank" rel="noreferrer">delphi_doctors_claims</a></strong>`"]
         direction LR
-        n36["`data_fill_method.csv.gz`"]:::pass
-        n37["`data.csv.gz<br/><br/><ul><li><code>type_changed: delphi_doc_covid_smooth</code></li></ul>`"]:::warn
+        n36["`data_fill_method.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li><li><code>type_changed: delphi_doc_covid_smooth_unlabeled</code></li></ul>`"]:::warn
+        n37["`data.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li></ul>`"]:::warn
     end
     subgraph delphi_hospital_claims["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/delphi_hospital_claims" target="_blank" rel="noreferrer">delphi_hospital_claims</a></strong>`"]
         direction LR
-        n38["`data_fill_method.csv.gz`"]:::pass
-        n39["`data.csv.gz<br/><br/><ul><li><code>type_changed: delphi_hospital_covid_smooth, delphi_hospital_flu_smooth</code></li></ul>`"]:::warn
+        n38["`data_fill_method.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li><li><code>type_changed: delphi_hospital_covid_smooth_unlabeled, delphi_hospital_flu_smooth_unlabeled</code></li></ul>`"]:::warn
+        n39["`data.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li></ul>`"]:::warn
     end
     subgraph delphi_ili_fluview["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/delphi_ili_fluview" target="_blank" rel="noreferrer">delphi_ili_fluview</a></strong>`"]
         direction LR
@@ -407,12 +407,12 @@ flowchart LR
     end
     subgraph wastewater_measles["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/wastewater_measles" target="_blank" rel="noreferrer">wastewater_measles</a></strong>`"]
         direction LR
-        n141["`data_county.csv.gz`"]:::pass
+        n141["`data_county.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li></ul>`"]:::warn
         n142["`data.csv.gz`"]:::pass
     end
     subgraph wastewater["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/wastewater" target="_blank" rel="noreferrer">wastewater</a></strong>`"]
         direction LR
-        n143["`data.csv.gz<br/><br/><ul><li><code>type_changed: geography</code></li></ul>`"]:::warn
+        n143["`data.csv.gz`"]:::pass
     end
     subgraph wisqars["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/wisqars" target="_blank" rel="noreferrer">wisqars</a></strong>`"]
         direction LR
