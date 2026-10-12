@@ -225,22 +225,25 @@ a:hover { color: var(--accent); }
 .ov-card { border: 1px solid var(--navy-light); border-top: 3px solid var(--navy); border-radius: 6px; padding: .8rem 1rem .7rem; background: #fff; }
 .ov-list { margin: .75rem 0 1rem; border-top: 1px solid #e6ecf4; }
 .ov-row { display: grid; grid-template-columns: minmax(12rem, 1.6fr) minmax(8rem, 1fr) minmax(11rem, 1.2fr) 10rem minmax(9rem, 1fr); align-items: center; gap: .5rem 1.25rem; padding: .65rem .25rem; border-bottom: 1px solid #e6ecf4; }
-.ov-row .ov-val { font-size: 1.4rem; }
 .ov-row .ov-spark { height: 2.2rem; }
 @media (max-width: 900px) { .ov-row { grid-template-columns: 1fr 1fr; } .ov-sparkwrap { grid-column: 1 / -1; } }
-.ov-label { font-size: .85rem; font-weight: 500; color: var(--navy); }
-.ov-val { font-family: 'Source Serif 4', serif; font-size: 1.9rem; font-weight: 700; color: var(--navy); line-height: 1.2; }
-.ov-unit { font-family: 'Rubik', sans-serif; font-size: .78rem; font-weight: 400; color: var(--gray); }
-.ov-meta { font-size: .8rem; color: #444; margin: .15rem 0 .3rem; }
-.ov-badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: .08rem .5rem; border-radius: 999px; margin-right: .3rem; }
-.ov-badge.rising { background: #fde9e0; color: #a8430f; }
-.ov-badge.falling { background: #def5ec; color: #11704d; }
-.ov-badge.steady { background: #eef2f8; color: #4a5565; }
+.ov-headline, .ov-label, .ov-val, .ov-unit, .ov-meta, .ov-foot, .ov-table { font-family: 'Rubik', sans-serif; color: var(--ink); }
+.ov-label, .ov-val, .ov-unit, .ov-meta, .ov-foot, .ov-age, .ov-badge { font-size: .95rem; font-weight: 500; line-height: 1.35; }
+.ov-label, .ov-val { font-weight: 600; font-size: 1rem; }
+.ov-unit { font-weight: 500; }
+.ov-badge { font-weight: 600; }
+.ov-foot { font-size: .85rem; }
+.ov-meta { margin: .15rem 0 .3rem; }
+.ov-age { margin: 0; }
+.ov-badge { display: inline; margin-right: .3rem; }
+.ov-badge.rising { color: #d03b3b; }
+.ov-badge.falling { color: #1a8a3c; }
+.ov-badge.steady { color: #2a78d6; }
 .ov-spark { width: 100%; height: auto; display: block; margin: .2rem 0; }
-.ov-foot { font-size: .75rem; color: var(--gray); }
 .ov-table { border-collapse: collapse; font-size: .85rem; max-width: 52rem; width: 100%; }
 .ov-table th, .ov-table td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid #e6ecf4; }
-.ov-table th { color: var(--navy); font-weight: 600; }
+.ov-table th { font-weight: 600; }
+.panel-tabset > .tab-content > .tab-pane:first-child h3, .panel-tabset > .tab-content > .tab-pane:first-child .source-note { font-family: 'Rubik', sans-serif; color: var(--ink); }
 #TOC a { white-space: normal; word-wrap: break-word; }
 </style>
 
@@ -1301,7 +1304,7 @@ cat(sprintf(
 cat('<div class="ov-list">\n', paste(vapply(cards, `[[`, character(1), "html"), collapse = "\n"), '\n</div>\n')
 ```
 
-<p class="source-note">Each row is national. &ldquo;Rising&rdquo; or &ldquo;falling&rdquo; compares the latest two weeks with the two before, with a 10% band for &ldquo;steady&rdquo;. The line shows the past 52 weeks; the dot is the latest week. Sources report on different schedules, so the date is shown on each row.</p>
+<p class="source-note">Each row is national. The change vs the prior week is colored by trend: red if the latest two weeks are more than 10% above the two before, green if more than 10% below, blue otherwise. The line shows the past 52 weeks up to today; the dashed vertical line marks January 1 and the dot marks the latest data, so a gap to the right edge means that source is lagging. The date at right shows how many days old that latest data is. &ldquo;Past-year peak&rdquo; is the highest weekly value for that indicator over its latest 52 weeks of data, so &ldquo;40% of past-year peak&rdquo; means the latest week is 40% as high as the busiest week of the past year. Sources report on different schedules, so the date is shown on each row.</p>
 
 ```{r ov-fresh}
 #| results: asis
@@ -1317,7 +1320,7 @@ fresh <- tibble::tribble(
   "Kinsa illness signal", lat(flu_overall, "Kinsa"), source_caveats$kinsa$lag,
   "CDC Rt, states", rt_date, source_caveats$rt$lag
 )
-cat('<details class="chart-info"><summary>Data freshness</summary>\n<table class="ov-table"><tr><th>Source</th><th>Latest data</th><th>Typical lag</th></tr>\n')
+cat('<details class="chart-info"><summary>Data recency</summary>\n<table class="ov-table"><tr><th>Source</th><th>Latest data</th><th>Typical lag</th></tr>\n')
 for (i in seq_len(nrow(fresh))) cat(sprintf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n',
   fresh$name[i], ov_date(fresh$date[i]), sub("\\. .*$", "", fresh$lag[i])))
 cat('</table></details>\n')

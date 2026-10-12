@@ -383,17 +383,29 @@ ov_date <- function(x) format(as.Date(x), "%b %e, %Y") %>% sub("  ", " ", ., fix
 ov_num <- function(v, dec = 1) format(round(v, dec), big.mark = ",", nsmall = dec, trim = TRUE)
 
 # Inline-SVG sparkline of a numeric vector (oldest first); last point marked.
-ov_spark <- function(x, w = 180, h = 40) {
-  ok <- !is.na(x)
-  if (sum(ok) < 2) return("")
-  n <- length(x)
-  rng <- range(x, na.rm = TRUE)
+#
+# All sparklines share one time axis (the 52 weeks ending today), so a source
+# that lags stops short of the right edge. A dashed vertical line marks the
+# latest data point; the empty space to its right is the reporting lag.
+ov_spark <- function(x, dates, w = 180, h = 40, end = Sys.Date()) {
+  dates <- as.Date(dates)
+  start <- end - 364
+  keep <- !is.na(x) & dates >= start & dates <= end
+  if (sum(keep) < 2) return("")
+  x <- x[keep]; dates <- dates[keep]
+  rng <- range(x)
   span <- if (diff(rng) > 0) diff(rng) else 1
-  px <- (seq_len(n) - 1) / (n - 1) * (w - 8) + 4
+  px <- as.numeric(dates - start) / 364 * (w - 8) + 4
   py <- h - 4 - (x - rng[1]) / span * (h - 8)
-  last <- tail(which(ok), 1)
-  sprintf('<svg class="ov-spark" viewBox="0 0 %d %d" role="img" aria-label="Past year trend"><polyline points="%s" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"/><circle cx="%.1f" cy="%.1f" r="3" fill="#00356b"/></svg>',
-          w, h, paste(sprintf("%.1f,%.1f", px[ok], py[ok]), collapse = " "), px[last], py[last])
+  n <- length(x)
+  # Dashed vertical line at the most recent Jan 1 inside the window.
+  jan1 <- as.Date(sprintf("%s-01-01", format(end, "%Y")))
+  jan <- if (jan1 >= start && jan1 <= end) sprintf('<line x1="%.1f" y1="1" x2="%.1f" y2="%d" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"/><text x="%.1f" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text>',
+                                                    as.numeric(jan1 - start) / 364 * (w - 8) + 4,
+                                                    as.numeric(jan1 - start) / 364 * (w - 8) + 4, h - 1,
+                                                    as.numeric(jan1 - start) / 364 * (w - 8) + 7) else ""
+  sprintf('<svg class="ov-spark" viewBox="0 0 %d %d" role="img" aria-label="Past year trend; dashed line marks January 1">%s<polyline points="%s" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"/><circle cx="%.1f" cy="%.1f" r="3" fill="#00356b"/></svg>',
+          w, h, jan, paste(sprintf("%.1f,%.1f", px, py), collapse = " "), px[n], py[n])
 }
 
 # One national indicator -> list(html, dir). `d` has columns date, value
@@ -410,12 +422,12 @@ ov_card <- function(label, d, unit, dec = 1, foot = "", date_label = "Week endin
   wow <- if (prev > 0) sprintf("%+.0f%% vs prior week", (cur - prev) / prev * 100) else "prior week was 0"
   yr <- tail(d$value, 52)
   pk <- if (max(yr) > 0) sprintf("%.0f%% of past-year peak", cur / max(yr) * 100) else ""
-  badge <- c(rising = "Rising", falling = "Falling", steady = "Steady")[[dir]]
   list(dir = dir, pct_peak = if (max(yr) > 0) cur / max(yr) * 100 else NA_real_, html = sprintf(
-    '<div class="ov-row"><div class="ov-label">%s</div><div class="ov-val">%s<span class="ov-unit"> %s</span></div><div class="ov-meta"><span class="ov-badge %s">%s</span> %s</div><div class="ov-sparkwrap">%s</div><div class="ov-foot">%s %s%s%s</div></div>',
-    label, ov_num(cur, dec), unit, dir, badge, wow, ov_spark(tail(d$value, 52), w = 160, h = 34),
-    date_label, ov_date(d$date[n]), if (nzchar(pk)) paste0("<br>", pk) else "",
-    if (nzchar(foot)) paste0("<br>", foot) else ""))
+    '<div class="ov-row"><div class="ov-label">%s</div><div class="ov-val">%s<span class="ov-unit"> %s</span></div><div class="ov-meta"><span class="ov-badge %s">%s</span></div><div class="ov-sparkwrap">%s</div><div class="ov-foot">%s %s (%d days old)%s%s</div></div>',
+    label, ov_num(cur, dec), unit, dir, wow, ov_spark(d$value, d$date, w = 160, h = 34),
+    date_label, ov_date(d$date[n]), as.integer(Sys.Date() - as.Date(d$date[n])),
+    if (nzchar(pk)) paste0("<br>", pk) else "",
+    if (nzchar(foot)) paste0("<br><em>", foot, "</em>") else ""))
 }
 
 emit_chart <- function(id, kind = c("Choropleth", "LineChart", "Dumbbell", "Scatter"), cfg, about) {

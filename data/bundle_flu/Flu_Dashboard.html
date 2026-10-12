@@ -2391,22 +2391,25 @@ box-shadow: 0 2px 8px rgba(0,0,0,.25);
 .ov-card { border: 1px solid var(--navy-light); border-top: 3px solid var(--navy); border-radius: 6px; padding: .8rem 1rem .7rem; background: #fff; }
 .ov-list { margin: .75rem 0 1rem; border-top: 1px solid #e6ecf4; }
 .ov-row { display: grid; grid-template-columns: minmax(12rem, 1.6fr) minmax(8rem, 1fr) minmax(11rem, 1.2fr) 10rem minmax(9rem, 1fr); align-items: center; gap: .5rem 1.25rem; padding: .65rem .25rem; border-bottom: 1px solid #e6ecf4; }
-.ov-row .ov-val { font-size: 1.4rem; }
 .ov-row .ov-spark { height: 2.2rem; }
 @media (max-width: 900px) { .ov-row { grid-template-columns: 1fr 1fr; } .ov-sparkwrap { grid-column: 1 / -1; } }
-.ov-label { font-size: .85rem; font-weight: 500; color: var(--navy); }
-.ov-val { font-family: 'Source Serif 4', serif; font-size: 1.9rem; font-weight: 700; color: var(--navy); line-height: 1.2; }
-.ov-unit { font-family: 'Rubik', sans-serif; font-size: .78rem; font-weight: 400; color: var(--gray); }
-.ov-meta { font-size: .8rem; color: #444; margin: .15rem 0 .3rem; }
-.ov-badge { display: inline-block; font-size: .72rem; font-weight: 600; padding: .08rem .5rem; border-radius: 999px; margin-right: .3rem; }
-.ov-badge.rising { background: #fde9e0; color: #a8430f; }
-.ov-badge.falling { background: #def5ec; color: #11704d; }
-.ov-badge.steady { background: #eef2f8; color: #4a5565; }
+.ov-headline, .ov-label, .ov-val, .ov-unit, .ov-meta, .ov-foot, .ov-table { font-family: 'Rubik', sans-serif; color: var(--ink); }
+.ov-label, .ov-val, .ov-unit, .ov-meta, .ov-foot, .ov-age, .ov-badge { font-size: .95rem; font-weight: 500; line-height: 1.35; }
+.ov-label, .ov-val { font-weight: 600; font-size: 1rem; }
+.ov-unit { font-weight: 500; }
+.ov-badge { font-weight: 600; }
+.ov-foot { font-size: .85rem; }
+.ov-meta { margin: .15rem 0 .3rem; }
+.ov-age { margin: 0; }
+.ov-badge { display: inline; margin-right: .3rem; }
+.ov-badge.rising { color: #d03b3b; }
+.ov-badge.falling { color: #1a8a3c; }
+.ov-badge.steady { color: #2a78d6; }
 .ov-spark { width: 100%; height: auto; display: block; margin: .2rem 0; }
-.ov-foot { font-size: .75rem; color: var(--gray); }
 .ov-table { border-collapse: collapse; font-size: .85rem; max-width: 52rem; width: 100%; }
 .ov-table th, .ov-table td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid #e6ecf4; }
-.ov-table th { color: var(--navy); font-weight: 600; }
+.ov-table th { font-weight: 600; }
+.panel-tabset > .tab-content > .tab-pane:first-child h3, .panel-tabset > .tab-content > .tab-pane:first-child .source-note { font-family: 'Rubik', sans-serif; color: var(--ink); }
 #TOC a { white-space: normal; word-wrap: break-word; }
 </style>
 
@@ -3504,15 +3507,15 @@ ED visits for flu (CDC NSSP)
 0.58<span class="ov-unit"> % of ED visits</span>
 </div>
 <div class="ov-meta">
-<span class="ov-badge rising">Rising</span> +26% vs prior week
+<span class="ov-badge rising">+26% vs prior week</span>
 </div>
 <div class="ov-sparkwrap">
-<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend">
-<polyline points="4.0,29.7 7.0,29.6 10.0,29.5 12.9,29.4 15.9,29.0 18.9,28.4 21.9,27.3 24.9,25.8 27.8,25.2 30.8,21.4 33.8,13.2 36.8,4.0 39.8,10.4 42.7,17.4 45.7,20.2 48.7,19.4 51.7,19.8 54.7,20.0 57.6,19.3 60.6,20.2 63.6,22.2 66.6,22.7 69.6,24.2 72.5,25.4 75.5,26.1 78.5,26.9 81.5,27.8 84.5,28.5 87.5,28.9 90.4,29.1 93.4,29.3 96.4,29.4 99.4,29.5 102.4,29.6 105.3,29.7 108.3,29.8 111.3,29.9 114.3,29.9 117.3,29.9 120.2,30.0 123.2,30.0 126.2,30.0 129.2,30.0 132.2,30.0 135.1,29.9 138.1,29.9 141.1,29.8 144.1,29.6 147.1,29.4 150.0,29.2 153.0,28.8 156.0,28.5" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="156.0" cy="28.5" r="3" fill="#00356b"></circle>
+<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend; dashed line marks January 1">
+<line x1="37.4" y1="1" x2="37.4" y2="33" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"></line><text x="40.4" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text><polyline points="6.1,29.6 9.0,29.5 11.9,29.4 14.9,29.0 17.8,28.4 20.7,27.3 23.6,25.8 26.5,25.2 29.5,21.4 32.4,13.2 35.3,4.0 38.2,10.4 41.2,17.4 44.1,20.2 47.0,19.4 49.9,19.8 52.9,20.0 55.8,19.3 58.7,20.2 61.6,22.2 64.5,22.7 67.5,24.2 70.4,25.4 73.3,26.1 76.2,26.9 79.2,27.8 82.1,28.5 85.0,28.9 87.9,29.1 90.9,29.3 93.8,29.4 96.7,29.5 99.6,29.6 102.5,29.7 105.5,29.8 108.4,29.9 111.3,29.9 114.2,29.9 117.2,30.0 120.1,30.0 123.0,30.0 125.9,30.0 128.9,30.0 131.8,29.9 134.7,29.9 137.6,29.8 140.5,29.6 143.5,29.4 146.4,29.2 149.3,28.8 152.2,28.5" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="152.2" cy="28.5" r="3" fill="#00356b"></circle>
 </svg>
 </div>
 <div class="ov-foot">
-Week ending Oct 3, 2026<br>7% of past-year peak
+Week ending Oct 3, 2026 (9 days old)<br>7% of past-year peak
 </div>
 </div>
 <div class="ov-row">
@@ -3523,15 +3526,15 @@ Hospital admissions for flu (CDC NHSN)
 3,334<span class="ov-unit"> admissions</span>
 </div>
 <div class="ov-meta">
-<span class="ov-badge rising">Rising</span> +27% vs prior week
+<span class="ov-badge rising">+27% vs prior week</span>
 </div>
 <div class="ov-sparkwrap">
-<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend">
-<polyline points="4.0,29.8 7.0,29.7 10.0,29.6 12.9,29.5 15.9,29.3 18.9,28.8 21.9,28.2 24.9,27.2 27.8,25.8 30.8,23.5 33.8,17.3 36.8,7.1 39.8,4.0 42.7,11.8 45.7,18.1 48.7,19.9 51.7,20.6 54.7,20.4 57.6,20.2 60.6,21.2 63.6,23.5 66.6,24.4 69.6,25.5 72.5,26.6 75.5,28.3 78.5,28.6 81.5,29.0 84.5,29.2 87.5,29.2 90.4,29.4 93.4,29.5 96.4,29.6 99.4,29.6 102.4,29.7 105.3,29.7 108.3,29.9 111.3,29.9 114.3,29.9 117.3,29.9 120.2,29.9 123.2,30.0 126.2,30.0 129.2,30.0 132.2,30.0 135.1,30.0 138.1,29.8 141.1,29.8 144.1,29.6 147.1,29.4 150.0,29.1 153.0,28.8 156.0,28.3" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="156.0" cy="28.3" r="3" fill="#00356b"></circle>
+<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend; dashed line marks January 1">
+<line x1="37.4" y1="1" x2="37.4" y2="33" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"></line><text x="40.4" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text><polyline points="6.1,29.7 9.0,29.6 11.9,29.5 14.9,29.3 17.8,28.8 20.7,28.2 23.6,27.2 26.5,25.8 29.5,23.5 32.4,17.3 35.3,7.1 38.2,4.0 41.2,11.8 44.1,18.1 47.0,19.9 49.9,20.6 52.9,20.4 55.8,20.2 58.7,21.2 61.6,23.5 64.5,24.4 67.5,25.5 70.4,26.6 73.3,28.3 76.2,28.6 79.2,29.0 82.1,29.2 85.0,29.2 87.9,29.4 90.9,29.5 93.8,29.6 96.7,29.6 99.6,29.7 102.5,29.7 105.5,29.9 108.4,29.9 111.3,29.9 114.2,29.9 117.2,29.9 120.1,30.0 123.0,30.0 125.9,30.0 128.9,30.0 131.8,30.0 134.7,29.8 137.6,29.8 140.5,29.6 143.5,29.4 146.4,29.1 149.3,28.8 152.2,28.3" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="152.2" cy="28.3" r="3" fill="#00356b"></circle>
 </svg>
 </div>
 <div class="ov-foot">
-Week ending Oct 3, 2026<br>8% of past-year peak
+Week ending Oct 3, 2026 (9 days old)<br>8% of past-year peak
 </div>
 </div>
 <div class="ov-row">
@@ -3542,15 +3545,15 @@ Patients in hospital with flu (CDC NHSN)
 2,143<span class="ov-unit"> patients</span>
 </div>
 <div class="ov-meta">
-<span class="ov-badge rising">Rising</span> +24% vs prior week
+<span class="ov-badge rising">+24% vs prior week</span>
 </div>
 <div class="ov-sparkwrap">
-<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend">
-<polyline points="4.0,29.9 7.0,29.9 10.0,29.8 12.9,29.8 15.9,29.5 18.9,29.3 21.9,28.7 24.9,28.0 27.8,26.5 30.8,24.6 33.8,20.4 36.8,13.1 39.8,4.0 42.7,7.1 45.7,14.2 48.7,17.5 51.7,18.8 54.7,19.2 57.6,19.4 60.6,20.2 63.6,22.2 66.6,23.7 69.6,24.7 72.5,26.2 75.5,27.0 78.5,27.6 81.5,28.1 84.5,28.6 87.5,28.9 90.4,29.1 93.4,29.3 96.4,29.5 99.4,29.5 102.4,29.6 105.3,29.7 108.3,29.8 111.3,29.9 114.3,29.9 117.3,29.9 120.2,29.9 123.2,29.9 126.2,30.0 129.2,30.0 132.2,30.0 135.1,30.0 138.1,29.9 141.1,29.9 144.1,29.8 147.1,29.5 150.0,29.2 153.0,28.9 156.0,28.5" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="156.0" cy="28.5" r="3" fill="#00356b"></circle>
+<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend; dashed line marks January 1">
+<line x1="37.4" y1="1" x2="37.4" y2="33" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"></line><text x="40.4" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text><polyline points="6.1,29.9 9.0,29.8 11.9,29.8 14.9,29.5 17.8,29.3 20.7,28.7 23.6,28.0 26.5,26.5 29.5,24.6 32.4,20.4 35.3,13.1 38.2,4.0 41.2,7.1 44.1,14.2 47.0,17.5 49.9,18.8 52.9,19.2 55.8,19.4 58.7,20.2 61.6,22.2 64.5,23.7 67.5,24.7 70.4,26.2 73.3,27.0 76.2,27.6 79.2,28.1 82.1,28.6 85.0,28.9 87.9,29.1 90.9,29.3 93.8,29.5 96.7,29.5 99.6,29.6 102.5,29.7 105.5,29.8 108.4,29.9 111.3,29.9 114.2,29.9 117.2,29.9 120.1,29.9 123.0,30.0 125.9,30.0 128.9,30.0 131.8,30.0 134.7,29.9 137.6,29.9 140.5,29.8 143.5,29.5 146.4,29.2 149.3,28.9 152.2,28.5" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="152.2" cy="28.5" r="3" fill="#00356b"></circle>
 </svg>
 </div>
 <div class="ov-foot">
-Week ending Oct 3, 2026<br>8% of past-year peak
+Week ending Oct 3, 2026 (9 days old)<br>8% of past-year peak
 </div>
 </div>
 <div class="ov-row">
@@ -3561,15 +3564,15 @@ Patients in ICU with flu (CDC NHSN)
 330<span class="ov-unit"> patients</span>
 </div>
 <div class="ov-meta">
-<span class="ov-badge rising">Rising</span> +30% vs prior week
+<span class="ov-badge rising">+30% vs prior week</span>
 </div>
 <div class="ov-sparkwrap">
-<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend">
-<polyline points="4.0,29.8 7.0,29.7 10.0,29.7 12.9,29.6 15.9,29.3 18.9,29.2 21.9,28.6 24.9,27.7 27.8,26.3 30.8,24.6 33.8,20.9 36.8,13.9 39.8,4.0 42.7,5.6 45.7,12.0 48.7,15.8 51.7,17.6 54.7,17.8 57.6,17.8 60.6,17.7 63.6,20.1 66.6,22.2 69.6,23.6 72.5,25.1 75.5,26.0 78.5,26.7 81.5,27.3 84.5,28.0 87.5,28.4 90.4,28.7 93.4,29.0 96.4,29.1 99.4,29.4 102.4,29.3 105.3,29.5 108.3,29.7 111.3,29.7 114.3,29.7 117.3,29.8 120.2,29.8 123.2,29.8 126.2,29.8 129.2,30.0 132.2,30.0 135.1,30.0 138.1,29.9 141.1,29.8 144.1,29.7 147.1,29.5 150.0,29.2 153.0,28.8 156.0,28.3" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="156.0" cy="28.3" r="3" fill="#00356b"></circle>
+<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend; dashed line marks January 1">
+<line x1="37.4" y1="1" x2="37.4" y2="33" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"></line><text x="40.4" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text><polyline points="6.1,29.7 9.0,29.7 11.9,29.6 14.9,29.3 17.8,29.2 20.7,28.6 23.6,27.7 26.5,26.3 29.5,24.6 32.4,20.9 35.3,13.9 38.2,4.0 41.2,5.6 44.1,12.0 47.0,15.8 49.9,17.6 52.9,17.8 55.8,17.8 58.7,17.7 61.6,20.1 64.5,22.2 67.5,23.6 70.4,25.1 73.3,26.0 76.2,26.7 79.2,27.3 82.1,28.0 85.0,28.4 87.9,28.7 90.9,29.0 93.8,29.1 96.7,29.4 99.6,29.3 102.5,29.5 105.5,29.7 108.4,29.7 111.3,29.7 114.2,29.8 117.2,29.8 120.1,29.8 123.0,29.8 125.9,30.0 128.9,30.0 131.8,30.0 134.7,29.9 137.6,29.8 140.5,29.7 143.5,29.5 146.4,29.2 149.3,28.8 152.2,28.3" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="152.2" cy="28.3" r="3" fill="#00356b"></circle>
 </svg>
 </div>
 <div class="ov-foot">
-Week ending Oct 3, 2026<br>9% of past-year peak
+Week ending Oct 3, 2026 (9 days old)<br>9% of past-year peak
 </div>
 </div>
 <div class="ov-row">
@@ -3580,15 +3583,15 @@ Outpatient flu-like illness (CDC ILINet)
 1.85<span class="ov-unit"> % of visits</span>
 </div>
 <div class="ov-meta">
-<span class="ov-badge rising">Rising</span> +6% vs prior week
+<span class="ov-badge rising">+6% vs prior week</span>
 </div>
 <div class="ov-sparkwrap">
-<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend">
-<polyline points="4.0,27.3 7.0,27.1 10.0,26.9 12.9,26.6 15.9,25.6 18.9,25.1 21.9,24.2 24.9,22.6 27.8,21.5 30.8,18.6 33.8,12.0 36.8,4.0 39.8,8.0 42.7,14.5 45.7,17.7 48.7,16.5 51.7,17.5 54.7,16.9 57.6,17.0 60.6,17.6 63.6,19.5 66.6,20.1 69.6,21.6 72.5,22.9 75.5,23.8 78.5,24.7 81.5,25.7 84.5,26.4 87.5,26.7 90.4,26.9 93.4,26.9 96.4,26.9 99.4,27.5 102.4,27.5 105.3,28.2 108.3,28.7 111.3,29.1 114.3,29.4 117.3,29.5 120.2,29.7 123.2,29.9 126.2,30.0 129.2,30.0 132.2,30.0 135.1,29.7 138.1,29.1 141.1,28.3 144.1,27.7 147.1,27.5 150.0,27.3 153.0,26.9 156.0,26.6" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="156.0" cy="26.6" r="3" fill="#00356b"></circle>
+<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend; dashed line marks January 1">
+<line x1="37.4" y1="1" x2="37.4" y2="33" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"></line><text x="40.4" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text><polyline points="6.1,27.1 9.0,26.9 11.9,26.6 14.9,25.6 17.8,25.1 20.7,24.2 23.6,22.6 26.5,21.5 29.5,18.6 32.4,12.0 35.3,4.0 38.2,8.0 41.2,14.5 44.1,17.7 47.0,16.5 49.9,17.5 52.9,16.9 55.8,17.0 58.7,17.6 61.6,19.5 64.5,20.1 67.5,21.6 70.4,22.9 73.3,23.8 76.2,24.7 79.2,25.7 82.1,26.4 85.0,26.7 87.9,26.9 90.9,26.9 93.8,26.9 96.7,27.5 99.6,27.5 102.5,28.2 105.5,28.7 108.4,29.1 111.3,29.4 114.2,29.5 117.2,29.7 120.1,29.9 123.0,30.0 125.9,30.0 128.9,30.0 131.8,29.7 134.7,29.1 137.6,28.3 140.5,27.7 143.5,27.5 146.4,27.3 149.3,26.9 152.2,26.6" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="152.2" cy="26.6" r="3" fill="#00356b"></circle>
 </svg>
 </div>
 <div class="ov-foot">
-Week ending Oct 3, 2026<br>22% of past-year peak
+Week ending Oct 3, 2026 (9 days old)<br>22% of past-year peak
 </div>
 </div>
 <div class="ov-row">
@@ -3599,15 +3602,15 @@ Flu in wastewater (CDC NWSS)
 3.19<span class="ov-unit"> viral activity</span>
 </div>
 <div class="ov-meta">
-<span class="ov-badge rising">Rising</span> +61% vs prior week
+<span class="ov-badge rising">+61% vs prior week</span>
 </div>
 <div class="ov-sparkwrap">
-<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend">
-<polyline points="4.0,29.4 7.0,29.7 10.0,29.3 12.9,29.2 15.9,26.5 18.9,28.5 21.9,27.4 24.9,25.1 27.8,20.3 30.8,20.5 33.8,10.5 36.8,4.0 39.8,4.2 42.7,9.2 45.7,17.9 48.7,15.0 51.7,15.2 54.7,17.2 57.6,18.3 60.6,21.1 63.6,23.8 66.6,25.9 69.6,27.7 72.5,27.8 75.5,28.6 78.5,28.5 81.5,29.0 84.5,29.7 87.5,29.4 90.4,29.4 93.4,30.0 96.4,29.8 99.4,30.0 102.4,29.9 105.3,29.7 108.3,29.9 111.3,29.7 114.3,29.7 117.3,29.5 120.2,29.6 123.2,29.9 126.2,29.7 129.2,30.0 132.2,29.6 135.1,29.2 138.1,28.8 141.1,29.8 144.1,29.0 147.1,29.1 150.0,28.4 153.0,28.2 156.0,25.5" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="156.0" cy="25.5" r="3" fill="#00356b"></circle>
+<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend; dashed line marks January 1">
+<line x1="37.4" y1="1" x2="37.4" y2="33" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"></line><text x="40.4" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text><polyline points="6.1,29.7 9.0,29.3 11.9,29.2 14.9,26.5 17.8,28.5 20.7,27.4 23.6,25.1 26.5,20.3 29.5,20.5 32.4,10.5 35.3,4.0 38.2,4.2 41.2,9.2 44.1,17.9 47.0,15.0 49.9,15.2 52.9,17.2 55.8,18.3 58.7,21.1 61.6,23.8 64.5,25.9 67.5,27.7 70.4,27.8 73.3,28.6 76.2,28.5 79.2,29.0 82.1,29.7 85.0,29.4 87.9,29.4 90.9,30.0 93.8,29.8 96.7,30.0 99.6,29.9 102.5,29.7 105.5,29.9 108.4,29.7 111.3,29.7 114.2,29.5 117.2,29.6 120.1,29.9 123.0,29.7 125.9,30.0 128.9,29.6 131.8,29.2 134.7,28.8 137.6,29.8 140.5,29.0 143.5,29.1 146.4,28.4 149.3,28.2 152.2,25.5" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="152.2" cy="25.5" r="3" fill="#00356b"></circle>
 </svg>
 </div>
 <div class="ov-foot">
-Week ending Oct 3, 2026<br>25% of past-year peak
+Week ending Oct 3, 2026 (9 days old)<br>25% of past-year peak
 </div>
 </div>
 <div class="ov-row">
@@ -3618,15 +3621,15 @@ Flu hospitalization rate (CDC RESP-NET)
 0.60<span class="ov-unit"> per 100,000</span>
 </div>
 <div class="ov-meta">
-<span class="ov-badge rising">Rising</span> -14% vs prior week
+<span class="ov-badge rising">-14% vs prior week</span>
 </div>
 <div class="ov-sparkwrap">
-<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend">
-<polyline points="4.0,29.8 7.0,29.8 10.0,29.8 12.9,29.6 15.9,29.2 18.9,28.8 21.9,27.8 24.9,26.6 27.8,24.6 30.8,21.0 33.8,14.0 36.8,4.0 39.8,5.2 42.7,15.6 45.7,21.6 48.7,23.2 51.7,23.4 54.7,23.4 57.6,24.2 60.6,24.2 63.6,25.4 66.6,26.0 69.6,27.0 72.5,27.6 75.5,28.0 78.5,28.2 81.5,28.8 84.5,28.8 87.5,29.2 90.4,29.4 93.4,29.6 96.4,29.6 99.4,29.8 102.4,30.0 105.3,30.0 108.3,30.0 111.3,30.0 114.3,30.0 117.3,30.0 120.2,30.0 123.2,30.0 126.2,30.0 129.2,30.0 132.2,30.0 135.1,30.0 138.1,29.8 141.1,29.8 144.1,29.6 147.1,29.4 150.0,29.2 153.0,28.8 156.0,29.0" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="156.0" cy="29.0" r="3" fill="#00356b"></circle>
+<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend; dashed line marks January 1">
+<line x1="37.4" y1="1" x2="37.4" y2="33" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"></line><text x="40.4" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text><polyline points="6.1,29.8 9.0,29.8 11.9,29.6 14.9,29.2 17.8,28.8 20.7,27.8 23.6,26.6 26.5,24.6 29.5,21.0 32.4,14.0 35.3,4.0 38.2,5.2 41.2,15.6 44.1,21.6 47.0,23.2 49.9,23.4 52.9,23.4 55.8,24.2 58.7,24.2 61.6,25.4 64.5,26.0 67.5,27.0 70.4,27.6 73.3,28.0 76.2,28.2 79.2,28.8 82.1,28.8 85.0,29.2 87.9,29.4 90.9,29.6 93.8,29.6 96.7,29.8 99.6,30.0 102.5,30.0 105.5,30.0 108.4,30.0 111.3,30.0 114.2,30.0 117.2,30.0 120.1,30.0 123.0,30.0 125.9,30.0 128.9,30.0 131.8,30.0 134.7,29.8 137.6,29.8 140.5,29.6 143.5,29.4 146.4,29.2 149.3,28.8 152.2,29.0" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="152.2" cy="29.0" r="3" fill="#00356b"></circle>
 </svg>
 </div>
 <div class="ov-foot">
-Week ending Oct 3, 2026<br>5% of past-year peak
+Week ending Oct 3, 2026 (9 days old)<br>5% of past-year peak
 </div>
 </div>
 <div class="ov-row">
@@ -3637,15 +3640,15 @@ ED visits for flu (Epic Cosmos)
 0.44<span class="ov-unit"> % of ED visits</span>
 </div>
 <div class="ov-meta">
-<span class="ov-badge rising">Rising</span> +52% vs prior week
+<span class="ov-badge rising">+52% vs prior week</span>
 </div>
 <div class="ov-sparkwrap">
-<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend">
-<polyline points="4.0,29.8 7.0,29.8 10.0,29.7 12.9,29.6 15.9,29.5 18.9,29.0 21.9,28.5 24.9,27.3 27.8,25.9 30.8,25.1 33.8,21.4 36.8,13.2 39.8,4.0 42.7,10.5 45.7,17.7 48.7,20.9 51.7,20.4 54.7,20.9 57.6,21.2 60.6,20.4 63.6,20.9 66.6,22.8 69.6,22.9 72.5,24.4 75.5,25.6 78.5,26.2 81.5,27.1 84.5,28.0 87.5,28.7 90.4,29.1 93.4,29.3 96.4,29.4 99.4,29.5 102.4,29.6 105.3,29.7 108.3,29.8 111.3,29.9 114.3,29.9 117.3,29.9 120.2,29.9 123.2,30.0 126.2,30.0 129.2,30.0 132.2,30.0 135.1,30.0 138.1,29.9 141.1,29.9 144.1,29.8 147.1,29.7 150.0,29.6 153.0,29.3 156.0,28.9" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="156.0" cy="28.9" r="3" fill="#00356b"></circle>
+<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend; dashed line marks January 1">
+<line x1="37.4" y1="1" x2="37.4" y2="33" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"></line><text x="40.4" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text><polyline points="6.1,29.7 9.0,29.6 11.9,29.5 14.9,29.0 17.8,28.5 20.7,27.3 23.6,25.9 26.5,25.1 29.5,21.4 32.4,13.2 35.3,4.0 38.2,10.5 41.2,17.7 44.1,20.9 47.0,20.4 49.9,20.9 52.9,21.2 55.8,20.4 58.7,20.9 61.6,22.8 64.5,22.9 67.5,24.4 70.4,25.6 73.3,26.2 76.2,27.1 79.2,28.0 82.1,28.7 85.0,29.1 87.9,29.3 90.9,29.4 93.8,29.5 96.7,29.6 99.6,29.7 102.5,29.8 105.5,29.9 108.4,29.9 111.3,29.9 114.2,29.9 117.2,30.0 120.1,30.0 123.0,30.0 125.9,30.0 128.9,30.0 131.8,29.9 134.7,29.9 137.6,29.8 140.5,29.7 143.5,29.6 146.4,29.3 149.3,28.9" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="149.3" cy="28.9" r="3" fill="#00356b"></circle>
 </svg>
 </div>
 <div class="ov-foot">
-Refreshed through Sep 26, 2026<br>5% of past-year peak<br>Epic data arrive in batches, so this lags the others.
+Refreshed through Sep 26, 2026 (16 days old)<br>5% of past-year peak<br><em>Epic data arrive in batches, so this lags the others.</em>
 </div>
 </div>
 <div class="ov-row">
@@ -3656,24 +3659,24 @@ Illness signal (Kinsa thermometers)
 1.46<span class="ov-unit"> illness signal</span>
 </div>
 <div class="ov-meta">
-<span class="ov-badge steady">Steady</span> +2% vs prior week
+<span class="ov-badge steady">+2% vs prior week</span>
 </div>
 <div class="ov-sparkwrap">
-<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend">
-<polyline points="4.0,25.5 7.0,25.3 10.0,24.6 12.9,24.1 15.9,23.2 18.9,22.0 21.9,22.1 24.9,21.8 27.8,18.6 30.8,10.7 33.8,4.0 36.8,8.3 39.8,14.2 42.7,17.0 45.7,15.7 48.7,15.2 51.7,14.8 54.7,13.2 57.6,11.6 60.6,13.8 63.6,14.6 66.6,17.0 69.6,19.5 72.5,20.1 75.5,21.6 78.5,23.5 81.5,24.4 84.5,24.9 87.5,25.0 90.4,24.5 93.4,24.3 96.4,25.3 99.4,25.9 102.4,26.6 105.3,27.5 108.3,28.5 111.3,29.4 114.3,29.5 117.3,29.8 120.2,29.4 123.2,30.0 126.2,29.6 129.2,29.2 132.2,28.9 135.1,27.7 138.1,25.9 141.1,24.6 144.1,24.4 147.1,23.5 150.0,23.2 153.0,22.3 156.0,22.0" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="156.0" cy="22.0" r="3" fill="#00356b"></circle>
+<svg class="ov-spark" viewbox="0 0 160 34" role="img" aria-label="Past year trend; dashed line marks January 1">
+<line x1="37.4" y1="1" x2="37.4" y2="33" stroke="#767676" stroke-width="1" stroke-dasharray="2,2"></line><text x="40.4" y="8" font-size="8" fill="#767676" font-family="Rubik, sans-serif" stroke="#ffffff" stroke-width="2" paint-order="stroke">Jan 1</text><polyline points="6.1,25.5 9.0,25.3 11.9,24.6 14.9,24.1 17.8,23.2 20.7,22.0 23.6,22.1 26.5,21.8 29.5,18.6 32.4,10.7 35.3,4.0 38.2,8.3 41.2,14.2 44.1,17.0 47.0,15.7 49.9,15.2 52.9,14.8 55.8,13.2 58.7,11.6 61.6,13.8 64.5,14.6 67.5,17.0 70.4,19.5 73.3,20.1 76.2,21.6 79.2,23.5 82.1,24.4 85.0,24.9 87.9,25.0 90.9,24.5 93.8,24.3 96.7,25.3 99.6,25.9 102.5,26.6 105.5,27.5 108.4,28.5 111.3,29.4 114.2,29.5 117.2,29.8 120.1,29.4 123.0,30.0 125.9,29.6 128.9,29.2 131.8,28.9 134.7,27.7 137.6,25.9 140.5,24.6 143.5,24.4 146.4,23.5 149.3,23.2 152.2,22.3 155.2,22.0" fill="none" stroke="#2a78d6" stroke-width="1.8" stroke-linejoin="round"></polyline><circle cx="155.2" cy="22.0" r="3" fill="#00356b"></circle>
 </svg>
 </div>
 <div class="ov-foot">
-Week ending Oct 10, 2026<br>48% of past-year peak
+Week ending Oct 10, 2026 (2 days old)<br>48% of past-year peak
 </div>
 </div>
 </div>
 <p class="source-note">
-Each row is national. “Rising” or “falling” compares the latest two weeks with the two before, with a 10% band for “steady”. The line shows the past 52 weeks; the dot is the latest week. Sources report on different schedules, so the date is shown on each row.
+Each row is national. The change vs the prior week is colored by trend: red if the latest two weeks are more than 10% above the two before, green if more than 10% below, blue otherwise. The line shows the past 52 weeks up to today; the dashed vertical line marks January 1 and the dot marks the latest data, so a gap to the right edge means that source is lagging. The date at right shows how many days old that latest data is. “Past-year peak” is the highest weekly value for that indicator over its latest 52 weeks of data, so “40% of past-year peak” means the latest week is 40% as high as the busiest week of the past year. Sources report on different schedules, so the date is shown on each row.
 </p>
 <details class="chart-info">
 <summary>
-Data freshness
+Data recency
 </summary>
 <table class="ov-table">
 <tbody><tr>
