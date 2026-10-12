@@ -15,6 +15,37 @@
     "citations": []
   },
 
+  "delphi_doc_covid_smooth_fill_method": {
+    "id": "delphi_doc_covid_smooth_fill_method",
+    "short_name": "COVID Doctor Visits: null handling",
+    "long_name": "Null-handling variant of delphi_doc_covid_smooth",
+    "category": "respiratory",
+    "short_description": "How Delphi handled missing values in the value reported in delphi_doc_covid_smooth: source (raw, no imputation), zero (nulls filled with zero) or unlabeled (older series published before Delphi labeled variants, through 2026-09-30)",
+    "long_description": "Delphi's cast API publishes some signals in variants that differ in how nulls were handled during geographic aggregation. Counties are published as source (no imputation) and the nation and states as zero (nulls filled with zero). Weeks published before 2026-10-01 carry no label and are reported as unlabeled. Text column; not a measure.",
+    "statement": "",
+    "measure_type": "category",
+    "unit": "category",
+    "time_resolution": "week",
+    "restrictions": "CC-BY Attribution license",
+    "sources": [{ "id": "delphi_doctor_visits" }],
+    "citations": []
+  },
+  "delphi_doc_covid_smooth_unlabeled": {
+    "id": "delphi_doc_covid_smooth_unlabeled",
+    "short_name": "COVID Doctor Visits: earlier unlabeled value",
+    "long_name": "Unlabeled-series value of delphi_doc_covid_smooth",
+    "category": "respiratory",
+    "short_description": "Value for the same geography and week from the older Delphi series that carries no fill_method label, where one exists; delphi_doc_covid_smooth may differ because it takes the labeled variant when available",
+    "long_description": "Delphi began labeling signal variants on 2026-10-01 and kept the older unlabeled history. For weeks where both exist the two values can differ (for example from revisions or null handling). This column keeps the unlabeled value so neither version is lost. Missing for weeks published only after labeling began.",
+    "statement": "",
+    "measure_type": "percent",
+    "unit": "Percent, 7-day average ending Saturday",
+    "time_resolution": "week",
+    "restrictions": "CC-BY Attribution license",
+    "sources": [{ "id": "delphi_doctor_visits" }],
+    "citations": []
+  },
+
   "_sources": {
     "delphi_doctor_visits": {
       "name": "CMU Delphi Epidata - Outpatient Claims",
@@ -33,7 +64,8 @@
     "search_terms": ["Respiratory"],
     "bucket": ["Infectious disease"],
     "files": {
-      "data.csv.gz": "Outpatient doctor visits with COVID-related diagnoses"
+      "data.csv.gz": "Outpatient doctor visits with COVID-related diagnoses",
+      "data_fill_method.csv.gz": "Null-handling flag and earlier unlabeled value"
     }
   }
 }
