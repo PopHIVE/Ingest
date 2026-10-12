@@ -1348,39 +1348,30 @@ emit_json("IV_FIREARM_BEHAVIOR", list(
 ```{r iv-drowning}
 #| results: asis
 dr_age_opts <- c("<1 year", "1-4 years", "5-14 years", "15-24 years")
-dr_metrics <- list(
-  rate  = list(measure = "drowning_crude_rate", label = "Drowning death rate (per 100,000)",
-               unit = "per 100k", decimals = 1),
-  count = list(measure = "drowning_deaths", label = "Drowning deaths (count)",
-               unit = "deaths", decimals = 0)
-)
 
-# ---- Map: state, rate or count, by age and year ----
+# ---- Map: state death rate, by age and year ----
 dr_entries <- list()
-for (mk in names(dr_metrics)) for (ag in dr_age_opts) {
-  m <- dr_metrics[[mk]]
+for (ag in dr_age_opts) {
   d <- drowning_state %>%
-    filter(measure == m$measure, age == ag) %>%
+    filter(measure == "drowning_crude_rate", age == ag) %>%
     mutate(loc = fips2abbr[fips], t = year,
            note = if_else(suppressed == 1, " (unreliable - small count)", "")) %>%
     select(loc, t, value, note)
   if (nrow(d) == 0) next
-  eid <- paste(mk, ag, sep = "|")
-  dr_entries[[eid]] <- build_measure_entry(
-    d, id = eid, label = paste0(m$label, " — ", ag), level = "state",
-    unit = m$unit, decimals = m$decimals,
+  dr_entries[[ag]] <- build_measure_entry(
+    d, id = ag, label = paste0("Drowning death rate (per 100,000) — ", ag), level = "state",
+    unit = "per 100k", decimals = 1,
     sub = "CDC WONDER underlying cause of death: unintentional, intentional and undetermined drowning",
-    tags = list(metric = tools::toTitleCase(mk), age = ag)
+    tags = list(age = ag)
   )
 }
 
 emit_json("IV_DROWNING_MAP", list(
   measureLabel = "Measure", height = 500,
   filters = list(
-    list(key = "metric", label = "Metric", options = c("Rate", "Count"), default = "Rate"),
     list(key = "age", label = "Age", options = dr_age_opts, default = "1-4 years")
   ),
-  defaultMeasure = "rate|1-4 years",
+  defaultMeasure = "1-4 years",
   measures = unname(dr_entries)
 ))
 
@@ -1413,7 +1404,7 @@ emit_json("IV_DROWNING_TS", list(
 <script>PH.renderChoropleth('iv-drowning-map', window.IV_DROWNING_MAP);</script>
 <details class="chart-info">
 <summary>About this chart</summary>
-<p>Drowning deaths among children and young people, by state, age group and year (2018&ndash;2024), from CDC WONDER underlying-cause-of-death records (all drowning, whether unintentional, intentional or undetermined). Switch Metric between the crude death rate per 100,000 residents in the age group and the raw count. Counts under 10 are suppressed by CDC and shown as no data, and rates built on small counts are flagged as unreliable in the hover; small states will often show no data. The 15&ndash;24 band includes adults aged 18&ndash;24. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/drowning">CDC WONDER</a>.</p>
+<p>Drowning death rate (crude deaths per 100,000 residents in the age group) among children and young people, by state, age group and year (2018&ndash;2024), from CDC WONDER underlying-cause-of-death records (all drowning, whether unintentional, intentional or undetermined). Counts under 10 are suppressed by CDC and shown as no data, and rates built on small counts are flagged as unreliable in the hover; small states will often show no data. The 15&ndash;24 band includes adults aged 18&ndash;24. Data: <a href="https://github.com/PopHIVE/Ingest/tree/main/data/drowning">CDC WONDER</a>.</p>
 </details>
 ```
 
