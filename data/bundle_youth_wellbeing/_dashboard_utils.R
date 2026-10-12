@@ -120,33 +120,6 @@ epic_mh <- bind_rows(lapply(names(mh_dx_labels), function(dx) {
              "<br>All ED visits: ", format(round(n_visits), big.mark = ",", trim = TRUE))
     )
   )
-# Crisis Text Line "Crisis Trends" (crisistrends.org) conversation-topic
-# data, year-grain aggregate. Same stopgap as epic_concussion above: lives
-# in a separate crisis-text-line repo that
-# hasn't yet been formally ingested into PopHIVE/Ingest as its own
-# data/{source} folder. Only the year-grain aggregate is loaded (not the
-# monthly file) to keep this dashboard's embedded page size in line with its
-# other choropleths/bar grids -- see
-# crisis-text-line/crisis_trends_dashboard.qmd for the fuller monthly/yearly
-# toggle the charts built from this are a scoped-down version of.
-ctl_annual <- vroom::vroom(
-  "C:/Users/as5325/Desktop/repos/crisis-text-line/standard/data_annual.csv.gz",
-  show_col_types = FALSE
-) %>%
-  filter(geography != "Missing")
-
-# Population denominators for per-100,000 conversions, by state x age group x
-# year. "Missing" (age not reported) has no Census equivalent, so it's
-# aliased to the same total-population denominator as "Overall" -- same
-# convention as the source dashboard.
-ctl_population_raw <- vroom::vroom(
-  "C:/Users/as5325/Desktop/repos/crisis-text-line/population_denominators/standard/population_by_age.csv.gz",
-  show_col_types = FALSE
-)
-ctl_population <- bind_rows(
-  ctl_population_raw,
-  ctl_population_raw %>% filter(age_group == "Overall") %>% mutate(age_group = "Missing")
-)
 
 # ---------------------------------------------------------------------------
 # JSON helpers
@@ -376,4 +349,4 @@ chr_choropleth_measure <- function(measure_id, level = c("state", "county"), tag
                        unit = chr_unit[[measure_id]], decimals = chr_dec[[measure_id]], tags = tags)
 }
 
-cat("Dashboard data loaded:", nrow(chr_county), "chr_county rows,", nrow(yrbss), "yrbss rows,", nrow(ctl_annual), "crisis text line rows\n")
+cat("Dashboard data loaded:", nrow(chr_county), "chr_county rows,", nrow(yrbss), "yrbss rows\n")

@@ -209,7 +209,7 @@ a:hover { color: var(--accent); }
 ```
 
 <p class="source-note">
-Draft dashboard for internal review. Data are combined from CDC/NEISS, CDC/WISQARS, CDC/YRBSS, Epic Cosmos, Medicaid/CHIP Child Core Set, County Health Rankings &amp; Roadmaps, NHTSA FARS, Crisis Text Line, and NOAA/NWS HeatRisk &mdash; see the <a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_youth_wellbeing">bundle README</a> for full source details. Hover any chart for exact values.
+Draft dashboard for internal review. Data are combined from CDC/NEISS, CDC/WISQARS, CDC/YRBSS, Epic Cosmos, Medicaid/CHIP Child Core Set, County Health Rankings &amp; Roadmaps, NHTSA FARS, and NOAA/NWS HeatRisk &mdash; see the <a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_youth_wellbeing">bundle README</a> for full source details. Hover any chart for exact values.
 </p>
 
 ```{=html}
@@ -1505,126 +1505,6 @@ emit_json("MH_ED_TS", list(
 <details class="chart-info">
 <summary>About this chart</summary>
 <p>Median emergency department length of stay (minutes) for visits in each mental health diagnosis group (Epic Cosmos), by state, age at time of visit, and quarter. Defaults to the national total for Suicidal behavior; use the Diagnosis dropdown to switch groups and the State dropdown to change geography. Toggle age-band lines on/off via the legend below the chart; each age band also has an "(all ED encounters)" line (median length of stay for all ED visits in that age band) that you can switch on as a comparison. The all-encounters comparison is not shown when All ED encounters is the selected diagnosis. Hovering any point always shows its interquartile range (Q1-Q3) in the tooltip; check "Show interquartile range (Q1-Q3)" to also draw it as whiskers on the chart itself. Data: Epic Cosmos, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
-</details>
-```
-
-### Crisis Text Line conversations by topic and state
-
-```{r mh-ctl-map}
-#| results: asis
-ctl_category_labels <- c(
-  crisistrends_suicide                = "Suicide",
-  crisistrends_self_harm              = "Self-Harm",
-  crisistrends_eating_body_image      = "Eating / Body Image (eating disorders)",
-  crisistrends_depression_sadness     = "Depression / Sadness",
-  crisistrends_anxiety_stress         = "Anxiety / Stress",
-  crisistrends_isolation_loneliness   = "Isolation / Loneliness",
-  crisistrends_grief                  = "Grief",
-  crisistrends_bullying               = "Bullying",
-  crisistrends_abuse                  = "Abuse",
-  crisistrends_substance_use          = "Substance Use",
-  crisistrends_relationships          = "Relationships",
-  crisistrends_gender_sexual_identity = "Gender / Sexual Identity"
-)
-ctl_age_order <- c("13 or younger", "14-17", "18-24", "25-34", "35-44", "45-54", "55-64", "65+", "Overall")
-
-# Years outside the Census population vintage (2020-2025) are clamped to the
-# nearest one available, same convention as the source dashboard
-# (crisis-text-line/crisis_trends_dashboard.qmd).
-ctl_pop_year_range <- range(ctl_population$year)
-ctl_map_base <- ctl_annual %>%
-  filter(geography != "00", age %in% ctl_age_order) %>%
-  mutate(
-    loc = fips2abbr[geography],
-    census_year = pmin(pmax(year, ctl_pop_year_range[1]), ctl_pop_year_range[2])
-  ) %>%
-  left_join(
-    ctl_population %>% select(geography, year, age_group, population),
-    by = c("geography" = "geography", "census_year" = "year", "age" = "age_group")
-  )
-
-ctl_map_measures <- list()
-for (ctl_cat in names(ctl_category_labels)) {
-  for (ctl_ag in ctl_age_order) {
-    d <- ctl_map_base %>%
-      filter(age == ctl_ag) %>%
-      transmute(loc, t = year, value = .data[[ctl_cat]] / population * 1e5)
-    ctl_map_measures[[length(ctl_map_measures) + 1]] <- build_measure_entry(
-      d, id = paste(ctl_cat, ctl_ag, sep = "__"), label = ctl_category_labels[[ctl_cat]],
-      level = "state", unit = "per 100k", decimals = 1,
-      sub = "Crisis Text Line conversations per 100,000 population, by year",
-      tags = list(age = ctl_ag)
-    )
-  }
-}
-
-emit_json("CTL_MAP", list(
-  measureLabel = "Topic", height = 520, defaultMeasure = "crisistrends_suicide__Overall",
-  filters = list(list(key = "age", label = "Age group", options = ctl_age_order, default = "Overall")),
-  measures = ctl_map_measures
-))
-```
-
-```{=html}
-<div class="ph-card" id="mh-ctl-map"></div>
-<script>PH.renderChoropleth('mh-ctl-map', window.CTL_MAP);</script>
-<details class="chart-info">
-<summary>About this chart</summary>
-<p>Crisis Text Line conversations tagged with a given topic, per 100,000 population, by state, age group, and year. A conversation can carry more than one topic tag, so topic totals overlap and don't sum to a single combined total. Choose a topic from the dropdown -- including <b>Eating / Body Image</b>, which covers eating disorders and body-image concerns, from the same dataset as the Suicide topic above it -- and an age group, then use the slider to change year. Grey states have no data available (state or age not reported that year, or too few conversations to publish safely under Crisis Text Line's disclosure-control rules). Data are annual totals only. Data: Crisis Text Line's <a href="https://crisistrends.org/">Crisis Trends</a> monthly aggregate, a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
-</details>
-```
-
-### Most common Crisis Text Line conversation topics by age group
-
-```{r mh-ctl-topic-age}
-#| results: asis
-# Top 5 topics kept per state/year/age before emitting -- same "only ship
-# what's shown" optimization as the NEISS grid in the Overview tab.
-ctl_bar_age_order <- setdiff(ctl_age_order, "Overall")
-ctl_geo_name <- function(g) {
-  case_when(g == "00" ~ "United States", g == "72" ~ "Puerto Rico", TRUE ~ unname(fips2name[g]))
-}
-
-ctl_bar_long <- ctl_annual %>%
-  filter(age %in% ctl_bar_age_order) %>%
-  mutate(geography_name = ctl_geo_name(geography)) %>%
-  filter(!is.na(geography_name)) %>%
-  select(geography_name, year, age, crisistrends_n_tagged, all_of(names(ctl_category_labels))) %>%
-  pivot_longer(all_of(names(ctl_category_labels)), names_to = "tag", values_to = "count") %>%
-  mutate(
-    label = unname(ctl_category_labels[tag]),
-    suppressed = is.na(count) | is.na(crisistrends_n_tagged),
-    pct = if_else(suppressed | crisistrends_n_tagged == 0, NA_real_, 100 * count / crisistrends_n_tagged)
-  ) %>%
-  group_by(geography_name, year, age) %>%
-  mutate(rank = rank(-replace_na(pct, -1), ties.method = "first")) %>%
-  ungroup() %>%
-  filter(rank <= 5) %>%
-  transmute(state = geography_name, year, age, rank, label, value = count,
-            pct_of_all = round(pct, 1), n_sampled = crisistrends_n_tagged, unstable = suppressed)
-
-ctl_bar_states <- c("United States", sort(setdiff(unique(ctl_bar_long$state), "United States")))
-ctl_bar_years  <- sort(unique(ctl_bar_long$year), decreasing = TRUE)
-
-emit_json("CTL_TOPIC_AGE", list(
-  topN = 5, valueLabel = "conversations", height = 320,
-  filters = list(
-    list(key = "state", label = "State", options = ctl_bar_states, default = "United States"),
-    list(key = "year", label = "Year", options = ctl_bar_years, default = ctl_bar_years[1])
-  ),
-  panels = lapply(ctl_bar_age_order, function(ag) {
-    list(id = gsub("[^A-Za-z0-9]", "_", ag), title = paste0("Age ", ag),
-         rows = ctl_bar_long %>% filter(age == ag) %>% select(-age))
-  })
-))
-```
-
-```{=html}
-<div class="ph-card" id="mh-ctl-topic-age"></div>
-<script>PH.renderBarGrid('mh-ctl-topic-age', window.CTL_TOPIC_AGE);</script>
-<details class="chart-info">
-<summary>About this chart</summary>
-<p>The 5 most common Crisis Text Line conversation topics for each reported age group (including Eating / Body Image), as a share of that age group's own tagged conversations (conversations with at least one topic recorded) in the selected state and year. A conversation can carry more than one topic tag, so shares can add to more than 100% within an age group. Bars marked "suppressed / small sample" reflect a cell too small to publish safely under Crisis Text Line's disclosure-control rules, not a real 0%. Use the State and Year dropdowns to change the selection for every age panel at once. Data: Crisis Text Line's <a href="https://crisistrends.org/">Crisis Trends</a> monthly aggregate (annual totals), a draft ingest not yet formally published in <a href="https://github.com/PopHIVE/Ingest">PopHIVE/Ingest</a>.</p>
 </details>
 ```
 
