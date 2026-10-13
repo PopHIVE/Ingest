@@ -59,8 +59,7 @@ brfss_long <- brfss %>%
   dplyr::select(geography, year,age, source, outcome_name, value, value_lcl, value_ucl ,sample_size)%>%
   filter( outcome_name %in% c("Diabetes", "Obesity")
   ) %>%
-  filter(year <= 2024 & #there is some 2025 data, but only for a few months
-           !(year==2024 & geography=='Tennessee') &
+  filter(!(year==2024 & geography=='Tennessee') &
            !(year==2023 & geography %in% c('Kentucky', 'Pennsylvania')) 
          ) 
 
