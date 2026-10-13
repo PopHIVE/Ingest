@@ -28,6 +28,7 @@ Bundles name the time column **`date`**; the standard files call it `time`. `geo
 | `flu_vax_coverage.parquet` | `fluvaxview`, `nis_flu_rsv`, `iis_vax`, `medicare_vax`, `vsd_pregnancy_vax` | 321,384 | state + national, by season, age and stratum |
 | `flu_vax_substate.parquet` | `fluvaxview`, `nis_flu_rsv`, `iis_vax` | 73,393 | county, HHS region and named sub-state areas |
 | `flu_vax_doses.parquet` | `iqvia_vax_administered`, `flu_doses_distributed` | 10,656 | national, weekly |
+| `flu_voter_politics.parquet` | `medsl_president`, `usafacts_voter_registration` | 190,174 | national, state and county, annual, long by `measure` |
 
 ### Trend files
 
@@ -103,6 +104,22 @@ on carries `"Total"` (`stratum_type = "Overall"`), so nothing needs NA handling.
 `Freely associated state` it is the source's own id (`hhs_1`, `il_city_of_chicago`), which is not
 a FIPS code. NIS `Substate` and `Local` areas overlap (Bexar County is also inside Texas-Rest of
 State), so do not sum across `geography_level`.
+
+### Voter context
+
+`flu_voter_politics` is not flu data; it is political context to set beside it. It is long: filter
+on `measure` first, since counts (votes, registered voters) and percents (0-100) share `value`.
+`geography_level` is `National`, `State` or `County`. Dates are December 31.
+
+- **`source = "MIT MEDSL"`**: presidential votes (total, Democratic, Republican), vote shares and
+  the Republican two-party share, for every election 2000-2024. It is the only source with
+  national (`"00"`) rows. State and national totals include Alaska and votes not assigned to a
+  county; Alaska has no county rows. Connecticut is its eight former counties, and Kansas City, MO
+  is folded into Jackson County.
+- **`source = "USAFacts"`**: registered voters and the Democratic, Republican and
+  other/unaffiliated share, for the 27 states and DC that record party affiliation (no national
+  row, no other states). Mostly 2016 onward; see the source's `measure_info.json` for the states
+  with shorter spans. Only active voters are counted where a state separates active and inactive.
 
 `flu_vax_doses` is national. `doses_administered` (IQVIA, single doses, by `setting` and `age`)
 and `doses_distributed_cumulative_millions` (CDC, millions) have different units. IQVIA

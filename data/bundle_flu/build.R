@@ -4,7 +4,8 @@
 #   nhsn_hospital_capacity, delphi_nhsn, delphi_hospital_claims,
 #   delphi_ili_fluview, kinsa_ili, wastewater, fluvaxview, nis_flu_rsv, iis_vax,
 #   medicare_vax, vsd_pregnancy_vax, flu_doses_distributed,
-#   iqvia_vax_administered, cdc_cfa_rt, nchs_mortality, nnds
+#   iqvia_vax_administered, cdc_cfa_rt, nchs_mortality, nnds, plus the
+#   non-flu voter context sources medsl_president, usafacts_voter_registration
 #
 # Output: parquet files in dist/
 #   Surveillance (weekly)
@@ -17,6 +18,9 @@
 #     flu_vax_coverage.parquet         coverage, national + state, all strata
 #     flu_vax_substate.parquet         coverage, county / HHS region / substate
 #     flu_vax_doses.parquet            doses administered and distributed
+#   Context
+#     flu_voter_politics.parquet       presidential vote (MEDSL) and party
+#                                      registration (USAFacts), annual, long
 #
 # Only influenza variables are carried. Where a standard file mixes viruses
 # (nssp, epic, respnet, wastewater, nhsn, delphi_nhsn, cfa_rt, nis, iis, ...)
@@ -556,3 +560,56 @@ flu_vax_doses <- bind_rows(iqvia, distributed) %>%
   arrange(source, measure, setting, age, date)
 
 write_dist(flu_vax_doses, "flu_vax_doses.parquet")
+
+# -----------------------------------------------------------------------------
+# 8. Voter context: presidential vote (MEDSL) and party registration (USAFacts)
+#    National, state and county, annual (December 31), long by `measure`.
+#    These are not flu measures; they are carried as political context for the
+#    flu data. MEDSL is every presidential election since 2000 and has national
+#    ("00") rows; USAFacts covers 27 states and DC (those that record party
+#    affiliation) and has no national row. Counts and percents share `value`,
+#    so filter on `measure`.
+# -----------------------------------------------------------------------------
+voter_files <- list(
+  list(file = "medsl_president/standard/data_state.csv.gz", source = "MIT MEDSL"),
+  list(file = "medsl_president/standard/data_county.csv.gz", source = "MIT MEDSL"),
+  list(file = "usafacts_voter_registration/standard/data_state.csv.gz",
+       source = "USAFacts"),
+  list(file = "usafacts_voter_registration/standard/data_county.csv.gz",
+       source = "USAFacts")
+)
+
+load_voter <- function(s) {
+  d <- read_std(s$file)
+  measures <- setdiff(names(d), c("geography", "time"))
+  d %>%
+    pivot_longer(all_of(measures), names_to = "measure", values_to = "value") %>%
+    mutate(source = s$source)
+}
+
+voter_long <- bind_rows(lapply(voter_files, load_voter)) %>%
+  filter(!is.na(value)) %>%
+  rename(geography_fips = geography) %>%
+  mutate(geography_level = case_when(geography_fips == "00" ~ "National",
+                                     nchar(geography_fips) == 2 ~ "State",
+                                     nchar(geography_fips) == 5 ~ "County"))
+
+voter_names <- bind_rows(state_lookup %>% mutate(geography_name = if_else(
+                           geography_fips == "00", "United States", geography_name)),
+                         county_lookup)
+
+flu_voter_politics <- voter_long %>%
+  left_join(voter_names, by = "geography_fips") %>%
+  mutate(geography = coalesce(geography_name, geography_fips)) %>%
+  select(geography, geography_fips, geography_level, date = time, source, measure,
+         value) %>%
+  arrange(source, measure, geography_level, geography_fips, date)
+
+if (anyNA(flu_voter_politics$geography_level)) {
+  stop("flu_voter_politics: FIPS that is not national, state or county.")
+}
+if (anyDuplicated(flu_voter_politics[c("geography_fips", "date", "source", "measure")])) {
+  stop("flu_voter_politics: duplicate index rows.")
+}
+
+write_dist(flu_voter_politics, "flu_voter_politics.parquet")

@@ -14,7 +14,8 @@
       "bundle_flu/dist/flu_rt_and_mortality.parquet|": {},
       "bundle_flu/dist/flu_vax_coverage.parquet|": {},
       "bundle_flu/dist/flu_vax_substate.parquet|": {},
-      "bundle_flu/dist/flu_vax_doses.parquet|": {}
+      "bundle_flu/dist/flu_vax_doses.parquet|": {},
+      "bundle_flu/dist/flu_voter_politics.parquet|": {}
     }
   },
   "{category}geography_fips": {
@@ -32,7 +33,8 @@
       "bundle_flu/dist/flu_rt_and_mortality.parquet|": {},
       "bundle_flu/dist/flu_vax_coverage.parquet|": {},
       "bundle_flu/dist/flu_vax_substate.parquet|": {},
-      "bundle_flu/dist/flu_vax_doses.parquet|": {}
+      "bundle_flu/dist/flu_vax_doses.parquet|": {},
+      "bundle_flu/dist/flu_voter_politics.parquet|": {}
     }
   },
   "{category}date": {
@@ -50,7 +52,8 @@
       "bundle_flu/dist/flu_rt_and_mortality.parquet|": {},
       "bundle_flu/dist/flu_vax_coverage.parquet|": {},
       "bundle_flu/dist/flu_vax_substate.parquet|": {},
-      "bundle_flu/dist/flu_vax_doses.parquet|": {}
+      "bundle_flu/dist/flu_vax_doses.parquet|": {},
+      "bundle_flu/dist/flu_voter_politics.parquet|": {}
     }
   },
   "bundle_flu/dist/flu_overall_trends.parquet|source": {
@@ -750,6 +753,116 @@
       }
     ]
   },
+  "bundle_flu/dist/flu_voter_politics.parquet|source": {
+    "short_name": "Data source",
+    "levels": {
+      "MIT MEDSL": {
+        "source_id": "medsl_votes_total"
+      },
+      "USAFacts": {
+        "source_id": "usafacts_voters_total"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_voter_politics.parquet|geography_level": {
+    "short_name": "Geography level",
+    "short_description": "National, State, or County.",
+    "long_description": "Level of the geography: \"National\" (\"00\"; MIT MEDSL only), \"State\" (states and DC) or \"County\" (5-digit county FIPS; Connecticut is its eight former counties). USAFacts covers only the 27 states and DC that record party affiliation.",
+    "measure_type": "category",
+    "unit": ""
+  },
+  "bundle_flu/dist/flu_voter_politics.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "medsl_votes_total": {
+        "source_id": "medsl_votes_total",
+        "short_name": "Presidential votes",
+        "short_description": "Total votes cast for president.",
+        "measure_type": "Count",
+        "unit": "votes"
+      },
+      "medsl_votes_dem": {
+        "source_id": "medsl_votes_dem",
+        "short_name": "Democratic presidential votes",
+        "short_description": "Votes cast for the Democratic candidate for president.",
+        "measure_type": "Count",
+        "unit": "votes"
+      },
+      "medsl_votes_rep": {
+        "source_id": "medsl_votes_rep",
+        "short_name": "Republican presidential votes",
+        "short_description": "Votes cast for the Republican candidate for president.",
+        "measure_type": "Count",
+        "unit": "votes"
+      },
+      "medsl_pct_dem": {
+        "source_id": "medsl_pct_dem",
+        "short_name": "Democratic vote share",
+        "short_description": "Percent of presidential votes cast for the Democratic candidate.",
+        "measure_type": "Percent",
+        "unit": "percent"
+      },
+      "medsl_pct_rep": {
+        "source_id": "medsl_pct_rep",
+        "short_name": "Republican vote share",
+        "short_description": "Percent of presidential votes cast for the Republican candidate.",
+        "measure_type": "Percent",
+        "unit": "percent"
+      },
+      "medsl_pct_rep_two_party": {
+        "source_id": "medsl_pct_rep_two_party",
+        "short_name": "Republican two-party vote share",
+        "short_description": "Republican percent of the Democratic plus Republican presidential vote.",
+        "measure_type": "Percent",
+        "unit": "percent"
+      },
+      "usafacts_voters_total": {
+        "source_id": "usafacts_voters_total",
+        "short_name": "Registered voters",
+        "short_description": "Number of registered voters (active only where a state separates active and inactive).",
+        "measure_type": "Count",
+        "unit": "registered voters"
+      },
+      "usafacts_pct_dem": {
+        "source_id": "usafacts_pct_dem",
+        "short_name": "Registered Democrats",
+        "short_description": "Percent of registered voters affiliated with the Democratic Party.",
+        "measure_type": "Percent",
+        "unit": "percent"
+      },
+      "usafacts_pct_rep": {
+        "source_id": "usafacts_pct_rep",
+        "short_name": "Registered Republicans",
+        "short_description": "Percent of registered voters affiliated with the Republican Party.",
+        "measure_type": "Percent",
+        "unit": "percent"
+      },
+      "usafacts_pct_other_unaffiliated": {
+        "source_id": "usafacts_pct_other_unaffiliated",
+        "short_name": "Other or unaffiliated voters",
+        "short_description": "Percent of registered voters with a minor party, no party, or unknown affiliation.",
+        "measure_type": "Percent",
+        "unit": "percent"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_voter_politics.parquet|value": {
+    "short_name": "Value",
+    "long_name": "Measure value",
+    "short_description": "Value of the measure named in the measure column.",
+    "long_description": "Value of the measure named in the measure column. Counts (votes, registered voters) and percents (0-100) share this column, so filter on measure first. MEDSL state and national totals include Alaska and votes not assigned to a county; Alaska has no county rows. Annual: MEDSL is election years 2000 to 2024, USAFacts is 2016 onward.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "medsl_president"
+      },
+      {
+        "id": "usafacts_voter_registration"
+      }
+    ]
+  },
   "_bundle": {
     "name": "bundle_flu",
     "sources": [
@@ -764,12 +877,14 @@
       "iqvia_vax_administered",
       "kinsa_ili",
       "medicare_vax",
+      "medsl_president",
       "nchs_mortality",
       "nhsn_hospital_capacity",
       "nis_flu_rsv",
       "nnds",
       "nssp",
       "respnet",
+      "usafacts_voter_registration",
       "vsd_pregnancy_vax",
       "wastewater"
     ],
@@ -865,6 +980,18 @@
         "source_files": [
           "iqvia_vax_administered/standard/data.csv.gz",
           "flu_doses_distributed/standard/data.csv.gz"
+        ]
+      },
+      "flu_voter_politics.parquet": {
+        "sources": [
+          "medsl_president",
+          "usafacts_voter_registration"
+        ],
+        "source_files": [
+          "medsl_president/standard/data_state.csv.gz",
+          "medsl_president/standard/data_county.csv.gz",
+          "usafacts_voter_registration/standard/data_state.csv.gz",
+          "usafacts_voter_registration/standard/data_county.csv.gz"
         ]
       },
       "flu_vax_substate.parquet": {
