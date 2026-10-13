@@ -64,6 +64,8 @@ AGE_EPIC_I  <- c('<15 Years'  = '0-14 years', '15-25 Years' = '15-25 years')
 AGE_EPIC_C  <- c('<18 Years'  = '0-17 years')
 AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' = '5-9 years',
                  '10-13 Years' = '10-13 years', '14-17 Years' = '14-17 years')
+AGE_DROWN   <- c('<1' = '<1 year', '1-4' = '1-4 years', '5-14' = '5-14 years',
+                 '15-24' = '15-24 years')
 AGE_YRBSS   <- c('14' = '14 years', '15' = '15 years', '16' = '16 years',
                  '17' = '17 years', 'Overall' = 'Overall')
 
@@ -80,7 +82,7 @@ YRBSS_RACE <- c('AI/AN'    = 'American Indian/Alaska Native',
 
 # Canonical column order; each file carries the subset that applies to it.
 COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
-               'age', 'sex', 'race', 'ethnicity', 'payer', 'domain',
+               'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer', 'domain',
                'vaccine', 'product', 'diagnosis', 'forecast_day',
                'section', 'focus_area', 'source', 'measure', 'rank', 'value',
                'pct_of_all', 'lcl', 'ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
@@ -164,7 +166,8 @@ SPEC <- bind_rows(
   sp('wisqars', 'Substance abuse', 'Overdose trends', wq('drug_poisoning')),
 
   # ---- NHTSA ----
-  sp('nhtsa', 'Injury and violence', 'Motor vehicle accidents', 'nhtsa_fatalities'),
+  sp('nhtsa', 'Injury and violence', 'Motor vehicle accidents',
+     c('nhtsa_fatalities', 'nhtsa_fatality_rate')),
 
   # ---- NEISS (not in the workbook; added for the injury page) ----
   # `product` / `diagnosis` are dimensions, so both datasets carry the same
@@ -173,6 +176,10 @@ SPEC <- bind_rows(
      'neiss_injuries_weighted'),
   sp('neiss_diagnosis', 'Injury and violence', 'Injury diagnoses',
      'neiss_injuries_weighted'),
+
+  # ---- Drowning (CDC WONDER underlying cause of death) ----
+  sp('drowning', 'Injury and violence', 'Drowning',
+     'drowning_crude_rate'),
 
   # ---- YRBSS ----
   sp('yrbss', 'Injury and violence', 'Dangerous driving',
@@ -245,6 +252,13 @@ SPEC <- bind_rows(
        'chr_contaminants_in_municipal_water_wi', 'chr_air_pollution_particulate_matter',
        'chr_adverse_climate_events')),
   sp('chr', 'Preventative health and wellness', 'Pregnancy', 'chr_teen_births'),
+  # Added post-launch: chr_infant_mortality / chr_child_mortality are present
+  # with substantial real data in the raw CHR source (unlike
+  # chr_lead_poisoned_children, which is present but empty) -- they were
+  # simply never transcribed from the workbook. Deaths per 1,000 live births
+  # (infant) / per 100,000 population ages 1-19 (child), CHR's standard units.
+  sp('chr', 'Preventative health and wellness', 'Child and infant mortality',
+     c('chr_infant_mortality', 'chr_child_mortality')),
   sp('chr', 'Preventative health and wellness', 'Nutrition',
      c('chr_limited_access_to_healthy_foods', 'chr_food_environment_index')),
   sp('chr', 'Social determinants of health', 'Schools',
@@ -288,7 +302,8 @@ stopifnot(!anyDuplicated(SPEC[c('dataset', 'section', 'focus_area', 'measure')])
 
 wisqars_measures <- SPEC %>% filter(dataset == 'wisqars') %>% pull(measure) %>% unique()
 
-vroom::vroom('../wisqars/standard/data.csv.gz', show_col_types = FALSE) %>%
+vroom::vroom('../wisqars/standard/data.csv.gz', show_col_types = FALSE,
+             guess_max = Inf) %>%
   filter(age %in% names(AGE_WISQARS)) %>%
   mutate(age = unname(AGE_WISQARS[age])) %>%
   tall_simple(wisqars_measures, c('geography', 'time', 'age', 'sex', 'race', 'ethnicity')) %>%
@@ -320,8 +335,31 @@ nhtsa_tall <- nhtsa_youth %>%
       summarize(nhtsa_fatalities = sum(nhtsa_fatalities, na.rm = TRUE), .groups = 'drop') %>%
       mutate(sex = 'All')
   ) %>%
-  tall_simple('nhtsa_fatalities', c('geography', 'time', 'age', 'sex')) %>%
-  rename(fips = geography) %>%
+  rename(fips = geography)
+
+# Per-100,000 rate by youth age band and sex, using the same-year July 1 PEP
+# population (pep_population, 2010-2023) as the denominator. PEP is published in
+# 5-year bands, so 0-14 = 0-4 + 5-9 + 10-14 and 15-24 = 15-19 + 20-24. Years
+# before 2010 have no denominator, so only counts are kept for them. PEP's
+# 'Overall' sex is the sum of Male and Female, matching this file's 'All'.
+nhtsa_pop <- vroom::vroom('../pep_population/standard/data.csv.gz', show_col_types = FALSE,
+                          col_types = vroom::cols(geography = 'c', time = 'c', age = 'c',
+                                                  sex = 'c', pep_population = 'd')) %>%
+  mutate(age = case_when(age %in% c('0-4', '5-9', '10-14') ~ '0-14 years',
+                         age %in% c('15-19', '20-24')      ~ '15-24 years'),
+         sex = if_else(sex == 'Overall', 'All', sex),
+         time = as.Date(time)) %>%
+  filter(!is.na(age)) %>%
+  group_by(fips = geography, time, age, sex) %>%
+  summarize(population = sum(pep_population), .groups = 'drop')
+
+nhtsa_tall <- nhtsa_tall %>%
+  left_join(nhtsa_pop, by = c('fips', 'time', 'age', 'sex')) %>%
+  mutate(nhtsa_fatality_rate = if_else(population > 0,
+                                       round(nhtsa_fatalities / population * 100000, 2),
+                                       NA_real_)) %>%
+  tall_simple(c('nhtsa_fatalities', 'nhtsa_fatality_rate'),
+              c('fips', 'time', 'age', 'sex')) %>%
   filter(!is.na(value))
 
 nhtsa_tall %>%
@@ -510,7 +548,9 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 # race_ethnicity are 'Total' on every row. Its real dimensions are payer
 # (Medicaid / CHIP / Total) and domain. The requested measures are all Child
 # Core Set (_ch_) rates, so the population is children by construction; age is
-# set to 'Not stratified'.
+# carried through from the source. The source's age, sex and race_ethnicity
+# columns are all 'Total' today but are kept so any future stratification flows
+# through.
 #
 # Each rate has 25th and 75th percentile companions (medicaid_<stem>_pct_25 /
 # _pct_75) describing the spread across states; they are carried as pct_25 /
@@ -522,21 +562,22 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 medicaid_measures <- SPEC %>% filter(dataset == 'medicaid') %>% pull(measure) %>% unique()
 medicaid_stems <- sub('_rate$', '', medicaid_measures)
 
-vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE) %>%
+vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE,
+             guess_max = Inf) %>%
   filter(geography_level == 's') %>%
   mutate(geography = if_else(geography == 'Dist. of Col.', 'District of Columbia', geography)) %>%
   rename_with(~ sub('_rate$', '_value', .x), all_of(medicaid_measures)) %>%
-  select(geography, time, payer, domain,
+  select(geography, time, age, sex, race_ethnicity, payer, domain,
          all_of(intersect(as.vector(outer(medicaid_stems,
                                           c('_value', '_pct_25', '_pct_75'), paste0)),
                           names(.)))) %>%
   pivot_longer(
-    cols          = -c(geography, time, payer, domain),
+    cols          = -c(geography, time, age, sex, race_ethnicity, payer, domain),
     names_to      = c('measure', '.value'),
     names_pattern = sprintf('^(%s)_(value|pct_25|pct_75)$',
                             paste(medicaid_stems[order(-nchar(medicaid_stems))], collapse = '|'))
   ) %>%
-  mutate(measure = paste0(measure, '_rate'), age = 'Not stratified') %>%
+  mutate(measure = paste0(measure, '_rate')) %>%
   filter(!is.na(value)) %>%
   inner_join(state_cw %>% select(fips, geography = geography_name), by = 'geography') %>%
   label('medicaid', 'Medicaid/CHIP Child Core Set') %>%
@@ -565,36 +606,65 @@ vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE)
 # ~214. That is an upstream inconsistency, left as-is here.
 #
 # Two requested measures, chr_lead_poisoned_children and
-# chr_contaminants_in_municipal_water_wi, are present as columns but completely
-# empty at source (0 non-missing values in either the state or county file), so
-# they produce no rows.
+# chr_contaminants_in_municipal_water_wi, are present as columns but hold no
+# numbers at source (only NA and a few literal TRUE/FALSE placeholders, in
+# either the state or county file), so they produce no rows. The placeholders
+# are blanked in chr_read() below. chr_adverse_climate_events has the same
+# placeholder at state level (one FALSE row) but real county values.
+# The placeholders originate upstream (PopHIVE/county_health_rankings).
 # =============================================================================
 
 chr_measures <- SPEC %>% filter(dataset == 'chr') %>% pull(measure) %>% unique()
 
 # Read every column as character so sparse measure columns aren't mistyped;
-# tall_simple coerces value to numeric.
+# tall_simple coerces value to numeric. Literal TRUE/FALSE cells are upstream
+# placeholders, not values, so blank them first (as.numeric('FALSE') is NA with
+# a warning).
 chr_read <- function(file) {
   vroom::vroom(file.path('../county_health_rankings/standard', file),
                col_types = vroom::cols(.default = 'c'), show_col_types = FALSE) %>%
+    mutate(across(any_of(chr_measures), ~ na_if(na_if(.x, 'TRUE'), 'FALSE'))) %>%
     tall_simple(chr_measures, c('geography', 'time')) %>%
     mutate(time = as.Date(time), age = 'Not stratified') %>%
     filter(!is.na(value))
 }
 
-chr_read('data_state.csv.gz') %>%
+# CHR parquets carry no section / focus_area: label()'s join on those would
+# duplicate every measure that SPEC maps to two pairs, so skip it and just
+# restrict to the chr measures (already done in chr_read).
+chr_label <- function(df) {
+  df %>%
+    distinct() %>%
+    mutate(source = 'County Health Rankings',
+           year = as.integer(lubridate::year(time))) %>%
+    relocate(any_of(COL_ORDER)) %>%
+    arrange(measure, fips, time)
+}
+
+chr_state <- chr_read('data_state.csv.gz') %>%
   rename(fips = geography) %>%
   as_state() %>%
-  label('chr', 'County Health Rankings') %>%
-  write_parquet('dist/chr_state.parquet')
+  chr_label()
+write_parquet(chr_state, 'dist/chr_state.parquet')
 
-chr_read('data_county.csv.gz') %>%
+chr_county <- chr_read('data_county.csv.gz') %>%
   mutate(fips = formatC(as.integer(geography), width = 5, flag = '0')) %>%
   select(-geography) %>%
   inner_join(county_cw, by = 'fips') %>%
   rename(geography = geography_name) %>%
-  label('chr', 'County Health Rankings') %>%
-  write_parquet('dist/chr_county.parquet')
+  chr_label()
+write_parquet(chr_county, 'dist/chr_county.parquet')
+
+# Disconnected youth only, as standalone files for the dashboard page that
+# uses just this measure. These duplicate the chr_disconnected_youth rows in
+# chr_state / chr_county.
+chr_state %>%
+  filter(measure == 'chr_disconnected_youth') %>%
+  write_parquet('dist/chr_disconnected_state.parquet')
+
+chr_county %>%
+  filter(measure == 'chr_disconnected_youth') %>%
+  write_parquet('dist/chr_disconnected_county.parquet')
 
 
 # =============================================================================
@@ -864,7 +934,52 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 
 
 # =============================================================================
-# 12. MAIN PAGE -- PLACEHOLDER
+# 12. Drowning -- CDC WONDER death rate, state + county, age
+#
+#   dist/drowning_state_age.parquet
+#   dist/drowning_county_age.parquet
+#
+# Age bands are <1, 1-4, 5-14 and 15-24 (15-24 straddles 18, as in WISQARS);
+# older bands are dropped. At these ages the source carries only the
+# sex = 'Overall' / race_ethnicity = 'Overall' stratum, so those columns are
+# not carried. Years are 2018-2024.
+#
+# The source writes -999 for suppressed cells (WONDER suppresses counts under
+# 10, and rates on counts under 20 are 'unreliable'). Those become NA and are
+# dropped; suppressed = 1 marks the rows the source flagged where a value was
+# still published. Only the crude rate is carried (with its lcl/ucl); the raw
+# death count is left out as redundant with it. The state file has no national
+# row.
+# =============================================================================
+
+drowning_read <- function(file) {
+  vroom::vroom(file.path('../drowning/standard', file), show_col_types = FALSE) %>%
+    filter(age %in% names(AGE_DROWN), sex == 'Overall', race_ethnicity == 'Overall') %>%
+    mutate(age = unname(AGE_DROWN[age]),
+           across(c(drowning_crude_rate, drowning_crude_rate_lcl, drowning_crude_rate_ucl),
+                  ~ if_else(.x == -999, NA_real_, .x))) %>%
+    transmute(fips = geography, time, age,
+              suppressed = as.integer(suppressed_flag),
+              measure = 'drowning_crude_rate',
+              value = drowning_crude_rate,
+              lcl = drowning_crude_rate_lcl, ucl = drowning_crude_rate_ucl) %>%
+    filter(!is.na(value))
+}
+
+drowning_read('data_state.csv.gz') %>%
+  as_state() %>%
+  label('drowning', 'CDC WONDER') %>%
+  write_parquet('dist/drowning_state_age.parquet')
+
+drowning_read('data_county.csv.gz') %>%
+  inner_join(county_cw, by = 'fips') %>%
+  rename(geography = geography_name) %>%
+  label('drowning', 'CDC WONDER') %>%
+  write_parquet('dist/drowning_county_age.parquet')
+
+
+# =============================================================================
+# 13. MAIN PAGE -- PLACEHOLDER
 # =============================================================================
 # TODO: to be defined; see the 'Main page' tab of the workbook.
 # Expected output: dist/main_*.parquet

@@ -1,0 +1,214 @@
+{
+  "epic_ed_los_median_{variant}": {
+    "id": "epic_ed_los_median_{variant}",
+    "short_name": "Median ED length of stay: {variant.short_name}",
+    "long_name": "Median emergency department length of stay for {variant.short_name} encounters",
+    "category": "behavioral_health",
+    "short_description": "Median time in minutes from ED arrival to ED departure for {variant.short_name} encounters.",
+    "long_description": "Median emergency department length of stay in minutes for {variant.short_name} encounters. Encounters are Epic Cosmos ED encounters with a United States country of residence, attributed to the patient's state of residence and to the calendar quarter of arrival, and assigned to the {variant.short_name} group of the ED Diagnoses grouper. Length of stay runs from arrival to ED departure, so it includes boarding time for patients awaiting an inpatient or psychiatric bed. Cells built on 10 or fewer encounters are suppressed at source. In these cases, length of stay is left missing and the suppression flag is 1. The 'all' variant is the Total group of the ED Diagnoses grouper: every ED encounter, including diagnoses not shown as their own group, and not a total of the other variants. The 'other' variant is the grouper's Other group: ED encounters for other mental health reasons.",
+    "statement": "In {location}, the median {variant.short_name} ED encounter lasted {value} minutes.",
+    "measure_type": "Rate",
+    "unit": "Minutes",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": [],
+    "variants": {
+      "all": { "short_name": "all ED" },
+      "suicidal_behavior": { "short_name": "suicidal behavior" },
+      "other": { "short_name": "other mental health" }
+    }
+  },
+  "epic_ed_los_median_{variant}_suppressed_flag": {
+    "id": "epic_ed_los_median_{variant}_suppressed_flag",
+    "short_name": "Suppressed flag: median ED length of stay, {variant.short_name}",
+    "long_name": "Suppression flag for the {variant.short_name} median ED length of stay",
+    "category": "behavioral_health",
+    "short_description": "Indicates whether the {variant.short_name} median ED length of stay was suppressed at source.",
+    "long_description": "1 when Epic Cosmos suppressed the {variant.short_name} median ED length of stay (the cell was built on 10 or fewer encounters) and the value is left missing; 0 when a value was published.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": [],
+    "variants": {
+      "all": { "short_name": "all ED" },
+      "suicidal_behavior": { "short_name": "suicidal behavior" },
+      "other": { "short_name": "other mental health" }
+    }
+  },
+  "epic_ed_los_q1_{variant}": {
+    "id": "epic_ed_los_q1_{variant}",
+    "short_name": "First-quartile ED length of stay: {variant.short_name}",
+    "long_name": "First-quartile (25th percentile) emergency department length of stay for {variant.short_name} encounters",
+    "category": "behavioral_health",
+    "short_description": "Time in minutes from ED arrival to ED departure that 25% of {variant.short_name} encounters fall under.",
+    "long_description": "First quartile (25th percentile) of emergency department length of stay in minutes for {variant.short_name} encounters: one quarter of encounters ended in less time than this. Same population, attribution, boarding-time and suppression handling as epic_ed_los_median_{variant}. Read with the median and epic_ed_los_q3_{variant} it describes the spread of stays.",
+    "statement": "In {location}, one quarter of {variant.short_name} ED encounters lasted under {value} minutes.",
+    "measure_type": "Rate",
+    "unit": "Minutes",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": [],
+    "variants": {
+      "all": { "short_name": "all ED" },
+      "suicidal_behavior": { "short_name": "suicidal behavior" },
+      "other": { "short_name": "other mental health" }
+    }
+  },
+  "epic_ed_los_q1_{variant}_suppressed_flag": {
+    "id": "epic_ed_los_q1_{variant}_suppressed_flag",
+    "short_name": "Suppressed flag: first-quartile ED length of stay, {variant.short_name}",
+    "long_name": "Suppression flag for the {variant.short_name} first-quartile ED length of stay",
+    "category": "behavioral_health",
+    "short_description": "Indicates whether the {variant.short_name} first-quartile ED length of stay was suppressed at source.",
+    "long_description": "1 when Epic Cosmos suppressed the {variant.short_name} first-quartile ED length of stay (10 or fewer encounters) and the value is left missing; 0 when a value was published.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": [],
+    "variants": {
+      "all": { "short_name": "all ED" },
+      "suicidal_behavior": { "short_name": "suicidal behavior" },
+      "other": { "short_name": "other mental health" }
+    }
+  },
+  "epic_ed_los_q3_{variant}": {
+    "id": "epic_ed_los_q3_{variant}",
+    "short_name": "Third-quartile ED length of stay: {variant.short_name}",
+    "long_name": "Third-quartile (75th percentile) emergency department length of stay for {variant.short_name} encounters",
+    "category": "behavioral_health",
+    "short_description": "Time in minutes from ED arrival to ED departure that 75% of {variant.short_name} encounters fall under.",
+    "long_description": "Third quartile (75th percentile) of emergency department length of stay in minutes for {variant.short_name} encounters: three quarters of encounters ended in less time than this, so the longest quarter of stays - the boarders - sit above it. Same population, attribution, boarding-time and suppression handling as epic_ed_los_median_{variant}.",
+    "statement": "In {location}, three quarters of {variant.short_name} ED encounters lasted under {value} minutes.",
+    "measure_type": "Rate",
+    "unit": "Minutes",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": [],
+    "variants": {
+      "all": { "short_name": "all ED" },
+      "suicidal_behavior": { "short_name": "suicidal behavior" },
+      "other": { "short_name": "other mental health" }
+    }
+  },
+  "epic_ed_los_q3_{variant}_suppressed_flag": {
+    "id": "epic_ed_los_q3_{variant}_suppressed_flag",
+    "short_name": "Suppressed flag: third-quartile ED length of stay, {variant.short_name}",
+    "long_name": "Suppression flag for the {variant.short_name} third-quartile ED length of stay",
+    "category": "behavioral_health",
+    "short_description": "Indicates whether the {variant.short_name} third-quartile ED length of stay was suppressed at source.",
+    "long_description": "1 when Epic Cosmos suppressed the {variant.short_name} third-quartile ED length of stay (10 or fewer encounters) and the value is left missing; 0 when a value was published.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": [],
+    "variants": {
+      "all": { "short_name": "all ED" },
+      "suicidal_behavior": { "short_name": "suicidal behavior" },
+      "other": { "short_name": "other mental health" }
+    }
+  },
+  "epic_ed_n_visits": {
+    "id": "epic_ed_n_visits",
+    "short_name": "ED visits: all encounters",
+    "long_name": "Number of emergency department visits, all encounters",
+    "category": "behavioral_health",
+    "short_description": "Number of Epic Cosmos ED encounters, for any diagnosis, in the geography, quarter and age band.",
+    "long_description": "Number of Epic Cosmos emergency department encounters with a United States country of residence attributed to the patient's state of residence and the calendar quarter of arrival. Cells of 10 or fewer encounters are suppressed at source and imputed as 5, with the flag set to 1. It covers all ED encounters, not only the mental health diagnoses.",
+    "statement": "In {location}, there were {value} ED visits.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": []
+  },
+  "epic_ed_n_visits_{variant}": {
+    "id": "epic_ed_n_visits_{variant}",
+    "short_name": "ED visits: {variant.short_name}",
+    "long_name": "Number of emergency department visits with a {variant.short_name} diagnosis",
+    "category": "behavioral_health",
+    "short_description": "Number of Epic Cosmos ED encounters in the {variant.short_name} diagnosis group in the geography, quarter and age band.",
+    "long_description": "Number of Epic Cosmos emergency department encounters with a United States country of residence assigned to the {variant.short_name} group of the ED Diagnoses grouper, attributed to the patient's state of residence and the calendar quarter of arrival. Counts of 10 or fewer are suppressed at source and imputed as 5, with the flag set to 1. The grouper's groups are not guaranteed to be mutually exclusive, and the age bands do not add up to 'Overall'. Divide by epic_ed_n_visits for the share of all ED encounters; imputed cells make small shares approximate.",
+    "statement": "In {location}, there were {value} ED visits for {variant.short_name}.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": [],
+    "variants": {
+      "suicidal_behavior": { "short_name": "suicidal behavior" },
+      "other": { "short_name": "other mental health" }
+    }
+  },
+  "epic_ed_n_visits_{variant}_suppressed_flag": {
+    "id": "epic_ed_n_visits_{variant}_suppressed_flag",
+    "short_name": "Suppressed flag: ED visits, {variant.short_name}",
+    "long_name": "Suppression flag for the {variant.short_name} ED visit count",
+    "category": "behavioral_health",
+    "short_description": "Indicates whether the {variant.short_name} ED visit count was suppressed and imputed as 5.",
+    "long_description": "1 when Epic Cosmos reported '10 or fewer' for the cell and the count was imputed as 5; 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": [],
+    "variants": {
+      "suicidal_behavior": { "short_name": "suicidal behavior" },
+      "other": { "short_name": "other mental health" }
+    }
+  },
+  "epic_ed_n_visits_suppressed_flag": {
+    "id": "epic_ed_n_visits_suppressed_flag",
+    "short_name": "Suppressed flag: ED visits",
+    "long_name": "Suppression flag for the all-encounter ED visit count",
+    "category": "behavioral_health",
+    "short_description": "Indicates whether the ED visit count was suppressed and imputed as 5.",
+    "long_description": "1 when Epic Cosmos reported '10 or fewer' for the cell and the count was imputed as 5; 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": []
+  },
+  "age": {
+    "id": "age",
+    "short_name": "Age group",
+    "long_name": "Age at time of ED visit",
+    "category": "demographic",
+    "short_description": "Age band of the patient at the time of the emergency department visit.",
+    "long_description": "Age at the time of the visit, in bands: 0-9, 10-14, 15-19, 20-24, 25-44, 45-64 and 65+. '0-24' is the exported under-25 band; it overlaps the bands below it.",
+    "measure_type": "Categorical",
+    "unit": "",
+    "time_resolution": "Quarter",
+    "sources": [{ "id": "epic_cosmos" }],
+    "citations": []
+  },
+  "_catalog": {
+    "name": "Epic Mental Health ED Visits",
+    "summary": "Quarterly emergency department visit counts and ED length of stay (median and quartiles) from Epic Cosmos, a de-identified electronic health record research platform, by state and age group, for suicidal-behavior visits, visits for other mental health reasons, and all ED encounters as a comparison.",
+    "search_terms": [
+      "Youth well-being",
+      "Mental health",
+      "suicidal behavior",
+      "emergency department",
+      "ED length of stay"
+    ],
+    "bucket": ["Youth well-being"],
+    "files": {
+      "data.csv.gz": "State by quarter and age group (0-9, 10-14, 15-19, 20-24, 0-24, 25-44, 45-64, 65+, Overall)"
+    }
+  },
+  "_sources": {
+    "epic_cosmos": {
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/",
+      "date_accessed": 2026,
+      "organization": "Epic Systems",
+      "organization_url": "https://www.epic.com/",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. ICD-10 codes for mental health diagnoses were obtained from paper Zima BT, Gay JC, Rodean J, et al. Classification System for International Classification of Diseases, Ninth Revision, Clinical Modification and Tenth Revision Pediatric Mental Health Disorders. JAMA Pediatr. 2020;174(6):620–622. doi:10.1001/jamapediatrics.2020.0037",
+      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+    }
+  }
+}
