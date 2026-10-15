@@ -239,6 +239,24 @@ flu_ed_visits_by_county <- read_std("nssp/standard/data.csv.gz") %>%
 write_dist(flu_ed_visits_by_county, "flu_ed_visits_by_county.parquet")
 
 # -----------------------------------------------------------------------------
+# 3b. NSSP commercial laboratory flu NAAT testing, state
+#     Counts and percent positive are NA when suppressed (<10); not imputed.
+# -----------------------------------------------------------------------------
+flu_lab_testing <- read_std("nssp/standard/data_lab.csv.gz") %>%
+  filter(nchar(geography) == 2) %>%
+  add_state_names() %>%
+  filter(geography %in% keep_states) %>%
+  transmute(geography, geography_fips, date = time,
+            source = "CDC NSSP Commercial Laboratory",
+            test_count = lab_test_count_flu,
+            positive_count = lab_positive_count_flu,
+            value = lab_percent_pos_flu,
+            suppressed_flag = lab_suppressed_flag_flu) %>%
+  arrange(geography_fips, date)
+
+write_dist(flu_lab_testing, "flu_lab_testing.parquet")
+
+# -----------------------------------------------------------------------------
 # 4. NHSN flu hospital measures (state, national and HHS region), long
 #    `measure` is the NHSN column name. Units differ by measure (patients,
 #    admissions, admissions per 100,000, percent of beds, percent of hospitals
