@@ -1,0 +1,108 @@
+{
+  "alcohol_population": {
+    "id": "alcohol_population",
+    "short_name": "Population (county/state/national)",
+    "long_name": "Total population of the area reported alongside the alcohol-related health harms snapshot",
+    "category": "demographic",
+    "short_description": "Total population of the geography as reported alongside the alcohol-related EMS outcome.",
+    "long_description": "Total population denominator reported for a given county, state, or national area alongside the alcohol-related health harms snapshot. Provided for context, not as an independent outcome measure. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
+    "statement": "In {location}, the total population was {value}.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "nhtsa_alcohol"
+      },
+      {
+        "id": "nemsis_alcohol"
+      }
+    ]
+  },
+  "alcohol_ems_rate_low": {
+    "id": "alcohol_ems_rate_low",
+    "short_name": "Alcohol EMS rate, low bound",
+    "long_name": "Lower bound of the rate of EMS patient encounters for alcohol-related emergencies per 100,000 population",
+    "category": "injury",
+    "short_description": "Lower bound of the alcohol-related EMS encounter rate range for this county.",
+    "long_description": "Alcohol-related EMS encounter rates are reported only as a range, never as a single point value. This is the numeric lower bound of that range. Use alongside alcohol_ems_rate_high and alcohol_ems_rate_label -- do not average low/high into a point estimate. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
+    "statement": "In {location}, the alcohol-related EMS encounter rate fell between {value} and {alcohol_ems_rate_high} per 100,000 population.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000 population",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "nhtsa_alcohol"
+      },
+      {
+        "id": "nemsis_alcohol"
+      }
+    ]
+  },
+  "alcohol_ems_rate_high": {
+    "id": "alcohol_ems_rate_high",
+    "short_name": "Alcohol EMS rate, high bound",
+    "long_name": "Upper bound of the rate of EMS patient encounters for alcohol-related emergencies per 100,000 population",
+    "category": "injury",
+    "short_description": "Upper bound of the alcohol-related EMS encounter rate range for this county.",
+    "long_description": "Numeric upper bound of the same range described in alcohol_ems_rate_low. See that field's description for the range estimate caveat. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
+    "statement": "In {location}, the alcohol-related EMS encounter rate fell between {alcohol_ems_rate_low} and {value} per 100,000 population.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000 population",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "nhtsa_alcohol"
+      },
+      {
+        "id": "nemsis_alcohol"
+      }
+    ]
+  },
+  "alcohol_ems_rate_label": {
+    "id": "alcohol_ems_rate_label",
+    "short_name": "Alcohol EMS rate, qualitative bucket",
+    "long_name": "Qualitative label for the alcohol-related EMS encounter rate ramge, relative to the national average",
+    "category": "injury",
+    "short_description": "Text label describing this county's alcohol-related EMS encounter rate relative to the national average.",
+    "long_description": "A qualitative classification of the alcohol-related EMS rate, ranging from \"Low Outlier\" through \"High Outlier\", or \"No Data\" where the area had no reportable rate. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
+    "statement": "In {location}, the alcohol-related EMS rate was classified as \"{value}\".",
+    "measure_type": "Indicator",
+    "unit": "Category",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "nhtsa_alcohol"
+      },
+      {
+        "id": "nemsis_alcohol"
+      }
+    ]
+  },
+  "_catalog": {
+    "name": "Alcohol-Related Health Harms",
+    "summary": "County-level ranges for emergency (EMS) calls related to alcohol. Values are given as ranges, not exact numbers.",
+    "search_terms": [
+      "Injury",
+      "alcohol",
+      "ems"
+    ],
+    "bucket": [],
+    "files": {
+      "data.csv.gz": "Alcohol EMS rate ranges by county"
+    }
+  },
+  "_sources": {
+      "nemsis_alcohol": {
+      "name": "Alcohol-related EMS encounters",
+      "url": "",
+      "organization": "National Emergency Medical Services Information System (NEMSIS)",
+      "organization_url": "https://nemsis.org",
+      "location": "",
+      "location_url": "",
+      "description": "Alcohol-Related Health Harms data are provided by National Highway Traffic Safety Administration (NHTSA), National Emergency Medical Services Information System (NEMSIS). These data cover the period 01/01/2022-07/31/2025. The content reproduced from the NEMSIS Database remains the property of the National Highway Traffic Safety Administration (NHTSA). The National Highway Traffic Safety Administration is not responsible for any claims arising from works based on the original Data, Text, Tables, or Figures.",
+      "restrictions": "Data can be reused with attribution of data from NEMSIS, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).",
+      "data_source": "alcohol"
+    }
+  }
+}
