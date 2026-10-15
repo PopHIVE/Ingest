@@ -80,7 +80,66 @@
   "citations": [],
   "layer": []
   },
+  "lab_test_count": {
+    "id": "lab_test_count_{pathogen}",
+    "short_name": "Commercial lab NAAT tests ({pathogen})",
+    "long_name": "Number of NAAT tests performed by participating commercial laboratories ({pathogen})",
+    "category": "respiratory",
+    "short_description": "Weekly count of COVID-19, flu, or RSV NAAT tests (columns lab_test_count_covid, _flu, _rsv)",
+    "long_description": "Weekly count of nucleic acid amplification tests (NAATs) for the pathogen reported by participating commercial laboratories (Labcorp, Quest, Aegis, ARUP, Perimeter), by state of patient residence (or ordering provider). Counts are specimens, not unique persons. Counts under 10 are suppressed (NA); zeros are not.",
+    "measure_type": "Count",
+    "unit": "Tests",
+    "time_resolution": "Week",
+    "sources": [{ "id": "nssp_lab" }]
+  },
+  "lab_positive_count": {
+    "id": "lab_positive_count_{pathogen}",
+    "short_name": "Commercial lab positive NAATs ({pathogen})",
+    "long_name": "Number of positive NAAT tests from commercial laboratories ({pathogen})",
+    "category": "respiratory",
+    "short_description": "Weekly count of positive tests (columns lab_positive_count_covid, _flu, _rsv)",
+    "long_description": "Weekly count of positive NAATs. Suppressed (NA) when fewer than 10 positives or fewer than 10 tests; zeros are not suppressed.",
+    "measure_type": "Count",
+    "unit": "Tests",
+    "time_resolution": "Week",
+    "sources": [{ "id": "nssp_lab" }]
+  },
+  "lab_percent_pos": {
+    "id": "lab_percent_pos_{pathogen}",
+    "short_name": "Commercial lab percent positivity ({pathogen})",
+    "long_name": "Percent of NAAT tests that were positive in commercial laboratories ({pathogen})",
+    "category": "respiratory",
+    "short_description": "Weekly percent positivity (columns lab_percent_pos_covid, _flu, _rsv)",
+    "long_description": "Positive NAATs divided by NAATs classified as positive or negative, times 100. Suppressed (NA) when the denominator or the number of positives is under 10. Not a representative sample; geographic coverage varies by laboratory.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Week",
+    "sources": [{ "id": "nssp_lab" }]
+  },
+  "lab_suppressed_flag": {
+    "id": "lab_suppressed_flag_{pathogen}",
+    "short_name": "Commercial lab suppression flag ({pathogen})",
+    "long_name": "Positive count and percent positivity suppressed",
+    "category": "respiratory",
+    "short_description": "1 if tests were performed but positives/percent were suppressed (columns lab_suppressed_flag_covid, _flu, _rsv)",
+    "long_description": "Equals 1 when test_count > 0 but positive_count is missing because of CDC small-number suppression (<10); values are left NA, not imputed. Otherwise 0.",
+    "measure_type": "Flag",
+    "unit": "0/1",
+    "time_resolution": "Week",
+    "sources": [{ "id": "nssp_lab" }]
+  },
   "_sources": {
+    "nssp_lab": {
+      "name": "NSSP Commercial Laboratory Data: COVID-19, Flu, and RSV",
+      "location": "NSSP Commercial Laboratory Test Volumes and Results by State",
+      "url": "https://www.cdc.gov/nssp/index.html",
+      "organization": "Centers for Disease Control and Prevention",
+      "organization_url": "https://www.cdc.gov",
+      "location_url": "https://data.cdc.gov/d/jqxy-cyu2",
+      "description": "Weekly state-level NAAT test volumes, positives, and percent positivity for SARS-CoV-2, influenza, and RSV from five commercial laboratories (Labcorp, Quest Diagnostics, Aegis Sciences, ARUP, Perimeter), starting 2024-10-04 and updated weekly. State is assigned by patient zip code (or ordering provider's). Not a representative sample; representation is uneven by region and condition, and prior weeks may be revised.",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions.",
+      "date_accessed": 2026
+    },
     "nssp": {
       "name": "National Syndromic Surveillance Program (NSSP)",
       "location": "National Syndromic Surveillance Program",
@@ -93,11 +152,12 @@
     }
   },
   "_catalog": {
-    "summary": "The NSSP records the percentage of emergency department patient visits for RSV, flu, and COVID-19.",
+    "summary": "The NSSP records the percentage of emergency department patient visits for RSV, flu, and COVID-19, plus weekly commercial lab test counts and percent positive by state.",
     "search_terms": ["Respiratory", "flu", "rsv", "Covid"],
     "bucket": ["Infectious disease"],
     "files": {
-      "data.csv.gz": "NSSP data"
+      "data.csv.gz": "NSSP ED visits by pathogen",
+      "data_lab.csv.gz": "Commercial lab tests by pathogen, state"
     }
   }
 }

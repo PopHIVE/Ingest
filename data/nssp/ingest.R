@@ -165,3 +165,47 @@ if (!identical(process$raw_state, raw_state)) {
 }
 
 
+
+#####################
+# NSSP Commercial Laboratory Data (state level)
+# https://data.cdc.gov/d/jqxy-cyu2
+# Output: standard/data_lab.csv.gz (variables prefixed with lab_)
+######################
+
+lab_state <- dcf::dcf_download_cdc(
+  "jqxy-cyu2",
+  "raw",
+  process$lab_state
+)
+
+if (!identical(process$lab_state, lab_state)) {
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2) %>%
+    select(geography, state)
+
+  lab_raw <- vroom::vroom("./raw/jqxy-cyu2.csv.xz", show_col_types = FALSE)
+
+  data_lab <- lab_raw %>%
+    filter(geography_type == "state") %>%
+    mutate(
+      pathogen = c("COVID-19" = "covid", "Influenza" = "flu", "RSV" = "rsv")[pathogen],
+      time = format(as.Date(mmwr_week_end), "%Y-%m-%d")
+    ) %>%
+    left_join(state_fips_lookup, by = c("geography_value" = "state")) %>%
+    filter(!is.na(geography), !is.na(pathogen)) %>%
+    # suppressed when positives < 10 (denominator > 0 but positives missing)
+    mutate(suppressed_flag = if_else(test_count > 0 & is.na(positive_count), 1L, 0L)) %>%
+    select(geography, time, pathogen, test_count, positive_count, percent_pos, suppressed_flag) %>%
+    tidyr::pivot_wider(
+      names_from = pathogen,
+      values_from = c(test_count, positive_count, percent_pos, suppressed_flag),
+      names_glue = "lab_{.value}_{pathogen}"
+    ) %>%
+    arrange(geography, time)
+
+  vroom::vroom_write(data_lab, "standard/data_lab.csv.gz", ",")
+
+  process$lab_state <- lab_state
+  dcf::dcf_process_record(updated = process)
+}

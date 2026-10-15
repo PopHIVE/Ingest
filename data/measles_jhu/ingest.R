@@ -141,8 +141,9 @@ if (!identical(process$raw_state, raw_state)) {
         # Date-specific mapping for New Jersey unknown county
         location_name == "Unknown County, New Jersey" & date == "2025-08-29" ~
           "34003",  # Bergen County, NJ
-        location_name == "Unknown County, New Jersey" & date == "2025-10-29" ~
-          "34",     # State-level, county unknown
+        # All other dates (no end date): state-level, county unknown
+        location_name == "Unknown County, New Jersey" ~
+          "34",
         # Regional/unknown entries using state FIPS as location_id
         location_name %in% names(regional_fips_map) ~
           regional_fips_map[location_name],

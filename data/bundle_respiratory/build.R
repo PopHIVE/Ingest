@@ -256,6 +256,30 @@ d3 %>%
   dplyr::select(source,fips, week_end, percent_visits_covid,is_state_estimate) %>%
   arrow::write_parquet(., "dist/covid_ed_visits_by_county.parquet")
 
+#########################
+## NSSP commercial laboratory testing, state
+## NA counts / percent positive = suppressed (<10), not imputed
+#########################
+lab <- vroom::vroom('../nssp/standard/data_lab.csv.gz', show_col_types = FALSE,
+                    col_types = vroom::cols(geography = "c")) %>%
+  filter(geography %in% state_fips) %>%
+  left_join(state_name_lookup, by = "geography") %>%
+  filter(!is.na(geography_name)) %>%
+  mutate(source = 'CDC NSSP Commercial Laboratory',
+         fips = geography,
+         geography = if_else(fips == '00', 'United States', geography_name)) %>%
+  rename(date = time)
+
+for (v in c('rsv', 'flu', 'covid')) {
+  lab %>%
+    transmute(source, geography, fips, date,
+              test_count = .data[[paste0('lab_test_count_', v)]],
+              positive_count = .data[[paste0('lab_positive_count_', v)]],
+              value = .data[[paste0('lab_percent_pos_', v)]],
+              suppressed_flag = .data[[paste0('lab_suppressed_flag_', v)]]) %>%
+    arrow::write_parquet(paste0("dist/", v, "_lab_testing.parquet"))
+}
+
 #############
 ## Age, state
 #############
