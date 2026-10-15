@@ -43,10 +43,16 @@
                 <a class="nav-link" href="#ACS-estimates">ACS Estimates</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="#alcohol">Alcohol</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="#arbonet">Arbonet</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#area-health-resource-file">Area Health Resource File</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#ascvd">Ascvd</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#atlas-amr">Atlas AMR</a>
@@ -130,9 +136,6 @@
                 <a class="nav-link" href="#gtrends">Gtrends</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#health-outcomes">Health Outcomes</a>
-              </li>
-              <li class="nav-item">
                 <a class="nav-link" href="#hud-chas">Hud Chas</a>
               </li>
               <li class="nav-item">
@@ -143,6 +146,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#kinsa-ili">Kinsa ILI</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#maternal">Maternal</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#measles-age-cdc2">Measles Age CDC2</a>
@@ -203,6 +209,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#nssp">NSSP</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#opioid">Opioid</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#pep-population">Pep Population</a>
@@ -2673,6 +2682,120 @@
                 </table>
               </div>
             </section>
+            <section id="alcohol" class="mb-5">
+              <h2 class="border-bottom pb-2">Alcohol</h2>
+              <p class="lead">Alcohol-Related Health Harms data are provided by NHTSA from the National Emergency Medical Services Information System (NEMSIS). See nemsis_alcohol for coverage and caveats.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://www.nhtsa.gov" target="_blank">National Highway Traffic Safety Administration (NHTSA)</a>
+                </li>
+                <li>
+                  <a href="https://nemsis.org" target="_blank">National Emergency Medical Services Information System (NEMSIS)</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions:</strong>
+                <ul class="mb-0 mt-2">
+                  <li>
+                    <strong>
+                      Alcohol-related health harms (NHTSA)
+                      : 
+                    </strong>
+                    Data can be reused with attribution of data from NHTSA/NEMSIS, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
+                  </li>
+                  <li>
+                    <strong>
+                      Alcohol-related EMS encounters
+                      : 
+                    </strong>
+                    Data can be reused with attribution of data from NEMSIS, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
+                  </li>
+                </ul>
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_type</code>
+                      </td>
+                      <td>geography_type</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>alcohol_population</code>
+                      </td>
+                      <td>Population (county/state/national)</td>
+                      <td>Total population of the geography as reported alongside the alcohol-related EMS outcome.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>alcohol_ems_rate_low</code>
+                      </td>
+                      <td>Alcohol EMS rate, low bound</td>
+                      <td>Lower bound of the alcohol-related EMS encounter rate range for this county.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>alcohol_ems_rate_high</code>
+                      </td>
+                      <td>Alcohol EMS rate, high bound</td>
+                      <td>Upper bound of the alcohol-related EMS encounter rate range for this county.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>alcohol_ems_rate_label</code>
+                      </td>
+                      <td>Alcohol EMS rate, qualitative bucket</td>
+                      <td>Text label describing this county's alcohol-related EMS encounter rate relative to the national average.</td>
+                      <td>Indicator</td>
+                      <td>Category</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
             <section id="arbonet" class="mb-5">
               <h2 class="border-bottom pb-2">Arbonet</h2>
               <p class="lead">ArboNET is the national arboviral surveillance system managed by CDC together with state and territorial health departments. In addition to human disease, ArboNET maintains data on arboviral infections among presumptive viremic blood donors, veterinary disease cases, mosquitoes, dead birds, and sentinel animals. Human cases are reported by county of residence rather than location of exposure, which is not necessarily the county or state where exposure occurred, and are assigned to the year of illness onset. Several caveats apply: under-reporting is inherent to any surveillance system that depends on clinicians suspecting the disease, ordering the appropriate test, and reporting confirmed results; non-neuroinvasive cases are substantially more under-reported than neuroinvasive cases, so total case counts should not be used to compare disease activity between locations or over time; and there is a lag in reporting to CDC. Values are the counts CDC publishes for public use and are not suppressed or imputed here. Connecticut reported by county through 2022 and by planning region from 2023 onward, so its geography codes change mid-series. Records that CDC assigns to an unallocated placeholder geography (state FIPS plus '999') because the county of residence is unknown are excluded from the county file but retained in the state and national totals. Reporting years differ by disease and the most recent year is preliminary and subject to change. Data that were not collected in a given year are coded as NA, so cells with count 0 indicate that disease was tested for but not reported.</p>
@@ -3282,6 +3405,102 @@
                       <td>Percentage of measured days rated 'Good' by EPA Air Quality Index.</td>
                       <td>Percent</td>
                       <td>Percent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="ascvd" class="mb-5">
+              <h2 class="border-bottom pb-2">Ascvd</h2>
+              <p class="lead">Data for the 10-year Atherosclerotic Cardiovascular Disease (ASCVD) risk score are provided by Veradigm from multiple sources using the Veradigm Network Electronic Health Record (EHR) database for patients with all data elements necessary for score calculation. These data cover the period 01/01/2022-07/31/2025. It is important to note that the data displayed are not intended to represent the entire US population.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://veradigm.com" target="_blank">Veradigm</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Data can be reused with attribution of data from Veradigm, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_type</code>
+                      </td>
+                      <td>geography_type</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ascvd_population</code>
+                      </td>
+                      <td>Population (ZCTA3/state/national)</td>
+                      <td>Total population of the geography as reported alongside the ASCVD risk outcome.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ascvd_risk_low</code>
+                      </td>
+                      <td>ASCVD 10-yr risk, low bound</td>
+                      <td>Lower bound (percent) of the ASCVD risk range for this area.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ascvd_risk_high</code>
+                      </td>
+                      <td>ASCVD 10-yr risk, high bound</td>
+                      <td>Upper bound (percent) of the ASCVD risk range for this area.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ascvd_risk_label</code>
+                      </td>
+                      <td>ASCVD risk, qualitative bucket</td>
+                      <td>Text label describing this area's ASCVD risk relative to the national average.</td>
+                      <td>Indicator</td>
+                      <td>Category</td>
                     </tr>
                   </tbody>
                 </table>
@@ -13576,393 +13795,6 @@
                 </table>
               </div>
             </section>
-            <section id="health-outcomes" class="mb-5">
-              <h2 class="border-bottom pb-2">Health Outcomes</h2>
-              <p class="lead">Alcohol-Related Health Harms data are provided by National Highway Traffic Safety Administration (NHTSA), National Emergency Medical Services Information System (NEMSIS). These data cover the period 01/01/2022-07/31/2025. The content reproduced from the NEMSIS Database remains the property of the National Highway Traffic Safety Administration (NHTSA). The National Highway Traffic Safety Administration is not responsible for any claims arising from works based on the original Data, Text, Tables, or Figures.</p>
-              <h5>Sources</h5>
-              <ul class="list-unstyled">
-                <li>
-                  <a href="https://nemsis.org" target="_blank">National Emergency Medical Services Information System (NEMSIS)</a>
-                </li>
-                <li>
-                  <a href="https://veradigm.com" target="_blank">Veradigm</a>
-                </li>
-                <li>
-                  <a href="https://healthverity.com" target="_blank">HealthVerity</a>
-                </li>
-                <li>
-                  <a href="https://nemsis.org" target="_blank">National Emergency Medical Services Information System (NEMSIS)</a>
-                </li>
-                <li>
-                  <a href="https://www.nhtsa.gov" target="_blank">National Highway Traffic Safety Administration (NHTSA)</a>
-                </li>
-              </ul>
-              <div class="alert alert-warning">
-                <strong>Restrictions:</strong>
-                <ul class="mb-0 mt-2">
-                  <li>
-                    <strong>
-                      Alcohol-related EMS encounters
-                      : 
-                    </strong>
-                    Data can be reused with attribution of data from NEMSIS, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
-                  </li>
-                  <li>
-                    <strong>
-                      10-year ASCVD risk
-                      : 
-                    </strong>
-                    Data can be reused with attribution of data from Veradigm, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
-                  </li>
-                  <li>
-                    <strong>
-                      Key indicators of maternal health -- severe obstetric complications (SOC)
-                      : 
-                    </strong>
-                    Data can be reused with attribution of data from HealthVerity, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
-                  </li>
-                  <li>
-                    <strong>
-                      Opioid-related EMS encounters
-                      : 
-                    </strong>
-                    Data can be reused with attribution of data from NEMSIS, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
-                  </li>
-                  <li>
-                    <strong>
-                      Alcohol-related health harms (NHTSA)
-                      : 
-                    </strong>
-                    Data can be reused with attribution of data from NHTSA/NEMSIS, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
-                  </li>
-                </ul>
-              </div>
-              <h4 class="mt-4">Variables</h4>
-              <h5 class="mt-3">
-                <code>data_alcohol.csv.gz</code>
-              </h5>
-              <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                  <thead>
-                    <tr>
-                      <th>Variable</th>
-                      <th>Short Name</th>
-                      <th>Description</th>
-                      <th>Type</th>
-                      <th>Unit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <code>geography</code>
-                      </td>
-                      <td>Geography</td>
-                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
-                      <td>identifier</td>
-                      <td>FIPS code</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>geography_type</code>
-                      </td>
-                      <td>geography_type</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>time</code>
-                      </td>
-                      <td>Time</td>
-                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
-                      <td>date</td>
-                      <td>date</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>alcohol_population</code>
-                      </td>
-                      <td>Population (county/state/national)</td>
-                      <td>Total population of the geography as reported alongside the alcohol-related EMS outcome.</td>
-                      <td>Count</td>
-                      <td>Count</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>alcohol_ems_rate_low</code>
-                      </td>
-                      <td>Alcohol EMS rate, low bound</td>
-                      <td>Lower bound of the alcohol-related EMS encounter rate range for this county.</td>
-                      <td>Rate</td>
-                      <td>Cases per 100,000 population</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>alcohol_ems_rate_high</code>
-                      </td>
-                      <td>Alcohol EMS rate, high bound</td>
-                      <td>Upper bound of the alcohol-related EMS encounter rate range for this county.</td>
-                      <td>Rate</td>
-                      <td>Cases per 100,000 population</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>alcohol_ems_rate_label</code>
-                      </td>
-                      <td>Alcohol EMS rate, qualitative bucket</td>
-                      <td>Text label describing this county's alcohol-related EMS encounter rate relative to the national average.</td>
-                      <td>Indicator</td>
-                      <td>Category</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <h5 class="mt-3">
-                <code>data_ascvd.csv.gz</code>
-              </h5>
-              <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                  <thead>
-                    <tr>
-                      <th>Variable</th>
-                      <th>Short Name</th>
-                      <th>Description</th>
-                      <th>Type</th>
-                      <th>Unit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <code>geography</code>
-                      </td>
-                      <td>Geography</td>
-                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
-                      <td>identifier</td>
-                      <td>FIPS code</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>geography_type</code>
-                      </td>
-                      <td>geography_type</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>time</code>
-                      </td>
-                      <td>Time</td>
-                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
-                      <td>date</td>
-                      <td>date</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>ascvd_population</code>
-                      </td>
-                      <td>Population (ZCTA3/state/national)</td>
-                      <td>Total population of the geography as reported alongside the ASCVD risk outcome.</td>
-                      <td>Count</td>
-                      <td>Count</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>ascvd_risk_low</code>
-                      </td>
-                      <td>ASCVD 10-yr risk, low bound</td>
-                      <td>Lower bound (percent) of the ASCVD risk range for this area.</td>
-                      <td>Percent</td>
-                      <td>Percent</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>ascvd_risk_high</code>
-                      </td>
-                      <td>ASCVD 10-yr risk, high bound</td>
-                      <td>Upper bound (percent) of the ASCVD risk range for this area.</td>
-                      <td>Percent</td>
-                      <td>Percent</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>ascvd_risk_label</code>
-                      </td>
-                      <td>ASCVD risk, qualitative bucket</td>
-                      <td>Text label describing this area's ASCVD risk relative to the national average.</td>
-                      <td>Indicator</td>
-                      <td>Category</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <h5 class="mt-3">
-                <code>data_maternal.csv.gz</code>
-              </h5>
-              <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                  <thead>
-                    <tr>
-                      <th>Variable</th>
-                      <th>Short Name</th>
-                      <th>Description</th>
-                      <th>Type</th>
-                      <th>Unit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <code>geography</code>
-                      </td>
-                      <td>Geography</td>
-                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
-                      <td>identifier</td>
-                      <td>FIPS code</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>geography_type</code>
-                      </td>
-                      <td>geography_type</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>time</code>
-                      </td>
-                      <td>Time</td>
-                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
-                      <td>date</td>
-                      <td>date</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>maternal_population</code>
-                      </td>
-                      <td>Population (ZCTA3/state/national)</td>
-                      <td>Total population of the geography as reported alongside the SOC rate outcome.</td>
-                      <td>Count</td>
-                      <td>Count</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>maternal_soc_rate_low</code>
-                      </td>
-                      <td>SOC rate, low bound</td>
-                      <td>Lower bound of the SOC rate range for this area.</td>
-                      <td>Rate</td>
-                      <td>Cases per 10,000 deliveries</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>maternal_soc_rate_high</code>
-                      </td>
-                      <td>SOC rate, high bound</td>
-                      <td>Upper bound of the SOC rate range for this area.</td>
-                      <td>Rate</td>
-                      <td>Cases per 10,000 deliveries</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>maternal_soc_rate_label</code>
-                      </td>
-                      <td>SOC rate, qualitative bucket</td>
-                      <td>Text label describing this area's SOC rate relative to the national average (e.g. "Slightly Lower than National Average").</td>
-                      <td>Indicator</td>
-                      <td>Category</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <h5 class="mt-3">
-                <code>data_opioid.csv.gz</code>
-              </h5>
-              <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                  <thead>
-                    <tr>
-                      <th>Variable</th>
-                      <th>Short Name</th>
-                      <th>Description</th>
-                      <th>Type</th>
-                      <th>Unit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <code>geography</code>
-                      </td>
-                      <td>Geography</td>
-                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
-                      <td>identifier</td>
-                      <td>FIPS code</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>geography_type</code>
-                      </td>
-                      <td>geography_type</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>time</code>
-                      </td>
-                      <td>Time</td>
-                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
-                      <td>date</td>
-                      <td>date</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>opioid_population</code>
-                      </td>
-                      <td>Population (county/state/national)</td>
-                      <td>Total population of the geography as reported alongside the opioid overdose EMS outcome.</td>
-                      <td>Count</td>
-                      <td>Count</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>opioid_ems_rate_low</code>
-                      </td>
-                      <td>Opioid EMS rate, low bound</td>
-                      <td>Lower bound of the opioid EMS encounter rate range for this county.</td>
-                      <td>Rate</td>
-                      <td>Cases per 100,000 population</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>opioid_ems_rate_high</code>
-                      </td>
-                      <td>Opioid EMS rate, high bound</td>
-                      <td>Upper bound of the opioid EMS encounter rate range for this county.</td>
-                      <td>Rate</td>
-                      <td>Cases per 100,000 population</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <code>opioid_ems_rate_label</code>
-                      </td>
-                      <td>Opioid EMS rate, qualitative bucket</td>
-                      <td>Text label describing this county's opioid EMS encounter rate relative to the national average.</td>
-                      <td>Indicator</td>
-                      <td>Category</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
             <section id="hud-chas" class="mb-5">
               <h2 class="border-bottom pb-2">Hud Chas</h2>
               <p class="lead">CHAS data is a custom tabulation of American Community Survey data produced for HUD, providing detailed cross-tabulations of housing problems (cost burden, overcrowding, and facilities adequacy) by income, tenure, and race, at multiple geographic levels including county. Used here as the direct source for the county-level severe housing problems rate.</p>
@@ -14484,6 +14316,102 @@
                       <td>Share of Kinsa smart thermometer users reporting cough, cold, or flu symptoms.</td>
                       <td>Prevalence</td>
                       <td>Percent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="maternal" class="mb-5">
+              <h2 class="border-bottom pb-2">Maternal</h2>
+              <p class="lead">Data on maternal health severe obstetric complications (SOCs) are provided by HealthVerity from multiple sources and represent aggregate reports based upon open claims data for the periods covered. These data cover the period 01/01/2021-05/31/2025. It is important to note that the data displayed are not intended to represent the entire US population.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://healthverity.com" target="_blank">HealthVerity</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Data can be reused with attribution of data from HealthVerity, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_type</code>
+                      </td>
+                      <td>geography_type</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>maternal_population</code>
+                      </td>
+                      <td>Population (ZCTA3/state/national)</td>
+                      <td>Total population of the geography as reported alongside the SOC rate outcome.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>maternal_soc_rate_low</code>
+                      </td>
+                      <td>SOC rate, low bound</td>
+                      <td>Lower bound of the SOC rate range for this area.</td>
+                      <td>Rate</td>
+                      <td>Cases per 10,000 deliveries</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>maternal_soc_rate_high</code>
+                      </td>
+                      <td>SOC rate, high bound</td>
+                      <td>Upper bound of the SOC rate range for this area.</td>
+                      <td>Rate</td>
+                      <td>Cases per 10,000 deliveries</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>maternal_soc_rate_label</code>
+                      </td>
+                      <td>SOC rate, qualitative bucket</td>
+                      <td>Text label describing this area's SOC rate relative to the national average (e.g. "Slightly Lower than National Average").</td>
+                      <td>Indicator</td>
+                      <td>Category</td>
                     </tr>
                   </tbody>
                 </table>
@@ -28032,6 +27960,102 @@
                       <td>Flag indicating county values were imputed from state-level data</td>
                       <td></td>
                       <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="opioid" class="mb-5">
+              <h2 class="border-bottom pb-2">Opioid</h2>
+              <p class="lead">Opioid overdose data are provided by National Highway Traffic Safety Administration (NHTSA), National Emergency Medical Services Information System (NEMSIS). These data cover the period 01/01/2022-07/31/2025. The content reproduced from the NEMSIS Database remains the property of the National Highway Traffic Safety Administration (NHTSA). The National Highway Traffic Safety Administration is not responsible for any claims arising from works based on the original Data, Text, Tables, or Figures.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://nemsis.org" target="_blank">National Emergency Medical Services Information System (NEMSIS)</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Data can be reused with attribution of data from NEMSIS, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_type</code>
+                      </td>
+                      <td>geography_type</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>opioid_population</code>
+                      </td>
+                      <td>Population (county/state/national)</td>
+                      <td>Total population of the geography as reported alongside the opioid overdose EMS outcome.</td>
+                      <td>Count</td>
+                      <td>Count</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>opioid_ems_rate_low</code>
+                      </td>
+                      <td>Opioid EMS rate, low bound</td>
+                      <td>Lower bound of the opioid EMS encounter rate range for this county.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>opioid_ems_rate_high</code>
+                      </td>
+                      <td>Opioid EMS rate, high bound</td>
+                      <td>Upper bound of the opioid EMS encounter rate range for this county.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 population</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>opioid_ems_rate_label</code>
+                      </td>
+                      <td>Opioid EMS rate, qualitative bucket</td>
+                      <td>Text label describing this county's opioid EMS encounter rate relative to the national average.</td>
+                      <td>Indicator</td>
+                      <td>Category</td>
                     </tr>
                   </tbody>
                 </table>

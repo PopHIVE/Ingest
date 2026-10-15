@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-14T10:28:36Z",
+  "generated": "2026-10-14T15:04:17Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -19680,6 +19680,67 @@
         }
       ]
     },
+    "alcohol": {
+      "name": "alcohol",
+      "display_name": "Alcohol",
+      "description": "Alcohol-Related Health Harms data are provided by NHTSA from the National Emergency Medical Services Information System (NEMSIS). See nemsis_alcohol for coverage and caveats.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "geography_type",
+              "short_name": "geography_type",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "alcohol_population",
+              "short_name": "Population (county/state/national)",
+              "description": "Total population of the geography as reported alongside the alcohol-related EMS outcome.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "alcohol_ems_rate_low",
+              "short_name": "Alcohol EMS rate, low bound",
+              "description": "Lower bound of the alcohol-related EMS encounter rate range for this county.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000 population"
+            },
+            {
+              "name": "alcohol_ems_rate_high",
+              "short_name": "Alcohol EMS rate, high bound",
+              "description": "Upper bound of the alcohol-related EMS encounter rate range for this county.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000 population"
+            },
+            {
+              "name": "alcohol_ems_rate_label",
+              "short_name": "Alcohol EMS rate, qualitative bucket",
+              "description": "Text label describing this county's alcohol-related EMS encounter rate relative to the national average.",
+              "measure_type": "Indicator",
+              "unit": "Category"
+            }
+          ]
+        }
+      ]
+    },
     "arbonet": {
       "name": "arbonet",
       "display_name": "Arbonet",
@@ -20110,6 +20171,67 @@
               "description": "Percentage of measured days rated 'Good' by EPA Air Quality Index.",
               "measure_type": "Percent",
               "unit": "Percent"
+            }
+          ]
+        }
+      ]
+    },
+    "ascvd": {
+      "name": "ascvd",
+      "display_name": "Ascvd",
+      "description": "Data for the 10-year Atherosclerotic Cardiovascular Disease (ASCVD) risk score are provided by Veradigm from multiple sources using the Veradigm Network Electronic Health Record (EHR) database for patients with all data elements necessary for score calculation. These data cover the period 01/01/2022-07/31/2025. It is important to note that the data displayed are not intended to represent the entire US population.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "geography_type",
+              "short_name": "geography_type",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "ascvd_population",
+              "short_name": "Population (ZCTA3/state/national)",
+              "description": "Total population of the geography as reported alongside the ASCVD risk outcome.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "ascvd_risk_low",
+              "short_name": "ASCVD 10-yr risk, low bound",
+              "description": "Lower bound (percent) of the ASCVD risk range for this area.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ascvd_risk_high",
+              "short_name": "ASCVD 10-yr risk, high bound",
+              "description": "Upper bound (percent) of the ASCVD risk range for this area.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ascvd_risk_label",
+              "short_name": "ASCVD risk, qualitative bucket",
+              "description": "Text label describing this area's ASCVD risk relative to the national average.",
+              "measure_type": "Indicator",
+              "unit": "Category"
             }
           ]
         }
@@ -27374,229 +27496,6 @@
         }
       ]
     },
-    "health_outcomes": {
-      "name": "health_outcomes",
-      "display_name": "Health Outcomes",
-      "description": "Alcohol-Related Health Harms data are provided by National Highway Traffic Safety Administration (NHTSA), National Emergency Medical Services Information System (NEMSIS). These data cover the period 01/01/2022-07/31/2025. The content reproduced from the NEMSIS Database remains the property of the National Highway Traffic Safety Administration (NHTSA). The National Highway Traffic Safety Administration is not responsible for any claims arising from works based on the original Data, Text, Tables, or Figures.",
-      "standard_files": [
-        {
-          "filename": "data_alcohol.csv.gz",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
-              "measure_type": "identifier",
-              "unit": "FIPS code"
-            },
-            {
-              "name": "geography_type",
-              "short_name": "geography_type",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
-              "measure_type": "date",
-              "unit": "date"
-            },
-            {
-              "name": "alcohol_population",
-              "short_name": "Population (county/state/national)",
-              "description": "Total population of the geography as reported alongside the alcohol-related EMS outcome.",
-              "measure_type": "Count",
-              "unit": "Count"
-            },
-            {
-              "name": "alcohol_ems_rate_low",
-              "short_name": "Alcohol EMS rate, low bound",
-              "description": "Lower bound of the alcohol-related EMS encounter rate range for this county.",
-              "measure_type": "Rate",
-              "unit": "Cases per 100,000 population"
-            },
-            {
-              "name": "alcohol_ems_rate_high",
-              "short_name": "Alcohol EMS rate, high bound",
-              "description": "Upper bound of the alcohol-related EMS encounter rate range for this county.",
-              "measure_type": "Rate",
-              "unit": "Cases per 100,000 population"
-            },
-            {
-              "name": "alcohol_ems_rate_label",
-              "short_name": "Alcohol EMS rate, qualitative bucket",
-              "description": "Text label describing this county's alcohol-related EMS encounter rate relative to the national average.",
-              "measure_type": "Indicator",
-              "unit": "Category"
-            }
-          ]
-        },
-        {
-          "filename": "data_ascvd.csv.gz",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
-              "measure_type": "identifier",
-              "unit": "FIPS code"
-            },
-            {
-              "name": "geography_type",
-              "short_name": "geography_type",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
-              "measure_type": "date",
-              "unit": "date"
-            },
-            {
-              "name": "ascvd_population",
-              "short_name": "Population (ZCTA3/state/national)",
-              "description": "Total population of the geography as reported alongside the ASCVD risk outcome.",
-              "measure_type": "Count",
-              "unit": "Count"
-            },
-            {
-              "name": "ascvd_risk_low",
-              "short_name": "ASCVD 10-yr risk, low bound",
-              "description": "Lower bound (percent) of the ASCVD risk range for this area.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "ascvd_risk_high",
-              "short_name": "ASCVD 10-yr risk, high bound",
-              "description": "Upper bound (percent) of the ASCVD risk range for this area.",
-              "measure_type": "Percent",
-              "unit": "Percent"
-            },
-            {
-              "name": "ascvd_risk_label",
-              "short_name": "ASCVD risk, qualitative bucket",
-              "description": "Text label describing this area's ASCVD risk relative to the national average.",
-              "measure_type": "Indicator",
-              "unit": "Category"
-            }
-          ]
-        },
-        {
-          "filename": "data_maternal.csv.gz",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
-              "measure_type": "identifier",
-              "unit": "FIPS code"
-            },
-            {
-              "name": "geography_type",
-              "short_name": "geography_type",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
-              "measure_type": "date",
-              "unit": "date"
-            },
-            {
-              "name": "maternal_population",
-              "short_name": "Population (ZCTA3/state/national)",
-              "description": "Total population of the geography as reported alongside the SOC rate outcome.",
-              "measure_type": "Count",
-              "unit": "Count"
-            },
-            {
-              "name": "maternal_soc_rate_low",
-              "short_name": "SOC rate, low bound",
-              "description": "Lower bound of the SOC rate range for this area.",
-              "measure_type": "Rate",
-              "unit": "Cases per 10,000 deliveries"
-            },
-            {
-              "name": "maternal_soc_rate_high",
-              "short_name": "SOC rate, high bound",
-              "description": "Upper bound of the SOC rate range for this area.",
-              "measure_type": "Rate",
-              "unit": "Cases per 10,000 deliveries"
-            },
-            {
-              "name": "maternal_soc_rate_label",
-              "short_name": "SOC rate, qualitative bucket",
-              "description": "Text label describing this area's SOC rate relative to the national average (e.g. \"Slightly Lower than National Average\").",
-              "measure_type": "Indicator",
-              "unit": "Category"
-            }
-          ]
-        },
-        {
-          "filename": "data_opioid.csv.gz",
-          "columns": [
-            {
-              "name": "geography",
-              "short_name": "Geography",
-              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
-              "measure_type": "identifier",
-              "unit": "FIPS code"
-            },
-            {
-              "name": "geography_type",
-              "short_name": "geography_type",
-              "description": "",
-              "measure_type": "",
-              "unit": ""
-            },
-            {
-              "name": "time",
-              "short_name": "Time",
-              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
-              "measure_type": "date",
-              "unit": "date"
-            },
-            {
-              "name": "opioid_population",
-              "short_name": "Population (county/state/national)",
-              "description": "Total population of the geography as reported alongside the opioid overdose EMS outcome.",
-              "measure_type": "Count",
-              "unit": "Count"
-            },
-            {
-              "name": "opioid_ems_rate_low",
-              "short_name": "Opioid EMS rate, low bound",
-              "description": "Lower bound of the opioid EMS encounter rate range for this county.",
-              "measure_type": "Rate",
-              "unit": "Cases per 100,000 population"
-            },
-            {
-              "name": "opioid_ems_rate_high",
-              "short_name": "Opioid EMS rate, high bound",
-              "description": "Upper bound of the opioid EMS encounter rate range for this county.",
-              "measure_type": "Rate",
-              "unit": "Cases per 100,000 population"
-            },
-            {
-              "name": "opioid_ems_rate_label",
-              "short_name": "Opioid EMS rate, qualitative bucket",
-              "description": "Text label describing this county's opioid EMS encounter rate relative to the national average.",
-              "measure_type": "Indicator",
-              "unit": "Category"
-            }
-          ]
-        }
-      ]
-    },
     "hud_chas": {
       "name": "hud_chas",
       "display_name": "Hud Chas",
@@ -27916,6 +27815,67 @@
               "description": "Share of Kinsa smart thermometer users reporting cough, cold, or flu symptoms.",
               "measure_type": "Prevalence",
               "unit": "Percent"
+            }
+          ]
+        }
+      ]
+    },
+    "maternal": {
+      "name": "maternal",
+      "display_name": "Maternal",
+      "description": "Data on maternal health severe obstetric complications (SOCs) are provided by HealthVerity from multiple sources and represent aggregate reports based upon open claims data for the periods covered. These data cover the period 01/01/2021-05/31/2025. It is important to note that the data displayed are not intended to represent the entire US population.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "geography_type",
+              "short_name": "geography_type",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "maternal_population",
+              "short_name": "Population (ZCTA3/state/national)",
+              "description": "Total population of the geography as reported alongside the SOC rate outcome.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "maternal_soc_rate_low",
+              "short_name": "SOC rate, low bound",
+              "description": "Lower bound of the SOC rate range for this area.",
+              "measure_type": "Rate",
+              "unit": "Cases per 10,000 deliveries"
+            },
+            {
+              "name": "maternal_soc_rate_high",
+              "short_name": "SOC rate, high bound",
+              "description": "Upper bound of the SOC rate range for this area.",
+              "measure_type": "Rate",
+              "unit": "Cases per 10,000 deliveries"
+            },
+            {
+              "name": "maternal_soc_rate_label",
+              "short_name": "SOC rate, qualitative bucket",
+              "description": "Text label describing this area's SOC rate relative to the national average (e.g. \"Slightly Lower than National Average\").",
+              "measure_type": "Indicator",
+              "unit": "Category"
             }
           ]
         }
@@ -37739,6 +37699,67 @@
               "description": "Flag indicating county values were imputed from state-level data",
               "measure_type": "",
               "unit": ""
+            }
+          ]
+        }
+      ]
+    },
+    "opioid": {
+      "name": "opioid",
+      "display_name": "Opioid",
+      "description": "Opioid overdose data are provided by National Highway Traffic Safety Administration (NHTSA), National Emergency Medical Services Information System (NEMSIS). These data cover the period 01/01/2022-07/31/2025. The content reproduced from the NEMSIS Database remains the property of the National Highway Traffic Safety Administration (NHTSA). The National Highway Traffic Safety Administration is not responsible for any claims arising from works based on the original Data, Text, Tables, or Figures.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "geography_type",
+              "short_name": "geography_type",
+              "description": "",
+              "measure_type": "",
+              "unit": ""
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "opioid_population",
+              "short_name": "Population (county/state/national)",
+              "description": "Total population of the geography as reported alongside the opioid overdose EMS outcome.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "opioid_ems_rate_low",
+              "short_name": "Opioid EMS rate, low bound",
+              "description": "Lower bound of the opioid EMS encounter rate range for this county.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000 population"
+            },
+            {
+              "name": "opioid_ems_rate_high",
+              "short_name": "Opioid EMS rate, high bound",
+              "description": "Upper bound of the opioid EMS encounter rate range for this county.",
+              "measure_type": "Rate",
+              "unit": "Cases per 100,000 population"
+            },
+            {
+              "name": "opioid_ems_rate_label",
+              "short_name": "Opioid EMS rate, qualitative bucket",
+              "description": "Text label describing this county's opioid EMS encounter rate relative to the national average.",
+              "measure_type": "Indicator",
+              "unit": "Category"
             }
           ]
         }

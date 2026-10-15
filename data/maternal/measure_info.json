@@ -1,0 +1,96 @@
+{
+  "maternal_population": {
+    "id": "maternal_population",
+    "short_name": "Population (ZCTA3/state/national)",
+    "long_name": "Total population of the area reported alongside the maternal health snapshot",
+    "category": "demographic",
+    "short_description": "Total population of the geography as reported alongside the SOC rate outcome.",
+    "long_description": "Total population denominator reported for a given ZCTA3, state, or national area alongside the maternal health snapshot. Provided for context, not as an independent outcome measure. Time period represented: 01/01/2021 – 05/31/2025. The `time` value in the standard data is the last date of this period (2025-05-31).",
+    "statement": "In {location}, the total population was {value}.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "healthverity"
+      }
+    ]
+  },
+  "maternal_soc_rate_low": {
+    "id": "maternal_soc_rate_low",
+    "short_name": "SOC rate, low bound",
+    "long_name": "Lower bound of the rate of severe obstetric complications (SOC) per 10,000 deliveries",
+    "category": "maternal",
+    "short_description": "Lower bound of the SOC rate range for this area.",
+    "long_description": "SOC rate (rate of severe obstetric complications during the delivery hospitalization and 60 days postpartum per 10,000 deliveries, open claims only) is reported only as a range (e.g. \"192.3 to 243.9\"), never as a single point value. This is the numeric lower bound of that range. Use alongside maternal_soc_rate_high and maternal_soc_rate_label -- do not average low/high into a point estimate, since the true value's position within the range is unknown. Time period represented: 01/01/2021 – 05/31/2025. The `time` value in the standard data is the last date of this period (2025-05-31).",
+    "statement": "In {location}, the SOC rate fell between {value} and {maternal_soc_rate_high} per 10,000 deliveries.",
+    "measure_type": "Rate",
+    "unit": "Cases per 10,000 deliveries",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "healthverity"
+      }
+    ]
+  },
+  "maternal_soc_rate_high": {
+    "id": "maternal_soc_rate_high",
+    "short_name": "SOC rate, high bound",
+    "long_name": "Upper bound of the rate of severe obstetric complications (SOC) per 10,000 deliveries",
+    "category": "maternal",
+    "short_description": "Upper bound of the SOC rate range for this area.",
+    "long_description": "Numeric upper bound of the same range described in maternal_soc_rate_low. See that field's description for the range-vs-point-estimate caveat. Time period represented: 01/01/2021 – 05/31/2025. The `time` value in the standard data is the last date of this period (2025-05-31).",
+    "statement": "In {location}, the SOC rate fell between {maternal_soc_rate_low} and {value} per 10,000 deliveries.",
+    "measure_type": "Rate",
+    "unit": "Cases per 10,000 deliveries",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "healthverity"
+      }
+    ]
+  },
+  "maternal_soc_rate_label": {
+    "id": "maternal_soc_rate_label",
+    "short_name": "SOC rate, qualitative bucket",
+    "long_name": "Qualitative label for the severe obstetric complications (SOC) rate, relative to the national average",
+    "category": "maternal",
+    "short_description": "Text label describing this area's SOC rate relative to the national average (e.g. \"Slightly Lower than National Average\").",
+    "long_description": "A qualitative classification of the SOC rate range, ranging from \"Low Outlier\" through \"High Outlier\", or \"No Data\" where the area had no reportable rate. Time period represented: 01/01/2021 – 05/31/2025. The `time` value in the standard data is the last date of this period (2025-05-31).",
+    "statement": "In {location}, the SOC rate was classified as \"{value}\".",
+    "measure_type": "Indicator",
+    "unit": "Category",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "healthverity"
+      }
+    ]
+  },
+  "_catalog": {
+    "name": "Maternal Health: Severe Obstetric Complications",
+    "summary": "Area-level ranges for severe childbirth complications per 10,000 deliveries. Values are given as ranges, not exact numbers.",
+    "search_terms": [
+      "Maternal",
+      "childbirth",
+      "obstetric"
+    ],
+    "bucket": [],
+    "files": {
+      "data.csv.gz": "Severe obstetric complication ranges by ZCTA3"
+    }
+  },
+  "_sources": {
+    "healthverity": {
+      "name": "Key indicators of maternal health -- severe obstetric complications (SOC)",
+      "url": "",
+      "organization": "HealthVerity",
+      "organization_url": "https://healthverity.com",
+      "location": "",
+      "location_url": "",
+      "description": "Data on maternal health severe obstetric complications (SOCs) are provided by HealthVerity from multiple sources and represent aggregate reports based upon open claims data for the periods covered. These data cover the period 01/01/2021-05/31/2025. It is important to note that the data displayed are not intended to represent the entire US population.",
+      "restrictions": "Data can be reused with attribution of data from HealthVerity, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).",
+      "data_source": "maternal"
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "opioid_population": {
+    "id": "opioid_population",
+    "short_name": "Population (county/state/national)",
+    "long_name": "Total population of the area reported alongside the opioid overdose snapshot",
+    "category": "demographic",
+    "short_description": "Total population of the geography as reported alongside the opioid overdose EMS outcome.",
+    "long_description": "Total population denominator reported for a given county, state, or national area alongside the opioid overdose snapshot. Provided for context, not as an independent outcome measure. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
+    "statement": "In {location}, the total population was {value}.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "nemsis_opioid"
+      }
+    ]
+  },
+  "opioid_ems_rate_low": {
+    "id": "opioid_ems_rate_low",
+    "short_name": "Opioid EMS rate, low bound",
+    "long_name": "Lower bound of the rate of EMS patient encounters for fatal and non-fatal opioid overdoses per 100,000 population",
+    "category": "injury",
+    "short_description": "Lower bound of the opioid EMS encounter rate range for this county.",
+    "long_description": "The opioid overdose EMS encounter rate is reported only as a range (e.g. \"3.0 to 3.9\"), never as a single point value. This is the numeric lower bound of that range. Use alongside opioid_ems_rate_high and opioid_ems_rate_label -- do not average low/high into a point estimate. Reported at real county FIPS geography. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
+    "statement": "In {location}, the opioid overdose EMS encounter rate fell between {value} and {opioid_ems_rate_high} per 100,000 population.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000 population",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "nemsis_opioid"
+      }
+    ]
+  },
+  "opioid_ems_rate_high": {
+    "id": "opioid_ems_rate_high",
+    "short_name": "Opioid EMS rate, high bound",
+    "long_name": "Upper bound of the rate of EMS patient encounters for fatal and non-fatal opioid overdoses per 100,000 population",
+    "category": "injury",
+    "short_description": "Upper bound of the opioid EMS encounter rate range for this county.",
+    "long_description": "Numeric upper bound of the same map-legend bucket described in opioid_ems_rate_low. See that field's description for the bucket-vs-point-estimate caveat. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
+    "statement": "In {location}, the opioid overdose EMS encounter rate fell between {opioid_ems_rate_low} and {value} per 100,000 population.",
+    "measure_type": "Rate",
+    "unit": "Cases per 100,000 population",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "nemsis_opioid"
+      }
+    ]
+  },
+  "opioid_ems_rate_label": {
+    "id": "opioid_ems_rate_label",
+    "short_name": "Opioid EMS rate, qualitative bucket",
+    "long_name": "Qualitative label for the opioid overdose EMS encounter rate range, relative to the national average",
+    "category": "injury",
+    "short_description": "Text label describing this county's opioid EMS encounter rate relative to the national average.",
+    "long_description": "A qualitative classification of the opioid EMS rate bucket, ranging from \"Low Outlier\" through \"High Outlier\", or \"No Data\" where the area had no reportable rate. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
+    "statement": "In {location}, the opioid overdose EMS rate was classified as \"{value}\".",
+    "measure_type": "Indicator",
+    "unit": "Category",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "nemsis_opioid"
+      }
+    ]
+  },
+  "_catalog": {
+    "name": "Opioid Overdose EMS Encounters",
+    "summary": "County-level ranges for emergency (EMS) calls for opioid overdose. Values are given as ranges, not exact numbers.",
+    "search_terms": [
+      "Injury",
+      "opioid",
+      "overdose",
+      "ems"
+    ],
+    "bucket": [],
+    "files": {
+      "data.csv.gz": "Opioid EMS rate ranges by county"
+    }
+  },
+  "_sources": {
+    "nemsis_opioid": {
+      "name": "Opioid-related EMS encounters",
+      "url": "",
+      "organization": "National Emergency Medical Services Information System (NEMSIS)",
+      "organization_url": "https://nemsis.org",
+      "location": "",
+      "location_url": "",
+      "description": "Opioid overdose data are provided by National Highway Traffic Safety Administration (NHTSA), National Emergency Medical Services Information System (NEMSIS). These data cover the period 01/01/2022-07/31/2025. The content reproduced from the NEMSIS Database remains the property of the National Highway Traffic Safety Administration (NHTSA). The National Highway Traffic Safety Administration is not responsible for any claims arising from works based on the original Data, Text, Tables, or Figures.",
+      "restrictions": "Data can be reused with attribution of data from NEMSIS, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).",
+      "data_source": "opioid"
+    }
+  }
+}
