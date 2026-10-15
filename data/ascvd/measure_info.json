@@ -1,12 +1,29 @@
 {
-  "ascvd_population": {
-    "id": "ascvd_population",
-    "short_name": "Population (ZCTA3/state/national)",
-    "long_name": "Total population of the area reported alongside the ASCVD risk snapshot",
+  "ascvd_risk": {
+    "id": "ascvd_risk",
+    "short_name": "Mean 10-yr ASCVD risk",
+    "long_name": "Mean 10-year risk of heart attack and stroke (ASCVD) for people aged 40-70",
+    "category": "chronic",
+    "short_description": "Mean 10-year ASCVD risk score (percent) among Veradigm patients in this area.",
+    "long_description": "Mean 10-year Atherosclerotic Cardiovascular Disease (ASCVD) risk score, in percent, among Veradigm EHR patients with all data elements needed to calculate the score. Reported by 3-digit ZIP (ZCTA3) and nationally, overall and by age group (40-49, 50-59, 60-69, 70+), race, and sex. Stratum rows with no observations are omitted. The source stores the value as a proportion; it is multiplied by 100 here. Time period represented: 01/01/2022 – 08/31/2025. The `time` value in the standard data is the last date of this period (2025-08-31).",
+    "statement": "In {location}, the mean 10-year ASCVD risk was {value}%.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "veradigm"
+      }
+    ]
+  },
+  "ascvd_n": {
+    "id": "ascvd_n",
+    "short_name": "Patients with ASCVD risk score",
+    "long_name": "Number of patients contributing to the mean ASCVD risk",
     "category": "demographic",
-    "short_description": "Total population of the geography as reported alongside the ASCVD risk outcome.",
-    "long_description": "Total population denominator reported for a given ZCTA3, state, or national area alongside the ASCVD risk snapshot. Provided for context, not as an independent outcome measure. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
-    "statement": "In {location}, the total population was {value}.",
+    "short_description": "Number of patients whose risk score contributes to the mean in this row.",
+    "long_description": "Number of Veradigm patients (observations) behind the mean 10-year ASCVD risk in the same row. Provided for context on precision; small counts mean less stable means. Time period represented: 01/01/2022 – 08/31/2025. The `time` value in the standard data is the last date of this period (2025-08-31).",
+    "statement": "In {location}, the mean ASCVD risk was based on {value} patients.",
     "measure_type": "Count",
     "unit": "Count",
     "time_resolution": "Year",
@@ -16,60 +33,9 @@
       }
     ]
   },
-  "ascvd_risk_low": {
-    "id": "ascvd_risk_low",
-    "short_name": "ASCVD 10-yr risk, low bound",
-    "long_name": "Lower bound of the aggregate of 10-year risk of heart attack and stroke for people aged 40-70",
-    "category": "chronic",
-    "short_description": "Lower bound (percent) of the ASCVD risk range for this area.",
-    "long_description": "ASCVD (heart attack and stroke) risk for the 40-70 age range is reported only as only as a range, never as a single point value. This is the numeric lower bound of that range, in percent. Use alongside ascvd_risk_high and ascvd_risk_label -- do not average low/high into a point estimate. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
-    "statement": "In {location}, aggregate 10-year ASCVD risk fell between {value}% and {ascvd_risk_high}%.",
-    "measure_type": "Percent",
-    "unit": "Percent",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "veradigm"
-      }
-    ]
-  },
-  "ascvd_risk_high": {
-    "id": "ascvd_risk_high",
-    "short_name": "ASCVD 10-yr risk, high bound",
-    "long_name": "Upper bound of the aggregate 10-year risk of heart attack and stroke for people aged 40-70",
-    "category": "chronic",
-    "short_description": "Upper bound (percent) of the ASCVD risk range for this area.",
-    "long_description": "Numeric upper bound of the same range described in ascvd_risk_low. See that field's description for the range-vs-point-estimate caveat. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
-    "statement": "In {location}, aggregate 10-year ASCVD risk fell between {ascvd_risk_low}% and {value}%.",
-    "measure_type": "Percent",
-    "unit": "Percent",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "veradigm"
-      }
-    ]
-  },
-  "ascvd_risk_label": {
-    "id": "ascvd_risk_label",
-    "short_name": "ASCVD risk, qualitative bucket",
-    "long_name": "Qualitative label for the ASCVD 10-year risk, relative to the national average",
-    "category": "chronic",
-    "short_description": "Text label describing this area's ASCVD risk relative to the national average.",
-    "long_description": "A qualitative classification of the ASCVD risk, ranging from \"Low Outlier\" through \"High Outlier\", or \"No Data\" where the area had no reportable rate. Time period represented: 01/01/2022 – 07/31/2025. The `time` value in the standard data is the last date of this period (2025-07-31).",
-    "statement": "In {location}, ASCVD risk was classified as \"{value}\".",
-    "measure_type": "Indicator",
-    "unit": "Category",
-    "time_resolution": "Year",
-    "sources": [
-      {
-        "id": "veradigm"
-      }
-    ]
-  },
   "_catalog": {
     "name": "10-Year ASCVD Risk",
-    "summary": "Area-level ranges for the 10-year risk of heart attack and stroke in adults ages 40-70. Values are given as ranges, not exact numbers.",
+    "summary": "Average 10-year risk of heart attack and stroke in adults ages 40-70, by 3-digit ZIP code. Also broken out by age, race, and sex.",
     "search_terms": [
       "Chronic diseases",
       "ascvd",
@@ -78,7 +44,7 @@
     ],
     "bucket": [],
     "files": {
-      "data.csv.gz": "ASCVD risk ranges by ZCTA3"
+      "data.csv.gz": "ASCVD risk by ZCTA3, age, race, and sex"
     }
   },
   "_sources": {
@@ -89,7 +55,7 @@
       "organization_url": "https://veradigm.com",
       "location": "",
       "location_url": "",
-      "description": "Data for the 10-year Atherosclerotic Cardiovascular Disease (ASCVD) risk score are provided by Veradigm from multiple sources using the Veradigm Network Electronic Health Record (EHR) database for patients with all data elements necessary for score calculation. These data cover the period 01/01/2022-07/31/2025. It is important to note that the data displayed are not intended to represent the entire US population.",
+      "description": "Data for the 10-year Atherosclerotic Cardiovascular Disease (ASCVD) risk score are provided by Veradigm from multiple sources using the Veradigm Network Electronic Health Record (EHR) database for patients with all data elements necessary for score calculation. These data cover the period 01/01/2022-08/31/2025. It is important to note that the data displayed are not intended to represent the entire US population.",
       "restrictions": "Data can be reused with attribution of data from Veradigm, obtained via the PopHIVE platform (https://github.com/PopHIVE/Ingest).",
       "data_source": "ascvd"
     }

@@ -1,50 +1,34 @@
 # =============================================================================
 # 10-year ASCVD risk, ages 40-70 Data Ingestion
-# Source: area-level snapshot exports (Results_ASCVD-<date>_<AREA>.csv)
-#   10-year ASCVD risk, ages 40-70, in percent (Veradigm)
+# Source: Veradigm data submission (data_submission_VERADIGM_2025-08.xlsx),
+#   first tab "ASCVD BY ZIP3": mean 10-year ASCVD risk by 3-digit ZIP, overall
+#   and by age group, race, and sex.
 #
-# No automated download exists -- place fresh Results_ASCVD-<date>_<AREA>.csv
-# exports in raw/ by hand before running.
+# No automated download exists -- place a fresh data_submission_VERADIGM_*.xlsx
+# in raw/ by hand before running.
 #
-# Caveats behind the parsing choices below: outcomes are binned ranges only (no
-# recoverable point value); `time` is the last date of the period represented
-# (01/01/2022 - 07/31/2025) rather than the extract date; demographic enrichment columns
-# are dropped. Geography type is "zcta3" (ZCTA3 codes are not FIPS and are
-# flagged by `geography_type`).
+# Caveats behind the parsing choices below: the sheet stores risk as a
+# proportion (0.0795), converted here to percent (7.95). "." means no
+# observations and becomes NA (rows without a value are dropped). `time` is
+# the last date of the period represented (EndDate). Geography type is "zcta3"
+# (ZIP3 codes are not FIPS and are flagged by `geography_type`); the one row
+# with a blank zip3 is the all-area total and is mapped to national ("00").
+# Only the first tab is used (the "MONTH BY ZIP3" tab is ignored).
 # =============================================================================
 
 library(dplyr)
-library(tibble)
 library(stringr)
 
 process <- dcf::dcf_process_record()
 
 # -----------------------------------------------------------------------------
-# 1. Configuration
+# 1. Change detection on raw file
 # -----------------------------------------------------------------------------
-TOPIC <- "ascvd"
-FILE_PREFIX <- "ASCVD"
-MEASURE_NAME <- "risk"
-GEO_TYPE <- "zcta3"
-MID_PREFIX <- "ZCTA3 "
-MAX_VALUE <- 100
-TIME <- as.Date("2025-07-31")
-AREA_CORRECTIONS <- NULL
-
-# -----------------------------------------------------------------------------
-# 2. Change detection on raw files
-# -----------------------------------------------------------------------------
-raw_files <- list.files(
-  "raw",
-  pattern = paste0("^Results_", FILE_PREFIX, "[-_][0-9]{4}-[0-9]{2}-[0-9]{2}_.*\\.csv$"),
-  full.names = TRUE
-)
+raw_files <- list.files("raw", pattern = "^data_submission_VERADIGM_.*\\.xlsx$", full.names = TRUE)
 if (length(raw_files) == 0) {
-  stop("No raw/Results_", FILE_PREFIX, "-<date>_<AREA>.csv files found -- place fresh exports in raw/ before running.")
+  stop("No raw/data_submission_VERADIGM_*.xlsx file found -- place the submission in raw/ before running.")
 }
-# National file first so its rows win any tie when the same county/ZCTA3 also
-# appears in a per-area file (see distinct() below).
-raw_files <- raw_files[order(!grepl("_National\\.csv$", basename(raw_files)))]
+if (length(raw_files) > 1) stop("More than one raw/data_submission_VERADIGM_*.xlsx file found")
 raw_state <- as.list(tools::md5sum(raw_files))
 names(raw_state) <- basename(raw_files)
 
@@ -52,100 +36,65 @@ if (!identical(process$raw_state, raw_state)) {
   dir.create("standard", showWarnings = FALSE)
 
   # ---------------------------------------------------------------------------
-  # 3. FIPS lookup (state abbreviation -> state FIPS)
+  # 2. Read first tab
   # ---------------------------------------------------------------------------
-  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
-  state_fips <- all_fips %>%
-    filter(nchar(geography) == 2) %>%
-    distinct(state, .keep_all = TRUE) %>%
-    transmute(state, state_fips = geography)
+  raw <- readxl::read_excel(raw_files, sheet = 1, col_types = "text")
+
+  num <- function(x) suppressWarnings(as.numeric(x))
 
   # ---------------------------------------------------------------------------
-  # 4. Parse each area export
+  # 3. Reshape: one stratum per row (age, race_ethnicity, sex; others "Overall")
   # ---------------------------------------------------------------------------
-  parse_one <- function(path) {
-    fname <- basename(path)
-    m <- str_match(
-      fname,
-      paste0("^Results_", FILE_PREFIX, "[-_]([0-9]{4}-[0-9]{2}-[0-9]{2})_([A-Za-z]+)\\.csv$")
-    )
-    if (is.na(m[1, 1])) stop("Unrecognized raw filename pattern: ", fname)
-    area <- m[1, 3]
-    if (area %in% names(AREA_CORRECTIONS)) area <- AREA_CORRECTIONS[[area]]
+  strata <- tibble::tribble(
+    ~suffix,         ~age,      ~race_ethnicity, ~sex,
+    "",              "Overall", "Overall",       "Overall",
+    "_age_40_to_49", "40-49",   "Overall",       "Overall",
+    "_age_50_to_59", "50-59",   "Overall",       "Overall",
+    "_age_60_to_69", "60-69",   "Overall",       "Overall",
+    "_age_70",       "70+",     "Overall",       "Overall",
+    "_race_asian",   "Overall", "Asian",         "Overall",
+    "_race_black",   "Overall", "Black",         "Overall",
+    "_race_white",   "Overall", "White",         "Overall",
+    "_race_other",   "Overall", "Other",         "Overall",
+    "_race_null",    "Overall", "Unknown",       "Overall",
+    "_sex_female",   "Overall", "Overall",       "Female",
+    "_sex_male",     "Overall", "Overall",       "Male"
+  )
 
-    df <- vroom::vroom(path, show_col_types = FALSE)
-
-    range_col <- grep("^Range for (Rate|Aggregate)", names(df), value = TRUE)
-    if (length(range_col) != 1) {
-      stop("Could not resolve the outcome range column by pattern in ", fname, " -- upstream column may have been renamed.")
-    }
-
-    # Bounds are usually plain decimals ("192.3 to 243.9") or percents
-    # ("7.2% to 7.7%"), but the top bucket can use "k" shorthand for
-    # thousands (e.g. "708.0 to 5.0k High Outlier" -> 708.0 to 5000).
-    parsed_range <- str_match(df[[range_col]], "^([0-9.]+)(k)?%? to ([0-9.]+)(k)?%?\\s*(.*)$")
-    to_number <- function(digits, k_suffix) as.numeric(digits) * ifelse(is.na(k_suffix), 1, 1000)
-
-    out <- tibble(
-      mid = df$MID,
-      population = df$POPULATION,
-      value_low = to_number(parsed_range[, 2], parsed_range[, 3]),
-      value_high = to_number(parsed_range[, 4], parsed_range[, 5]),
-      value_label = ifelse(is.na(parsed_range[, 1]), trimws(df[[range_col]]), trimws(parsed_range[, 6])),
-      time = TIME
+  base <- raw %>%
+    transmute(
+      geography = ifelse(is.na(zip3) | zip3 == "NA", "00", str_pad(zip3, 3, pad = "0")),
+      geography_type = ifelse(geography == "00", "national", "zcta3"),
+      time = as.Date(substr(EndDate, 1, 10))
     )
 
-    if (identical(area, "National")) {
-      total_geo <- "00"
-      total_type <- "national"
-    } else {
-      total_geo <- state_fips$state_fips[state_fips$state == area]
-      if (length(total_geo) != 1) {
-        stop("No state FIPS match for area '", area, "' in ", fname, " -- check the all_fips crosswalk.")
-      }
-      total_type <- "state"
-    }
-    out %>%
-      mutate(
-        geography = ifelse(mid == "TOTAL", total_geo, sub(paste0("^", MID_PREFIX), "", mid)),
-        geography_type = ifelse(mid == "TOTAL", total_type, GEO_TYPE)
+  data_standard <- bind_rows(lapply(seq_len(nrow(strata)), function(i) {
+    s <- strata[i, ]
+    bind_cols(
+      base,
+      tibble::tibble(
+        age = s$age,
+        race_ethnicity = s$race_ethnicity,
+        sex = s$sex,
+        ascvd_risk = num(raw[[paste0("MeanASCVD", s$suffix)]]) * 100,
+        ascvd_n = num(raw[[paste0("MeanASCVD", s$suffix, "_obs")]])
       )
-  }
-
-  rows <- bind_rows(lapply(raw_files, parse_one)) %>%
-    distinct(geography, geography_type, time, .keep_all = TRUE)
-
-  low_col <- paste0(TOPIC, "_", MEASURE_NAME, "_low")
-  high_col <- paste0(TOPIC, "_", MEASURE_NAME, "_high")
-
-  data_standard <- rows %>%
-    select(geography, geography_type, time, population, value_low, value_high, value_label) %>%
-    rename(
-      !!paste0(TOPIC, "_population") := population,
-      !!low_col := value_low,
-      !!high_col := value_high,
-      !!paste0(TOPIC, "_", MEASURE_NAME, "_label") := value_label
     )
+  })) %>%
+    filter(!is.na(ascvd_risk), !is.na(ascvd_n), ascvd_n > 0) %>%
+    arrange(geography_type, geography, age, race_ethnicity, sex)
 
   # ---------------------------------------------------------------------------
-  # 5. Validate
+  # 4. Validate
   # ---------------------------------------------------------------------------
-  dup <- data_standard %>% count(geography, geography_type, time) %>% filter(n > 1)
-  if (nrow(dup) > 0) stop("Duplicate (geography, geography_type, time) rows found")
+  dup <- data_standard %>% count(geography, geography_type, time, age, race_ethnicity, sex) %>% filter(n > 1)
+  if (nrow(dup) > 0) stop("Duplicate geography/time/stratum rows found")
   if (any(is.na(data_standard$geography) | is.na(data_standard$time))) stop("Missing geography or time")
-  if (any(data_standard[[paste0(TOPIC, "_population")]] < 0, na.rm = TRUE)) stop("Negative population value")
-  if (any(data_standard[[low_col]] < 0, na.rm = TRUE) || any(data_standard[[high_col]] < 0, na.rm = TRUE)) {
-    stop("Negative value bound")
-  }
-  if (any(data_standard[[low_col]] > data_standard[[high_col]], na.rm = TRUE)) {
-    stop("Low bound exceeds high bound in at least one row")
-  }
-  if (!is.na(MAX_VALUE) && any(data_standard[[high_col]] > MAX_VALUE, na.rm = TRUE)) {
-    stop("Value bound exceeds expected max (", MAX_VALUE, ")")
-  }
+  if (any(data_standard$ascvd_risk < 0 | data_standard$ascvd_risk > 100)) stop("ascvd_risk outside 0-100")
+  if (sum(data_standard$geography == "00") == 0) stop("No national total row found")
 
   # ---------------------------------------------------------------------------
-  # 6. Write standardized output and record processed state
+  # 5. Write standardized output and record processed state
   # ---------------------------------------------------------------------------
   vroom::vroom_write(data_standard, "standard/data.csv.gz", delim = ",")
 
