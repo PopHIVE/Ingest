@@ -416,6 +416,7 @@ bind_rows(
   rename(fips = geography) %>%
   as_state() %>%
   label('yrbss', 'CDC/YRBSS') %>%
+  rename(value_lcl = lcl, value_ucl = ucl) %>%
   write_parquet('dist/yrbss_state_age_demographics.parquet')
 
 
