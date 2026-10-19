@@ -85,7 +85,7 @@ COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
                'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer', 'domain',
                'vaccine', 'product', 'diagnosis', 'forecast_day',
                'section', 'focus_area', 'source', 'measure', 'rank', 'value',
-               'pct_of_all', 'lcl', 'ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
+               'pct_of_all', 'value_lcl', 'value_ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
                'suppressed', 'not_asked', 'low_coverage_flag', 'unstable_flag',
                'percent_surveyed', 'survey_type')
 
@@ -104,7 +104,7 @@ tall_simple <- function(df, measures, strata) {
 
 # Pivot wide measure columns to tall, carrying per-measure companion columns
 # named <measure><suffix>. Each suffix becomes a column of its own, e.g.
-# '_lcl' -> lcl. Measures are matched longest-first so that overlapping names
+# '_lcl' -> lcl (callers rename to value_lcl). Measures are matched longest-first so that overlapping names
 # (pct_no_breakfast vs pct_no_breakfast_7days) resolve correctly.
 tall_flagged <- function(df, measures, strata, suffixes) {
   measures <- intersect(measures, names(df))
@@ -415,8 +415,8 @@ bind_rows(
   mutate(across(c(sex, race, ethnicity), ~ replace_na(.x, 'All'))) %>%
   rename(fips = geography) %>%
   as_state() %>%
-  label('yrbss', 'CDC/YRBSS') %>%
   rename(value_lcl = lcl, value_ucl = ucl) %>%
+  label('yrbss', 'CDC/YRBSS') %>%
   write_parquet('dist/yrbss_state_age_demographics.parquet')
 
 
@@ -723,8 +723,8 @@ read_parquet('../bundle_childhood_immunizations/dist/overall_rates_by_source.par
     geography, vaccine, age,
     time  = as.Date(paste0(year, '-12-31')),
     value = as.numeric(value),
-    lcl   = as.numeric(value_lcl),
-    ucl   = as.numeric(value_ucl),
+    value_lcl = as.numeric(value_lcl),
+    value_ucl = as.numeric(value_ucl),
     sample_size, percent_surveyed, survey_type,
     measure = 'pct_vaccinated',
     source
@@ -948,7 +948,7 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 # The source writes -999 for suppressed cells (WONDER suppresses counts under
 # 10, and rates on counts under 20 are 'unreliable'). Those become NA and are
 # dropped; suppressed = 1 marks the rows the source flagged where a value was
-# still published. Only the crude rate is carried (with its lcl/ucl); the raw
+# still published. Only the crude rate is carried (with its value_lcl/value_ucl); the raw
 # death count is left out as redundant with it. The state file has no national
 # row.
 # =============================================================================
@@ -963,7 +963,8 @@ drowning_read <- function(file) {
               suppressed = as.integer(suppressed_flag),
               measure = 'drowning_crude_rate',
               value = drowning_crude_rate,
-              lcl = drowning_crude_rate_lcl, ucl = drowning_crude_rate_ucl) %>%
+              value_lcl = drowning_crude_rate_lcl,
+              value_ucl = drowning_crude_rate_ucl) %>%
     filter(!is.na(value))
 }
 
