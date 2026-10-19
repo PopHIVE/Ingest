@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-19T13:48:59Z",
+  "generated": "2026-10-19T14:00:56Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -17014,16 +17014,16 @@
               "levels": {}
             },
             {
-              "name": "lcl",
-              "short_name": "lcl",
+              "name": "value_lcl",
+              "short_name": "value_lcl",
               "description": "",
               "measure_type": "",
               "unit": "",
               "levels": {}
             },
             {
-              "name": "ucl",
-              "short_name": "ucl",
+              "name": "value_ucl",
+              "short_name": "value_ucl",
               "description": "",
               "measure_type": "",
               "unit": "",
@@ -17125,16 +17125,16 @@
               "levels": {}
             },
             {
-              "name": "lcl",
-              "short_name": "lcl",
+              "name": "value_lcl",
+              "short_name": "value_lcl",
               "description": "",
               "measure_type": "",
               "unit": "",
               "levels": {}
             },
             {
-              "name": "ucl",
-              "short_name": "ucl",
+              "name": "value_ucl",
+              "short_name": "value_ucl",
               "description": "",
               "measure_type": "",
               "unit": "",
@@ -17934,7 +17934,7 @@
               "levels": {}
             },
             {
-              "name": "lcl",
+              "name": "value_lcl",
               "short_name": "Lower confidence limit",
               "description": "Lower bound of the 95% confidence interval on value, where the source supplies one.",
               "measure_type": "",
@@ -17942,7 +17942,7 @@
               "levels": {}
             },
             {
-              "name": "ucl",
+              "name": "value_ucl",
               "short_name": "Upper confidence limit",
               "description": "Upper bound of the 95% confidence interval on value, where the source supplies one.",
               "measure_type": "",
@@ -19726,7 +19726,7 @@
               "levels": {}
             },
             {
-              "name": "lcl",
+              "name": "value_lcl",
               "short_name": "Lower confidence limit",
               "description": "Lower bound of the 95% confidence interval on value, where the source supplies one.",
               "measure_type": "",
@@ -19734,7 +19734,7 @@
               "levels": {}
             },
             {
-              "name": "ucl",
+              "name": "value_ucl",
               "short_name": "Upper confidence limit",
               "description": "Upper bound of the 95% confidence interval on value, where the source supplies one.",
               "measure_type": "",
@@ -26851,7 +26851,7 @@
     "drowning": {
       "name": "drowning",
       "display_name": "Drowning",
-      "description": "Mortality data from death certificates filed in the 50 states and the District of Columbia, queried through CDC WONDER's Underlying Cause of Death (ICD-10, expanded) database and restricted to unintentional drowning: ICD-10 codes W65 (bathtub), W66 (swimming pool fall), W67 (in swimming pool), W68 (fall into swimming pool), W69 (natural water), W70 (fall into natural water), W73 (other specified drowning/submersion), and W74 (unspecified drowning/submersion). Data are broken out separately by age group, sex, single race, and Hispanic origin (each queried independently, not cross-tabulated), at both the state and county level, for years 2018-2024. State and county both use CDC WONDER's Ten-Year Age Groups (<1, 1-4, 5-14, 15-24, ..., 85+), but the two levels differ in how population is sourced. At the state level, CDC WONDER reports Population and Crude Rate directly for Ten-Year Age Groups. At the county level, CDC WONDER reports Deaths only for this age variable -- Population and Crude Rate remain checked (mandatory) in the query form but the server omits them from the export regardless, for every state and year. County-level population is therefore derived here by summing CDC's Five-Year Age Groups county population export into the same Ten-Year buckets (e.g. 5-9 + 10-14 = 5-14); crude_rate is then recomputed from that derived population rather than taken from CDC directly, so drowning_crude_rate_lcl/_ucl are not populated for county-level age rows (a valid confidence interval needs CDC's own interval method, which this derivation does not replicate). This also surfaces a further CDC limitation: county-level population is reported as 'Not Applicable' for the <1, 1-4, and 85+ Five-Year groups nationwide, for every county regardless of size -- so missing_denom_flag = 1 for those three Ten-Year buckets at the county level essentially always, and county-level drowning rates (though not death counts) are structurally unavailable for infants/toddlers and the oldest age group. Missing values are coded as -999, accompanied by two independent row-level indicator columns (a true zero is reported as 0, never -999). suppressed_flag = 1 where CDC withheld a cell for confidentiality (any cell representing fewer than 10 deaths); this affects the death count and the rates derived from it, never the population. missing_denom_flag = 1 where no population denominator exists for that geography and demographic combination (CDC reports 'Not Applicable' or 'Not Available', or -- for county-level age specifically -- the Five-Year population export used to derive it was itself missing); this affects the population and the rates derived from it, never the death count. The two are not mutually exclusive and are both 1 on rows carrying both markers, which is common at the county level. No national total is included: CDC WONDER does not provide one directly for this query design, and summing state totals that each contain suppressed cells of unknown magnitude would produce a biased estimate.",
+      "description": "Mortality data from death certificates filed in the 50 states and the District of Columbia, queried through CDC WONDER's Underlying Cause of Death (ICD-10, expanded) database and restricted to unintentional drowning: ICD-10 codes W65 (bathtub), W66 (swimming pool fall), W67 (in swimming pool), W68 (fall into swimming pool), W69 (natural water), W70 (fall into natural water), W73 (other specified drowning/submersion), and W74 (unspecified drowning/submersion). Data are broken out separately by age group, sex, single race, and Hispanic origin (each queried independently, not cross-tabulated), at both the state and county level, for years 2018-2024. State and county both use CDC WONDER's Ten-Year Age Groups (<1, 1-4, 5-14, 15-24, ..., 85+), but the two levels differ in how population is sourced. At the state level, CDC WONDER reports Population and Crude Rate directly for Ten-Year Age Groups. At the county level, CDC WONDER reports Deaths only for this age variable -- Population and Crude Rate remain checked (mandatory) in the query form but the server omits them from the export regardless, for every state and year. County-level population is therefore derived here by summing CDC's Five-Year Age Groups county population export into the same Ten-Year buckets (e.g. 5-9 + 10-14 = 5-14); crude_rate is then recomputed from that derived population rather than taken from CDC directly, so drowning_crude_rate_lcl/_ucl are not populated for county-level age rows (a valid confidence interval needs CDC's own interval method, which this derivation does not replicate). This also surfaces a further CDC limitation: county-level population is reported as 'Not Applicable' for the <1, 1-4, and 85+ Five-Year groups nationwide, for every county regardless of size -- so missing_denom_flag = 1 for those three Ten-Year buckets at the county level essentially always, and county-level drowning rates (though not death counts) are structurally unavailable for infants/toddlers and the oldest age group. Missing values are coded as -999, accompanied by two independent row-level indicator columns (a true zero is reported as 0, never -999). suppressed_flag = 1 where CDC withheld a cell for confidentiality (any cell representing fewer than 10 deaths); this affects the death count and the rates derived from it, never the population. missing_denom_flag = 1 where no population denominator exists for that geography and demographic combination (CDC reports 'Not Applicable' or 'Not Available', or -- for county-level age specifically -- the Five-Year population export used to derive it was itself missing); this affects the population and the rates derived from it, never the death count. The two are not mutually exclusive and are both 1 on rows carrying both markers, which is common at the county level. National rows (geography 00, in data_state.csv.gz) come from separate CDC WONDER national queries (scrape_national.py) with the same breakdowns, not from summing the states: every state cell with fewer than 10 deaths is suppressed, so a sum of state counts undercounts (2024: 4,087 from the state cells vs 4,201 reported nationally). The national Overall row is CDC's own national total, whereas state Overall rows are the sum of the Female and Male rows.",
       "standard_files": [
         {
           "filename": "data_county.csv.gz",

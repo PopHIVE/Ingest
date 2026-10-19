@@ -11,15 +11,21 @@
 #         (columns: year, level, breakdown, file_state, geo_name, geography,
 #         raw_category, raw_category_code, deaths, population, crude_rate,
 #         crude_rate_lcl, crude_rate_ucl, crude_rate_se; footers removed).
-# Geography: State and county. No national totals are computed -- the raw data
-#            has no national query, and summing state totals that each contain
-#            unknown-magnitude suppressed cells would fabricate a biased number.
+#         National rows (geography "00") come from WONDER's own national
+#         queries, scraped by scrape_national.py into
+#         raw/national_ucd_icd10_expanded_2018_2024.parquet (same columns,
+#         level = "national"; breakdowns total/age/gender/race/ethnicity).
+# Geography: National, state and county. The national rows are never summed
+#            from the states: every state cell with 1-9 deaths is suppressed,
+#            so the sum undercounts (2024: 4,087 vs 4,201 reported nationally).
+#            They are written to data_state.csv.gz alongside the states.
 # =============================================================================
 
 library(dplyr)
 library(purrr)
 
 RAW_FILE <- "raw/ucd_icd10_expanded_2018_2024.parquet"
+RAW_NATIONAL_FILE <- "raw/national_ucd_icd10_expanded_2018_2024.parquet"
 YEARS <- 2018:2024
 
 # -----------------------------------------------------------------------------
@@ -256,13 +262,20 @@ build_overall_from_sex <- function(sex_df) {
 
 # Full standardized long table for one geography level across all years and
 # the four demographic breakdowns.
+#
+# The state table also carries the national ("00") rows when `raw` has any. The
+# national Overall row is CDC's own national total (breakdown "total", grouped
+# by Year because WONDER needs at least one group-by), not the sum of the sexes
+# used for states, so it is built separately and kept out of the sex sum.
 build_level <- function(raw, level) {
-  raw <- raw %>% filter(level == !!level)
+  keep <- if (level == "state") c("state", "national") else level
+  raw <- raw %>% filter(level %in% keep)
   slice_of <- function(yr, bd) raw %>% filter(year == yr, breakdown == bd)
 
   age_parts <- list()
   sex_parts <- list()
   race_eth_parts <- list()
+  national_total_parts <- list()
 
   for (yr in YEARS) {
     time_val <- sprintf("%d-12-31", yr)
@@ -281,11 +294,21 @@ build_level <- function(raw, level) {
       drop_raw = "Not Stated", time_val = time_val
     )
     race_eth_parts[[key]] <- bind_rows(race_rows, eth_rows)
+
+    if (level == "state" && nrow(slice_of(yr, "total")) > 0) {
+      national_total_parts[[key]] <- read_category(
+        slice_of(yr, "total"), "age", function(x) "Overall", time_val = time_val
+      )
+    }
   }
 
   sex_all <- bind_rows(sex_parts)
 
-  bind_rows(bind_rows(age_parts), sex_all, bind_rows(race_eth_parts), build_overall_from_sex(sex_all)) %>%
+  bind_rows(
+    bind_rows(age_parts), sex_all, bind_rows(race_eth_parts),
+    build_overall_from_sex(filter(sex_all, geography != "00")),
+    bind_rows(national_total_parts)
+  ) %>%
     fill_missing_with_sentinel() %>%
     select(
       geography, time, age, sex, race_ethnicity,
@@ -302,14 +325,20 @@ build_level <- function(raw, level) {
 process <- dcf::dcf_process_record()
 
 raw_state <- list(hash = unname(tools::md5sum(RAW_FILE)))
+if (file.exists(RAW_NATIONAL_FILE)) {
+  raw_state$national_hash <- unname(tools::md5sum(RAW_NATIONAL_FILE))
+} else {
+  warning("No ", RAW_NATIONAL_FILE, "; run scrape_national.py to add national rows.", call. = FALSE)
+}
 
 if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
-  # 2. Build state- and county-level standardized tables
+  # 2. Build state- (plus national) and county-level standardized tables
   # ---------------------------------------------------------------------------
   raw <- arrow::read_parquet(RAW_FILE)
+  raw_national <- if (file.exists(RAW_NATIONAL_FILE)) arrow::read_parquet(RAW_NATIONAL_FILE)
 
-  data_state <- build_level(raw, "state")
+  data_state <- build_level(bind_rows(raw, raw_national), "state")
   data_county <- build_level(raw, "county")
 
   # ---------------------------------------------------------------------------
