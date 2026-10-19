@@ -66,7 +66,13 @@ kinsa_daily <- vroom::vroom('../kinsa_ili/standard/data.csv.gz', show_col_types 
   #summarise(kinsa_cough_cold_flu = mean(kinsa_cough_cold_flu, na.rm = TRUE), .groups = "drop") %>%
   filter(as.character(time) > start_time)
 
-data <- c(data, list(kinsa_daily))
+# NSSP commercial laboratory percent positivity (NA = suppressed, <10)
+lab_pos <- vroom::vroom('../nssp/standard/data_lab.csv.gz', show_col_types = FALSE,
+                        col_types = vroom::cols(geography = "c")) %>%
+  filter(as.character(time) > start_time)
+
+data <- c(data, list(kinsa_daily,
+                     lab_pos %>% dplyr::select(geography, time, starts_with('lab_percent_pos_'))))
 
 combined <- Reduce(
   function(a, b) merge(a, b, by = c("geography", "time"), all = TRUE),
@@ -133,17 +139,32 @@ suppressed_covid <- combined %>%
   mutate(source = 'Epic Cosmos, ED') %>%
   rename(date = time) 
 
-overall_trends %>% 
+LAB_SOURCE <- 'CDC NSSP Commercial Laboratory'
+
+# Lab suppression flags (1 where percent positive was suppressed, <10 tests/positives)
+lab_suppressed <- function(v) {
+  lab_pos %>%
+    dplyr::select(fips = geography, date = time,
+                  suppressed_flag = all_of(paste0('lab_suppressed_flag_', v))) %>%
+    mutate(source = LAB_SOURCE)
+}
+
+suppressed_rsv <- bind_rows(suppressed_rsv, lab_suppressed('rsv'))
+suppressed_flu <- bind_rows(suppressed_flu, lab_suppressed('flu'))
+suppressed_covid <- bind_rows(suppressed_covid, lab_suppressed('covid'))
+
+overall_trends %>%
   filter(grepl('rsv',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv','delphi_nhsn_rsv' )) %>%
+  filter(variable %in% c('epic_pct_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv','delphi_nhsn_rsv','lab_percent_pos_rsv' )) %>%
   mutate( source = if_else(variable=='epic_pct_rsv', 'Epic Cosmos, ED',
                     if_else(variable=='gtrends_rsv_adjusted', 'Google Health Trends',
                             if_else(variable=='percent_visits_rsv', 'CDC NSSP',
                                     if_else(variable=='rate_rsv', 'CDC RespNET',
-                                            if_else(variable=='wastewater_rsv', 'CDC NWSS', 
-                                                    if_else(variable=='delphi_nhsn_rsv', 'CDC NHSN', 
+                                            if_else(variable=='wastewater_rsv', 'CDC NWSS',
+                                                    if_else(variable=='delphi_nhsn_rsv', 'CDC NHSN',
+                                                            if_else(variable=='lab_percent_pos_rsv', LAB_SOURCE,
                                                                                                                                                                   NA_character_
-                    ))))))
+                    )))))))
           ) %>%
   left_join(suppressed_rsv, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
@@ -156,7 +177,7 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth','delphi_fluview_wili','kinsa_cough_cold_flu')) %>%
+  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth','delphi_fluview_wili','kinsa_cough_cold_flu','lab_percent_pos_flu')) %>%
   mutate( source = if_else(variable=='epic_pct_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
@@ -165,9 +186,10 @@ overall_trends %>%
                                                              if_else(variable=='delphi_nhsn_flu', 'CDC NHSN',
                                                                    if_else(variable=='delphi_fluview_wili', 'CDC ILINet',
                                                                          if_else(variable=='kinsa_cough_cold_flu', 'Kinsa',
+                                                                           if_else(variable=='lab_percent_pos_flu', LAB_SOURCE,
                                                            NA_character_
 
-                                                   ))))))))
+                                                   )))))))))
   ) %>%
   left_join(suppressed_flu, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
@@ -180,7 +202,7 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('covid',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid','delphi_nhsn_covid','delphi_hospital_covid_smooth','delphi_doc_covid_smooth' )) %>%
+  filter(variable %in% c('epic_pct_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid','delphi_nhsn_covid','delphi_hospital_covid_smooth','delphi_doc_covid_smooth','lab_percent_pos_covid' )) %>%
   mutate( source = if_else(variable=='epic_pct_covid', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_covid', 'CDC NSSP',
                                            if_else(variable=='rate_covid', 'CDC RespNET',
@@ -188,11 +210,11 @@ overall_trends %>%
                                                            if_else(variable=='delphi_nhsn_covid', 'CDC NHSN', 
                                                                    if_else(variable=='delphi_hospital_covid_smooth', 'Delphi Hospital Claims', 
                                                                            if_else(variable=='delphi_doc_covid_smooth', 'Delphi Doctor Claims' ,
-                                                                             
-                                                                   
+                                                                             if_else(variable=='lab_percent_pos_covid', LAB_SOURCE,
+
                                                            NA_character_
-                                                           
-                                                   )))))))
+
+                                                   ))))))))
   ) %>%
   left_join(suppressed_covid, by=c('fips','date','source')) %>%
   mutate(suppressed_flag = if_else(is.na(suppressed_flag), 0, suppressed_flag)) %>%
