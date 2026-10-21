@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-21T14:02:46Z",
+  "generated": "2026-10-21T15:05:47Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -16021,13 +16021,37 @@
                 "ehrlichiosis_and_anaplasmosis_ehrlichia_ewingii_infection": {},
                 "ehrlichiosis_and_anaplasmosis_undetermined_ehrlichiosis_anaplasmosis": {},
                 "malaria": {},
-                "zika_virus_disease_non_congenital": {}
+                "zika_virus_disease_non_congenital": {},
+                "epic_n_new_lyme": {},
+                "epic_pct_new_lyme": {},
+                "epic_n_new_babesiosis": {},
+                "epic_pct_new_babesiosis": {},
+                "epic_n_new_malaria": {},
+                "epic_pct_new_malaria": {},
+                "epic_n_new_rmsf": {},
+                "epic_pct_new_rmsf": {},
+                "epic_n_new_west_nile": {},
+                "epic_pct_new_west_nile": {},
+                "epic_n_new_dengue": {},
+                "epic_pct_new_dengue": {},
+                "epic_n_new_patients": {},
+                "epic_n_tests_babesiosis": {},
+                "epic_pct_tests_babesiosis": {},
+                "epic_n_tests_rmsf": {},
+                "epic_pct_tests_rmsf": {},
+                "epic_n_tests_west_nile": {},
+                "epic_pct_tests_west_nile": {},
+                "epic_n_tests_dengue": {},
+                "epic_pct_tests_dengue": {},
+                "epic_n_tests_malaria": {},
+                "epic_pct_tests_malaria": {},
+                "epic_n_lab_results": {}
               }
             },
             {
               "name": "value",
               "short_name": "Value",
-              "description": "Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), or weekly case counts for the NNDSS measures (national and state only). NNDSS publishes cumulative year-to-date counts; this bundle de-cumulates them into weekly incident counts by differencing consecutive weeks within each MMWR year, so occasional negative values reflect downward revisions to the source's cumulative totals.",
+              "description": "Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), weekly case counts for the NNDSS measures (national and state only), or monthly Epic Cosmos new-diagnosis and lab-test counts and percents (national and state only). NNDSS publishes cumulative year-to-date counts; this bundle de-cumulates them into weekly incident counts by differencing consecutive weeks within each MMWR year, so occasional negative values reflect downward revisions to the source's cumulative totals.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -16040,8 +16064,17 @@
               "unit": "",
               "levels": {
                 "CDC ArboNET": {},
-                "CDC NNDSS": {}
+                "CDC NNDSS": {},
+                "Epic Cosmos": {}
               }
+            },
+            {
+              "name": "suppressed_flag",
+              "short_name": "Suppressed flag",
+              "description": "1 if the Epic Cosmos value was suppressed (10 or fewer patients) and imputed, 0 otherwise; NA for other sources.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
             }
           ]
         }
@@ -27033,6 +27066,163 @@
         }
       ]
     },
+    "epic_birth_vaccines": {
+      "name": "epic_birth_vaccines",
+      "display_name": "Epic Birth Vaccines",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. This source produces two population datasets: standard/data.csv.gz and standard/data_cpt_birth.csv.gz. The first includes all patients with linked birthing parent information and captures records from the child's first year of life, which may include vaccines administered at follow-up appointments after birth. The second is a subset restricted to the specific encounter in which a birth-related billing code was recorded (CPT 99460-99465, 99468, 99477). Because this second dataset is limited to a single encounter, it may exclude vaccines administered at birth under certain circumstances—for example, if an infant was delivered at a non-Epic facility and immediately transferred to an Epic-using site. As such, it should be considered a lower bound and the dataset with all patients with linked birthing parent information  can be considered an upper bound. Due to privacy protections, counts fewer than 10 are suppressed and imputed.to high levels of missingness of county data in some states.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_pct_vitamin_k",
+              "short_name": "Vitamin K prophylaxis",
+              "description": "Percent of patients with birthing parent information who received Vitamin K prophylaxis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_pct_vitamin_k_suppressed_flag",
+              "short_name": "Suppressed flag: Vitamin K prophylaxis",
+              "description": "Indicates whether the Vitamin K prophylaxis percentage was suppressed by Epic Cosmos.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_pct_rsv",
+              "short_name": "RSV immunization",
+              "description": "Percent of patients with birthing parent information who received an RSV immunization (nirsevimab).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_pct_rsv_suppressed_flag",
+              "short_name": "Suppressed flag: RSV immunization",
+              "description": "Indicates whether the RSV immunization percentage was suppressed by Epic Cosmos.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_pct_hepb",
+              "short_name": "HepB vaccination",
+              "description": "Percent of patients with birthing parent information with at least one recorded hepatitis B vaccine dose.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_pct_hepb_suppressed_flag",
+              "short_name": "Suppressed flag: HepB vaccination",
+              "description": "Indicates whether the HepB vaccination percentage was suppressed by Epic Cosmos.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_patients",
+              "short_name": "patients with birthing parent",
+              "description": "Count of patients with birthing parent information, used as the denominator for the vaccination percentages.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "epic_n_patients_suppressed_flag",
+              "short_name": "Suppressed flag: patient count",
+              "description": "Indicates whether the patient count was suppressed and imputed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            }
+          ]
+        },
+        {
+          "filename": "data_cpt_birth.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_pct_vitamin_k",
+              "short_name": "Vitamin K prophylaxis",
+              "description": "Percent of patients with birthing parent information who received Vitamin K prophylaxis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_pct_vitamin_k_suppressed_flag",
+              "short_name": "Suppressed flag: Vitamin K prophylaxis",
+              "description": "Indicates whether the Vitamin K prophylaxis percentage was suppressed by Epic Cosmos.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_pct_rsv",
+              "short_name": "RSV immunization",
+              "description": "Percent of patients with birthing parent information who received an RSV immunization (nirsevimab).",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_pct_rsv_suppressed_flag",
+              "short_name": "Suppressed flag: RSV immunization",
+              "description": "Indicates whether the RSV immunization percentage was suppressed by Epic Cosmos.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_pct_hepb",
+              "short_name": "HepB vaccination",
+              "description": "Percent of patients with birthing parent information with at least one recorded hepatitis B vaccine dose.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_pct_hepb_suppressed_flag",
+              "short_name": "Suppressed flag: HepB vaccination",
+              "description": "Indicates whether the HepB vaccination percentage was suppressed by Epic Cosmos.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_patients",
+              "short_name": "patients with birthing parent",
+              "description": "Count of patients with birthing parent information, used as the denominator for the vaccination percentages.",
+              "measure_type": "Count",
+              "unit": "Count"
+            },
+            {
+              "name": "epic_n_patients_suppressed_flag",
+              "short_name": "Suppressed flag: patient count",
+              "description": "Indicates whether the patient count was suppressed and imputed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            }
+          ]
+        }
+      ]
+    },
     "epic_chronic": {
       "name": "epic_chronic",
       "display_name": "Epic Chronic",
@@ -28391,6 +28581,310 @@
               "description": "Binary indicator: 1 if the all-cause weekly ED encounter count was suppressed, 0 otherwise.",
               "measure_type": "binary",
               "unit": ""
+            }
+          ]
+        }
+      ]
+    },
+    "epic_vector_borne": {
+      "name": "epic_vector_borne",
+      "display_name": "Epic Vector Borne",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from over 300 million patients across more than 1,600 hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. The dataset includes emergency department visits, diagnoses, immunizations, laboratory results, and other clinical data. Due to privacy protections, counts fewer than 10 are suppressed and imputed. Coverage extends across all U.S. states and territories. Note that county-level and city-level stratifications could differ markedly in total sample size due to high levels of missingness of county data in some states.",
+      "standard_files": [
+        {
+          "filename": "data_lab_tests.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_n_tests_babesiosis",
+              "short_name": "Lab Results: babesia",
+              "description": "Monthly count of lab component results for babesia testing.",
+              "measure_type": "Count",
+              "unit": "lab component results"
+            },
+            {
+              "name": "epic_pct_tests_babesiosis",
+              "short_name": "Lab Results Percentage: babesia",
+              "description": "Percent of all lab component results that were for babesia testing.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_tests_babesiosis_suppressed_flag",
+              "short_name": "Suppressed flag: lab results, babesia",
+              "description": "Indicates whether the babesia lab-result count was suppressed and imputed; applies to both epic_n_tests_babesiosis and epic_pct_tests_babesiosis.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_tests_rmsf",
+              "short_name": "Lab Results: Rocky Mountain Spotted Fever (RMSF)",
+              "description": "Monthly count of lab component results for Rocky Mountain Spotted Fever (RMSF) testing.",
+              "measure_type": "Count",
+              "unit": "lab component results"
+            },
+            {
+              "name": "epic_pct_tests_rmsf",
+              "short_name": "Lab Results Percentage: Rocky Mountain Spotted Fever (RMSF)",
+              "description": "Percent of all lab component results that were for Rocky Mountain Spotted Fever (RMSF) testing.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_tests_rmsf_suppressed_flag",
+              "short_name": "Suppressed flag: lab results, Rocky Mountain Spotted Fever (RMSF)",
+              "description": "Indicates whether the Rocky Mountain Spotted Fever (RMSF) lab-result count was suppressed and imputed; applies to both epic_n_tests_rmsf and epic_pct_tests_rmsf.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_tests_west_nile",
+              "short_name": "Lab Results: West Nile virus",
+              "description": "Monthly count of lab component results for West Nile virus testing.",
+              "measure_type": "Count",
+              "unit": "lab component results"
+            },
+            {
+              "name": "epic_pct_tests_west_nile",
+              "short_name": "Lab Results Percentage: West Nile virus",
+              "description": "Percent of all lab component results that were for West Nile virus testing.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_tests_west_nile_suppressed_flag",
+              "short_name": "Suppressed flag: lab results, West Nile virus",
+              "description": "Indicates whether the West Nile virus lab-result count was suppressed and imputed; applies to both epic_n_tests_west_nile and epic_pct_tests_west_nile.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_tests_dengue",
+              "short_name": "Lab Results: dengue",
+              "description": "Monthly count of lab component results for dengue testing.",
+              "measure_type": "Count",
+              "unit": "lab component results"
+            },
+            {
+              "name": "epic_pct_tests_dengue",
+              "short_name": "Lab Results Percentage: dengue",
+              "description": "Percent of all lab component results that were for dengue testing.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_tests_dengue_suppressed_flag",
+              "short_name": "Suppressed flag: lab results, dengue",
+              "description": "Indicates whether the dengue lab-result count was suppressed and imputed; applies to both epic_n_tests_dengue and epic_pct_tests_dengue.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_tests_malaria",
+              "short_name": "Lab Results: malaria",
+              "description": "Monthly count of lab component results for malaria testing.",
+              "measure_type": "Count",
+              "unit": "lab component results"
+            },
+            {
+              "name": "epic_pct_tests_malaria",
+              "short_name": "Lab Results Percentage: malaria",
+              "description": "Percent of all lab component results that were for malaria testing.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_tests_malaria_suppressed_flag",
+              "short_name": "Suppressed flag: lab results, malaria",
+              "description": "Indicates whether the malaria lab-result count was suppressed and imputed; applies to both epic_n_tests_malaria and epic_pct_tests_malaria.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_lab_results",
+              "short_name": "Total Lab Component Results",
+              "description": "Monthly total of lab component results, the denominator for each lab-test percentage.",
+              "measure_type": "Count",
+              "unit": "lab component results"
+            },
+            {
+              "name": "epic_n_lab_results_suppressed_flag",
+              "short_name": "Suppressed flag: total lab results",
+              "description": "Indicates whether the total lab-result count was suppressed and imputed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            }
+          ]
+        },
+        {
+          "filename": "data_new_cases.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "epic_n_new_lyme",
+              "short_name": "New Lyme disease patients",
+              "description": "Monthly count of patients with a new Lyme disease diagnosis.",
+              "measure_type": "Count",
+              "unit": "patients"
+            },
+            {
+              "name": "epic_pct_new_lyme",
+              "short_name": "New Lyme disease percent of filtered patients",
+              "description": "Monthly percent of patients in the new-diagnosis population with a new Lyme disease diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_new_lyme_suppressed_flag",
+              "short_name": "Suppressed flag: new Lyme disease",
+              "description": "Indicates whether the numerator was suppressed and imputed; applies to both epic_n_new_lyme and epic_pct_new_lyme .",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_new_babesiosis",
+              "short_name": "New babesiosis patients",
+              "description": "Monthly count of patients with a new babesiosis diagnosis.",
+              "measure_type": "Count",
+              "unit": "patients"
+            },
+            {
+              "name": "epic_pct_new_babesiosis",
+              "short_name": "New babesiosis percent of filtered patients",
+              "description": "Monthly percent of patients in the new-diagnosis population with a new babesiosis diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_new_babesiosis_suppressed_flag",
+              "short_name": "Suppressed flag: new babesiosis",
+              "description": "Indicates whether the numerator was suppressed and imputed; applies to both epic_n_new_babesiosis and epic_pct_new_babesiosis .",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_new_malaria",
+              "short_name": "New malaria patients",
+              "description": "Monthly count of patients with a new malaria diagnosis.",
+              "measure_type": "Count",
+              "unit": "patients"
+            },
+            {
+              "name": "epic_pct_new_malaria",
+              "short_name": "New malaria percent of filtered patients",
+              "description": "Monthly percent of patients in the new-diagnosis population with a new malaria diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_new_malaria_suppressed_flag",
+              "short_name": "Suppressed flag: new malaria",
+              "description": "Indicates whether the numerator was suppressed and imputed; applies to both epic_n_new_malaria and epic_pct_new_malaria .",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_new_rmsf",
+              "short_name": "New Rocky Mountain spotted fever (RMSF) patients",
+              "description": "Monthly count of patients with a new Rocky Mountain spotted fever (RMSF) diagnosis.",
+              "measure_type": "Count",
+              "unit": "patients"
+            },
+            {
+              "name": "epic_pct_new_rmsf",
+              "short_name": "New Rocky Mountain spotted fever (RMSF) percent of filtered patients",
+              "description": "Monthly percent of patients in the new-diagnosis population with a new Rocky Mountain spotted fever (RMSF) diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_new_rmsf_suppressed_flag",
+              "short_name": "Suppressed flag: new Rocky Mountain spotted fever (RMSF)",
+              "description": "Indicates whether the numerator was suppressed and imputed; applies to both epic_n_new_rmsf and epic_pct_new_rmsf .",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_new_west_nile",
+              "short_name": "New West Nile virus patients",
+              "description": "Monthly count of patients with a new West Nile virus diagnosis.",
+              "measure_type": "Count",
+              "unit": "patients"
+            },
+            {
+              "name": "epic_pct_new_west_nile",
+              "short_name": "New West Nile virus percent of filtered patients",
+              "description": "Monthly percent of patients in the new-diagnosis population with a new West Nile virus diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_new_west_nile_suppressed_flag",
+              "short_name": "Suppressed flag: new West Nile virus",
+              "description": "Indicates whether the numerator was suppressed and imputed; applies to both epic_n_new_west_nile and epic_pct_new_west_nile .",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_new_dengue",
+              "short_name": "New dengue patients",
+              "description": "Monthly count of patients with a new dengue diagnosis.",
+              "measure_type": "Count",
+              "unit": "patients"
+            },
+            {
+              "name": "epic_pct_new_dengue",
+              "short_name": "New dengue percent of filtered patients",
+              "description": "Monthly percent of patients in the new-diagnosis population with a new dengue diagnosis.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "epic_new_dengue_suppressed_flag",
+              "short_name": "Suppressed flag: new dengue",
+              "description": "Indicates whether the numerator was suppressed and imputed; applies to both epic_n_new_dengue and epic_pct_new_dengue .",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "epic_n_new_patients",
+              "short_name": "Patients with any new diagnosis",
+              "description": "Monthly count of patients in the new-case population, the denominator for epic_pct_new_*.",
+              "measure_type": "Count",
+              "unit": "patients"
+            },
+            {
+              "name": "epic_n_new_patients_suppressed_flag",
+              "short_name": "Suppressed flag: new-case patients",
+              "description": "Indicates whether the new-case denominator was suppressed and imputed.",
+              "measure_type": "Binary",
+              "unit": "0/1"
             }
           ]
         }

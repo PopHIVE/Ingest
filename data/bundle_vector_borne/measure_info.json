@@ -10,8 +10,16 @@
     "short_name": "Data source",
     "levels": {
       "CDC ArboNET": {},
-      "CDC NNDSS": {}
+      "CDC NNDSS": {},
+      "Epic Cosmos": {}
     }
+  },
+  "bundle_vector_borne/dist/vector_borne.parquet|suppressed_flag": {
+    "id": "bundle_vector_borne/dist/vector_borne.parquet|suppressed_flag",
+    "short_name": "Suppressed flag",
+    "long_name": "Suppressed and imputed value flag",
+    "short_description": "1 if the Epic Cosmos value was suppressed (10 or fewer patients) and imputed, 0 otherwise; NA for other sources.",
+    "long_description": "Epic Cosmos suppresses counts of 10 or fewer. Those cells are imputed as 5 and flagged 1. A disease's count and percent measures share one flag, and the denominators (patients with a new vector-borne diagnosis, all lab component results) have their own. ArboNET and NNDSS rows are NA."
   },
   "bundle_vector_borne/dist/vector_borne.parquet|measure": {
     "levels": {
@@ -248,25 +256,51 @@
       "ehrlichiosis_and_anaplasmosis_ehrlichia_ewingii_infection": {},
       "ehrlichiosis_and_anaplasmosis_undetermined_ehrlichiosis_anaplasmosis": {},
       "malaria": {},
-      "zika_virus_disease_non_congenital": {}
+      "zika_virus_disease_non_congenital": {},
+      "epic_n_new_lyme": {},
+      "epic_pct_new_lyme": {},
+      "epic_n_new_babesiosis": {},
+      "epic_pct_new_babesiosis": {},
+      "epic_n_new_malaria": {},
+      "epic_pct_new_malaria": {},
+      "epic_n_new_rmsf": {},
+      "epic_pct_new_rmsf": {},
+      "epic_n_new_west_nile": {},
+      "epic_pct_new_west_nile": {},
+      "epic_n_new_dengue": {},
+      "epic_pct_new_dengue": {},
+      "epic_n_new_patients": {},
+      "epic_n_tests_babesiosis": {},
+      "epic_pct_tests_babesiosis": {},
+      "epic_n_tests_rmsf": {},
+      "epic_pct_tests_rmsf": {},
+      "epic_n_tests_west_nile": {},
+      "epic_pct_tests_west_nile": {},
+      "epic_n_tests_dengue": {},
+      "epic_pct_tests_dengue": {},
+      "epic_n_tests_malaria": {},
+      "epic_pct_tests_malaria": {},
+      "epic_n_lab_results": {}
     }
   },
   "bundle_vector_borne/dist/vector_borne.parquet|value": {
     "id": "bundle_vector_borne/dist/vector_borne.parquet|value",
     "measure_column": "bundle_vector_borne/dist/vector_borne.parquet|measure",
     "short_name": "Value",
-    "short_description": "Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), or weekly case counts for the NNDSS measures (national and state only). NNDSS publishes cumulative year-to-date counts; this bundle de-cumulates them into weekly incident counts by differencing consecutive weeks within each MMWR year, so occasional negative values reflect downward revisions to the source's cumulative totals."
+    "short_description": "Value for the vector-borne disease measure identified by the measure column: annual case/activity counts as reported to ArboNET (national, state, and county), weekly case counts for the NNDSS measures (national and state only), or monthly Epic Cosmos new-diagnosis and lab-test counts and percents (national and state only). NNDSS publishes cumulative year-to-date counts; this bundle de-cumulates them into weekly incident counts by differencing consecutive weeks within each MMWR year, so occasional negative values reflect downward revisions to the source's cumulative totals."
   },
   "_bundle": {
     "name": "bundle_vector_borne",
-    "sources": ["arbonet", "nnds"],
+    "sources": ["arbonet", "nnds", "epic_vector_borne"],
     "dist_files": {
       "vector_borne.parquet": {
-        "sources": ["arbonet", "nnds"],
+        "sources": ["arbonet", "nnds", "epic_vector_borne"],
         "source_files": [
           "arbonet/standard/data_state.csv.gz",
           "arbonet/standard/data_county.csv.gz",
-          "nnds/standard/data.csv.gz"
+          "nnds/standard/data.csv.gz",
+          "epic_vector_borne/standard/data_new_cases.csv.gz",
+          "epic_vector_borne/standard/data_lab_tests.csv.gz"
         ]
       }
     }
@@ -291,6 +325,15 @@
       "organization_url": "https://www.cdc.gov/",
       "description": "The National Notifiable Diseases Surveillance System (NNDSS) is a nationwide collaboration that enables all levels of public health to share notifiable disease related health information. Public health uses this information to monitor, control, and prevent the occurrence and spread of state-reportable and nationally notifiable infectious and some non-infectious diseases and conditions. NNDSS publishes weekly cumulative year-to-date case counts; this bundle de-cumulates them (by differencing consecutive weeks within each MMWR year) into weekly incident counts covering vector-borne, tick-borne, and travel-associated arboviral and parasitic diseases: the eight ArboNET-overlapping arboviral diseases NNDSS also tracks by weekly provisional count (chikungunya, Eastern/Western equine encephalitis, Jamestown Canyon, La Crosse, Powassan, St. Louis encephalitis, and West Nile virus disease), babesiosis, dengue and dengue-like illness, ehrlichiosis/anaplasmosis, malaria, and non-congenital Zika virus disease. Negative values in case counts reflect retroactive corrections by the CDC.",
       "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions."
+    },
+    "epic_vector_borne": {
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/",
+      "organization": "Epic Systems",
+      "organization_url": "https://www.epic.com/",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems, accessed via SlicerDicer. This bundle includes monthly counts of new diagnoses (first diagnosis of the disease with none in the prior 6 months) and of lab component results for Lyme disease, babesiosis, malaria, Rocky Mountain spotted fever, West Nile virus and dengue, by state of residence. Percent measures are shares of patients with a new vector-borne diagnosis (new cases) or of all lab component results (tests), not positivity rates. Counts of 10 or fewer are suppressed and imputed as 5. Malaria and dengue in the US are mostly travel-associated.",
+      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'",
+      "date_accessed": 2026
     }
   }
 }
