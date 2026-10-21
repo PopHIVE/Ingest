@@ -1,0 +1,171 @@
+{
+  "epic_pct_vitamin_k": {
+    "id": "epic_pct_vitamin_k",
+    "short_name": "Vitamin K prophylaxis",
+    "long_name": "Percentage of patients with birthing parent with a recorded Vitamin K prophylaxis",
+    "category": "immunization",
+    "short_description": "Percent of patients with birthing parent information who received Vitamin K prophylaxis.",
+    "long_description": "Among Epic Cosmos patients with birthing parent information, the percentage with a recorded Vitamin K (phytonadione) prophylaxis administration. Percentages are computed by Epic Cosmos over the patient count in each cell (epic_n_patients). ",
+    "statement": "In {location}, {value}% of patients with birthing parent received Vitamin K prophylaxis.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_pct_vitamin_k_suppressed_flag": {
+    "id": "epic_pct_vitamin_k_suppressed_flag",
+    "short_name": "Suppressed flag: Vitamin K prophylaxis",
+    "long_name": "Suppression flag for the Vitamin K prophylaxis percentage",
+    "category": "immunization",
+    "short_description": "Indicates whether the Vitamin K prophylaxis percentage was suppressed by Epic Cosmos.",
+    "long_description": "This flag is 1 when Epic Cosmos suppressed the Vitamin K percentage (reported as '-'), and 0 otherwise. Suppressed percentages are imputed as 5 / epic_n_patients (the standard imputed numerator of 5, over the row's patient count) rather than left missing; the flag stays 1 to mark the value as imputed.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_pct_rsv": {
+    "id": "epic_pct_rsv",
+    "short_name": "RSV immunization",
+    "long_name": "Percentage of patients with birthing parent with a recorded RSV immunization",
+    "category": "immunization",
+    "short_description": "Percent of patients with birthing parent information who received an RSV immunization (nirsevimab).",
+    "long_description": "Among Epic Cosmos patients with birthing parent information, the percentage with a recorded RSV immunization (nirsevimab, a monoclonal antibody). Percentages are computed by Epic Cosmos over the patient count in each cell (epic_n_patients). Note that this metric is a known underestimate, as RSV immunizations are often administered in primary care offices, which are underrepresented in Epic Cosmos. Because nirsevimab was not approved until 2023, this measure did not exist and is marked as missing (NA), rather than suppressed, for the years 2018–2022 in both population bases.",
+    "statement": "In {location}, {value}% of patients with birthing parent received an RSV immunization.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_pct_rsv_suppressed_flag": {
+    "id": "epic_pct_rsv_suppressed_flag",
+    "short_name": "Suppressed flag: RSV immunization",
+    "long_name": "Suppression flag for the RSV immunization percentage",
+    "category": "immunization",
+    "short_description": "Indicates whether the RSV immunization percentage was suppressed by Epic Cosmos.",
+    "long_description": "This flag is 1 when Epic Cosmos suppressed the RSV immunization percentage (reported as '-'), and 0 otherwise. Suppressed percentages are imputed as 5 / epic_n_patients (the standard imputed numerator of 5, over the row's patient count) rather than left missing; the flag stays 1 to mark the value as imputed. This flag is 0 for the 2018-2022 rows where epic_pct_rsv is NA. That gap reflects the measure not existing yet (nirsevimab was not approved until 2023), not suppression.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_pct_hepb": {
+    "id": "epic_pct_hepb",
+    "short_name": "HepB vaccination",
+    "long_name": "Percentage of patients with birthing parent with a recorded hepatitis B vaccination",
+    "category": "immunization",
+    "short_description": "Percent of patients with birthing parent information with at least one recorded hepatitis B vaccine dose.",
+    "long_description": "Among Epic Cosmos patients with birthing parent information, the percentage with at least one recorded hepatitis B (HepB) vaccine dose. Percentages are computed by Epic Cosmos over the patient count in each cell (epic_n_patients).",
+    "statement": "In {location}, {value}% of patients with birthing parent had a recorded HepB vaccine dose.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_pct_hepb_suppressed_flag": {
+    "id": "epic_pct_hepb_suppressed_flag",
+    "short_name": "Suppressed flag: HepB vaccination",
+    "long_name": "Suppression flag for the hepatitis B vaccination percentage",
+    "category": "immunization",
+    "short_description": "Indicates whether the HepB vaccination percentage was suppressed by Epic Cosmos.",
+    "long_description": "This flag is 1 when Epic Cosmos suppressed the HepB vaccination percentage (reported as '-'), and 0 otherwise. Suppressed percentages are imputed as 5 / epic_n_patients (the standard imputed numerator of 5, over the row's patient count) rather than left missing; the flag stays 1 to mark the value as imputed.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_n_patients": {
+    "id": "epic_n_patients",
+    "short_name": "patients with birthing parent",
+    "long_name": "Number of patients with birthing parent information at Epic Cosmos network sites",
+    "category": "immunization",
+    "short_description": "Count of patients with birthing parent information, used as the denominator for the vaccination percentages.",
+    "long_description": "Annual count of Epic Cosmos patients with birthing parent information, stratified by state of residence. Counts of 10 or fewer are suppressed and imputed as 5 (see suppressed_flag). This source produces two population bases: standard/data.csv.gz (all patients with birthing parent information, larger) and standard/data_cpt_birth.csv.gz (subset with a billed procedure indicating birth: CPT 99460-99465, 99468, 99477, smaller). State-level counts reflect Epic's footprint among birthing facilities, not the underlying birth count.",
+    "statement": "In {location}, {value} patients with birthing parent information were recorded at Epic Cosmos network sites.",
+    "measure_type": "Count",
+    "unit": "Count",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "epic_n_patients_suppressed_flag": {
+    "id": "epic_n_patients_suppressed_flag",
+    "short_name": "Suppressed flag: patient count",
+    "long_name": "Suppression flag for the birthing parent patient count",
+    "category": "immunization",
+    "short_description": "Indicates whether the patient count was suppressed and imputed.",
+    "long_description": "Due to privacy protections, Epic Cosmos suppresses counts of 10 or fewer patients. This flag is 1 when epic_n_patients was suppressed and imputed as 5, and 0 otherwise.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "epic_cosmos"
+      }
+    ],
+    "citations": []
+  },
+  "_sources": {
+    "epic_cosmos": {
+      "name": "Epic Cosmos",
+      "url": "https://cosmos.epic.com/",
+      "date_accessed": 2026,
+      "organization": "Epic Systems",
+      "organization_url": "https://www.epic.com/",
+      "description": "Epic Cosmos is a collaborative research platform containing de-identified patient data from hospitals and health systems using Epic electronic health record systems. Data is accessed via SlicerDicer, a self-service analytics tool. This source produces two population datasets: standard/data.csv.gz and standard/data_cpt_birth.csv.gz. The first includes all patients with linked birthing parent information and captures records from the child's first year of life, which may include vaccines administered at follow-up appointments after birth. The second is a subset restricted to the specific encounter in which a birth-related billing code was recorded (CPT 99460-99465, 99468, 99477). Because this second dataset is limited to a single encounter, it may exclude vaccines administered at birth under certain circumstances—for example, if an infant was delivered at a non-Epic facility and immediately transferred to an Epic-using site. As such, it should be considered a lower bound and the dataset with all patients with linked birthing parent information  can be considered an upper bound. Due to privacy protections, counts fewer than 10 are suppressed and imputed.to high levels of missingness of county data in some states.",
+      "restrictions": "The data can be re-used with appropriate attribution. A suggested citation relating to this data is 'Results of research performed with Epic Cosmos were obtained from the PopHIVE platform (https://github.com/PopHIVE/Ingest).'"
+    }
+  },
+  "_catalog": {
+    "name": "Epic Birth Vaccines",
+    "summary": "Share of newborns who received Vitamin K, RSV immunization (nirsevimab) and hepatitis B vaccine, by state and year. Data come from Epic Cosmos, a platform of de-identified patient records from hospitals and health systems using Epic.",
+    "search_terms": [
+      "Immunizations",
+      "vitamin k",
+      "hepatitis b",
+      "rsv",
+      "nirsevimab"
+    ],
+    "bucket": [
+      "Immunization"
+    ],
+    "files": {
+      "data.csv.gz": "Newborns with birthing parent information, by state and year",
+      "data_cpt_birth.csv.gz": "Newborns with a billed birth procedure, by state and year"
+    }
+  }
+}

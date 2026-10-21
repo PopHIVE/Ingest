@@ -2,7 +2,9 @@
 # Bundle: Vector-Borne Diseases
 # Combines: arbonet (CDC ArboNET arboviral disease surveillance, state + county),
 #           nnds (NNDSS vector-borne/tick-borne/travel-associated disease
-#           case counts)
+#           case counts),
+#           epic_vector_borne (Epic Cosmos monthly new diagnoses and lab
+#           tests, national + state)
 # Output:
 #   vector_borne.parquet - ArboNET state- and county-level annual measures +
 #                           NNDSS weekly case counts (de-cumulated from the
@@ -120,12 +122,63 @@ arbonet_county_long <- vroom::vroom('../arbonet/standard/data_county.csv.gz', sh
   filter(!is.na(value))
 
 # -----------------------------------------------------------------------------
-# 3. Combine all three into a single long-format dist file. `geography_level`
+# 3. Epic Cosmos (national + state, monthly): new diagnoses and lab tests.
+#    Each disease has `epic_n_*` / `epic_pct_*` columns sharing one
+#    `*_suppressed_flag` column (flag name = measure name with the n_/pct_
+#    prefix dropped); the denominators have their own flag. Flags are carried
+#    into `suppressed_flag`; other sources leave it NA.
+# -----------------------------------------------------------------------------
+epic_long <- function(path) {
+  wide <- vroom::vroom(path, show_col_types = FALSE) %>%
+    filter(!is.na(geography)) %>%
+    rename(fips = geography, date = time) %>%
+    left_join(state_name_lookup, by = c("fips" = "geography")) %>%
+    mutate(
+      geography_level = if_else(fips == '00', 'national', 'state'),
+      geography_name = if_else(fips == '00', 'United States', geography_name)
+    ) %>%
+    filter(!is.na(geography_name))
+
+  flag_cols <- grep("_suppressed_flag$", names(wide), value = TRUE)
+  value_cols <- setdiff(
+    grep("^epic_", names(wide), value = TRUE),
+    flag_cols
+  )
+
+  values <- wide %>%
+    dplyr::select(fips, geography_level, date, all_of(value_cols)) %>%
+    reshape2::melt(id.vars = c('fips', 'geography_level', 'date'), variable.name = 'measure', value.name = 'value') %>%
+    mutate(measure = as.character(measure), value = suppressWarnings(as.numeric(value)))
+
+  flags <- wide %>%
+    dplyr::select(fips, geography_level, date, all_of(flag_cols)) %>%
+    reshape2::melt(id.vars = c('fips', 'geography_level', 'date'), variable.name = 'flag', value.name = 'suppressed_flag') %>%
+    mutate(flag = as.character(flag))
+
+  values %>%
+    mutate(flag = if_else(
+      grepl("^epic_(n|pct)_(new|tests)_", measure) & !grepl("_patients$", measure),
+      paste0("epic_", sub("^epic_(n|pct)_", "", measure), "_suppressed_flag"),
+      paste0(measure, "_suppressed_flag")
+    )) %>%
+    left_join(flags, by = c('fips', 'geography_level', 'date', 'flag')) %>%
+    dplyr::select(-flag) %>%
+    filter(!is.na(value)) %>%
+    mutate(source = 'Epic Cosmos')
+}
+
+epic_long_all <- bind_rows(
+  epic_long('../epic_vector_borne/standard/data_new_cases.csv.gz'),
+  epic_long('../epic_vector_borne/standard/data_lab_tests.csv.gz')
+)
+
+# -----------------------------------------------------------------------------
+# 4. Combine all sources into a single long-format dist file. `geography_level`
 #    distinguishes granularity: `fips` holds "00" for national rows, a
 #    2-digit state/territory FIPS code for state rows, and a 5-digit county
 #    FIPS code for county rows.
 # -----------------------------------------------------------------------------
-vector_borne <- bind_rows(arbonet_state_long, nnds_long, arbonet_county_long) %>%
+vector_borne <- bind_rows(arbonet_state_long, nnds_long, arbonet_county_long, epic_long_all) %>%
   arrange(source, measure, geography_level, fips, date)
 
 arrow::write_parquet(vector_borne, "dist/vector_borne.parquet", compression = "snappy")
