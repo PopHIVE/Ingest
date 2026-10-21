@@ -186,7 +186,7 @@ if (!identical(process$lab_state, lab_state)) {
 
   lab_raw <- vroom::vroom("./raw/jqxy-cyu2.csv.xz", show_col_types = FALSE)
 
-  data_lab <- lab_raw %>%
+  lab_state_long <- lab_raw %>%
     filter(geography_type == "state") %>%
     mutate(
       pathogen = c("COVID-19" = "covid", "Influenza" = "flu", "RSV" = "rsv")[pathogen],
@@ -196,7 +196,32 @@ if (!identical(process$lab_state, lab_state)) {
     filter(!is.na(geography), !is.na(pathogen)) %>%
     # suppressed when positives < 10 (denominator > 0 but positives missing)
     mutate(suppressed_flag = if_else(test_count > 0 & is.na(positive_count), 1L, 0L)) %>%
-    select(geography, time, pathogen, test_count, positive_count, percent_pos, suppressed_flag) %>%
+    select(geography, time, pathogen, test_count, positive_count, percent_pos, suppressed_flag)
+
+  # National totals: sum across states at each time point. Suppressed states
+  # contribute tests but no positives, so the national positive count is a lower
+  # bound (suppressed_flag is NA for national since some state is nearly always
+  # suppressed) and percent_pos uses
+  # only tests from states with reported positives.
+  lab_national <- lab_state_long %>%
+    group_by(time, pathogen) %>%
+    summarize(
+      positive_count = if_else(
+        all(is.na(positive_count)), NA_real_, sum(positive_count, na.rm = TRUE)
+      ),
+      percent_pos = 100 * sum(positive_count, na.rm = TRUE) /
+        sum(test_count[!is.na(positive_count)], na.rm = TRUE),
+      test_count = sum(test_count, na.rm = TRUE),
+      suppressed_flag = NA_integer_,
+      .groups = "drop"
+    ) %>%
+    mutate(
+      percent_pos = if_else(is.finite(percent_pos), percent_pos, NA_real_),
+      geography = "00"
+    ) %>%
+    select(geography, time, pathogen, test_count, positive_count, percent_pos, suppressed_flag)
+
+  data_lab <- bind_rows(lab_state_long, lab_national) %>%
     tidyr::pivot_wider(
       names_from = pathogen,
       values_from = c(test_count, positive_count, percent_pos, suppressed_flag),

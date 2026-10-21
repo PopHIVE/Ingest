@@ -155,6 +155,54 @@
     "unit": "",
     "time_resolution": "Week"
   },
+  "{category}test_count": {
+    "short_name": "Commercial lab NAAT tests",
+    "short_description": "Weekly number of NAAT tests from participating commercial laboratories. National (United States) is the sum of state counts for each week.",
+    "measure_type": "Count",
+    "unit": "Tests",
+    "time_resolution": "Week",
+    "categories": {
+      "bundle_respiratory/dist/rsv_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/flu_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/covid_lab_testing.parquet|": {}
+    }
+  },
+  "{category}positive_count": {
+    "short_name": "Commercial lab positive NAATs",
+    "short_description": "Weekly number of positive NAAT tests; NA when suppressed (<10). National (United States) is the sum of state counts, so suppressed states contribute no positives and the national count is a lower bound whenever any state is suppressed.",
+    "measure_type": "Count",
+    "unit": "Tests",
+    "time_resolution": "Week",
+    "categories": {
+      "bundle_respiratory/dist/rsv_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/flu_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/covid_lab_testing.parquet|": {}
+    }
+  },
+  "{category}value": {
+    "short_name": "Commercial lab percent positivity",
+    "short_description": "Weekly percent of NAAT tests that were positive; NA when suppressed (<10). National (United States) is total positives divided by total tests across states with unsuppressed positives, times 100, so it is affected by state-level suppression.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Week",
+    "categories": {
+      "bundle_respiratory/dist/rsv_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/flu_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/covid_lab_testing.parquet|": {}
+    }
+  },
+  "{category}suppressed_flag": {
+    "short_name": "Commercial lab suppression flag",
+    "short_description": "Equals 1 when tests were performed but positives were suppressed (<10); 0 otherwise. NA for national (United States), where some state is suppressed in nearly every week.",
+    "measure_type": "Flag",
+    "unit": "0/1",
+    "time_resolution": "Week",
+    "categories": {
+      "bundle_respiratory/dist/rsv_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/flu_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/covid_lab_testing.parquet|": {}
+    }
+  },
   "bundle_respiratory/dist/rsv_testing_pct.parquet|suppressed_flag": {
     "short_name": "Suppressed flag",
     "short_description": "Equals 1 when the number of ED encounters coded J12-J18 was '10 or fewer' (suppressed); 0 otherwise.",
