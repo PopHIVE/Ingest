@@ -403,7 +403,7 @@ flowchart LR
     end
     subgraph pep_population["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/pep_population" target="_blank" rel="noreferrer">pep_population</a></strong>`"]
         direction LR
-        n136["`data.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul><br />Script Failed:<br />CENSUS_API_KEY environment variable is not set`"]:::fail
+        n136["`data.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
     end
     subgraph respnet["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/respnet" target="_blank" rel="noreferrer">respnet</a></strong>`"]
         direction LR
