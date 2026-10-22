@@ -66,7 +66,7 @@ kinsa_daily <- vroom::vroom('../kinsa_ili/standard/data.csv.gz', show_col_types 
   #summarise(kinsa_cough_cold_flu = mean(kinsa_cough_cold_flu, na.rm = TRUE), .groups = "drop") %>%
   filter(as.character(time) > start_time)
 
-# NSSP commercial laboratory percent positivity (NA = suppressed, <10)
+# NSSP commercial laboratory percent positivity (suppressed <10 positives imputed as 5)
 lab_pos <- vroom::vroom('../nssp/standard/data_lab.csv.gz', show_col_types = FALSE,
                         col_types = vroom::cols(geography = "c")) %>%
   filter(as.character(time) > start_time)
@@ -280,7 +280,7 @@ d3 %>%
 
 #########################
 ## NSSP commercial laboratory testing, state
-## NA counts / percent positive = suppressed (<10), not imputed
+## suppressed positive counts (<10) are imputed as 5 (see suppressed_flag)
 #########################
 lab <- vroom::vroom('../nssp/standard/data_lab.csv.gz', show_col_types = FALSE,
                     col_types = vroom::cols(geography = "c")) %>%
