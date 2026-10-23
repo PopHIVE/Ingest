@@ -956,9 +956,13 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 drowning_read <- function(file) {
   vroom::vroom(file.path('../drowning/standard', file), show_col_types = FALSE) %>%
     filter(age %in% names(AGE_DROWN), sex == 'Overall', race_ethnicity == 'Overall') %>%
+    # The source fills a suppressed death count with 5 (and derives a rate from
+    # it) and sets suppressed_flag = 1; a published count is never 5, so those
+    # rows are the imputed ones. Treat their rate as missing, as when it was -999.
     mutate(age = unname(AGE_DROWN[age]),
+           imputed = drowning_deaths == 5 & suppressed_flag == 1,
            across(c(drowning_crude_rate, drowning_crude_rate_lcl, drowning_crude_rate_ucl),
-                  ~ if_else(.x == -999, NA_real_, .x))) %>%
+                  ~ if_else(.x == -999 | imputed, NA_real_, .x))) %>%
     transmute(fips = geography, time, age,
               suppressed = as.integer(suppressed_flag),
               measure = 'drowning_crude_rate',

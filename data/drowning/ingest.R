@@ -26,6 +26,13 @@ library(purrr)
 
 RAW_FILE <- "raw/ucd_icd10_expanded_2018_2024.parquet"
 RAW_NATIONAL_FILE <- "raw/national_ucd_icd10_expanded_2018_2024.parquet"
+# Age-band pulls (scrape_age_bands.py), one raw file per geography level;
+# national and state go into data_state_ageband, county into data_county_ageband.
+RAW_AGEBAND_FILES <- c(
+  national = "raw/ageband_national_ucd_icd10_expanded_2018_2024.parquet",
+  state = "raw/ageband_state_ucd_icd10_expanded_2018_2024.parquet",
+  county = "raw/ageband_county_ucd_icd10_expanded_2018_2024.parquet"
+)
 YEARS <- 2018:2024
 
 # -----------------------------------------------------------------------------
@@ -52,6 +59,10 @@ MISSING_DENOM_MARKERS <- c("Not Applicable", "Not Available")
 # missing_denom_flag is 1. Chosen over 0 so a missing cell can never be
 # mistaken for a true zero without cross-referencing a flag column.
 MISSING_SENTINEL <- -999
+
+# Value filled in for a suppressed death count (1-9 deaths): the midpoint of the
+# suppressed range.
+SUPPRESSED_DEATHS_IMPUTED <- 5
 
 RAW_VALUE_COLS <- c(
   "deaths_raw", "population_raw", "crude_rate_raw",
@@ -124,7 +135,13 @@ clean_ethnicity_label <- function(x) {
 # Both are 1 when a row has both kinds of marker in different cells -- common
 # in the county files, where Deaths is "Suppressed" and Population is
 # "Not Applicable".
-read_category <- function(df, dim, map_fn, drop_raw = character(0), time_val) {
+#
+# impute_suppressed = TRUE replaces a suppressed death count with
+# SUPPRESSED_DEATHS_IMPUTED, the midpoint of the 1-9 range, and recomputes the
+# rate from it. suppressed_flag still marks those rows; the confidence bounds
+# stay missing since they are not meaningful for an imputed count.
+read_category <- function(df, dim, map_fn, drop_raw = character(0), time_val,
+                          impute_suppressed = TRUE) {
   df <- df %>%
     rename(
       deaths_raw = deaths, population_raw = population, crude_rate_raw = crude_rate,
@@ -145,9 +162,21 @@ read_category <- function(df, dim, map_fn, drop_raw = character(0), time_val) {
       time = time_val,
       suppressed_flag = suppressed_flag,
       missing_denom_flag = missing_denom_flag,
-      drowning_deaths = to_num(deaths_raw),
+      drowning_deaths = if (impute_suppressed) {
+        ifelse(is_suppressed(deaths_raw), SUPPRESSED_DEATHS_IMPUTED, to_num(deaths_raw))
+      } else {
+        to_num(deaths_raw)
+      },
       drowning_population = to_num(population_raw),
-      drowning_crude_rate = to_num(crude_rate_raw),
+      drowning_crude_rate = if (impute_suppressed) {
+        ifelse(
+          is_suppressed(deaths_raw) & !is.na(to_num(population_raw)) & to_num(population_raw) > 0,
+          SUPPRESSED_DEATHS_IMPUTED / to_num(population_raw) * 1e5,
+          to_num(crude_rate_raw)
+        )
+      } else {
+        to_num(crude_rate_raw)
+      },
       drowning_crude_rate_lcl = to_num(crude_rate_lcl_raw),
       drowning_crude_rate_ucl = to_num(crude_rate_ucl_raw),
       !!dim := category_value
@@ -192,7 +221,7 @@ read_county_age_deaths <- function(df, time_val) {
       time = time_val,
       age = clean_age_label(raw_category),
       suppressed_flag = as.integer(is_suppressed(deaths)),
-      drowning_deaths = to_num(deaths)
+      drowning_deaths = ifelse(is_suppressed(deaths), SUPPRESSED_DEATHS_IMPUTED, to_num(deaths))
     )
 }
 
@@ -319,6 +348,32 @@ build_level <- function(raw, level) {
     arrange(geography, time, age, sex, race_ethnicity)
 }
 
+# Ages 0-24 as one band, plus all ages (age = Overall), queried directly
+# (scrape_age_bands.py filters WONDER's age variable to a band's groups and lets
+# WONDER total them): a band is suppressed only if the whole band has 1-9
+# deaths. National/state use the Ten-Year groups; county uses Five-Year groups
+# for the same bands, since CDC drops county population for Ten-Year ones.
+# They are added to data_state/data_county as age levels "0-24" and "Overall"
+# (the 0-24 band overlaps the Ten-Year age rows, so never sum across age).
+# raw_category is the band label.
+build_age_band <- function(raw, level) {
+  raw <- raw %>% filter(level == !!level)
+  bind_rows(lapply(YEARS, function(yr) {
+    read_category(
+      filter(raw, year == yr), "age", identity,
+      time_val = sprintf("%d-12-31", yr)
+    )
+  })) %>%
+    fill_missing_with_sentinel() %>%
+    select(
+      geography, time, age, sex, race_ethnicity,
+      drowning_deaths, drowning_population, drowning_crude_rate,
+      drowning_crude_rate_lcl, drowning_crude_rate_ucl,
+      suppressed_flag, missing_denom_flag
+    ) %>%
+    arrange(geography, time, age)
+}
+
 # -----------------------------------------------------------------------------
 # 1. Initialize process record and check for changes
 # -----------------------------------------------------------------------------
@@ -331,6 +386,15 @@ if (file.exists(RAW_NATIONAL_FILE)) {
   warning("No ", RAW_NATIONAL_FILE, "; run scrape_national.py to add national rows.", call. = FALSE)
 }
 
+for (lv in names(RAW_AGEBAND_FILES)) {
+  if (file.exists(RAW_AGEBAND_FILES[[lv]])) {
+    raw_state[[paste0("ageband_", lv, "_hash")]] <- unname(tools::md5sum(RAW_AGEBAND_FILES[[lv]]))
+  } else {
+    warning("No ", RAW_AGEBAND_FILES[[lv]], "; run scrape_age_bands.py --levels ", lv,
+      " to add its age-band rows.", call. = FALSE)
+  }
+}
+
 if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   # 2. Build state- (plus national) and county-level standardized tables
@@ -340,6 +404,27 @@ if (!identical(process$raw_state, raw_state)) {
 
   data_state <- build_level(bind_rows(raw, raw_national), "state")
   data_county <- build_level(raw, "county")
+
+  # Add the age-band rows (0-24, and WONDER's own all-ages total) to each table,
+  # from whichever per-level pulls exist. The direct all-ages total replaces the
+  # Overall row built above (summed from the sexes, which undercounts when a sex
+  # is suppressed).
+  add_age_bands <- function(data, levels) {
+    levels <- Filter(function(lv) file.exists(RAW_AGEBAND_FILES[[lv]]), levels)
+    if (!length(levels)) {
+      return(data)
+    }
+    bands <- bind_rows(lapply(levels, function(lv) {
+      build_age_band(arrow::read_parquet(RAW_AGEBAND_FILES[[lv]]), lv)
+    }))
+    is_total <- data$age == "Overall" & data$sex == "Overall" & data$race_ethnicity == "Overall" &
+      data$geography %in% bands$geography
+    bind_rows(data[!is_total, ], bands) %>%
+      arrange(geography, time, age, sex, race_ethnicity)
+  }
+
+  data_state <- add_age_bands(data_state, c("national", "state"))
+  data_county <- add_age_bands(data_county, "county")
 
   # ---------------------------------------------------------------------------
   # 3. Write standardized output
