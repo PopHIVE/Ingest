@@ -26,7 +26,7 @@
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
         <div class="d-flex align-items-center">
           <a class="btn btn-outline-light btn-sm me-3" href="data-table.html">Data Table →</a>
-          <span class="navbar-text text-light">Last updated: October 23, 2026</span>
+          <span class="navbar-text text-light">Last updated: October 24, 2026</span>
         </div>
       </div>
     </nav>
@@ -10284,7 +10284,7 @@
             </section>
             <section id="drowning" class="mb-5">
               <h2 class="border-bottom pb-2">Drowning</h2>
-              <p class="lead">Mortality data from death certificates filed in the 50 states and the District of Columbia, queried through CDC WONDER's Underlying Cause of Death (ICD-10, expanded) database and restricted to unintentional drowning: ICD-10 codes W65 (bathtub), W66 (swimming pool fall), W67 (in swimming pool), W68 (fall into swimming pool), W69 (natural water), W70 (fall into natural water), W73 (other specified drowning/submersion), and W74 (unspecified drowning/submersion). Data are broken out separately by age group, sex, single race, and Hispanic origin (each queried independently, not cross-tabulated), at both the state and county level, for years 2018-2024. State and county both use CDC WONDER's Ten-Year Age Groups (&lt;1, 1-4, 5-14, 15-24, ..., 85+), but the two levels differ in how population is sourced. At the state level, CDC WONDER reports Population and Crude Rate directly for Ten-Year Age Groups. At the county level, CDC WONDER reports Deaths only for this age variable -- Population and Crude Rate remain checked (mandatory) in the query form but the server omits them from the export regardless, for every state and year. County-level population is therefore derived here by summing CDC's Five-Year Age Groups county population export into the same Ten-Year buckets (e.g. 5-9 + 10-14 = 5-14); crude_rate is then recomputed from that derived population rather than taken from CDC directly, so drowning_crude_rate_lcl/_ucl are not populated for county-level age rows (a valid confidence interval needs CDC's own interval method, which this derivation does not replicate). This also surfaces a further CDC limitation: county-level population is reported as 'Not Applicable' for the &lt;1, 1-4, and 85+ Five-Year groups nationwide, for every county regardless of size -- so missing_denom_flag = 1 for those three Ten-Year buckets at the county level essentially always, and county-level drowning rates (though not death counts) are structurally unavailable for infants/toddlers and the oldest age group. Missing values are coded as -999, accompanied by two independent row-level indicator columns (a true zero is reported as 0, never -999). suppressed_flag = 1 where CDC withheld a cell for confidentiality (any cell representing fewer than 10 deaths); this affects the death count and the rates derived from it, never the population. missing_denom_flag = 1 where no population denominator exists for that geography and demographic combination (CDC reports 'Not Applicable' or 'Not Available', or -- for county-level age specifically -- the Five-Year population export used to derive it was itself missing); this affects the population and the rates derived from it, never the death count. The two are not mutually exclusive and are both 1 on rows carrying both markers, which is common at the county level. National rows (geography 00, in data_state.csv.gz) come from separate CDC WONDER national queries (scrape_national.py) with the same breakdowns, not from summing the states: every state cell with fewer than 10 deaths is suppressed, so a sum of state counts undercounts (2024: 4,087 from the state cells vs 4,201 reported nationally). The national Overall row is CDC's own national total, whereas state Overall rows are the sum of the Female and Male rows.</p>
+              <p class="lead">Mortality data from death certificates filed in the 50 states and the District of Columbia, queried through CDC WONDER's Underlying Cause of Death (ICD-10, expanded) database and restricted to unintentional drowning: ICD-10 codes W65 (bathtub), W66 (swimming pool fall), W67 (in swimming pool), W68 (fall into swimming pool), W69 (natural water), W70 (fall into natural water), W73 (other specified drowning/submersion), and W74 (unspecified drowning/submersion). Data are broken out separately by age group, sex, single race, and Hispanic origin (each queried independently, not cross-tabulated), at both the state and county level, for years 2018-2024. State and county both use CDC WONDER's Ten-Year Age Groups (&lt;1, 1-4, 5-14, 15-24, ..., 85+), but the two levels differ in how population is sourced. At the state level, CDC WONDER reports Population and Crude Rate directly for Ten-Year Age Groups. At the county level, CDC WONDER reports Deaths only for this age variable -- Population and Crude Rate remain checked (mandatory) in the query form but the server omits them from the export regardless, for every state and year. County-level population is therefore derived here by summing CDC's Five-Year Age Groups county population export into the same Ten-Year buckets (e.g. 5-9 + 10-14 = 5-14); crude_rate is then recomputed from that derived population rather than taken from CDC directly, so drowning_crude_rate_lcl/_ucl are not populated for county-level age rows (a valid confidence interval needs CDC's own interval method, which this derivation does not replicate). This also surfaces a further CDC limitation: county-level population is reported as 'Not Applicable' for the &lt;1, 1-4, and 85+ Five-Year groups nationwide, for every county regardless of size -- so missing_denom_flag = 1 for those three Ten-Year buckets at the county level essentially always, and county-level drowning rates (though not death counts) are structurally unavailable for infants/toddlers and the oldest age group. Suppressed death counts (1-9 deaths) are filled in with 5, the midpoint of the range, and the rate is recomputed from that count; suppressed_flag = 1 marks these estimated rows (confidence bounds stay -999), and a true zero is reported as 0. Values that cannot be computed are coded -999. suppressed_flag = 1 where CDC withheld a cell for confidentiality (any cell representing fewer than 10 deaths); this affects the death count and the rates derived from it, never the population. missing_denom_flag = 1 where no population denominator exists for that geography and demographic combination (CDC reports 'Not Applicable' or 'Not Available', or -- for county-level age specifically -- the Five-Year population export used to derive it was itself missing); this affects the population and the rates derived from it, never the death count. The two are not mutually exclusive and are both 1 on rows carrying both markers, which is common at the county level. National rows (geography 00, in data_state.csv.gz) come from separate CDC WONDER national queries (scrape_national.py) with the same breakdowns, not from summing the states: every state cell with fewer than 10 deaths is suppressed, so a sum of state counts undercounts (2024: 4,087 from the state cells vs 4,201 reported nationally). The all-ages Overall rows (age = Overall, sex and race Overall) at the national, state and county level are CDC WONDER's own totals from separate queries, not sums of other rows. Each geography also has an age = 0-24 row, a single WONDER query over ages 0-24 (national and state: Ten-Year groups &lt;1, 1-4, 5-14, 15-24; county: the equivalent Five-Year groups, because CDC omits county population for Ten-Year groups), so a cell is suppressed only if all of 0-24 has 1-9 deaths. The 0-24 row overlaps the ten-year age rows, so do not sum across age.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
@@ -10407,19 +10407,19 @@
                       <td>
                         <code>suppressed_flag</code>
                       </td>
-                      <td>suppressed_flag</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td>Suppressed (1-9 deaths)</td>
+                      <td>1 if CDC suppressed the death count (1-9 deaths) for this row, 0 otherwise.</td>
+                      <td>Indicator</td>
+                      <td>0/1 flag</td>
                     </tr>
                     <tr>
                       <td>
                         <code>missing_denom_flag</code>
                       </td>
-                      <td>missing_denom_flag</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td>No population denominator</td>
+                      <td>1 if CDC publishes no population for this row, so no rate can be given, 0 otherwise.</td>
+                      <td>Indicator</td>
+                      <td>0/1 flag</td>
                     </tr>
                   </tbody>
                 </table>
@@ -10533,19 +10533,19 @@
                       <td>
                         <code>suppressed_flag</code>
                       </td>
-                      <td>suppressed_flag</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td>Suppressed (1-9 deaths)</td>
+                      <td>1 if CDC suppressed the death count (1-9 deaths) for this row, 0 otherwise.</td>
+                      <td>Indicator</td>
+                      <td>0/1 flag</td>
                     </tr>
                     <tr>
                       <td>
                         <code>missing_denom_flag</code>
                       </td>
-                      <td>missing_denom_flag</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td>No population denominator</td>
+                      <td>1 if CDC publishes no population for this row, so no rate can be given, 0 otherwise.</td>
+                      <td>Indicator</td>
+                      <td>0/1 flag</td>
                     </tr>
                   </tbody>
                 </table>
