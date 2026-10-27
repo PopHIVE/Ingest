@@ -5,7 +5,7 @@
     "long_name": "Health Professional Shortage Area Designation — Primary Care",
     "category": "access",
     "short_description": "Federal HPSA designation indicating primary care provider shortages.",
-    "long_description": "Health Professional Shortage Area (HPSA) designation for primary medical care, assigned by HRSA. A value of 1 indicates a whole-county shortage area; 2 indicates a partial-county shortage area; 0 or missing indicates no shortage designation. Whole-county HPSAs are eligible for federal programs including National Health Service Corps placements and J-1 visa waivers.",
+    "long_description": "Health Professional Shortage Area (HPSA) designation for primary medical care, assigned by HRSA. A value of 1 indicates a whole-county shortage area; 2 indicates a partial-county shortage area; 0 or missing indicates no shortage designation.",
     "statement": "In {location}, the primary care HPSA designation is {value}.",
     "measure_type": "Category",
     "unit": "Designation code (0=none, 1=whole county, 2=partial county)",
@@ -56,7 +56,7 @@
     "long_name": "USDA Rural-Urban Continuum Code",
     "category": "access",
     "short_description": "USDA rural-urban continuum code classifying counties from metro to rural (1–9).",
-    "long_description": "USDA Economic Research Service Rural-Urban Continuum Code. Codes 1–3 are metropolitan counties (by population size of metro area); codes 4–9 are nonmetropolitan counties ranging from urbanized adjacent to metro areas (4) to completely rural or less than 2,500 urban population not adjacent to a metro area (9).",
+    "long_description": "USDA Economic Research Service Rural-Urban Continuum Code. Codes 1–3 are metropolitan counties (by population size of metro area); codes 4–9 are nonmetropolitan counties ranging from urbanized adjacent to metro areas (4) to completely rural or less than 2,500 urban population not adjacent to a metro area (9). The AHRF technical documentation lists this variable with 2013 vintage codes, so check the vintage before using it for trends.",
     "statement": "In {location}, the rural-urban continuum code is {value}.",
     "measure_type": "Category",
     "unit": "Code 1–9 (1=large metro, 9=most rural)",
@@ -73,7 +73,7 @@
     "long_name": "Non-Federal Primary Care Physicians in Patient Care (Excluding Residents)",
     "category": "access",
     "short_description": "Count of non-federal primary care physicians (MDs and DOs) in patient care roles, excluding hospital residents.",
-    "long_description": "Number of non-federal primary care physicians (including both MDs and DOs) actively in patient care, excluding hospital residents and those age 75 or older. Primary care includes general practice, family medicine, general internal medicine, general pediatrics, and obstetrics/gynecology. Source: AMA Physician Masterfile and CMS data compiled by HRSA.",
+    "long_description": "Number of non-federal primary care physicians (including both MDs and DOs) actively in patient care, excluding hospital residents and those age 75 or older. Primary care includes general practice, family medicine, general internal medicine, general pediatrics, and obstetrics/gynecology. Source: AMA Physician Masterfile compiled by HRSA.",
     "statement": "In {location}, there are {value} primary care physicians in patient care.",
     "measure_type": "Count",
     "unit": "Physicians",
@@ -107,7 +107,7 @@
     "long_name": "Non-Federal Psychiatrists (Total)",
     "category": "access",
     "short_description": "Count of non-federal adult psychiatrists.",
-    "long_description": "Total number of non-federal MDs specializing in adult psychiatry (excludes child and adolescent psychiatrists, which are counted separately). Includes all activity categories (patient care, administration, teaching, research). Counties with zero psychiatrists are common in rural areas. Source: AMA Physician Masterfile compiled by HRSA.",
+    "long_description": "Total number of non-federal psychiatrists (MDs), across all activity categories (patient care, administration, teaching, research). AHRF reports child and adolescent psychiatrists as a separate variable, which this pipeline does not pull. Source: AMA Physician Masterfile compiled by HRSA.",
     "statement": "In {location}, there are {value} psychiatrists.",
     "measure_type": "Count",
     "unit": "Psychiatrists",
@@ -172,10 +172,10 @@
   "ahrf_population": {
     "id": "ahrf_population",
     "short_name": "Population",
-    "long_name": "Total County Population Estimate",
+    "long_name": "Total County Population (LAPI Estimate)",
     "category": "demographic",
-    "short_description": "Total county resident population estimate.",
-    "long_description": "Total county resident population from Census Bureau estimates as compiled by HRSA in the AHRF. For most editions, this reflects the most recent available annual intercensal or postcensal estimate.",
+    "short_description": "Total county resident population (LAPI estimate).",
+    "long_description": "Total county resident population, from the Local Area Personal Income (LAPI) estimates that HRSA carries in AHRF as the 'Population (Persons)' variable. The AHRF also includes separate Census County Population Estimates, which this pipeline does not pull.",
     "statement": "In {location}, the estimated total population is {value}.",
     "measure_type": "Count",
     "unit": "Persons",
@@ -192,7 +192,7 @@
     "long_name": "Percentage of Days with Good Air Quality",
     "category": "environment",
     "short_description": "Percentage of measured days rated 'Good' by EPA Air Quality Index.",
-    "long_description": "Percentage of air quality monitoring days in the county rated 'Good' (AQI 0–50) by EPA's Air Quality System (AQS). Only counties with active monitoring stations have data; many rural counties report NA. Source: EPA AQS compiled by HRSA.",
+    "long_description": "Percentage of measured days in the county rated 'Good' (AQI 0-50) on the EPA Air Quality Index report, as carried in AHRF. Counties with no air quality monitoring data have no value.",
     "statement": "In {location}, {value}% of measured days had good air quality.",
     "measure_type": "Percent",
     "unit": "Percent",
@@ -209,7 +209,7 @@
     "long_name": "Annual Average Fine Particulate Matter (PM2.5) Concentration",
     "category": "environment",
     "short_description": "Annual average PM2.5 concentration (μg/m³) from EPA monitoring data.",
-    "long_description": "Annual average ambient fine particulate matter (PM2.5) concentration in micrograms per cubic meter from EPA Air Quality System (AQS) monitoring data. In the ASCII editions, this is the average daily PM2.5 scaled by a factor of 0.01 (SAS implied-decimal format). Counties without monitoring stations may have NA values.",
+    "long_description": "Annual average ambient fine particulate matter (PM2.5) concentration in micrograms per cubic meter, from the CDC Environmental Public Health Tracking Network as carried in AHRF. In the 2025 release, values exist only for 2019 and 2020. Counties without monitoring stations may have NA values.",
     "statement": "In {location}, the annual average PM2.5 concentration is {value} μg/m³.",
     "measure_type": "Rate",
     "unit": "μg/m³",
@@ -226,7 +226,7 @@
     "long_name": "Population Density per Square Mile",
     "category": "demographic",
     "short_description": "County population density per square mile from Census data.",
-    "long_description": "Resident population per square mile of total county area from decennial Census data compiled by HRSA. Values reflect the most recent available Census (typically 2010 or 2020 depending on the AHRF edition).",
+    "long_description": "Resident population per square mile of total county area, from the 2020 Census redistricting data as carried in AHRF. The AHRF also carries 2010 values for earlier data years.",
     "statement": "In {location}, the population density is {value} persons per square mile.",
     "measure_type": "Rate",
     "unit": "Persons per square mile",
@@ -243,7 +243,7 @@
     "long_name": "Actual Medicare Fee-for-Service Per Capita Expenditure",
     "category": "utilization",
     "short_description": "Actual Medicare FFS per capita spending for county residents.",
-    "long_description": "Actual (not price-standardized) Medicare fee-for-service per capita expenditures for county residents enrolled in traditional Medicare. Reflects local healthcare prices, service intensity, and enrollment patterns. Source: CMS Medicare Claims data compiled by HRSA.",
+    "long_description": "Actual (not price-standardized) Medicare fee-for-service per capita expenditures for county residents enrolled in traditional Medicare. Reflects local healthcare prices, service intensity, and enrollment patterns. Source: CMS Medicare Geographic Variation data, as carried in AHRF.",
     "statement": "In {location}, Medicare FFS per capita spending is ${value}.",
     "measure_type": "Rate",
     "unit": "Dollars per Medicare FFS enrollee",
@@ -260,10 +260,503 @@
     "long_name": "Emergency Department Visits per 1,000 Medicare FFS Beneficiaries",
     "category": "utilization",
     "short_description": "County ED visit rate among traditional Medicare fee-for-service enrollees.",
-    "long_description": "Number of emergency department visits per 1,000 Medicare fee-for-service (FFS) beneficiaries residing in the county. Captures acute care utilization and may reflect access barriers, disease burden, or care coordination quality. Source: CMS Medicare Claims data compiled by HRSA.",
+    "long_description": "Number of emergency department visits per 1,000 Medicare fee-for-service (FFS) beneficiaries residing in the county. Captures acute care utilization and may reflect access barriers, disease burden, or care coordination quality. Source: CMS Medicare Geographic Variation data, as carried in AHRF.",
     "statement": "In {location}, there are {value} ED visits per 1,000 Medicare FFS beneficiaries.",
     "measure_type": "Rate",
     "unit": "ED visits per 1,000 Medicare FFS beneficiaries",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_births": {
+    "id": "ahrf_births",
+    "short_name": "Births (Count)",
+    "long_name": "Total Births",
+    "category": "maternal_infant",
+    "short_description": "Number of resident births in the county.",
+    "long_description": "Total Births This is a 3-year average, so the value is pooled across the three years ending in the data year.",
+    "statement": "In {location}, there are {value} births.",
+    "measure_type": "Count",
+    "unit": "Births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_births_wh": {
+    "id": "ahrf_births_wh",
+    "short_name": "Births: White",
+    "long_name": "Births to White Mothers",
+    "category": "maternal_infant",
+    "short_description": "Number of resident births to White mothers.",
+    "long_description": "Births to White Mothers This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} births to White mothers.",
+    "measure_type": "Count",
+    "unit": "Births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_births_bl": {
+    "id": "ahrf_births_bl",
+    "short_name": "Births: Black",
+    "long_name": "Births to Black Mothers",
+    "category": "maternal_infant",
+    "short_description": "Number of resident births to Black mothers.",
+    "long_description": "Births to Black Mothers This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} births to Black mothers.",
+    "measure_type": "Count",
+    "unit": "Births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_births_hsp": {
+    "id": "ahrf_births_hsp",
+    "short_name": "Births: Hispanic",
+    "long_name": "Births to Hispanic Mothers",
+    "category": "maternal_infant",
+    "short_description": "Number of resident births to Hispanic mothers.",
+    "long_description": "Births to Hispanic Mothers This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} births to Hispanic mothers.",
+    "measure_type": "Count",
+    "unit": "Births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_births_oth": {
+    "id": "ahrf_births_oth",
+    "short_name": "Births: other race",
+    "long_name": "Births to other race Mothers",
+    "category": "maternal_infant",
+    "short_description": "Number of resident births to other race mothers.",
+    "long_description": "Births to other race Mothers This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} births to other race mothers.",
+    "measure_type": "Count",
+    "unit": "Births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_births_pretrm": {
+    "id": "ahrf_births_pretrm",
+    "short_name": "Preterm Births",
+    "long_name": "Preterm Births",
+    "category": "maternal_infant",
+    "short_description": "Number of preterm births in the county.",
+    "long_description": "Preterm Births This is a 3-year average, so the value is pooled across the three years ending in the data year.",
+    "statement": "In {location}, there are {value} preterm births.",
+    "measure_type": "Count",
+    "unit": "Births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_births_to_teens": {
+    "id": "ahrf_births_to_teens",
+    "short_name": "Births to Teens",
+    "long_name": "Births to Mothers Under Age 18",
+    "category": "maternal_infant",
+    "short_description": "Number of births to mothers under age 18.",
+    "long_description": "Births to Mothers Under Age 18 This is a 3-year average, so the value is pooled across the three years ending in the data year.",
+    "statement": "In {location}, there are {value} births to mothers under age 18.",
+    "measure_type": "Count",
+    "unit": "Births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_low_birth_wgt": {
+    "id": "ahrf_low_birth_wgt",
+    "short_name": "Low Birth Weight Births",
+    "long_name": "Low Birth Weight Births (under 2,500 g)",
+    "category": "maternal_infant",
+    "short_description": "Number of births under 2,500 grams.",
+    "long_description": "Low Birth Weight Births (under 2,500 g) This is a 3-year average, so the value is pooled across the three years ending in the data year.",
+    "statement": "In {location}, there are {value} low birth weight births.",
+    "measure_type": "Count",
+    "unit": "Births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_very_low_birth_wgt": {
+    "id": "ahrf_very_low_birth_wgt",
+    "short_name": "Very Low Birth Weight Births",
+    "long_name": "Very Low Birth Weight Births (under 1,500 g)",
+    "category": "maternal_infant",
+    "short_description": "Number of births under 1,500 grams.",
+    "long_description": "Very Low Birth Weight Births (under 1,500 g) This is a 3-year average, so the value is pooled across the three years ending in the data year.",
+    "statement": "In {location}, there are {value} very low birth weight births.",
+    "measure_type": "Count",
+    "unit": "Births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_inf_mort_rate": {
+    "id": "ahrf_inf_mort_rate",
+    "short_name": "Infant Mortality Rate",
+    "long_name": "Infant Mortality Rate (Deaths Under Age 1 per 1,000 Live Births)",
+    "category": "maternal_infant",
+    "short_description": "Infant deaths per 1,000 live births, as a 5-year average (2017-2021 in the 2023 release).",
+    "long_description": "Infant deaths (under age 1) per 1,000 live births, a 5-year average computed by HRSA from NCHS mortality and natality data. Available only at county level; state and national rates are not computed from it.",
+    "statement": "In {location}, the infant mortality rate is {value} deaths per 1,000 live births.",
+    "measure_type": "Rate",
+    "unit": "Deaths per 1,000 live births",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_infant_deaths": {
+    "id": "ahrf_infant_deaths",
+    "short_name": "Infant Deaths",
+    "long_name": "Deaths Under Age 1",
+    "category": "maternal_infant",
+    "short_description": "Number of deaths of infants under age 1.",
+    "long_description": "Deaths Under Age 1 This is a 3-year average, so the value is pooled across the three years ending in the data year.",
+    "statement": "In {location}, there are {value} infant deaths.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_infant_deaths_fem_wh": {
+    "id": "ahrf_infant_deaths_fem_wh",
+    "short_name": "Infant Deaths: Female, White",
+    "long_name": "Infant Deaths (Under Age 1): Female Infants, White",
+    "category": "maternal_infant",
+    "short_description": "Number of deaths of female infants under age 1, White.",
+    "long_description": "Infant Deaths (Under Age 1): Female Infants, White This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} infant deaths of female white infants.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_infant_deaths_fem_bl": {
+    "id": "ahrf_infant_deaths_fem_bl",
+    "short_name": "Infant Deaths: Female, Black",
+    "long_name": "Infant Deaths (Under Age 1): Female Infants, Black",
+    "category": "maternal_infant",
+    "short_description": "Number of deaths of female infants under age 1, Black.",
+    "long_description": "Infant Deaths (Under Age 1): Female Infants, Black This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} infant deaths of female black infants.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_infant_deaths_fem_hsp": {
+    "id": "ahrf_infant_deaths_fem_hsp",
+    "short_name": "Infant Deaths: Female, Hispanic",
+    "long_name": "Infant Deaths (Under Age 1): Female Infants, Hispanic",
+    "category": "maternal_infant",
+    "short_description": "Number of deaths of female infants under age 1, Hispanic.",
+    "long_description": "Infant Deaths (Under Age 1): Female Infants, Hispanic This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} infant deaths of female hispanic infants.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_infant_deaths_fem_oth": {
+    "id": "ahrf_infant_deaths_fem_oth",
+    "short_name": "Infant Deaths: Female, other race",
+    "long_name": "Infant Deaths (Under Age 1): Female Infants, other race",
+    "category": "maternal_infant",
+    "short_description": "Number of deaths of female infants under age 1, other race.",
+    "long_description": "Infant Deaths (Under Age 1): Female Infants, other race This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} infant deaths of female other race infants.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_infant_deaths_mal_wh": {
+    "id": "ahrf_infant_deaths_mal_wh",
+    "short_name": "Infant Deaths: Male, White",
+    "long_name": "Infant Deaths (Under Age 1): Male Infants, White",
+    "category": "maternal_infant",
+    "short_description": "Number of deaths of male infants under age 1, White.",
+    "long_description": "Infant Deaths (Under Age 1): Male Infants, White This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} infant deaths of male white infants.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_infant_deaths_mal_bl": {
+    "id": "ahrf_infant_deaths_mal_bl",
+    "short_name": "Infant Deaths: Male, Black",
+    "long_name": "Infant Deaths (Under Age 1): Male Infants, Black",
+    "category": "maternal_infant",
+    "short_description": "Number of deaths of male infants under age 1, Black.",
+    "long_description": "Infant Deaths (Under Age 1): Male Infants, Black This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} infant deaths of male black infants.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_infant_deaths_mal_hsp": {
+    "id": "ahrf_infant_deaths_mal_hsp",
+    "short_name": "Infant Deaths: Male, Hispanic",
+    "long_name": "Infant Deaths (Under Age 1): Male Infants, Hispanic",
+    "category": "maternal_infant",
+    "short_description": "Number of deaths of male infants under age 1, Hispanic.",
+    "long_description": "Infant Deaths (Under Age 1): Male Infants, Hispanic This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} infant deaths of male hispanic infants.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_infant_deaths_mal_oth": {
+    "id": "ahrf_infant_deaths_mal_oth",
+    "short_name": "Infant Deaths: Male, other race",
+    "long_name": "Infant Deaths (Under Age 1): Male Infants, other race",
+    "category": "maternal_infant",
+    "short_description": "Number of deaths of male infants under age 1, other race.",
+    "long_description": "Infant Deaths (Under Age 1): Male Infants, other race This is a 3-year average, so the value is pooled across the three years ending in the data year. Race and Hispanic ethnicity overlap in HRSA data (Hispanic mothers are also counted under White or Black), so these counts should not be summed across groups.",
+    "statement": "In {location}, there are {value} infant deaths of male other race infants.",
+    "measure_type": "Count",
+    "unit": "Deaths",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_obstetric_hospitals": {
+    "id": "ahrf_obstetric_hospitals",
+    "short_name": "Hospitals with Obstetric Care",
+    "long_name": "Hospitals Providing Obstetric Care",
+    "category": "maternal_infant",
+    "short_description": "Number of hospitals providing obstetric care.",
+    "long_description": "Hospitals Providing Obstetric Care",
+    "statement": "In {location}, there are {value} hospitals of this type.",
+    "measure_type": "Count",
+    "unit": "Hospitals",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_obstetric_beds": {
+    "id": "ahrf_obstetric_beds",
+    "short_name": "Obstetric Beds",
+    "long_name": "Obstetric Care Beds",
+    "category": "maternal_infant",
+    "short_description": "Number of hospital beds for obstetric care.",
+    "long_description": "Obstetric Care Beds",
+    "statement": "In {location}, there are {value} beds of this type.",
+    "measure_type": "Count",
+    "unit": "Beds",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_neonatal_icu_hospitals": {
+    "id": "ahrf_neonatal_icu_hospitals",
+    "short_name": "Hospitals with Neonatal ICU",
+    "long_name": "Hospitals with a Neonatal Intensive Care Unit",
+    "category": "maternal_infant",
+    "short_description": "Number of hospitals with a neonatal intensive care unit.",
+    "long_description": "Hospitals with a Neonatal Intensive Care Unit",
+    "statement": "In {location}, there are {value} hospitals of this type.",
+    "measure_type": "Count",
+    "unit": "Hospitals",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_neonatal_icu_beds": {
+    "id": "ahrf_neonatal_icu_beds",
+    "short_name": "Neonatal ICU Beds",
+    "long_name": "Neonatal Intensive Care Unit Beds",
+    "category": "maternal_infant",
+    "short_description": "Number of neonatal intensive care unit beds.",
+    "long_description": "Neonatal Intensive Care Unit Beds",
+    "statement": "In {location}, there are {value} beds of this type.",
+    "measure_type": "Count",
+    "unit": "Beds",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_neonatal_interm_hospitals": {
+    "id": "ahrf_neonatal_interm_hospitals",
+    "short_name": "Hospitals with Neonatal Intermediate Care",
+    "long_name": "Hospitals with Neonatal Intermediate Care",
+    "category": "maternal_infant",
+    "short_description": "Number of hospitals providing neonatal intermediate care.",
+    "long_description": "Hospitals with Neonatal Intermediate Care",
+    "statement": "In {location}, there are {value} hospitals of this type.",
+    "measure_type": "Count",
+    "unit": "Hospitals",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_neonatal_interm_beds": {
+    "id": "ahrf_neonatal_interm_beds",
+    "short_name": "Neonatal Intermediate Care Beds",
+    "long_name": "Neonatal Intermediate Care Beds",
+    "category": "maternal_infant",
+    "short_description": "Number of neonatal intermediate care beds.",
+    "long_description": "Neonatal Intermediate Care Beds",
+    "statement": "In {location}, there are {value} beds of this type.",
+    "measure_type": "Count",
+    "unit": "Beds",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_teen_outreach_hospitals": {
+    "id": "ahrf_teen_outreach_hospitals",
+    "short_name": "Hospitals with Teen Outreach",
+    "long_name": "Hospitals with Teen Pregnancy Outreach Services",
+    "category": "maternal_infant",
+    "short_description": "Number of hospitals offering teen pregnancy outreach services.",
+    "long_description": "Hospitals with Teen Pregnancy Outreach Services",
+    "statement": "In {location}, there are {value} hospitals of this type.",
+    "measure_type": "Count",
+    "unit": "Hospitals",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_obgyn_nf_md": {
+    "id": "ahrf_obgyn_nf_md",
+    "short_name": "Non-Federal OB-GYN MDs in Patient Care",
+    "long_name": "Non-Federal OB-GYN MDs in Total Patient Care",
+    "category": "maternal_infant",
+    "short_description": "Number of non-federal MDs in general obstetrics and gynecology in patient care.",
+    "long_description": "Number of non-federal MDs in general obstetrics and gynecology in total patient care (documented as 'Ob-Gyn, Gen, Total Patient Care' in the HRSA technical documentation). Source: AMA Physician Masterfile compiled by HRSA.",
+    "statement": "In {location}, there are {value} non-federal OB-GYN MDs in patient care.",
+    "measure_type": "Count",
+    "unit": "Physicians",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_birth_room_hospitals": {
+    "id": "ahrf_birth_room_hospitals",
+    "short_name": "Hospitals with Birth Room",
+    "long_name": "Hospitals with a Birth Room, Labor-Delivery Room, or Labor-Delivery-Recovery-Postpartum Room",
+    "category": "maternal_infant",
+    "short_description": "Number of hospitals with a birth, labor-delivery, or LDRP room.",
+    "long_description": "Number of short-term general hospitals with a birth room, labor-delivery room, or labor-delivery-recovery-postpartum (LDRP) room. Source: AHA Annual Survey compiled by HRSA.",
+    "statement": "In {location}, there are {value} hospitals with a birth or labor-delivery room.",
+    "measure_type": "Count",
+    "unit": "Hospitals",
+    "time_resolution": "Year",
+    "sources": [
+      {
+        "id": "ahrf"
+      }
+    ]
+  },
+  "ahrf_obgyn_nf_do": {
+    "id": "ahrf_obgyn_nf_do",
+    "short_name": "Non-Federal OB-GYN DOs in Patient Care",
+    "long_name": "Non-Federal Osteopathic (DO) OB-GYNs in Total Patient Care",
+    "category": "maternal_infant",
+    "short_description": "Count of non-federal DOs in general obstetrics and gynecology in patient care.",
+    "long_description": "Number of non-federal doctors of osteopathic medicine (DOs) in general obstetrics and gynecology in total patient care (documented as 'DO's, Ob-Gyn, Gen, Tot Patn Cr' in the HRSA technical documentation). Source: AMA Physician Masterfile compiled by HRSA.",
+    "statement": "In {location}, there are {value} non-federal OB-GYN DOs in patient care.",
+    "measure_type": "Count",
+    "unit": "Physicians",
     "time_resolution": "Year",
     "sources": [
       {
@@ -285,16 +778,21 @@
     }
   },
   "_catalog": {
-    "summary": "The AHRF compiles county-level measures of health workforce supply, hospital and facility counts, shortage-area designations, Medicare utilization and spending, and demographic and environmental conditions from over 50 federal sources.",
+    "summary": "The AHRF compiles county-level measures of health workforce supply, hospital and facility counts, shortage-area designations, Medicare utilization and spending, demographic and environmental conditions, and maternal and infant health (births, infant deaths, low birth weight, and obstetric and neonatal hospital capacity) from over 50 federal sources.",
     "search_terms": [
       "County access",
       "health workforce",
       "physician shortage",
-      "rural health"
+      "rural health",
+      "maternal health",
+      "infant mortality",
+      "low birth weight",
+      "obstetric care"
     ],
     "bucket": [
       "Social determinants of health",
-      "Rural health"
+      "Rural health",
+      "Maternal and child health"
     ],
     "files": {
       "data.csv.gz": "State and county level AHRF data"
