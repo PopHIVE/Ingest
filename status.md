@@ -17,77 +17,77 @@ flowchart LR
     s24(("<strong><a href="https://data.cdc.gov/Foodborne-Waterborne-and-Related-Diseases/BEAM-Dashboard-Report-Data/jbhn-e8xn/about_data" target="_blank" rel="noreferrer">BEAM Dashboard - Report Data</a></strong>"))
     s26(("<strong><a href="https://www.bls.gov/lau/" target="_blank" rel="noreferrer">Local Area Unemployment Statistics (LAUS)</a></strong>"))
     s28(("<strong><a href="https://www.cdc.gov/brfss/index.html" target="_blank" rel="noreferrer">Behavioral Risk Factor Surveillance System (BRFSS)</a></strong>"))
-    s30(("<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/CDC-Epidemic-Trends-and-Rt/5dqz-y4ea/" target="_blank" rel="noreferrer">CDC Epidemic Trends and Rt</a></strong>"))
-    s31(("<strong><a href="https://data.cdc.gov/d/e2d5-ggg7" target="_blank" rel="noreferrer">NCHS VSRR Provisional Maternal Death Counts and Rates</a></strong>"))
-    s32(("<strong><a href="https://wonder.cdc.gov/natality-expanded-current.html" target="_blank" rel="noreferrer">CDC WONDER Natality, 2016-2024 expanded</a></strong>"))
-    s34(("<strong><a href="https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/process/data-quality.html" target="_blank" rel="noreferrer">2020 Census Operational Quality Metrics</a></strong>"))
-    s36(("<strong><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noreferrer">Population Estimates Program (PEP): Annual Population Estimates by Age, Sex, Race, and Hispanic Origin</a></strong>"))
-    s38(("<strong><a href="https://www.census.gov/programs-surveys/sahie.html" target="_blank" rel="noreferrer">Small Area Health Insurance Estimates (SAHIE)</a></strong>"))
-    s40(("<strong><a href="https://www.census.gov/programs-surveys/saipe.html" target="_blank" rel="noreferrer">Small Area Income and Poverty Estimates (SAIPE)</a></strong>"))
-    s42(("<strong><a href="https://data.cms.gov/provider-data/dataset/hbf-map" target="_blank" rel="noreferrer">Birthing Friendly Hospitals with Geocoded Addresses</a></strong>"))
-    s43(("<strong><a href="https://data.cdc.gov" target="_blank" rel="noreferrer">Center of Medicare and Medicaid Services (CMS)</a></strong>"))
-    s45(("<strong><a href="https://data.cms.gov/tools/mapping-medicare-disparities-by-population" target="_blank" rel="noreferrer">Mapping Medicare Disparities by Population Tool</a></strong>"))
-    s46(("<strong><a href="https://github.com/ColinVu/CountyBuddy/blob/main/county_data.csv" target="_blank" rel="noreferrer">County Buddy</a></strong>"))
-    s47(("<strong><a href="https://delphi.cmu.edu/epidata/v5/" target="_blank" rel="noreferrer">CMU Delphi Epidata - Outpatient Claims</a></strong>"))
-    s49(("<strong><a href="https://delphi.cmu.edu/epidata/v5/" target="_blank" rel="noreferrer">CMU Delphi Epidata - Inpatient Claims</a></strong>"))
-    s50(("<strong><a href="https://cmu-delphi.github.io/delphi-epidata/" target="_blank" rel="noreferrer">CMU Delphi Epidata</a></strong>"))
-    s52(("<strong><a href="https://www.cdc.gov/flu/weekly/overview.htm" target="_blank" rel="noreferrer">CDC ILINet</a></strong>"))
-    s53(("<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/fluview.html" target="_blank" rel="noreferrer">CMU Delphi Epidata - FluView (ILINet)</a></strong>"))
-    s54(("<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/nhsn.html" target="_blank" rel="noreferrer">CMU Delphi COVIDcast - NHSN Respiratory Hospitalizations</a></strong>"))
-    s55(("<strong><a href="https://wonder.cdc.gov/ucd-icd10-expanded.html" target="_blank" rel="noreferrer">CDC WONDER Underlying Cause of Death, 2018-2024 (ICD-10, expanded)</a></strong>"))
-    s56(("<strong><a href="https://cosmos.epic.com/" target="_blank" rel="noreferrer">Epic Cosmos</a></strong>"))
-    s57(("<strong><a href="https://www.epicresearch.org/health-alerts/" target="_blank" rel="noreferrer">Epic Research Health Alerts</a></strong>"))
-    s58(("<strong><a href="https://www.cdc.gov/fluvaxview/dashboard/vaccine-doses-distributed.html" target="_blank" rel="noreferrer">Influenza vaccine doses distributed (CDC FluVaxView)</a></strong>"))
-    s60(("<strong><a href="https://www.cdc.gov/fluvaxview/interactive/general-population-coverage.html" target="_blank" rel="noreferrer">National Immunization Survey-Flu (NIS-Flu), FluVaxView Interactive</a></strong>"))
-    s62(("<strong><a href="https://www.cdc.gov/brfss/index.html" target="_blank" rel="noreferrer">Behavioral Risk Factor Surveillance System (BRFSS), FluVaxView Interactive</a></strong>"))
-    s63(("<strong><a href="https://trends.google.com" target="_blank" rel="noreferrer">Google Trends</a></strong>"))
-    s65(("<strong><a href="https://www.huduser.gov/portal/datasets/cp.html" target="_blank" rel="noreferrer">Comprehensive Housing Affordability Strategy (CHAS) data</a></strong>"))
-    s67(("<strong><a href="https://www.cdc.gov/iis/about/index.html" target="_blank" rel="noreferrer">Immunization Information Systems (IIS) monthly submissions to CDC</a></strong>"))
-    s69(("<strong><a href="https://www.cdc.gov/fluvaxview/dashboard/adult-vaccinations-administered.html" target="_blank" rel="noreferrer">IQVIA pharmacy and physician-office vaccination claims (CDC estimates)</a></strong>"))
-    s71(("<strong><a href="https://apiv2.kinsainsights.com/api/v1/docs" target="_blank" rel="noreferrer">Kinsa Insights API</a></strong>"))
-    s73(("<strong><a href="" target="_blank" rel="noreferrer">Key indicators of maternal health -- severe obstetric complications (SOC)</a></strong>"))
-    s78(("<strong><a href="https://www.cdc.gov/measles/data-research/index.html" target="_blank" rel="noreferrer">CDC Measles Cases and Outbreaks - Age and Vaccination Status</a></strong>"))
-    s79(("<strong><a href="https://www.cdc.gov/measles/data-research/index.html" target="_blank" rel="noreferrer">CDC Measles Cases and Outbreaks</a></strong>"))
-    s80(("<strong><a href="https://github.com/CSSEGISandData/measles_data" target="_blank" rel="noreferrer">Johns Hopkins University Measles Tracking Team</a></strong>"))
-    s81(("<strong><a href="https://data.medicaid.gov/datasets?theme%5B0%5D=Quality" target="_blank" rel="noreferrer">Medicaid and CHIP Adult and Child Core Set Quality Measures</a></strong>"))
-    s83(("<strong><a href="https://www2.ccwdata.org/web/guest/home" target="_blank" rel="noreferrer">Medicare Fee-For-Service claims (CMS Chronic Conditions Warehouse)</a></strong>"))
-    s85(("<strong><a href="https://doi.org/10.7910/DVN/VOQCHQ" target="_blank" rel="noreferrer">County Presidential Election Returns</a></strong>"))
-    s87(("<strong><a href="https://github.com/eric-gengzhou/MMR_vaccine_estimates" target="_blank" rel="noreferrer">HealthMap MMR Vaccine Coverage Estimates</a></strong>"))
-    s88(("<strong><a href="https://www.cdc.gov/narms/data/index.html" target="_blank" rel="noreferrer">NARMS Now: Human Data - Antimicrobial Resistance</a></strong>"))
-    s90(("<strong><a href="https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries" target="_blank" rel="noreferrer">FDA NARMS Retail Meats Surveillance Data</a></strong>"))
-    s91(("<strong><a href="https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries" target="_blank" rel="noreferrer">FDA NARMS Animal Pathogen Surveillance Data</a></strong>"))
-    s92(("<strong><a href="https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries" target="_blank" rel="noreferrer">FDA NARMS Food-Producing Animals Surveillance Data</a></strong>"))
-    s93(("<strong><a href="https://nccrexplorer.ccdi.cancer.gov/" target="_blank" rel="noreferrer">National Childhood Cancer Registry Explorer (NCCR*Explorer)</a></strong>"))
-    s95(("<strong><a href="https://data.cdc.gov/d/xkb8-kh2a" target="_blank" rel="noreferrer">NCHS VSRR Provisional Drug Overdose Death Counts (State)</a></strong>"))
-    s96(("<strong><a href="https://data.cdc.gov/d/gb4e-yj24" target="_blank" rel="noreferrer">NCHS VSRR Provisional County-Level Drug Overdose Death Counts</a></strong>"))
-    s97(("<strong><a href="https://data.cdc.gov/d/489q-934x" target="_blank" rel="noreferrer">NCHS VSRR Quarterly Provisional Estimates for Selected Indicators of Mortality</a></strong>"))
-    s98(("<strong><a href="https://www.cpsc.gov/Research--Statistics/NEISS-Injury-Data" target="_blank" rel="noreferrer">National Electronic Injury Surveillance System (NEISS)</a></strong>"))
-    s100(("<strong><a href="https://www.cdc.gov/nhsn/psc/hospital-respiratory-reporting.html" target="_blank" rel="noreferrer">NHSN Hospital Respiratory Data</a></strong>"))
-    s102(("<strong><a href="https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/" target="_blank" rel="noreferrer">Fatality Analysis Reporting System (FARS)</a></strong>"))
-    s104(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Flu (NIS-Flu)</a></strong>"))
-    s106(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Fall Respiratory Virus Module (NIS-FRVM)</a></strong>"))
-    s108(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Teen (NIS-Teen)</a></strong>"))
-    s110(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey (NIS)</a></strong>"))
-    s111(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey</a></strong>"))
-    s113(("<strong><a href="https://www.cdc.gov/nndss/" target="_blank" rel="noreferrer">National Notifiable Diseases Surveillance System (NNDSS)</a></strong>"))
-    s114(("<strong><a href="https://www.wpc.ncep.noaa.gov/heatrisk/data/archive/" target="_blank" rel="noreferrer">NOAA WPC HeatRisk</a></strong>"))
-    s116(("<strong><a href="https://data.cdc.gov" target="_blank" rel="noreferrer">Centers for Disease Control and Prevention</a></strong>"))
-    s118(("<strong><a href="https://data.cdc.gov/resource/3cxc-4k8q" target="_blank" rel="noreferrer">National Respiratory and Enteric Virus Surveillance System (NREVSS)</a></strong>"))
-    s119(("<strong><a href="" target="_blank" rel="noreferrer">Opioid-related EMS encounters</a></strong>"))
-    s124(("<strong><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noreferrer">Census Bureau Population Estimates Program (PEP)</a></strong>"))
-    s126(("<strong><a href="https://www.cdc.gov/resp-net/dashboard/index.html" target="_blank" rel="noreferrer">Respiratory Virus Hospitalization Surveillance Network (RESP-NET)</a></strong>"))
-    s130(("<strong><a href="https://github.com/PopHIVE/school_immunizations" target="_blank" rel="noreferrer">PopHIVE school immunization assessments</a></strong>"))
-    s132(("<strong><a href="https://github.com/washingtonpost/data-school-vaccination-rates" target="_blank" rel="noreferrer">Washington Post School Vaccination Rates</a></strong>"))
-    s133(("<strong><a href="https://www.tn.gov/health/cedep/immunization/school-immunization-requirements.html" target="_blank" rel="noreferrer">Tennessee Kindergarten Immunization Compliance Assessment</a></strong>"))
-    s134(("<strong><a href="https://www.cdc.gov/schoolvaxview/index.html" target="_blank" rel="noreferrer">SchoolVaxView</a></strong>"))
-    s136(("<strong><a href="https://usafacts.org/articles/more-voters-are-registering-outside-the-two-party-system/" target="_blank" rel="noreferrer">USAFacts Voter Registration by Party Affiliation</a></strong>"))
-    s137(("<strong><a href="https://www.ers.usda.gov/data-products/food-environment-atlas/" target="_blank" rel="noreferrer">Food Environment Atlas</a></strong>"))
-    s139(("<strong><a href="https://jamanetwork.com/journals/jama/fullarticle/2843870" target="_blank" rel="noreferrer">Medical Exemptions From Childhood Vaccination in the US (Kiang et al. 2025)</a></strong>"))
-    s140(("<strong><a href="https://www.cdc.gov/vaccine-safety-systems/vsd/index.html" target="_blank" rel="noreferrer">Vaccine Safety Datalink (VSD) pregnancy vaccination coverage</a></strong>"))
-    s142(("<strong><a href="https://data.cdc.gov/d/akvg-8vrb" target="_blank" rel="noreferrer">CDC National Wastewater Surveillance System (NWSS) - Measles</a></strong>"))
-    s143(("<strong><a href="https://www.cdc.gov/nwss/" target="_blank" rel="noreferrer">CDC National Wastewater Surveillance System (NWSS)</a></strong>"))
-    s145(("<strong><a href="https://wisqars.cdc.gov/" target="_blank" rel="noreferrer">Web-based Injury Statistics Query and Reporting System (WISQARS)</a></strong>"))
-    s147(("<strong><a href="https://yrbs-explorer.services.cdc.gov/" target="_blank" rel="noreferrer">CDC Youth Risk Behavior Surveillance System (YRBSS)</a></strong>"))
+    s30(("<strong><a href="https://data.cdc.gov/d/ahfs-x44r" target="_blank" rel="noreferrer">CDC Epidemic Trends and Rt</a></strong>"))
+    s32(("<strong><a href="https://data.cdc.gov/d/e2d5-ggg7" target="_blank" rel="noreferrer">NCHS VSRR Provisional Maternal Death Counts and Rates</a></strong>"))
+    s33(("<strong><a href="https://wonder.cdc.gov/natality-expanded-current.html" target="_blank" rel="noreferrer">CDC WONDER Natality, 2016-2024 expanded</a></strong>"))
+    s35(("<strong><a href="https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/process/data-quality.html" target="_blank" rel="noreferrer">2020 Census Operational Quality Metrics</a></strong>"))
+    s37(("<strong><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noreferrer">Population Estimates Program (PEP): Annual Population Estimates by Age, Sex, Race, and Hispanic Origin</a></strong>"))
+    s39(("<strong><a href="https://www.census.gov/programs-surveys/sahie.html" target="_blank" rel="noreferrer">Small Area Health Insurance Estimates (SAHIE)</a></strong>"))
+    s41(("<strong><a href="https://www.census.gov/programs-surveys/saipe.html" target="_blank" rel="noreferrer">Small Area Income and Poverty Estimates (SAIPE)</a></strong>"))
+    s43(("<strong><a href="https://data.cms.gov/provider-data/dataset/hbf-map" target="_blank" rel="noreferrer">Birthing Friendly Hospitals with Geocoded Addresses</a></strong>"))
+    s44(("<strong><a href="https://data.cdc.gov" target="_blank" rel="noreferrer">Center of Medicare and Medicaid Services (CMS)</a></strong>"))
+    s46(("<strong><a href="https://data.cms.gov/tools/mapping-medicare-disparities-by-population" target="_blank" rel="noreferrer">Mapping Medicare Disparities by Population Tool</a></strong>"))
+    s47(("<strong><a href="https://github.com/ColinVu/CountyBuddy/blob/main/county_data.csv" target="_blank" rel="noreferrer">County Buddy</a></strong>"))
+    s48(("<strong><a href="https://delphi.cmu.edu/epidata/v5/" target="_blank" rel="noreferrer">CMU Delphi Epidata - Outpatient Claims</a></strong>"))
+    s50(("<strong><a href="https://delphi.cmu.edu/epidata/v5/" target="_blank" rel="noreferrer">CMU Delphi Epidata - Inpatient Claims</a></strong>"))
+    s51(("<strong><a href="https://cmu-delphi.github.io/delphi-epidata/" target="_blank" rel="noreferrer">CMU Delphi Epidata</a></strong>"))
+    s53(("<strong><a href="https://www.cdc.gov/flu/weekly/overview.htm" target="_blank" rel="noreferrer">CDC ILINet</a></strong>"))
+    s54(("<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/fluview.html" target="_blank" rel="noreferrer">CMU Delphi Epidata - FluView (ILINet)</a></strong>"))
+    s55(("<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/nhsn.html" target="_blank" rel="noreferrer">CMU Delphi COVIDcast - NHSN Respiratory Hospitalizations</a></strong>"))
+    s56(("<strong><a href="https://wonder.cdc.gov/ucd-icd10-expanded.html" target="_blank" rel="noreferrer">CDC WONDER Underlying Cause of Death, 2018-2024 (ICD-10, expanded)</a></strong>"))
+    s57(("<strong><a href="https://cosmos.epic.com/" target="_blank" rel="noreferrer">Epic Cosmos</a></strong>"))
+    s58(("<strong><a href="https://www.epicresearch.org/health-alerts/" target="_blank" rel="noreferrer">Epic Research Health Alerts</a></strong>"))
+    s59(("<strong><a href="https://www.cdc.gov/fluvaxview/dashboard/vaccine-doses-distributed.html" target="_blank" rel="noreferrer">Influenza vaccine doses distributed (CDC FluVaxView)</a></strong>"))
+    s61(("<strong><a href="https://www.cdc.gov/fluvaxview/interactive/general-population-coverage.html" target="_blank" rel="noreferrer">National Immunization Survey-Flu (NIS-Flu), FluVaxView Interactive</a></strong>"))
+    s63(("<strong><a href="https://www.cdc.gov/brfss/index.html" target="_blank" rel="noreferrer">Behavioral Risk Factor Surveillance System (BRFSS), FluVaxView Interactive</a></strong>"))
+    s64(("<strong><a href="https://trends.google.com" target="_blank" rel="noreferrer">Google Trends</a></strong>"))
+    s66(("<strong><a href="https://www.huduser.gov/portal/datasets/cp.html" target="_blank" rel="noreferrer">Comprehensive Housing Affordability Strategy (CHAS) data</a></strong>"))
+    s68(("<strong><a href="https://www.cdc.gov/iis/about/index.html" target="_blank" rel="noreferrer">Immunization Information Systems (IIS) monthly submissions to CDC</a></strong>"))
+    s70(("<strong><a href="https://www.cdc.gov/fluvaxview/dashboard/adult-vaccinations-administered.html" target="_blank" rel="noreferrer">IQVIA pharmacy and physician-office vaccination claims (CDC estimates)</a></strong>"))
+    s72(("<strong><a href="https://apiv2.kinsainsights.com/api/v1/docs" target="_blank" rel="noreferrer">Kinsa Insights API</a></strong>"))
+    s74(("<strong><a href="" target="_blank" rel="noreferrer">Key indicators of maternal health -- severe obstetric complications (SOC)</a></strong>"))
+    s79(("<strong><a href="https://www.cdc.gov/measles/data-research/index.html" target="_blank" rel="noreferrer">CDC Measles Cases and Outbreaks - Age and Vaccination Status</a></strong>"))
+    s80(("<strong><a href="https://www.cdc.gov/measles/data-research/index.html" target="_blank" rel="noreferrer">CDC Measles Cases and Outbreaks</a></strong>"))
+    s81(("<strong><a href="https://github.com/CSSEGISandData/measles_data" target="_blank" rel="noreferrer">Johns Hopkins University Measles Tracking Team</a></strong>"))
+    s82(("<strong><a href="https://data.medicaid.gov/datasets?theme%5B0%5D=Quality" target="_blank" rel="noreferrer">Medicaid and CHIP Adult and Child Core Set Quality Measures</a></strong>"))
+    s84(("<strong><a href="https://www2.ccwdata.org/web/guest/home" target="_blank" rel="noreferrer">Medicare Fee-For-Service claims (CMS Chronic Conditions Warehouse)</a></strong>"))
+    s86(("<strong><a href="https://doi.org/10.7910/DVN/VOQCHQ" target="_blank" rel="noreferrer">County Presidential Election Returns</a></strong>"))
+    s88(("<strong><a href="https://github.com/eric-gengzhou/MMR_vaccine_estimates" target="_blank" rel="noreferrer">HealthMap MMR Vaccine Coverage Estimates</a></strong>"))
+    s89(("<strong><a href="https://www.cdc.gov/narms/data/index.html" target="_blank" rel="noreferrer">NARMS Now: Human Data - Antimicrobial Resistance</a></strong>"))
+    s91(("<strong><a href="https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries" target="_blank" rel="noreferrer">FDA NARMS Retail Meats Surveillance Data</a></strong>"))
+    s92(("<strong><a href="https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries" target="_blank" rel="noreferrer">FDA NARMS Animal Pathogen Surveillance Data</a></strong>"))
+    s93(("<strong><a href="https://www.fda.gov/animal-veterinary/national-antimicrobial-resistance-monitoring-system/integrated-reportssummaries" target="_blank" rel="noreferrer">FDA NARMS Food-Producing Animals Surveillance Data</a></strong>"))
+    s94(("<strong><a href="https://nccrexplorer.ccdi.cancer.gov/" target="_blank" rel="noreferrer">National Childhood Cancer Registry Explorer (NCCR*Explorer)</a></strong>"))
+    s96(("<strong><a href="https://data.cdc.gov/d/xkb8-kh2a" target="_blank" rel="noreferrer">NCHS VSRR Provisional Drug Overdose Death Counts (State)</a></strong>"))
+    s97(("<strong><a href="https://data.cdc.gov/d/gb4e-yj24" target="_blank" rel="noreferrer">NCHS VSRR Provisional County-Level Drug Overdose Death Counts</a></strong>"))
+    s98(("<strong><a href="https://data.cdc.gov/d/489q-934x" target="_blank" rel="noreferrer">NCHS VSRR Quarterly Provisional Estimates for Selected Indicators of Mortality</a></strong>"))
+    s99(("<strong><a href="https://www.cpsc.gov/Research--Statistics/NEISS-Injury-Data" target="_blank" rel="noreferrer">National Electronic Injury Surveillance System (NEISS)</a></strong>"))
+    s101(("<strong><a href="https://www.cdc.gov/nhsn/psc/hospital-respiratory-reporting.html" target="_blank" rel="noreferrer">NHSN Hospital Respiratory Data</a></strong>"))
+    s103(("<strong><a href="https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/" target="_blank" rel="noreferrer">Fatality Analysis Reporting System (FARS)</a></strong>"))
+    s105(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Flu (NIS-Flu)</a></strong>"))
+    s107(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Fall Respiratory Virus Module (NIS-FRVM)</a></strong>"))
+    s109(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Teen (NIS-Teen)</a></strong>"))
+    s111(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey (NIS)</a></strong>"))
+    s112(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey</a></strong>"))
+    s114(("<strong><a href="https://www.cdc.gov/nndss/" target="_blank" rel="noreferrer">National Notifiable Diseases Surveillance System (NNDSS)</a></strong>"))
+    s115(("<strong><a href="https://www.wpc.ncep.noaa.gov/heatrisk/data/archive/" target="_blank" rel="noreferrer">NOAA WPC HeatRisk</a></strong>"))
+    s117(("<strong><a href="https://data.cdc.gov" target="_blank" rel="noreferrer">Centers for Disease Control and Prevention</a></strong>"))
+    s119(("<strong><a href="https://data.cdc.gov/resource/3cxc-4k8q" target="_blank" rel="noreferrer">National Respiratory and Enteric Virus Surveillance System (NREVSS)</a></strong>"))
+    s120(("<strong><a href="" target="_blank" rel="noreferrer">Opioid-related EMS encounters</a></strong>"))
+    s125(("<strong><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noreferrer">Census Bureau Population Estimates Program (PEP)</a></strong>"))
+    s127(("<strong><a href="https://www.cdc.gov/resp-net/dashboard/index.html" target="_blank" rel="noreferrer">Respiratory Virus Hospitalization Surveillance Network (RESP-NET)</a></strong>"))
+    s131(("<strong><a href="https://github.com/PopHIVE/school_immunizations" target="_blank" rel="noreferrer">PopHIVE school immunization assessments</a></strong>"))
+    s133(("<strong><a href="https://github.com/washingtonpost/data-school-vaccination-rates" target="_blank" rel="noreferrer">Washington Post School Vaccination Rates</a></strong>"))
+    s134(("<strong><a href="https://www.tn.gov/health/cedep/immunization/school-immunization-requirements.html" target="_blank" rel="noreferrer">Tennessee Kindergarten Immunization Compliance Assessment</a></strong>"))
+    s135(("<strong><a href="https://www.cdc.gov/schoolvaxview/index.html" target="_blank" rel="noreferrer">SchoolVaxView</a></strong>"))
+    s137(("<strong><a href="https://usafacts.org/articles/more-voters-are-registering-outside-the-two-party-system/" target="_blank" rel="noreferrer">USAFacts Voter Registration by Party Affiliation</a></strong>"))
+    s138(("<strong><a href="https://www.ers.usda.gov/data-products/food-environment-atlas/" target="_blank" rel="noreferrer">Food Environment Atlas</a></strong>"))
+    s140(("<strong><a href="https://jamanetwork.com/journals/jama/fullarticle/2843870" target="_blank" rel="noreferrer">Medical Exemptions From Childhood Vaccination in the US (Kiang et al. 2025)</a></strong>"))
+    s141(("<strong><a href="https://www.cdc.gov/vaccine-safety-systems/vsd/index.html" target="_blank" rel="noreferrer">Vaccine Safety Datalink (VSD) pregnancy vaccination coverage</a></strong>"))
+    s143(("<strong><a href="https://data.cdc.gov/d/akvg-8vrb" target="_blank" rel="noreferrer">CDC National Wastewater Surveillance System (NWSS) - Measles</a></strong>"))
+    s144(("<strong><a href="https://www.cdc.gov/nwss/" target="_blank" rel="noreferrer">CDC National Wastewater Surveillance System (NWSS)</a></strong>"))
+    s146(("<strong><a href="https://wisqars.cdc.gov/" target="_blank" rel="noreferrer">Web-based Injury Statistics Query and Reporting System (WISQARS)</a></strong>"))
+    s148(("<strong><a href="https://yrbs-explorer.services.cdc.gov/" target="_blank" rel="noreferrer">CDC Youth Risk Behavior Surveillance System (YRBSS)</a></strong>"))
     subgraph abcs["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/abcs" target="_blank" rel="noreferrer">abcs</a></strong>`"]
         direction LR
         n1["`data.csv.gz`"]:::pass
@@ -141,7 +141,7 @@ flowchart LR
     end
     subgraph cdc_cfa_rt["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cdc_cfa_rt" target="_blank" rel="noreferrer">cdc_cfa_rt</a></strong>`"]
         direction LR
-        n22["`data.csv.gz<br /><br />Script Failed:<br />cdc_cfa_rt: could not parse 'date'/'as_of' from raw/5dqz-y4ea.csv.xz - the source date format likely changed again. Example value: `"]:::fail
+        n22["`data.csv.gz`"]:::pass
     end
     subgraph cdc_vssr["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/cdc_vssr" target="_blank" rel="noreferrer">cdc_vssr</a></strong>`"]
         direction LR
@@ -296,7 +296,7 @@ flowchart LR
     end
     subgraph measles_cdc["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/measles_cdc" target="_blank" rel="noreferrer">measles_cdc</a></strong>`"]
         direction LR
-        n84["`data.csv.gz<br /><br />Script Failed:<br />In argument: 'time = as.Date(week_end)'.`"]:::fail
+        n84["`data.csv.gz`"]:::pass
     end
     subgraph measles_jhu["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/measles_jhu" target="_blank" rel="noreferrer">measles_jhu</a></strong>`"]
         direction LR
@@ -741,230 +741,231 @@ flowchart LR
     s27 --> n20
     s28---s29["<strong><a href="https://data.cdc.gov/Behavioral-Risk-Factors/Behavioral-Risk-Factor-Surveillance-System-BRFSS-P/dttw-5yxu/about_data" target="_blank" rel="noreferrer">Behavioral Risk Factor Surveillance System (BRFSS) Prevalence Data (2011 to present)</a></strong>"]
     s29 --> n21
-    s30 --> n22
-    s31 --> n23
-    s32---s33["<strong><a href="https://wonder.cdc.gov/natality-expanded-current.html" target="_blank" rel="noreferrer">Natality, 2016-2024 expanded (Single Race), database D149</a></strong>"]
-    s33 --> n24
-    s33 --> n25
-    s33 --> n26
-    s33 --> n27
-    s34---s35["<strong><a href="https://www2.census.gov/programs-surveys/decennial/2020/data/operational-quality-metrics/census-operational-quality-metrics-release_4.xlsx" target="_blank" rel="noreferrer">Release 4 county-level file (October 2022)</a></strong>"]
-    s35 --> n28
-    s36---s37["<strong><a href="https://api.census.gov/data/2023/pep/charv.html" target="_blank" rel="noreferrer">Census API — pep/charv</a></strong>"]
-    s37 --> n29
-    s38---s39["<strong><a href="https://api.census.gov/data/timeseries/healthins/sahie.html" target="_blank" rel="noreferrer">Census API — timeseries/healthins/sahie</a></strong>"]
-    s39 --> n30
-    s40---s41["<strong><a href="https://api.census.gov/data/timeseries/poverty/saipe.html" target="_blank" rel="noreferrer">Census API — timeseries/poverty/saipe</a></strong>"]
-    s41 --> n31
-    s42 --> n32
-    s42 --> n33
-    s43---s44["<strong><a href="https://data.cms.gov/tools/mapping-medicare-disparities-by-population" target="_blank" rel="noreferrer">Mapping Medicare Disparities by Population Tool</a></strong>"]
-    s44 --> n34
+    s30---s31["<strong><a href="https://data.cdc.gov/d/ahfs-x44r" target="_blank" rel="noreferrer">data.cdc.gov dataset ahfs-x44r, 'Epidemic Trends and Rt: COVID-19, Influenza, and RSV at National, State, Local Level'. Location changed in October 2026: updated estimates were previously published in dataset 5dqz-y4ea ('CDC Epidemic Trends and Rt'), which CDC emptied on 2026-10-23.</a></strong>"]
+    s31 --> n22
+    s32 --> n23
+    s33---s34["<strong><a href="https://wonder.cdc.gov/natality-expanded-current.html" target="_blank" rel="noreferrer">Natality, 2016-2024 expanded (Single Race), database D149</a></strong>"]
+    s34 --> n24
+    s34 --> n25
+    s34 --> n26
+    s34 --> n27
+    s35---s36["<strong><a href="https://www2.census.gov/programs-surveys/decennial/2020/data/operational-quality-metrics/census-operational-quality-metrics-release_4.xlsx" target="_blank" rel="noreferrer">Release 4 county-level file (October 2022)</a></strong>"]
+    s36 --> n28
+    s37---s38["<strong><a href="https://api.census.gov/data/2023/pep/charv.html" target="_blank" rel="noreferrer">Census API — pep/charv</a></strong>"]
+    s38 --> n29
+    s39---s40["<strong><a href="https://api.census.gov/data/timeseries/healthins/sahie.html" target="_blank" rel="noreferrer">Census API — timeseries/healthins/sahie</a></strong>"]
+    s40 --> n30
+    s41---s42["<strong><a href="https://api.census.gov/data/timeseries/poverty/saipe.html" target="_blank" rel="noreferrer">Census API — timeseries/poverty/saipe</a></strong>"]
+    s42 --> n31
+    s43 --> n32
+    s43 --> n33
+    s44---s45["<strong><a href="https://data.cms.gov/tools/mapping-medicare-disparities-by-population" target="_blank" rel="noreferrer">Mapping Medicare Disparities by Population Tool</a></strong>"]
     s45 --> n34
-    s44 --> n35
+    s46 --> n34
     s45 --> n35
-    s44 --> n36
+    s46 --> n35
     s45 --> n36
-    s46 --> n37
-    s47---s48["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/" target="_blank" rel="noreferrer">Epidata API, claims_outpatient source</a></strong>"]
-    s48 --> n38
-    s48 --> n39
-    s48 --> n40
-    s48 --> n41
-    s50---s51["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/fluview.html" target="_blank" rel="noreferrer">FluView API</a></strong>"]
-    s51 --> n42
+    s46 --> n36
+    s47 --> n37
+    s48---s49["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/" target="_blank" rel="noreferrer">Epidata API, claims_outpatient source</a></strong>"]
+    s49 --> n38
+    s49 --> n39
+    s49 --> n40
+    s49 --> n41
+    s51---s52["<strong><a href="https://cmu-delphi.github.io/delphi-epidata/api/fluview.html" target="_blank" rel="noreferrer">FluView API</a></strong>"]
     s52 --> n42
-    s48 --> n42
-    s48 --> n43
-    s55 --> n44
-    s55 --> n45
-    s56 --> n46
-    s56 --> n47
-    s56 --> n48
-    s56 --> n49
-    s56 --> n50
-    s56 --> n51
-    s56 --> n52
-    s56 --> n53
-    s56 --> n54
-    s57 --> n55
-    s56 --> n56
-    s56 --> n57
-    s56 --> n58
-    s56 --> n59
-    s56 --> n60
-    s56 --> n61
-    s56 --> n62
-    s56 --> n63
-    s56 --> n64
-    s58---s59["<strong><a href="https://data.cdc.gov/d/ph8r-wzxn" target="_blank" rel="noreferrer">Weekly Cumulative Doses (in Millions) of Influenza Vaccines Distributed by Season, United States</a></strong>"]
-    s59 --> n65
-    s60---s61["<strong><a href="https://data.cdc.gov/d/vh55-3he6" target="_blank" rel="noreferrer">Influenza Vaccination Coverage for All Ages (6+ Months)</a></strong>"]
-    s61 --> n66
-    s61 --> n67
-    s61 --> n68
-    s61 --> n69
-    s61 --> n70
-    s61 --> n71
-    s63---s64["<strong><a href="https://github.com/DISSC-yale/gtrends_collection" target="_blank" rel="noreferrer">Yale Data-Intensive Social Sciences, Google Trends Collection Framework</a></strong>"]
-    s64 --> n72
-    s64 --> n73
-    s64 --> n74
-    s64 --> n75
-    s65---s66["<strong><a href="https://www.huduser.gov/portal/datasets/cp.html" target="_blank" rel="noreferrer">CHAS county-level (sumlevel 050) CSV download</a></strong>"]
-    s66 --> n76
-    s66 --> n77
-    s67---s68["<strong><a href="https://data.cdc.gov/d/ivdz-qhnr" target="_blank" rel="noreferrer">Monthly Cumulative Number and Percent of Persons Who Received Influenza and RSV Immunizations by Jurisdiction (FluVaxView and RSVVaxView dashboards)</a></strong>"]
-    s68 --> n78
-    s68 --> n79
-    s69---s70["<strong><a href="https://data.cdc.gov/d/ysd3-txwj" target="_blank" rel="noreferrer">Weekly Cumulative Estimated Number of Influenza (and RSV) Vaccinations Administered in Retail Pharmacies and Physicians' Medical Offices, Adults, United States (FluVaxView and RSVVaxView dashboards)</a></strong>"]
-    s70 --> n80
-    s71---s72["<strong><a href="https://apiv2.kinsainsights.com/api/v1/docs" target="_blank" rel="noreferrer">Kinsa Insights API - Signal Endpoint</a></strong>"]
-    s72 --> n81
-    s73---s74["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
-    s74 --> n82
-    s73---s75["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s53 --> n42
+    s49 --> n42
+    s49 --> n43
+    s56 --> n44
+    s56 --> n45
+    s57 --> n46
+    s57 --> n47
+    s57 --> n48
+    s57 --> n49
+    s57 --> n50
+    s57 --> n51
+    s57 --> n52
+    s57 --> n53
+    s57 --> n54
+    s58 --> n55
+    s57 --> n56
+    s57 --> n57
+    s57 --> n58
+    s57 --> n59
+    s57 --> n60
+    s57 --> n61
+    s57 --> n62
+    s57 --> n63
+    s57 --> n64
+    s59---s60["<strong><a href="https://data.cdc.gov/d/ph8r-wzxn" target="_blank" rel="noreferrer">Weekly Cumulative Doses (in Millions) of Influenza Vaccines Distributed by Season, United States</a></strong>"]
+    s60 --> n65
+    s61---s62["<strong><a href="https://data.cdc.gov/d/vh55-3he6" target="_blank" rel="noreferrer">Influenza Vaccination Coverage for All Ages (6+ Months)</a></strong>"]
+    s62 --> n66
+    s62 --> n67
+    s62 --> n68
+    s62 --> n69
+    s62 --> n70
+    s62 --> n71
+    s64---s65["<strong><a href="https://github.com/DISSC-yale/gtrends_collection" target="_blank" rel="noreferrer">Yale Data-Intensive Social Sciences, Google Trends Collection Framework</a></strong>"]
+    s65 --> n72
+    s65 --> n73
+    s65 --> n74
+    s65 --> n75
+    s66---s67["<strong><a href="https://www.huduser.gov/portal/datasets/cp.html" target="_blank" rel="noreferrer">CHAS county-level (sumlevel 050) CSV download</a></strong>"]
+    s67 --> n76
+    s67 --> n77
+    s68---s69["<strong><a href="https://data.cdc.gov/d/ivdz-qhnr" target="_blank" rel="noreferrer">Monthly Cumulative Number and Percent of Persons Who Received Influenza and RSV Immunizations by Jurisdiction (FluVaxView and RSVVaxView dashboards)</a></strong>"]
+    s69 --> n78
+    s69 --> n79
+    s70---s71["<strong><a href="https://data.cdc.gov/d/ysd3-txwj" target="_blank" rel="noreferrer">Weekly Cumulative Estimated Number of Influenza (and RSV) Vaccinations Administered in Retail Pharmacies and Physicians' Medical Offices, Adults, United States (FluVaxView and RSVVaxView dashboards)</a></strong>"]
+    s71 --> n80
+    s72---s73["<strong><a href="https://apiv2.kinsainsights.com/api/v1/docs" target="_blank" rel="noreferrer">Kinsa Insights API - Signal Endpoint</a></strong>"]
+    s73 --> n81
+    s74---s75["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
     s75 --> n82
-    s73---s76["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s74---s76["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
     s76 --> n82
-    s73---s77["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s74---s77["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
     s77 --> n82
-    s78 --> n83
-    s79 --> n84
-    s80 --> n85
-    s80 --> n86
-    s80 --> n87
-    s81---s82["<strong><a href="https://data.medicaid.gov/datasets?theme%5B0%5D=Quality" target="_blank" rel="noreferrer">Medicaid.gov Open Data – Quality Measures datasets (2014–2025)</a></strong>"]
-    s82 --> n88
-    s83---s84["<strong><a href="https://data.cdc.gov/d/agz7-4mvg" target="_blank" rel="noreferrer">Weekly Cumulative Influenza (and RSV) Vaccination Coverage, by Race and Ethnicity, Medicare Fee-For-Service Beneficiaries (FluVaxView and RSVVaxView dashboards)</a></strong>"]
-    s84 --> n89
-    s85---s86["<strong><a href="https://dataverse.harvard.edu/dataverse/medsl_president" target="_blank" rel="noreferrer">Harvard Dataverse</a></strong>"]
-    s86 --> n90
-    s86 --> n91
-    s87 --> n92
-    s87 --> n93
-    s87 --> n94
-    s88---s89["<strong><a href="https://app.powerbigov.us/view?r=eyJrIjoiZmU5ZjA2ZDItNTU0MS00M2EzLWEyZmQtZmY3Y2RlZjdjYTdjIiwidCI6IjljZTcwODY5LTYwZGItNDRmZC1hYmU4LWQyNzY3MDc3ZmM4ZiJ9" target="_blank" rel="noreferrer">NARMS Now Interactive Dashboard - Human Data</a></strong>"]
-    s89 --> n95
+    s74---s78["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s78 --> n82
+    s79 --> n83
+    s80 --> n84
+    s81 --> n85
+    s81 --> n86
+    s81 --> n87
+    s82---s83["<strong><a href="https://data.medicaid.gov/datasets?theme%5B0%5D=Quality" target="_blank" rel="noreferrer">Medicaid.gov Open Data – Quality Measures datasets (2014–2025)</a></strong>"]
+    s83 --> n88
+    s84---s85["<strong><a href="https://data.cdc.gov/d/agz7-4mvg" target="_blank" rel="noreferrer">Weekly Cumulative Influenza (and RSV) Vaccination Coverage, by Race and Ethnicity, Medicare Fee-For-Service Beneficiaries (FluVaxView and RSVVaxView dashboards)</a></strong>"]
+    s85 --> n89
+    s86---s87["<strong><a href="https://dataverse.harvard.edu/dataverse/medsl_president" target="_blank" rel="noreferrer">Harvard Dataverse</a></strong>"]
+    s87 --> n90
+    s87 --> n91
+    s88 --> n92
+    s88 --> n93
+    s88 --> n94
+    s89---s90["<strong><a href="https://app.powerbigov.us/view?r=eyJrIjoiZmU5ZjA2ZDItNTU0MS00M2EzLWEyZmQtZmY3Y2RlZjdjYTdjIiwidCI6IjljZTcwODY5LTYwZGItNDRmZC1hYmU4LWQyNzY3MDc3ZmM4ZiJ9" target="_blank" rel="noreferrer">NARMS Now Interactive Dashboard - Human Data</a></strong>"]
     s90 --> n95
     s91 --> n95
     s92 --> n95
-    s89 --> n96
+    s93 --> n95
     s90 --> n96
     s91 --> n96
     s92 --> n96
-    s89 --> n97
+    s93 --> n96
     s90 --> n97
     s91 --> n97
     s92 --> n97
-    s89 --> n98
+    s93 --> n97
     s90 --> n98
     s91 --> n98
     s92 --> n98
-    s89 --> n99
+    s93 --> n98
     s90 --> n99
     s91 --> n99
     s92 --> n99
-    s93---s94["<strong><a href="https://nccrexplorer.ccdi.cancer.gov/application.html" target="_blank" rel="noreferrer">NCCR*Explorer: An interactive website for NCCR cancer statistics</a></strong>"]
-    s94 --> n100
-    s95 --> n101
+    s93 --> n99
+    s94---s95["<strong><a href="https://nccrexplorer.ccdi.cancer.gov/application.html" target="_blank" rel="noreferrer">NCCR*Explorer: An interactive website for NCCR cancer statistics</a></strong>"]
+    s95 --> n100
     s96 --> n101
-    s97 --> n102
-    s95 --> n103
+    s97 --> n101
+    s98 --> n102
     s96 --> n103
-    s98---s99["<strong><a href="https://www.cpsc.gov/cgibin/NEISSQuery/" target="_blank" rel="noreferrer">NEISS public query / archived data files</a></strong>"]
-    s99 --> n104
-    s99 --> n105
-    s99 --> n106
-    s99 --> n107
-    s99 --> n108
-    s99 --> n109
-    s99 --> n110
-    s99 --> n111
-    s100---s101["<strong><a href="https://data.cdc.gov/d/ua7e-t2fy" target="_blank" rel="noreferrer">Weekly Hospital Respiratory Data (HRD) Metrics by Jurisdiction, National Healthcare Safety Network (NHSN)</a></strong>"]
-    s101 --> n112
-    s101 --> n113
-    s101 --> n114
-    s101 --> n115
-    s102---s103["<strong><a href="https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/" target="_blank" rel="noreferrer">NHTSA File Downloads — FARS National CSV archives</a></strong>"]
-    s103 --> n116
-    s103 --> n117
-    s103 --> n118
-    s103 --> n119
-    s104---s105["<strong><a href="https://data.cdc.gov/d/judz-8etw" target="_blank" rel="noreferrer">Weekly Influenza Vaccination Status and Intent for Vaccination, Children 6 Months-17 Years (FluVaxView dashboard)</a></strong>"]
-    s105 --> n120
-    s106---s107["<strong><a href="https://data.cdc.gov/d/sw5n-wg2p" target="_blank" rel="noreferrer">Weekly Influenza and RSV Vaccination Coverage and Intent, Adults 18 Years and Older (FluVaxView and RSVVaxView dashboards)</a></strong>"]
-    s107 --> n120
-    s105 --> n121
-    s107 --> n121
-    s105 --> n122
-    s107 --> n122
-    s105 --> n123
-    s107 --> n123
-    s105 --> n124
-    s107 --> n124
-    s108---s109["<strong><a href="https://data.cdc.gov/d/ee48-w5t6" target="_blank" rel="noreferrer">Vaccination Coverage among Adolescents (13-17 Years), TeenVaxView</a></strong>"]
-    s109 --> n125
-    s109 --> n126
-    s109 --> n127
-    s109 --> n128
-    s109 --> n129
-    s110 --> n130
-    s111---s112["<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">About the National Immunization Surveys (NIS)</a></strong>"]
-    s112 --> n130
-    s110 --> n131
-    s112 --> n131
-    s110 --> n132
-    s112 --> n132
-    s113 --> n133
-    s114---s115["<strong><a href="https://www.wpc.ncep.noaa.gov/heatrisk/data.html" target="_blank" rel="noreferrer">HeatRisk GeoTIFF Archive and 7-Day Forecast</a></strong>"]
-    s115 --> n134
-    s115 --> n135
-    s116---s117["<strong><a href="https://data.cdc.gov/resource/3cxc-4k8q" target="_blank" rel="noreferrer">Percent Positivity of Respiratory Syncytial Virus Nucleic Acid Amplification Tests by HHS Region, National Respiratory and Enteric Virus Surveillance System</a></strong>"]
-    s117 --> n136
+    s97 --> n103
+    s99---s100["<strong><a href="https://www.cpsc.gov/cgibin/NEISSQuery/" target="_blank" rel="noreferrer">NEISS public query / archived data files</a></strong>"]
+    s100 --> n104
+    s100 --> n105
+    s100 --> n106
+    s100 --> n107
+    s100 --> n108
+    s100 --> n109
+    s100 --> n110
+    s100 --> n111
+    s101---s102["<strong><a href="https://data.cdc.gov/d/ua7e-t2fy" target="_blank" rel="noreferrer">Weekly Hospital Respiratory Data (HRD) Metrics by Jurisdiction, National Healthcare Safety Network (NHSN)</a></strong>"]
+    s102 --> n112
+    s102 --> n113
+    s102 --> n114
+    s102 --> n115
+    s103---s104["<strong><a href="https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/" target="_blank" rel="noreferrer">NHTSA File Downloads — FARS National CSV archives</a></strong>"]
+    s104 --> n116
+    s104 --> n117
+    s104 --> n118
+    s104 --> n119
+    s105---s106["<strong><a href="https://data.cdc.gov/d/judz-8etw" target="_blank" rel="noreferrer">Weekly Influenza Vaccination Status and Intent for Vaccination, Children 6 Months-17 Years (FluVaxView dashboard)</a></strong>"]
+    s106 --> n120
+    s107---s108["<strong><a href="https://data.cdc.gov/d/sw5n-wg2p" target="_blank" rel="noreferrer">Weekly Influenza and RSV Vaccination Coverage and Intent, Adults 18 Years and Older (FluVaxView and RSVVaxView dashboards)</a></strong>"]
+    s108 --> n120
+    s106 --> n121
+    s108 --> n121
+    s106 --> n122
+    s108 --> n122
+    s106 --> n123
+    s108 --> n123
+    s106 --> n124
+    s108 --> n124
+    s109---s110["<strong><a href="https://data.cdc.gov/d/ee48-w5t6" target="_blank" rel="noreferrer">Vaccination Coverage among Adolescents (13-17 Years), TeenVaxView</a></strong>"]
+    s110 --> n125
+    s110 --> n126
+    s110 --> n127
+    s110 --> n128
+    s110 --> n129
+    s111 --> n130
+    s112---s113["<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">About the National Immunization Surveys (NIS)</a></strong>"]
+    s113 --> n130
+    s111 --> n131
+    s113 --> n131
+    s111 --> n132
+    s113 --> n132
+    s114 --> n133
+    s115---s116["<strong><a href="https://www.wpc.ncep.noaa.gov/heatrisk/data.html" target="_blank" rel="noreferrer">HeatRisk GeoTIFF Archive and 7-Day Forecast</a></strong>"]
+    s116 --> n134
+    s116 --> n135
+    s117---s118["<strong><a href="https://data.cdc.gov/resource/3cxc-4k8q" target="_blank" rel="noreferrer">Percent Positivity of Respiratory Syncytial Virus Nucleic Acid Amplification Tests by HHS Region, National Respiratory and Enteric Virus Surveillance System</a></strong>"]
     s118 --> n136
-    s119---s120["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
-    s120 --> n137
-    s119---s121["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s119 --> n136
+    s120---s121["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
     s121 --> n137
-    s119---s122["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s120---s122["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
     s122 --> n137
-    s119---s123["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s120---s123["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
     s123 --> n137
-    s124---s125["<strong><a href="https://www.census.gov/data/developers/data-sets/popest-popproj/popest.html" target="_blank" rel="noreferrer">Census Data API: pep/charagegroups (2019) and pep/charv (2023)</a></strong>"]
-    s125 --> n138
-    s126---s127["<strong><a href="https://healthdata.gov/CDC/Weekly-Rates-of-Laboratory-Confirmed-COVID-19-Hosp/gk5r-vjtt/about_data" target="_blank" rel="noreferrer">Weekly Rates of Laboratory-Confirmed COVID-19 Hospitalizations from the COVID-NET Surveillance System</a></strong>"]
-    s127 --> n139
-    s126---s128["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/Weekly-Rates-of-Laboratory-Confirmed-RSV-Hospitali/29hc-w46k/about_data" target="_blank" rel="noreferrer">Weekly Rates of Laboratory-Confirmed RSV Hospitalizations from the RSV-NET Surveillance System</a></strong>"]
+    s120---s124["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s124 --> n137
+    s125---s126["<strong><a href="https://www.census.gov/data/developers/data-sets/popest-popproj/popest.html" target="_blank" rel="noreferrer">Census Data API: pep/charagegroups (2019) and pep/charv (2023)</a></strong>"]
+    s126 --> n138
+    s127---s128["<strong><a href="https://healthdata.gov/CDC/Weekly-Rates-of-Laboratory-Confirmed-COVID-19-Hosp/gk5r-vjtt/about_data" target="_blank" rel="noreferrer">Weekly Rates of Laboratory-Confirmed COVID-19 Hospitalizations from the COVID-NET Surveillance System</a></strong>"]
     s128 --> n139
-    s126---s129["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/Rates-of-Laboratory-Confirmed-RSV-COVID-19-and-Flu/kvib-3txy/about_data" target="_blank" rel="noreferrer">Rates of Laboratory-Confirmed RSV, COVID-19, and Flu Hospitalizations from the RESP-NET Surveillance Systems</a></strong>"]
+    s127---s129["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/Weekly-Rates-of-Laboratory-Confirmed-RSV-Hospitali/29hc-w46k/about_data" target="_blank" rel="noreferrer">Weekly Rates of Laboratory-Confirmed RSV Hospitalizations from the RSV-NET Surveillance System</a></strong>"]
     s129 --> n139
-    s130---s131["<strong><a href="https://github.com/PopHIVE/school_immunizations/blob/main/data/DATA_SOURCES.md" target="_blank" rel="noreferrer">Per-state standard files and source notes</a></strong>"]
-    s131 --> n140
-    s132 --> n141
+    s127---s130["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/Rates-of-Laboratory-Confirmed-RSV-COVID-19-and-Flu/kvib-3txy/about_data" target="_blank" rel="noreferrer">Rates of Laboratory-Confirmed RSV, COVID-19, and Flu Hospitalizations from the RESP-NET Surveillance Systems</a></strong>"]
+    s130 --> n139
+    s131---s132["<strong><a href="https://github.com/PopHIVE/school_immunizations/blob/main/data/DATA_SOURCES.md" target="_blank" rel="noreferrer">Per-state standard files and source notes</a></strong>"]
+    s132 --> n140
     s133 --> n141
-    s132 --> n142
-    s134---s135["<strong><a href="https://data.cdc.gov/Vaccinations/Vaccination-Coverage-and-Exemptions-among-Kinderga/ijqb-a7ye/about_data" target="_blank" rel="noreferrer">Vaccination Coverage and Exemptions among Kindergartners</a></strong>"]
-    s135 --> n143
-    s135 --> n144
-    s136 --> n145
-    s136 --> n146
-    s137---s138["<strong><a href="https://www.ers.usda.gov/data-products/food-environment-atlas/data-access-and-documentation-downloads" target="_blank" rel="noreferrer">Food Environment Atlas data download</a></strong>"]
-    s138 --> n147
-    s139 --> n148
-    s139 --> n149
-    s139 --> n150
-    s140---s141["<strong><a href="https://data.cdc.gov/d/8fbp-accd" target="_blank" rel="noreferrer">Percent of Pregnant Women Ages 18-49 Years Who Have Received an Influenza (or RSV) Vaccine, by Race and Ethnicity (FluVaxView and RSVVaxView dashboards)</a></strong>"]
-    s141 --> n151
-    s142 --> n152
-    s142 --> n153
-    s143---s144["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/CDC-Wastewater-Viral-Activity-Level-for-SARS-CoV-2/atcp-73re/" target="_blank" rel="noreferrer">CDC Wastewater Viral Activity Level for SARS-CoV-2, Influenza A and RSV</a></strong>"]
-    s144 --> n154
-    s145---s146["<strong><a href="https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0" target="_blank" rel="noreferrer">Fatal Injury Report</a></strong>"]
-    s146 --> n155
-    s147 --> n156
-    s147 --> n157
-    s147 --> n158
+    s134 --> n141
+    s133 --> n142
+    s135---s136["<strong><a href="https://data.cdc.gov/Vaccinations/Vaccination-Coverage-and-Exemptions-among-Kinderga/ijqb-a7ye/about_data" target="_blank" rel="noreferrer">Vaccination Coverage and Exemptions among Kindergartners</a></strong>"]
+    s136 --> n143
+    s136 --> n144
+    s137 --> n145
+    s137 --> n146
+    s138---s139["<strong><a href="https://www.ers.usda.gov/data-products/food-environment-atlas/data-access-and-documentation-downloads" target="_blank" rel="noreferrer">Food Environment Atlas data download</a></strong>"]
+    s139 --> n147
+    s140 --> n148
+    s140 --> n149
+    s140 --> n150
+    s141---s142["<strong><a href="https://data.cdc.gov/d/8fbp-accd" target="_blank" rel="noreferrer">Percent of Pregnant Women Ages 18-49 Years Who Have Received an Influenza (or RSV) Vaccine, by Race and Ethnicity (FluVaxView and RSVVaxView dashboards)</a></strong>"]
+    s142 --> n151
+    s143 --> n152
+    s143 --> n153
+    s144---s145["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/CDC-Wastewater-Viral-Activity-Level-for-SARS-CoV-2/atcp-73re/" target="_blank" rel="noreferrer">CDC Wastewater Viral Activity Level for SARS-CoV-2, Influenza A and RSV</a></strong>"]
+    s145 --> n154
+    s146---s147["<strong><a href="https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0" target="_blank" rel="noreferrer">Fatal Injury Report</a></strong>"]
+    s147 --> n155
+    s148 --> n156
+    s148 --> n157
+    s148 --> n158
     n88 --> bundle_adolescent_vaccination
     n129 --> bundle_adolescent_vaccination
     n125 --> bundle_adolescent_vaccination
