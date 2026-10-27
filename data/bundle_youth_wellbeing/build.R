@@ -84,8 +84,7 @@ YRBSS_RACE <- c('AI/AN'    = 'American Indian/Alaska Native',
 COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
                'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer', 'domain',
                'vaccine', 'product', 'diagnosis', 'forecast_day',
-               'section', 'focus_area', 'source', 'measure', 'rank', 'value',
-               'pct_of_all', 'value_lcl', 'value_ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
+               'section', 'focus_area', 'source', 'measure', 'rank', 'value', 'pct_captured',               'pct_of_all', 'value_lcl', 'value_ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
                'suppressed', 'not_asked', 'low_coverage_flag', 'unstable_flag',
                'percent_surveyed', 'survey_type')
 
@@ -218,7 +217,7 @@ SPEC <- bind_rows(
 
   # ---- Epic Chronic ----
   sp('epic_chronic', 'Chronic disease', 'Obesity',
-     c('obesity_bmi', 'obesity_dx_ccw', 'n_patients_chronic')),
+     c('obesity_bmi', 'obesity_dx_ccw')),
   sp('epic_chronic', 'Chronic disease', 'Diabetes', c('diabetes_a1c_6_5', 'diabetes_dx_ccw')),
 
   # ---- Epic Concussions (not in the workbook; added alongside YRBSS's
@@ -482,14 +481,45 @@ epic_injury_tall('monthly_injury.csv.gz') %>%
 
 epic_chronic_measures <- SPEC %>% filter(dataset == 'epic_chronic') %>% pull(measure) %>% unique()
 
+# 2021 census population under 18, as in bundle_chronic_diseases: states and
+# counties by GEOID, plus a national row summed over the 50 states + DC.
+epic_pop <- dcf::dcf_load_census(year = 2021, out_dir = './resources', overwrite = FALSE) %>%
+  mutate(`<18 Years` = `<10 Years` + `10-18 Years`) %>%
+  select(GEOID, region_name, `<18 Years`) %>%
+  pivot_longer(`<18 Years`, names_to = 'age', values_to = 'pop_2021') %>%
+  mutate(age = unname(AGE_EPIC_C[age]))
+epic_pop <- bind_rows(
+  epic_pop,
+  epic_pop %>%
+    filter(region_name %in% c(state.name, 'District of Columbia')) %>%
+    group_by(age) %>%
+    summarize(pop_2021 = sum(pop_2021), .groups = 'drop') %>%
+    mutate(GEOID = '00')
+) %>%
+  select(fips = GEOID, age, pop_2021)
+
 epic_chronic_tall <- function(file) {
-  vroom::vroom(file.path('../epic_chronic/standard', file), show_col_types = FALSE) %>%
+  raw <- vroom::vroom(file.path('../epic_chronic/standard', file), show_col_types = FALSE) %>%
     filter(age %in% names(AGE_EPIC_C)) %>%
     mutate(age = unname(AGE_EPIC_C[age])) %>%
     rename_with(~ paste0(sub('^suppressed_', '', .x), '_suppressed'),
-                any_of(paste0('suppressed_', epic_chronic_measures))) %>%
-    tall_flagged(epic_chronic_measures, c('geography', 'time', 'age'), '_suppressed') %>%
+                any_of(paste0('suppressed_', epic_chronic_measures)))
+  keys <- c('geography', 'time', 'age')
+  # As in bundle_chronic_diseases, n_patients_chronic is the sample size for every
+  # measure (obesity included) and rides along as `sample_size` rather than being
+  # a measure of its own, with pct_captured = sample_size as a percent of the
+  # under-18 population (NA where the count was suppressed). The suppression flag
+  # itself is not carried.
+  raw %>%
+    tall_flagged(epic_chronic_measures, keys, '_suppressed') %>%
+    left_join(raw %>% select(all_of(keys), sample_size = n_patients_chronic,
+                             n_patients_suppressed = suppressed_n_patients_chronic),
+              by = keys) %>%
     rename(fips = geography) %>%
+    left_join(epic_pop, by = c('fips', 'age')) %>%
+    mutate(pct_captured = if_else(n_patients_suppressed == 1, NA_real_,
+                                  sample_size / pop_2021 * 100)) %>%
+    select(-pop_2021, -n_patients_suppressed) %>%
     filter(!is.na(value))
 }
 
