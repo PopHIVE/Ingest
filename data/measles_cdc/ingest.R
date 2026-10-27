@@ -28,7 +28,15 @@ if (!identical(process$raw_state, raw_state)) {
   # ---------------------------------------------------------------------------
   # 2. Read and transform data
   # ---------------------------------------------------------------------------
-  measles_data <- fromJSON(raw_file)
+  measles_json <- fromJSON(raw_file)
+
+  # CDC used to publish a flat table; it now wraps the weekly rows in a
+  # list with a `lastUpdated` field and the table under `data`. Accept both.
+  measles_data <- if (is.data.frame(measles_json)) measles_json else measles_json$data
+  if (!is.data.frame(measles_data) || !"week_end" %in% names(measles_data)) {
+    stop("measles_cdc: could not find weekly rows with `week_end` in ", raw_file,
+         " - the JSON layout likely changed again.")
+  }
 
   # Transform to standard format
   data_standard <- measles_data %>%
