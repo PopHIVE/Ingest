@@ -508,8 +508,9 @@ epic_chronic_tall <- function(file) {
   # As in bundle_chronic_diseases, n_patients_chronic is the sample size for every
   # measure (obesity included) and rides along as `sample_size` rather than being
   # a measure of its own, with pct_captured = sample_size as a percent of the
-  # under-18 population (NA where the count was suppressed). The suppression flag
-  # itself is not carried.
+  # under-18 population (NA where the count or the measure was suppressed -- the
+  # source can impute n = 5 for a suppressed measure without flagging the count,
+  # e.g. Kalawao County). The suppression flag itself is not carried.
   raw %>%
     tall_flagged(epic_chronic_measures, keys, '_suppressed') %>%
     left_join(raw %>% select(all_of(keys), sample_size = n_patients_chronic,
@@ -517,7 +518,7 @@ epic_chronic_tall <- function(file) {
               by = keys) %>%
     rename(fips = geography) %>%
     left_join(epic_pop, by = c('fips', 'age')) %>%
-    mutate(pct_captured = if_else(n_patients_suppressed == 1, NA_real_,
+    mutate(pct_captured = if_else(n_patients_suppressed == 1 | suppressed == 1, NA_real_,
                                   sample_size / pop_2021 * 100)) %>%
     select(-pop_2021, -n_patients_suppressed) %>%
     filter(!is.na(value))
