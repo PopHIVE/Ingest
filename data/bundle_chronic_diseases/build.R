@@ -109,8 +109,8 @@ epic_state <- vroom::vroom('../epic_chronic/standard/state_year.csv.gz') %>%
           ) %>%
   rename(n_patients = n_patients_chronic) %>%
  left_join(pop_combined, by=c('age'='age','geography'='geography')) %>%
-  mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, as.numeric(n_patients)/pop_2021 * 100 ),
-         source= if_else(outcome_name=='diabetes_a1c_6_5','Epic Cosmos: HbA1c',
+  mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, pmin(as.numeric(n_patients)/pop_2021 * 100, 100) ),
+         source=if_else(outcome_name=='diabetes_a1c_6_5','Epic Cosmos: HbA1c',
                                         if_else(outcome_name=='diabetes_dx_ccw','Epic Cosmos: ICD10',  
                                                 if_else(outcome_name %in% c('obesity_dx_ccw','obesity_dx_ccw'),'Epic Cosmos: ICD10',  
                                                         if_else(outcome_name=='obesity_bmi','Epic Cosmos: BMI', 
@@ -217,7 +217,7 @@ epic_county <- vroom::vroom('../epic_chronic/standard/county_year.csv.gz') %>%
     values_to = "value"
   ) %>%
   left_join(pop_long_state, by=c('age'='age','geography'='GEOID')) %>%
-  mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, as.numeric(n_patients)/pop_2021 * 100 ),
+  mutate(pct_captured = ifelse(n_patients == "10 or fewer", NA, pmin(as.numeric(n_patients)/pop_2021 * 100, 100) ),
          source='Epic Cosmos'
   ) %>%
   dplyr::select(geography, age,year, outcome_name, source,value
