@@ -248,7 +248,7 @@ if (!identical(process$raw_state, raw_state)) {
   }
 
   #creating wide format
-  data_wide <- data1 %>%
+  data_long <- data1 %>%
     mutate(
       time            = paste0(time_year, "-01-01"),
       geography       = state,
@@ -264,7 +264,19 @@ if (!identical(process$raw_state, raw_state)) {
       # IMA carries two definitions from 2017 (Combination 1 = MenACWY + Tdap,
       # and HPV series completion); WCV carries four age bands from 2021. Keep
       # the base column as Combination 1 / ages 3-21 and split the rest out.
+      # AMR reports every year ages 5-11, 12-18 and 5-18 (child) and 19-50,
+      # 51-64 and 19-64 (adult) under one abbreviation; the base column is the
+      # overall 5-18 / 19-64 rate and the narrower bands are split out.
       sub_metric = case_when(
+        measure_abbr %in% c("AMR-CH", "AMR-AD") &
+          grepl("Ages 5 to 11\\s*$", coalesce(measure_info, ""))                 ~ "5_11",
+        measure_abbr %in% c("AMR-CH", "AMR-AD") &
+          grepl("Ages 12 to 18\\s*$", coalesce(measure_info, ""))                ~ "12_18",
+        measure_abbr %in% c("AMR-CH", "AMR-AD") &
+          grepl("Ages 19 to 50\\s*$", coalesce(measure_info, ""))                ~ "19_50",
+        measure_abbr %in% c("AMR-CH", "AMR-AD") &
+          grepl("Ages 51 to 64\\s*$", coalesce(measure_info, ""))                ~ "51_64",
+        measure_abbr %in% c("AMR-CH", "AMR-AD")                                  ~ "",
         measure_abbr == "IMA-CH" &
           grepl("Papillomavirus|HPV", coalesce(measure_info, ""))               ~ "hpv",
         measure_abbr == "IMA-CH"                                                 ~ "",
@@ -302,16 +314,36 @@ if (!identical(process$raw_state, raw_state)) {
       var_name = paste("medicaid", measure_clean, sub_metric, stat, sep = "_"),
       var_name = gsub("_+$", "", gsub("__+", "_", var_name))
     ) %>%
-    select(-measure_clean, -sub_metric, -stat) %>%
-    warn_collapsed() %>%
-    arrange_for_distinct() %>%
-    select(-measure_abbr, -measure_info, -population) %>%
-    distinct(geography, time, payer, domain, var_name, .keep_all = TRUE) %>%
-    pivot_wider(names_from = var_name, values_from = val) %>%
-    mutate(across(starts_with("medicaid_"), as.numeric))
-  
-  #writing standard file
+    select(-measure_clean, -sub_metric, -stat)
+
+  # collapse to one row per (geography, time, payer, domain, var_name) and widen
+  widen_measures <- function(d) {
+    d %>%
+      warn_collapsed() %>%
+      arrange_for_distinct() %>%
+      select(-measure_abbr, -measure_info, -population) %>%
+      distinct(geography, time, payer, domain, var_name, .keep_all = TRUE) %>%
+      pivot_wider(names_from = var_name, values_from = val) %>%
+      mutate(across(starts_with("medicaid_"), as.numeric))
+  }
+
+  data_wide <- widen_measures(data_long)
+
+  # Combined Medicaid + CHIP only. In data.csv.gz payer "Medicaid" is whichever
+  # population survives the tie-break, which can be Medicaid-only. This file
+  # keeps just populations that name both Medicaid and CHIP ("Medicaid & CHIP"
+  # through 2023; the Title XIX / Title XXI strings from 2024), so every row
+  # is a combined rate. Where a state reports several combined populations the
+  # most inclusive one is kept (see arrange_for_distinct()).
+  data_combined <- data_long %>%
+    filter(grepl("Medicaid", population, ignore.case = TRUE) &
+             grepl("CHIP", population, ignore.case = TRUE)) %>%
+    mutate(payer = "Medicaid & CHIP") %>%
+    widen_measures()
+
+  #writing standard files
   vroom::vroom_write(data_wide, "standard/data.csv.gz", delim = ",")
+  vroom::vroom_write(data_combined, "standard/data_combined.csv.gz", delim = ",")
   
   #record processed raw state
   process$raw_state <- raw_state

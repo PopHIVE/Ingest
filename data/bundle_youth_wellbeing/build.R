@@ -505,21 +505,32 @@ epic_chronic_tall <- function(file) {
     rename_with(~ paste0(sub('^suppressed_', '', .x), '_suppressed'),
                 any_of(paste0('suppressed_', epic_chronic_measures)))
   keys <- c('geography', 'time', 'age')
-  # As in bundle_chronic_diseases, n_patients_chronic is the sample size for every
-  # measure (obesity included) and rides along as `sample_size` rather than being
-  # a measure of its own, with pct_captured = sample_size as a percent of the
-  # under-18 population (NA where the count was suppressed). The suppression flag
-  # itself is not carried.
+  # The sample size rides along as `sample_size` rather than being a measure of
+  # its own, with pct_captured = sample_size as a percent of the under-18
+  # population (NA where the count or the measure was suppressed). Source
+  # suppression is applied against each measure's own denominator: obesity
+  # measures use n_patients_ob (n_patients_ob_county at county level), diabetes
+  # measures use n_patients_chronic. Using n_patients_chronic for obesity pairs
+  # a suppressed count (imputed as 5) with an unsuppressed value. Values over
+  # 100 (Epic counts can exceed the 2021 census population) are capped at 100.
+  # The suppression flag itself is not carried.
+  ob_n <- grep('^n_patients_ob', names(raw), value = TRUE)
   raw %>%
     tall_flagged(epic_chronic_measures, keys, '_suppressed') %>%
-    left_join(raw %>% select(all_of(keys), sample_size = n_patients_chronic,
-                             n_patients_suppressed = suppressed_n_patients_chronic),
+    left_join(raw %>% select(all_of(keys),
+                             n_Diabetes = n_patients_chronic, n_Obesity = all_of(ob_n),
+                             n_suppressed_Diabetes = suppressed_n_patients_chronic,
+                             n_suppressed_Obesity = all_of(paste0('suppressed_', ob_n))),
               by = keys) %>%
+    mutate(is_obesity = grepl('^obesity', measure),
+           sample_size = if_else(is_obesity, n_Obesity, n_Diabetes),
+           n_patients_suppressed = if_else(is_obesity, n_suppressed_Obesity, n_suppressed_Diabetes)) %>%
     rename(fips = geography) %>%
     left_join(epic_pop, by = c('fips', 'age')) %>%
-    mutate(pct_captured = if_else(n_patients_suppressed == 1, NA_real_,
-                                  sample_size / pop_2021 * 100)) %>%
-    select(-pop_2021, -n_patients_suppressed) %>%
+    mutate(pct_captured = if_else(n_patients_suppressed == 1 | suppressed == 1, NA_real_,
+                                  pmin(sample_size / pop_2021 * 100, 100))) %>%
+    select(-pop_2021, -n_patients_suppressed, -is_obesity,
+           -n_Diabetes, -n_Obesity, -n_suppressed_Diabetes, -n_suppressed_Obesity) %>%
     filter(!is.na(value))
 }
 
@@ -576,8 +587,10 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 #   dist/medicaid_state_payer.parquet
 #
 # This source carries no demographic stratification at all: age, sex and
-# race_ethnicity are 'Total' on every row. Its real dimensions are payer
-# (Medicaid / CHIP / Total) and domain. The requested measures are all Child
+# race_ethnicity are 'Total' on every row. Only the combined Medicaid + CHIP
+# population is used (standard/data_combined.csv.gz, payer 'Medicaid & CHIP'),
+# so a state-year with no combined rate is absent rather than filled in from a
+# Medicaid-only or CHIP-only rate. The remaining dimension is domain. The requested measures are all Child
 # Core Set (_ch_) rates, so the population is children by construction; age is
 # carried through from the source. The source's age, sex and race_ethnicity
 # columns are all 'Total' today but are kept so any future stratification flows
@@ -593,7 +606,7 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 medicaid_measures <- SPEC %>% filter(dataset == 'medicaid') %>% pull(measure) %>% unique()
 medicaid_stems <- sub('_rate$', '', medicaid_measures)
 
-vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE,
+vroom::vroom('../medicaid_quality/standard/data_combined.csv.gz', show_col_types = FALSE,
              guess_max = Inf) %>%
   filter(geography_level == 's') %>%
   mutate(geography = if_else(geography == 'Dist. of Col.', 'District of Columbia', geography)) %>%
@@ -696,6 +709,20 @@ chr_state %>%
 chr_county %>%
   filter(measure == 'chr_disconnected_youth') %>%
   write_parquet('dist/chr_disconnected_county.parquet')
+
+# Teen births, limited access to healthy foods and food environment index only,
+# as standalone files. These duplicate the matching rows in chr_state /
+# chr_county.
+CHR_TEEN_FOOD_MEASURES <- c('chr_teen_births', 'chr_limited_access_to_healthy_foods',
+                            'chr_food_environment_index')
+
+chr_state %>%
+  filter(measure %in% CHR_TEEN_FOOD_MEASURES) %>%
+  write_parquet('dist/chr_teen_births_food_state.parquet')
+
+chr_county %>%
+  filter(measure %in% CHR_TEEN_FOOD_MEASURES) %>%
+  write_parquet('dist/chr_teen_births_food_county.parquet')
 
 
 # =============================================================================
