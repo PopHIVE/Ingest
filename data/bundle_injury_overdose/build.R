@@ -445,7 +445,8 @@ vroom::vroom('../medicaid_quality/standard/data.csv.gz') %>%
   filter(geography_level == 's') %>%
   dplyr::select(geography, time, age, sex, race_ethnicity, payer,
                 medicaid_oud_ad_rate,
-                medicaid_iet_ad_rate,
+                medicaid_iet_ad_init_total_rate,
+                medicaid_iet_ad_engage_total_rate,
                 medicaid_fua_ad_30d_rate,
                 medicaid_cob_ad_rate) %>%
   pivot_longer(
@@ -457,7 +458,8 @@ vroom::vroom('../medicaid_quality/standard/data.csv.gz') %>%
   mutate(
     outcome_name = case_when(
       outcome_name == "oud_ad_rate"      ~ "Opioid Use Disorder",
-      outcome_name == "iet_ad_rate"      ~ "Initiation and Engagement of Substance Use Treatment",
+      outcome_name == "iet_ad_init_total_rate"   ~ "Initiation of Substance Use Treatment",
+      outcome_name == "iet_ad_engage_total_rate" ~ "Engagement of Substance Use Treatment",
       outcome_name == "fua_ad_30d_rate"  ~ "Follow-Up After ED Visit for Alcohol and Drug Abuse",
       outcome_name == "cob_ad_rate"      ~ "Concurrent Use of Opioids and Benzodiazepines"
     ),

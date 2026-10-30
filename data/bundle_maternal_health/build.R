@@ -61,13 +61,13 @@ CHR_MEASURES <- c(
 
 # Medicaid quality (CMS) — state level only; values stored in *_rate columns
 MEDICAID_MEASURES <- c(
-  medicaid_ppc_ad_rate  = "medicaid_prenatal_postpartum_care_adult",
-  medicaid_ppc_ch_rate  = "medicaid_prenatal_postpartum_care_child",
-  medicaid_fpc_ch_rate  = "medicaid_first_prenatal_visit",
-  medicaid_cpa_ad_rate  = "medicaid_contraceptive_postpartum_adult",
-  medicaid_cpc_ch_rate  = "medicaid_contraceptive_postpartum_child",
+  medicaid_ppc_ad_rate  = "medicaid_postpartum_care_adult",
+  medicaid_ppc_ch_rate  = "medicaid_prenatal_care_timeliness_child",
+  medicaid_fpc_ch_rate  = "medicaid_prenatal_visit_frequency_child",
+  medicaid_ccp_ad_rate  = "medicaid_contraceptive_postpartum_adult",
+  medicaid_ccp_ch_rate  = "medicaid_contraceptive_postpartum_child",
   medicaid_lbw_ch_rate  = "medicaid_low_birthweight",
-  medicaid_lrcd_ch_rate = "medicaid_low_birthweight_risk_adjusted"
+  medicaid_lrcd_ch_rate = "medicaid_low_risk_cesarean_child"
 )
 
 # CDC VSRR provisional maternal mortality — national only
@@ -161,13 +161,21 @@ state_fips_lookup <- all_fips %>%
   select(fips = geography, geography_name)
 
 medicaid_long <- medicaid_raw %>%
-  # Restrict to Medicaid payer to avoid duplicate rows across payer splits.
-  filter(payer == "Medicaid") %>%
+  # CMS reports Medicaid only, CHIP only and combined Medicaid & CHIP
+  # populations separately; keep the Medicaid-program rows (combined
+  # preferred, else Medicaid only) and drop the CHIP-only / Other rows.
+  filter(payer %in% c("Medicaid & CHIP", "Medicaid")) %>%
   left_join(state_fips_lookup, by = c("geography" = "geography_name")) %>%
   filter(!is.na(fips)) %>%
   select(-geography) %>%
   rename(geography = fips) %>%
-  pivot_measures(MEDICAID_MEASURES)
+  pivot_measures(MEDICAID_MEASURES, id_cols = c("geography", "time", "payer")) %>%
+  # one value per state-year-measure: Medicaid & CHIP where reported
+  group_by(geography, time, measure) %>%
+  arrange(payer != "Medicaid & CHIP", .by_group = TRUE) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(-payer)
 
 # -----------------------------------------------------------------------------
 # 5. CDC WONDER natality — state + national + county; Overall demographic
