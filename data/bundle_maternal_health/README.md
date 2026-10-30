@@ -25,7 +25,7 @@ measures don't have.
 |------------|-------------|-----|
 | `census` (ACS) | `birth_rate` | state + county |
 | `county_health_rankings` | `teen_birth_rate`, `low_birth_weight`, `infant_mortality`, `child_mortality`, `smoking_during_pregnancy`, `breastfeeding` | state + county |
-| `medicaid_quality` (CMS Core Set, Medicaid payer) | `medicaid_prenatal_postpartum_care_adult`/`_child`, `medicaid_first_prenatal_visit`, `medicaid_contraceptive_postpartum_adult`/`_child`, `medicaid_low_birthweight`, `medicaid_low_birthweight_risk_adjusted` | state only |
+| `medicaid_quality` (CMS Core Set, Medicaid-program rows) | `medicaid_postpartum_care_adult`, `medicaid_prenatal_care_timeliness_child`, `medicaid_prenatal_visit_frequency_child`, `medicaid_contraceptive_postpartum_adult`/`_child`, `medicaid_low_birthweight`, `medicaid_low_risk_cesarean_child` | state only |
 | `cdc_vssr` (NCHS VSRR, provisional) | `maternal_mortality_rate` (→ `maternal_mortality.parquet`) | national only |
 
 ## Known data-quality handling

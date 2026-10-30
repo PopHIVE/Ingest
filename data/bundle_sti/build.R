@@ -192,9 +192,10 @@ chr_county <- read_chr("../county_health_rankings/standard/data_county.csv.gz") 
 # -----------------------------------------------------------------------------
 
 medicaid_raw <- read_chr("../medicaid_quality/standard/data.csv.gz") %>%
-  # CHIP reports the adolescent measure separately for the same state-years;
-  # keep the Medicaid rows only.
-  filter(payer == "Medicaid") %>%
+  # CMS reports Medicaid only, CHIP only and combined Medicaid & CHIP
+  # populations separately; keep the Medicaid-program rows (combined
+  # preferred, else Medicaid only) and drop the CHIP-only / Other rows.
+  filter(payer %in% c("Medicaid & CHIP", "Medicaid")) %>%
   mutate(geography = if_else(geography == "Dist. of Col.", "District of Columbia", geography)) %>%
   left_join(state_fips_lookup, by = c("geography" = "geography_name"))
 
@@ -208,7 +209,13 @@ medicaid_state <- medicaid_raw %>%
   filter(!is.na(fips)) %>%
   select(-geography) %>%
   rename(geography = fips) %>%
-  pivot_measures(MEDICAID_MEASURES) %>%
+  pivot_measures(MEDICAID_MEASURES, id_cols = c("geography", "time", "payer")) %>%
+  # one value per state-year-measure: Medicaid & CHIP where reported
+  group_by(geography, time, measure) %>%
+  arrange(payer != "Medicaid & CHIP", .by_group = TRUE) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(-payer) %>%
   mutate(source = "CMS Medicaid Core Set")
 
 # -----------------------------------------------------------------------------

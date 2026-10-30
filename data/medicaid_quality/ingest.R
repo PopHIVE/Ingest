@@ -247,20 +247,66 @@ if (!identical(process$raw_state, raw_state)) {
       select(-population_priority)
   }
 
+  # Many CMS measures report several distinct rates under ONE abbreviation in
+  # the same year (different age bands, sub-measures, survey items, ...). Each
+  # distinct rate_definition must land in its own column, otherwise the
+  # one-row-per-state-year collapse below silently keeps an arbitrary one.
+  # sub_metric / sub_extra below label them; the unlabeled ("") column is the
+  # headline / total rate. After labeling, warn_collapsed() should report
+  # nothing -- if it does, a new definition needs a rule here.
+  mi_has <- function(x, pattern) grepl(pattern, coalesce(x, ""), ignore.case = TRUE)
+
+  # IET-AD: initiation (14 days) / engagement (34 days) by substance. The
+  # subject is read from the text before "who ..." / "with Engagement|Initiation"
+  # because every definition also mentions "Alcohol or Other Drug Treatment".
+  iet_label <- function(x) {
+    subj <- sub("( who | with (Engagement|Initiation)).*$", "", coalesce(x, ""),
+                ignore.case = TRUE, perl = TRUE)
+    phase <- if_else(grepl("Engage", x, ignore.case = TRUE), "engage", "init")
+    sub_ <- case_when(
+      grepl("Opioid", subj, ignore.case = TRUE)                                     ~ "opioid",
+      grepl("Alcohol or Other Drug|Alcohol or Drug|Total SUD", subj, ignore.case = TRUE) ~ "total",
+      grepl("Alcohol", subj, ignore.case = TRUE)                                    ~ "alc",
+      grepl("Other", subj, ignore.case = TRUE)                                      ~ "other",
+      TRUE                                                                          ~ "total"
+    )
+    paste(phase, sub_, sep = "_")
+  }
+  all_fips <- vroom::vroom("../../resources/all_fips.csv.gz", show_col_types = FALSE)
+  state_fips_lookup <- all_fips %>%
+    filter(nchar(geography) == 2, geography != "00") %>%
+    mutate(state_name = coalesce(
+      geography_name,
+      c(GU = "Guam", PR = "Puerto Rico", VI = "U.S. Virgin Islands")[state]
+    )) %>%
+    select(geography, state_name)
+
   #creating wide format
   data_long <- data1 %>%
+    # state names -> FIPS (all_fips has no names for the territories, so fill
+    # them in from the abbreviation; CMS also uses "Dist. of Col." in some years)
+    mutate(state = case_when(
+      state == "Dist. of Col."  ~ "District of Columbia",
+      state == "Virgin Islands" ~ "U.S. Virgin Islands",
+      TRUE ~ state
+    )) %>%
+    left_join(state_fips_lookup, by = c("state" = "state_name")) %>%
     mutate(
       time            = paste0(time_year, "-01-01"),
-      geography       = state,
       geography_level = "s",
       age             = "Total",
       sex             = "Total",
       race_ethnicity  = "Total",
+      # payer comes from the CMS population string: Medicaid only, CHIP only,
+      # both ("Medicaid & CHIP"), or neither ("Other").
       payer = case_when(
+        grepl("Medicaid", population, ignore.case = TRUE) &
+          grepl("CHIP", population, ignore.case = TRUE)   ~ "Medicaid & CHIP",
         grepl("Medicaid", population, ignore.case = TRUE) ~ "Medicaid",
         grepl("CHIP", population, ignore.case = TRUE)     ~ "CHIP",
-        TRUE                                               ~ "Total"
+        TRUE                                               ~ "Other"
       ),
+      # Labels for definitions that share one abbreviation (see mi_has above).
       # IMA carries two definitions from 2017 (Combination 1 = MenACWY + Tdap,
       # and HPV series completion); WCV carries four age bands from 2021. Keep
       # the base column as Combination 1 / ages 3-21 and split the rest out.
@@ -269,13 +315,13 @@ if (!identical(process$raw_state, raw_state)) {
       # overall 5-18 / 19-64 rate and the narrower bands are split out.
       sub_metric = case_when(
         measure_abbr %in% c("AMR-CH", "AMR-AD") &
-          grepl("Ages 5 to 11\\s*$", coalesce(measure_info, ""))                 ~ "5_11",
+          mi_has(measure_info, "Ages 5( to |-)11\\s*$")                          ~ "5_11",
         measure_abbr %in% c("AMR-CH", "AMR-AD") &
-          grepl("Ages 12 to 18\\s*$", coalesce(measure_info, ""))                ~ "12_18",
+          mi_has(measure_info, "Ages 12( to |-)18\\s*$")                         ~ "12_18",
         measure_abbr %in% c("AMR-CH", "AMR-AD") &
-          grepl("Ages 19 to 50\\s*$", coalesce(measure_info, ""))                ~ "19_50",
+          mi_has(measure_info, "Ages 19( to |-)50\\s*$")                         ~ "19_50",
         measure_abbr %in% c("AMR-CH", "AMR-AD") &
-          grepl("Ages 51 to 64\\s*$", coalesce(measure_info, ""))                ~ "51_64",
+          mi_has(measure_info, "Ages 51( to |-)64\\s*$")                         ~ "51_64",
         measure_abbr %in% c("AMR-CH", "AMR-AD")                                  ~ "",
         measure_abbr == "IMA-CH" &
           grepl("Papillomavirus|HPV", coalesce(measure_info, ""))               ~ "hpv",
@@ -287,6 +333,95 @@ if (!identical(process$raw_state, raw_state)) {
         measure_abbr == "WCV-CH" &
           grepl("Ages 18 to 21$", coalesce(measure_info, ""))                    ~ "18_21",
         measure_abbr == "WCV-CH"                                                 ~ "",
+        # vaccines (AIS-AD, 2025 only) and pregnancy vaccines (PRS)
+        measure_abbr == "AIS-AD" & mi_has(measure_info, "Influenza")             ~ "flu",
+        measure_abbr == "AIS-AD" & mi_has(measure_info, "Td/Tdap")               ~ "tdap",
+        measure_abbr == "AIS-AD" & mi_has(measure_info, "Zoster")                ~ "zoster",
+        measure_abbr %in% c("PRS-AD", "PRS-CH") &
+          mi_has(measure_info, "Recommended Immunizations")                      ~ "both",
+        measure_abbr %in% c("PRS-AD", "PRS-CH") & mi_has(measure_info, "Tdap")   ~ "tdap",
+        measure_abbr %in% c("PRS-AD", "PRS-CH") & mi_has(measure_info, "Influenza") ~ "flu",
+        # antidepressant management: base = acute phase (12 weeks)
+        measure_abbr == "AMM-AD" & mi_has(measure_info, "6 Months")              ~ "6mo",
+        measure_abbr == "AMM-AD"                                                 ~ "",
+        # CAP-CH: four age groups; base = ages 12-19 (the column historically kept)
+        measure_abbr == "CAP-CH" & mi_has(measure_info, "Past Year: (Ages )?12")         ~ "12_24m",
+        measure_abbr == "CAP-CH" & mi_has(measure_info, "Past Year: (Ages )?25")         ~ "25m_6y",
+        measure_abbr == "CAP-CH" & mi_has(measure_info, "Past Two Years: (Ages )?7")     ~ "7_11",
+        measure_abbr == "CAP-CH"                                                 ~ "",
+        # contraceptive care: LARC vs most/moderately effective, 3 days vs 60/90 days
+        measure_abbr %in% c("CCP-AD", "CCP-CH") & mi_has(measure_info, "Long-Acting") &
+          mi_has(measure_info, "Within 3 Days")                                  ~ "",
+        measure_abbr %in% c("CCP-AD", "CCP-CH") & mi_has(measure_info, "Long-Acting") ~ "larc_late",
+        measure_abbr %in% c("CCP-AD", "CCP-CH") & mi_has(measure_info, "Within 3 Days") ~ "mod_3d",
+        measure_abbr %in% c("CCP-AD", "CCP-CH")                                  ~ "mod_late",
+        measure_abbr %in% c("CCW-AD", "CCW-CH") & mi_has(measure_info, "Most Effective") ~ "mod",
+        measure_abbr %in% c("CCW-AD", "CCW-CH")                                  ~ "",
+        # childhood immunization status: base = Combination 3
+        measure_abbr == "CIS-CH" & mi_has(measure_info, "Combination 10")        ~ "combo10",
+        measure_abbr == "CIS-CH" & mi_has(measure_info, "Measles|MMR")           ~ "mmr",
+        measure_abbr == "CIS-CH" & mi_has(measure_info, "Flu")                   ~ "flu",
+        measure_abbr == "CIS-CH"                                                 ~ "",
+        # colorectal screening: base = younger age band (46-49, then 46-50)
+        measure_abbr == "COL-AD" & mi_has(measure_info, "Ages 46 to")            ~ "",
+        measure_abbr == "COL-AD"                                                 ~ "older",
+        # CAHPS survey items (CPA-AD adult, CPC-CH child)
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "Informed")                                       ~ "doctor_informed",
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "Getting Care Quickly|Got Care Quickly")          ~ "care_quickly",
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "Getting Needed Care|Got Needed Care")            ~ "needed_care",
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "Customer Service")                               ~ "customer_service",
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "Communicate")                                    ~ "doctor_communication",
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "Rating of Health Care|Rated Their Health Care")  ~ "rating_care",
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "Rating of Health Plan|Rated Their Health Plan")  ~ "rating_plan",
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "Rating of Personal Doctor|Rated Their Personal Doctor") ~ "rating_doctor",
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "Rating of Specialist|Rated Their Specialist")    ~ "rating_specialist",
+        # glycemic status / HbA1c control
+        measure_abbr %in% c("GSD-AD", "HBD-AD") & mi_has(measure_info, "<8")     ~ "lt8",
+        measure_abbr %in% c("GSD-AD", "HBD-AD") & mi_has(measure_info, ">9")     ~ "gt9",
+        # initiation / engagement of SUD treatment by substance
+        measure_abbr == "IET-AD"                                                 ~ iet_label(measure_info),
+        # asthma medication management (MMA-CH): base = total ages 5-20
+        measure_abbr == "MMA-CH" & mi_has(measure_info, "5-11")                  ~ "5_11",
+        measure_abbr == "MMA-CH" & mi_has(measure_info, "12-18")                 ~ "12_18",
+        measure_abbr == "MMA-CH" & mi_has(measure_info, "19-20")                 ~ "19_20",
+        measure_abbr == "MMA-CH"                                                 ~ "",
+        # tobacco cessation: base = advised to quit
+        measure_abbr == "MSC-AD" & mi_has(measure_info, "Medication")            ~ "meds",
+        measure_abbr == "MSC-AD" & mi_has(measure_info, "Strateg|Methods")       ~ "strategies",
+        measure_abbr == "MSC-AD"                                                 ~ "",
+        # NCI-IDD adult consumer survey (renamed NCIIDD-AD in 2024)
+        measure_abbr %in% c("NCIDDS-AD", "NCIIDD-AD") &
+          mi_has(measure_info, "way to get places")                              ~ "transport",
+        measure_abbr %in% c("NCIDDS-AD", "NCIIDD-AD") &
+          mi_has(measure_info, "life decisions")                                 ~ "life_decisions",
+        measure_abbr %in% c("NCIDDS-AD", "NCIIDD-AD") &
+          mi_has(measure_info, "daily schedule|everyday lives")                  ~ "daily_choices",
+        # opioid use disorder pharmacotherapy: base = any medication (total rate)
+        measure_abbr == "OUD-AD" & mi_has(measure_info, "Buprenorphine")         ~ "bup",
+        measure_abbr == "OUD-AD" & mi_has(measure_info, "Injectable Naltrexone") ~ "ntx_inj",
+        measure_abbr == "OUD-AD" & mi_has(measure_info, "Methadone")             ~ "methadone",
+        measure_abbr == "OUD-AD" & mi_has(measure_info, "Oral Naltrexone")       ~ "ntx_oral",
+        measure_abbr == "OUD-AD"                                                 ~ "",
+        # PPC2: postpartum visit vs timeliness of prenatal care
+        measure_abbr %in% c("PPC2-AD", "PPC2-CH") &
+          mi_has(measure_info, "Postpartum Care Visit")                          ~ "postpartum",
+        measure_abbr %in% c("PPC2-AD", "PPC2-CH") &
+          mi_has(measure_info, "Prenatal Care Visit")                            ~ "prenatal",
+        measure_abbr == "SFM-CH" & mi_has(measure_info, "All Four")              ~ "all4",
+        measure_abbr == "SFM-CH"                                                 ~ "any",
+        # well-care for children: BMI (base), nutrition counseling, activity counseling
+        measure_abbr == "WCC-CH" & mi_has(measure_info, "Nutrition")             ~ "nutrition",
+        measure_abbr == "WCC-CH" & mi_has(measure_info, "Physical Activity")     ~ "activity",
+        measure_abbr == "WCC-CH"                                                 ~ "",
         grepl("Within 7 Days|7-Day|7 Days", measure_info, ignore.case = TRUE)    ~ "7d",
         grepl("Within 30 Days|30-Day|30 Days", measure_info, ignore.case = TRUE) ~ "30d",
         grepl("Initiation Phase", measure_info, ignore.case = TRUE)               ~ "init",
@@ -296,13 +431,56 @@ if (!identical(process$raw_state, raw_state)) {
         grepl("Cholesterol", measure_info, ignore.case = TRUE)                    ~ "chol",
         TRUE ~ ""
       ),
-      measure_clean = tolower(gsub("[^A-Za-z0-9]+", "_", measure_abbr)),
+      # Second label: age band / population / threshold within a measure.
+      # FFY 2025 adds "Age 65 and Older" rows next to "Ages 18 to 64" for the
+      # FUA/FUH/FUM adult measures; those must not share the 18-64 column.
+      sub_age = case_when(
+        measure_abbr %in% c("APM-CH", "APP-CH") &
+          mi_has(measure_info, "Ages 1 to 11\\s*$")                              ~ "1_11",
+        measure_abbr %in% c("APM-CH", "APP-CH") &
+          mi_has(measure_info, "Ages 12 to 17\\s*$")                             ~ "12_17",
+        measure_abbr %in% c("FUA-AD", "FUH-AD", "FUM-AD") &
+          mi_has(measure_info, "Age 65 and Older")                               ~ "65p",
+        measure_abbr == "OEV-CH" & mi_has(measure_info, "Age < 3")               ~ "lt3",
+        measure_abbr == "OEV-CH" & mi_has(measure_info, "Ages 3 to 5")           ~ "3_5",
+        measure_abbr == "OEV-CH" & mi_has(measure_info, "Ages 6 to 14")          ~ "6_14",
+        measure_abbr == "OEV-CH" & mi_has(measure_info, "Ages 15 to 20")         ~ "15_20",
+        measure_abbr == "TFL-CH" & mi_has(measure_info, "Ages 1 to 2")           ~ "1_2",
+        measure_abbr == "TFL-CH" & mi_has(measure_info, "Ages 3 to 5")           ~ "3_5",
+        measure_abbr == "TFL-CH" & mi_has(measure_info, "Ages 6 to 14")          ~ "6_14",
+        measure_abbr == "TFL-CH" & mi_has(measure_info, "Ages 15 to 20")         ~ "15_20",
+        measure_abbr == "CPC-CH" & mi_has(measure_info, "Chronic Conditions")    ~ "ccc",
+        measure_abbr == "CPC-CH" & mi_has(measure_info, "General Child")         ~ "gc",
+        TRUE ~ ""
+      ),
+      # CAHPS FFY 2025 reports a broader top-box next to the stricter one
+      # ("Usually or Always" next to "Always"; 8-10 next to 9-10 ratings).
+      # FFY 2023 reported CAHPS as composite / rating scores ("Getting Care
+      # Quickly Composite", "Rating of Health Care"); from FFY 2024 CMS reports
+      # top-box percentages ("Percentage who Selected ... Always"). Different
+      # statistics, so the 2023 definitions get their own "composite" column.
+      sub_thr = case_when(
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          !mi_has(measure_info, "^Percentage")                                  ~ "composite",
+        measure_abbr %in% c("CPA-AD", "CPC-CH") &
+          mi_has(measure_info, "\"Usually\" or \"Always|\"8\", \"9\" or \"10\"") ~ "broad",
+        TRUE ~ ""),
+      sub_extra = gsub("^_+|_+$", "", gsub("__+", "_", paste(sub_age, sub_thr, sep = "_"))),
+      # Measures CMS renamed / re-abbreviated mid-series continue their column:
+      # FUA/FUM-AD (FFY 2018 combined measure) -> FUA-AD / FUM-AD, and the
+      # first-15-months well-child measure that moved under W30-CH in FFY 2021.
+      measure_clean = case_when(
+        measure_abbr == "FUA/FUM-AD" & mi_has(measure_info, "Alcohol")           ~ "fua_ad",
+        measure_abbr == "FUA/FUM-AD" & mi_has(measure_info, "Mental Illness")    ~ "fum_ad",
+        measure_abbr == "W30-CH" & mi_has(measure_info, "First 15 Months")       ~ "w15_ch",
+        TRUE ~ tolower(gsub("[^A-Za-z0-9]+", "_", measure_abbr))
+      ),
       value = as.numeric(if_else(value == "DS", NA_character_, value)),
       pct25 = as.numeric(if_else(pct25 == "DS", NA_character_, pct25)),
       pct75 = as.numeric(if_else(pct75 == "DS", NA_character_, pct75))
     ) %>%
     select(geography, geography_level, time, age, sex, race_ethnicity,
-           payer, domain, measure_abbr, measure_info, measure_clean, sub_metric,
+           payer, domain, measure_abbr, measure_info, measure_clean, sub_metric, sub_extra,
            population, value, pct25, pct75) %>%
     pivot_longer(cols = c(value, pct25, pct75), names_to = "stat", values_to = "val") %>%
     mutate(
@@ -311,10 +489,10 @@ if (!identical(process$raw_state, raw_state)) {
         stat == "pct25" ~ "pct_25",
         stat == "pct75" ~ "pct_75"
       ),
-      var_name = paste("medicaid", measure_clean, sub_metric, stat, sep = "_"),
+      var_name = paste("medicaid", measure_clean, sub_metric, sub_extra, stat, sep = "_"),
       var_name = gsub("_+$", "", gsub("__+", "_", var_name))
     ) %>%
-    select(-measure_clean, -sub_metric, -stat)
+    select(-measure_clean, -sub_metric, -sub_extra, -stat)
 
   # collapse to one row per (geography, time, payer, domain, var_name) and widen
   widen_measures <- function(d) {
@@ -329,18 +507,14 @@ if (!identical(process$raw_state, raw_state)) {
 
   data_wide <- widen_measures(data_long)
 
-  # Combined Medicaid + CHIP only. In data.csv.gz payer "Medicaid" is whichever
-  # population survives the tie-break, which can be Medicaid-only. This file
-  # keeps just populations that name both Medicaid and CHIP ("Medicaid & CHIP"
-  # through 2023; the Title XIX / Title XXI strings from 2024), so every row
-  # is a combined rate. Where a state reports several combined populations the
-  # most inclusive one is kept (see arrange_for_distinct()).
+  # Combined Medicaid + CHIP only: the payer == "Medicaid & CHIP" rows of
+  # data.csv.gz, kept as a separate file for consumers that want a single
+  # population per state-year ("Medicaid & CHIP" through 2023; the Title XIX /
+  # Title XXI strings from 2024). Where a state reports several combined
+  # populations the most inclusive one is kept (see arrange_for_distinct()).
   data_combined <- data_long %>%
-    filter(grepl("Medicaid", population, ignore.case = TRUE) &
-             grepl("CHIP", population, ignore.case = TRUE)) %>%
-    mutate(payer = "Medicaid & CHIP") %>%
+    filter(payer == "Medicaid & CHIP") %>%
     widen_measures()
-
   #writing standard files
   vroom::vroom_write(data_wide, "standard/data.csv.gz", delim = ",")
   vroom::vroom_write(data_combined, "standard/data_combined.csv.gz", delim = ",")

@@ -587,10 +587,11 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 #   dist/medicaid_state_payer.parquet
 #
 # This source carries no demographic stratification at all: age, sex and
-# race_ethnicity are 'Total' on every row. Only the combined Medicaid + CHIP
-# population is used (standard/data_combined.csv.gz, payer 'Medicaid & CHIP'),
-# so a state-year with no combined rate is absent rather than filled in from a
-# Medicaid-only or CHIP-only rate. The remaining dimension is domain. The requested measures are all Child
+# race_ethnicity are 'Total' on every row. All payer categories are kept
+# (standard/data.csv.gz: 'Medicaid', 'CHIP' and the combined 'Medicaid & CHIP';
+# the empty 'Other' category drops out with its NA values) so the dashboard can
+# offer a payer selector. A payer's rate is never filled in from another
+# payer's. The remaining dimension is domain. The requested measures are all Child
 # Core Set (_ch_) rates, so the population is children by construction; age is
 # carried through from the source. The source's age, sex and race_ethnicity
 # columns are all 'Total' today but are kept so any future stratification flows
@@ -606,7 +607,7 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 medicaid_measures <- SPEC %>% filter(dataset == 'medicaid') %>% pull(measure) %>% unique()
 medicaid_stems <- sub('_rate$', '', medicaid_measures)
 
-vroom::vroom('../medicaid_quality/standard/data_combined.csv.gz', show_col_types = FALSE,
+vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE,
              guess_max = Inf) %>%
   filter(geography_level == 's') %>%
   mutate(geography = if_else(geography == 'Dist. of Col.', 'District of Columbia', geography)) %>%
@@ -631,8 +632,9 @@ vroom::vroom('../medicaid_quality/standard/data_combined.csv.gz', show_col_types
 # =============================================================================
 # 8. County Health Rankings -- state + county, no demographic stratification
 #
-#   dist/chr_state.parquet
-#   dist/chr_county.parquet
+#   dist/chr_disconnected_state.parquet
+#   dist/chr_disconnected_county.parquet
+#   dist/chr_teen_births_food_county.parquet
 #
 # CHR has no age, sex or race dimension, so age is 'Not stratified'. Some
 # measures cover children by definition (children in poverty, teen births,
@@ -685,11 +687,12 @@ chr_label <- function(df) {
     arrange(measure, fips, time)
 }
 
+# Only the three standalone files below are published; the full chr_state /
+# chr_county tables are intermediate and not written to dist/.
 chr_state <- chr_read('data_state.csv.gz') %>%
   rename(fips = geography) %>%
   as_state() %>%
   chr_label()
-write_parquet(chr_state, 'dist/chr_state.parquet')
 
 chr_county <- chr_read('data_county.csv.gz') %>%
   mutate(fips = formatC(as.integer(geography), width = 5, flag = '0')) %>%
@@ -697,11 +700,9 @@ chr_county <- chr_read('data_county.csv.gz') %>%
   inner_join(county_cw, by = 'fips') %>%
   rename(geography = geography_name) %>%
   chr_label()
-write_parquet(chr_county, 'dist/chr_county.parquet')
 
 # Disconnected youth only, as standalone files for the dashboard page that
-# uses just this measure. These duplicate the chr_disconnected_youth rows in
-# chr_state / chr_county.
+# uses just this measure.
 chr_state %>%
   filter(measure == 'chr_disconnected_youth') %>%
   write_parquet('dist/chr_disconnected_state.parquet')
@@ -711,14 +712,9 @@ chr_county %>%
   write_parquet('dist/chr_disconnected_county.parquet')
 
 # Teen births, limited access to healthy foods and food environment index only,
-# as standalone files. These duplicate the matching rows in chr_state /
-# chr_county.
+# county level.
 CHR_TEEN_FOOD_MEASURES <- c('chr_teen_births', 'chr_limited_access_to_healthy_foods',
                             'chr_food_environment_index')
-
-chr_state %>%
-  filter(measure %in% CHR_TEEN_FOOD_MEASURES) %>%
-  write_parquet('dist/chr_teen_births_food_state.parquet')
 
 chr_county %>%
   filter(measure %in% CHR_TEEN_FOOD_MEASURES) %>%
