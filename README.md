@@ -71,6 +71,9 @@ The county-level MMR school vaccine coverage data obtained from the Washington P
 **August 25, 2026**
 Delphi has upgraded to a new platform and changed how they smooth their data. This impacts Delphi Doctors Claims and Hospital Claims. Under the old system, the mathematical approach prevented case counts from ever reaching zero. The new system now provides daily updates smoothed using a rolling seven-day average, and we are pulling the Saturday value from this new feed to represent each week. This update impacts low values of flu cases but has very little impact on COVID-19 data. 
 
+**October 31,2026**
+There was a data parsing issue when ingesting the NSSP commercial lab testing data due to the presence of commas in the source numeric data that was causing data to be masked for certain states and inaccurate national aggregates.
+
 # Guide to adding data and rebuilding the bundle
 
 ## Steps for adding new datasets
