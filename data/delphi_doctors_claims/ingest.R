@@ -79,11 +79,21 @@ state_fips_lookup <- all_fips %>%
   filter(nchar(geography) == 2) %>%
   select(geography, state)
 
-  data <- vroom::vroom(
-      './raw/data.csv.xz',
-      col_types = vroom::cols(geo_value = "c", fill_method = "c"),
-      show_col_types = FALSE
-    ) %>%
+  # raw/data.csv.xz is only the latest report_time batch, which the API now
+  # serves with a few weeks of history (from 2026-09). The archived per-year
+  # pulls (raw/data_YYYY.csv.xz, through 2026-10-07) supply the earlier years;
+  # where the two overlap the newest report_time wins (slice_max below).
+  # Saturdays are kept at read time to keep the combined table small.
+  raw_files <- list.files("raw", "^data(_[0-9]{4})?\\.csv\\.xz$", full.names = TRUE)
+  data <- lapply(raw_files, function(f) {
+      vroom::vroom(
+        f,
+        col_types = vroom::cols(geo_value = "c", fill_method = "c"),
+        show_col_types = FALSE
+      ) %>%
+        filter(lubridate::wday(reference_time, week_start = 7) == 7)
+    }) %>%
+    bind_rows() %>%
     mutate(state = toupper(geo_value)) %>%
     left_join(state_fips_lookup, by = "state") %>%
     mutate(
@@ -146,17 +156,6 @@ state_fips_lookup <- all_fips %>%
     ) %>%
     arrange(time, geography)
 
-  # the flag and the pre-labeling value go in their own file so the main file
-  # keeps one numeric column per measure (bundle_respiratory melts every column)
-  data_fill <- combined %>%
-    pivot_wider(
-      names_from = signal,
-      values_from = c(fill_method, value_unlabeled),
-      id_cols = c(geography, time),
-      names_glue = "{signal}_{sub('value_', '', .value)}"
-    ) %>%
-    arrange(time, geography)
-
   if (any(vapply(data_main, is.list, logical(1)))) {
     stop("list column in standard output: duplicate rows reached pivot_wider")
   }
@@ -171,7 +170,6 @@ state_fips_lookup <- all_fips %>%
   }
 
   vroom::vroom_write(data_main, "standard/data.csv.gz", ",")
-  vroom::vroom_write(data_fill, "standard/data_fill_method.csv.gz", ",")
 
   # record processed raw state
   process$raw_state <- raw_state
