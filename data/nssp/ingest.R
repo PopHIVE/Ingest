@@ -184,7 +184,17 @@ if (!identical(process$lab_state, lab_state)) {
     filter(nchar(geography) == 2) %>%
     select(geography, state)
 
-  lab_raw <- vroom::vroom("./raw/jqxy-cyu2.csv.xz", show_col_types = FALSE)
+  # some counts >= 1000 are written with thousands separators (e.g. "1,674")
+  lab_raw <- vroom::vroom(
+    "./raw/jqxy-cyu2.csv.xz",
+    show_col_types = FALSE,
+    col_types = vroom::cols(
+      test_count = vroom::col_number(),
+      positive_count = vroom::col_number(),
+      percent_pos = vroom::col_number(),
+      .default = "?"
+    )
+  )
 
   lab_state_long <- lab_raw %>%
     filter(geography_type == "state") %>%
@@ -221,7 +231,9 @@ if (!identical(process$lab_state, lab_state)) {
     ) %>%
     select(geography, time, pathogen, test_count, positive_count, percent_pos, suppressed_flag)
 
-  data_lab <- bind_rows(lab_state_long, lab_national) %>%
+  #data_lab <- bind_rows(lab_state_long, lab_national) %>%
+  data_lab <- bind_rows(lab_state_long) %>%
+
     tidyr::pivot_wider(
       names_from = pathogen,
       values_from = c(test_count, positive_count, percent_pos, suppressed_flag),
