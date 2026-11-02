@@ -107,7 +107,8 @@ State), so do not sum across `geography_level`.
 
 ### Voter context
 
-`flu_voter_politics` is not flu data; it is political context to set beside it. It is long: filter
+`flu_voter_politics` is not flu data; it is political context to set beside it. It is meant for the
+PopHIVE website, and the PopHIVE MCP server excludes it as non-health data. It is long: filter
 on `measure` first, since counts (votes, registered voters) and percents (0-100) share `value`.
 `geography_level` is `National`, `State` or `County`. Dates are December 31.
 
