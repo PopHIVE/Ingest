@@ -103,6 +103,14 @@ jobs:
           fi
 
       - if: ${{ steps.diff.outputs.changed == 'true' }}
+        name: Rebuild documentation and manifest
+        run: Rscript scripts/build_docs.R
+
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
+        name: Rebuild data table
+        run: Rscript scripts/build_data_table.R
+
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"

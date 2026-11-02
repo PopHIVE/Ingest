@@ -15,7 +15,8 @@
       "bundle_flu/dist/flu_vax_coverage.parquet|": {},
       "bundle_flu/dist/flu_vax_substate.parquet|": {},
       "bundle_flu/dist/flu_vax_doses.parquet|": {},
-      "bundle_flu/dist/flu_voter_politics.parquet|": {}
+      "bundle_flu/dist/flu_voter_politics.parquet|": {},
+      "bundle_flu/dist/flu_lab_testing.parquet|": {}
     }
   },
   "{category}geography_fips": {
@@ -34,7 +35,8 @@
       "bundle_flu/dist/flu_vax_coverage.parquet|": {},
       "bundle_flu/dist/flu_vax_substate.parquet|": {},
       "bundle_flu/dist/flu_vax_doses.parquet|": {},
-      "bundle_flu/dist/flu_voter_politics.parquet|": {}
+      "bundle_flu/dist/flu_voter_politics.parquet|": {},
+      "bundle_flu/dist/flu_lab_testing.parquet|": {}
     }
   },
   "{category}date": {
@@ -53,35 +55,52 @@
       "bundle_flu/dist/flu_vax_coverage.parquet|": {},
       "bundle_flu/dist/flu_vax_substate.parquet|": {},
       "bundle_flu/dist/flu_vax_doses.parquet|": {},
-      "bundle_flu/dist/flu_voter_politics.parquet|": {}
+      "bundle_flu/dist/flu_voter_politics.parquet|": {},
+      "bundle_flu/dist/flu_lab_testing.parquet|": {}
     }
   },
   "bundle_flu/dist/flu_overall_trends.parquet|source": {
     "short_name": "Data source",
     "levels": {
       "Epic Cosmos, ED": {
-        "source_id": "epic_pct_flu"
+        "source_id": "epic_pct_flu",
+        "measure_type": "percent",
+        "unit": "%"
       },
       "CDC NSSP": {
-        "source_id": "percent_visits_flu"
+        "source_id": "percent_visits_flu",
+        "measure_type": "Percent",
+        "unit": "Percent"
       },
       "CDC RespNET": {
-        "source_id": "rate_flu"
+        "source_id": "rate_flu",
+        "measure_type": "Incidence",
+        "unit": "Cases per 100,000 people"
       },
       "CDC NWSS": {
-        "source_id": "wastewater_flua"
+        "source_id": "wastewater_flua",
+        "measure_type": "scaled_log_standard_deviation",
+        "unit": "linear scaling of log standard deviations above a baseline"
       },
       "CDC NHSN": {
-        "source_id": "delphi_nhsn_flu"
+        "source_id": "delphi_nhsn_flu",
+        "measure_type": "count",
+        "unit": "hospitalizations"
       },
       "Delphi Hospital Claims": {
-        "source_id": "delphi_hospital_flu_smooth"
+        "source_id": "delphi_hospital_flu_smooth",
+        "measure_type": "percent",
+        "unit": "Percent of new hospital admissions, 7-day average ending Saturday"
       },
       "CDC ILINet": {
-        "source_id": "delphi_fluview_wili"
+        "source_id": "delphi_fluview_wili",
+        "measure_type": "Percent",
+        "unit": "Percent of visits"
       },
       "Kinsa": {
-        "source_id": "kinsa_cough_cold_flu"
+        "source_id": "kinsa_cough_cold_flu",
+        "measure_type": "Prevalence",
+        "unit": "Percent"
       }
     }
   },
@@ -89,13 +108,19 @@
     "short_name": "Data source",
     "levels": {
       "Epic Cosmos, ED": {
-        "source_id": "epic_pct_flu"
+        "source_id": "epic_pct_flu",
+        "measure_type": "percent",
+        "unit": "%"
       },
       "CDC RespNET": {
-        "source_id": "rate_flu"
+        "source_id": "rate_flu",
+        "measure_type": "Incidence",
+        "unit": "Cases per 100,000 people"
       },
       "CDC NHSN": {
-        "source_id": "nhsn_adm_rate_flu"
+        "source_id": "nhsn_adm_rate_flu",
+        "measure_type": "Rate",
+        "unit": "Admissions per 100,000"
       }
     }
   },
@@ -103,9 +128,77 @@
     "short_name": "Data source",
     "levels": {
       "CDC NSSP": {
-        "source_id": "percent_visits_flu"
+        "source_id": "percent_visits_flu",
+        "measure_type": "Percent",
+        "unit": "Percent"
       }
     }
+  },
+  "bundle_flu/dist/flu_hospital_capacity.parquet|source": {
+    "short_name": "Data source",
+    "short_description": "Dataset the row comes from.",
+    "levels": {
+      "CDC NHSN": {}
+    }
+  },
+  "bundle_flu/dist/flu_lab_testing.parquet|source": {
+    "short_name": "Data source",
+    "short_description": "Dataset the row comes from.",
+    "levels": {
+      "CDC NSSP Commercial Laboratory": {
+        "source_id": "lab_percent_pos_flu",
+        "measure_type": "Percent",
+        "unit": "Percent"
+      }
+    }
+  },
+  "bundle_flu/dist/flu_lab_testing.parquet|test_count": {
+    "short_name": "Commercial lab NAAT tests",
+    "short_description": "Weekly number of flu NAAT tests from participating commercial laboratories.",
+    "measure_type": "Count",
+    "unit": "Tests",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "nssp"
+      }
+    ]
+  },
+  "bundle_flu/dist/flu_lab_testing.parquet|positive_count": {
+    "short_name": "Commercial lab positive NAATs",
+    "short_description": "Weekly number of positive flu NAAT tests. Counts under 10 are suppressed by CDC and left missing (flagged by suppressed_flag).",
+    "measure_type": "Count",
+    "unit": "Tests",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "nssp"
+      }
+    ]
+  },
+  "bundle_flu/dist/flu_lab_testing.parquet|value": {
+    "short_name": "Commercial lab percent positivity",
+    "short_description": "Weekly percent of flu NAAT tests that were positive. Missing where the positive count was suppressed (under 10).",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "nssp"
+      }
+    ]
+  },
+  "bundle_flu/dist/flu_lab_testing.parquet|suppressed_flag": {
+    "short_name": "Commercial lab suppression flag",
+    "short_description": "Equals 1 when tests were performed but the positive count was suppressed (under 10); 0 otherwise.",
+    "measure_type": "Flag",
+    "unit": "0/1",
+    "time_resolution": "Week",
+    "sources": [
+      {
+        "id": "nssp"
+      }
+    ]
   },
   "{category}value{variant}": {
     "measure_column": "{category}source",
@@ -1007,6 +1100,14 @@
           "nis_flu_rsv/standard/data_region.csv.gz",
           "nis_flu_rsv/standard/data_substate.csv.gz",
           "iis_vax/standard/data_substate.csv.gz"
+        ]
+      },
+      "flu_lab_testing.parquet": {
+        "sources": [
+          "nssp"
+        ],
+        "source_files": [
+          "nssp/standard/data_lab.csv.gz"
         ]
       }
     }

@@ -74,6 +74,9 @@ Delphi has upgraded to a new platform and changed how they smooth their data. Th
 **October 31,2026**
 There was a data parsing issue when ingesting the NSSP commercial lab testing data due to the presence of commas in the source numeric data that was causing data to be masked for certain states and inaccurate national aggregates.
 
+**November 2, 2026**
+Several bundle files changed shape so that every stratified file carries a row for the combined category and names its data source. The bundle_sex_disparities files now keep the source's both-sexes row as `sex = "Overall"` and carry a `source` column; the youth wellbeing drowning and concussion files gain an `All ages` row; and `flu_hospital_capacity` gains a `source` column. Values are unchanged.
+
 # Guide to adding data and rebuilding the bundle
 
 ## Steps for adding new datasets

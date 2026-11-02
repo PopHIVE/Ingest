@@ -1,11 +1,12 @@
 # bundle_sex_disparities
 
-Female and male values for every sex-stratified measure in the standardized
-PopHIVE sources. Each source gets one tall-format file (`measure` + `value`,
-like the other bundles), `<name>_by_sex.parquet`, with `geography`, `time`, the
-source's strata columns, `sex` (Female or Male), `measure`, `value` and
-`suppressed_flag`. Ratios and differences are not stored; compute them from the
-two `sex` rows of a stratum.
+Female, male and both-sexes values for every sex-stratified measure in the
+standardized PopHIVE sources. Each source gets one tall-format file (`measure`
++ `value`, like the other bundles), `<name>_by_sex.parquet`, with `geography`,
+`time`, the source's strata columns, `sex` (Female, Male or Overall), `measure`,
+`value`, `suppressed_flag` and `source` (the data source's label, one per
+file). Ratios and differences are not stored; compute them from the Female and
+Male rows of a stratum.
 
 Each measure's unit and definition are on the `measure` column's levels in
 `measure_info.json`; they are the sources' own definitions.
@@ -14,7 +15,7 @@ Each measure's unit and definition are on the `measure` column's levels in
 
 | `<name>_by_sex` | Source | Contents | Geography |
 |----------|--------|----------|-----------|
-| `abcs_strep` | `abcs` | Group A/B strep case rate | national |
+| `abcs_strep` | `abcs` | Group A strep case rate (the death rate and Group B have no sex split) | national |
 | `cms_prevalence` | `cms_mmd` | 45 Medicare FFS chronic conditions | national, state, county |
 | `epic_concussion_rate` | `epic_concussions` | Concussion percent of ED encounters | national, state |
 | `epic_concussion_count` | `epic_concussions` | Concussion and ED encounter counts | national, state |
@@ -30,6 +31,12 @@ Each measure's unit and definition are on the `measure` column's levels in
 Where a file combines several source files (`neiss_*`, `nhtsa_fatalities`), a
 `dataset` column says which one a row came from.
 
+`sex` is `Overall` on the source's row for both sexes combined (labelled Total,
+All or Overall in the source). That row is kept only for strata that also have
+a Female and a Male row, so YRBSS single ages and ABCs Group B stay out. The
+exception is WISQARS, where age `Total` is reported for all sexes only and is
+kept so the files have an all-ages row. NEISS has no both-sexes row.
+
 Strata columns that hold a single value in a file are left out: `age`,
 `race_ethnicity` and `onset` in `abcs_strep` (all `Total`), `age` in
 `yrbss_behavior` (all `Overall`), and CMS `geography_level` (use the length of
@@ -42,8 +49,9 @@ Strata columns that hold a single value in a file are left out: `age`,
 - `suppressed_flag = 1` means the source suppressed the value or did not ask or
   collect it. Some sources store such values as 0 (YRBSS, NCCR), so leave
   flagged rows out of any ratio or difference.
-- To compare, pivot the two `sex` rows of a stratum (all columns except `sex`,
-  `value` and `suppressed_flag`) and divide or subtract.
+- To compare, pivot the Female and Male rows of a stratum (all columns except
+  `sex`, `value` and `suppressed_flag`) and divide or subtract. The Overall row
+  is the source's own both-sexes value, not a mean of the two.
 - **Counts are not population-adjusted.** In `epic_concussion_count`,
   `neiss_count`, `nhtsa_fatalities` and `wisqars_death_count`, a female/male
   ratio of raw counts mostly reflects the size of the two populations and is
