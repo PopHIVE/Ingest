@@ -291,7 +291,8 @@ cap_region <- read_std("nhsn_hospital_capacity/standard/data_region.csv.gz") %>%
          geography_level = "HHS region")
 
 flu_hospital_capacity <- bind_rows(cap_state, cap_region) %>%
-  select(geography, geography_fips, geography_level, date = time, measure, value) %>%
+  mutate(source = "CDC NHSN") %>%
+  select(geography, geography_fips, geography_level, date = time, source, measure, value) %>%
   arrange(measure, geography_fips, date)
 
 write_dist(flu_hospital_capacity, "flu_hospital_capacity.parquet")

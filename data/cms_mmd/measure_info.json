@@ -2,34 +2,25 @@
   "cms_{variant}": {
     "full_name": "cms_{variant}",
     "measure": "cms_{variant}",
-    "short_name": "CMS: {variant}",
-    "long_name": "Prevalence among Medicare Fee for Service patients of {variant.short_name}",
+    "short_name": "CMS: {variant.short_name}",
+    "long_name": "Prevalence of {variant.short_name} among Medicare Fee-for-Service beneficiaries",
     "category": "chronic conditions",
-    "short_description": "Prevalence among Medicare Fee for Service patients of {variant.short_name}.",
-    "long_description": "Prevalence among Medicare Fee for Service patients of {variant.short_name}. Prevalence rates are calculated by searching for certain diagnosis codes in Medicare beneficiaries’ claims. A beneficiary is considered to have a condition if the CMS administrative data has a claim indicating that the beneficiary is diagnosed for a specific condition over the reference time period (one, two, or three years, depending on the condition chosen) or, in the case of ESRD and disability, if the reason for entitlement (original or current) is listed as disabled or ESRD in the MBSF. The definitions used are the FFS definitions, based on ICD10 codes: https://www2.ccwdata.org/documents/10280/19139421/chr-chronic-condition-algorithms.pdf",
-    "statement": "The viral activity level of {variant.short_name} in wastewater is {value}.",
-    "measure_type": "prevalence",
-    "unit": "percentage",
+    "short_description": "Percent of Medicare Fee-for-Service beneficiaries with {variant.short_name}.",
+    "long_description": "Percent of Medicare Fee-for-Service beneficiaries with {variant.short_name}. Prevalence rates are calculated by searching for certain diagnosis codes in Medicare beneficiaries’ claims. A beneficiary is considered to have a condition if the CMS administrative data has a claim indicating that the beneficiary is diagnosed for a specific condition over the reference time period (one, two, or three years, depending on the condition chosen) or, in the case of ESRD and disability, if the reason for entitlement (original or current) is listed as disabled or ESRD in the MBSF. The definitions used are the FFS definitions, based on ICD10 codes: https://www2.ccwdata.org/documents/10280/19139421/chr-chronic-condition-algorithms.pdf",
+    "statement": "{value}% of Medicare Fee-for-Service beneficiaries have {variant.short_name}.",
+    "measure_type": "Percent",
+    "unit": "Percent",
     "time_resolution": "year",
-    "sources": [
-      {
-        "name": "Center of Medicare and Medicaid Services (CMS)",
-        "url": "https://data.cdc.gov",
-        "location": "Mapping Medicare Disparities by Population Tool",
-        "location_url": "https://data.cms.gov/tools/mapping-medicare-disparities-by-population",
-        "date_accessed": 2025
-      }
-    ],
     "variants": {
       "acute_myocardial_infarction": {
         "default": "acute_myocardial_infarction",
         "short_name": "Acute myocardial infarction"
       },
-    "adhd": {
+      "adhd": {
         "default": "adhd",
         "short_name": "Attention-deficit/hyperactivity disorder"
       },
-    "alcohol_use_disorder": {
+      "alcohol_use_disorder": {
         "default": "alcohol_use_disorder",
         "short_name": "Alcohol Use Disorder"
       },
@@ -142,7 +133,6 @@
         "default": "schizophrenia",
         "short_name": "Schizophrenia"
       },
-
       "schizophrenia_other_psychotic": {
         "default": "schizophrenia_other_psychotic",
         "short_name": "Schizophrenia and other psychotic disorders"
@@ -154,57 +144,81 @@
       "tobacco_use_disorder": {
         "default": "tobacco_use_disorder",
         "short_name": "tobacco_use_disorder"
-      },
-      "scrn_prvnt_annual_wellness": {
-        "default": "scrn_prvnt_annual_wellness",
-        "short_name": "Screening and prevention: annual_wellness"
-      },
-      "scrn_prvnt_cardiovascular_disease": {
-        "default": "scrn_prvnt_cardiovascular_disease",
-        "short_name": "Screening and prevention: cardiovascular disease"
-      },
-      "scrn_prvnt_colorectal_cancer": {
-        "default": "scrn_prvnt_colorectal_cancer",
-        "short_name": "Screening and prevention: colorectal cancer"
-      },
-      "scrn_prvnt_depression": {
-        "default": "scrn_prvnt_depression",
-        "short_name": "Screening and prevention: depression"
-      },
-      "scrn_prvnt_diabetes": {
-        "default": "scrn_prvnt_diabetes",
-        "short_name": "Screening and prevention: diabetes"
-      },
-      "scrn_prvnt_influenza_vaccine": {
-        "default": "scrn_prvnt_influenza_vaccine",
-        "short_name": "Screening and prevention: influenza vaccine"
-      },
-      "scrn_prvnt_mammogram": {
-        "default": "scrn_prvnt_mammogram",
-        "short_name": "Screening and prevention: mammogram"
-      },
-      "scrn_prvnt_pap_test": {
-        "default": "scrn_prvnt_pap_test",
-        "short_name": "Screening and prevention: pap test"
-      },
-      "scrn_prvnt_pelvic_exam": {
-        "default": "scrn_prvnt_pelvic_exam",
-        "short_name": "Screening and prevention: pelvic exam"
-      },
-      "scrn_prvnt_pneumococcal_vaccine": {
-        "default": "scrn_prvnt_pneumococcal_vaccine",
-        "short_name": "Screening and prevention: pneumococcal vaccine"
-      },
-      "scrn_prvnt_prostate_cancer": {
-        "default": "scrn_prvnt_prostate_cancer",
-        "short_name": "Screening and prevention: prostate cancer"
-      },
-      "scrn_prvnt_sti": {
-        "default": "scrn_prvnt_sti",
-        "short_name": "Screening and prevention: sti"
       }
     },
-    "sources": [{ "id": "cms_mmd" }]
+    "sources": [
+      {
+        "id": "cms_mmd"
+      }
+    ]
+  },
+  "cms_scrn_prvnt_{variant}": {
+    "full_name": "cms_scrn_prvnt_{variant}",
+    "measure": "cms_scrn_prvnt_{variant}",
+    "short_name": "CMS: {variant.short_name}",
+    "long_name": "{variant.short_name} among Medicare Fee-for-Service beneficiaries",
+    "category": "preventive services",
+    "short_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for {variant.short_name} during the year.",
+    "long_description": "Percent of Medicare Fee-for-Service beneficiaries with at least one claim for {variant.short_name} during the year, from the screening and prevention measures of the Mapping Medicare Disparities by Population tool.",
+    "statement": "{value}% of Medicare Fee-for-Service beneficiaries had a claim for {variant.short_name} in the year.",
+    "measure_type": "Percent",
+    "unit": "Percent",
+    "time_resolution": "year",
+    "variants": {
+      "annual_wellness": {
+        "default": "annual_wellness",
+        "short_name": "annual wellness visits"
+      },
+      "cardiovascular_disease": {
+        "default": "cardiovascular_disease",
+        "short_name": "cardiovascular disease screening"
+      },
+      "colorectal_cancer": {
+        "default": "colorectal_cancer",
+        "short_name": "colorectal cancer screening"
+      },
+      "depression": {
+        "default": "depression",
+        "short_name": "depression screening"
+      },
+      "diabetes": {
+        "default": "diabetes",
+        "short_name": "diabetes screening"
+      },
+      "influenza_vaccine": {
+        "default": "influenza_vaccine",
+        "short_name": "influenza vaccination"
+      },
+      "mammogram": {
+        "default": "mammogram",
+        "short_name": "mammograms"
+      },
+      "pap_test": {
+        "default": "pap_test",
+        "short_name": "Pap tests"
+      },
+      "pelvic_exam": {
+        "default": "pelvic_exam",
+        "short_name": "pelvic exams"
+      },
+      "pneumococcal_vaccine": {
+        "default": "pneumococcal_vaccine",
+        "short_name": "pneumococcal vaccination"
+      },
+      "prostate_cancer": {
+        "default": "prostate_cancer",
+        "short_name": "prostate cancer screening"
+      },
+      "sti": {
+        "default": "sti",
+        "short_name": "sexually transmitted infection screening"
+      }
+    },
+    "sources": [
+      {
+        "id": "cms_mmd"
+      }
+    ]
   },
   "geography_level": {
     "full_name": "geography_level",
@@ -240,7 +254,11 @@
     "measure_type": "categorical",
     "unit": "categorical",
     "time_resolution": "",
-    "sources": [{ "id": "cms_mmd" }]
+    "sources": [
+      {
+        "id": "cms_mmd"
+      }
+    ]
   },
   "race_ethnicity": {
     "full_name": "race_ethnicity",
@@ -254,7 +272,11 @@
     "measure_type": "categorical",
     "unit": "categorical",
     "time_resolution": "",
-    "sources": [{ "id": "cms_mmd" }]
+    "sources": [
+      {
+        "id": "cms_mmd"
+      }
+    ]
   },
   "sex": {
     "full_name": "sex",
@@ -268,9 +290,12 @@
     "measure_type": "categorical",
     "unit": "categorical",
     "time_resolution": "",
-    "sources": [{ "id": "cms_mmd" }]
+    "sources": [
+      {
+        "id": "cms_mmd"
+      }
+    ]
   },
-
   "_sources": {
     "cms_mmd": {
       "name": "Mapping Medicare Disparities by Population Tool",
@@ -283,8 +308,19 @@
   },
   "_catalog": {
     "summary": "These data are generated from the Mapping Medicare Disparities (MMD) by Population Tool, which reports chronic disease prevalence, costs, hospitalization, and preventive care use for Medicare Fee-for-Service beneficiaries.",
-    "search_terms": ["Cancer screening", "Chronic diseases", "STI", "Youth wellbeing", "sti screening"],
-    "bucket": ["Prevention", "Chronic disease", "Injury/Overdose", "Rural health"],
+    "search_terms": [
+      "Cancer screening",
+      "Chronic diseases",
+      "STI",
+      "Youth wellbeing",
+      "sti screening"
+    ],
+    "bucket": [
+      "Prevention",
+      "Chronic disease",
+      "Injury/Overdose",
+      "Rural health"
+    ],
     "files": {
       "data_state_county_age.csv.gz": "CMS MMD data by age group",
       "data_state_county_age_by_race.csv.gz": "CMS MMD data by age group and race/ethnicity",

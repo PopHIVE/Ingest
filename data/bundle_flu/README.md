@@ -24,6 +24,7 @@ Bundles name the time column **`date`**; the standard files call it `time`. `geo
 | `flu_trends_by_age.parquet` | `epic_resp_infections`, `respnet`, `nhsn_hospital_capacity` | 164,275 | state + national, weekly, by age group |
 | `flu_ed_visits_by_county.parquet` | `nssp` | 652,491 | county, weekly |
 | `flu_hospital_capacity.parquet` | `nhsn_hospital_capacity` | 267,040 | state, national and HHS region, weekly, long by `measure` |
+| `flu_lab_testing.parquet` | `nssp` | 5,616 | state + national, weekly, commercial laboratory flu test counts and percent positivity |
 | `flu_rt_and_mortality.parquet` | `cdc_cfa_rt`, `nchs_mortality`, `nnds` | 119,217 | state + national, long by `measure` |
 | `flu_vax_coverage.parquet` | `fluvaxview`, `nis_flu_rsv`, `iis_vax`, `medicare_vax`, `vsd_pregnancy_vax` | 321,384 | state + national, by season, age and stratum |
 | `flu_vax_substate.parquet` | `fluvaxview`, `nis_flu_rsv`, `iis_vax` | 73,393 | county, HHS region and named sub-state areas |
@@ -107,7 +108,7 @@ State), so do not sum across `geography_level`.
 
 ### Voter context
 
-`flu_voter_politics` is not flu data; it is political context to set beside it. It is long: filter
+`flu_voter_politics` is not flu data; it is political context to set beside it. It is kept for the pophive.org flu page and is not health surveillance data, so downstream consumers such as the MCP leave it out. It is long: filter
 on `measure` first, since counts (votes, registered voters) and percents (0-100) share `value`.
 `geography_level` is `National`, `State` or `County`. Dates are December 31.
 

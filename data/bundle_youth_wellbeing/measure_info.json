@@ -1148,7 +1148,7 @@
   },
   "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|age": {
     "short_name": "Age group",
-    "short_description": "Age band. Youth only: bands entirely under 18, using Epic Concussions' own bands (<1, 1-4, 5-9, 10-13, 14-17 years) rather than a shared cross-source label."
+    "short_description": "Age band: Epic Concussions' own bands entirely under 18 (<1, 1-4, 5-9, 10-13, 14-17 years), plus 'All ages', the source's total over every age, adults included."
   },
   "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|sex": {
     "short_name": "Sex",
@@ -1171,6 +1171,9 @@
     "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
     "levels": {
       "epic_n_concussion": {
+        "source_id": "epic_n_concussion",
+        "measure_type": "Count",
+        "unit": "Encounters",
         "sources": [
           {
             "id": "epic_cosmos"
@@ -1178,6 +1181,9 @@
         ]
       },
       "epic_n_ed_encounters": {
+        "source_id": "epic_n_ed_encounters",
+        "measure_type": "Count",
+        "unit": "Encounters",
         "sources": [
           {
             "id": "epic_cosmos"
@@ -1185,6 +1191,9 @@
         ]
       },
       "epic_pct_concussion": {
+        "source_id": "epic_pct_concussion",
+        "measure_type": "Percent",
+        "unit": "Percent",
         "sources": [
           {
             "id": "epic_cosmos"
@@ -1905,6 +1914,144 @@
     "measure_type": "Percent",
     "unit": "Percent"
   },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band: CDC WONDER's ten-year groups under 25 (<1, 1-4, 5-14, 15-24 years), plus 'All ages', the source's total over every age, adults included. Do not sum across age."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from.",
+    "levels": {
+      "CDC WONDER": {}
+    }
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "drowning_crude_rate": {
+        "source_id": "drowning_crude_rate",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000 population",
+        "sources": [
+          {
+            "id": "cdc_wonder_ucd_drowning"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Crude unintentional drowning death rate per 100,000 population. Rows where the source suppressed or could not compute the rate are left out."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|value_lcl": {
+    "short_name": "Lower 95% CI",
+    "short_description": "Lower bound of the 95% confidence interval of the rate, as reported by CDC WONDER."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|value_ucl": {
+    "short_name": "Upper 95% CI",
+    "short_description": "Upper bound of the 95% confidence interval of the rate, as reported by CDC WONDER."
+  },
+  "bundle_youth_wellbeing/dist/drowning_state_age.parquet|suppressed": {
+    "short_name": "Suppressed flag",
+    "short_description": "1 if CDC WONDER suppressed the death count (fewer than 10 deaths) but still published a value for the row."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State or county name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state, 5-digit = county)."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|state": {
+    "short_name": "State abbreviation",
+    "short_description": "Two-letter postal abbreviation of the county's state."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Period the estimate covers, as a date (YYYY-mm-dd)."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Age band: CDC WONDER's ten-year groups under 25 (<1, 1-4, 5-14, 15-24 years), plus 'All ages', the source's total over every age, adults included. Do not sum across age. County rates for <1 and 1-4 years are not available (no county population denominator at CDC WONDER)."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from.",
+    "levels": {
+      "CDC WONDER": {}
+    }
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "drowning_crude_rate": {
+        "source_id": "drowning_crude_rate",
+        "measure_type": "Rate",
+        "unit": "Deaths per 100,000 population",
+        "sources": [
+          {
+            "id": "cdc_wonder_ucd_drowning"
+          }
+        ]
+      }
+    }
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Crude unintentional drowning death rate per 100,000 population. Rows where the source suppressed or could not compute the rate are left out."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|value_lcl": {
+    "short_name": "Lower 95% CI",
+    "short_description": "Lower bound of the 95% confidence interval of the rate. Missing for the ten-year age bands, where the county rate is derived from a summed population."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|value_ucl": {
+    "short_name": "Upper 95% CI",
+    "short_description": "Upper bound of the 95% confidence interval of the rate. Missing for the ten-year age bands, where the county rate is derived from a summed population."
+  },
+  "bundle_youth_wellbeing/dist/drowning_county_age.parquet|suppressed": {
+    "short_name": "Suppressed flag",
+    "short_description": "1 if CDC WONDER suppressed the death count (fewer than 10 deaths) but still published a value for the row."
+  },
   "_sources": {
     "wisqars": {
       "name": "Web-based Injury Statistics Query and Reporting System (WISQARS)",
@@ -2004,6 +2151,15 @@
       "description": "NEISS is a national probability sample of hospital emergency departments (~100 of the ~5,000+ U.S. hospitals with 24-hour EDs) operated by the U.S. Consumer Product Safety Commission. Each sampled record describes an injury treated in the ED, including patient age, sex, race, Hispanic ethnicity (added 2019), diagnosis, body part, disposition, up to three associated consumer products, and a statistical weight (plus sampling stratum and PSU). Sample weights scale records to national estimates; raw record counts are not nationally representative. This bundle uses the annual national counts for 2019 onward, restricted to patients under 20 and aggregated over race and Hispanic ethnicity to age x sex x year. Product groups are reconstructed from NEISS product-code bands and are approximate, not an official CPSC taxonomy.",
       "restrictions": "Public domain. NEISS data are produced by the U.S. Consumer Product Safety Commission and are generally not subject to copyright restrictions.",
       "date_accessed": 2026
+    },
+    "cdc_wonder_ucd_drowning": {
+      "name": "CDC WONDER Underlying Cause of Death, 2018-2024 (ICD-10, expanded)",
+      "url": "https://wonder.cdc.gov/ucd-icd10-expanded.html",
+      "organization": "CDC National Center for Health Statistics",
+      "organization_url": "https://www.cdc.gov/nchs/",
+      "description": "Mortality data from death certificates filed in the 50 states and the District of Columbia, queried through CDC WONDER's Underlying Cause of Death (ICD-10, expanded) database and restricted to unintentional drowning: ICD-10 codes W65 (bathtub), W66 (swimming pool fall), W67 (in swimming pool), W68 (fall into swimming pool), W69 (natural water), W70 (fall into natural water), W73 (other specified drowning/submersion), and W74 (unspecified drowning/submersion). Data are broken out separately by age group, sex, single race, and Hispanic origin (each queried independently, not cross-tabulated), at both the state and county level, for years 2018-2024. State and county both use CDC WONDER's Ten-Year Age Groups (<1, 1-4, 5-14, 15-24, ..., 85+), but the two levels differ in how population is sourced. At the state level, CDC WONDER reports Population and Crude Rate directly for Ten-Year Age Groups. At the county level, CDC WONDER reports Deaths only for this age variable -- Population and Crude Rate remain checked (mandatory) in the query form but the server omits them from the export regardless, for every state and year. County-level population is therefore derived here by summing CDC's Five-Year Age Groups county population export into the same Ten-Year buckets (e.g. 5-9 + 10-14 = 5-14); crude_rate is then recomputed from that derived population rather than taken from CDC directly, so drowning_crude_rate_lcl/_ucl are not populated for county-level age rows (a valid confidence interval needs CDC's own interval method, which this derivation does not replicate). This also surfaces a further CDC limitation: county-level population is reported as 'Not Applicable' for the <1, 1-4, and 85+ Five-Year groups nationwide, for every county regardless of size -- so missing_denom_flag = 1 for those three Ten-Year buckets at the county level essentially always, and county-level drowning rates (though not death counts) are structurally unavailable for infants/toddlers and the oldest age group. Suppressed death counts (1-9 deaths) are filled in with 5, the midpoint of the range, and the rate is recomputed from that count; suppressed_flag = 1 marks these estimated rows (confidence bounds stay -999), and a true zero is reported as 0. Values that cannot be computed are coded -999. suppressed_flag = 1 where CDC withheld a cell for confidentiality (any cell representing fewer than 10 deaths); this affects the death count and the rates derived from it, never the population. missing_denom_flag = 1 where no population denominator exists for that geography and demographic combination (CDC reports 'Not Applicable' or 'Not Available', or -- for county-level age specifically -- the Five-Year population export used to derive it was itself missing); this affects the population and the rates derived from it, never the death count. The two are not mutually exclusive and are both 1 on rows carrying both markers, which is common at the county level. National rows (geography 00, in data_state.csv.gz) come from separate CDC WONDER national queries (scrape_national.py) with the same breakdowns, not from summing the states: every state cell with fewer than 10 deaths is suppressed, so a sum of state counts undercounts (2024: 4,087 from the state cells vs 4,201 reported nationally). The all-ages Overall rows (age = Overall, sex and race Overall) at the national, state and county level are CDC WONDER's own totals from separate queries, not sums of other rows. Each geography also has an age = 0-24 row, a single WONDER query over ages 0-24 (national and state: Ten-Year groups <1, 1-4, 5-14, 15-24; county: the equivalent Five-Year groups, because CDC omits county population for Ten-Year groups), so a cell is suppressed only if all of 0-24 has 1-9 deaths. The 0-24 row overlaps the ten-year age rows, so do not sum across age.",
+      "restrictions": "Data Use Restrictions: The Public Health Service Act (42 U.S.C. 242m(d)) provides that the data collected by the National Center for Health Statistics (NCHS) may be used only for the purpose for which they were obtained; any effort to determine the identity of any reported cases, or to use the information for any purpose other than for health statistical reporting and analysis, is against the law. Therefore users will: (1) Use these data for health statistical reporting and analysis only. (2) Do not present or publish birth counts of 9 or fewer or birth rates based on counts of nine or fewer (in figures, graphs, maps, tables, etc.). (3) Make no attempt to learn the identity of any person or establishment included in these data. (4) Make no disclosure or other use of the identity of any person or establishment discovered inadvertently and advise the NCHS Confidentiality Officer of any such discovery: Confidentiality Officer, National Center for Health Statistics, 3311 Toledo Road, Hyattsville, MD 20782. Telephone 888-642-4159. Email: nchsconfidentiality@cdc.gov. Sanctions for Violating Rules: Researchers who violate the terms of the data use restrictions will lose access to WONDER and their sponsors and institutions will be notified. Researchers who are suspected of violating the rules may be prevented from using WONDER until an investigation can be completed. Deliberately making a false statement in any matter within the jurisdiction of any department or agency of the Federal government violates 18 USC 1001 and is punishable by a fine of up to $10,000 or up to 5 years in prison, or both..",
+      "date_accessed": 2026
     }
   },
   "_bundle": {
@@ -2011,7 +2167,9 @@
     "sources": [
       "bundle_childhood_immunizations",
       "county_health_rankings",
+      "drowning",
       "epic_chronic",
+      "epic_concussions",
       "epic_injury",
       "medicaid_quality",
       "neiss",
@@ -2159,6 +2317,30 @@
         ],
         "source_files": [
           "county_health_rankings/standard/data_county.csv.gz"
+        ]
+      },
+      "epic_concussions_state_age_sex.parquet": {
+        "sources": [
+          "epic_concussions"
+        ],
+        "source_files": [
+          "epic_concussions/standard/data.csv.gz"
+        ]
+      },
+      "drowning_state_age.parquet": {
+        "sources": [
+          "drowning"
+        ],
+        "source_files": [
+          "drowning/standard/data_state.csv.gz"
+        ]
+      },
+      "drowning_county_age.parquet": {
+        "sources": [
+          "drowning"
+        ],
+        "source_files": [
+          "drowning/standard/data_county.csv.gz"
         ]
       }
     }

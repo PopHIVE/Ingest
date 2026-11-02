@@ -63,9 +63,10 @@ AGE_NHTSA   <- c('0-14'       = '0-14 years', '15-24'       = '15-24 years')
 AGE_EPIC_I  <- c('<15 Years'  = '0-14 years', '15-25 Years' = '15-25 years')
 AGE_EPIC_C  <- c('<18 Years'  = '0-17 years')
 AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' = '5-9 years',
-                 '10-13 Years' = '10-13 years', '14-17 Years' = '14-17 years')
+                 '10-13 Years' = '10-13 years', '14-17 Years' = '14-17 years',
+                 'Overall' = 'All ages')
 AGE_DROWN   <- c('<1' = '<1 year', '1-4' = '1-4 years', '5-14' = '5-14 years',
-                 '15-24' = '15-24 years')
+                 '15-24' = '15-24 years', 'Overall' = 'All ages')
 AGE_YRBSS   <- c('14' = '14 years', '15' = '15 years', '16' = '16 years',
                  '17' = '17 years', 'Overall' = 'Overall')
 
@@ -551,9 +552,10 @@ epic_chronic_tall('county_year.csv.gz') %>%
 #
 #   dist/epic_concussions_state_age_sex.parquet
 #
-# Restricted to age bands entirely under 18 (Epic Concussions' own bands:
-# <1, 1-4, 5-9, 10-13, 14-17 Years -- none straddle 18, so no relabeling
-# compromise is needed the way Epic Injury's 15-25 band requires one).
+# Age bands entirely under 18 (Epic Concussions' own bands: <1, 1-4, 5-9,
+# 10-13, 14-17 Years -- none straddle 18, so no relabeling compromise is needed
+# the way Epic Injury's 15-25 band requires one), plus the source's Overall row
+# (every age, adults included) as 'All ages'.
 #
 # epic_n_ed_encounters (the all-diagnosis ED denominator behind
 # epic_pct_concussion) is carried through as its own measure, the same
@@ -993,7 +995,8 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 #   dist/drowning_state_age.parquet
 #   dist/drowning_county_age.parquet
 #
-# Age bands are <1, 1-4, 5-14 and 15-24 (15-24 straddles 18, as in WISQARS);
+# Age bands are <1, 1-4, 5-14 and 15-24 (15-24 straddles 18, as in WISQARS),
+# plus the source's Overall row (every age, adults included) as 'All ages';
 # older bands are dropped. At these ages the source carries only the
 # sex = 'Overall' / race_ethnicity = 'Overall' stratum, so those columns are
 # not carried. Years are 2018-2024.
@@ -1002,8 +1005,7 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 # 10, and rates on counts under 20 are 'unreliable'). Those become NA and are
 # dropped; suppressed = 1 marks the rows the source flagged where a value was
 # still published. Only the crude rate is carried (with its value_lcl/value_ucl); the raw
-# death count is left out as redundant with it. The state file has no national
-# row.
+# death count is left out as redundant with it.
 # =============================================================================
 
 drowning_read <- function(file) {
