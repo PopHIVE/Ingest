@@ -232,16 +232,17 @@ SPEC <- bind_rows(
      c('medicaid_fua_ch_30d_rate', 'medicaid_fua_ch_7d_rate')),
   sp('medicaid', 'Mental health', 'Care seeking',
      c('medicaid_fuh_ch_30d_rate', 'medicaid_fuh_ch_7d_rate')),
-  sp('medicaid', 'Chronic disease', 'Asthma',
-     c('medicaid_mma_ch_rate', 'medicaid_amr_ch_rate')),
+  # Retired CMS measures dropped: MMA (replaced by AMR), FPC and CAP. W34/AWC
+  # (end FFY 2020) are replaced by the combined WCV (FFY 2021+).
+  sp('medicaid', 'Chronic disease', 'Asthma', 'medicaid_amr_ch_rate'),
   sp('medicaid', 'Chronic disease', 'Lead testing', 'medicaid_lsc_ch_rate'),
-  sp('medicaid', 'Preventative health and wellness', 'Pregnancy',
-     c('medicaid_fpc_ch_rate', 'medicaid_ppc_ch_rate')),
+  sp('medicaid', 'Preventative health and wellness', 'Pregnancy', 'medicaid_ppc_ch_rate'),
   sp('medicaid', 'Preventative health and wellness', 'Contraception', 'medicaid_ccp_ch_rate'),
   sp('medicaid', 'Preventative health and wellness', 'Preventative health',
-     c('medicaid_ima_ch_rate', 'medicaid_w34_ch_rate', 'medicaid_awc_ch_rate',
+     c('medicaid_ima_ch_rate', 'medicaid_wcv_ch_rate', 'medicaid_wcv_ch_3_11_rate',
+       'medicaid_wcv_ch_12_17_rate', 'medicaid_wcv_ch_18_21_rate',
        'medicaid_w15_ch_rate', 'medicaid_w30_ch_rate', 'medicaid_oev_ch_rate',
-       'medicaid_cap_ch_rate', 'medicaid_dev_ch_rate')),
+       'medicaid_dev_ch_rate')),
   sp('medicaid', 'Preventative health and wellness', 'Nutrition', 'medicaid_wcc_ch_rate'),
 
   # ---- County Health Rankings ----
@@ -626,7 +627,11 @@ vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE,
   ) %>%
   mutate(measure = paste0(measure, '_rate')) %>%
   filter(!is.na(value)) %>%
-  inner_join(state_cw %>% select(fips, geography = geography_name), by = 'geography') %>%
+  # WCV replaces W34/AWC from FFY 2021; never carry it earlier.
+  filter(!(grepl('^medicaid_wcv_', measure) & substr(time, 1, 4) < '2021')) %>%
+  # inner_join to state_cw keeps only the 50 states + DC (drops Puerto Rico).
+  inner_join(state_cw %>% filter(geography_name != 'United States') %>%
+               select(fips, geography = geography_name), by = 'geography') %>%
   label('medicaid', 'Medicaid/CHIP Child Core Set') %>%
   write_parquet('dist/medicaid_state_payer.parquet')
 
