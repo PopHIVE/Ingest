@@ -66,7 +66,7 @@ AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' 
                  '10-13 Years' = '10-13 years', '14-17 Years' = '14-17 years',
                  'Overall' = 'All ages')
 AGE_DROWN   <- c('<1' = '<1 year', '1-4' = '1-4 years', '5-14' = '5-14 years',
-                 '15-24' = '15-24 years', 'Overall' = 'All ages')
+                 '15-24' = '15-24 years', '0-24' = '0-24 years', 'Overall' = 'All ages')
 AGE_YRBSS   <- c('14' = '14 years', '15' = '15 years', '16' = '16 years',
                  '17' = '17 years', 'Overall' = 'Overall')
 
@@ -1001,8 +1001,10 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 #   dist/drowning_county_age.parquet
 #
 # Age bands are <1, 1-4, 5-14 and 15-24 (15-24 straddles 18, as in WISQARS),
-# plus the source's Overall row (every age, adults included) as 'All ages';
-# older bands are dropped. At these ages the source carries only the
+# a true '0-24 years' band queried directly from WONDER (so it is suppressed
+# only if the whole band has 1-9 deaths; it OVERLAPS the other bands, so never
+# sum across age), plus the source's Overall row (every age, adults included)
+# as 'All ages'; older bands are dropped. At these ages the source carries only the
 # sex = 'Overall' / race_ethnicity = 'Overall' stratum, so those columns are
 # not carried. Years are 2018-2024.
 #
