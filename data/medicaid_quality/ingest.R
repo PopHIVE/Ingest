@@ -232,17 +232,20 @@ if (!identical(process$raw_state, raw_state)) {
   # sub-components share one population, e.g. AIS-AD's per-vaccine rows)
   # by rate definition -- so re-running the ingest always keeps the same row
   # for a given ambiguous key, regardless of API response order.
+  # "Dual Eligible(s)" (through 2023) and "Dually Eligible" (2024+) both count
+  # as a dual-eligible breakout. Expects one row per source row (rate stat
+  # only) with `base_var` and `rate_missing` columns (see widen_measures()).
   arrange_for_distinct <- function(d) {
     d %>%
       mutate(
         population_priority = if_else(
-          grepl("Dual Eligible", population, ignore.case = TRUE) |
+          grepl("Dual(ly)? Eligible", population, ignore.case = TRUE) |
             grepl("(^|, )Other(,|$)", population, ignore.case = TRUE),
           1L, 0L
         )
       ) %>%
-      arrange(geography, time, payer, domain, var_name,
-              is.na(val), population_priority, desc(nchar(population)), population,
+      arrange(geography, time, payer, domain, base_var,
+              rate_missing, population_priority, desc(nchar(population)), population,
               measure_info) %>%
       select(-population_priority)
   }
@@ -298,14 +301,20 @@ if (!identical(process$raw_state, raw_state)) {
       sex             = "Total",
       race_ethnicity  = "Total",
       # payer comes from the CMS population string: Medicaid only, CHIP only,
-      # both ("Medicaid & CHIP"), or neither ("Other").
+      # both ("Medicaid & CHIP"), or neither ("Other"). The 2024+ dual-eligible
+      # breakouts ("Individuals Dually Eligible for Medicare and Medicaid" /
+      # "... and Separate CHIP") name a program only to describe Medicare
+      # overlap, so they are blanked before testing for Medicaid / CHIP.
+      pop_payer = gsub("Individuals Dually Eligible for Medicare and (Separate CHIP|Medicaid)",
+                       "", population, ignore.case = TRUE),
       payer = case_when(
-        grepl("Medicaid", population, ignore.case = TRUE) &
-          grepl("CHIP", population, ignore.case = TRUE)   ~ "Medicaid & CHIP",
-        grepl("Medicaid", population, ignore.case = TRUE) ~ "Medicaid",
-        grepl("CHIP", population, ignore.case = TRUE)     ~ "CHIP",
-        TRUE                                               ~ "Other"
+        grepl("Medicaid", pop_payer, ignore.case = TRUE) &
+          grepl("CHIP", pop_payer, ignore.case = TRUE)   ~ "Medicaid & CHIP",
+        grepl("Medicaid", pop_payer, ignore.case = TRUE) ~ "Medicaid",
+        grepl("CHIP", pop_payer, ignore.case = TRUE)     ~ "CHIP",
+        TRUE                                              ~ "Other"
       ),
+      row_id = row_number(),
       # Labels for definitions that share one abbreviation (see mi_has above).
       # IMA carries two definitions from 2017 (Combination 1 = MenACWY + Tdap,
       # and HPV series completion); WCV carries four age bands from 2021. Keep
@@ -481,7 +490,7 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     select(geography, geography_level, time, age, sex, race_ethnicity,
            payer, domain, measure_abbr, measure_info, measure_clean, sub_metric, sub_extra,
-           population, value, pct25, pct75) %>%
+           population, row_id, value, pct25, pct75) %>%
     pivot_longer(cols = c(value, pct25, pct75), names_to = "stat", values_to = "val") %>%
     mutate(
       stat = case_when(
@@ -495,12 +504,24 @@ if (!identical(process$raw_state, raw_state)) {
     select(-measure_clean, -sub_metric, -sub_extra, -stat)
 
   # collapse to one row per (geography, time, payer, domain, var_name) and widen
+  # The winning source row is chosen once per (geography, time, payer, domain,
+  # measure column) using the rate, and the rate / pct_25 / pct_75 are then all
+  # taken from that same row (same population), never mixed across rows.
   widen_measures <- function(d) {
-    d %>%
-      warn_collapsed() %>%
+    d <- warn_collapsed(d) %>%
+      mutate(base_var = sub("_(rate|pct_25|pct_75)$", "", var_name)) %>%
+      group_by(row_id) %>%
+      mutate(rate_missing = any(grepl("_rate$", var_name) & is.na(val))) %>%
+      ungroup()
+    winners <- d %>%
+      filter(grepl("_rate$", var_name)) %>%
       arrange_for_distinct() %>%
-      select(-measure_abbr, -measure_info, -population) %>%
-      distinct(geography, time, payer, domain, var_name, .keep_all = TRUE) %>%
+      distinct(geography, time, payer, domain, base_var, .keep_all = TRUE) %>%
+      pull(row_id)
+    d %>%
+      filter(row_id %in% winners) %>%
+      select(-measure_abbr, -measure_info, -population, -row_id,
+             -base_var, -rate_missing) %>%
       pivot_wider(names_from = var_name, values_from = val) %>%
       mutate(across(starts_with("medicaid_"), as.numeric))
   }
