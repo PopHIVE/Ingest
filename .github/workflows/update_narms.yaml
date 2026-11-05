@@ -1,0 +1,151 @@
+name: Update NARMS Now
+
+# The NARMS Now (CDC human data) scrape is ~6,250 Power BI queries and takes
+# 2-3 hours even with 8 requests in flight, so it runs here on its own
+# schedule instead of inside the Tue/Fri data build. By default (mode "check")
+# a national-only pre-pass (a few minutes) decides whether CDC changed
+# anything, and the full state scrape only runs when it did. The Tue/Fri build
+# runs narms in "standardize" mode, which never queries CDC. See
+# data/narms/ingest.R for the modes.
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'   # 06:00 UTC on the 1st of each month
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Run the full scrape even if the national pre-pass sees no change'
+        type: boolean
+        default: false
+
+jobs:
+  update-narms:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 240
+    env:
+      RENV_PATHS_CACHE: /home/runner/.local/share/renv/cache
+    permissions:
+      contents: write
+    # bash with pipefail, so a step piped through tee still fails when R does
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            gfortran \
+            libcurl4-openssl-dev \
+            libharfbuzz-dev \
+            libfribidi-dev \
+            libfreetype6-dev \
+            libpng-dev \
+            libtiff5-dev \
+            libjpeg-dev \
+            libudunits2-dev \
+            libproj-dev \
+            libgdal-dev \
+            libgeos-dev \
+            cmake \
+            libnode-dev \
+            libfontconfig1-dev
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4'
+          use-public-rspm: false
+
+      - name: Cache renv packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.RENV_PATHS_CACHE }}
+          key: ${{ runner.os }}-renv-3-${{ hashFiles('renv.lock') }}
+          restore-keys: ${{ runner.os }}-renv-3-
+
+      - name: Restore Renv
+        run: |
+          options(repos = c(CRAN = "https://cloud.r-project.org"))
+          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+          renv::restore()
+        shell: Rscript {0}
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dcf
+        # Same retry as build.yaml: api.github.com calls can hit GitHub's
+        # secondary rate limit on shared Actions runners.
+        run: |
+          for attempt in 1 2 3; do
+            Rscript -e "renv::install('dissc-yale/dcf')" && exit 0
+            echo "install failed (attempt $attempt); retrying after backoff"
+            sleep $((attempt * 15))
+          done
+          echo "::error::failed to install dcf after 3 attempts"
+          exit 1
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Scrape NARMS Now and rebuild the narms source
+        # Output is kept in a log so the last step can tell whether the source
+        # failed: dcf_process() exits 0 even when ingest.R errors.
+        run: Rscript -e "dcf::dcf_process('narms')" 2>&1 | tee "$RUNNER_TEMP/process.log"
+        env:
+          NARMS_NOW_MODE: ${{ inputs.force == true && 'full' || 'check' }}
+
+      - name: Rebuild bundles that use narms
+        run: |
+          Rscript -e "dcf::dcf_process('bundle_antimicrobial_resistance', '.')" 2>&1 | tee -a "$RUNNER_TEMP/process.log"
+          Rscript -e "dcf::dcf_process('bundle_enteric_diseases', '.')" 2>&1 | tee -a "$RUNNER_TEMP/process.log"
+
+      # Unlike build.yaml this runs before the commit: a failed scrape leaves
+      # the error log, checkpoints and a modified process.json behind, and
+      # none of that should land on main. dcf_process() exits 0 even when
+      # ingest.R errors, so the log is the only signal.
+      - name: Check for failed sources
+        run: Rscript scripts/check_build_status.R "$RUNNER_TEMP/process.log"
+
+      - id: diff
+        run: |
+          if git diff --exit-code; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
+        name: Rebuild documentation and manifest
+        run: Rscript scripts/build_docs.R
+
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
+        name: Rebuild data table
+        run: Rscript scripts/build_data_table.R
+
+      - if: ${{ steps.diff.outputs.changed == 'true' }}
+        name: Commit and push
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add -A
+          git commit -m "scheduled NARMS Now update"
+          # Same non-fast-forward hazard as build.yaml: anything merged to main
+          # while this job runs makes a bare push fail. Rebase and retry.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected (attempt $attempt); rebasing onto origin/main"
+            git fetch origin
+            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+          done
+          echo "::error::could not push NARMS update after 3 attempts"
+          exit 1
+
