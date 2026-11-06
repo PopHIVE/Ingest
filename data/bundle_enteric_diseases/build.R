@@ -99,7 +99,8 @@ human_long <- human_agent %>%
     test_method,
     pct_resistant = narms_pct_resistant,
     n_resistant   = narms_n_resistant,
-    n_tested      = narms_n_tested
+    n_tested      = narms_n_tested,
+    narms_flag
   )
 
 retail_long <- retail_meats %>%
@@ -111,7 +112,8 @@ retail_long <- retail_meats %>%
     n_resistant   = narms_n_resistant,
     n_tested      = narms_n_tested,
     mic50         = narms_mic50,
-    mic90         = narms_mic90
+    mic90         = narms_mic90,
+    narms_flag
   )
 
 animal_long <- animal_path %>%
@@ -123,7 +125,8 @@ animal_long <- animal_path %>%
     n_resistant   = narms_n_resistant,
     n_tested      = narms_n_tested,
     mic50         = narms_mic50,
-    mic90         = narms_mic90
+    mic90         = narms_mic90,
+    narms_flag
   )
 
 # NOTE: narms/ingest.R no longer preserves a per-file source label
@@ -139,7 +142,8 @@ food_long <- food_animals %>%
     n_resistant   = narms_n_resistant,
     n_tested      = narms_n_tested,
     mic50         = narms_mic50,
-    mic90         = narms_mic90
+    mic90         = narms_mic90,
+    narms_flag
   )
 
 resistance_by_agent <- bind_rows(
@@ -182,7 +186,8 @@ resistance_by_pattern <- human_pattern %>%
     pattern, test_method,
     pct_resistant = narms_pct_resistant,
     n_resistant   = narms_n_resistant,
-    n_tested      = narms_n_tested
+    n_tested      = narms_n_tested,
+    narms_flag
   ) %>%
   arrange(geography, time, genus_species_serotype, pattern)
 
