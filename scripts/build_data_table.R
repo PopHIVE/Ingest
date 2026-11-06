@@ -401,6 +401,28 @@ latest_issue_for <- function(source_dir) {
   list(date = NA_character_, basis = "none")
 }
 
+# TRUE when the ingest has already processed the raw files currently in raw/:
+# every raw data file's md5 is recorded in process.json's `raw_state`, which an
+# ingest.R writes only after it has rebuilt standard/ from those files. In that
+# case a raw commit newer than the last standard/ commit just means the rebuilt
+# output was byte-identical (e.g. the source reordered rows, or revised columns
+# the ingest does not use), so git had nothing to commit -- not that standard/
+# is behind. Only applies to the raw-file fallback ("est."); returns FALSE
+# whenever it cannot positively confirm the match (no raw_state, a source that
+# records some other kind of state, a missing hash), so real staleness -- e.g.
+# raw downloaded but the ingest failed before recording it -- is still flagged.
+raw_in_sync <- function(source_dir) {
+  proc <- tryCatch(fromJSON(file.path(source_dir, "process.json"), simplifyVector = FALSE),
+                   error = function(e) NULL)
+  recorded <- unlist(proc$raw_state, use.names = FALSE)
+  recorded <- tolower(as.character(recorded[grepl("^[0-9a-fA-F]{32}$", recorded)]))
+  if (!length(recorded)) return(FALSE)
+  files <- list.files(file.path(source_dir, "raw"), recursive = TRUE, full.names = TRUE)
+  files <- files[!grepl("\\.json$", files, ignore.case = TRUE)]
+  if (!length(files)) return(FALSE)
+  all(tolower(unname(tools::md5sum(files))) %in% recorded)
+}
+
 # Name of the default branch, for the behind-check below.
 git_default_branch <- function() {
   out <- tryCatch(
@@ -551,6 +573,7 @@ summarize_source <- function(source_name, source_dir) {
     latest_issue = latest_issue,
     issue_basis  = issue$basis,
     issue_lead   = issue_lead_days(last_updated, latest_issue),
+    raw_in_sync  = identical(issue$basis, "files") && raw_in_sync(source_dir),
     restrictions = if (nzchar(restrictions)) restrictions else "—",
     organization = if (nzchar(organization)) organization else "—",
     data_url     = data_url
@@ -608,9 +631,11 @@ DATASET_HEADERS <- c("Dataset", "Content Title", "Brief Description", "Subject T
 strat_class <- function(v) if (identical(v, "Not Stratified")) "strat-notstratified" else "strat-stratified"
 
 # TRUE when new upstream data (raw/) landed well after the last standardized
-# output commit -- see STALE_THRESHOLD_DAYS.
+# output commit -- see STALE_THRESHOLD_DAYS -- unless process.json shows the
+# ingest already consumed those raw files (see raw_in_sync()).
 is_stale <- function(s) {
-  !is.null(s$issue_lead) && !is.na(s$issue_lead) && s$issue_lead > STALE_THRESHOLD_DAYS
+  !is.null(s$issue_lead) && !is.na(s$issue_lead) && s$issue_lead > STALE_THRESHOLD_DAYS &&
+    !isTRUE(s$raw_in_sync)
 }
 
 dataset_row <- function(s) {
@@ -827,7 +852,10 @@ notes_block <- tags$details(class = "table-notes", open = NA,
     tags$dd(sprintf(paste0("Shown when Latest Issue is more than %d days after Last Refreshed: the ",
                            "publisher has updated the data since we last rebuilt the standardized ",
                            "output, so the files here are behind the source. The badge gives the gap ",
-                           "in days. "), STALE_THRESHOLD_DAYS),
+                           "in days. For an est. date, the flag is suppressed when the source's ",
+                           "process.json shows its ingest already processed the current raw files ",
+                           "(the rebuilt standardized output was simply unchanged). "),
+                    STALE_THRESHOLD_DAYS),
             tags$strong(sprintf("%d of %d dataset%s flagged", length(stale_sources),
                                 length(source_summaries),
                                 if (length(stale_sources) == 1) "" else "s")),
