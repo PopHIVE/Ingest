@@ -16,7 +16,10 @@
 #                national rows changed (or a newly appeared year) are then
 #                re-scraped for every state, from the earliest changed year to
 #                the current one. Earlier years are kept from the stored raw
-#                files. Used by the monthly update_narms workflow.
+#                files. When more than FULL_SCRAPE_YEARS years changed (CDC
+#                reissues the whole WGS series about once a year) it switches
+#                to a full all-years scrape, which is then the cheaper path.
+#                Used by the monthly update_narms workflow.
 #   full         re-scrapes every year since 1999 for every state (workflow
 #                dispatch with force = true, or a local backfill).
 # Query cost is server-side and grows with the year range: ~1.5 s for one year,
@@ -72,6 +75,10 @@ CHUNK_SIZE <- 200L
 OUTAGE_FAIL_FRACTION <- 0.5
 OUTAGE_WAIT_SEC <- 60L
 OUTAGE_MAX_TRIES <- 20L
+# Year-by-year re-scraping costs ~25 min per year (6,120 single-year queries),
+# a full all-years scrape ~3 h flat, so beyond this many changed years the
+# full scrape is faster and also stays inside the workflow timeout.
+FULL_SCRAPE_YEARS <- 7L
 
 # --- Run mode (see header) ---
 NARMS_NOW_MODE <- Sys.getenv("NARMS_NOW_MODE", "standardize")
@@ -1378,6 +1385,11 @@ if (NARMS_NOW_MODE != "standardize") {
     if (!is.na(scrape_from)) {
       message(sprintf("Changed years nationally: %s",
                       paste(sort(unique(changed_years)), collapse = ", ")))
+      if (YEAR_TO - scrape_from + 1L > FULL_SCRAPE_YEARS) {
+        message(sprintf("%d years to re-scrape (> %d): falling back to a full all-years scrape",
+                        YEAR_TO - scrape_from + 1L, FULL_SCRAPE_YEARS))
+        scrape_from <- earliest_year
+      }
     }
   }
   do_scrape <- !is.na(scrape_from)

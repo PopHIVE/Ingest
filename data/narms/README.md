@@ -23,7 +23,7 @@ The CDC NARMS Now human data come from a Power BI dashboard and take about
 | Mode | What it does | Who runs it |
 |------|--------------|-------------|
 | `standardize` (default) | Never queries CDC. Rebuilds the standard files from the raw files already in `raw/` and refreshes the FDA xlsx sources. | Tue/Fri `build.yaml` |
-| `check` | National-only pre-pass (130 queries, ~10 minutes), compared year by year with the stored national rows. Only the years that changed (earliest changed year through the current one) are re-scraped for every state, at ~25 minutes per year. The current year changes almost every month, so a typical run is 35-60 minutes; if nothing changed it stops after the pre-pass. | Monthly `update_narms.yaml` |
+| `check` | National-only pre-pass (130 queries, ~10 minutes), compared year by year with the stored national rows. Only the years that changed (earliest changed year through the current one) are re-scraped for every state, at ~25 minutes per year. The current year changes almost every month, so a typical run is 35-60 minutes; if nothing changed it stops after the pre-pass. If more than 7 years changed (CDC reissues the whole WGS series about once a year) it runs a full scrape instead, which is faster at that point. | Monthly `update_narms.yaml` |
 | `full` | Re-scrapes every year since 1999 for every state (about 3 hours). | `update_narms.yaml` with `force = true`, or a local backfill |
 
 For a quick local test without a multi-hour run:
