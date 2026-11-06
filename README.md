@@ -77,6 +77,9 @@ There was a data parsing issue when ingesting the NSSP commercial lab testing da
 **November 2, 2026**
 Several bundle files changed shape so that every stratified file carries a row for the combined category and names its data source. The bundle_sex_disparities files now keep the source's both-sexes row as `sex = "Overall"` and carry a `source` column; the youth wellbeing drowning and concussion files gain an `All ages` row; and `flu_hospital_capacity` gains a `source` column. Values are unchanged.
 
+**November 5, 2026**
+The NARMS Now human clinical files (resistance by agent and by pattern) were rebuilt from a full re-scrape of the CDC dashboard. The dashboard's responses mark a cell as "same as the previous cell", and the parser treated the first cell of each row as missing instead of carrying that value over, so a share of cells in every year was recorded as `not_tested` when the dashboard actually reported a value; about 157,000 agent cells and 279,000 pattern cells now carry values. Recent years also pick up CDC's revisions, and data now extend through the current year. The scrape moved out of the twice-weekly build into a monthly workflow that only re-pulls the years whose national totals changed.
+
 # Guide to adding data and rebuilding the bundle
 
 ## Steps for adding new datasets

@@ -2,6 +2,39 @@
 # NARMS Data Ingestion
 # Source 1: NARMS Now Human Data - Resistance by Agent (Power BI API)
 # Source 2: NARMS Now Human Data - Resistance by Pattern (Power BI API)
+# Source 3: FDA NARMS Retail Meats (xlsx)
+# Source 4: FDA NARMS Animal Pathogen (xlsx)
+# Source 5: FDA NARMS Food-Producing Animals (xlsx)
+#
+# The NARMS Now scrape (sources 1-2) is controlled by the NARMS_NOW_MODE
+# environment variable, so the one ingest.R can serve both workflows:
+#   standardize  (default) never queries CDC; rebuilds the standard files from
+#                the raw files already in raw/. Used by the Tue/Fri build.
+#   check        runs a national-only pre-pass (130 queries, ~10 minutes) and
+#                compares it, year by year, with the stored national rows. The
+#                national counts are sums over states, so only the years whose
+#                national rows changed (or a newly appeared year) are then
+#                re-scraped for every state, from the earliest changed year to
+#                the current one. Earlier years are kept from the stored raw
+#                files. When more than FULL_SCRAPE_YEARS years changed (CDC
+#                reissues the whole WGS series about once a year) it switches
+#                to a full all-years scrape, which is then the cheaper path.
+#                Used by the monthly update_narms workflow.
+#   full         re-scrapes every year since 1999 for every state (workflow
+#                dispatch with force = true, or a local backfill).
+# Query cost is server-side and grows with the year range: ~1.5 s for one year,
+# ~6 s for all years, and the Power BI backend serves only a few requests at
+# once (8 in flight = 3-4x speedup, measured 2026-11-04). Re-scraping one year
+# for every state takes ~25 minutes, so a typical monthly update (the current
+# year changes almost every time, earlier years occasionally) takes 35-60
+# minutes; a full all-years run takes about 3 hours. Any query that still
+# fails after retries makes the run fail; the raw files are only replaced when
+# every query succeeded.
+#
+# Local testing without a 40-minute run:
+#   NARMS_NOW_LIMIT_ORGANISMS=2 NARMS_NOW_LIMIT_SITES=3   (0 = no limit)
+#   NARMS_NOW_OUT_DIR=/some/dir   writes the scraped raw files there and leaves
+#                                 process.json untouched
 # =============================================================================
 
 library(dplyr)
@@ -25,7 +58,49 @@ POWERBI_DATASET_ID <- "79ae757b-89a7-402a-b539-769c6da4ca8e"
 POWERBI_REPORT_ID <- "4d3aa8d6-8c28-485a-aa28-9defc6e356ad"
 AGENT_VISUAL_ID <- "6ac0e3afaa4ddc521019"
 PATTERN_VISUAL_ID <- "f400588f58b922c7b131"
-QUERY_DELAY <- 0.5  # seconds between API requests
+
+# Concurrency and timeouts. The Power BI backend serves only a few queries at
+# once: 8 in flight gave a 3-4x speedup over sequential and 16 gave no more
+# (2026-11-04). The 300 s timeout is for the one known slow query (national
+# Salmonella nontyphoidal WGS, ~80 s per year), which is also split into
+# single-year requests below.
+MAX_ACTIVE <- 8L
+FALLBACK_MAX_ACTIVE <- 4L
+REQ_TIMEOUT_SEC <- 300
+# Requests are issued in chunks of this many so that memory and progress
+# messages stay bounded (one chunk is about one organism's 52 sites).
+CHUNK_SIZE <- 200L
+# If at least this fraction of a chunk fails, treat it as an outage: wait and
+# retry the whole chunk, up to OUTAGE_MAX_TRIES times (20 minutes in total).
+OUTAGE_FAIL_FRACTION <- 0.5
+OUTAGE_WAIT_SEC <- 60L
+OUTAGE_MAX_TRIES <- 20L
+# Year-by-year re-scraping costs ~25 min per year (6,120 single-year queries),
+# a full all-years scrape ~3 h flat, so beyond this many changed years the
+# full scrape is faster and also stays inside the workflow timeout.
+FULL_SCRAPE_YEARS <- 7L
+
+# --- Run mode (see header) ---
+NARMS_NOW_MODE <- Sys.getenv("NARMS_NOW_MODE", "standardize")
+if (!NARMS_NOW_MODE %in% c("standardize", "check", "full")) {
+  stop("NARMS_NOW_MODE must be one of standardize, check, full; got '",
+       NARMS_NOW_MODE, "'")
+}
+NARMS_NOW_OUT_DIR <- Sys.getenv("NARMS_NOW_OUT_DIR", "raw")
+is_test_run <- NARMS_NOW_OUT_DIR != "raw"
+env_int <- function(name) {
+  v <- Sys.getenv(name, "0")
+  n <- suppressWarnings(as.integer(v))
+  if (is.na(n) || n < 0) stop(name, " must be a non-negative integer; got '", v, "'")
+  n
+}
+limit_organisms <- env_int("NARMS_NOW_LIMIT_ORGANISMS")
+limit_sites <- env_int("NARMS_NOW_LIMIT_SITES")
+# A limited run only ever covers a subset, so it must not replace the real raw files.
+if ((limit_organisms > 0 || limit_sites > 0) && !is_test_run) {
+  stop("NARMS_NOW_LIMIT_ORGANISMS / NARMS_NOW_LIMIT_SITES require NARMS_NOW_OUT_DIR ",
+       "to point somewhere other than raw/")
+}
 
 # --- Organism definitions ---
 organisms <- list(
@@ -64,11 +139,22 @@ organisms <- list(
 test_methods <- c("AST", "WGS")
 YEAR_FROM_AST <- 1999
 YEAR_FROM_WGS <- 2016
-YEAR_TO <- 2025
+# Ask for everything up to the current year. The model lists a year as soon as
+# it exists (2026 was present, with no tested isolates, in November 2026), so a
+# trailing year with no tested cells is dropped before the raw files are
+# written rather than hard-coding the last complete year here.
+YEAR_TO <- as.integer(format(Sys.Date(), "%Y"))
+
+# Queries that time out or return HTTP 500 when asked for their full year
+# range. They are issued one year at a time from the start.
+SPLIT_PER_YEAR <- list(
+  list(site_name = NA_character_, genus = "Salmonella",
+       species = "All nontyphoidal", test_method = "WGS", tab = "agent")
+)
 
 # --- Site definitions ---
 # NARMSSiteName entity values from the Power BI model (51 states + DC)
-# The main loop prepends NULL (= national "All" with no site filter)
+# The national "All" figures come from queries with no site filter.
 sites <- c(
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
   "Connecticut", "Delaware", "District Of Columbia", "Florida", "Georgia",
@@ -80,6 +166,9 @@ sites <- c(
   "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
   "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
 )
+
+if (limit_organisms > 0) organisms <- head(organisms, limit_organisms)
+if (limit_sites > 0) sites <- head(sites, limit_sites)
 
 # =============================================================================
 # Helper Functions
@@ -118,7 +207,7 @@ build_site_filter <- function(site_name) {
 #' @param site_name NULL for national "All", or a state name like "California"
 build_agent_query <- function(genus, species, test_method,
                               site_name = NULL,
-                              year_from = YEAR_FROM, year_to = YEAR_TO) {
+                              year_from, year_to) {
 
   # From clause: include NARMSSiteName only when filtering by site
   from_clause <- list(
@@ -334,7 +423,7 @@ build_agent_query <- function(genus, species, test_method,
 #' @param site_name NULL for national "All", or a state name like "California"
 build_pattern_query <- function(genus, species, test_method,
                                 site_name = NULL,
-                                year_from = YEAR_FROM, year_to = YEAR_TO) {
+                                year_from, year_to) {
 
   # From clause: include NARMSSiteName only when filtering by site
   from_clause <- list(
@@ -510,26 +599,6 @@ build_pattern_query <- function(genus, species, test_method,
   )
 }
 
-#' Execute a Power BI querydata request
-execute_powerbi_query <- function(query_body) {
-  resp <- request(POWERBI_ENDPOINT) |>
-    req_headers(
-      `X-PowerBI-ResourceKey` = POWERBI_RESOURCE_KEY,
-      `Content-Type` = "application/json;charset=UTF-8",
-      Accept = "application/json, text/plain, */*",
-      Origin = "https://app.powerbigov.us",
-      Referer = "https://app.powerbigov.us/"
-    ) |>
-    req_body_json(query_body, auto_unbox = TRUE) |>
-    req_retry(max_tries = 3, backoff = ~ 5) |>
-    req_timeout(120) |>
-    req_perform()
-
-  # Power BI returns text/plain content type even though body is JSON;
-  # httr2::resp_body_json() rejects non-JSON content types, so parse manually
-  jsonlite::fromJSON(resp_body_string(resp), simplifyVector = FALSE)
-}
-
 #' Parse a cell value like "4.3%\n(19/446)" or "Not\nTested"
 #' Returns a named list: pct_resistant, n_resistant, n_tested
 parse_cell_value <- function(cell_text) {
@@ -581,6 +650,12 @@ parse_agent_response <- function(response, genus, species, test_method) {
   ph_key <- names(ds$PH[[1]])[grep("^DM", names(ds$PH[[1]]))]
   rank_groups <- ds$PH[[1]][[ph_key]]
 
+  # A cell's R flag means "same value as the previous cell in the response",
+  # and the previous cell can be the last cell of the previous row (agent), so
+  # the carried value has to survive across agents and classes. Resetting it
+  # per row turned the first cells of many rows into NA ("Not Tested").
+  prev_value <- NULL
+
   for (rank_group in rank_groups) {
     # rank_val <- rank_group$G0  # Not needed in output
 
@@ -602,9 +677,6 @@ parse_agent_response <- function(response, genus, species, test_method) {
 
         if (is.null(agent_group$X)) next
         cells <- agent_group$X
-
-        # Track previous value for R (repeat) handling
-        prev_value <- NULL
 
         for (i in seq_along(cells)) {
           cell <- cells[[i]]
@@ -672,14 +744,16 @@ parse_pattern_response <- function(response, genus, species, test_method) {
   ph_key <- names(ds$PH[[1]])[grep("^DM", names(ds$PH[[1]]))]
   pattern_groups <- ds$PH[[1]][[ph_key]]
 
+  # R = repeat the previous cell in the response, across rows (see
+  # parse_agent_response)
+  prev_value <- NULL
+
   for (pattern_group in pattern_groups) {
     pattern_idx <- pattern_group[[grep("^G", names(pattern_group))[1]]]
     pattern_name <- pattern_names[[pattern_idx + 1]]
 
     if (is.null(pattern_group$X)) next
     cells <- pattern_group$X
-
-    prev_value <- NULL
 
     for (i in seq_along(cells)) {
       cell <- cells[[i]]
@@ -721,7 +795,7 @@ parse_pattern_response <- function(response, genus, species, test_method) {
 #' the ResistByAgentCell numerator to leak national counts for Shigella DSC.
 #' This query uses the NARMS entity's SiteName for grouping, which works correctly.
 build_dsc_state_query <- function(species, test_method,
-                                   year_from = YEAR_FROM_AST, year_to = YEAR_TO) {
+                                   year_from, year_to) {
   list(
     version = "1.0.0",
     queries = list(list(
@@ -847,6 +921,9 @@ parse_dsc_state_response <- function(response, species, test_method) {
   groups <- ds$PH[[1]][[ph_key]]
 
   rows <- list()
+  # R = repeat the previous cell in the response, across rows (see
+  # parse_agent_response)
+  prev_value <- NULL
   for (g in groups) {
     if (!is.null(g[["Ø"]])) next
 
@@ -854,7 +931,6 @@ parse_dsc_state_response <- function(response, species, test_method) {
     if (is.null(state_name) || !is.character(state_name)) next
     if (is.null(g$X)) next
 
-    prev_value <- NULL
     for (i in seq_along(g$X)) {
       cell <- g$X[[i]]
 
@@ -869,7 +945,6 @@ parse_dsc_state_response <- function(response, species, test_method) {
         prev_value <- cell_text
       } else {
         cell_text <- NULL
-        prev_value <- NULL
       }
 
       if (is.null(cell_text)) next
@@ -896,237 +971,541 @@ parse_dsc_state_response <- function(response, species, test_method) {
 }
 
 # =============================================================================
-# Main Scraping Loop — writes raw data to raw/narms_now_agent.csv.gz
-# and raw/narms_now_pattern.csv.gz
+# Query execution: parallel requests with retries and a per-year fallback
 # =============================================================================
 
-# Determine if we need to scrape new data:
-# - First run (no state): full scrape
-# - New year available (YEAR_TO > last scraped year): incremental scrape
-# - Monthly refresh (>30 days since last scrape): incremental for latest year
-last_scrape <- process$narms_now_state$last_scrape_date
-last_year_to <- process$narms_now_state$year_to
+#' Build (but do not perform) a Power BI querydata request
+build_powerbi_request <- function(query_body) {
+  request(POWERBI_ENDPOINT) |>
+    req_headers(
+      `X-PowerBI-ResourceKey` = POWERBI_RESOURCE_KEY,
+      `Content-Type` = "application/json;charset=UTF-8",
+      Accept = "application/json, text/plain, */*",
+      Origin = "https://app.powerbigov.us",
+      Referer = "https://app.powerbigov.us/"
+    ) |>
+    req_body_json(query_body, auto_unbox = TRUE) |>
+    # retry_on_failure = TRUE also retries curl-level failures such as
+    # timeouts, which the default (status-based) retry silently drops.
+    req_retry(
+      max_tries = 3,
+      backoff = ~ 10 * 2^.x,
+      retry_on_failure = TRUE,
+      is_transient = ~ resp_status(.x) %in% c(429L, 500L, 502L, 503L, 504L)
+    ) |>
+    req_timeout(REQ_TIMEOUT_SEC)
+}
 
-needs_scrape <- is.null(last_scrape) ||
-  as.Date(last_scrape) < Sys.Date() - 30 ||
-  (!is.null(last_year_to) && YEAR_TO > last_year_to)
+#' Perform a list of requests concurrently.
+#' Returns one element per request: the parsed JSON body, or an error
+#' condition for a request that failed after retries.
+perform_powerbi_batch <- function(reqs, max_active = MAX_ACTIVE) {
+  if (length(reqs) == 0) return(list())
+  resps <- req_perform_parallel(reqs, on_error = "continue",
+                                progress = FALSE, max_active = max_active)
+  lapply(resps, function(r) {
+    if (!inherits(r, "httr2_response")) return(r)
+    # Power BI returns text/plain even though the body is JSON, so parse manually
+    tryCatch(jsonlite::fromJSON(resp_body_string(r), simplifyVector = FALSE),
+             error = function(e) e)
+  })
+}
 
-if (needs_scrape) {
-  # Determine year range for this scrape
-  if (is.null(last_year_to)) {
-    # First run: full scrape
-    scrape_year_from_ast <- YEAR_FROM_AST
-    scrape_year_from_wgs <- YEAR_FROM_WGS
-    message("=== Full NARMS Now scrape (first run) ===")
+#' Execute a single Power BI querydata request (errors are raised)
+execute_powerbi_query <- function(query_body) {
+  out <- perform_powerbi_batch(list(build_powerbi_request(query_body)))[[1]]
+  if (inherits(out, "condition")) stop(out)
+  out
+}
+
+#' Message from a Power BI-level error embedded in a 200 response, if any
+powerbi_error_message <- function(response) {
+  shapes <- response$results[[1]]$result$data$dsr$DataShapes
+  if (is.null(shapes)) return(NULL)
+  shapes[[1]]$odata.error$message$value
+}
+
+#' One row per query: site_name (NA = national), genus, species, test_method,
+#' tab ("agent" or "pattern"), year_from, year_to.
+#' year_from_min raises the start year (used to re-scrape only changed years).
+make_query_specs <- function(site_list, organisms, test_methods, year_to,
+                             year_from_min = NULL) {
+  site_vec <- vapply(site_list, function(s) if (is.null(s)) NA_character_ else s,
+                     character(1))
+  org_df <- bind_rows(lapply(organisms, function(o) {
+    data.frame(genus = o$genus, species = o$species, stringsAsFactors = FALSE)
+  }))
+  tidyr::expand_grid(site_name = site_vec, org_df, test_method = test_methods,
+                     tab = c("agent", "pattern")) %>%
+    mutate(
+      year_from = if_else(test_method == "WGS", YEAR_FROM_WGS, YEAR_FROM_AST),
+      year_from = if (is.null(year_from_min)) year_from else pmax(year_from, year_from_min),
+      year_to = year_to
+    ) %>%
+    filter(year_from <= year_to) %>%
+    as.data.frame(stringsAsFactors = FALSE)
+}
+
+#' Expand each spec into one spec per year in its range
+expand_spec_years <- function(specs) {
+  if (nrow(specs) == 0) return(specs)
+  bind_rows(lapply(seq_len(nrow(specs)), function(i) {
+    s <- specs[i, , drop = FALSE]
+    years <- seq(s$year_from, s$year_to)
+    out <- s[rep(1, length(years)), , drop = FALSE]
+    out$year_from <- years
+    out$year_to <- years
+    out
+  }))
+}
+
+#' Which specs match an entry of SPLIT_PER_YEAR
+is_split_spec <- function(specs) {
+  hit <- rep(FALSE, nrow(specs))
+  for (k in SPLIT_PER_YEAR) {
+    hit <- hit | (
+      (is.na(specs$site_name) & is.na(k$site_name) |
+         (!is.na(specs$site_name) & !is.na(k$site_name) & specs$site_name == k$site_name)) &
+        specs$genus == k$genus & specs$species == k$species &
+        specs$test_method == k$test_method & specs$tab == k$tab
+    )
+  }
+  hit
+}
+
+spec_label <- function(s) {
+  sprintf("%s / %s / %s / %s (%s, %d-%d)",
+          if (is.na(s$site_name)) "All (national)" else s$site_name,
+          s$genus, s$species, s$test_method, s$tab, s$year_from, s$year_to)
+}
+
+#' Run a set of specs once. Returns list(agent, pattern, errors, failed_specs)
+run_specs <- function(specs, max_active = MAX_ACTIVE) {
+  empty <- list(agent = NULL, pattern = NULL, errors = list(),
+                failed_specs = specs[0, , drop = FALSE])
+  if (nrow(specs) == 0) return(empty)
+
+  reqs <- lapply(seq_len(nrow(specs)), function(i) {
+    s <- specs[i, , drop = FALSE]
+    site <- if (is.na(s$site_name)) NULL else s$site_name
+    q <- if (s$tab == "agent") {
+      build_agent_query(s$genus, s$species, s$test_method, site_name = site,
+                        year_from = s$year_from, year_to = s$year_to)
+    } else {
+      build_pattern_query(s$genus, s$species, s$test_method, site_name = site,
+                          year_from = s$year_from, year_to = s$year_to)
+    }
+    build_powerbi_request(q)
+  })
+  responses <- perform_powerbi_batch(reqs, max_active = max_active)
+
+  agent_parts <- list()
+  pattern_parts <- list()
+  errors <- list()
+  failed <- integer()
+  for (i in seq_len(nrow(specs))) {
+    s <- specs[i, , drop = FALSE]
+    resp <- responses[[i]]
+    err <- NULL
+    parsed <- NULL
+    if (inherits(resp, "condition")) {
+      err <- conditionMessage(resp)
+    } else {
+      pbi_err <- powerbi_error_message(resp)
+      if (!is.null(pbi_err)) {
+        err <- paste("Power BI error:", pbi_err)
+      } else {
+        parsed <- suppressWarnings(
+          if (s$tab == "agent") {
+            parse_agent_response(resp, s$genus, s$species, s$test_method)
+          } else {
+            parse_pattern_response(resp, s$genus, s$species, s$test_method)
+          }
+        )
+        if (is.null(parsed) || nrow(parsed) == 0) {
+          # A well-formed response with no data shape is the dashboard's way of
+          # saying there are no rows for this combination. Log it and move on
+          # rather than failing the whole run on one empty site/organism.
+          warning(sprintf("  No data returned for %s", spec_label(s)))
+          next
+        }
+      }
+    }
+    if (!is.null(err)) {
+      failed <- c(failed, i)
+      errors[[length(errors) + 1]] <- list(
+        site = if (is.na(s$site_name)) "All (national)" else s$site_name,
+        genus = s$genus, species = s$species, test_method = s$test_method,
+        tab = s$tab, year_from = s$year_from, year_to = s$year_to, error = err
+      )
+      next
+    }
+    parsed$site_name <- s$site_name
+    if (s$tab == "agent") {
+      agent_parts[[length(agent_parts) + 1]] <- parsed
+    } else {
+      pattern_parts[[length(pattern_parts) + 1]] <- parsed
+    }
+  }
+
+  list(
+    agent = if (length(agent_parts)) bind_rows(agent_parts) else NULL,
+    pattern = if (length(pattern_parts)) bind_rows(pattern_parts) else NULL,
+    errors = errors,
+    failed_specs = specs[failed, , drop = FALSE]
+  )
+}
+
+#' Scrape a set of specs in chunks of CHUNK_SIZE requests, then re-issue
+#' anything that failed one year at a time.
+#' Returns list(agent, pattern, errors, n_queries).
+scrape_specs <- function(specs) {
+  # Known-slow queries go one year at a time from the start
+  split <- is_split_spec(specs)
+  specs <- bind_rows(specs[!split, , drop = FALSE],
+                     expand_spec_years(specs[split, , drop = FALSE]))
+
+  chunk_id <- ceiling(seq_len(nrow(specs)) / CHUNK_SIZE)
+  n_chunks <- max(chunk_id)
+  agent_parts <- list()
+  pattern_parts <- list()
+  failed <- specs[0, , drop = FALSE]
+  n_queries <- 0L
+
+  # Completed chunks are checkpointed so an interrupted run (lost network,
+  # killed session) resumes where it stopped. The key includes today's date so
+  # a later run never picks up another day's data; checkpoints are removed once
+  # the raw files have been written, and stale ones from a failed run are
+  # cleared here.
+  ckpt_dir <- file.path(NARMS_NOW_OUT_DIR, "narms_now_checkpoints")
+  dir.create(ckpt_dir, showWarnings = FALSE, recursive = TRUE)
+  run_day <- as.character(Sys.Date())
+  stale <- list.files(ckpt_dir, full.names = TRUE)
+  stale <- stale[!startsWith(basename(stale), run_day)]
+  if (length(stale) > 0) unlink(stale)
+
+  for (k in seq_len(n_chunks)) {
+    batch <- specs[chunk_id == k, , drop = FALSE]
+    ckpt <- file.path(ckpt_dir, paste0(run_day, "_", rlang::hash(batch), ".rds"))
+    if (file.exists(ckpt)) {
+      res <- readRDS(ckpt)
+      message(sprintf("  [chunk %d/%d] loaded from checkpoint", k, n_chunks))
+      agent_parts[[k]] <- res$agent
+      pattern_parts[[k]] <- res$pattern
+      next
+    }
+    t0 <- Sys.time()
+    res <- run_specs(batch)
+    n_queries <- n_queries + nrow(batch)
+    # A chunk in which (nearly) everything failed means the network or the
+    # service is down, not that the queries are bad. Wait and retry the chunk
+    # rather than cascading failures into the per-year fallback.
+    outage_tries <- 0L
+    while (nrow(res$failed_specs) >= OUTAGE_FAIL_FRACTION * nrow(batch) &&
+           outage_tries < OUTAGE_MAX_TRIES) {
+      outage_tries <- outage_tries + 1L
+      message(sprintf("  chunk %d: %d of %d queries failed (%s); waiting %d s and retrying (%d/%d)",
+                      k, nrow(res$failed_specs), nrow(batch),
+                      substr(res$errors[[1]]$error, 1, 80),
+                      OUTAGE_WAIT_SEC, outage_tries, OUTAGE_MAX_TRIES))
+      Sys.sleep(OUTAGE_WAIT_SEC)
+      res <- run_specs(batch)
+      n_queries <- n_queries + nrow(batch)
+    }
+    message(sprintf("  [chunk %d/%d] %s .. %s: %d queries, %d ok, %d failed, %.0f s",
+                    k, n_chunks,
+                    paste(batch$genus[1], batch$species[1]),
+                    paste(batch$genus[nrow(batch)], batch$species[nrow(batch)]),
+                    nrow(batch), nrow(batch) - nrow(res$failed_specs),
+                    nrow(res$failed_specs),
+                    as.numeric(difftime(Sys.time(), t0, units = "secs"))))
+    agent_parts[[k]] <- res$agent
+    pattern_parts[[k]] <- res$pattern
+    failed <- bind_rows(failed, res$failed_specs)
+    if (nrow(res$failed_specs) == 0) {
+      saveRDS(res[c("agent", "pattern")], ckpt)
+    }
+  }
+
+  errors <- list()
+  if (nrow(failed) > 0) {
+    retry <- expand_spec_years(failed)
+    message(sprintf("  Re-issuing %d failed queries as %d single-year queries",
+                    nrow(failed), nrow(retry)))
+    res <- run_specs(retry, max_active = FALLBACK_MAX_ACTIVE)
+    n_queries <- n_queries + nrow(retry)
+    agent_parts[[length(agent_parts) + 1]] <- res$agent
+    pattern_parts[[length(pattern_parts) + 1]] <- res$pattern
+    errors <- res$errors
+    for (e in errors) {
+      warning(sprintf("  FAILED: %s: %s", spec_label(as.data.frame(e[1:7])), e$error))
+    }
+  }
+
+  list(
+    agent = bind_rows(agent_parts),
+    pattern = bind_rows(pattern_parts),
+    errors = errors,
+    n_queries = n_queries
+  )
+}
+
+#' Rename the parser output to the raw-file column names
+finalize_scrape <- function(df, tab) {
+  if (is.null(df) || nrow(df) == 0) return(NULL)
+  df <- df %>%
+    rename(pct_resistant = narms_now_pct_resistant,
+           n_resistant = narms_now_n_resistant,
+           n_tested = narms_now_n_tested)
+  cols <- if (tab == "agent") {
+    c("site_name", "year", "genus", "species_serotype", "antimicrobial_class",
+      "antimicrobial_agent", "test_method", "pct_resistant", "n_resistant",
+      "n_tested")
   } else {
-    # Incremental: only scrape from last scraped year onward
-    # (re-scrape the last year too in case it was incomplete)
-    scrape_year_from_ast <- last_year_to
-    scrape_year_from_wgs <- max(last_year_to, YEAR_FROM_WGS)
-    message(sprintf("=== Incremental NARMS Now scrape (years %d-%d) ===",
-                    scrape_year_from_ast, YEAR_TO))
+    c("site_name", "year", "genus", "species_serotype", "pattern",
+      "test_method", "pct_resistant", "n_resistant", "n_tested")
   }
+  df %>% select(all_of(cols)) %>% distinct()
+}
 
-  n_sites <- length(sites)
-  total_queries <- length(organisms) * length(test_methods) * 2 * (n_sites + 1)
+#' Years in which the national rows differ between the new pre-pass and the
+#' stored raw file (either direction), restricted to the organisms scraped
+national_changed_years <- function(new, path) {
+  old <- vroom::vroom(path, show_col_types = FALSE) %>%
+    filter(is.na(site_name)) %>%
+    semi_join(distinct(new, genus, species_serotype, test_method),
+              by = c("genus", "species_serotype", "test_method"))
+  keys <- names(new)
+  sort(unique(c(anti_join(new, old, by = keys)$year,
+                anti_join(old, new, by = keys)$year)))
+}
 
-  message(sprintf("Organisms: %d | Test methods: %d | Sites: %d (+ national) | Total queries: ~%d (%.1fs delay between queries)",
-                  length(organisms), length(test_methods), n_sites, total_queries, QUERY_DELAY))
+#' Last year with at least one tested isolate across both tabs
+last_year_with_data <- function(...) {
+  years <- unlist(lapply(list(...), function(d) {
+    if (is.null(d)) return(integer())
+    d$year[!is.na(d$n_tested) & d$n_tested > 0]
+  }))
+  if (length(years) == 0) NA_integer_ else as.integer(max(years))
+}
 
-  all_agent_data <- list()
-  all_pattern_data <- list()
-  error_log <- list()
-  query_count <- 0
-
-  # Iterate: national (NULL) first, then each state
-  site_list <- c(list(NULL), as.list(sites))
-
-  for (site in site_list) {
-    site_label <- if (is.null(site)) "All (national)" else site
-
-    for (org in organisms) {
-      for (tm in test_methods) {
-        year_from <- if (tm == "WGS") scrape_year_from_wgs else scrape_year_from_ast
-
-        # --- Resistance by Agent ---
-        query_count <- query_count + 1
-        message(sprintf("  [%d/%d] %s / %s / %s / %s (agent)",
-                        query_count, total_queries, site_label,
-                        org$genus, org$species, tm))
-
-        tryCatch({
-          query <- build_agent_query(org$genus, org$species, tm, site_name = site,
-                                     year_from = year_from)
-          response <- execute_powerbi_query(query)
-          parsed <- parse_agent_response(response, org$genus, org$species, tm)
-
-          if (!is.null(parsed) && nrow(parsed) > 0) {
-            parsed$site_name <- if (is.null(site)) NA_character_ else site
-            all_agent_data[[length(all_agent_data) + 1]] <- parsed
-            message(sprintf("    -> %d rows", nrow(parsed)))
-          } else {
-            message("    -> No data")
-          }
-        }, error = function(e) {
-          error_log[[length(error_log) + 1]] <<- list(
-            site = site_label, genus = org$genus, species = org$species,
-            test_method = tm, tab = "agent",
-            error = conditionMessage(e)
-          )
-          warning(sprintf("    -> ERROR: %s", conditionMessage(e)))
-        })
-
-        Sys.sleep(QUERY_DELAY)
-
-        # --- Resistance by Pattern ---
-        query_count <- query_count + 1
-        message(sprintf("  [%d/%d] %s / %s / %s / %s (pattern)",
-                        query_count, total_queries, site_label,
-                        org$genus, org$species, tm))
-
-        tryCatch({
-          query <- build_pattern_query(org$genus, org$species, tm, site_name = site,
-                                       year_from = year_from)
-          response <- execute_powerbi_query(query)
-          parsed <- parse_pattern_response(response, org$genus, org$species, tm)
-
-          if (!is.null(parsed) && nrow(parsed) > 0) {
-            parsed$site_name <- if (is.null(site)) NA_character_ else site
-            all_pattern_data[[length(all_pattern_data) + 1]] <- parsed
-            message(sprintf("    -> %d rows", nrow(parsed)))
-          } else {
-            message("    -> No data")
-          }
-        }, error = function(e) {
-          error_log[[length(error_log) + 1]] <<- list(
-            site = site_label, genus = org$genus, species = org$species,
-            test_method = tm, tab = "pattern",
-            error = conditionMessage(e)
-          )
-          warning(sprintf("    -> ERROR: %s", conditionMessage(e)))
-        })
-
-        Sys.sleep(QUERY_DELAY)
-      }
-    }
+#' Record the error log (or remove a stale one), update process state and stop
+fail_scrape <- function(errors, state, errors_path) {
+  jsonlite::write_json(errors, errors_path, pretty = TRUE, auto_unbox = TRUE)
+  state$n_errors <- length(errors)
+  state$last_check_result <- "failed"
+  if (!is_test_run) {
+    process$narms_now_state <<- state
+    dcf::dcf_process_record(updated = process)
   }
+  stop(sprintf("%d NARMS Now queries failed after retries; see %s",
+               length(errors), errors_path))
+}
 
-  # --- Write raw scraped data ---
 
-  if (length(all_agent_data) > 0) {
-    new_agent_df <- do.call(rbind, all_agent_data) %>%
-      rename(pct_resistant = narms_now_pct_resistant,
-             n_resistant = narms_now_n_resistant,
-             n_tested = narms_now_n_tested)
+# =============================================================================
+# Main scrape: national pre-pass, change detection, state scrape of the years
+# that changed. Writes raw/narms_now_agent.csv.gz and raw/narms_now_pattern.csv.gz
+# =============================================================================
 
-    # Incremental: load existing raw, remove overlapping years, append new
-    if (!is.null(last_year_to) && file.exists("raw/narms_now_agent.csv.gz")) {
-      existing <- vroom::vroom("raw/narms_now_agent.csv.gz", show_col_types = FALSE)
-      existing <- existing %>% filter(year < scrape_year_from_ast)
-      new_agent_df <- bind_rows(existing, new_agent_df)
-    }
+raw_agent_path <- "raw/narms_now_agent.csv.gz"
+raw_pattern_path <- "raw/narms_now_pattern.csv.gz"
+out_agent_path <- file.path(NARMS_NOW_OUT_DIR, "narms_now_agent.csv.gz")
+out_pattern_path <- file.path(NARMS_NOW_OUT_DIR, "narms_now_pattern.csv.gz")
+errors_path <- file.path(NARMS_NOW_OUT_DIR, "narms_now_scrape_errors.json")
 
-    # National rows carry site_name = NA, so repeated scrapes have historically
-    # accumulated exact copies of them. The copies never disagree, so dropping
-    # them here keeps the raw file from growing and makes it self-healing.
-    new_agent_df <- distinct(new_agent_df)
-
-    vroom::vroom_write(new_agent_df, "raw/narms_now_agent.csv.gz", delim = ",")
-    message(sprintf("Wrote %d rows to raw/narms_now_agent.csv.gz", nrow(new_agent_df)))
-  }
-
-  # --- Fix Shigella DSC state-level data ---
-  # The main scrape returns wrong state-level values for Ciprofloxacin (DSC)
-  # because the ResistByAgentCell measure leaks national counts when filtered
-  # by NARMSSiteName. Re-scrape using the NARMS fact table for state grouping,
-  # which returns correct values (6 queries total).
-  if (file.exists("raw/narms_now_agent.csv.gz")) {
-    message("=== Correcting Shigella DSC state-level data (6 queries) ===")
-    shigella_species <- c("flexneri", "other", "sonnei")
-    dsc_corrected <- list()
-
-    for (sp in shigella_species) {
-      for (tm in test_methods) {
-        year_from <- if (tm == "WGS") YEAR_FROM_WGS else YEAR_FROM_AST
-        message(sprintf("  DSC fix: Shigella %s / %s", sp, tm))
-
-        tryCatch({
-          query <- build_dsc_state_query(sp, tm, year_from = year_from, year_to = YEAR_TO)
-          response <- execute_powerbi_query(query)
-          parsed <- parse_dsc_state_response(response, sp, tm)
-
-          if (!is.null(parsed) && nrow(parsed) > 0) {
-            dsc_corrected[[length(dsc_corrected) + 1]] <- parsed
-            message(sprintf("    -> %d rows", nrow(parsed)))
-          }
-        }, error = function(e) {
-          warning(sprintf("    -> DSC fix ERROR: %s", conditionMessage(e)))
-        })
-        Sys.sleep(QUERY_DELAY)
-      }
-    }
-
-    if (length(dsc_corrected) > 0) {
-      dsc_df <- do.call(rbind, dsc_corrected) %>%
-        rename(pct_resistant = narms_now_pct_resistant,
-               n_resistant = narms_now_n_resistant,
-               n_tested = narms_now_n_tested)
-
-      agent_raw <- vroom::vroom("raw/narms_now_agent.csv.gz", show_col_types = FALSE)
-
-      # Remove bad Shigella DSC state rows and replace with corrected data
-      agent_fixed <- agent_raw %>%
-        filter(!(genus == "Shigella" &
-                 antimicrobial_agent == "Ciprofloxacin (DSC)" &
-                 !is.na(site_name))) %>%
-        bind_rows(dsc_df)
-
-      vroom::vroom_write(agent_fixed, "raw/narms_now_agent.csv.gz", delim = ",")
-      message(sprintf("DSC fix: replaced Shigella DSC state rows. %d -> %d total rows",
-                      nrow(agent_raw), nrow(agent_fixed)))
-    }
-  }
-
-  if (length(all_pattern_data) > 0) {
-    new_pattern_df <- do.call(rbind, all_pattern_data) %>%
-      rename(pct_resistant = narms_now_pct_resistant,
-             n_resistant = narms_now_n_resistant,
-             n_tested = narms_now_n_tested)
-
-    # Incremental: load existing raw, remove overlapping years, append new
-    if (!is.null(last_year_to) && file.exists("raw/narms_now_pattern.csv.gz")) {
-      existing <- vroom::vroom("raw/narms_now_pattern.csv.gz", show_col_types = FALSE)
-      existing <- existing %>% filter(year < scrape_year_from_ast)
-      new_pattern_df <- bind_rows(existing, new_pattern_df)
-    }
-
-    # See note in the agent block above.
-    new_pattern_df <- distinct(new_pattern_df)
-
-    vroom::vroom_write(new_pattern_df, "raw/narms_now_pattern.csv.gz", delim = ",")
-    message(sprintf("Wrote %d rows to raw/narms_now_pattern.csv.gz", nrow(new_pattern_df)))
-  }
-
-  # Log errors
-  if (length(error_log) > 0) {
-    jsonlite::write_json(error_log, "raw/narms_now_scrape_errors.json", pretty = TRUE)
-    warning(sprintf("%d scraping errors occurred. See raw/narms_now_scrape_errors.json",
-                    length(error_log)))
-  }
-
-  # Update process state
-  process$narms_now_state <- list(
-    last_scrape_date = as.character(Sys.Date()),
-    n_agent_rows = if (length(all_agent_data) > 0) nrow(new_agent_df) else 0,
-    n_pattern_rows = if (length(all_pattern_data) > 0) nrow(new_pattern_df) else 0,
-    n_errors = length(error_log),
-    n_sites = n_sites + 1,
+if (NARMS_NOW_MODE != "standardize") {
+  dir.create(NARMS_NOW_OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+  prev_state <- process$narms_now_state
+  state <- list(
+    last_check_date = as.character(Sys.Date()),
+    last_check_result = NA_character_,
+    last_scrape_date = prev_state$last_scrape_date,
+    last_scrape_year_from = prev_state$last_scrape_year_from,
     year_from_ast = YEAR_FROM_AST,
     year_from_wgs = YEAR_FROM_WGS,
-    year_to = YEAR_TO
+    year_to_requested = YEAR_TO,
+    year_to_data = prev_state$year_to_data,
+    n_sites = length(sites) + 1L,
+    n_queries = 0L,
+    n_errors = 0L,
+    n_agent_rows = prev_state$n_agent_rows,
+    n_pattern_rows = prev_state$n_pattern_rows
   )
-  dcf::dcf_process_record(updated = process)
 
+  # ---------------------------------------------------------------------------
+  # 1. National pre-pass, all years (also supplies the national rows)
+  # ---------------------------------------------------------------------------
+  message(sprintf("=== NARMS Now national pre-pass (mode = %s, %d organisms, years to %d) ===",
+                  NARMS_NOW_MODE, length(organisms), YEAR_TO))
+  nat <- scrape_specs(make_query_specs(list(NULL), organisms, test_methods, YEAR_TO))
+  state$n_queries <- state$n_queries + nat$n_queries
+  if (length(nat$errors) > 0) fail_scrape(nat$errors, state, errors_path)
+
+  nat_agent <- finalize_scrape(nat$agent, "agent")
+  nat_pattern <- finalize_scrape(nat$pattern, "pattern")
+  year_to_data <- last_year_with_data(nat_agent, nat_pattern)
+  if (is.na(year_to_data)) {
+    fail_scrape(list(list(site = "All (national)", error = "pre-pass returned no tested cells")),
+                state, errors_path)
+  }
+  nat_agent <- nat_agent %>% filter(year <= year_to_data)
+  nat_pattern <- nat_pattern %>% filter(year <= year_to_data)
+
+  # ---------------------------------------------------------------------------
+  # 2. Which years need the state scrape?
+  # The national counts are sums over states, so a year whose national rows
+  # are unchanged is taken as unchanged for every state too. The state scrape
+  # covers the earliest changed year through YEAR_TO; earlier years are kept
+  # from the stored raw files.
+  # ---------------------------------------------------------------------------
+  stored_ok <- file.exists(raw_agent_path) && file.exists(raw_pattern_path)
+  earliest_year <- min(YEAR_FROM_AST, YEAR_FROM_WGS)
+
+  if (NARMS_NOW_MODE == "full") {
+    scrape_from <- earliest_year
+    state$last_check_result <- "forced"
+  } else if (is.null(prev_state$year_to_data) || !stored_ok) {
+    scrape_from <- earliest_year
+    state$last_check_result <- "first_run"
+  } else {
+    changed_years <- c(
+      national_changed_years(nat_agent, raw_agent_path),
+      national_changed_years(nat_pattern, raw_pattern_path)
+    )
+    if (year_to_data > prev_state$year_to_data) {
+      changed_years <- c(changed_years, seq(prev_state$year_to_data + 1L, year_to_data))
+      state$last_check_result <- "new_year"
+    } else if (length(changed_years) > 0) {
+      state$last_check_result <- "changed"
+    } else {
+      state$last_check_result <- "unchanged"
+    }
+    scrape_from <- if (length(changed_years) > 0) as.integer(min(changed_years)) else NA_integer_
+    if (!is.na(scrape_from)) {
+      message(sprintf("Changed years nationally: %s",
+                      paste(sort(unique(changed_years)), collapse = ", ")))
+      if (YEAR_TO - scrape_from + 1L > FULL_SCRAPE_YEARS) {
+        message(sprintf("%d years to re-scrape (> %d): falling back to a full all-years scrape",
+                        YEAR_TO - scrape_from + 1L, FULL_SCRAPE_YEARS))
+        scrape_from <- earliest_year
+      }
+    }
+  }
+  do_scrape <- !is.na(scrape_from)
+  message(sprintf("Pre-pass result: %s (latest year with data: %d%s)",
+                  state$last_check_result, year_to_data,
+                  if (do_scrape) sprintf("; state scrape from %d", scrape_from) else ""))
+
+  # ---------------------------------------------------------------------------
+  # 3. State scrape for years >= scrape_from
+  # ---------------------------------------------------------------------------
+  if (do_scrape) {
+    specs <- make_query_specs(as.list(sites), organisms, test_methods, YEAR_TO,
+                              year_from_min = scrape_from)
+    message(sprintf("=== NARMS Now state scrape: %d sites x %d organisms, years %d-%d (%d queries, %d in flight) ===",
+                    length(sites), length(organisms), scrape_from, YEAR_TO,
+                    nrow(specs), MAX_ACTIVE))
+    st <- scrape_specs(specs)
+    state$n_queries <- state$n_queries + st$n_queries
+    errors <- st$errors
+
+    # Shigella DSC state rows: the standard agent query leaks national counts
+    # for Ciprofloxacin (DSC) when filtered by NARMSSiteName, so those cells are
+    # replaced with a query that groups by the NARMS fact table's SiteName.
+    # These 6 queries are cheap, so they always cover every year.
+    dsc_df <- NULL
+    shigella_in_run <- any(vapply(organisms, function(o) o$genus == "Shigella", logical(1)))
+    if (shigella_in_run) {
+      message("=== Correcting Shigella DSC state-level data (6 queries) ===")
+      dsc_specs <- tidyr::expand_grid(species = c("flexneri", "other", "sonnei"),
+                                      test_method = test_methods)
+      dsc_reqs <- lapply(seq_len(nrow(dsc_specs)), function(i) {
+        tm <- dsc_specs$test_method[i]
+        build_powerbi_request(build_dsc_state_query(
+          dsc_specs$species[i], tm,
+          year_from = if (tm == "WGS") YEAR_FROM_WGS else YEAR_FROM_AST,
+          year_to = YEAR_TO
+        ))
+      })
+      dsc_resps <- perform_powerbi_batch(dsc_reqs)
+      state$n_queries <- state$n_queries + length(dsc_reqs)
+      dsc_parts <- list()
+      for (i in seq_along(dsc_resps)) {
+        r <- dsc_resps[[i]]
+        err <- if (inherits(r, "condition")) conditionMessage(r) else powerbi_error_message(r)
+        parsed <- if (is.null(err)) {
+          suppressWarnings(parse_dsc_state_response(r, dsc_specs$species[i], dsc_specs$test_method[i]))
+        }
+        if (is.null(err) && is.null(parsed)) err <- "No data returned"
+        if (!is.null(err)) {
+          errors[[length(errors) + 1]] <- list(
+            site = "states (DSC fix)", genus = "Shigella", species = dsc_specs$species[i],
+            test_method = dsc_specs$test_method[i], tab = "agent",
+            year_from = if (dsc_specs$test_method[i] == "WGS") YEAR_FROM_WGS else YEAR_FROM_AST,
+            year_to = YEAR_TO, error = err
+          )
+        } else {
+          dsc_parts[[length(dsc_parts) + 1]] <- parsed
+        }
+      }
+      if (length(dsc_parts) > 0) dsc_df <- finalize_scrape(bind_rows(dsc_parts), "agent")
+    }
+
+    if (length(errors) > 0) fail_scrape(errors, state, errors_path)
+
+    # Assemble: national rows (all years, fresh) + state rows for years before
+    # scrape_from (kept from the stored file) + state rows just scraped.
+    kept_state_rows <- function(path) {
+      if (scrape_from <= earliest_year || !stored_ok) return(NULL)
+      vroom::vroom(path, show_col_types = FALSE) %>%
+        filter(!is.na(site_name), year < scrape_from) %>%
+        semi_join(distinct(nat_agent, genus, species_serotype) %>%
+                    bind_rows(distinct(nat_pattern, genus, species_serotype)) %>% distinct(),
+                  by = c("genus", "species_serotype"))
+    }
+    agent_df <- bind_rows(nat_agent, kept_state_rows(raw_agent_path),
+                          finalize_scrape(st$agent, "agent"))
+    if (!is.null(dsc_df)) {
+      agent_df <- agent_df %>%
+        filter(!(genus == "Shigella" &
+                   antimicrobial_agent == "Ciprofloxacin (DSC)" &
+                   !is.na(site_name))) %>%
+        bind_rows(dsc_df)
+    }
+    pattern_df <- bind_rows(nat_pattern, kept_state_rows(raw_pattern_path),
+                            finalize_scrape(st$pattern, "pattern"))
+
+    year_to_data <- last_year_with_data(agent_df, pattern_df)
+    agent_df <- agent_df %>% filter(year <= year_to_data) %>% distinct() %>%
+      arrange(site_name, genus, species_serotype, test_method, antimicrobial_class,
+              antimicrobial_agent, year)
+    pattern_df <- pattern_df %>% filter(year <= year_to_data) %>% distinct() %>%
+      arrange(site_name, genus, species_serotype, test_method, pattern, year)
+
+    vroom::vroom_write(agent_df, out_agent_path, delim = ",")
+    vroom::vroom_write(pattern_df, out_pattern_path, delim = ",")
+    message(sprintf("Wrote %d rows to %s", nrow(agent_df), out_agent_path))
+    message(sprintf("Wrote %d rows to %s", nrow(pattern_df), out_pattern_path))
+    unlink(file.path(NARMS_NOW_OUT_DIR, "narms_now_checkpoints"), recursive = TRUE)
+
+    state$last_scrape_date <- as.character(Sys.Date())
+    state$last_scrape_year_from <- scrape_from
+    state$n_agent_rows <- nrow(agent_df)
+    state$n_pattern_rows <- nrow(pattern_df)
+  }
+
+  # ---------------------------------------------------------------------------
+  # 4. Record state; a clean run removes any stale error log
+  # ---------------------------------------------------------------------------
+  state$year_to_data <- year_to_data
+  if (file.exists(errors_path)) file.remove(errors_path)
+  if (!is_test_run) {
+    process$narms_now_state <- state
+    dcf::dcf_process_record(updated = process)
+  } else {
+    message("Test run (NARMS_NOW_OUT_DIR set): process.json left unchanged")
+  }
   message("=== NARMS Now scraping complete ===")
 }
 
