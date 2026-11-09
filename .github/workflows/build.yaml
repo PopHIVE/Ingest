@@ -93,6 +93,9 @@ jobs:
         env:
           DELPHI_EPIDATA_KEY: ${{ secrets.DELPHI_EPIDATA_KEY }}
           CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+          # The NARMS Now scrape (2-3 h) has its own monthly workflow,
+          # update_narms.yaml; here narms only re-standardizes its raw files.
+          NARMS_NOW_MODE: standardize
 
       - id: diff
         run: |

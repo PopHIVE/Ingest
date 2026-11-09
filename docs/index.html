@@ -26,7 +26,7 @@
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
         <div class="d-flex align-items-center">
           <a class="btn btn-outline-light btn-sm me-3" href="data-table.html">Data Table →</a>
-          <span class="navbar-text text-light">Last updated: November 06, 2026</span>
+          <span class="navbar-text text-light">Last updated: November 08, 2026</span>
         </div>
       </div>
     </nav>
@@ -27114,7 +27114,7 @@
             </section>
             <section id="narms" class="mb-5">
               <h2 class="border-bottom pb-2">Narms</h2>
-              <p class="lead">Detailed antimicrobial resistance data from NARMS human clinical isolates, including resistance by individual antimicrobial agent (with CLSI class) and by resistance pattern (multidrug resistance profiles). Data available for 30 species/serotypes across 5 genera (Campylobacter, E. coli O157, Non-cholera Vibrio, Salmonella, Shigella), tested against 22 antimicrobial agents and summarised into 29 resistance patterns. Both AST (phenotypic) and WGS (genotypic) test method results are available; WGS coverage begins in 2016. Data span 1999-2025. Records from years after 2021 are preliminary, since isolate collection and testing are still in progress, and a substantially higher share of those cells is flagged 'not_tested' as a result. Data extracted from the NARMS Now Power BI dashboard. Suggested citation: CDC. National Antimicrobial Resistance Monitoring System (NARMS) Now: Human Data. Atlanta, Georgia: U.S. Department of Health and Human Services.</p>
+              <p class="lead">Antimicrobial resistance surveillance data from the NARMS (National Antimicrobial Resistance Monitoring System) program across four sources: CDC human clinical isolates (1999 to present; 30 species/serotypes across 5 genera, 22 agents, 29 multidrug resistance patterns; AST and WGS results, with WGS beginning in 2016), FDA retail meats (2002-2021; 221 genus/species/serotype combinations across Campylobacter, Enterococcus, E. coli, and Salmonella, 31 agents; chicken, ground beef, ground turkey, pork chops, veal), FDA animal diagnostic pathogens (2017-2024; E. coli, Klebsiella, S. pseudintermedius, Salmonella; 74 agents; state level), and FDA food-producing animals (1997-2023; HACCP slaughter, cecal, and minor species programs; 638 combinations, 628 of them Salmonella serotypes; 35 agents; national level only). FDA calls are SIR (Susceptible/Intermediate/Resistant) based on CLSI breakpoints. Recent CDC years are preliminary, with a higher share of 'not_tested' cells, and CDC revises earlier years, so all years are re-scraped when national totals change. Animal diagnostic testing is ordered per clinical case, so about half of its 'not_tested' cells fall in years where the same organism and antimicrobial pair was tested in another host species or source. The 'tested_no_mic' flag occurs only in the food-producing animal file, mostly for streptomycin, where resistance counts exist without MIC values. The 'no_isolates_tested' flag does not occur in the FDA files, which are built by aggregating isolate-level records. CDC data were extracted from the NARMS Now Power BI dashboard.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
@@ -49002,9 +49002,7 @@
                           <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">NARMS Now (Human Clinical)</span>
                           <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Retail Meats</span>
                           <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Animal Pathogen</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals (HACCP)</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals (Cecal)</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals (Minor Species)</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals</span>
                         </div>
                       </td>
                       <td></td>
@@ -49014,8 +49012,8 @@
                       <td>
                         <code>genus_species_serotype</code>
                       </td>
-                      <td>genus_species_serotype</td>
-                      <td></td>
+                      <td>Organism</td>
+                      <td>Bacterial genus, species and serotype combined into one label (e.g. 'Salmonella Typhimurium'). Populated for human clinical, retail meats and food-producing animal isolates; empty for FDA Animal Pathogen isolates, which use genus.</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -49077,9 +49075,9 @@
                       <td>
                         <code>narms_flag</code>
                       </td>
-                      <td>narms_flag</td>
-                      <td></td>
-                      <td></td>
+                      <td>Measurement status</td>
+                      <td>Categorical flag explaining whether the values on this row are real measurements.</td>
+                      <td>Category</td>
                       <td></td>
                     </tr>
                     <tr>
@@ -49114,7 +49112,7 @@
                         <code>genus</code>
                       </td>
                       <td>Bacterial genus</td>
-                      <td>Genus of the bacterial isolate tested (e.g. Campylobacter, Escherichia, Enterococcus, Salmonella, Shigella, Vibrio).</td>
+                      <td>Genus of the bacterial isolate tested (E. coli, Klebsiella spp, S. pseudintermedius, Salmonella). Populated for FDA Animal Pathogen isolates only; other sources report genus_species_serotype instead.</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -49210,8 +49208,8 @@
                       <td>
                         <code>genus_species_serotype</code>
                       </td>
-                      <td>genus_species_serotype</td>
-                      <td></td>
+                      <td>Organism</td>
+                      <td>Bacterial genus, species and serotype combined into one label (e.g. 'Salmonella Typhimurium').</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -49273,9 +49271,9 @@
                       <td>
                         <code>narms_flag</code>
                       </td>
-                      <td>narms_flag</td>
-                      <td></td>
-                      <td></td>
+                      <td>Measurement status</td>
+                      <td>Categorical flag explaining whether the values on this row are real measurements.</td>
+                      <td>Category</td>
                       <td></td>
                     </tr>
                   </tbody>
@@ -52967,9 +52965,7 @@
                           <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">NARMS Now (Human Clinical)</span>
                           <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Retail Meats</span>
                           <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Animal Pathogen</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals (HACCP)</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals (Cecal)</span>
-                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals (Minor Species)</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">FDA Food Animals</span>
                         </div>
                       </td>
                       <td></td>
@@ -53028,6 +53024,15 @@
                       <td></td>
                       <td>Count</td>
                       <td>Isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>narms_flag</code>
+                      </td>
+                      <td>Measurement status</td>
+                      <td>Categorical flag explaining whether the values on this row are real measurements.</td>
+                      <td>Category</td>
+                      <td></td>
                     </tr>
                     <tr>
                       <td>
@@ -53206,6 +53211,15 @@
                       <td></td>
                       <td>Count</td>
                       <td>Isolates</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>narms_flag</code>
+                      </td>
+                      <td>Measurement status</td>
+                      <td>Categorical flag explaining whether the values on this row are real measurements.</td>
+                      <td>Category</td>
+                      <td></td>
                     </tr>
                   </tbody>
                 </table>

@@ -14,22 +14,16 @@
       "NARMS Now (Human Clinical)": {},
       "FDA Retail Meats": {},
       "FDA Animal Pathogen": {},
-      "FDA Food Animals (HACCP)": {},
-      "FDA Food Animals (Cecal)": {},
-      "FDA Food Animals (Minor Species)": {}
+      "FDA Food Animals": {}
     }
   },
   "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|genus": {
     "short_name": "Bacterial genus",
-    "short_description": "Genus of the bacterial isolate tested (e.g. Campylobacter, Escherichia, Enterococcus, Salmonella, Shigella, Vibrio)."
+    "short_description": "Genus of the bacterial isolate tested (E. coli, Klebsiella spp, S. pseudintermedius, Salmonella). Populated for FDA Animal Pathogen isolates only; other sources report genus_species_serotype instead."
   },
-  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|species_serotype": {
-    "short_name": "Species / serotype",
-    "short_description": "Bacterial species and, where available, serotype of the isolate (e.g. 'Salmonella Typhimurium', 'E. coli O157')."
-  },
-  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|antimicrobial_class": {
-    "short_name": "Antimicrobial class",
-    "short_description": "CLSI drug class of the antimicrobial agent (e.g. Aminoglycosides, Beta-lactams, Macrolides, Quinolones). Populated for human clinical isolates."
+  "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|genus_species_serotype": {
+    "short_name": "Organism",
+    "short_description": "Bacterial genus, species and serotype combined into one label (e.g. 'Salmonella Typhimurium'). Populated for human clinical, retail meats and food-producing animal isolates; empty for FDA Animal Pathogen isolates, which use genus."
   },
   "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|antimicrobial": {
     "short_name": "Antimicrobial agent",
@@ -74,13 +68,9 @@
       "NARMS Now (Human Clinical)": {}
     }
   },
-  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|genus": {
-    "short_name": "Bacterial genus",
-    "short_description": "Genus of the bacterial isolate tested (e.g. Campylobacter, Escherichia, Salmonella, Shigella, Vibrio)."
-  },
-  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|species_serotype": {
-    "short_name": "Species / serotype",
-    "short_description": "Bacterial species and, where available, serotype of the isolate (e.g. 'Salmonella Typhimurium', 'E. coli O157')."
+  "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|genus_species_serotype": {
+    "short_name": "Organism",
+    "short_description": "Bacterial genus, species and serotype combined into one label (e.g. 'Salmonella Typhimurium')."
   },
   "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|pattern": {
     "short_name": "Resistance pattern",
@@ -127,6 +117,21 @@
     "category": "antimicrobial_resistance",
     "measure_type": "Count",
     "unit": "Isolates",
+    "time_resolution": "Year",
+    "categories": {
+      "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|": {},
+      "bundle_antimicrobial_resistance/dist/resistance_by_pattern.parquet|": {}
+    }
+  },
+  "{category}narms_flag": {
+    "measure_column": "{category}source",
+    "short_name": "Measurement status",
+    "long_name": "Why a measurement is present or absent",
+    "short_description": "Categorical flag explaining whether the values on this row are real measurements.",
+    "long_description": "Records whether the value columns on this row hold a real measurement, and if not, why not. tested: isolates were tested and results came back; a 0 percent means none were resistant. no_isolates_tested: the antimicrobial was tracked for that organism, geography and year but no isolates were available, so n_tested is 0 and the percentage of 0 is 0 out of 0, not a resistance finding; exclude these rows from averages. not_tested: the antimicrobial was not on the panel for that combination, so all value columns are NA (recent years are preliminary and some will resolve to tested). tested_no_mic: counts and percentage are real but no MIC was published (FDA food-producing animals file, mostly streptomycin). To select all real resistance measurements, match both tested and tested_no_mic.",
+    "category": "antimicrobial_resistance",
+    "measure_type": "Category",
+    "unit": "",
     "time_resolution": "Year",
     "categories": {
       "bundle_antimicrobial_resistance/dist/resistance_by_agent.parquet|": {},
