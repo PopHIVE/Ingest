@@ -10,24 +10,26 @@
 # environment variable, so the one ingest.R can serve both workflows:
 #   standardize  (default) never queries CDC; rebuilds the standard files from
 #                the raw files already in raw/. Used by the Tue/Fri build.
-#   check        runs a national-only pre-pass (130 queries, ~10 minutes) and
-#                compares it, year by year, with the stored national rows. The
-#                national counts are sums over states, so only the years whose
-#                national rows changed (or a newly appeared year) are then
-#                re-scraped for every state, from the earliest changed year to
-#                the current one. Earlier years are kept from the stored raw
-#                files. When more than FULL_SCRAPE_YEARS years changed (CDC
-#                reissues the whole WGS series about once a year) it switches
-#                to a full all-years scrape, which is then the cheaper path.
-#                Used by the monthly update_narms workflow.
+#   check        runs a national-only pre-pass (130 queries, ~18 minutes) and
+#                compares it with the stored national rows. The national
+#                counts are sums over states, so only the organism x test
+#                method x year combinations whose national rows changed in
+#                either tab (or a newly appeared year) are re-scraped for every
+#                state; everything else is kept from the stored raw files.
+#                A full all-years scrape runs instead when the last one is
+#                older than FULL_REFRESH_DAYS (this bounds anything the
+#                national comparison cannot see, such as an isolate reassigned
+#                between states) or when the changed set would cost more than
+#                FULL_SCRAPE_YEARS year-equivalents, where the full scrape is
+#                the cheaper path. Used by the monthly update_narms workflow.
 #   full         re-scrapes every year since 1999 for every state (workflow
 #                dispatch with force = true, or a local backfill).
 # Query cost is server-side and grows with the year range: ~1.5 s for one year,
 # ~6 s for all years, and the Power BI backend serves only a few requests at
 # once (8 in flight = 3-4x speedup, measured 2026-11-04). Re-scraping one year
-# for every state takes ~25 minutes, so a typical monthly update (the current
-# year changes almost every time, earlier years occasionally) takes 35-60
-# minutes; a full all-years run takes about 3 hours. Any query that still
+# of every organism for every state takes ~25 minutes; a typical monthly
+# update touches a few dozen organism-years (20-30 minutes of state queries,
+# measured 2026-11-09) and a full all-years run takes about 3 hours. Any query that still
 # fails after retries makes the run fail; the raw files are only replaced when
 # every query succeeded.
 #
@@ -75,10 +77,15 @@ CHUNK_SIZE <- 200L
 OUTAGE_FAIL_FRACTION <- 0.5
 OUTAGE_WAIT_SEC <- 60L
 OUTAGE_MAX_TRIES <- 20L
-# Year-by-year re-scraping costs ~25 min per year (6,120 single-year queries),
-# a full all-years scrape ~3 h flat, so beyond this many changed years the
-# full scrape is faster and also stays inside the workflow timeout.
+# Re-scraping one year of every organism for every state costs ~25 min (6,120
+# single-year queries); a full all-years scrape ~3 h flat. The changed set is
+# measured in year-equivalents of that (years summed over the state queries,
+# divided by the 6,120), and beyond this many the full scrape is cheaper.
 FULL_SCRAPE_YEARS <- 7L
+# Check mode runs a full scrape anyway when the last one is older than this,
+# so a state-level change that left every national row unchanged (an isolate
+# reassigned between states) is picked up within half a year.
+FULL_REFRESH_DAYS <- 180L
 
 # --- Run mode (see header) ---
 NARMS_NOW_MODE <- Sys.getenv("NARMS_NOW_MODE", "standardize")
@@ -1027,9 +1034,7 @@ powerbi_error_message <- function(response) {
 
 #' One row per query: site_name (NA = national), genus, species, test_method,
 #' tab ("agent" or "pattern"), year_from, year_to.
-#' year_from_min raises the start year (used to re-scrape only changed years).
-make_query_specs <- function(site_list, organisms, test_methods, year_to,
-                             year_from_min = NULL) {
+make_query_specs <- function(site_list, organisms, test_methods, year_to) {
   site_vec <- vapply(site_list, function(s) if (is.null(s)) NA_character_ else s,
                      character(1))
   org_df <- bind_rows(lapply(organisms, function(o) {
@@ -1039,10 +1044,29 @@ make_query_specs <- function(site_list, organisms, test_methods, year_to,
                      tab = c("agent", "pattern")) %>%
     mutate(
       year_from = if_else(test_method == "WGS", YEAR_FROM_WGS, YEAR_FROM_AST),
-      year_from = if (is.null(year_from_min)) year_from else pmax(year_from, year_from_min),
       year_to = year_to
     ) %>%
     filter(year_from <= year_to) %>%
+    as.data.frame(stringsAsFactors = FALSE)
+}
+
+#' State specs for the organism x test method x year combinations in `combos`
+#' (columns genus, species_serotype, test_method, year): one query per site
+#' and tab for each contiguous run of years, in make_query_specs() layout
+specs_from_combos <- function(combos, site_list) {
+  site_vec <- vapply(site_list, function(s) if (is.null(s)) NA_character_ else s,
+                     character(1))
+  runs <- combos %>%
+    distinct(genus, species_serotype, test_method, year) %>%
+    mutate(year = as.integer(year)) %>%
+    arrange(genus, species_serotype, test_method, year) %>%
+    group_by(genus, species_serotype, test_method) %>%
+    mutate(run = cumsum(c(1L, diff(year) != 1L))) %>%
+    group_by(genus, species_serotype, test_method, run) %>%
+    summarise(year_from = min(year), year_to = max(year), .groups = "drop") %>%
+    select(genus, species = species_serotype, test_method, year_from, year_to)
+  tidyr::expand_grid(site_name = site_vec, runs, tab = c("agent", "pattern")) %>%
+    select(site_name, genus, species, test_method, tab, year_from, year_to) %>%
     as.data.frame(stringsAsFactors = FALSE)
 }
 
@@ -1268,16 +1292,18 @@ finalize_scrape <- function(df, tab) {
   df %>% select(all_of(cols)) %>% distinct()
 }
 
-#' Years in which the national rows differ between the new pre-pass and the
-#' stored raw file (either direction), restricted to the organisms scraped
-national_changed_years <- function(new, path) {
+#' Organism x test method x year combinations whose national rows differ
+#' between the new pre-pass and the stored raw file (either direction),
+#' restricted to the organisms scraped
+national_changed_combos <- function(new, path) {
   old <- vroom::vroom(path, show_col_types = FALSE) %>%
     filter(is.na(site_name)) %>%
     semi_join(distinct(new, genus, species_serotype, test_method),
               by = c("genus", "species_serotype", "test_method"))
   keys <- names(new)
-  sort(unique(c(anti_join(new, old, by = keys)$year,
-                anti_join(old, new, by = keys)$year)))
+  bind_rows(anti_join(new, old, by = keys), anti_join(old, new, by = keys)) %>%
+    distinct(genus, species_serotype, test_method, year) %>%
+    mutate(year = as.integer(year))
 }
 
 #' Last year with at least one tested isolate across both tabs
@@ -1322,6 +1348,8 @@ if (NARMS_NOW_MODE != "standardize") {
     last_check_result = NA_character_,
     last_scrape_date = prev_state$last_scrape_date,
     last_scrape_year_from = prev_state$last_scrape_year_from,
+    last_full_scrape_date = prev_state$last_full_scrape_date,
+    n_rescraped_organism_years = prev_state$n_rescraped_organism_years,
     year_from_ast = YEAR_FROM_AST,
     year_from_wgs = YEAR_FROM_WGS,
     year_to_requested = YEAR_TO,
@@ -1353,59 +1381,86 @@ if (NARMS_NOW_MODE != "standardize") {
   nat_pattern <- nat_pattern %>% filter(year <= year_to_data)
 
   # ---------------------------------------------------------------------------
-  # 2. Which years need the state scrape?
-  # The national counts are sums over states, so a year whose national rows
-  # are unchanged is taken as unchanged for every state too. The state scrape
-  # covers the earliest changed year through YEAR_TO; earlier years are kept
-  # from the stored raw files.
+  # 2. Which organism-years need the state scrape?
+  # The national counts are sums over states, so an organism x test method x
+  # year whose national rows are unchanged in both tabs is taken as unchanged
+  # for every state too. Only the changed combinations are re-scraped for
+  # every state (contiguous years in one query); everything else is kept from
+  # the stored raw files. A full scrape runs instead when forced, on the first
+  # run, when the last full scrape is older than FULL_REFRESH_DAYS, or when the
+  # changed set would cost more than a full scrape. `changed` is NULL for a
+  # full scrape.
   # ---------------------------------------------------------------------------
   stored_ok <- file.exists(raw_agent_path) && file.exists(raw_pattern_path)
-  earliest_year <- min(YEAR_FROM_AST, YEAR_FROM_WGS)
+  all_state_specs <- make_query_specs(as.list(sites), organisms, test_methods, YEAR_TO)
+  full_units <- FULL_SCRAPE_YEARS * nrow(all_state_specs)
+  last_full <- suppressWarnings(as.Date(prev_state$last_full_scrape_date))
+  days_since_full <- if (length(last_full) == 1 && !is.na(last_full)) {
+    as.integer(Sys.Date() - last_full)
+  } else {
+    NA_integer_
+  }
+  changed <- NULL
 
   if (NARMS_NOW_MODE == "full") {
-    scrape_from <- earliest_year
     state$last_check_result <- "forced"
   } else if (is.null(prev_state$year_to_data) || !stored_ok) {
-    scrape_from <- earliest_year
     state$last_check_result <- "first_run"
+  } else if (is.na(days_since_full) || days_since_full > FULL_REFRESH_DAYS) {
+    message(sprintf("Last full scrape %s: running the %d-day full refresh",
+                    if (is.na(days_since_full)) "date unknown" else sprintf("%d days ago", days_since_full),
+                    FULL_REFRESH_DAYS))
+    state$last_check_result <- "refresh"
   } else {
-    changed_years <- c(
-      national_changed_years(nat_agent, raw_agent_path),
-      national_changed_years(nat_pattern, raw_pattern_path)
-    )
+    changed <- bind_rows(
+      national_changed_combos(nat_agent, raw_agent_path),
+      national_changed_combos(nat_pattern, raw_pattern_path)
+    ) %>% distinct()
     if (year_to_data > prev_state$year_to_data) {
-      changed_years <- c(changed_years, seq(prev_state$year_to_data + 1L, year_to_data))
+      new_years <- seq(prev_state$year_to_data + 1L, year_to_data)
+      org_df <- bind_rows(lapply(organisms, function(o) {
+        data.frame(genus = o$genus, species_serotype = o$species, stringsAsFactors = FALSE)
+      }))
+      changed <- bind_rows(
+        changed,
+        tidyr::expand_grid(org_df, test_method = test_methods, year = as.integer(new_years)) %>%
+          filter(!(test_method == "WGS" & year < YEAR_FROM_WGS))
+      ) %>% distinct()
       state$last_check_result <- "new_year"
-    } else if (length(changed_years) > 0) {
+    } else if (nrow(changed) > 0) {
       state$last_check_result <- "changed"
     } else {
       state$last_check_result <- "unchanged"
     }
-    scrape_from <- if (length(changed_years) > 0) as.integer(min(changed_years)) else NA_integer_
-    if (!is.na(scrape_from)) {
-      message(sprintf("Changed years nationally: %s",
-                      paste(sort(unique(changed_years)), collapse = ", ")))
-      if (YEAR_TO - scrape_from + 1L > FULL_SCRAPE_YEARS) {
-        message(sprintf("%d years to re-scrape (> %d): falling back to a full all-years scrape",
-                        YEAR_TO - scrape_from + 1L, FULL_SCRAPE_YEARS))
-        scrape_from <- earliest_year
+    if (nrow(changed) > 0) {
+      message(sprintf("Changed nationally: %d organism-years in %d organism/method series; years %s",
+                      nrow(changed), nrow(distinct(changed, genus, species_serotype, test_method)),
+                      paste(sort(unique(changed$year)), collapse = ", ")))
+      year_units <- sum(with(specs_from_combos(changed, as.list(sites)), year_to - year_from + 1L))
+      if (year_units > full_units) {
+        message(sprintf("%d year-equivalents to re-scrape (> %d x %d): falling back to a full all-years scrape",
+                        year_units, FULL_SCRAPE_YEARS, nrow(all_state_specs)))
+        changed <- NULL
       }
     }
   }
-  do_scrape <- !is.na(scrape_from)
+  full_scrape <- is.null(changed)
+  do_scrape <- full_scrape || nrow(changed) > 0
+  specs <- if (full_scrape) all_state_specs else specs_from_combos(changed, as.list(sites))
   message(sprintf("Pre-pass result: %s (latest year with data: %d%s)",
                   state$last_check_result, year_to_data,
-                  if (do_scrape) sprintf("; state scrape from %d", scrape_from) else ""))
+                  if (!do_scrape) "" else if (full_scrape) "; full state scrape"
+                  else sprintf("; %d state queries for %d organism-years", nrow(specs), nrow(changed))))
 
   # ---------------------------------------------------------------------------
-  # 3. State scrape for years >= scrape_from
+  # 3. State scrape of the selected organism-years
   # ---------------------------------------------------------------------------
   if (do_scrape) {
-    specs <- make_query_specs(as.list(sites), organisms, test_methods, YEAR_TO,
-                              year_from_min = scrape_from)
-    message(sprintf("=== NARMS Now state scrape: %d sites x %d organisms, years %d-%d (%d queries, %d in flight) ===",
-                    length(sites), length(organisms), scrape_from, YEAR_TO,
-                    nrow(specs), MAX_ACTIVE))
+    message(sprintf("=== NARMS Now state scrape: %d sites, %s, years %d-%d (%d queries, %d in flight) ===",
+                    length(sites),
+                    if (full_scrape) sprintf("all %d organisms", length(organisms))
+                    else sprintf("%d organism-years", nrow(changed)),
+                    min(specs$year_from), max(specs$year_to), nrow(specs), MAX_ACTIVE))
     st <- scrape_specs(specs)
     state$n_queries <- state$n_queries + st$n_queries
     errors <- st$errors
@@ -1454,15 +1509,19 @@ if (NARMS_NOW_MODE != "standardize") {
 
     if (length(errors) > 0) fail_scrape(errors, state, errors_path)
 
-    # Assemble: national rows (all years, fresh) + state rows for years before
-    # scrape_from (kept from the stored file) + state rows just scraped.
+    # Assemble: national rows (all years, fresh) + state rows of the
+    # organism-years that were not re-scraped (kept from the stored file) +
+    # state rows just scraped.
     kept_state_rows <- function(path) {
-      if (scrape_from <= earliest_year || !stored_ok) return(NULL)
+      if (full_scrape || !stored_ok) return(NULL)
       vroom::vroom(path, show_col_types = FALSE) %>%
-        filter(!is.na(site_name), year < scrape_from) %>%
+        filter(!is.na(site_name)) %>%
         semi_join(distinct(nat_agent, genus, species_serotype) %>%
                     bind_rows(distinct(nat_pattern, genus, species_serotype)) %>% distinct(),
-                  by = c("genus", "species_serotype"))
+                  by = c("genus", "species_serotype")) %>%
+        mutate(year = as.integer(year)) %>%
+        anti_join(distinct(changed, genus, species_serotype, test_method, year),
+                  by = c("genus", "species_serotype", "test_method", "year"))
     }
     agent_df <- bind_rows(nat_agent, kept_state_rows(raw_agent_path),
                           finalize_scrape(st$agent, "agent"))
@@ -1490,7 +1549,11 @@ if (NARMS_NOW_MODE != "standardize") {
     unlink(file.path(NARMS_NOW_OUT_DIR, "narms_now_checkpoints"), recursive = TRUE)
 
     state$last_scrape_date <- as.character(Sys.Date())
-    state$last_scrape_year_from <- scrape_from
+    state$last_scrape_year_from <- as.integer(min(specs$year_from))
+    # each organism-year appears once per site and tab
+    state$n_rescraped_organism_years <-
+      as.integer(sum(specs$year_to - specs$year_from + 1L) / (length(sites) * 2L))
+    if (full_scrape) state$last_full_scrape_date <- as.character(Sys.Date())
     state$n_agent_rows <- nrow(agent_df)
     state$n_pattern_rows <- nrow(pattern_df)
   }
