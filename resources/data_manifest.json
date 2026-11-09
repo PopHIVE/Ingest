@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-08T14:06:31Z",
+  "generated": "2026-11-09T10:42:55Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -4879,6 +4879,9 @@
                 "CDC NCHS Mortality": {
                   "source_id": "rate_influenza_and_pneumonia"
                 },
+                "CDC NCHS Weekly Provisional Deaths": {
+                  "source_id": "nchs_influenza_deaths"
+                },
                 "CDC NNDSS": {
                   "source_id": "influenza_associated_pediatric_mortality"
                 }
@@ -4925,6 +4928,41 @@
                   "short_description": "Quarterly age-adjusted death rate with influenza or pneumonia as the underlying cause. Combined cause: it is not influenza alone.",
                   "measure_type": "Rate",
                   "unit": "per 100,000"
+                },
+                "nchs_influenza_deaths": {
+                  "source_id": "nchs_influenza_deaths",
+                  "short_name": "Influenza deaths, weekly",
+                  "short_description": "Provisional weekly deaths with influenza on the death certificate. NA where NCHS suppressed a count of 1-9.",
+                  "measure_type": "Count",
+                  "unit": "deaths"
+                },
+                "nchs_pneumonia_deaths": {
+                  "source_id": "nchs_pneumonia_deaths",
+                  "short_name": "Pneumonia deaths, weekly",
+                  "short_description": "Provisional weekly deaths with pneumonia on the death certificate (with or without influenza or COVID-19). NA where suppressed.",
+                  "measure_type": "Count",
+                  "unit": "deaths"
+                },
+                "nchs_pneumonia_flu_covid_deaths": {
+                  "source_id": "nchs_pneumonia_flu_covid_deaths",
+                  "short_name": "Pneumonia, influenza or COVID-19 deaths, weekly",
+                  "short_description": "Provisional weekly deaths involving pneumonia, influenza, or COVID-19 (any of the three, each death counted once). Combined cause: it is not influenza alone.",
+                  "measure_type": "Count",
+                  "unit": "deaths"
+                },
+                "nchs_total_deaths": {
+                  "source_id": "nchs_total_deaths",
+                  "short_name": "All-cause deaths, weekly",
+                  "short_description": "Provisional weekly deaths from all causes; the denominator context for the cause-specific counts.",
+                  "measure_type": "Count",
+                  "unit": "deaths"
+                },
+                "nchs_pct_expected_deaths": {
+                  "source_id": "nchs_pct_expected_deaths",
+                  "short_name": "Deaths as % of expected, weekly",
+                  "short_description": "Weekly all-cause deaths as a percent of the number expected (100 = as expected).",
+                  "measure_type": "Percent",
+                  "unit": "percent"
                 },
                 "influenza_associated_pediatric_mortality_cumulative": {
                   "short_name": "Pediatric flu deaths, year to date",
@@ -40605,6 +40643,116 @@
               "description": "Indicates whether the state drug overdose death count was suppressed by NCHS.",
               "measure_type": "Binary",
               "unit": "Binary indicator"
+            }
+          ]
+        }
+      ]
+    },
+    "nchs_respiratory_deaths": {
+      "name": "nchs_respiratory_deaths",
+      "display_name": "NCHS Respiratory Deaths",
+      "description": "Weekly provisional counts of deaths from all causes, COVID-19, pneumonia, influenza, and pneumonia/influenza/COVID-19 combined, by state of occurrence, from death certificates received by NCHS. Covers the United States, the 50 states, the District of Columbia, New York City (summed into New York here, with a suppressed part imputed as 5 and flagged) and Puerto Rico, from the week ending 2020-01-04. Data are provisional: recent weeks are incomplete because of reporting lags and are revised, weeks not yet reported are NA, and counts of 1-9 are suppressed.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "nchs_total_deaths",
+              "short_name": "All-cause deaths (weekly)",
+              "description": "Provisional number of deaths from all causes in the week.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nchs_pct_expected_deaths",
+              "short_name": "Deaths as % of expected",
+              "description": "Observed weekly all-cause deaths divided by the number expected for that week, times 100.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "nchs_covid_deaths",
+              "short_name": "COVID-19 deaths (weekly)",
+              "description": "Provisional number of deaths with COVID-19 listed on the death certificate in the week.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nchs_pneumonia_deaths",
+              "short_name": "Pneumonia deaths (weekly)",
+              "description": "Provisional number of deaths with pneumonia listed on the death certificate in the week.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nchs_pneumonia_covid_deaths",
+              "short_name": "Pneumonia and COVID-19 deaths (weekly)",
+              "description": "Provisional number of deaths with both pneumonia and COVID-19 listed in the week.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nchs_influenza_deaths",
+              "short_name": "Influenza deaths (weekly)",
+              "description": "Provisional number of deaths with influenza listed on the death certificate in the week.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nchs_pneumonia_flu_covid_deaths",
+              "short_name": "Pneumonia, influenza or COVID-19 deaths (weekly)",
+              "description": "Provisional number of deaths with pneumonia, influenza or COVID-19 listed in the week.",
+              "measure_type": "Count",
+              "unit": "Deaths"
+            },
+            {
+              "name": "nchs_suppressed_flag_covid",
+              "short_name": "COVID-19 deaths",
+              "description": "1 if the COVID-19 deaths count was suppressed by NCHS (1-9 deaths) and imputed as 5, otherwise 0.",
+              "measure_type": "Flag",
+              "unit": "0/1"
+            },
+            {
+              "name": "nchs_suppressed_flag_pneumonia",
+              "short_name": "pneumonia deaths",
+              "description": "1 if the pneumonia deaths count was suppressed by NCHS (1-9 deaths) and imputed as 5, otherwise 0.",
+              "measure_type": "Flag",
+              "unit": "0/1"
+            },
+            {
+              "name": "nchs_suppressed_flag_pneumonia_covid",
+              "short_name": "pneumonia and COVID-19 deaths",
+              "description": "1 if the pneumonia and COVID-19 deaths count was suppressed by NCHS (1-9 deaths) and imputed as 5, otherwise 0.",
+              "measure_type": "Flag",
+              "unit": "0/1"
+            },
+            {
+              "name": "nchs_suppressed_flag_influenza",
+              "short_name": "influenza deaths",
+              "description": "1 if the influenza deaths count was suppressed by NCHS (1-9 deaths) and imputed as 5, otherwise 0.",
+              "measure_type": "Flag",
+              "unit": "0/1"
+            },
+            {
+              "name": "nchs_suppressed_flag_pneumonia_flu_covid",
+              "short_name": "pneumonia, influenza, or COVID-19 deaths",
+              "description": "1 if the pneumonia, influenza, or COVID-19 deaths count was suppressed by NCHS (1-9 deaths) and imputed as 5, otherwise 0.",
+              "measure_type": "Flag",
+              "unit": "0/1"
             }
           ]
         }

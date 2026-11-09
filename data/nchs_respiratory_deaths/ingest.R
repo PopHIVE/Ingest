@@ -27,6 +27,21 @@ if (!identical(process$raw_state, raw_state)) {
   as_num <- function(x) {
     if (is.character(x)) as.numeric(gsub(",", "", x, fixed = TRUE)) else x
   }
+  # Dates arrive as "YYYY-mm-dd", "mm/dd/YYYY" or "YYYY Mon dd ...", depending
+  # on how the file was exported
+  parse_cdc_date <- function(x) {
+    if (inherits(x, "Date")) return(x)
+    if (inherits(x, "POSIXt")) return(as.Date(x))
+    x <- as.character(x)
+    out <- as.Date(rep(NA_character_, length(x)))
+    for (fmt in c("%Y-%m-%d", "%m/%d/%Y", "%Y %b %d")) {
+      i <- is.na(out) & !is.na(x)
+      out[i] <- as.Date(x[i], format = fmt)
+    }
+    bad <- is.na(out) & !is.na(x)
+    if (any(bad)) stop("unparsed dates: ", paste(head(unique(x[bad])), collapse = ", "))
+    out
+  }
 
   # ---------------------------------------------------------------------------
   # 2. Read raw data
@@ -56,8 +71,12 @@ if (!identical(process$raw_state, raw_state)) {
   # 3. Transform
   #    - Counts of 1-9 are suppressed (NA) by NCHS. Following project
   #      convention they are imputed as 5 with a suppressed flag.
+  #    - A week NCHS has not received any certificates for yet is published as
+  #      0 deaths and 0% of expected (e.g. Alaska, latest weeks). That is not an
+  #      observation, so every value in such a row is set to NA.
   #    - NCHS reports New York City separately from New York (state excluding
-  #      NYC). They are summed into one row for the state (FIPS 36).
+  #      NYC). They are summed into one row for the state (FIPS 36). If either
+  #      part is suppressed it is imputed as 5 and the row is flagged.
   #      "Percent of Expected Deaths" is recombined through expected deaths
   #      (total / pct), since a percent cannot simply be summed.
   # ---------------------------------------------------------------------------
@@ -65,38 +84,49 @@ if (!identical(process$raw_state, raw_state)) {
     transmute(
       is_nyc = State == "New York City",
       state_name = if_else(is_nyc, "New York", State),
-      time = as.Date(`Week Ending Date`, "%m/%d/%Y"),
+      time = parse_cdc_date(`Week Ending Date`),
       nchs_total_deaths = as_num(`Total Deaths`),
-      # 0% of expected with 0 deaths = week not yet reported (e.g. Alaska, latest weeks)
-      expected_deaths = if_else(`Percent of Expected Deaths` > 0,
-                                nchs_total_deaths / (`Percent of Expected Deaths` / 100), 0),
+      pct_expected = as_num(`Percent of Expected Deaths`),
       across(all_of(count_cols), as_num)
+    ) %>%
+    mutate(
+      unreported = coalesce(nchs_total_deaths == 0 & pct_expected == 0, FALSE),
+      expected_deaths = if_else(!unreported & pct_expected > 0,
+                                nchs_total_deaths / (pct_expected / 100), NA_real_)
     )
 
-  # NY (state excluding NYC) and NYC are summed. The state part decides the flag:
-  # if it has data the flag is 0, and if NYC is suppressed it is simply left out
-  # (the value is then the NY total, which may be an undercount). If the state
-  # part itself is suppressed (every other state is a single part) it is imputed
-  # as 5 with flag 1; an available NYC count is still added.
   flag_cols <- paste0("nchs_suppressed_flag_",
                       sub("_deaths$", "", sub("^nchs_", "", names(count_cols))))
   names(flag_cols) <- names(count_cols)
 
+  # One row per state and week. Every state but New York is a single part; for
+  # New York the state and NYC parts are summed. The flags are computed first
+  # because the value columns below overwrite the raw columns they read.
   data <- data %>%
     group_by(state_name, time) %>%
     summarize(
+      n_state_parts = sum(!is_nyc),
+      unreported = any(unreported),
       across(c(nchs_total_deaths, expected_deaths), sum),
-      # flags first: the value columns below overwrite the raw columns they read
-      across(all_of(names(count_cols)), ~ as.integer(is.na(.x[!is_nyc])), .names = "flag__{.col}"),
-      across(all_of(names(count_cols)),
-             ~ if_else(is.na(.x[!is_nyc]), 5, .x[!is_nyc]) + sum(.x[is_nyc], na.rm = TRUE)),
+      across(all_of(names(count_cols)), ~ as.integer(any(is.na(.x))), .names = "flag__{.col}"),
+      across(all_of(names(count_cols)), ~ sum(if_else(is.na(.x), 5, .x))),
       .groups = "drop"
+    )
+  if (any(data$n_state_parts != 1)) {
+    stop("expected exactly one non-NYC row per state and week")
+  }
+
+  data <- data %>%
+    mutate(
+      across(c(nchs_total_deaths, expected_deaths, all_of(names(count_cols))),
+             ~ if_else(unreported, NA_real_, .x)),
+      across(starts_with("flag__"), ~ if_else(unreported, 0L, .x)),
+      nchs_pct_expected_deaths = if_else(!is.na(expected_deaths) & expected_deaths > 0,
+                                         round(nchs_total_deaths / expected_deaths * 100),
+                                         NA_real_)
     ) %>%
     rename(!!!setNames(paste0("flag__", names(flag_cols)), flag_cols)) %>%
-    mutate(nchs_pct_expected_deaths = if_else(expected_deaths > 0,
-                                              round(nchs_total_deaths / expected_deaths * 100),
-                                              NA_real_)) %>%
-    select(-expected_deaths) %>%
+    select(-expected_deaths, -unreported, -n_state_parts) %>%
     left_join(
       bind_rows(state_fips_lookup,
                 data.frame(geography = "00", geography_name = "United States")) %>%
@@ -118,8 +148,17 @@ if (!identical(process$raw_state, raw_state)) {
            all_of(names(count_cols)), all_of(unname(flag_cols))) %>%
     arrange(geography, time)
 
+  if (anyNA(data_standard$time)) {
+    stop("missing week ending dates")
+  }
   if (anyDuplicated(data_standard[c("geography", "time")])) {
     stop("duplicate geography/time rows")
+  }
+  n_geo <- n_distinct(data_standard$geography)
+  n_week <- n_distinct(data_standard$time)
+  if (n_geo < 50 || nrow(data_standard) != n_geo * n_week) {
+    stop("expected a complete geography by week grid, got ", nrow(data_standard),
+         " rows for ", n_geo, " geographies and ", n_week, " weeks")
   }
 
   # ---------------------------------------------------------------------------
