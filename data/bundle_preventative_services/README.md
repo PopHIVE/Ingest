@@ -27,11 +27,15 @@ beneficiaries.
 
 **Columns:** - `geography`: State name or "District of Columbia" -
 `year`: Calendar year - `age`: Age group category - `sex`: Sex
-category - `race_ethnicity`: Race/ethnicity category - `outcome_name`:
-Preventative service type (Influenza Vaccine, Chlamydia Screening,
-Diabetes Screening, Depression Screening, Cardiovascular Disease
-Screening) - `source`: Data source ("Medicaid") - `value`: Service rate
-(percent)
+category - `race_ethnicity`: Race/ethnicity category - `population_match`:
+how the reported population compares with the Adult Core Set target
+(non-dual Medicaid) - `outcome_name`: Medicaid Adult Core Set measure
+(Influenza Vaccine, Chlamydia Screening, HbA1c Testing in Adults with
+Diabetes, Antidepressant Medication Management, Controlling High Blood
+Pressure; the last three measure care for people already diagnosed, not
+screening, so they do not pair with the Medicare screening rows in
+`combined_preventative_services.parquet`) - `source`: Data source
+("Medicaid") - `value`: Rate (percent)
 
 ### cms_preventative_services_state.parquet
 

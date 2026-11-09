@@ -7,7 +7,8 @@
 # Sources:
 #   - ACS_estimates/standard/data_{state,county}.csv.gz   (ACS, fertility)
 #   - county_health_rankings/standard/data_{state,county}.csv.gz (CHR&R)
-#   - medicaid_quality/standard/data.csv.gz               (CMS Core Set,
+#   - medicaid_quality/standard/data_{child,adult}_core_set.csv.gz
+#                                                         (CMS Core Set,
 #                                                          state-level only)
 #   - cdc_wonder_natality/standard/data_{state,county}.csv.gz (CDC WONDER
 #                                                          natality counts,
@@ -59,15 +60,15 @@ CHR_MEASURES <- c(
   chr_breastfeeding            = "breastfeeding"
 )
 
-# Medicaid quality (CMS) — state level only; values stored in *_rate columns
+# Medicaid quality (CMS) — state level only; Core Set measure id -> bundle id
 MEDICAID_MEASURES <- c(
-  medicaid_ppc_ad_rate  = "medicaid_postpartum_care_adult",
-  medicaid_ppc_ch_rate  = "medicaid_prenatal_care_timeliness_child",
-  medicaid_fpc_ch_rate  = "medicaid_prenatal_visit_frequency_child",
-  medicaid_ccp_ad_rate  = "medicaid_contraceptive_postpartum_adult",
-  medicaid_ccp_ch_rate  = "medicaid_contraceptive_postpartum_child",
-  medicaid_lbw_ch_rate  = "medicaid_low_birthweight",
-  medicaid_lrcd_ch_rate = "medicaid_low_risk_cesarean_child"
+  medicaid_ppc_ad  = "medicaid_postpartum_care_adult",
+  medicaid_ppc_ch  = "medicaid_prenatal_care_timeliness_child",
+  medicaid_fpc_ch  = "medicaid_prenatal_visit_frequency_child",
+  medicaid_ccp_ad  = "medicaid_contraceptive_postpartum_adult",
+  medicaid_ccp_ch  = "medicaid_contraceptive_postpartum_child",
+  medicaid_lbw_ch  = "medicaid_low_birthweight",
+  medicaid_lrcd_ch = "medicaid_low_risk_cesarean_child"
 )
 
 # CDC VSRR provisional maternal mortality — national only
@@ -149,33 +150,24 @@ chr_state_long  <- pivot_measures(chr_state,  CHR_MEASURES)
 chr_county_long <- pivot_measures(chr_county, CHR_MEASURES)
 
 # -----------------------------------------------------------------------------
-# 4. Medicaid quality (CMS) — state only; geography stored as state name
+# 4. Medicaid quality (CMS) — state only; geography = FIPS
 # -----------------------------------------------------------------------------
 
-medicaid_raw <- read_chr("../medicaid_quality/standard/data.csv.gz")
-
-# Map state names -> 2-digit FIPS using the project crosswalk.
+# The Core Set files are long: one row per state-year-measure, already one
+# value per state-year (the reported population closest to the Core Set's
+# target: all Medicaid + CHIP children / non-dual Medicaid adults;
+# population_match says how close). Only the rate is used here.
 all_fips <- read_chr("../../resources/all_fips.csv.gz")
-state_fips_lookup <- all_fips %>%
-  filter(nchar(geography) == 2) %>%
-  select(fips = geography, geography_name)
 
-medicaid_long <- medicaid_raw %>%
-  # CMS reports Medicaid only, CHIP only and combined Medicaid & CHIP
-  # populations separately; keep the Medicaid-program rows (combined
-  # preferred, else Medicaid only) and drop the CHIP-only / Other rows.
-  filter(payer %in% c("Medicaid & CHIP", "Medicaid")) %>%
-  left_join(state_fips_lookup, by = c("geography" = "geography_name")) %>%
-  filter(!is.na(fips)) %>%
-  select(-geography) %>%
-  rename(geography = fips) %>%
-  pivot_measures(MEDICAID_MEASURES, id_cols = c("geography", "time", "payer")) %>%
-  # one value per state-year-measure: Medicaid & CHIP where reported
-  group_by(geography, time, measure) %>%
-  arrange(payer != "Medicaid & CHIP", .by_group = TRUE) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(-payer)
+medicaid_long <- bind_rows(
+  read_chr("../medicaid_quality/standard/data_child_core_set.csv.gz"),
+  read_chr("../medicaid_quality/standard/data_adult_core_set.csv.gz")
+) %>%
+  filter(measure %in% names(MEDICAID_MEASURES)) %>%
+  mutate(measure = unname(MEDICAID_MEASURES[measure]),
+         value = suppressWarnings(as.numeric(value))) %>%
+  filter(!is.na(value)) %>%
+  select(geography, time, measure, value, population_match)
 
 # -----------------------------------------------------------------------------
 # 5. CDC WONDER natality — state + national + county; Overall demographic

@@ -19,22 +19,23 @@
     "short_name": "Race/ethnicity",
     "short_description": "Race/ethnicity category of beneficiaries."
   },
-  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|payer": {
-    "short_name": "Payer",
-    "short_description": "Coverage/payer program of the CMS reporting population: Medicaid only, CHIP only, both (Medicaid & CHIP), or neither (Other).",
+  "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|population_match": {
+    "short_name": "Population match",
+    "short_description": "How the population behind the Medicaid Core Set value compares with the Core Set's target population (Child Core Set: all Medicaid and CHIP children; Adult Core Set: Medicaid enrollees who are not dually eligible for Medicare). Each state-year-measure has one value, taken from the reported population closest to the target. target = matches the target; broader = target plus small groups that are not dual eligibles (Other; CHIP for Adult measures); narrower = Child measures, only part of Medicaid + CHIP reported (e.g. Medicaid without separate CHIP); chip_only = Child measures, CHIP enrollees only; broader_incl_duals = Adult measures, a population including dual eligibles, whose care is largely paid by Medicare and so partly missing from Medicaid data. See medicaid_quality/measure_info.json (population_match).",
     "levels": {
-      "Medicaid": {},
-      "CHIP": {},
-      "Medicaid & CHIP": {},
-      "Other": {}
+      "broader": {},
+      "broader_incl_duals": {},
+      "target": {}
     }
   },
   "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|outcome_name": {
     "short_name": "Cancer screening measure",
+    "short_description": "Adult Core Set measure: Breast Cancer Screening (BCS-AD, mammogram, Medicaid ages 50-64), Cervical Cancer Screening (CCS-AD, ages 21-64) and Colorectal Cancer Screening (COL-AD), which CMS reports for Medicaid in two age bands: Ages 46-50 (46-49 in FFY 2023) and Ages 51-65 (50-64 in FFY 2023). Colorectal values are reported from FFY 2023.",
     "levels": {
       "Breast Cancer Screening": { "source_id": "medicaid_bcs_ad_rate" },
       "Cervical Cancer Screening": { "source_id": "medicaid_ccs_ad_rate" },
-      "Colorectal Cancer Screening": { "source_id": "medicaid_col_ad_rate" }
+      "Colorectal Cancer Screening, Ages 46-50": { "source_id": "medicaid_col_ad_rate" },
+      "Colorectal Cancer Screening, Ages 51-65": { "source_id": "medicaid_col_ad_older_rate" }
     }
   },
   "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|source": {
@@ -341,7 +342,7 @@
     "dist_files": {
       "medicaid_cancer_screening.parquet": {
         "sources": ["medicaid_quality"],
-        "source_files": ["medicaid_quality/standard/data.csv.gz"]
+        "source_files": ["medicaid_quality/standard/data_adult_core_set.csv.gz"]
       },
       "cms_cancer_screening_state.parquet": {
         "sources": ["cms_mmd"],
@@ -359,7 +360,7 @@
         "sources": ["cms_mmd", "medicaid_quality"],
         "source_files": [
           "cms_mmd/standard/data_state_county_age.csv.gz",
-          "medicaid_quality/standard/data.csv.gz"
+          "medicaid_quality/standard/data_adult_core_set.csv.gz"
         ]
       },
       "nccr_incidence.parquet": {

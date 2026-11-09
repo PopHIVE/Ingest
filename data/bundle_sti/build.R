@@ -7,8 +7,9 @@
 # Sources:
 #   - county_health_rankings/standard/data_{state,county}.csv.gz
 #       chlamydia incidence, HIV prevalence (annual)
-#   - medicaid_quality/standard/data.csv.gz
-#       chlamydia screening in women, Medicaid Core Set (annual, state only)
+#   - medicaid_quality/standard/data_{child,adult}_core_set.csv.gz
+#       chlamydia screening in women, Medicaid Core Set (annual, state only;
+#       population flagged in population_match)
 #   - cms_mmd/standard/data_state_county_age.csv.gz
 #       STI screening among Medicare FFS beneficiaries (annual)
 #   - nchs_mortality/standard/data_state_21_causes.csv.gz
@@ -45,10 +46,8 @@ CHR_MEASURES <- c(
   "chr_hiv_prevalence"
 )
 
-MEDICAID_MEASURES <- c(
-  "medicaid_chl_ch_rate", "medicaid_chl_ch_pct_25", "medicaid_chl_ch_pct_75",
-  "medicaid_chl_ad_rate", "medicaid_chl_ad_pct_25", "medicaid_chl_ad_pct_75"
-)
+# Core Set measure ids; each becomes <stem>_rate / _pct_25 / _pct_75
+MEDICAID_STEMS <- c("medicaid_chl_ch", "medicaid_chl_ad")
 
 CMS_MEASURES <- "cms_scrn_prvnt_sti"
 
@@ -160,21 +159,6 @@ quarter_end <- function(x) {
   as.Date(next_q) - 1
 }
 
-# State name -> 2-digit FIPS. Territories have no name in all_fips.csv.gz.
-all_fips <- read_chr("../../resources/all_fips.csv.gz")
-state_fips_lookup <- all_fips %>%
-  filter(nchar(geography) == 2) %>%
-  mutate(geography_name = case_when(
-    !is.na(geography_name) ~ geography_name,
-    state == "AS" ~ "American Samoa",
-    state == "GU" ~ "Guam",
-    state == "MP" ~ "Northern Mariana Islands",
-    state == "PR" ~ "Puerto Rico",
-    state == "VI" ~ "U.S. Virgin Islands",
-    TRUE ~ geography_name
-  )) %>%
-  select(fips = geography, geography_name)
-
 # -----------------------------------------------------------------------------
 # 2. County Health Rankings (annual, state + county)
 # -----------------------------------------------------------------------------
@@ -188,34 +172,25 @@ chr_county <- read_chr("../county_health_rankings/standard/data_county.csv.gz") 
   mutate(source = "County Health Rankings")
 
 # -----------------------------------------------------------------------------
-# 3. Medicaid Core Set (annual, state only, geography stored as state name)
+# 3. Medicaid Core Set (annual, state only, geography = FIPS)
 # -----------------------------------------------------------------------------
 
-medicaid_raw <- read_chr("../medicaid_quality/standard/data.csv.gz") %>%
-  # CMS reports Medicaid only, CHIP only and combined Medicaid & CHIP
-  # populations separately; keep the Medicaid-program rows (combined
-  # preferred, else Medicaid only) and drop the CHIP-only / Other rows.
-  filter(payer %in% c("Medicaid & CHIP", "Medicaid")) %>%
-  mutate(geography = if_else(geography == "Dist. of Col.", "District of Columbia", geography)) %>%
-  left_join(state_fips_lookup, by = c("geography" = "geography_name"))
-
-unmatched <- unique(medicaid_raw$geography[is.na(medicaid_raw$fips)])
-if (length(unmatched) > 0) {
-  warning("medicaid_quality geographies without a FIPS match (dropped): ",
-          paste(unmatched, collapse = ", "))
-}
-
-medicaid_state <- medicaid_raw %>%
-  filter(!is.na(fips)) %>%
-  select(-geography) %>%
-  rename(geography = fips) %>%
-  pivot_measures(MEDICAID_MEASURES, id_cols = c("geography", "time", "payer")) %>%
-  # one value per state-year-measure: Medicaid & CHIP where reported
-  group_by(geography, time, measure) %>%
-  arrange(payer != "Medicaid & CHIP", .by_group = TRUE) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(-payer) %>%
+# The Core Set files are long: one row per state-year-measure, already one
+# value per state-year (the reported population closest to the Core Set's
+# target: all Medicaid + CHIP children / non-dual Medicaid adults;
+# population_match says how close). Rate and 25th / 75th percentiles become
+# the bundle measures <stem>_rate / _pct_25 / _pct_75.
+medicaid_state <- bind_rows(
+  read_chr("../medicaid_quality/standard/data_child_core_set.csv.gz"),
+  read_chr("../medicaid_quality/standard/data_adult_core_set.csv.gz")
+) %>%
+  filter(measure %in% MEDICAID_STEMS) %>%
+  rename(rate = value) %>%
+  pivot_longer(c(rate, pct_25, pct_75), names_to = "stat", values_to = "value") %>%
+  mutate(measure = paste0(measure, "_", stat),
+         value = suppressWarnings(as.numeric(value))) %>%
+  filter(!is.na(value)) %>%
+  select(geography, time, measure, value, population_match) %>%
   mutate(source = "CMS Medicaid Core Set")
 
 # -----------------------------------------------------------------------------

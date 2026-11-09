@@ -28,7 +28,7 @@
         "unit": "Per 100,000 population",
         "short_description": "People aged 13+ living with diagnosed HIV per 100,000 population."
       },
-      "medicaid_chl_ch_rate": { "short_name": "CHL: Chlamydia Screening in Women (Child/Adolescent)", "source_id": "medicaid_chl_ch_rate", "measure_type": "Percent", "unit": "Percent" },
+      "medicaid_chl_ch_rate": { "short_name": "CHL: Chlamydia Screening in Women Ages 16 to 20", "source_id": "medicaid_chl_ch_rate", "measure_type": "Percent", "unit": "Percent" },
       "medicaid_chl_ch_pct_25": {
         "short_name": "Chlamydia screening (Adolescent), 25th percentile",
         "measure_type": "Percent",
@@ -41,7 +41,7 @@
         "unit": "Percent",
         "short_description": "75th percentile of the adolescent chlamydia screening rate across reporting states. The same value is repeated on every state row for the year."
       },
-      "medicaid_chl_ad_rate": { "short_name": "CHL: Chlamydia Screening in Women (Adult)", "source_id": "medicaid_chl_ad_rate", "measure_type": "Percent", "unit": "Percent" },
+      "medicaid_chl_ad_rate": { "short_name": "CHL: Chlamydia Screening in Women Ages 21 to 24", "source_id": "medicaid_chl_ad_rate", "measure_type": "Percent", "unit": "Percent" },
       "medicaid_chl_ad_pct_25": {
         "short_name": "Chlamydia screening (Adult), 25th percentile",
         "measure_type": "Percent",
@@ -61,6 +61,17 @@
         "unit": "Percent",
         "short_description": "Percent of Medicare Fee-for-Service beneficiaries with a claim for sexually transmitted infection screening during the year. Medicare FFS is mostly people 65 and older, so this is not comparable with the Medicaid or NNDSS measures."
       }
+    }
+  },
+  "bundle_sti/dist/sti_state.parquet|population_match": {
+    "short_name": "Population match",
+    "short_description": "How the population behind the Medicaid Core Set value compares with the Core Set's target population (Child Core Set: all Medicaid and CHIP children; Adult Core Set: Medicaid enrollees who are not dually eligible for Medicare). Each state-year-measure has one value, taken from the reported population closest to the target. target = matches the target; broader = target plus small groups that are not dual eligibles (Other; CHIP for Adult measures); narrower = Child measures, only part of Medicaid + CHIP reported (e.g. Medicaid without separate CHIP); chip_only = Child measures, CHIP enrollees only; broader_incl_duals = Adult measures, a population including dual eligibles, whose care is largely paid by Medicare and so partly missing from Medicaid data. See medicaid_quality/measure_info.json (population_match). Blank for rows from other sources.",
+    "levels": {
+      "broader": {},
+      "broader_incl_duals": {},
+      "chip_only": {},
+      "narrower": {},
+      "target": {}
     }
   },
   "bundle_sti/dist/sti_state.parquet|value": {
@@ -391,7 +402,7 @@
         ],
         "source_files": [
           "county_health_rankings/standard/data_state.csv.gz",
-          "medicaid_quality/standard/data.csv.gz",
+          "medicaid_quality/standard/data_child_core_set.csv.gz", "medicaid_quality/standard/data_adult_core_set.csv.gz",
           "cms_mmd/standard/data_state_county_age.csv.gz"
         ]
       },

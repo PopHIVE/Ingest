@@ -1230,9 +1230,15 @@
     "short_name": "Age group",
     "short_description": "Age band. Youth only: bands entirely under 18, plus bands that straddle 18 where the source cannot split them further (WISQARS/NHTSA 15-24, Epic Injury 15-25). '0-14 years' is shared by WISQARS/NHTSA '0-14' and Epic Injury '<15 Years'. 'Overall' (YRBSS) means all high school students. 'Not stratified' means the source has no age dimension at all -- deliberately not 'Overall', which would read as a youth total it is not."
   },
-  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|payer": {
-    "short_name": "Payer",
-    "short_description": "Payer population. Always 'Medicaid & CHIP': the combined Medicaid and CHIP rate. Medicaid-only and CHIP-only rates are not included."
+  "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|population_match": {
+    "short_name": "Population match",
+    "short_description": "How the population behind the Medicaid Core Set value compares with the Core Set's target population (Child Core Set: all Medicaid and CHIP children; Adult Core Set: Medicaid enrollees who are not dually eligible for Medicare). Each state-year-measure has one value, taken from the reported population closest to the target. target = matches the target; broader = target plus small groups that are not dual eligibles (Other; CHIP for Adult measures); narrower = Child measures, only part of Medicaid + CHIP reported (e.g. Medicaid without separate CHIP); chip_only = Child measures, CHIP enrollees only; broader_incl_duals = Adult measures, a population including dual eligibles, whose care is largely paid by Medicare and so partly missing from Medicaid data. See medicaid_quality/measure_info.json (population_match).",
+    "levels": {
+      "broader": {},
+      "chip_only": {},
+      "narrower": {},
+      "target": {}
+    }
   },
   "bundle_youth_wellbeing/dist/medicaid_state_payer.parquet|domain": {
     "short_name": "Measure domain",
@@ -1345,7 +1351,7 @@
           }
         ]
       },
-      "medicaid_wcc_ch_rate": {
+      "medicaid_wcc_ch_nutrition_rate": {
         "sources": [
           {
             "id": "medicaid_quality_cms"
@@ -2090,7 +2096,7 @@
       "organization_url": "https://www.medicaid.gov",
       "location": "Medicaid.gov Open Data – Quality Measures datasets (2014–2023)",
       "location_url": "https://data.medicaid.gov/datasets?theme%5B0%5D=Quality",
-      "description": "Annual state-level performance data on the Medicaid and CHIP Adult Core Set and Child Core Set quality measures, as voluntarily reported by states to CMS and analyzed by Mathematica via the Quality Measure Reporting (QMR) system. Measures span behavioral health (e.g., follow-up after ED visits for mental illness, substance use disorder treatment), primary and preventive care (e.g., well-child visits, immunizations), maternal and perinatal health (e.g., prenatal and postpartum care, low birthweight), dental health, care of chronic conditions (e.g., diabetes, asthma, hypertension), and long-term services and supports. Each annual dataset includes state rates and national 25th and 75th percentile benchmarks. Data cover federal fiscal years 2014–2023. Reporting is voluntary; not all states report all measures each year. The wide-format standard file contains one row per state-year-payer-domain combination, with each measure-statistic combination as a separate column following the naming convention medicaid_{measure_abbr}_{population}_{sub_metric}_{stat} where population is 'ch' (child) or 'ad' (adult), sub_metric captures time windows or sub-components, and stat is 'rate', 'pct_25', or 'pct_75'.",
+      "description": "Annual state-level rates for the Medicaid and CHIP Child Core Set and Adult Core Set health care quality measures, published by CMS on data.medicaid.gov for federal fiscal years (FFY) 2014-2025. The rates come from Mathematica's analysis of state reports in the Quality Measure Reporting (QMR) system, CDC WONDER data and National Core Indicators survey data, and from AHRQ and CMS analysis of the AHRQ CAHPS Database. Measures cover behavioral health, primary and preventive care, maternal and perinatal health, dental and oral health, care of acute and chronic conditions, experience of care, and long-term services and supports. Reporting is voluntary, so not all states report every measure each year. State rates that CMS marks as non-numeric are missing: DS (suppressed for small cell sizes), # (denominator under 30 or too few survey respondents), NR (not reported by the state for that population), NPR (state rates not publicly reported by CMS, e.g. depression screening, CDF) and NA (zero denominator). For each measure and year CMS also gives the 25th and 75th percentiles of the rates reported by states (from FFY 2016 as bottom and top quartiles, which are put in percentile order here). Each distinct CMS rate definition (age band, sub-measure, survey item or follow-up window) is kept as a separate measure, and measures CMS re-abbreviated are continued as one series (FUA/FUM-AD to FUA-AD and FUM-AD; first-15-months well-child visits under W30-CH as W15-CH; NCIDDS-AD to NCIIDD-AD). Files: data.csv.gz is wide, with one row per state, year, payer group and domain and columns medicaid_<measure>_rate, _pct_25 and _pct_75; data_combined.csv.gz holds its Medicaid and CHIP payer rows only; data_child_core_set.csv.gz and data_adult_core_set.csv.gz are long, with one row per state, year and measure and one value per measure chosen by the population hierarchy below. Population hierarchy: states choose which population to report each measure for (Medicaid, CHIP, dual eligibles and other groups, alone or combined), so each value is taken from the reported population closest to a target population, preferring a non-suppressed value. Child Core Set target: all Medicaid and CHIP children; order of preference: Medicaid plus all CHIP, then with Other populations added, then Medicaid missing one CHIP component, then Medicaid only, then CHIP only. Adult Core Set target: Medicaid (Title XIX) enrollees who are not dually eligible for Medicare; order of preference: Medicaid only, then with small non-dual additions (CHIP or Other), then populations that include dual eligibles. Dual eligibles are avoided because Medicare is their primary payer, so much of their care does not appear in Medicaid data. Narrower populations are kept and flagged rather than dropped because in states whose CHIP is a Medicaid expansion, or that have no separate CHIP, they are the whole target. The population_match column records which case applies; in data.csv.gz the same ordering picks among populations within a payer group.",
       "restrictions": "Public domain. CMS/Medicaid.gov data is generally not subject to copyright restrictions.",
       "date_accessed": 2025
     },
@@ -2243,7 +2249,7 @@
           "medicaid_quality"
         ],
         "source_files": [
-          "medicaid_quality/standard/data.csv.gz"
+          "medicaid_quality/standard/data_child_core_set.csv.gz"
         ]
       },
       "noaa_heat_risk_state.parquet": {

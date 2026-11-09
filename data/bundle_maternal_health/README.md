@@ -34,9 +34,11 @@ measures don't have.
   stored a mis-scaled/unrelated metric in the column (state 483–1254, county up
   to 3042 per 1,000 — impossible). Every other year (2014–present) is correct.
   The proper fix belongs upstream in `county_health_rankings/ingest.R`.
-- `medicaid_quality` is filtered to `payer == "Medicaid"` to avoid duplicate
-  geography–year–measure rows across the Medicaid/CHIP/Total payer splits; its
-  state names are mapped to FIPS via `resources/all_fips.csv.gz`.
+- `medicaid_quality` comes from its Child and Adult Core Set files, which
+  already hold one value per state, year and measure: the reported population
+  closest to the Core Set's target (all Medicaid + CHIP children / non-dual
+  Medicaid adults). Medicaid rows carry that flag in `population_match` (blank
+  for other sources).
 - `cdc_vssr` retains its full `age`/`race_ethnicity` breakdown in
   `maternal_mortality.parquet` (including the `"Overall"` level for each
   dimension) rather than being collapsed to a single national rate.

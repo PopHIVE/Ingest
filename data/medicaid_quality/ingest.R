@@ -170,6 +170,8 @@ if (!identical(process$raw_state, raw_state)) {
     { if (!"state_specific_comments" %in% names(.)) add_column(., state_specific_comments = NA_character_) else . } %>%
     { if (!"core_set_year" %in% names(.)) add_column(., core_set_year = NA_character_) else . } %>%
     { if (!"ffy" %in% names(.)) add_column(., ffy = NA_character_) else . } %>%
+    # "Higher/Lower rates are better for this measure"; CMS reports it from FFY 2019
+    { if (!"measure_type" %in% names(.)) add_column(., measure_type = NA_character_) else . } %>%
     rename(
       measure_abbr = measure_abbreviation,
       value        = state_rate,
@@ -190,7 +192,7 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     select(
       time_year, state, domain, reporting_program, measure_name,
-      measure_abbr, measure_info, population, methodology,
+      measure_abbr, measure_info, population, methodology, measure_type,
       value, n_states, median, pct25, pct75, notes, source, state_comments
     )
   
@@ -224,17 +226,105 @@ if (!identical(process$raw_state, raw_state)) {
     d
   }
 
-  # Deterministic tie-break for the distinct() below: prefer a real value over
-  # a suppressed/missing one, then the population with fewest demographic
-  # qualifiers (drop "Dual Eligibles"/"Other" breakouts in favor of the base
-  # reporting population), then the most inclusive population string among
-  # what's left, then alphabetical by population and (for measures whose
-  # sub-components share one population, e.g. AIS-AD's per-vaccine rows)
-  # by rate definition -- so re-running the ingest always keeps the same row
-  # for a given ambiguous key, regardless of API response order.
-  # "Dual Eligible(s)" (through 2023) and "Dually Eligible" (2024+) both count
-  # as a dual-eligible breakout. Expects one row per source row (rate stat
-  # only) with `base_var` and `rate_missing` columns (see widen_measures()).
+  # ---------------------------------------------------------------------------
+  # Population hierarchy: match each row to its Core Set's target population
+  # ---------------------------------------------------------------------------
+  # Rather than ranking population strings by length, each Core Set has a
+  # target population and the row closest to it wins:
+  #   * Child Core Set (-CH): all Medicaid AND CHIP children
+  #       = Title XIX + Title XXI Medicaid-expansion CHIP + separate CHIP
+  #         (pre-2024 CMS wrote this simply as "Medicaid & CHIP").
+  #   * Adult Core Set (-AD): non-dual Medicaid (Title XIX).
+  # Dual eligibles are avoided: Medicare is their primary payer, so much of
+  # their care never appears in Medicaid claims. A row that adds duals is only
+  # used for an Adult measure when no non-dual Medicaid row exists, and it is
+  # flagged. Where a state reports only a narrower population (e.g. Medicaid
+  # without CHIP for a Child measure) the row is kept and flagged rather than
+  # dropped -- it may be a state whose CHIP program is a Medicaid expansion or
+  # that has no separate CHIP, in which case it IS the whole target.
+  # A Child measure reported only for CHIP is used as a last resort and
+  # flagged "chip_only". Adult rows with no Medicaid population (separate CHIP,
+  # duals-only, "Other" only) and "Other"-only Child rows are never used.
+  #
+  # The CMS population string is parsed into components. Pre-2024 strings
+  # ("Medicaid only", "Medicaid & CHIP", "Medicaid & Dual Eligibles", ...) use
+  # a generic "CHIP" meaning both CHIP programs; 2024+ strings list
+  # "Medicaid (Title XIX)", "Title XXI-funded Medicaid Expansion CHIP",
+  # "Separate CHIP (Title XXI)", "Individuals Dually Eligible for Medicare and
+  # Medicaid / Separate CHIP" and "Other" separately.
+  #
+  # Adds:
+  #   pop_tier         primary distance from the target (lower = closer;
+  #                    NA = cannot represent the target)
+  #                      child: number of target components missing (0-2);
+  #                             3 = CHIP only (no Medicaid)
+  #                      adult: 1 if duals are included, else 0
+  #   pop_extra        secondary distance: components outside the target
+  #                      child: "Other" / duals present
+  #                      adult: count of CHIP / M-CHIP / Other components
+  #   population_match flag for the chosen row:
+  #                      "target"             matches the target population
+  #                      "broader"            target plus a small non-dual
+  #                                           addition (e.g. + Other, + CHIP)
+  #                      "narrower"           (child) part of the target only,
+  #                                           e.g. Medicaid without CHIP
+  #                      "chip_only"          (child) CHIP enrollees only;
+  #                                           no Medicaid population reported
+  #                      "broader_incl_duals" (adult) Medicaid incl. duals
+  add_population_match <- function(d) {
+    p <- coalesce(d$population, "")
+    dual <- grepl("Dual", p, ignore.case = TRUE)
+    p <- gsub("Individuals Dually Eligible for Medicare and (Separate CHIP|Medicaid)|Dual Eligibles",
+              "", p, ignore.case = TRUE)
+    mchip <- grepl("Medicaid Expansion CHIP", p, ignore.case = TRUE)
+    p <- gsub("Title XXI-funded Medicaid Expansion CHIP", "", p, ignore.case = TRUE)
+    schip <- grepl("Separate CHIP", p, ignore.case = TRUE)
+    p <- gsub("Separate CHIP( \\(Title XXI\\))?", "", p, ignore.case = TRUE)
+    chip_all <- grepl("CHIP", p)                     # pre-2024 generic "CHIP"
+    mcd   <- grepl("Medicaid", p, ignore.case = TRUE)
+    other <- grepl("\\bOther\\b", p, ignore.case = TRUE)
+
+    core_set <- case_when(grepl("-CH$", d$measure_abbr) ~ "child",
+                          grepl("-AD$", d$measure_abbr) ~ "adult")
+    child_missing <- (!mcd) + (!(mchip | chip_all)) + (!(schip | chip_all))
+
+    d %>%
+      mutate(
+        pop_tier = case_when(
+          # Child measures reported only for CHIP: last resort, after
+          # Medicaid-only (child_missing <= 2 for any row containing Medicaid)
+          core_set == "child" & !mcd & (chip_all | mchip | schip) ~ 3L,
+          !mcd                ~ NA_integer_,
+          core_set == "child" ~ as.integer(child_missing),
+          core_set == "adult" ~ as.integer(dual)
+        ),
+        pop_extra = case_when(
+          is.na(pop_tier)     ~ NA_integer_,
+          core_set == "child" ~ as.integer(other + dual),
+          core_set == "adult" ~ as.integer(mchip + schip + chip_all + other)
+        ),
+        population_match = case_when(
+          is.na(pop_tier)                        ~ NA_character_,
+          core_set == "child" & !mcd             ~ "chip_only",
+          core_set == "adult" & pop_tier == 1    ~ "broader_incl_duals",
+          core_set == "child" & pop_tier > 0     ~ "narrower",
+          pop_extra > 0                          ~ "broader",
+          TRUE                                   ~ "target"
+        )
+      )
+  }
+
+  # Deterministic pick for the distinct() in widen_measures(): prefer a real
+  # value over a suppressed/missing one, then the population closest to the
+  # Core Set target (pop_tier, then pop_extra; see add_population_match()).
+  # (Rows that cannot represent the target are filtered out before this; the
+  # remaining fallback keys -- fewest dual/"Other" qualifiers, then the most
+  # inclusive string -- only matter between rows of the same tier.) Ties are
+  # broken alphabetically by population and (for measures whose sub-components
+  # share one population, e.g. AIS-AD's per-vaccine rows) by rate definition,
+  # so re-running the ingest always keeps the same row regardless of the CMS
+  # API's response order. Expects one row per source row (rate stat only) with
+  # `rate_missing` (see widen_measures()).
   arrange_for_distinct <- function(d) {
     d %>%
       mutate(
@@ -244,8 +334,8 @@ if (!identical(process$raw_state, raw_state)) {
           1L, 0L
         )
       ) %>%
-      arrange(geography, time, payer, domain, base_var,
-              rate_missing, population_priority, desc(nchar(population)), population,
+      arrange(rate_missing, pop_tier, pop_extra,        # NA tiers sort last
+              population_priority, desc(nchar(population)), population,
               measure_info) %>%
       select(-population_priority)
   }
@@ -295,11 +385,11 @@ if (!identical(process$raw_state, raw_state)) {
     )) %>%
     left_join(state_fips_lookup, by = c("state" = "state_name")) %>%
     mutate(
-      time            = paste0(time_year, "-01-01"),
+      time            = paste0(time_year, "-12-31"),   # annual: YYYY-12-31
       geography_level = "s",
-      age             = "Total",
-      sex             = "Total",
-      race_ethnicity  = "Total",
+      age             = "Overall",
+      sex             = "Overall",
+      race_ethnicity  = "Overall",
       # payer comes from the CMS population string: Medicaid only, CHIP only,
       # both ("Medicaid & CHIP"), or neither ("Other"). The 2024+ dual-eligible
       # breakouts ("Individuals Dually Eligible for Medicare and Medicaid" /
@@ -477,20 +567,47 @@ if (!identical(process$raw_state, raw_state)) {
       sub_extra = gsub("^_+|_+$", "", gsub("__+", "_", paste(sub_age, sub_thr, sep = "_"))),
       # Measures CMS renamed / re-abbreviated mid-series continue their column:
       # FUA/FUM-AD (FFY 2018 combined measure) -> FUA-AD / FUM-AD, and the
-      # first-15-months well-child measure that moved under W30-CH in FFY 2021.
+      # first-15-months well-child measure that moved under W30-CH in FFY 2021,
+      # and the NCI-IDD adult survey, re-abbreviated NCIDDS-AD -> NCIIDD-AD in
+      # FFY 2024 with word-for-word identical rate definitions.
+      # (Not joined: HBD-AD -> GSD-AD, renamed when glycemic status replaced
+      # HbA1c; PPC-AD -> PPC2-AD, which is restricted to ages 21+.)
       measure_clean = case_when(
+        measure_abbr == "NCIDDS-AD"                                              ~ "nciidd_ad",
         measure_abbr == "FUA/FUM-AD" & mi_has(measure_info, "Alcohol")           ~ "fua_ad",
         measure_abbr == "FUA/FUM-AD" & mi_has(measure_info, "Mental Illness")    ~ "fum_ad",
         measure_abbr == "W30-CH" & mi_has(measure_info, "First 15 Months")       ~ "w15_ch",
         TRUE ~ tolower(gsub("[^A-Za-z0-9]+", "_", measure_abbr))
       ),
-      value = as.numeric(if_else(value == "DS", NA_character_, value)),
+      # CMS non-numeric rate codes, all -> NA (rate not available):
+      #   DS  = suppressed under CMS cell-size policy (counts 1-10)
+      #   #   = not reported, denominator < 30 (or CAHPS < 100 respondents)
+      #   NR  = state did not report the measure for this population
+      #   NPR = CMS does not publicly report state rates for this measure
+      # (a blank rate = state reported a denominator of zero). Any other code
+      # still triggers an as.numeric() coercion warning so it gets noticed.
+      value = as.numeric(if_else(value %in% c("DS", "#", "NR", "NPR"), NA_character_, value)),
       pct25 = as.numeric(if_else(pct25 == "DS", NA_character_, pct25)),
-      pct75 = as.numeric(if_else(pct75 == "DS", NA_character_, pct75))
+      pct75 = as.numeric(if_else(pct75 == "DS", NA_character_, pct75)),
+      # From FFY 2016 CMS orders the quartiles by performance, so for
+      # lower-is-better measures (PCR, PQIs, AMB, LBW, ...) the "bottom
+      # quartile" / "25th percentile" is the HIGHER value; FFY 2014-2015 order
+      # them by value. Normalize so pct_25 / pct_75 are always the 25th / 75th
+      # percentiles of the state rate distribution (pct_25 <= pct_75).
+      # (kept before normalizing: from FFY 2016 an inverted pair marks a
+      # lower-is-better measure; used for measures CMS never typed, see below)
+      pct_inverted = pct25 > pct75,
+      pct_lo = pmin(pct25, pct75),
+      pct75  = pmax(pct25, pct75),
+      pct25  = pct_lo
     ) %>%
+    select(-pct_lo) %>%
+    add_population_match() %>%
     select(geography, geography_level, time, age, sex, race_ethnicity,
            payer, domain, measure_abbr, measure_info, measure_clean, sub_metric, sub_extra,
-           population, row_id, value, pct25, pct75) %>%
+           population, pop_tier, pop_extra, population_match,
+           measure_type, pct_inverted,
+           row_id, value, pct25, pct75) %>%
     pivot_longer(cols = c(value, pct25, pct75), names_to = "stat", values_to = "val") %>%
     mutate(
       stat = case_when(
@@ -503,11 +620,16 @@ if (!identical(process$raw_state, raw_state)) {
     ) %>%
     select(-measure_clean, -sub_metric, -sub_extra, -stat)
 
-  # collapse to one row per (geography, time, payer, domain, var_name) and widen
-  # The winning source row is chosen once per (geography, time, payer, domain,
-  # measure column) using the rate, and the rate / pct_25 / pct_75 are then all
-  # taken from that same row (same population), never mixed across rows.
-  widen_measures <- function(d) {
+  # collapse to one row per (keys, measure column) and widen.
+  # The winning source row is chosen once per (keys, measure column) using the
+  # rate, and the rate / pct_25 / pct_75 are then all taken from that same row
+  # (same population), never mixed across rows. `keys` has no payer, so the
+  # pick is made across all populations a state reported.
+  # flag_match = TRUE adds a <measure>_population_match column per measure
+  # recording how the chosen row relates to the target population (the Core
+  # Set files then pivot these wide columns into long format).
+  widen_measures <- function(d, keys = c("geography", "time", "domain"),
+                             flag_match = FALSE, label = "") {
     d <- warn_collapsed(d) %>%
       mutate(base_var = sub("_(rate|pct_25|pct_75)$", "", var_name)) %>%
       group_by(row_id) %>%
@@ -516,29 +638,95 @@ if (!identical(process$raw_state, raw_state)) {
     winners <- d %>%
       filter(grepl("_rate$", var_name)) %>%
       arrange_for_distinct() %>%
-      distinct(geography, time, payer, domain, base_var, .keep_all = TRUE) %>%
-      pull(row_id)
-    d %>%
-      filter(row_id %in% winners) %>%
+      distinct(across(all_of(c(keys, "base_var"))), .keep_all = TRUE)
+    wide <- d %>%
+      filter(row_id %in% winners$row_id) %>%
       select(-measure_abbr, -measure_info, -population, -row_id,
-             -base_var, -rate_missing) %>%
+             -base_var, -rate_missing, -pop_tier, -pop_extra, -population_match,
+             -measure_type, -pct_inverted,
+             -any_of(setdiff("payer", keys))) %>%
       pivot_wider(names_from = var_name, values_from = val) %>%
       mutate(across(starts_with("medicaid_"), as.numeric))
+    if (flag_match) {
+      flags <- winners %>%
+        transmute(across(all_of(keys)),
+                  flag_name = paste0(base_var, "_population_match"),
+                  population_match) %>%
+        pivot_wider(names_from = flag_name, values_from = population_match)
+      wide <- wide %>%
+        left_join(flags, by = keys) %>%
+        # keep each measure's rate / pct_25 / pct_75 / flag together
+        select(!starts_with("medicaid_"), sort(grep("^medicaid_", names(.), value = TRUE)))
+      tiers <- winners %>% count(population_match, name = "n")
+      message("medicaid_quality ", label, ": state-year-measure picks by population match: ",
+              paste0(tiers$population_match, "=", tiers$n, collapse = ", "))
+    }
+    wide
   }
 
-  data_wide <- widen_measures(data_long)
+  # One file per Core Set: one value per state-year-measure from the row
+  # closest to that Core Set's target population (Child: Medicaid + CHIP;
+  # Adult: non-dual Medicaid), with a <measure>_population_match flag. Rows
+  # that cannot represent the target (adult CHIP-only, duals-only, Other-only)
+  # are excluded. See add_population_match().
+  # Written in long format -- one row per state, year and measure -- because
+  # the Core Set changes every year and a wide file is mostly empty cells.
+  # `measure` is a measure id (e.g. medicaid_bcs_ad, documented by the
+  # medicaid_bcs_ad_rate entry in measure_info.json) and
+  # `value` is the state rate. Only state-year-measures with a reported value
+  # are kept (suppressed / not reported / not public = no row), so measures
+  # CMS never publishes by state (e.g. CDF) do not appear. age / sex /
+  # race_ethnicity are always "Overall" and geography_level always "s", so
+  # they are omitted.
+  core_set_file <- function(suffix, label) {
+    data_long %>%
+      filter(!is.na(pop_tier), grepl(suffix, measure_abbr)) %>%
+      widen_measures(keys = c("geography", "time", "domain"), flag_match = TRUE,
+                     label = label) %>%
+      pivot_longer(starts_with("medicaid_"),
+                   names_to = c("measure", ".value"),
+                   names_pattern = "^(.*)_(rate|pct_25|pct_75|population_match)$") %>%
+      filter(!is.na(rate)) %>%
+      # In FFY 2014 CMS used domain labels it later dropped (e.g. Behavioral
+      # Health vs Behavioral Health Care from 2015); label every year with the
+      # measure's most recent domain
+      # (the most common label in its latest year) so each measure has one.
+      group_by(measure) %>%
+      mutate(domain = names(which.max(table(domain[time == max(time)])))) %>%
+      ungroup() %>%
+      left_join(measure_direction, by = "measure") %>%
+      select(geography, time, domain, measure, measure_type, value = rate,
+             pct_25, pct_75, population_match) %>%
+      arrange(geography, time, measure)
+  }
 
-  # Combined Medicaid + CHIP only: the payer == "Medicaid & CHIP" rows of
-  # data.csv.gz, kept as a separate file for consumers that want a single
-  # population per state-year ("Medicaid & CHIP" through 2023; the Title XIX /
-  # Title XXI strings from 2024). Where a state reports several combined
-  # populations the most inclusive one is kept (see arrange_for_distinct()).
-  data_combined <- data_long %>%
-    filter(payer == "Medicaid & CHIP") %>%
-    widen_measures()
-  #writing standard files
-  vroom::vroom_write(data_wide, "standard/data.csv.gz", delim = ",")
-  vroom::vroom_write(data_combined, "standard/data_combined.csv.gz", delim = ",")
+  # Whether higher or lower rates are better, per measure (one value for all
+  # years). CMS's measure_type (FFY 2019 on) is used where available; it is
+  # constant for every rate definition. For measures CMS never typed (those
+  # that ended before FFY 2019), it is inferred from CMS's quartiles: from FFY
+  # 2016 CMS orders them by performance, so a bottom quartile above the top
+  # quartile marks a lower-is-better measure (this matches CMS's measure_type
+  # in every row where both exist). Measures with neither stay NA.
+  measure_direction <- data_long %>%
+    filter(grepl("_rate$", var_name)) %>%
+    mutate(measure = sub("_rate$", "", var_name),
+           cms = sub(" for this measure$", "", measure_type),
+           yr = as.integer(substr(time, 1, 4))) %>%
+    group_by(measure) %>%
+    summarize(
+      cms = first(na.omit(cms)),
+      inferred = case_when(
+        !any(yr >= 2016 & !is.na(pct_inverted)) ~ NA_character_,
+        mean(pct_inverted[yr >= 2016], na.rm = TRUE) > 0.5 ~ "Lower rates are better",
+        TRUE ~ "Higher rates are better"),
+      .groups = "drop") %>%
+    transmute(measure, measure_type = coalesce(cms, inferred))
+  data_child <- core_set_file("-CH$", "data_child_core_set")
+  data_adult <- core_set_file("-AD$", "data_adult_core_set")
+
+  #writing standard files (only the two Core Set files are published)
+  vroom::vroom_write(data_child, "standard/data_child_core_set.csv.gz", delim = ",")
+  vroom::vroom_write(data_adult, "standard/data_adult_core_set.csv.gz", delim = ",")
   
   #record processed raw state
   process$raw_state <- raw_state
