@@ -4,7 +4,7 @@
 #   nhsn_hospital_capacity, delphi_nhsn, delphi_hospital_claims,
 #   delphi_ili_fluview, kinsa_ili, wastewater, fluvaxview, nis_flu_rsv, iis_vax,
 #   medicare_vax, vsd_pregnancy_vax, flu_doses_distributed,
-#   iqvia_vax_administered, cdc_cfa_rt, nchs_mortality, nnds, plus the
+#   iqvia_vax_administered, cdc_cfa_rt, nchs_mortality, nchs_respiratory_deaths, nnds, plus the
 #   non-flu voter context sources medsl_president, usafacts_voter_registration
 #
 # Output: parquet files in dist/
@@ -301,6 +301,8 @@ write_dist(flu_hospital_capacity, "flu_hospital_capacity.parquet")
 # 5. Rt, mortality and notifiable flu, long
 #    CDC CFA Rt        epidemic growth (Rt) with its interval and P(growing)
 #    NCHS              quarterly death rate, "influenza and pneumonia" combined
+#    NCHS weekly       provisional weekly deaths: influenza, pneumonia, pneumonia/
+#                      influenza/COVID-19 combined, all-cause, percent of expected
 #    NNDSS             influenza-associated pediatric deaths, novel influenza A
 #
 #    NNDSS publishes a year-to-date count that resets each MMWR year, so each
@@ -321,6 +323,30 @@ nchs_long <- read_std("nchs_mortality/standard/data_state_21_causes.csv.gz") %>%
   transmute(geography, time, measure = "rate_influenza_and_pneumonia",
             value = suppressWarnings(as.numeric(rate_influenza_and_pneumonia)),
             source = "CDC NCHS Mortality")
+
+# NCHS weekly provisional deaths (nchs_respiratory_deaths). Flu-relevant columns only;
+# the COVID-only columns (COVID-19, pneumonia and COVID-19) are not carried.
+# This long table has no suppressed_flag column, so cells NCHS suppressed (1-9,
+# imputed as 5 in the standard file) are set to NA here rather than shown as 5.
+nchs_weekly_flags <- c(
+  nchs_influenza_deaths = "nchs_suppressed_flag_influenza",
+  nchs_pneumonia_deaths = "nchs_suppressed_flag_pneumonia",
+  nchs_pneumonia_flu_covid_deaths = "nchs_suppressed_flag_pneumonia_flu_covid",
+  nchs_total_deaths = NA_character_,
+  nchs_pct_expected_deaths = NA_character_
+)
+
+nchs_weekly_std <- read_std("nchs_respiratory_deaths/standard/data.csv.gz")
+if (!is.null(TREND_START)) nchs_weekly_std <- filter(nchs_weekly_std, time >= TREND_START)
+
+nchs_weekly_long <- bind_rows(lapply(names(nchs_weekly_flags), function(m) {
+  flag <- nchs_weekly_flags[[m]]
+  suppressed <- if (is.na(flag)) rep(FALSE, nrow(nchs_weekly_std)) else nchs_weekly_std[[flag]] == 1
+  tibble(geography = nchs_weekly_std$geography, time = nchs_weekly_std$time,
+         measure = m,
+         value = if_else(suppressed, NA_real_, as.numeric(nchs_weekly_std[[m]])),
+         source = "CDC NCHS Weekly Provisional Deaths")
+}))
 
 nnds_cols <- c("influenza_associated_pediatric_mortality",
                "novel_influenza_a_virus_infections",
@@ -347,7 +373,7 @@ nnds_long <- nnds_long %>%
   transmute(geography, time, value, source = "CDC NNDSS",
             measure = paste0(series, "_", form))
 
-flu_rt_and_mortality <- bind_rows(cfa_long, nchs_long, nnds_long) %>%
+flu_rt_and_mortality <- bind_rows(cfa_long, nchs_long, nchs_weekly_long, nnds_long) %>%
   filter(!is.na(value)) %>%
   add_state_names() %>%
   select(geography, geography_fips, date = time, source, measure, value) %>%

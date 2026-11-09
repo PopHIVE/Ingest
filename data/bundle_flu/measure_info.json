@@ -413,6 +413,9 @@
       "CDC NCHS Mortality": {
         "source_id": "rate_influenza_and_pneumonia"
       },
+      "CDC NCHS Weekly Provisional Deaths": {
+        "source_id": "nchs_influenza_deaths"
+      },
       "CDC NNDSS": {
         "source_id": "influenza_associated_pediatric_mortality"
       }
@@ -455,6 +458,41 @@
         "short_description": "Quarterly age-adjusted death rate with influenza or pneumonia as the underlying cause. Combined cause: it is not influenza alone.",
         "measure_type": "Rate",
         "unit": "per 100,000"
+      },
+      "nchs_influenza_deaths": {
+        "source_id": "nchs_influenza_deaths",
+        "short_name": "Influenza deaths, weekly",
+        "short_description": "Provisional weekly deaths with influenza on the death certificate. NA where NCHS suppressed a count of 1-9.",
+        "measure_type": "Count",
+        "unit": "deaths"
+      },
+      "nchs_pneumonia_deaths": {
+        "source_id": "nchs_pneumonia_deaths",
+        "short_name": "Pneumonia deaths, weekly",
+        "short_description": "Provisional weekly deaths with pneumonia on the death certificate (with or without influenza or COVID-19). NA where suppressed.",
+        "measure_type": "Count",
+        "unit": "deaths"
+      },
+      "nchs_pneumonia_flu_covid_deaths": {
+        "source_id": "nchs_pneumonia_flu_covid_deaths",
+        "short_name": "Pneumonia, influenza or COVID-19 deaths, weekly",
+        "short_description": "Provisional weekly deaths involving pneumonia, influenza, or COVID-19 (any of the three, each death counted once). Combined cause: it is not influenza alone.",
+        "measure_type": "Count",
+        "unit": "deaths"
+      },
+      "nchs_total_deaths": {
+        "source_id": "nchs_total_deaths",
+        "short_name": "All-cause deaths, weekly",
+        "short_description": "Provisional weekly deaths from all causes; the denominator context for the cause-specific counts.",
+        "measure_type": "Count",
+        "unit": "deaths"
+      },
+      "nchs_pct_expected_deaths": {
+        "source_id": "nchs_pct_expected_deaths",
+        "short_name": "Deaths as % of expected, weekly",
+        "short_description": "Weekly all-cause deaths as a percent of the number expected (100 = as expected).",
+        "measure_type": "Percent",
+        "unit": "percent"
       },
       "influenza_associated_pediatric_mortality_cumulative": {
         "short_name": "Pediatric flu deaths, year to date",
@@ -514,7 +552,7 @@
     "short_name": "Value",
     "long_name": "Measure value",
     "short_description": "Value of the measure named in the measure column.",
-    "long_description": "Value of the measure named in the measure column. Units differ by measure (Rt, probability, deaths per 100,000, case counts), so filter on measure first. _cumulative and _weekly NNDSS series are two forms of one count and are not additive; weekly values can be negative where NNDSS revised a count down, so cut plot y axes at 0.",
+    "long_description": "Value of the measure named in the measure column. Units differ by measure (Rt, probability, deaths per 100,000, case counts, percent of expected deaths), so filter on measure first. _cumulative and _weekly NNDSS series are two forms of one count and are not additive; weekly values can be negative where NNDSS revised a count down, so cut plot y axes at 0. NCHS weekly provisional death counts are incomplete for recent weeks and are NA (not imputed) where NCHS suppressed a count of 1-9. New York is the sum of New York State and New York City and is NA if either part was suppressed.",
     "measure_type": "Mixed",
     "unit": "varies by measure",
     "time_resolution": "Week",
@@ -524,6 +562,9 @@
       },
       {
         "id": "nchs_vsrr_state"
+      },
+      {
+        "id": "nchs_respiratory_deaths"
       },
       {
         "id": "nnds"
@@ -971,6 +1012,7 @@
       "kinsa_ili",
       "medicare_vax",
       "medsl_president",
+      "nchs_respiratory_deaths",
       "nchs_mortality",
       "nhsn_hospital_capacity",
       "nis_flu_rsv",
@@ -1024,11 +1066,13 @@
       "flu_rt_and_mortality.parquet": {
         "sources": [
           "cdc_cfa_rt",
+          "nchs_respiratory_deaths",
           "nchs_mortality",
           "nnds"
         ],
         "source_files": [
           "cdc_cfa_rt/standard/data.csv.gz",
+          "nchs_respiratory_deaths/standard/data.csv.gz",
           "nchs_mortality/standard/data_state_21_causes.csv.gz",
           "nnds/standard/data.csv.gz"
         ]
