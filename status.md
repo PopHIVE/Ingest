@@ -61,35 +61,36 @@ flowchart LR
     s96(("<strong><a href="https://data.cdc.gov/d/xkb8-kh2a" target="_blank" rel="noreferrer">NCHS VSRR Provisional Drug Overdose Death Counts (State)</a></strong>"))
     s97(("<strong><a href="https://data.cdc.gov/d/gb4e-yj24" target="_blank" rel="noreferrer">NCHS VSRR Provisional County-Level Drug Overdose Death Counts</a></strong>"))
     s98(("<strong><a href="https://data.cdc.gov/d/489q-934x" target="_blank" rel="noreferrer">NCHS VSRR Quarterly Provisional Estimates for Selected Indicators of Mortality</a></strong>"))
-    s99(("<strong><a href="https://www.cpsc.gov/Research--Statistics/NEISS-Injury-Data" target="_blank" rel="noreferrer">National Electronic Injury Surveillance System (NEISS)</a></strong>"))
-    s101(("<strong><a href="https://www.cdc.gov/nhsn/psc/hospital-respiratory-reporting.html" target="_blank" rel="noreferrer">NHSN Hospital Respiratory Data</a></strong>"))
-    s103(("<strong><a href="https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/" target="_blank" rel="noreferrer">Fatality Analysis Reporting System (FARS)</a></strong>"))
-    s105(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Flu (NIS-Flu)</a></strong>"))
-    s107(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Fall Respiratory Virus Module (NIS-FRVM)</a></strong>"))
-    s109(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Teen (NIS-Teen)</a></strong>"))
-    s111(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey (NIS)</a></strong>"))
-    s112(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey</a></strong>"))
-    s114(("<strong><a href="https://www.cdc.gov/nndss/" target="_blank" rel="noreferrer">National Notifiable Diseases Surveillance System (NNDSS)</a></strong>"))
-    s115(("<strong><a href="https://www.wpc.ncep.noaa.gov/heatrisk/data/archive/" target="_blank" rel="noreferrer">NOAA WPC HeatRisk</a></strong>"))
-    s117(("<strong><a href="https://data.cdc.gov" target="_blank" rel="noreferrer">Centers for Disease Control and Prevention</a></strong>"))
-    s119(("<strong><a href="https://data.cdc.gov/resource/3cxc-4k8q" target="_blank" rel="noreferrer">National Respiratory and Enteric Virus Surveillance System (NREVSS)</a></strong>"))
-    s120(("<strong><a href="https://www.cdc.gov/nssp/index.html" target="_blank" rel="noreferrer">NSSP Commercial Laboratory Data: COVID-19, Flu, and RSV</a></strong>"))
-    s122(("<strong><a href="https://www.cdc.gov/nssp/index.html" target="_blank" rel="noreferrer">National Syndromic Surveillance Program (NSSP)</a></strong>"))
-    s124(("<strong><a href="" target="_blank" rel="noreferrer">Opioid-related EMS encounters</a></strong>"))
-    s129(("<strong><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noreferrer">Census Bureau Population Estimates Program (PEP)</a></strong>"))
-    s131(("<strong><a href="https://www.cdc.gov/resp-net/dashboard/index.html" target="_blank" rel="noreferrer">Respiratory Virus Hospitalization Surveillance Network (RESP-NET)</a></strong>"))
-    s135(("<strong><a href="https://github.com/PopHIVE/school_immunizations" target="_blank" rel="noreferrer">PopHIVE school immunization assessments</a></strong>"))
-    s137(("<strong><a href="https://github.com/washingtonpost/data-school-vaccination-rates" target="_blank" rel="noreferrer">Washington Post School Vaccination Rates</a></strong>"))
-    s138(("<strong><a href="https://www.tn.gov/health/cedep/immunization/school-immunization-requirements.html" target="_blank" rel="noreferrer">Tennessee Kindergarten Immunization Compliance Assessment</a></strong>"))
-    s139(("<strong><a href="https://www.cdc.gov/schoolvaxview/index.html" target="_blank" rel="noreferrer">SchoolVaxView</a></strong>"))
-    s141(("<strong><a href="https://usafacts.org/articles/more-voters-are-registering-outside-the-two-party-system/" target="_blank" rel="noreferrer">USAFacts Voter Registration by Party Affiliation</a></strong>"))
-    s142(("<strong><a href="https://www.ers.usda.gov/data-products/food-environment-atlas/" target="_blank" rel="noreferrer">Food Environment Atlas</a></strong>"))
-    s144(("<strong><a href="https://jamanetwork.com/journals/jama/fullarticle/2843870" target="_blank" rel="noreferrer">Medical Exemptions From Childhood Vaccination in the US (Kiang et al. 2025)</a></strong>"))
-    s145(("<strong><a href="https://www.cdc.gov/vaccine-safety-systems/vsd/index.html" target="_blank" rel="noreferrer">Vaccine Safety Datalink (VSD) pregnancy vaccination coverage</a></strong>"))
-    s147(("<strong><a href="https://data.cdc.gov/d/akvg-8vrb" target="_blank" rel="noreferrer">CDC National Wastewater Surveillance System (NWSS) - Measles</a></strong>"))
-    s148(("<strong><a href="https://www.cdc.gov/nwss/" target="_blank" rel="noreferrer">CDC National Wastewater Surveillance System (NWSS)</a></strong>"))
-    s150(("<strong><a href="https://wisqars.cdc.gov/" target="_blank" rel="noreferrer">Web-based Injury Statistics Query and Reporting System (WISQARS)</a></strong>"))
-    s152(("<strong><a href="https://yrbs-explorer.services.cdc.gov/" target="_blank" rel="noreferrer">CDC Youth Risk Behavior Surveillance System (YRBSS)</a></strong>"))
+    s99(("<strong><a href="https://data.cdc.gov/d/r8kw-7aab" target="_blank" rel="noreferrer">Provisional COVID-19 Death Counts by Week Ending Date and State</a></strong>"))
+    s101(("<strong><a href="https://www.cpsc.gov/Research--Statistics/NEISS-Injury-Data" target="_blank" rel="noreferrer">National Electronic Injury Surveillance System (NEISS)</a></strong>"))
+    s103(("<strong><a href="https://www.cdc.gov/nhsn/psc/hospital-respiratory-reporting.html" target="_blank" rel="noreferrer">NHSN Hospital Respiratory Data</a></strong>"))
+    s105(("<strong><a href="https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/" target="_blank" rel="noreferrer">Fatality Analysis Reporting System (FARS)</a></strong>"))
+    s107(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Flu (NIS-Flu)</a></strong>"))
+    s109(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Fall Respiratory Virus Module (NIS-FRVM)</a></strong>"))
+    s111(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey-Teen (NIS-Teen)</a></strong>"))
+    s113(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey (NIS)</a></strong>"))
+    s114(("<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">National Immunization Survey</a></strong>"))
+    s116(("<strong><a href="https://www.cdc.gov/nndss/" target="_blank" rel="noreferrer">National Notifiable Diseases Surveillance System (NNDSS)</a></strong>"))
+    s117(("<strong><a href="https://www.wpc.ncep.noaa.gov/heatrisk/data/archive/" target="_blank" rel="noreferrer">NOAA WPC HeatRisk</a></strong>"))
+    s119(("<strong><a href="https://data.cdc.gov" target="_blank" rel="noreferrer">Centers for Disease Control and Prevention</a></strong>"))
+    s121(("<strong><a href="https://data.cdc.gov/resource/3cxc-4k8q" target="_blank" rel="noreferrer">National Respiratory and Enteric Virus Surveillance System (NREVSS)</a></strong>"))
+    s122(("<strong><a href="https://www.cdc.gov/nssp/index.html" target="_blank" rel="noreferrer">NSSP Commercial Laboratory Data: COVID-19, Flu, and RSV</a></strong>"))
+    s124(("<strong><a href="https://www.cdc.gov/nssp/index.html" target="_blank" rel="noreferrer">National Syndromic Surveillance Program (NSSP)</a></strong>"))
+    s126(("<strong><a href="" target="_blank" rel="noreferrer">Opioid-related EMS encounters</a></strong>"))
+    s131(("<strong><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noreferrer">Census Bureau Population Estimates Program (PEP)</a></strong>"))
+    s133(("<strong><a href="https://www.cdc.gov/resp-net/dashboard/index.html" target="_blank" rel="noreferrer">Respiratory Virus Hospitalization Surveillance Network (RESP-NET)</a></strong>"))
+    s137(("<strong><a href="https://github.com/PopHIVE/school_immunizations" target="_blank" rel="noreferrer">PopHIVE school immunization assessments</a></strong>"))
+    s139(("<strong><a href="https://github.com/washingtonpost/data-school-vaccination-rates" target="_blank" rel="noreferrer">Washington Post School Vaccination Rates</a></strong>"))
+    s140(("<strong><a href="https://www.tn.gov/health/cedep/immunization/school-immunization-requirements.html" target="_blank" rel="noreferrer">Tennessee Kindergarten Immunization Compliance Assessment</a></strong>"))
+    s141(("<strong><a href="https://www.cdc.gov/schoolvaxview/index.html" target="_blank" rel="noreferrer">SchoolVaxView</a></strong>"))
+    s143(("<strong><a href="https://usafacts.org/articles/more-voters-are-registering-outside-the-two-party-system/" target="_blank" rel="noreferrer">USAFacts Voter Registration by Party Affiliation</a></strong>"))
+    s144(("<strong><a href="https://www.ers.usda.gov/data-products/food-environment-atlas/" target="_blank" rel="noreferrer">Food Environment Atlas</a></strong>"))
+    s146(("<strong><a href="https://jamanetwork.com/journals/jama/fullarticle/2843870" target="_blank" rel="noreferrer">Medical Exemptions From Childhood Vaccination in the US (Kiang et al. 2025)</a></strong>"))
+    s147(("<strong><a href="https://www.cdc.gov/vaccine-safety-systems/vsd/index.html" target="_blank" rel="noreferrer">Vaccine Safety Datalink (VSD) pregnancy vaccination coverage</a></strong>"))
+    s149(("<strong><a href="https://data.cdc.gov/d/akvg-8vrb" target="_blank" rel="noreferrer">CDC National Wastewater Surveillance System (NWSS) - Measles</a></strong>"))
+    s150(("<strong><a href="https://www.cdc.gov/nwss/" target="_blank" rel="noreferrer">CDC National Wastewater Surveillance System (NWSS)</a></strong>"))
+    s152(("<strong><a href="https://wisqars.cdc.gov/" target="_blank" rel="noreferrer">Web-based Injury Statistics Query and Reporting System (WISQARS)</a></strong>"))
+    s154(("<strong><a href="https://yrbs-explorer.services.cdc.gov/" target="_blank" rel="noreferrer">CDC Youth Risk Behavior Surveillance System (YRBSS)</a></strong>"))
     subgraph abcs["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/abcs" target="_blank" rel="noreferrer">abcs</a></strong>`"]
         direction LR
         n1["`data.csv.gz`"]:::pass
@@ -342,332 +343,336 @@ flowchart LR
         n101["`data_state_21_causes.csv.gz`"]:::pass
         n102["`data.csv.gz`"]:::pass
     end
+    subgraph nchs_respiratory_deaths["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nchs_respiratory_deaths" target="_blank" rel="noreferrer">nchs_respiratory_deaths</a></strong>`"]
+        direction LR
+        n103["`data.csv.gz`"]:::pass
+    end
     subgraph neiss["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/neiss" target="_blank" rel="noreferrer">neiss</a></strong>`"]
         direction LR
-        n103["`data_agegroup_diagnosis_rate.csv.gz`"]:::pass
-        n104["`data_agegroup_diagnosis.csv.gz`"]:::pass
-        n105["`data_agegroup_product_rate.csv.gz`"]:::pass
-        n106["`data_agegroup_product.csv.gz`"]:::pass
-        n107["`data_infant_diagnosis_rate.csv.gz`"]:::pass
-        n108["`data_infant_diagnosis.csv.gz`"]:::pass
-        n109["`data_infant_product_rate.csv.gz`"]:::pass
-        n110["`data_infant_product.csv.gz`"]:::pass
+        n104["`data_agegroup_diagnosis_rate.csv.gz`"]:::pass
+        n105["`data_agegroup_diagnosis.csv.gz`"]:::pass
+        n106["`data_agegroup_product_rate.csv.gz`"]:::pass
+        n107["`data_agegroup_product.csv.gz`"]:::pass
+        n108["`data_infant_diagnosis_rate.csv.gz`"]:::pass
+        n109["`data_infant_diagnosis.csv.gz`"]:::pass
+        n110["`data_infant_product_rate.csv.gz`"]:::pass
+        n111["`data_infant_product.csv.gz`"]:::pass
     end
     subgraph nhsn_hospital_capacity["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nhsn_hospital_capacity" target="_blank" rel="noreferrer">nhsn_hospital_capacity</a></strong>`"]
         direction LR
-        n111["`data_age.csv.gz`"]:::pass
-        n112["`data_region_age.csv.gz`"]:::pass
-        n113["`data_region.csv.gz`"]:::pass
-        n114["`data.csv.gz`"]:::pass
+        n112["`data_age.csv.gz`"]:::pass
+        n113["`data_region_age.csv.gz`"]:::pass
+        n114["`data_region.csv.gz`"]:::pass
+        n115["`data.csv.gz`"]:::pass
     end
     subgraph nhtsa_crash["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nhtsa_crash" target="_blank" rel="noreferrer">nhtsa_crash</a></strong>`"]
         direction LR
-        n115["`data_age_sex.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
-        n116["`data_crash_type.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
-        n117["`data_person_type.csv.gz<br/><br/><ul><li><code>missing_info: person_type</code></li></ul>`"]:::warn
-        n118["`data.csv.gz`"]:::pass
+        n116["`data_age_sex.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
+        n117["`data_crash_type.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
+        n118["`data_person_type.csv.gz<br/><br/><ul><li><code>missing_info: person_type</code></li></ul>`"]:::warn
+        n119["`data.csv.gz`"]:::pass
     end
     subgraph nis_flu_rsv["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nis_flu_rsv" target="_blank" rel="noreferrer">nis_flu_rsv</a></strong>`"]
         direction LR
-        n119["`data_age.csv.gz`"]:::pass
-        n120["`data_demographics.csv.gz`"]:::pass
-        n121["`data_region.csv.gz`"]:::pass
-        n122["`data_substate.csv.gz`"]:::pass
-        n123["`data.csv.gz`"]:::pass
+        n120["`data_age.csv.gz`"]:::pass
+        n121["`data_demographics.csv.gz`"]:::pass
+        n122["`data_region.csv.gz`"]:::pass
+        n123["`data_substate.csv.gz`"]:::pass
+        n124["`data.csv.gz`"]:::pass
     end
     subgraph nis_teen["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nis_teen" target="_blank" rel="noreferrer">nis_teen</a></strong>`"]
         direction LR
-        n124["`data_insurance.csv.gz<br/><br/><ul><li><code>missing_info: sex</code></li></ul>`"]:::warn
-        n125["`data_poverty.csv.gz<br/><br/><ul><li><code>missing_info: sex</code></li></ul>`"]:::warn
-        n126["`data_race_ethnicity.csv.gz<br/><br/><ul><li><code>missing_info: race_ethnicity, sex</code></li></ul>`"]:::warn
-        n127["`data_urban.csv.gz<br/><br/><ul><li><code>missing_info: sex</code></li></ul>`"]:::warn
-        n128["`data.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
+        n125["`data_insurance.csv.gz<br/><br/><ul><li><code>missing_info: sex</code></li></ul>`"]:::warn
+        n126["`data_poverty.csv.gz<br/><br/><ul><li><code>missing_info: sex</code></li></ul>`"]:::warn
+        n127["`data_race_ethnicity.csv.gz<br/><br/><ul><li><code>missing_info: race_ethnicity, sex</code></li></ul>`"]:::warn
+        n128["`data_urban.csv.gz<br/><br/><ul><li><code>missing_info: sex</code></li></ul>`"]:::warn
+        n129["`data.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
     end
     subgraph nis["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nis" target="_blank" rel="noreferrer">nis</a></strong>`"]
         direction LR
-        n129["`data_insurance.csv.gz`"]:::pass
-        n130["`data_urban.csv.gz`"]:::pass
-        n131["`data.csv.gz`"]:::pass
+        n130["`data_insurance.csv.gz`"]:::pass
+        n131["`data_urban.csv.gz`"]:::pass
+        n132["`data.csv.gz`"]:::pass
     end
     subgraph nnds["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nnds" target="_blank" rel="noreferrer">nnds</a></strong>`"]
         direction LR
-        n132["`data.csv.gz<br/><br/><ul><li><code>missing_info: mmwr_year, mmwr_week, anthrax, plague, rabies_human, rubella_congenital_syndrome, cronobacter_invasive_infection_infants_confirmed</code></li></ul>`"]:::warn
+        n133["`data.csv.gz<br/><br/><ul><li><code>missing_info: mmwr_year, mmwr_week, anthrax, plague, rabies_human, rubella_congenital_syndrome, cronobacter_invasive_infection_infants_confirmed</code></li></ul>`"]:::warn
     end
     subgraph noaa_heat_risk["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/noaa_heat_risk" target="_blank" rel="noreferrer">noaa_heat_risk</a></strong>`"]
         direction LR
-        n133["`data_county.csv.gz`"]:::pass
-        n134["`data_state.csv.gz`"]:::pass
+        n134["`data_county.csv.gz`"]:::pass
+        n135["`data_state.csv.gz`"]:::pass
     end
     subgraph NREVSS["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/NREVSS" target="_blank" rel="noreferrer">NREVSS</a></strong>`"]
         direction LR
-        n135["`data.csv.gz`"]:::pass
+        n136["`data.csv.gz`"]:::pass
     end
     subgraph nssp["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nssp" target="_blank" rel="noreferrer">nssp</a></strong>`"]
         direction LR
-        n136["`data_lab.csv.gz`"]:::pass
-        n137["`data.csv.gz`"]:::pass
+        n137["`data_lab.csv.gz`"]:::pass
+        n138["`data.csv.gz`"]:::pass
     end
     subgraph opioid["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/opioid" target="_blank" rel="noreferrer">opioid</a></strong>`"]
         direction LR
-        n138["`data.csv.gz<br/><br/><ul><li><code>missing_info: geography_type</code></li></ul>`"]:::warn
+        n139["`data.csv.gz<br/><br/><ul><li><code>missing_info: geography_type</code></li></ul>`"]:::warn
     end
     subgraph pep_population["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/pep_population" target="_blank" rel="noreferrer">pep_population</a></strong>`"]
         direction LR
-        n139["`data.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
+        n140["`data.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
     end
     subgraph respnet["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/respnet" target="_blank" rel="noreferrer">respnet</a></strong>`"]
         direction LR
-        n140["`data.csv.gz`"]:::pass
+        n141["`data.csv.gz`"]:::pass
     end
     subgraph school_immunizations_adolescent["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/school_immunizations_adolescent" target="_blank" rel="noreferrer">school_immunizations_adolescent</a></strong>`"]
         direction LR
-        n141["`data.csv.gz`"]:::pass
+        n142["`data.csv.gz`"]:::pass
     end
     subgraph schoolvax_washpost["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/schoolvax_washpost" target="_blank" rel="noreferrer">schoolvax_washpost</a></strong>`"]
         direction LR
-        n142["`data_counties.csv.gz`"]:::pass
-        n143["`data_schools.csv.gz`"]:::pass
+        n143["`data_counties.csv.gz`"]:::pass
+        n144["`data_schools.csv.gz`"]:::pass
     end
     subgraph schoolvaxview["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/schoolvaxview" target="_blank" rel="noreferrer">schoolvaxview</a></strong>`"]
         direction LR
-        n144["`data_exemptions.csv.gz`"]:::pass
-        n145["`data.csv.gz`"]:::pass
+        n145["`data_exemptions.csv.gz`"]:::pass
+        n146["`data.csv.gz`"]:::pass
     end
     subgraph usafacts_voter_registration["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/usafacts_voter_registration" target="_blank" rel="noreferrer">usafacts_voter_registration</a></strong>`"]
         direction LR
-        n146["`data_county.csv.gz`"]:::pass
-        n147["`data_state.csv.gz`"]:::pass
+        n147["`data_county.csv.gz`"]:::pass
+        n148["`data_state.csv.gz`"]:::pass
     end
     subgraph usda_food_access["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/usda_food_access" target="_blank" rel="noreferrer">usda_food_access</a></strong>`"]
         direction LR
-        n148["`data_county.csv.gz`"]:::pass
+        n149["`data_county.csv.gz`"]:::pass
     end
     subgraph vaccine_exemptions_fattah["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/vaccine_exemptions_fattah" target="_blank" rel="noreferrer">vaccine_exemptions_fattah</a></strong>`"]
         direction LR
-        n149["`data_county.csv.gz<br/><br/><ul><li><code>missing_info: is_state_estimate</code></li></ul>`"]:::warn
-        n150["`data_state.csv.gz`"]:::pass
-        n151["`data.csv.gz`"]:::pass
+        n150["`data_county.csv.gz<br/><br/><ul><li><code>missing_info: is_state_estimate</code></li></ul>`"]:::warn
+        n151["`data_state.csv.gz`"]:::pass
+        n152["`data.csv.gz`"]:::pass
     end
     subgraph vsd_pregnancy_vax["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/vsd_pregnancy_vax" target="_blank" rel="noreferrer">vsd_pregnancy_vax</a></strong>`"]
         direction LR
-        n152["`data.csv.gz`"]:::pass
+        n153["`data.csv.gz`"]:::pass
     end
     subgraph wastewater_measles["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/wastewater_measles" target="_blank" rel="noreferrer">wastewater_measles</a></strong>`"]
         direction LR
-        n153["`data_county.csv.gz`"]:::pass
-        n154["`data.csv.gz`"]:::pass
+        n154["`data_county.csv.gz`"]:::pass
+        n155["`data.csv.gz`"]:::pass
     end
     subgraph wastewater["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/wastewater" target="_blank" rel="noreferrer">wastewater</a></strong>`"]
         direction LR
-        n155["`data.csv.gz`"]:::pass
+        n156["`data.csv.gz`"]:::pass
     end
     subgraph wisqars["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/wisqars" target="_blank" rel="noreferrer">wisqars</a></strong>`"]
         direction LR
-        n156["`data.csv.gz`"]:::pass
+        n157["`data.csv.gz`"]:::pass
     end
     subgraph yrbss["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/yrbss" target="_blank" rel="noreferrer">yrbss</a></strong>`"]
         direction LR
-        n157["`data_age_ethnicity.csv.gz<br/><br/><ul><li><code>missing_info: age, race_ethnicity</code></li></ul>`"]:::warn
-        n158["`data_age_sex.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
-        n159["`data_age.csv.gz<br/><br/><ul><li><code>missing_info: age</code></li></ul>`"]:::warn
+        n158["`data_age_ethnicity.csv.gz<br/><br/><ul><li><code>missing_info: age, race_ethnicity</code></li></ul>`"]:::warn
+        n159["`data_age_sex.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
+        n160["`data_age.csv.gz<br/><br/><ul><li><code>missing_info: age</code></li></ul>`"]:::warn
     end
     subgraph bundle_adolescent_vaccination["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_adolescent_vaccination" target="_blank" rel="noreferrer">bundle_adolescent_vaccination</a></strong>`"]
         direction LR
-        n160["`adolescent_vax_county.parquet`"]
-        n161["`adolescent_vax_demographics.parquet`"]
-        n162["`adolescent_vax_state.parquet`"]
+        n161["`adolescent_vax_county.parquet`"]
+        n162["`adolescent_vax_demographics.parquet`"]
+        n163["`adolescent_vax_state.parquet`"]
     end
     subgraph bundle_antimicrobial_resistance["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_antimicrobial_resistance" target="_blank" rel="noreferrer">bundle_antimicrobial_resistance</a></strong>`"]
         direction LR
-        n163["`resistance_by_agent.parquet`"]
-        n164["`resistance_by_pattern.parquet`"]
+        n164["`resistance_by_agent.parquet`"]
+        n165["`resistance_by_pattern.parquet`"]
     end
     subgraph bundle_cancer_screening["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_cancer_screening" target="_blank" rel="noreferrer">bundle_cancer_screening</a></strong>`"]
         direction LR
-        n165["`cms_cancer_screening_by_race.parquet`"]
-        n166["`cms_cancer_screening_by_sex.parquet`"]
-        n167["`cms_cancer_screening_state.parquet`"]
-        n168["`combined_cancer_screening.parquet`"]
-        n169["`medicaid_cancer_screening.parquet`"]
-        n170["`nccr_incidence.parquet`"]
+        n166["`cms_cancer_screening_by_race.parquet`"]
+        n167["`cms_cancer_screening_by_sex.parquet`"]
+        n168["`cms_cancer_screening_state.parquet`"]
+        n169["`combined_cancer_screening.parquet`"]
+        n170["`medicaid_cancer_screening.parquet`"]
+        n171["`nccr_incidence.parquet`"]
     end
     subgraph bundle_census["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_census" target="_blank" rel="noreferrer">bundle_census</a></strong>`"]
         direction LR
-        n171["`census_county.parquet`"]
-        n172["`census_state.parquet`"]
+        n172["`census_county.parquet`"]
+        n173["`census_state.parquet`"]
     end
     subgraph bundle_childhood_immunizations["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_childhood_immunizations" target="_blank" rel="noreferrer">bundle_childhood_immunizations</a></strong>`"]
         direction LR
-        n173["`nis_insurance.parquet`"]
-        n174["`nis_overall.parquet`"]
-        n175["`nis_urban.parquet`"]
-        n176["`overall_rates_by_source.parquet`"]
-        n177["`schoolvaxview_exemptions.parquet`"]
-        n178["`schoolvaxview_overall.parquet`"]
-        n179["`state_compare.parquet`"]
-        n180["`wapo_vax_counties.parquet`"]
-        n181["`wapo_vax_schools.parquet`"]
+        n174["`nis_insurance.parquet`"]
+        n175["`nis_overall.parquet`"]
+        n176["`nis_urban.parquet`"]
+        n177["`overall_rates_by_source.parquet`"]
+        n178["`schoolvaxview_exemptions.parquet`"]
+        n179["`schoolvaxview_overall.parquet`"]
+        n180["`state_compare.parquet`"]
+        n181["`wapo_vax_counties.parquet`"]
+        n182["`wapo_vax_schools.parquet`"]
     end
     subgraph bundle_chronic_diseases["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_chronic_diseases" target="_blank" rel="noreferrer">bundle_chronic_diseases</a></strong>`"]
         direction LR
-        n182["`brfss_prevalence_by_geography.parquet`"]
-        n183["`epic_prevalence_by_geography_county_and_source.parquet`"]
-        n184["`epic_prevalence_by_geography_year.parquet`"]
-        n185["`prevalence_by_geography_and_source.csv`"]
-        n186["`prevalence_by_geography_and_year_and_source.parquet`"]
+        n183["`brfss_prevalence_by_geography.parquet`"]
+        n184["`epic_prevalence_by_geography_county_and_source.parquet`"]
+        n185["`epic_prevalence_by_geography_year.parquet`"]
+        n186["`prevalence_by_geography_and_source.csv`"]
+        n187["`prevalence_by_geography_and_year_and_source.parquet`"]
     end
     subgraph bundle_county_access["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_county_access" target="_blank" rel="noreferrer">bundle_county_access</a></strong>`"]
         direction LR
-        n187["`county_access.parquet`"]
-        n188["`county_determinants.parquet`"]
-        n189["`state_determinants.parquet`"]
+        n188["`county_access.parquet`"]
+        n189["`county_determinants.parquet`"]
+        n190["`state_determinants.parquet`"]
     end
     subgraph bundle_county_chronic["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_county_chronic" target="_blank" rel="noreferrer">bundle_county_chronic</a></strong>`"]
         direction LR
-        n190["`county_chronic.parquet`"]
+        n191["`county_chronic.parquet`"]
     end
     subgraph bundle_enteric_diseases["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_enteric_diseases" target="_blank" rel="noreferrer">bundle_enteric_diseases</a></strong>`"]
         direction LR
-        n191["`enteric_diseases.parquet`"]
-        n192["`epic_diarrhea.parquet`"]
-        n193["`epic_health_alerts.parquet`"]
-        n194["`resistance_by_agent.parquet`"]
-        n195["`resistance_by_pattern.parquet`"]
+        n192["`enteric_diseases.parquet`"]
+        n193["`epic_diarrhea.parquet`"]
+        n194["`epic_health_alerts.parquet`"]
+        n195["`resistance_by_agent.parquet`"]
+        n196["`resistance_by_pattern.parquet`"]
     end
     subgraph bundle_flu["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_flu" target="_blank" rel="noreferrer">bundle_flu</a></strong>`"]
         direction LR
-        n196["`flu_ed_visits_by_county.parquet`"]
-        n197["`flu_hospital_capacity.parquet`"]
-        n198["`flu_lab_testing.parquet`"]
-        n199["`flu_overall_trends.parquet`"]
-        n200["`flu_rt_and_mortality.parquet`"]
-        n201["`flu_trends_by_age.parquet`"]
-        n202["`flu_vax_coverage.parquet`"]
-        n203["`flu_vax_doses.parquet`"]
-        n204["`flu_vax_substate.parquet`"]
-        n205["`flu_voter_politics.parquet`"]
+        n197["`flu_ed_visits_by_county.parquet`"]
+        n198["`flu_hospital_capacity.parquet`"]
+        n199["`flu_lab_testing.parquet`"]
+        n200["`flu_overall_trends.parquet`"]
+        n201["`flu_rt_and_mortality.parquet`"]
+        n202["`flu_trends_by_age.parquet`"]
+        n203["`flu_vax_coverage.parquet`"]
+        n204["`flu_vax_doses.parquet`"]
+        n205["`flu_vax_substate.parquet`"]
+        n206["`flu_voter_politics.parquet`"]
     end
     subgraph bundle_health_outcomes["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_health_outcomes" target="_blank" rel="noreferrer">bundle_health_outcomes</a></strong>`"]
         direction LR
-        n206["`alcohol.parquet`"]
-        n207["`ascvd.parquet`"]
-        n208["`maternal.parquet`"]
-        n209["`opioid.parquet`"]
+        n207["`alcohol.parquet`"]
+        n208["`ascvd.parquet`"]
+        n209["`maternal.parquet`"]
+        n210["`opioid.parquet`"]
     end
     subgraph bundle_injury_overdose["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_injury_overdose" target="_blank" rel="noreferrer">bundle_injury_overdose</a></strong>`"]
         direction LR
-        n210["`county_opioid_by_source.parquet`"]
-        n211["`deaths_cause_age_demographics.parquet`"]
-        n212["`deaths_cause_age.parquet`"]
-        n213["`firearms_by_demographics.parquet`"]
-        n214["`firearms_by_geography_and_source_state_year.parquet`"]
-        n215["`firearms_geography_source.parquet`"]
-        n216["`google_dma.parquet`"]
-        n217["`heat_by_geography_and_source_state_year.parquet`"]
-        n218["`heat_risk.parquet`"]
-        n219["`medicaid_injury_overdose.parquet`"]
-        n220["`overdose_by_demographics.parquet`"]
-        n221["`overdose_by_geography_and_source_county.parquet`"]
-        n222["`overdose_by_geography_and_source_state_year.parquet`"]
-        n223["`overdose_by_geography_and_source.parquet`"]
-        n224["`overdose_deaths_county.parquet`"]
-        n225["`overdose_deaths_state.parquet`"]
-        n226["`state_opioid_by_source.parquet`"]
+        n211["`county_opioid_by_source.parquet`"]
+        n212["`deaths_cause_age_demographics.parquet`"]
+        n213["`deaths_cause_age.parquet`"]
+        n214["`firearms_by_demographics.parquet`"]
+        n215["`firearms_by_geography_and_source_state_year.parquet`"]
+        n216["`firearms_geography_source.parquet`"]
+        n217["`google_dma.parquet`"]
+        n218["`heat_by_geography_and_source_state_year.parquet`"]
+        n219["`heat_risk.parquet`"]
+        n220["`medicaid_injury_overdose.parquet`"]
+        n221["`overdose_by_demographics.parquet`"]
+        n222["`overdose_by_geography_and_source_county.parquet`"]
+        n223["`overdose_by_geography_and_source_state_year.parquet`"]
+        n224["`overdose_by_geography_and_source.parquet`"]
+        n225["`overdose_deaths_county.parquet`"]
+        n226["`overdose_deaths_state.parquet`"]
+        n227["`state_opioid_by_source.parquet`"]
     end
     subgraph bundle_maternal_health["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_maternal_health" target="_blank" rel="noreferrer">bundle_maternal_health</a></strong>`"]
         direction LR
-        n227["`maternal_county.parquet`"]
-        n228["`maternal_mortality.parquet`"]
-        n229["`maternal_state.parquet`"]
+        n228["`maternal_county.parquet`"]
+        n229["`maternal_mortality.parquet`"]
+        n230["`maternal_state.parquet`"]
     end
     subgraph bundle_measles["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_measles" target="_blank" rel="noreferrer">bundle_measles</a></strong>`"]
         direction LR
-        n230["`measles_cases_by_age.parquet`"]
-        n231["`measles_county.parquet`"]
-        n232["`measles_state.parquet`"]
+        n231["`measles_cases_by_age.parquet`"]
+        n232["`measles_county.parquet`"]
+        n233["`measles_state.parquet`"]
     end
     subgraph bundle_preventative_services["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_preventative_services" target="_blank" rel="noreferrer">bundle_preventative_services</a></strong>`"]
         direction LR
-        n233["`cms_preventative_services_by_race.parquet`"]
-        n234["`cms_preventative_services_by_sex.parquet`"]
-        n235["`cms_preventative_services_state.parquet`"]
-        n236["`combined_preventative_services.parquet`"]
-        n237["`medicaid_preventative_services.parquet`"]
+        n234["`cms_preventative_services_by_race.parquet`"]
+        n235["`cms_preventative_services_by_sex.parquet`"]
+        n236["`cms_preventative_services_state.parquet`"]
+        n237["`combined_preventative_services.parquet`"]
+        n238["`medicaid_preventative_services.parquet`"]
     end
     subgraph bundle_respiratory["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_respiratory" target="_blank" rel="noreferrer">bundle_respiratory</a></strong>`"]
         direction LR
-        n238["`abcs_strep.parquet`"]
-        n239["`covid_ed_visits_by_county.parquet`"]
-        n240["`covid_lab_testing.parquet`"]
-        n241["`covid_overall_trends.parquet`"]
-        n242["`covid_trends_by_age.parquet`"]
-        n243["`flu_ed_visits_by_county.parquet`"]
-        n244["`flu_lab_testing.parquet`"]
-        n245["`flu_overall_trends.parquet`"]
-        n246["`flu_trends_by_age.parquet`"]
-        n247["`gas_state.parquet`"]
-        n248["`other_measures_trends.parquet`"]
-        n249["`pneumococcus_by_geography_year.parquet`"]
-        n250["`pneumococcus_by_geography.parquet`"]
-        n251["`pneumococcus_comparison.parquet`"]
-        n252["`pneumococcus_serotype_trends.parquet`"]
-        n253["`rsv_ed_visits_by_county.parquet`"]
-        n254["`rsv_google_dma.parquet`"]
-        n255["`rsv_lab_testing.parquet`"]
-        n256["`rsv_overall_trends.parquet`"]
-        n257["`rsv_positive_tests.parquet`"]
-        n258["`rsv_testing_pct.parquet`"]
-        n259["`rsv_trends_by_age.parquet`"]
+        n239["`abcs_strep.parquet`"]
+        n240["`covid_ed_visits_by_county.parquet`"]
+        n241["`covid_lab_testing.parquet`"]
+        n242["`covid_overall_trends.parquet`"]
+        n243["`covid_trends_by_age.parquet`"]
+        n244["`flu_ed_visits_by_county.parquet`"]
+        n245["`flu_lab_testing.parquet`"]
+        n246["`flu_overall_trends.parquet`"]
+        n247["`flu_trends_by_age.parquet`"]
+        n248["`gas_state.parquet`"]
+        n249["`other_measures_trends.parquet`"]
+        n250["`pneumococcus_by_geography_year.parquet`"]
+        n251["`pneumococcus_by_geography.parquet`"]
+        n252["`pneumococcus_comparison.parquet`"]
+        n253["`pneumococcus_serotype_trends.parquet`"]
+        n254["`rsv_ed_visits_by_county.parquet`"]
+        n255["`rsv_google_dma.parquet`"]
+        n256["`rsv_lab_testing.parquet`"]
+        n257["`rsv_overall_trends.parquet`"]
+        n258["`rsv_positive_tests.parquet`"]
+        n259["`rsv_testing_pct.parquet`"]
+        n260["`rsv_trends_by_age.parquet`"]
     end
     subgraph bundle_sex_disparities["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_sex_disparities" target="_blank" rel="noreferrer">bundle_sex_disparities</a></strong>`"]
         direction LR
-        n260["`abcs_strep_by_sex.parquet`"]
-        n261["`cms_prevalence_by_sex.parquet`"]
-        n262["`epic_concussion_count_by_sex.parquet`"]
-        n263["`epic_concussion_rate_by_sex.parquet`"]
-        n264["`nccr_incidence_by_sex.parquet`"]
-        n265["`neiss_count_by_sex.parquet`"]
-        n266["`neiss_rate_by_sex.parquet`"]
-        n267["`nhtsa_fatalities_by_sex.parquet`"]
-        n268["`nis_teen_coverage_by_sex.parquet`"]
-        n269["`wisqars_death_count_by_sex.parquet`"]
-        n270["`wisqars_death_rate_by_sex.parquet`"]
-        n271["`yrbss_behavior_by_sex.parquet`"]
+        n261["`abcs_strep_by_sex.parquet`"]
+        n262["`cms_prevalence_by_sex.parquet`"]
+        n263["`epic_concussion_count_by_sex.parquet`"]
+        n264["`epic_concussion_rate_by_sex.parquet`"]
+        n265["`nccr_incidence_by_sex.parquet`"]
+        n266["`neiss_count_by_sex.parquet`"]
+        n267["`neiss_rate_by_sex.parquet`"]
+        n268["`nhtsa_fatalities_by_sex.parquet`"]
+        n269["`nis_teen_coverage_by_sex.parquet`"]
+        n270["`wisqars_death_count_by_sex.parquet`"]
+        n271["`wisqars_death_rate_by_sex.parquet`"]
+        n272["`yrbss_behavior_by_sex.parquet`"]
     end
     subgraph bundle_sti["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_sti" target="_blank" rel="noreferrer">bundle_sti</a></strong>`"]
         direction LR
-        n272["`sti_county.parquet`"]
-        n273["`sti_quarterly.parquet`"]
-        n274["`sti_state.parquet`"]
-        n275["`sti_weekly.parquet`"]
-        n276["`sti_youth.parquet`"]
+        n273["`sti_county.parquet`"]
+        n274["`sti_quarterly.parquet`"]
+        n275["`sti_state.parquet`"]
+        n276["`sti_weekly.parquet`"]
+        n277["`sti_youth.parquet`"]
     end
     subgraph bundle_vector_borne["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_vector_borne" target="_blank" rel="noreferrer">bundle_vector_borne</a></strong>`"]
         direction LR
-        n277["`vector_borne.parquet`"]
+        n278["`vector_borne.parquet`"]
     end
     subgraph bundle_youth_wellbeing["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/bundle_youth_wellbeing" target="_blank" rel="noreferrer">bundle_youth_wellbeing</a></strong>`"]
         direction LR
-        n278["`chr_disconnected_county.parquet`"]
-        n279["`chr_disconnected_state.parquet`"]
-        n280["`chr_teen_births_food_county.parquet`"]
-        n281["`drowning_county_age.parquet`"]
-        n282["`drowning_state_age.parquet`"]
-        n283["`epic_chronic_county_age.parquet`"]
-        n284["`epic_chronic_state_age.parquet`"]
-        n285["`epic_concussions_state_age_sex.parquet`"]
-        n286["`epic_injury_state_age_month.parquet`"]
-        n287["`epic_injury_state_age_year.parquet`"]
-        n288["`immunizations_state_age_vaccine.parquet`"]
-        n289["`medicaid_state_payer.parquet`"]
-        n290["`neiss_diagnosis_age_sex_year.parquet`"]
-        n291["`neiss_product_age_sex_year.parquet`"]
-        n292["`nhtsa_county_age_sex.parquet`"]
-        n293["`nhtsa_state_age_sex.parquet`"]
-        n294["`noaa_heat_risk_county.parquet`"]
-        n295["`noaa_heat_risk_state.parquet`"]
-        n296["`wisqars_state_age_demographics.parquet`"]
-        n297["`yrbss_state_age_demographics.parquet`"]
+        n279["`chr_disconnected_county.parquet`"]
+        n280["`chr_disconnected_state.parquet`"]
+        n281["`chr_teen_births_food_county.parquet`"]
+        n282["`drowning_county_age.parquet`"]
+        n283["`drowning_state_age.parquet`"]
+        n284["`epic_chronic_county_age.parquet`"]
+        n285["`epic_chronic_state_age.parquet`"]
+        n286["`epic_concussions_state_age_sex.parquet`"]
+        n287["`epic_injury_state_age_month.parquet`"]
+        n288["`epic_injury_state_age_year.parquet`"]
+        n289["`immunizations_state_age_vaccine.parquet`"]
+        n290["`medicaid_state_payer.parquet`"]
+        n291["`neiss_diagnosis_age_sex_year.parquet`"]
+        n292["`neiss_product_age_sex_year.parquet`"]
+        n293["`nhtsa_county_age_sex.parquet`"]
+        n294["`nhtsa_state_age_sex.parquet`"]
+        n295["`noaa_heat_risk_county.parquet`"]
+        n296["`noaa_heat_risk_state.parquet`"]
+        n297["`wisqars_state_age_demographics.parquet`"]
+        n298["`yrbss_state_age_demographics.parquet`"]
     end
     s0---s1["<strong><a href="https://data.cdc.gov/resource/qvzb-qs6p/" target="_blank" rel="noreferrer">Serotype Data for Invasive Pneumococcal Disease Cases by Age Group from Active Bacterial Core surveillance</a></strong>"]
     s1 --> n1
@@ -852,110 +857,112 @@ flowchart LR
     s98 --> n101
     s96 --> n102
     s97 --> n102
-    s99---s100["<strong><a href="https://www.cpsc.gov/cgibin/NEISSQuery/" target="_blank" rel="noreferrer">NEISS public query / archived data files</a></strong>"]
+    s99---s100["<strong><a href="https://data.cdc.gov/National-Center-for-Health-Statistics/Provisional-COVID-19-Death-Counts-by-Week-Ending-D/r8kw-7aab/about_data" target="_blank" rel="noreferrer">National Vital Statistics System, provisional mortality</a></strong>"]
     s100 --> n103
-    s100 --> n104
-    s100 --> n105
-    s100 --> n106
-    s100 --> n107
-    s100 --> n108
-    s100 --> n109
-    s100 --> n110
-    s101---s102["<strong><a href="https://data.cdc.gov/d/ua7e-t2fy" target="_blank" rel="noreferrer">Weekly Hospital Respiratory Data (HRD) Metrics by Jurisdiction, National Healthcare Safety Network (NHSN)</a></strong>"]
+    s101---s102["<strong><a href="https://www.cpsc.gov/cgibin/NEISSQuery/" target="_blank" rel="noreferrer">NEISS public query / archived data files</a></strong>"]
+    s102 --> n104
+    s102 --> n105
+    s102 --> n106
+    s102 --> n107
+    s102 --> n108
+    s102 --> n109
+    s102 --> n110
     s102 --> n111
-    s102 --> n112
-    s102 --> n113
-    s102 --> n114
-    s103---s104["<strong><a href="https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/" target="_blank" rel="noreferrer">NHTSA File Downloads — FARS National CSV archives</a></strong>"]
+    s103---s104["<strong><a href="https://data.cdc.gov/d/ua7e-t2fy" target="_blank" rel="noreferrer">Weekly Hospital Respiratory Data (HRD) Metrics by Jurisdiction, National Healthcare Safety Network (NHSN)</a></strong>"]
+    s104 --> n112
+    s104 --> n113
+    s104 --> n114
     s104 --> n115
-    s104 --> n116
-    s104 --> n117
-    s104 --> n118
-    s105---s106["<strong><a href="https://data.cdc.gov/d/judz-8etw" target="_blank" rel="noreferrer">Weekly Influenza Vaccination Status and Intent for Vaccination, Children 6 Months-17 Years (FluVaxView dashboard)</a></strong>"]
+    s105---s106["<strong><a href="https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/" target="_blank" rel="noreferrer">NHTSA File Downloads — FARS National CSV archives</a></strong>"]
+    s106 --> n116
+    s106 --> n117
+    s106 --> n118
     s106 --> n119
-    s107---s108["<strong><a href="https://data.cdc.gov/d/sw5n-wg2p" target="_blank" rel="noreferrer">Weekly Influenza and RSV Vaccination Coverage and Intent, Adults 18 Years and Older (FluVaxView and RSVVaxView dashboards)</a></strong>"]
-    s108 --> n119
-    s106 --> n120
+    s107---s108["<strong><a href="https://data.cdc.gov/d/judz-8etw" target="_blank" rel="noreferrer">Weekly Influenza Vaccination Status and Intent for Vaccination, Children 6 Months-17 Years (FluVaxView dashboard)</a></strong>"]
     s108 --> n120
-    s106 --> n121
+    s109---s110["<strong><a href="https://data.cdc.gov/d/sw5n-wg2p" target="_blank" rel="noreferrer">Weekly Influenza and RSV Vaccination Coverage and Intent, Adults 18 Years and Older (FluVaxView and RSVVaxView dashboards)</a></strong>"]
+    s110 --> n120
     s108 --> n121
-    s106 --> n122
+    s110 --> n121
     s108 --> n122
-    s106 --> n123
+    s110 --> n122
     s108 --> n123
-    s109---s110["<strong><a href="https://data.cdc.gov/d/ee48-w5t6" target="_blank" rel="noreferrer">Vaccination Coverage among Adolescents (13-17 Years), TeenVaxView</a></strong>"]
+    s110 --> n123
+    s108 --> n124
     s110 --> n124
-    s110 --> n125
-    s110 --> n126
-    s110 --> n127
-    s110 --> n128
-    s111 --> n129
-    s112---s113["<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">About the National Immunization Surveys (NIS)</a></strong>"]
-    s113 --> n129
-    s111 --> n130
+    s111---s112["<strong><a href="https://data.cdc.gov/d/ee48-w5t6" target="_blank" rel="noreferrer">Vaccination Coverage among Adolescents (13-17 Years), TeenVaxView</a></strong>"]
+    s112 --> n125
+    s112 --> n126
+    s112 --> n127
+    s112 --> n128
+    s112 --> n129
     s113 --> n130
-    s111 --> n131
+    s114---s115["<strong><a href="https://www.cdc.gov/nis/about/index.html" target="_blank" rel="noreferrer">About the National Immunization Surveys (NIS)</a></strong>"]
+    s115 --> n130
     s113 --> n131
-    s114 --> n132
-    s115---s116["<strong><a href="https://www.wpc.ncep.noaa.gov/heatrisk/data.html" target="_blank" rel="noreferrer">HeatRisk GeoTIFF Archive and 7-Day Forecast</a></strong>"]
+    s115 --> n131
+    s113 --> n132
+    s115 --> n132
     s116 --> n133
-    s116 --> n134
-    s117---s118["<strong><a href="https://data.cdc.gov/resource/3cxc-4k8q" target="_blank" rel="noreferrer">Percent Positivity of Respiratory Syncytial Virus Nucleic Acid Amplification Tests by HHS Region, National Respiratory and Enteric Virus Surveillance System</a></strong>"]
+    s117---s118["<strong><a href="https://www.wpc.ncep.noaa.gov/heatrisk/data.html" target="_blank" rel="noreferrer">HeatRisk GeoTIFF Archive and 7-Day Forecast</a></strong>"]
+    s118 --> n134
     s118 --> n135
-    s119 --> n135
-    s120---s121["<strong><a href="https://data.cdc.gov/d/jqxy-cyu2" target="_blank" rel="noreferrer">NSSP Commercial Laboratory Test Volumes and Results by State</a></strong>"]
+    s119---s120["<strong><a href="https://data.cdc.gov/resource/3cxc-4k8q" target="_blank" rel="noreferrer">Percent Positivity of Respiratory Syncytial Virus Nucleic Acid Amplification Tests by HHS Region, National Respiratory and Enteric Virus Surveillance System</a></strong>"]
+    s120 --> n136
     s121 --> n136
-    s122---s123["<strong><a href="https://data.cdc.gov/resource/rdmq-nq56" target="_blank" rel="noreferrer">National Syndromic Surveillance Program</a></strong>"]
+    s122---s123["<strong><a href="https://data.cdc.gov/d/jqxy-cyu2" target="_blank" rel="noreferrer">NSSP Commercial Laboratory Test Volumes and Results by State</a></strong>"]
     s123 --> n137
-    s124---s125["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s124---s125["<strong><a href="https://data.cdc.gov/resource/rdmq-nq56" target="_blank" rel="noreferrer">National Syndromic Surveillance Program</a></strong>"]
     s125 --> n138
-    s124---s126["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
-    s126 --> n138
-    s124---s127["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
-    s127 --> n138
-    s124---s128["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
-    s128 --> n138
-    s129---s130["<strong><a href="https://www.census.gov/data/developers/data-sets/popest-popproj/popest.html" target="_blank" rel="noreferrer">Census Data API: pep/charagegroups (2019) and pep/charv (2023)</a></strong>"]
+    s126---s127["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s127 --> n139
+    s126---s128["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s128 --> n139
+    s126---s129["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
+    s129 --> n139
+    s126---s130["<strong><a href="" target="_blank" rel="noreferrer"></a></strong>"]
     s130 --> n139
-    s131---s132["<strong><a href="https://healthdata.gov/CDC/Weekly-Rates-of-Laboratory-Confirmed-COVID-19-Hosp/gk5r-vjtt/about_data" target="_blank" rel="noreferrer">Weekly Rates of Laboratory-Confirmed COVID-19 Hospitalizations from the COVID-NET Surveillance System</a></strong>"]
+    s131---s132["<strong><a href="https://www.census.gov/data/developers/data-sets/popest-popproj/popest.html" target="_blank" rel="noreferrer">Census Data API: pep/charagegroups (2019) and pep/charv (2023)</a></strong>"]
     s132 --> n140
-    s131---s133["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/Weekly-Rates-of-Laboratory-Confirmed-RSV-Hospitali/29hc-w46k/about_data" target="_blank" rel="noreferrer">Weekly Rates of Laboratory-Confirmed RSV Hospitalizations from the RSV-NET Surveillance System</a></strong>"]
-    s133 --> n140
-    s131---s134["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/Rates-of-Laboratory-Confirmed-RSV-COVID-19-and-Flu/kvib-3txy/about_data" target="_blank" rel="noreferrer">Rates of Laboratory-Confirmed RSV, COVID-19, and Flu Hospitalizations from the RESP-NET Surveillance Systems</a></strong>"]
-    s134 --> n140
-    s135---s136["<strong><a href="https://github.com/PopHIVE/school_immunizations/blob/main/data/DATA_SOURCES.md" target="_blank" rel="noreferrer">Per-state standard files and source notes</a></strong>"]
+    s133---s134["<strong><a href="https://healthdata.gov/CDC/Weekly-Rates-of-Laboratory-Confirmed-COVID-19-Hosp/gk5r-vjtt/about_data" target="_blank" rel="noreferrer">Weekly Rates of Laboratory-Confirmed COVID-19 Hospitalizations from the COVID-NET Surveillance System</a></strong>"]
+    s134 --> n141
+    s133---s135["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/Weekly-Rates-of-Laboratory-Confirmed-RSV-Hospitali/29hc-w46k/about_data" target="_blank" rel="noreferrer">Weekly Rates of Laboratory-Confirmed RSV Hospitalizations from the RSV-NET Surveillance System</a></strong>"]
+    s135 --> n141
+    s133---s136["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/Rates-of-Laboratory-Confirmed-RSV-COVID-19-and-Flu/kvib-3txy/about_data" target="_blank" rel="noreferrer">Rates of Laboratory-Confirmed RSV, COVID-19, and Flu Hospitalizations from the RESP-NET Surveillance Systems</a></strong>"]
     s136 --> n141
-    s137 --> n142
+    s137---s138["<strong><a href="https://github.com/PopHIVE/school_immunizations/blob/main/data/DATA_SOURCES.md" target="_blank" rel="noreferrer">Per-state standard files and source notes</a></strong>"]
     s138 --> n142
-    s137 --> n143
-    s139---s140["<strong><a href="https://data.cdc.gov/Vaccinations/Vaccination-Coverage-and-Exemptions-among-Kinderga/ijqb-a7ye/about_data" target="_blank" rel="noreferrer">Vaccination Coverage and Exemptions among Kindergartners</a></strong>"]
-    s140 --> n144
-    s140 --> n145
-    s141 --> n146
-    s141 --> n147
-    s142---s143["<strong><a href="https://www.ers.usda.gov/data-products/food-environment-atlas/data-access-and-documentation-downloads" target="_blank" rel="noreferrer">Food Environment Atlas data download</a></strong>"]
+    s139 --> n143
+    s140 --> n143
+    s139 --> n144
+    s141---s142["<strong><a href="https://data.cdc.gov/Vaccinations/Vaccination-Coverage-and-Exemptions-among-Kinderga/ijqb-a7ye/about_data" target="_blank" rel="noreferrer">Vaccination Coverage and Exemptions among Kindergartners</a></strong>"]
+    s142 --> n145
+    s142 --> n146
+    s143 --> n147
     s143 --> n148
-    s144 --> n149
-    s144 --> n150
-    s144 --> n151
-    s145---s146["<strong><a href="https://data.cdc.gov/d/8fbp-accd" target="_blank" rel="noreferrer">Percent of Pregnant Women Ages 18-49 Years Who Have Received an Influenza (or RSV) Vaccine, by Race and Ethnicity (FluVaxView and RSVVaxView dashboards)</a></strong>"]
+    s144---s145["<strong><a href="https://www.ers.usda.gov/data-products/food-environment-atlas/data-access-and-documentation-downloads" target="_blank" rel="noreferrer">Food Environment Atlas data download</a></strong>"]
+    s145 --> n149
+    s146 --> n150
+    s146 --> n151
     s146 --> n152
-    s147 --> n153
-    s147 --> n154
-    s148---s149["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/CDC-Wastewater-Viral-Activity-Level-for-SARS-CoV-2/atcp-73re/" target="_blank" rel="noreferrer">CDC Wastewater Viral Activity Level for SARS-CoV-2, Influenza A and RSV</a></strong>"]
+    s147---s148["<strong><a href="https://data.cdc.gov/d/8fbp-accd" target="_blank" rel="noreferrer">Percent of Pregnant Women Ages 18-49 Years Who Have Received an Influenza (or RSV) Vaccine, by Race and Ethnicity (FluVaxView and RSVVaxView dashboards)</a></strong>"]
+    s148 --> n153
+    s149 --> n154
     s149 --> n155
-    s150---s151["<strong><a href="https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0" target="_blank" rel="noreferrer">Fatal Injury Report</a></strong>"]
+    s150---s151["<strong><a href="https://data.cdc.gov/Public-Health-Surveillance/CDC-Wastewater-Viral-Activity-Level-for-SARS-CoV-2/atcp-73re/" target="_blank" rel="noreferrer">CDC Wastewater Viral Activity Level for SARS-CoV-2, Influenza A and RSV</a></strong>"]
     s151 --> n156
-    s152 --> n157
-    s152 --> n158
-    s152 --> n159
+    s152---s153["<strong><a href="https://wisqars.cdc.gov/reports/?o=MORT&i=8&m=20810&s=0&r=0&ry=2&y1=2018&y2=2023&a=ALL&g1=0&g2=199&a1=0&a2=199&r1=MECH&r2=AGEGP&r3=STATE&r4=YEAR&r5=NONE&r6=NONE&g=00&e=0&yp=65&me=0&t=0" target="_blank" rel="noreferrer">Fatal Injury Report</a></strong>"]
+    s153 --> n157
+    s154 --> n158
+    s154 --> n159
+    s154 --> n160
     n87 --> bundle_adolescent_vaccination
-    n128 --> bundle_adolescent_vaccination
-    n124 --> bundle_adolescent_vaccination
+    n129 --> bundle_adolescent_vaccination
     n125 --> bundle_adolescent_vaccination
     n126 --> bundle_adolescent_vaccination
     n127 --> bundle_adolescent_vaccination
-    n141 --> bundle_adolescent_vaccination
+    n128 --> bundle_adolescent_vaccination
+    n142 --> bundle_adolescent_vaccination
     n96 --> bundle_antimicrobial_resistance
     n97 --> bundle_antimicrobial_resistance
     n98 --> bundle_antimicrobial_resistance
@@ -972,13 +979,13 @@ flowchart LR
     n31 --> bundle_census
     n30 --> bundle_census
     n28 --> bundle_census
+    n146 --> bundle_childhood_immunizations
     n145 --> bundle_childhood_immunizations
-    n144 --> bundle_childhood_immunizations
+    n132 --> bundle_childhood_immunizations
     n131 --> bundle_childhood_immunizations
     n130 --> bundle_childhood_immunizations
-    n129 --> bundle_childhood_immunizations
-    n142 --> bundle_childhood_immunizations
     n143 --> bundle_childhood_immunizations
+    n144 --> bundle_childhood_immunizations
     n21 --> bundle_chronic_diseases
     n49 --> bundle_chronic_diseases
     n47 --> bundle_chronic_diseases
@@ -988,13 +995,13 @@ flowchart LR
     n16 --> bundle_county_access
     n19 --> bundle_county_access
     n20 --> bundle_county_access
-    n148 --> bundle_county_access
+    n149 --> bundle_county_access
     n12 --> bundle_county_access
     n11 --> bundle_county_access
     n30 --> bundle_county_access
     n31 --> bundle_county_access
     n28 --> bundle_county_access
-    n132 --> bundle_enteric_diseases
+    n133 --> bundle_enteric_diseases
     n18 --> bundle_enteric_diseases
     n96 --> bundle_enteric_diseases
     n98 --> bundle_enteric_diseases
@@ -1004,46 +1011,47 @@ flowchart LR
     n51 --> bundle_enteric_diseases
     n53 --> bundle_enteric_diseases
     n60 --> bundle_flu
+    n138 --> bundle_flu
     n137 --> bundle_flu
-    n136 --> bundle_flu
-    n140 --> bundle_flu
-    n155 --> bundle_flu
+    n141 --> bundle_flu
+    n156 --> bundle_flu
     n41 --> bundle_flu
     n39 --> bundle_flu
     n40 --> bundle_flu
     n79 --> bundle_flu
+    n115 --> bundle_flu
     n114 --> bundle_flu
-    n113 --> bundle_flu
-    n111 --> bundle_flu
+    n112 --> bundle_flu
     n22 --> bundle_flu
     n101 --> bundle_flu
-    n132 --> bundle_flu
+    n103 --> bundle_flu
+    n133 --> bundle_flu
     n68 --> bundle_flu
     n65 --> bundle_flu
     n67 --> bundle_flu
     n64 --> bundle_flu
     n66 --> bundle_flu
     n69 --> bundle_flu
-    n123 --> bundle_flu
-    n119 --> bundle_flu
+    n124 --> bundle_flu
     n120 --> bundle_flu
     n121 --> bundle_flu
     n122 --> bundle_flu
+    n123 --> bundle_flu
     n77 --> bundle_flu
     n76 --> bundle_flu
     n88 --> bundle_flu
-    n152 --> bundle_flu
+    n153 --> bundle_flu
     n78 --> bundle_flu
     n63 --> bundle_flu
     n90 --> bundle_flu
     n89 --> bundle_flu
+    n148 --> bundle_flu
     n147 --> bundle_flu
-    n146 --> bundle_flu
     n17 --> bundle_health_outcomes
     n13 --> bundle_health_outcomes
-    n138 --> bundle_health_outcomes
+    n139 --> bundle_health_outcomes
     n80 --> bundle_health_outcomes
-    n156 --> bundle_injury_overdose
+    n157 --> bundle_injury_overdose
     n36 --> bundle_injury_overdose
     n102 --> bundle_injury_overdose
     n100 --> bundle_injury_overdose
@@ -1057,18 +1065,18 @@ flowchart LR
     n87 --> bundle_maternal_health
     n27 --> bundle_maternal_health
     n23 --> bundle_maternal_health
-    n154 --> bundle_measles
-    n151 --> bundle_measles
+    n155 --> bundle_measles
+    n152 --> bundle_measles
     n84 --> bundle_measles
     n92 --> bundle_measles
     n82 --> bundle_measles
-    n132 --> bundle_measles
+    n133 --> bundle_measles
     n83 --> bundle_measles
     n91 --> bundle_measles
-    n149 --> bundle_measles
-    n142 --> bundle_measles
-    n153 --> bundle_measles
+    n150 --> bundle_measles
     n143 --> bundle_measles
+    n154 --> bundle_measles
+    n144 --> bundle_measles
     n81 --> bundle_measles
     n87 --> bundle_preventative_services
     n36 --> bundle_preventative_services
@@ -1079,16 +1087,16 @@ flowchart LR
     n59 --> bundle_respiratory
     n73 --> bundle_respiratory
     n71 --> bundle_respiratory
+    n138 --> bundle_respiratory
     n137 --> bundle_respiratory
-    n136 --> bundle_respiratory
-    n140 --> bundle_respiratory
-    n155 --> bundle_respiratory
+    n141 --> bundle_respiratory
+    n156 --> bundle_respiratory
     n38 --> bundle_respiratory
     n39 --> bundle_respiratory
     n41 --> bundle_respiratory
     n40 --> bundle_respiratory
     n79 --> bundle_respiratory
-    n135 --> bundle_respiratory
+    n136 --> bundle_respiratory
     n1 --> bundle_respiratory
     n10 --> bundle_respiratory
     n8 --> bundle_respiratory
@@ -1101,42 +1109,42 @@ flowchart LR
     n4 --> bundle_respiratory
     n22 --> bundle_respiratory
     n101 --> bundle_respiratory
-    n132 --> bundle_respiratory
+    n133 --> bundle_respiratory
     n8 --> bundle_sex_disparities
     n35 --> bundle_sex_disparities
     n50 --> bundle_sex_disparities
     n99 --> bundle_sex_disparities
-    n104 --> bundle_sex_disparities
-    n103 --> bundle_sex_disparities
-    n106 --> bundle_sex_disparities
     n105 --> bundle_sex_disparities
-    n108 --> bundle_sex_disparities
+    n104 --> bundle_sex_disparities
     n107 --> bundle_sex_disparities
-    n110 --> bundle_sex_disparities
+    n106 --> bundle_sex_disparities
     n109 --> bundle_sex_disparities
-    n115 --> bundle_sex_disparities
+    n108 --> bundle_sex_disparities
+    n111 --> bundle_sex_disparities
+    n110 --> bundle_sex_disparities
     n116 --> bundle_sex_disparities
-    n128 --> bundle_sex_disparities
-    n156 --> bundle_sex_disparities
-    n158 --> bundle_sex_disparities
+    n117 --> bundle_sex_disparities
+    n129 --> bundle_sex_disparities
+    n157 --> bundle_sex_disparities
+    n159 --> bundle_sex_disparities
     n87 --> bundle_sti
     n36 --> bundle_sti
     n101 --> bundle_sti
-    n132 --> bundle_sti
+    n133 --> bundle_sti
+    n160 --> bundle_sti
     n159 --> bundle_sti
     n158 --> bundle_sti
-    n157 --> bundle_sti
     n15 --> bundle_vector_borne
-    n132 --> bundle_vector_borne
+    n133 --> bundle_vector_borne
     n14 --> bundle_vector_borne
     n62 --> bundle_vector_borne
     n61 --> bundle_vector_borne
-    n156 --> bundle_youth_wellbeing
-    n115 --> bundle_youth_wellbeing
-    n139 --> bundle_youth_wellbeing
+    n157 --> bundle_youth_wellbeing
+    n116 --> bundle_youth_wellbeing
+    n140 --> bundle_youth_wellbeing
+    n160 --> bundle_youth_wellbeing
     n159 --> bundle_youth_wellbeing
     n158 --> bundle_youth_wellbeing
-    n157 --> bundle_youth_wellbeing
     n56 --> bundle_youth_wellbeing
     n55 --> bundle_youth_wellbeing
     n49 --> bundle_youth_wellbeing
@@ -1145,10 +1153,10 @@ flowchart LR
     n43 --> bundle_youth_wellbeing
     n42 --> bundle_youth_wellbeing
     n87 --> bundle_youth_wellbeing
+    n135 --> bundle_youth_wellbeing
     n134 --> bundle_youth_wellbeing
-    n133 --> bundle_youth_wellbeing
-    n106 --> bundle_youth_wellbeing
-    n110 --> bundle_youth_wellbeing
-    n104 --> bundle_youth_wellbeing
-    n108 --> bundle_youth_wellbeing
+    n107 --> bundle_youth_wellbeing
+    n111 --> bundle_youth_wellbeing
+    n105 --> bundle_youth_wellbeing
+    n109 --> bundle_youth_wellbeing
 ```
