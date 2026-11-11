@@ -80,6 +80,11 @@ Several bundle files changed shape so that every stratified file carries a row f
 **November 5, 2026**
 The NARMS Now human clinical files (resistance by agent and by pattern) were rebuilt from a full re-scrape of the CDC dashboard. The dashboard's responses mark a cell as "same as the previous cell", and the parser treated the first cell of each row as missing instead of carrying that value over, so a share of cells in every year was recorded as `not_tested` when the dashboard actually reported a value; about 157,000 agent cells and 279,000 pattern cells now carry values. Recent years also pick up CDC's revisions, and data now extend through the current year. The scrape moved out of the twice-weekly build into a monthly workflow that only re-pulls the years whose national totals changed.
 
+**November 11, 2026**
+The Delphi NHSN hospital admissions data (COVID-19, influenza and RSV) had not updated since the week ending September 12, 2026, because Delphi stopped updating the legacy COVIDcast endpoint it was read from. It is now read from Delphi's Epidata v5 API, which restores the missing weeks. Earlier weeks also pick up NHSN's routine revisions (for example, national COVID-19 admissions for the week ending September 12 changed from 4,095 to 4,368). Weeks and geographies with no recent data are listed in each Delphi source's README.
+
+The Delphi FluView (ILINet) data moved to Delphi's Epidata v5 API ahead of the retirement of the endpoint it was read from, which Delphi deprecated in October 2026. Values are unchanged apart from CDC's routine revisions, with two changes: Puerto Rico and the U.S. Virgin Islands are now included, and weeks in which reporting providers saw no patients (42 state-weeks) now have a missing ILI percentage instead of 0%.
+
 # Guide to adding data and rebuilding the bundle
 
 ## Steps for adding new datasets
