@@ -85,6 +85,13 @@ YRBSS_RACE <- c('AI/AN'    = 'American Indian/Alaska Native',
                 'White'    = 'White',
                 'Multiple' = 'More than one race')
 
+# Epic Cosmos rows are dropped when their denominator -- the number of Epic
+# patients in that stratum -- is below this, or missing. Only epic_chronic
+# carries an Epic patient count (n_patients_*). Epic Concussions and Epic
+# Mental Health have ED visit counts rather than patient counts, and Epic
+# Injury's rates are per 100,000 population, so none of those are filtered.
+EPIC_MIN_DENOM <- 100
+
 # Canonical column order; each file carries the subset that applies to it.
 COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
                'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer', 'domain',
@@ -534,9 +541,11 @@ epic_chronic_tall <- function(file) {
   # reports such N as "10 or fewer", imputes it as 5, and fills the rate in as
   # 5 / 5 * 100 = 100%, so neither the rate nor pct_captured means anything.
   # The source's suppressed_n_* flag does not catch every case (it misses N
-  # that arrived as "10 or fewer" rather than blank), so a denominator is also
-  # treated as suppressed when it is <= 10: a real count that small is never
-  # published. The denominator flag itself is not carried.
+  # that arrived as "10 or fewer" rather than blank), so the count is checked
+  # directly too. Rows whose denominator is under EPIC_MIN_DENOM (100) are
+  # dropped as well -- this covers the imputed-5 case and also removes rates
+  # resting on too few patients to be stable. The denominator flag itself is
+  # not carried.
   ob_n <- grep('^n_patients_ob', names(raw), value = TRUE)
   raw %>%
     tall_flagged(epic_chronic_measures, keys, '_suppressed') %>%
@@ -549,7 +558,7 @@ epic_chronic_tall <- function(file) {
            sample_size = if_else(is_obesity, n_Obesity, n_Diabetes),
            n_patients_suppressed = if_else(is_obesity, n_suppressed_Obesity, n_suppressed_Diabetes)) %>%
     rename(fips = geography) %>%
-    filter(!is.na(sample_size), sample_size > 10,
+    filter(!is.na(sample_size), sample_size >= EPIC_MIN_DENOM,
            coalesce(n_patients_suppressed, 0) != 1) %>%
     left_join(epic_pop, by = c('fips', 'age')) %>%
     mutate(pct_captured = if_else(suppressed == 1, NA_real_,
