@@ -144,9 +144,14 @@ if (!identical(process$raw_state, raw_state)) {
     stop("no values in standard output for: ", paste(empty_cols, collapse = ", "))
   }
 
+  # three decimals is well below the noise Sleep Cycle adds for privacy, and
+  # keeps the file a third of the size it is at full precision
   data_main <- wide %>%
     select(geography, time, all_of(out_cols)) %>%
-    mutate(time = format(time, "%Y-%m-%d")) %>%
+    mutate(
+      across(all_of(out_cols), ~ round(.x, 3)),
+      time = format(time, "%Y-%m-%d")
+    ) %>%
     arrange(time, geography)
 
   vroom::vroom_write(data_main, "standard/data.csv.gz", ",")

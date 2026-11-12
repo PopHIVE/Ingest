@@ -22,7 +22,8 @@ select_signals <- c(
 # Before 2026-11 this used pub_fluview(), Delphi's V4 endpoint, which Delphi
 # deprecated in October 2026 ("new ingestion will end"). The latest update time
 # is recorded for provenance only; the pull is small, so it runs every time and
-# the md5 of the raw file decides whether to reprocess (as in delphi_nhsn).
+# the md5 of the raw file decides whether to reprocess (as in the other
+# delphi_* sources).
 # epidatr >= 1.4.0 returns the metadata without a source-name wrapper; older
 # versions nested it under the source name, so accept both
 delphi_meta <- epidatr::epidata_meta(source = "fluview_ilinet")
@@ -32,23 +33,29 @@ if (is.null(delphi_maxdate)) {
   warning("could not read latest_update from the fluview_ilinet metadata")
 }
 
-# epidatr joins multiple signals into one comma-separated parameter, which the
-# cast API matches to nothing, so each signal/geography is requested on its own.
-# wili is published for the nation only (CDC weights by state population only
-# when combining states), so it is not requested by state.
-requests <- tidyr::expand_grid(
-  signal = unname(select_signals),
-  geo_type = c("nation", "state")
-) %>%
-  filter(!(signal == "wili" & geo_type == "state"))
+# Without DELPHI_EPIDATA_KEY (e.g. a local run) the API allows 3 requests per
+# minute, so wait and retry on HTTP 429 instead of failing
+snapshot_with_retry <- function(..., tries = 4) {
+  for (i in seq_len(tries)) {
+    res <- tryCatch(epidatr::epidata_snapshot(...), error = function(e) e)
+    if (!inherits(res, "error")) return(res)
+    rate_limited <- inherits(res, "httr2_http_429") ||
+      inherits(res$parent, "httr2_http_429")
+    if (!rate_limited || i == tries) stop(res)
+    message("Delphi API rate limit reached; retrying in ", 30 * i, " seconds")
+    Sys.sleep(30 * i)
+  }
+}
 
-all <- purrr::pmap(requests, function(signal, geo_type) {
-  epidatr::epidata_snapshot(
-    source = "fluview_ilinet",
-    signals = signal,
-    geo_type = geo_type
-  )
-}) %>%
+# epidatr >= 1.4.0 sends several signals in one request; one request per
+# geography level. wili is published for the nation only (CDC weights by state
+# population only when combining states), so it is not requested by state.
+all <- c("nation", "state") %>%
+  lapply(function(geo_type) {
+    signals <- unname(select_signals)
+    if (geo_type == "state") signals <- setdiff(signals, "wili")
+    snapshot_with_retry(source = "fluview_ilinet", signals = signals, geo_type = geo_type)
+  }) %>%
   bind_rows() %>%
   select(signal, geo_type, geo_value, age_group, reference_time, fill_method, report_time, value) %>%
   # rows come back in a different order on each call; sort so an unchanged
@@ -103,18 +110,21 @@ if (!identical(process$raw_state, raw_state)) {
     )
   }
 
+  # the cast API dates each week by its ending Saturday
+  not_saturday <- lubridate::wday(data$reference_time, week_start = 7) != 7
+  if (any(not_saturday)) {
+    stop(sum(not_saturday), " row(s) have a reference_time that is not a Saturday")
+  }
+
   data_main <- data %>%
-    mutate(
-      signal = names(select_signals)[match(signal, select_signals)],
-      # weeks end on Saturday; shift any Sunday-start date to its Saturday
-      time = if_else(
-        lubridate::wday(reference_time, week_start = 7) == 1,
-        reference_time + 6,
-        reference_time
-      )
-    ) %>%
-    select(geography, time, signal, value) %>%
+    mutate(signal = names(select_signals)[match(signal, select_signals)]) %>%
+    select(geography, time = reference_time, signal, value) %>%
     pivot_wider(names_from = signal, values_from = value) %>%
+    # every geography gets every week from its first report to the latest
+    # week, so weeks a state did not report are NA rows rather than absent rows
+    group_by(geography) %>%
+    complete(time = seq(min(time), max(data$reference_time), by = "week")) %>%
+    ungroup() %>%
     mutate(
       # CDC does not population-weight a single state, so a state's weighted
       # ILI is its unweighted ILI (the old FluView feed published them as

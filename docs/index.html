@@ -26,7 +26,7 @@
         <a class="navbar-brand" href="#">PopHIVE Data Documentation</a>
         <div class="d-flex align-items-center">
           <a class="btn btn-outline-light btn-sm me-3" href="data-table.html">Data Table →</a>
-          <span class="navbar-text text-light">Last updated: November 10, 2026</span>
+          <span class="navbar-text text-light">Last updated: November 12, 2026</span>
         </div>
       </div>
     </nav>
@@ -100,7 +100,13 @@
                 <a class="nav-link" href="#delphi-ili-fluview">Delphi ILI Fluview</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#delphi-nhsn">Delphi NHSN</a>
+                <a class="nav-link" href="#delphi-nrevss">Delphi NREVSS</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#delphi-sleepcycle">Delphi Sleepcycle</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#delphi-vha-respiratory">Delphi Vha Respiratory</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#drowning">Drowning</a>
@@ -10105,7 +10111,7 @@
             </section>
             <section id="delphi-doctors-claims" class="mb-5">
               <h2 class="border-bottom pb-2">Delphi Doctors Claims</h2>
-              <p class="lead">The Delphi outpatient claims signal estimates the percentage of outpatient doctor visits with COVID-19 diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal tracks outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of service. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile and a lag-1 autocorrelation of 0.998), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. This signal replaces the retired COVIDcast doctor-visits signal (smoothed_cli), which was smoothed with a Gaussian linear smoother.</p>
+              <p class="lead">The Delphi outpatient claims signal estimates the percentage of outpatient doctor visits with COVID-19 diagnoses based on claims data from health system partners. CMU Delphi receives de-identified medical insurance claims data covering a significant fraction of United States healthcare visits. The signal tracks outpatient visits with COVID-related ICD-10 diagnosis codes (U071, U072, B9729, J1281, Z03818, B342, J1289). This signal provides near-real-time insight into COVID-19 activity at the community level based on actual healthcare encounters. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of service. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile and a lag-1 autocorrelation of 0.998), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. Geography-weeks with no Saturday observation are therefore absent, which affects about 4% of county-weeks. Delphi publishes low-volume geographies only intermittently, so some counties and states have gaps or stopped updating; see the README in this folder for the states affected. Values are not zero before the pandemic (about 0.15-0.4% nationally in late 2019) because the diagnosis code list includes codes that are not specific to SARS-CoV-2, such as B9729 (other coronavirus) and B342 (coronavirus infection, unspecified). This signal replaces the retired COVIDcast doctor-visits signal (smoothed_cli), which was smoothed with a Gaussian linear smoother.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
@@ -10169,7 +10175,7 @@
             </section>
             <section id="delphi-hospital-claims" class="mb-5">
               <h2 class="border-bottom pb-2">Delphi Hospital Claims</h2>
-              <p class="lead">The Delphi inpatient claims signals estimate the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of admission. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile, and runs of non-zero days bottom out at exactly seven), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. Geography-weeks with no Saturday observation are therefore absent, which affects about 11% of county-weeks. These signals replace the retired COVIDcast hospital-admissions signals (smoothed_covid19_from_claims and smoothed_flu_from_claims), which were smoothed with a Gaussian linear smoother.</p>
+              <p class="lead">The Delphi inpatient claims signals estimate the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of admission. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile, and runs of non-zero days bottom out at exactly seven), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. Geography-weeks with no Saturday observation are therefore absent, which affects about 11% of county-weeks. Delphi publishes low-volume geographies only intermittently, so several states have long gaps or stopped updating; see the README in this folder for the last week available in each. These signals replace the retired COVIDcast hospital-admissions signals (smoothed_covid19_from_claims and smoothed_flu_from_claims), which were smoothed with a Gaussian linear smoother.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
@@ -10222,7 +10228,7 @@
                       <td>
                         <code>delphi_hospital_covid_smooth</code>
                       </td>
-                      <td>delphi_hospital_covid_smooth</td>
+                      <td>COVID Hospital Admissions</td>
                       <td>Estimated percentage of new hospital admissions with COVID-associated diagnoses, based on claims data from health system partners, as of the week-ending Saturday</td>
                       <td>percent</td>
                       <td>Percent of new hospital admissions, 7-day average ending Saturday</td>
@@ -10242,11 +10248,11 @@
             </section>
             <section id="delphi-ili-fluview" class="mb-5">
               <h2 class="border-bottom pb-2">Delphi ILI Fluview</h2>
-              <p class="lead">Influenza-Like Illness (ILI) surveillance data from the CDC's ILINet network, accessed via the CMU Delphi Epidata API. ILINet is a collaborative effort between the CDC, state and local health departments, and approximately 3,000 outpatient healthcare providers across all 50 states, Puerto Rico, the District of Columbia, and the U.S. Virgin Islands. Providers report the total number of patients seen and the number presenting with ILI (defined as fever &gt;=100F plus cough and/or sore throat without a known cause other than influenza). Data are available from 1997 week 40 onward at national, HHS regional, and state levels. Both weighted (population-adjusted) and unweighted percentages are provided. This long-running surveillance system is the primary source for tracking seasonal influenza activity in the United States.</p>
+              <p class="lead">Influenza-Like Illness (ILI) surveillance data from the CDC's ILINet network, accessed via the CMU Delphi Epidata API. ILINet is a collaborative effort between the CDC, state and local health departments, and approximately 3,000 outpatient healthcare providers across all 50 states, Puerto Rico, the District of Columbia, and the U.S. Virgin Islands. Providers report the total number of patients seen and the number presenting with ILI (defined as fever &gt;=100F plus cough and/or sore throat without a known cause other than influenza). National data are available from 1997 week 40 onward; state data from the 2010-11 season (Puerto Rico from 2013, the U.S. Virgin Islands from 2015). New York values combine New York City and the rest of the state. Both weighted (population-adjusted) and unweighted percentages are provided; weighting changes only the national value. Weeks in which reporting providers saw no patients have no ILI percentage. Until November 2026 PopHIVE read these data from Delphi's V4 FluView endpoint, which Delphi deprecated in October 2026; they are now read from the Epidata v5 API, which returns the same values. This long-running surveillance system is the primary source for tracking seasonal influenza activity in the United States.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
-                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/fluview.html" target="_blank">Data Source</a>
+                  <a href="https://delphi.cmu.edu/epidata/v5/" target="_blank">Data Source</a>
                    | 
                   <a href="https://delphi.cmu.edu/" target="_blank">Carnegie Mellon University Delphi Research Group</a>
                    | 
@@ -10340,22 +10346,356 @@
                 </table>
               </div>
             </section>
-            <section id="delphi-nhsn" class="mb-5">
-              <h2 class="border-bottom pb-2">Delphi NHSN</h2>
-              <p class="lead">Weekly hospital respiratory data reported to CDC's National Healthcare Safety Network (NHSN), accessed via the CMU Delphi Epidata API. NHSN is the nation's most widely used healthcare-associated infection tracking system, collecting data from hospitals across the United States. The data includes COVID-19, influenza, and RSV associated hospital admissions aggregated to national and state levels. Data collection became mandatory for hospitals in November 2024; prior to this, reporting was voluntary with variable participation rates.</p>
+            <section id="delphi-nrevss" class="mb-5">
+              <h2 class="border-bottom pb-2">Delphi NREVSS</h2>
+              <p class="lead">Weekly laboratory testing data from CDC's National Respiratory and Enteric Virus Surveillance System (NREVSS), accessed through the CMU Delphi Epidata API (v5). NREVSS is a voluntary network of more than 450 clinical, public health and commercial laboratories that report nucleic acid amplification tests (NAATs) for respiratory viruses. National data cover adenovirus, SARS-CoV-2, rhinovirus/enterovirus, seasonal human coronavirus, human metapneumovirus, parainfluenza virus and RSV from July 2019 (SARS-CoV-2 from January 2020): weekly tests, positive detections and percent positivity. State data cover only RSV and SARS-CoV-2, from February 2024, as CDC-published moving averages (3-week centered averages of tests and percent positivity, 5-week trailing averages of positives) for states that meet CDC participation criteria. Influenza is not included (it is reported through FluView). Weeks end on Saturday (MMWR weeks). CDC suppresses weekly positive counts of 1-4 and the matching test counts; these are left missing. Data are provisional for up to two years; recent weeks are typically more than 90% complete after about two weeks. Values describe people who were tested, not population prevalence, and carry no demographic detail.</p>
               <h5>Sources</h5>
               <ul class="list-unstyled">
                 <li>
-                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/nhsn.html" target="_blank">Data Source</a>
+                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/nrevss.html" target="_blank">Data Source</a>
                    | 
                   <a href="https://delphi.cmu.edu/" target="_blank">Carnegie Mellon University Delphi Research Group</a>
                    | 
-                  <a href="https://cmu-delphi.github.io/delphi-epidata/" target="_blank">API/Data Location</a>
+                  <a href="https://data.cdc.gov/d/rgnm-fkqb" target="_blank">API/Data Location</a>
                 </li>
               </ul>
               <div class="alert alert-warning">
                 <strong>Restrictions: </strong>
-                CC-BY Attribution license. Data may be used with attribution to the CMU Delphi Group and CDC NHSN.
+                Public domain. CDC data is generally not subject to copyright restrictions. Delphi lists this source as a public-domain U.S. Government work (17 U.S.C. 105).
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data_nation.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_adv_tests</code>
+                      </td>
+                      <td>Adenovirus Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of adenovirus NAAT tests reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_covid_tests</code>
+                      </td>
+                      <td>COVID-19 Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of SARS-CoV-2 (COVID-19) NAAT tests reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_evrv_tests</code>
+                      </td>
+                      <td>Rhinovirus/Enterovirus Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of rhinovirus/enterovirus NAAT tests reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_hcov_tests</code>
+                      </td>
+                      <td>Seasonal Coronavirus Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of seasonal human coronavirus (all common types combined; excludes SARS-CoV-2) NAAT tests reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_hmpv_tests</code>
+                      </td>
+                      <td>hMPV Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of human metapneumovirus NAAT tests reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_hpiv_tests</code>
+                      </td>
+                      <td>Parainfluenza Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of human parainfluenza virus (types 1-4 combined) NAAT tests reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_rsv_tests</code>
+                      </td>
+                      <td>RSV Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of respiratory syncytial virus (RSV) NAAT tests reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_adv_positive_tests</code>
+                      </td>
+                      <td>Adenovirus Positive Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of positive adenovirus NAAT detections reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Positive tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_covid_positive_tests</code>
+                      </td>
+                      <td>COVID-19 Positive Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of positive SARS-CoV-2 (COVID-19) NAAT detections reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Positive tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_evrv_positive_tests</code>
+                      </td>
+                      <td>Rhinovirus/Enterovirus Positive Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of positive rhinovirus/enterovirus NAAT detections reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Positive tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_hcov_positive_tests</code>
+                      </td>
+                      <td>Seasonal Coronavirus Positive Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of positive seasonal human coronavirus (all common types combined; excludes SARS-CoV-2) NAAT detections reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Positive tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_hmpv_positive_tests</code>
+                      </td>
+                      <td>hMPV Positive Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of positive human metapneumovirus NAAT detections reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Positive tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_hpiv_positive_tests</code>
+                      </td>
+                      <td>Parainfluenza Positive Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of positive human parainfluenza virus (types 1-4 combined) NAAT detections reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Positive tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_rsv_positive_tests</code>
+                      </td>
+                      <td>RSV Positive Lab Tests (NREVSS, National)</td>
+                      <td>Weekly count of positive respiratory syncytial virus (RSV) NAAT detections reported by NREVSS laboratories nationwide.</td>
+                      <td>Count</td>
+                      <td>Positive tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_adv_pct_positive</code>
+                      </td>
+                      <td>Adenovirus Test Positivity (NREVSS, National)</td>
+                      <td>Weekly percent of adenovirus NAAT tests that were positive nationwide.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_covid_pct_positive</code>
+                      </td>
+                      <td>COVID-19 Test Positivity (NREVSS, National)</td>
+                      <td>Weekly percent of SARS-CoV-2 (COVID-19) NAAT tests that were positive nationwide.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_evrv_pct_positive</code>
+                      </td>
+                      <td>Rhinovirus/Enterovirus Test Positivity (NREVSS, National)</td>
+                      <td>Weekly percent of rhinovirus/enterovirus NAAT tests that were positive nationwide.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_hcov_pct_positive</code>
+                      </td>
+                      <td>Seasonal Coronavirus Test Positivity (NREVSS, National)</td>
+                      <td>Weekly percent of seasonal human coronavirus (all common types combined; excludes SARS-CoV-2) NAAT tests that were positive nationwide.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_hmpv_pct_positive</code>
+                      </td>
+                      <td>hMPV Test Positivity (NREVSS, National)</td>
+                      <td>Weekly percent of human metapneumovirus NAAT tests that were positive nationwide.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_hpiv_pct_positive</code>
+                      </td>
+                      <td>Parainfluenza Test Positivity (NREVSS, National)</td>
+                      <td>Weekly percent of human parainfluenza virus (types 1-4 combined) NAAT tests that were positive nationwide.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_rsv_pct_positive</code>
+                      </td>
+                      <td>RSV Test Positivity (NREVSS, National)</td>
+                      <td>Weekly percent of respiratory syncytial virus (RSV) NAAT tests that were positive nationwide.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>data_state.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_covid_tests_3wav</code>
+                      </td>
+                      <td>COVID-19 Lab Tests, 3-Week Average (NREVSS, State)</td>
+                      <td>3-week centered average of weekly SARS-CoV-2 (COVID-19) NAAT tests reported by NREVSS laboratories in each state.</td>
+                      <td>Count</td>
+                      <td>Tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_rsv_tests_3wav</code>
+                      </td>
+                      <td>RSV Lab Tests, 3-Week Average (NREVSS, State)</td>
+                      <td>3-week centered average of weekly respiratory syncytial virus (RSV) NAAT tests reported by NREVSS laboratories in each state.</td>
+                      <td>Count</td>
+                      <td>Tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_covid_positive_tests_5wav</code>
+                      </td>
+                      <td>COVID-19 Positive Lab Tests, 5-Week Average (NREVSS, State)</td>
+                      <td>5-week trailing average of weekly positive SARS-CoV-2 (COVID-19) NAAT detections reported by NREVSS laboratories in each state.</td>
+                      <td>Count</td>
+                      <td>Positive tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_rsv_positive_tests_5wav</code>
+                      </td>
+                      <td>RSV Positive Lab Tests, 5-Week Average (NREVSS, State)</td>
+                      <td>5-week trailing average of weekly positive respiratory syncytial virus (RSV) NAAT detections reported by NREVSS laboratories in each state.</td>
+                      <td>Count</td>
+                      <td>Positive tests</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_covid_pct_positive_3wav</code>
+                      </td>
+                      <td>COVID-19 Test Positivity, 3-Week Average (NREVSS, State)</td>
+                      <td>3-week centered average of the percent of SARS-CoV-2 (COVID-19) NAAT tests that were positive in each state.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_nrevss_rsv_pct_positive_3wav</code>
+                      </td>
+                      <td>RSV Test Positivity, 3-Week Average (NREVSS, State)</td>
+                      <td>3-week centered average of the percent of respiratory syncytial virus (RSV) NAAT tests that were positive in each state.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="delphi-sleepcycle" class="mb-5">
+              <h2 class="border-bottom pb-2">Delphi Sleepcycle</h2>
+              <p class="lead">De-identified nighttime cough data from the Sleep Cycle sleep-tracking app, contributed by Sleep Cycle and processed by the CMU Delphi Group, accessed through the Delphi Epidata API (v5). The app detects coughs from the phone's microphone while the user sleeps. Two signals give the percent of app users who averaged 2 or more, or 10 or more, coughs per hour of sleep; they track respiratory illness in general and are not specific to any pathogen. Delphi publishes daily 7-day trailing averages from January 7, 2023 for counties (the native level) and for states and the nation (built by summing county counts), with 90% intervals. PopHIVE keeps the value for each week-ending Saturday, which is the average over that Sunday-Saturday MMWR week. To protect privacy, Delphi adds differential-privacy noise (epsilon = 1 per user-day) to the number of users who cough, truncates impossible values after aggregation, and suppresses locations with sparse or very uncertain estimates; about 250 counties and 43 states are reported. Users opted in and likely skew younger and more urban than the U.S. population, demographic information is optional, user locations are perturbed by about 500 m, and app outages left a few weeks without data. Early daily values are revised within about a day.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/sleepcycle.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://delphi.cmu.edu/" target="_blank">Carnegie Mellon University Delphi Research Group; Sleep Cycle AB</a>
+                   | 
+                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/sleepcycle.html" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                CC BY-NC 4.0. Attribution to Sleep Cycle and the CMU Delphi Group is required, and the data may not be used for commercial purposes.
               </div>
               <h4 class="mt-4">Variables</h4>
               <h5 class="mt-3">
@@ -10393,30 +10733,422 @@
                     </tr>
                     <tr>
                       <td>
-                        <code>delphi_nhsn_covid</code>
+                        <code>delphi_sleepcycle_pct_cough_2_plus</code>
                       </td>
-                      <td>COVID Hospitalizations (NHSN)</td>
-                      <td>Weekly count of COVID-19 associated hospital admissions reported to CDC's NHSN.</td>
-                      <td>count</td>
-                      <td>hospitalizations</td>
+                      <td>Nighttime Cough, 2+ per Hour (Sleep Cycle)</td>
+                      <td>Percent of Sleep Cycle users who averaged 2 or more coughs per hour while asleep during the week.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
                     </tr>
                     <tr>
                       <td>
-                        <code>delphi_nhsn_flu</code>
+                        <code>delphi_sleepcycle_pct_cough_2_plus_lcl</code>
                       </td>
-                      <td>Influenza Hospitalizations (NHSN)</td>
-                      <td>Weekly count of influenza-associated hospital admissions reported to CDC's NHSN.</td>
-                      <td>count</td>
-                      <td>hospitalizations</td>
+                      <td>Nighttime Cough, 2+ per Hour (Sleep Cycle), 90% CI lower bound</td>
+                      <td>Lower bound of the 90% confidence interval for delphi_sleepcycle_pct_cough_2_plus.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
                     </tr>
                     <tr>
                       <td>
-                        <code>delphi_nhsn_rsv</code>
+                        <code>delphi_sleepcycle_pct_cough_2_plus_ucl</code>
                       </td>
-                      <td>RSV Hospitalizations (NHSN)</td>
-                      <td>Weekly count of RSV-associated hospital admissions reported to CDC's NHSN.</td>
-                      <td>count</td>
-                      <td>hospitalizations</td>
+                      <td>Nighttime Cough, 2+ per Hour (Sleep Cycle), 90% CI upper bound</td>
+                      <td>Upper bound of the 90% confidence interval for delphi_sleepcycle_pct_cough_2_plus.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_sleepcycle_pct_cough_10_plus</code>
+                      </td>
+                      <td>Nighttime Cough, 10+ per Hour (Sleep Cycle)</td>
+                      <td>Percent of Sleep Cycle users who averaged 10 or more coughs per hour while asleep during the week.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_sleepcycle_pct_cough_10_plus_lcl</code>
+                      </td>
+                      <td>Nighttime Cough, 10+ per Hour (Sleep Cycle), 90% CI lower bound</td>
+                      <td>Lower bound of the 90% confidence interval for delphi_sleepcycle_pct_cough_10_plus.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_sleepcycle_pct_cough_10_plus_ucl</code>
+                      </td>
+                      <td>Nighttime Cough, 10+ per Hour (Sleep Cycle), 90% CI upper bound</td>
+                      <td>Upper bound of the 90% confidence interval for delphi_sleepcycle_pct_cough_10_plus.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="delphi-vha-respiratory" class="mb-5">
+              <h2 class="border-bottom pb-2">Delphi Vha Respiratory</h2>
+              <p class="lead">Respiratory virus cases and vaccinations among patients of the Veterans Health Administration (VHA), the largest integrated health care system in the U.S., from the VHA Seasonal Disease Review on the VA Access to Care portal, accessed through the CMU Delphi Epidata API (v5) sources vha_respiratory_cases and vha_respiratory_vaccinations. Cases are laboratory-confirmed COVID-19, influenza and RSV cases, reported as season-to-date cumulative counts and as 7-day average new cases per 100,000 enrolled veterans. Vaccinations are cumulative COVID-19, influenza and RSV vaccine doses (season to date, plus lifetime RSV doses), as counts and per 100,000 enrolled veterans. Rates use enrollee counts from the VHA Enrollees by County dataset and come with 90% Wilson confidence intervals. Delphi publishes daily values from May 27, 2026; PopHIVE keeps the value for each week-ending Saturday, so 7-day averages correspond to Sunday-Saturday MMWR weeks. Data are available for states, DC and Puerto Rico and for the nation; national values are sums or enrollee-weighted averages of states, and national cumulative case totals are withheld whenever any state is missing. Important caveats: enrolled veterans are mostly older and male, so values may not reflect community transmission; case counts reflect testing and reporting, not symptom onset; cumulative counts can fall when VHA revises reports, which can make 7-day case rates negative (these are set to missing); VHA reports counts under 11 as 5; the season reset of cumulative counts on October 1 was delayed for cases, and vaccination counts did not reset but froze at their end-of-season totals from late September 2026; and the VHA portal keeps only about 30 days of files, which limits backfill of missing days.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/vha_respiratory.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://delphi.cmu.edu/" target="_blank">Carnegie Mellon University Delphi Research Group; U.S. Department of Veterans Affairs</a>
+                   | 
+                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/vha_respiratory.html" target="_blank">API/Data Location</a>
+                </li>
+                <li>
+                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/vha_respiratory.html" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://delphi.cmu.edu/" target="_blank">Carnegie Mellon University Delphi Research Group; U.S. Department of Veterans Affairs</a>
+                   | 
+                  <a href="https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/vha_respiratory.html" target="_blank">API/Data Location</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions:</strong>
+                <ul class="mb-0 mt-2">
+                  <li>
+                    <strong>
+                      CMU Delphi Epidata - VHA Respiratory Cases and Vaccinations
+                      : 
+                    </strong>
+                    Public domain. Delphi lists this source as a public-domain U.S. Government work (17 U.S.C. 105).
+                  </li>
+                  <li>
+                    <strong>
+                      CMU Delphi Epidata - VHA Respiratory Vaccinations
+                      : 
+                    </strong>
+                    Public domain. Delphi lists this source as a public-domain U.S. Government work (17 U.S.C. 105).
+                  </li>
+                </ul>
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_covid_cases_cumulative</code>
+                      </td>
+                      <td>COVID-19 Cases, Season to Date (VHA)</td>
+                      <td>Season-to-date count of lab-confirmed COVID-19 cases reported by the Veterans Health Administration.</td>
+                      <td>Count</td>
+                      <td>Cases</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_flu_cases_cumulative</code>
+                      </td>
+                      <td>Influenza Cases, Season to Date (VHA)</td>
+                      <td>Season-to-date count of lab-confirmed influenza cases reported by the Veterans Health Administration.</td>
+                      <td>Count</td>
+                      <td>Cases</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_cases_cumulative</code>
+                      </td>
+                      <td>RSV Cases, Season to Date (VHA)</td>
+                      <td>Season-to-date count of lab-confirmed RSV cases reported by the Veterans Health Administration.</td>
+                      <td>Count</td>
+                      <td>Cases</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_covid_cases_per_100k_7dav</code>
+                      </td>
+                      <td>COVID-19 Case Rate, 7-Day Average (VHA)</td>
+                      <td>Average daily new COVID-19 cases per 100,000 enrolled veterans over the week.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_covid_cases_per_100k_7dav_lcl</code>
+                      </td>
+                      <td>COVID-19 Case Rate, 7-Day Average (VHA), 90% CI lower bound</td>
+                      <td>Lower bound of the 90% Wilson confidence interval for delphi_vha_covid_cases_per_100k_7dav.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_covid_cases_per_100k_7dav_ucl</code>
+                      </td>
+                      <td>COVID-19 Case Rate, 7-Day Average (VHA), 90% CI upper bound</td>
+                      <td>Upper bound of the 90% Wilson confidence interval for delphi_vha_covid_cases_per_100k_7dav.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_flu_cases_per_100k_7dav</code>
+                      </td>
+                      <td>Influenza Case Rate, 7-Day Average (VHA)</td>
+                      <td>Average daily new influenza cases per 100,000 enrolled veterans over the week.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_flu_cases_per_100k_7dav_lcl</code>
+                      </td>
+                      <td>Influenza Case Rate, 7-Day Average (VHA), 90% CI lower bound</td>
+                      <td>Lower bound of the 90% Wilson confidence interval for delphi_vha_flu_cases_per_100k_7dav.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_flu_cases_per_100k_7dav_ucl</code>
+                      </td>
+                      <td>Influenza Case Rate, 7-Day Average (VHA), 90% CI upper bound</td>
+                      <td>Upper bound of the 90% Wilson confidence interval for delphi_vha_flu_cases_per_100k_7dav.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_cases_per_100k_7dav</code>
+                      </td>
+                      <td>RSV Case Rate, 7-Day Average (VHA)</td>
+                      <td>Average daily new RSV cases per 100,000 enrolled veterans over the week.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_cases_per_100k_7dav_lcl</code>
+                      </td>
+                      <td>RSV Case Rate, 7-Day Average (VHA), 90% CI lower bound</td>
+                      <td>Lower bound of the 90% Wilson confidence interval for delphi_vha_rsv_cases_per_100k_7dav.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_cases_per_100k_7dav_ucl</code>
+                      </td>
+                      <td>RSV Case Rate, 7-Day Average (VHA), 90% CI upper bound</td>
+                      <td>Upper bound of the 90% Wilson confidence interval for delphi_vha_rsv_cases_per_100k_7dav.</td>
+                      <td>Rate</td>
+                      <td>Cases per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_covid_vaccines_season_cumulative</code>
+                      </td>
+                      <td>COVID-19 Vaccine Doses, Season to Date (VHA)</td>
+                      <td>Cumulative COVID-19 vaccine doses administered by the Veterans Health Administration since the start of the respiratory season.</td>
+                      <td>Count</td>
+                      <td>Doses</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_covid_vaccines_season_cumulative_suppressed_flag</code>
+                      </td>
+                      <td>COVID-19 Vaccine Doses (VHA), suppression flag</td>
+                      <td>1 if VHA censored the state count (under 11, reported as 5), 0 otherwise.</td>
+                      <td>Flag</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_covid_vaccines_season_cumulative_per_100k</code>
+                      </td>
+                      <td>COVID-19 Vaccine Doses per 100k Enrollees, Season to Date (VHA)</td>
+                      <td>Cumulative COVID-19 vaccine doses given by VHA per 100,000 enrolled veterans.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_covid_vaccines_season_cumulative_per_100k_lcl</code>
+                      </td>
+                      <td>COVID-19 Vaccine Doses per 100k (VHA), 90% CI lower bound</td>
+                      <td>Lower bound of the 90% Wilson confidence interval for delphi_vha_covid_vaccines_season_cumulative_per_100k.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_covid_vaccines_season_cumulative_per_100k_ucl</code>
+                      </td>
+                      <td>COVID-19 Vaccine Doses per 100k (VHA), 90% CI upper bound</td>
+                      <td>Upper bound of the 90% Wilson confidence interval for delphi_vha_covid_vaccines_season_cumulative_per_100k.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_flu_vaccines_season_cumulative</code>
+                      </td>
+                      <td>Influenza Vaccine Doses, Season to Date (VHA)</td>
+                      <td>Cumulative influenza vaccine doses administered by the Veterans Health Administration since the start of the respiratory season.</td>
+                      <td>Count</td>
+                      <td>Doses</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_flu_vaccines_season_cumulative_suppressed_flag</code>
+                      </td>
+                      <td>Influenza Vaccine Doses (VHA), suppression flag</td>
+                      <td>1 if VHA censored the state count (under 11, reported as 5), 0 otherwise.</td>
+                      <td>Flag</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_flu_vaccines_season_cumulative_per_100k</code>
+                      </td>
+                      <td>Influenza Vaccine Doses per 100k Enrollees, Season to Date (VHA)</td>
+                      <td>Cumulative influenza vaccine doses given by VHA per 100,000 enrolled veterans.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_flu_vaccines_season_cumulative_per_100k_lcl</code>
+                      </td>
+                      <td>Influenza Vaccine Doses per 100k (VHA), 90% CI lower bound</td>
+                      <td>Lower bound of the 90% Wilson confidence interval for delphi_vha_flu_vaccines_season_cumulative_per_100k.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_flu_vaccines_season_cumulative_per_100k_ucl</code>
+                      </td>
+                      <td>Influenza Vaccine Doses per 100k (VHA), 90% CI upper bound</td>
+                      <td>Upper bound of the 90% Wilson confidence interval for delphi_vha_flu_vaccines_season_cumulative_per_100k.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_season_cumulative</code>
+                      </td>
+                      <td>RSV Vaccine Doses, Season to Date (VHA)</td>
+                      <td>Cumulative RSV vaccine doses administered by the Veterans Health Administration since the start of the respiratory season.</td>
+                      <td>Count</td>
+                      <td>Doses</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_season_cumulative_suppressed_flag</code>
+                      </td>
+                      <td>RSV Vaccine Doses (VHA), suppression flag</td>
+                      <td>1 if VHA censored the state count (under 11, reported as 5), 0 otherwise.</td>
+                      <td>Flag</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_season_cumulative_per_100k</code>
+                      </td>
+                      <td>RSV Vaccine Doses per 100k Enrollees, Season to Date (VHA)</td>
+                      <td>Cumulative RSV vaccine doses given by VHA per 100,000 enrolled veterans.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_season_cumulative_per_100k_lcl</code>
+                      </td>
+                      <td>RSV Vaccine Doses per 100k (VHA), 90% CI lower bound</td>
+                      <td>Lower bound of the 90% Wilson confidence interval for delphi_vha_rsv_vaccines_season_cumulative_per_100k.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_season_cumulative_per_100k_ucl</code>
+                      </td>
+                      <td>RSV Vaccine Doses per 100k (VHA), 90% CI upper bound</td>
+                      <td>Upper bound of the 90% Wilson confidence interval for delphi_vha_rsv_vaccines_season_cumulative_per_100k.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_lifetime_cumulative</code>
+                      </td>
+                      <td>RSV Vaccine Doses, Lifetime (VHA)</td>
+                      <td>Cumulative RSV vaccine doses administered by the Veterans Health Administration since VHA began tracking RSV vaccination.</td>
+                      <td>Count</td>
+                      <td>Doses</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_lifetime_cumulative_suppressed_flag</code>
+                      </td>
+                      <td>RSV Vaccine Doses (VHA), suppression flag</td>
+                      <td>1 if VHA censored the state count (under 11, reported as 5), 0 otherwise.</td>
+                      <td>Flag</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_lifetime_cumulative_per_100k</code>
+                      </td>
+                      <td>RSV Vaccine Doses per 100k Enrollees, Lifetime (VHA)</td>
+                      <td>Cumulative RSV vaccine doses given by VHA per 100,000 enrolled veterans.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_lifetime_cumulative_per_100k_lcl</code>
+                      </td>
+                      <td>RSV Vaccine Doses per 100k (VHA), 90% CI lower bound</td>
+                      <td>Lower bound of the 90% Wilson confidence interval for delphi_vha_rsv_vaccines_lifetime_cumulative_per_100k.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>delphi_vha_rsv_vaccines_lifetime_cumulative_per_100k_ucl</code>
+                      </td>
+                      <td>RSV Vaccine Doses per 100k (VHA), 90% CI upper bound</td>
+                      <td>Upper bound of the 90% Wilson confidence interval for delphi_vha_rsv_vaccines_lifetime_cumulative_per_100k.</td>
+                      <td>Rate</td>
+                      <td>Doses per 100,000 enrollees</td>
                     </tr>
                   </tbody>
                 </table>
@@ -53238,8 +53970,6 @@
                 ; 
                 <a href="#delphi-ili-fluview" class="bundle-source-link">Delphi ILI Fluview</a>
                 ; 
-                <a href="#delphi-nhsn" class="bundle-source-link">Delphi NHSN</a>
-                ; 
                 <a href="#epic-resp-infections" class="bundle-source-link">Epic Resp Infections</a>
                 ; 
                 <a href="#flu-doses-distributed" class="bundle-source-link">Flu Doses Distributed</a>
@@ -53612,8 +54342,8 @@
                 <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/wastewater/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
                   <code>wastewater/standard/data.csv.gz</code>
                 </a>
-                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_nhsn/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
-                  <code>delphi_nhsn/standard/data.csv.gz</code>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nhsn_hospital_capacity/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nhsn_hospital_capacity/standard/data.csv.gz</code>
                 </a>
                 <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_hospital_claims/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
                   <code>delphi_hospital_claims/standard/data.csv.gz</code>
@@ -57901,7 +58631,7 @@
             <section id="bundle-respiratory" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: Respiratory</h2>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 22 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 24 parquet file(s).</em>
               </p>
               <p class="mb-3">
                 <strong>Data sources: </strong>
@@ -57913,13 +58643,17 @@
                 ; 
                 <a href="#delphi-ili-fluview" class="bundle-source-link">Delphi ILI Fluview</a>
                 ; 
-                <a href="#delphi-nhsn" class="bundle-source-link">Delphi NHSN</a>
+                <a href="#delphi-nrevss" class="bundle-source-link">Delphi NREVSS</a>
+                ; 
+                <a href="#delphi-sleepcycle" class="bundle-source-link">Delphi Sleepcycle</a>
                 ; 
                 <a href="#epic-resp-infections" class="bundle-source-link">Epic Resp Infections</a>
                 ; 
                 <a href="#gtrends" class="bundle-source-link">Gtrends</a>
                 ; 
                 <a href="#kinsa-ili" class="bundle-source-link">Kinsa ILI</a>
+                ; 
+                <a href="#nhsn-hospital-capacity" class="bundle-source-link">NHSN Hospital Capacity</a>
                 ; 
                 <a href="#nnds" class="bundle-source-link">NNDS</a>
                 ; 
@@ -58394,8 +59128,8 @@
                 <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/wastewater/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
                   <code>wastewater/standard/data.csv.gz</code>
                 </a>
-                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_nhsn/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
-                  <code>delphi_nhsn/standard/data.csv.gz</code>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nhsn_hospital_capacity/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nhsn_hospital_capacity/standard/data.csv.gz</code>
                 </a>
                 <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_hospital_claims/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
                   <code>delphi_hospital_claims/standard/data.csv.gz</code>
@@ -58812,8 +59546,8 @@
                 <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/wastewater/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
                   <code>wastewater/standard/data.csv.gz</code>
                 </a>
-                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_nhsn/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
-                  <code>delphi_nhsn/standard/data.csv.gz</code>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nhsn_hospital_capacity/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nhsn_hospital_capacity/standard/data.csv.gz</code>
                 </a>
                 <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_hospital_claims/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
                   <code>delphi_hospital_claims/standard/data.csv.gz</code>
@@ -59173,6 +59907,111 @@
                       <td>1 where Epic withheld the underlying cell; blank on NNDSS rows.</td>
                       <td>Binary</td>
                       <td>0/1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>nrevss_lab_testing.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_nrevss/standard/data_nation.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>delphi_nrevss/standard/data_nation.csv.gz</code>
+                </a>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_nrevss/standard/data_state.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>delphi_nrevss/standard/data_state.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>State name, or "United States" for the national total.</td>
+                      <td>identifier</td>
+                      <td>state name</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_fips</code>
+                      </td>
+                      <td>Geography FIPS</td>
+                      <td>FIPS code for the geography; "00" is national.</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date</code>
+                      </td>
+                      <td>Date</td>
+                      <td>End date of the reporting period, in YYYY-mm-dd format.</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Data source</td>
+                      <td>CDC NREVSS laboratory tests, obtained through the CMU Delphi Epidata API.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>pathogen</code>
+                      </td>
+                      <td>Virus</td>
+                      <td>Virus tested for. States have COVID-19 and RSV only.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Weekly values are national. The moving averages are CDC's and cover states.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">tests</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">positive_tests</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_positive</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">tests_3wav</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">positive_tests_5wav</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_positive_3wav</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Value of the measure named in the measure column.</td>
+                      <td>Mixed</td>
+                      <td>varies by measure</td>
                     </tr>
                   </tbody>
                 </table>
@@ -59780,8 +60619,8 @@
                 <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/wastewater/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
                   <code>wastewater/standard/data.csv.gz</code>
                 </a>
-                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_nhsn/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
-                  <code>delphi_nhsn/standard/data.csv.gz</code>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/nhsn_hospital_capacity/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>nhsn_hospital_capacity/standard/data.csv.gz</code>
                 </a>
               </div>
               <div class="table-responsive">
@@ -60212,6 +61051,113 @@
                       <td>Equals 1 when the underlying Epic Cosmos count for this age group was suppressed (small cell) and imputed; 0 otherwise.</td>
                       <td>Flag</td>
                       <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>sleepcycle_cough.parquet</code>
+              </h5>
+              <div class="mb-2 small">
+                <span class="text-muted">
+                  <em>Source files: </em>
+                </span>
+                <a href="https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/delphi_sleepcycle/standard/data.csv.gz" target="_blank" class="me-2 text-decoration-none">
+                  <code>delphi_sleepcycle/standard/data.csv.gz</code>
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>State name, or "United States" for the national total.</td>
+                      <td>identifier</td>
+                      <td>state name</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>geography_fips</code>
+                      </td>
+                      <td>Geography FIPS</td>
+                      <td>FIPS code for the geography; "00" is national.</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>date</code>
+                      </td>
+                      <td>Date</td>
+                      <td>End date of the reporting period, in YYYY-mm-dd format.</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Data source</td>
+                      <td>Sleep Cycle app data, obtained through the CMU Delphi Epidata API. Licensed CC BY-NC 4.0, for non-commercial use only.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_cough_2_plus</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">pct_cough_10_plus</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Percent of Sleep Cycle users at or above the cough threshold named in the measure column.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value_lcl</code>
+                      </td>
+                      <td>Lower bound</td>
+                      <td>Lower bound of the 90% interval.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value_ucl</code>
+                      </td>
+                      <td>Upper bound</td>
+                      <td>Upper bound of the 90% interval.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
                     </tr>
                   </tbody>
                 </table>
@@ -62766,7 +63712,7 @@
             <section id="bundle-youth-wellbeing" class="mb-5">
               <h2 class="border-bottom pb-2">Bundle: Youth Wellbeing</h2>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 20 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 21 parquet file(s).</em>
               </p>
               <p class="mb-3">
                 <strong>Data sources: </strong>
@@ -63598,7 +64544,7 @@
                         <code>pct_captured</code>
                       </td>
                       <td>Percent of population captured</td>
-                      <td>sample_size as a percent of the 2021 census population under 18 for the same geography. NA where sample_size was suppressed. Values over 100% are capped at 100%.</td>
+                      <td>sample_size as a percent of the 2021 census population under 18 for the same geography. NA where the measure itself was suppressed. Values over 100% are capped at 100%.</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -63607,7 +64553,7 @@
                         <code>sample_size</code>
                       </td>
                       <td>Sample size</td>
-                      <td>Number of Epic Cosmos patients in the chronic disease sample (n_patients_chronic) for this geography, year and age band, used as the sample size for every measure. Counts under 10 are suppressed and imputed as 5.</td>
+                      <td>Number of Epic Cosmos patients in the denominator of this row's measure, for this geography, year and age band: n_patients_ob_county for obesity measures, n_patients_chronic for diabetes measures. Rows whose denominator was suppressed at source (10 or fewer patients) are dropped, so every sample_size here is a published count above 10.</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -63752,7 +64698,7 @@
                         <code>pct_captured</code>
                       </td>
                       <td>Percent of population captured</td>
-                      <td>sample_size as a percent of the 2021 census population under 18 for the same geography. NA where sample_size was suppressed. Values over 100% are capped at 100%.</td>
+                      <td>sample_size as a percent of the 2021 census population under 18 for the same geography. NA where the measure itself was suppressed. Values over 100% are capped at 100%.</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -63761,7 +64707,7 @@
                         <code>sample_size</code>
                       </td>
                       <td>Sample size</td>
-                      <td>Number of Epic Cosmos patients in the chronic disease sample (n_patients_chronic) for this geography, year and age band, used as the sample size for every measure. Counts under 10 are suppressed and imputed as 5.</td>
+                      <td>Number of Epic Cosmos patients in the denominator of this row's measure, for this geography, year and age band: n_patients_ob for obesity measures, n_patients_chronic for diabetes measures. Rows whose denominator was suppressed at source (10 or fewer patients) are dropped, so every sample_size here is a published count above 10.</td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -64191,6 +65137,156 @@
                       </td>
                       <td>Suppressed flag</td>
                       <td>1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>epic_mental_health_state_age_quarter.parquet</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>State name; 'United States' for the national total.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fips</code>
+                      </td>
+                      <td>FIPS code</td>
+                      <td>Geography FIPS code ('00' = national, 2-digit = state).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Last day of the calendar quarter the estimate covers (YYYY-mm-dd).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>year</code>
+                      </td>
+                      <td>Year</td>
+                      <td>Calendar year of `time`, for convenience.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age band: the source's 0-9 and 10-14 years (entirely under 18), 15-19 years (straddles 18; no finer split), 0-24 years (the youth headline total; includes ages 18-24), plus 'All ages', the source's total over every age, adults included.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>section</code>
+                      </td>
+                      <td>Dashboard section</td>
+                      <td>Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>focus_area</code>
+                      </td>
+                      <td>Focus area</td>
+                      <td>Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair: the all-diagnosis baselines (epic_ed_n_visits, epic_ed_los_median_all) appear under both 'Suicide and suicidal ideation' and 'General mental health measures'.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Source</td>
+                      <td>Data source the row came from.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Tall-format measure identifier; see levels for each measure's metadata.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_ed_n_visits</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_ed_n_visits_suicidal_behavior</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_ed_n_visits_other</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_pct_ed_suicidal_behavior</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_pct_ed_other</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_ed_los_median_all</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_ed_los_median_suicidal_behavior</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">epic_ed_los_median_other</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Primary measure value. Units vary by measure: encounters for epic_ed_n_visits*, percent for epic_pct_ed_*, minutes for epic_ed_los_median_*. Rows flagged suppressed do NOT carry a usable value; see that column.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>pct_25</code>
+                      </td>
+                      <td>25th percentile (Q1)</td>
+                      <td>For epic_ed_los_median_* only: first quartile of ED length of stay in minutes (source epic_ed_los_q1_*). NA for other measures, and NA where the source suppressed the quartile itself.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>pct_75</code>
+                      </td>
+                      <td>75th percentile (Q3)</td>
+                      <td>For epic_ed_los_median_* only: third quartile of ED length of stay in minutes (source epic_ed_los_q3_*). NA for other measures, and NA where the source suppressed the quartile itself.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>suppressed</code>
+                      </td>
+                      <td>Suppressed flag</td>
+                      <td>1 if the source suppressed the estimate. Visit counts of 10 or fewer are imputed as 5; epic_pct_ed_* carries its numerator's flag, and rows whose denominator (epic_ed_n_visits) was suppressed are dropped entirely. Suppressed length-of-stay cells are NA at source and are not in this file. Filter on suppressed == 0 before using value.</td>
                       <td></td>
                       <td></td>
                     </tr>

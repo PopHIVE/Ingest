@@ -7,7 +7,7 @@
       "CDC NSSP": { "source_id": "percent_visits_rsv", "measure_type": "Percent", "unit": "Percent" },
       "CDC RespNET": { "source_id": "rate_rsv", "measure_type": "Incidence", "unit": "Cases per 100,000 people" },
       "CDC NWSS": { "source_id": "wastewater_rsv", "measure_type": "scaled_log_standard_deviation", "unit": "linear scaling of log standard deviations above a baseline" },
-      "CDC NHSN": { "source_id": "delphi_nhsn_rsv", "measure_type": "count", "unit": "hospitalizations" }
+      "CDC NHSN": { "source_id": "nhsn_adm_rsv", "measure_type": "count", "unit": "hospitalizations" }
     }
   },
   "bundle_respiratory/dist/flu_overall_trends.parquet|source": {
@@ -17,7 +17,7 @@
       "CDC NSSP": { "source_id": "percent_visits_flu", "measure_type": "Percent", "unit": "Percent" },
       "CDC RespNET": { "source_id": "rate_flu", "measure_type": "Incidence", "unit": "Cases per 100,000 people" },
       "CDC NWSS": { "source_id": "wastewater_flua", "measure_type": "scaled_log_standard_deviation", "unit": "linear scaling of log standard deviations above a baseline" },
-      "CDC NHSN": { "source_id": "delphi_nhsn_flu", "measure_type": "count", "unit": "hospitalizations" },
+      "CDC NHSN": { "source_id": "nhsn_adm_flu", "measure_type": "count", "unit": "hospitalizations" },
       "Delphi Hospital Claims": { "source_id": "delphi_hospital_flu_smooth", "measure_type": "percent", "unit": "Percent of new hospital admissions, 7-day average ending Saturday" },
       "CDC ILINet": { "source_id": "delphi_fluview_wili", "measure_type": "Percent", "unit": "Percent of visits" },
       "Kinsa": { "source_id": "kinsa_cough_cold_flu", "measure_type": "Prevalence", "unit": "Percent" }
@@ -30,7 +30,7 @@
       "CDC NSSP": { "source_id": "percent_visits_covid", "measure_type": "Percent", "unit": "Percent" },
       "CDC RespNET": { "source_id": "rate_covid", "measure_type": "Incidence", "unit": "Cases per 100,000 people" },
       "CDC NWSS": { "source_id": "wastewater_covid", "measure_type": "scaled_log_standard_deviation", "unit": "linear scaling of log standard deviations above a baseline" },
-      "CDC NHSN": { "source_id": "delphi_nhsn_covid", "measure_type": "count", "unit": "hospitalizations" },
+      "CDC NHSN": { "source_id": "nhsn_adm_covid", "measure_type": "count", "unit": "hospitalizations" },
       "Delphi Hospital Claims": { "source_id": "delphi_hospital_covid_smooth", "measure_type": "percent", "unit": "Percent of new hospital admissions, 7-day average ending Saturday" },
       "Delphi Doctor Claims": { "source_id": "delphi_doc_covid_smooth", "measure_type": "percent", "unit": "Percent of outpatient visits, 7-day average ending Saturday" }
     }
@@ -327,7 +327,9 @@
     "unit": "state name",
     "categories": {
       "bundle_respiratory/dist/abcs_strep.parquet|": {},
-      "bundle_respiratory/dist/gas_state.parquet|": {}
+      "bundle_respiratory/dist/gas_state.parquet|": {},
+      "bundle_respiratory/dist/nrevss_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/sleepcycle_cough.parquet|": {}
     }
   },
   "{category}geography_fips": {
@@ -339,7 +341,9 @@
     "unit": "FIPS code",
     "categories": {
       "bundle_respiratory/dist/abcs_strep.parquet|": {},
-      "bundle_respiratory/dist/gas_state.parquet|": {}
+      "bundle_respiratory/dist/gas_state.parquet|": {},
+      "bundle_respiratory/dist/nrevss_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/sleepcycle_cough.parquet|": {}
     }
   },
   "{category}date": {
@@ -351,7 +355,9 @@
     "unit": "date",
     "categories": {
       "bundle_respiratory/dist/abcs_strep.parquet|": {},
-      "bundle_respiratory/dist/gas_state.parquet|": {}
+      "bundle_respiratory/dist/gas_state.parquet|": {},
+      "bundle_respiratory/dist/nrevss_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/sleepcycle_cough.parquet|": {}
     }
   },
   "{category}year": {
@@ -667,6 +673,61 @@
       }
     ]
   },
+  "bundle_respiratory/dist/nrevss_lab_testing.parquet|source": {
+    "short_name": "Data source",
+    "short_description": "CDC NREVSS laboratory tests, obtained through the CMU Delphi Epidata API."
+  },
+  "bundle_respiratory/dist/nrevss_lab_testing.parquet|pathogen": {
+    "short_name": "Virus",
+    "short_description": "Virus tested for. States have COVID-19 and RSV only."
+  },
+  "bundle_respiratory/dist/nrevss_lab_testing.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Weekly values are national. The moving averages are CDC's and cover states.",
+    "levels": {
+      "tests": { "short_name": "Tests", "measure_type": "Count", "unit": "Tests" },
+      "positive_tests": { "short_name": "Positive tests", "measure_type": "Count", "unit": "Positive tests" },
+      "pct_positive": { "short_name": "Percent positive", "measure_type": "Percent", "unit": "Percent" },
+      "tests_3wav": { "short_name": "Tests, 3-week centered average", "measure_type": "Count", "unit": "Tests" },
+      "positive_tests_5wav": { "short_name": "Positive tests, 5-week trailing average", "measure_type": "Count", "unit": "Positive tests" },
+      "pct_positive_3wav": { "short_name": "Percent positive, 3-week centered average", "measure_type": "Percent", "unit": "Percent" }
+    }
+  },
+  "bundle_respiratory/dist/nrevss_lab_testing.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Value of the measure named in the measure column.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure"
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|source": {
+    "short_name": "Data source",
+    "short_description": "Sleep Cycle app data, obtained through the CMU Delphi Epidata API. Licensed CC BY-NC 4.0, for non-commercial use only."
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "pct_cough_2_plus": { "source_id": "delphi_sleepcycle_pct_cough_2_plus", "measure_type": "Percent", "unit": "Percent" },
+      "pct_cough_10_plus": { "source_id": "delphi_sleepcycle_pct_cough_10_plus", "measure_type": "Percent", "unit": "Percent" }
+    }
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Percent of Sleep Cycle users at or above the cough threshold named in the measure column.",
+    "measure_type": "Percent",
+    "unit": "Percent"
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|value_lcl": {
+    "short_name": "Lower bound",
+    "short_description": "Lower bound of the 90% interval.",
+    "measure_type": "Percent",
+    "unit": "Percent"
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|value_ucl": {
+    "short_name": "Upper bound",
+    "short_description": "Upper bound of the 90% interval.",
+    "measure_type": "Percent",
+    "unit": "Percent"
+  },
   "_bundle": {
     "name": "bundle_respiratory",
     "sources": [
@@ -674,10 +735,12 @@
       "delphi_doctors_claims",
       "delphi_hospital_claims",
       "delphi_ili_fluview",
-      "delphi_nhsn",
+      "delphi_nrevss",
+      "delphi_sleepcycle",
       "epic_resp_infections",
       "gtrends",
       "kinsa_ili",
+      "nhsn_hospital_capacity",
       "nnds",
       "NREVSS",
       "nssp",
@@ -686,37 +749,37 @@
     ],
     "dist_files": {
       "rsv_overall_trends.parquet": {
-        "sources": ["delphi_nhsn", "epic_resp_infections", "gtrends", "nssp", "respnet", "wastewater"],
+        "sources": ["epic_resp_infections", "gtrends", "nhsn_hospital_capacity", "nssp", "respnet", "wastewater"],
         "source_files": [
           "epic_resp_infections/standard/weekly.csv.gz",
           "gtrends/standard/data.csv.gz",
           "nssp/standard/data.csv.gz",
           "respnet/standard/data.csv.gz",
           "wastewater/standard/data.csv.gz",
-          "delphi_nhsn/standard/data.csv.gz"
+          "nhsn_hospital_capacity/standard/data.csv.gz"
         ]
       },
       "flu_overall_trends.parquet": {
-        "sources": ["delphi_hospital_claims", "delphi_ili_fluview", "delphi_nhsn", "epic_resp_infections", "kinsa_ili", "nssp", "respnet", "wastewater"],
+        "sources": ["delphi_hospital_claims", "delphi_ili_fluview", "epic_resp_infections", "kinsa_ili", "nhsn_hospital_capacity", "nssp", "respnet", "wastewater"],
         "source_files": [
           "epic_resp_infections/standard/weekly.csv.gz",
           "nssp/standard/data.csv.gz",
           "respnet/standard/data.csv.gz",
           "wastewater/standard/data.csv.gz",
-          "delphi_nhsn/standard/data.csv.gz",
+          "nhsn_hospital_capacity/standard/data.csv.gz",
           "delphi_hospital_claims/standard/data.csv.gz",
           "delphi_ili_fluview/standard/data.csv.gz",
           "kinsa_ili/standard/data.csv.gz"
         ]
       },
       "covid_overall_trends.parquet": {
-        "sources": ["delphi_doctors_claims", "delphi_hospital_claims", "delphi_nhsn", "epic_resp_infections", "nssp", "respnet", "wastewater"],
+        "sources": ["delphi_doctors_claims", "delphi_hospital_claims", "epic_resp_infections", "nhsn_hospital_capacity", "nssp", "respnet", "wastewater"],
         "source_files": [
           "epic_resp_infections/standard/weekly.csv.gz",
           "nssp/standard/data.csv.gz",
           "respnet/standard/data.csv.gz",
           "wastewater/standard/data.csv.gz",
-          "delphi_nhsn/standard/data.csv.gz",
+          "nhsn_hospital_capacity/standard/data.csv.gz",
           "delphi_hospital_claims/standard/data.csv.gz",
           "delphi_doctors_claims/standard/data.csv.gz"
         ]
@@ -804,7 +867,28 @@
           "epic_resp_infections/standard/quarterly_gas.csv.gz",
           "nnds/standard/data.csv.gz"
         ]
+      },
+      "nrevss_lab_testing.parquet": {
+        "sources": ["delphi_nrevss"],
+        "source_files": [
+          "delphi_nrevss/standard/data_nation.csv.gz",
+          "delphi_nrevss/standard/data_state.csv.gz"
+        ]
+      },
+      "sleepcycle_cough.parquet": {
+        "sources": ["delphi_sleepcycle"],
+        "source_files": ["delphi_sleepcycle/standard/data.csv.gz"]
       }
+    }
+  },
+  "_sources": {
+    "delphi_sleepcycle": {
+      "name": "CMU Delphi Epidata - Sleep Cycle Nocturnal Coughs",
+      "url": "https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/sleepcycle.html",
+      "organization": "Carnegie Mellon University Delphi Research Group; Sleep Cycle AB",
+      "organization_url": "https://delphi.cmu.edu/",
+      "description": "Nighttime cough data from the Sleep Cycle app, processed by the CMU Delphi Group.",
+      "restrictions": "CC BY-NC 4.0. Attribution to Sleep Cycle and the CMU Delphi Group is required, and the data may not be used for commercial purposes."
     }
   }
 }

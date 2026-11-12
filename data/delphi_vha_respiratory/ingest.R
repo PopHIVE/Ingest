@@ -143,16 +143,42 @@ if (!identical(process$raw_state, raw_state)) {
     select(geography, time = reference_time, signal, value,
            lcl = ci_lower, ucl = ci_upper)
 
+  # The 7-day case rates are differences of a cumulative count that VHA revises
+  # downward, so some come out below zero. A negative rate is not a rate, so
+  # those values and their intervals are set to missing
+  case_rate_signals <- paste0("delphi_vha_", cases_signals[grepl("per_100k", cases_signals)])
+  data <- data %>%
+    mutate(
+      negative = signal %in% case_rate_signals & !is.na(value) & value < 0,
+      across(c(value, lcl, ucl), ~ if_else(negative, NA_real_, .x))
+    ) %>%
+    select(-negative)
+
   # Bad upstream days: on some dates (e.g. 2026-06-29, 2026-07-15) every state
   # reports exactly 5 COVID vaccine doses against cumulative totals in the
-  # thousands. That is a broken portal file, not censoring, so when most states
-  # report exactly 5 for a vaccine count on a date, that date's count and its
-  # per-100k rate are set to missing for every state and the nation
+  # thousands. That is a broken portal file, not censoring. A state's 5 counts
+  # as broken when its last count other than 5 was 11 or more and its next
+  # count other than 5 is back at or above that level, and a week is a broken
+  # file when that holds for most states; its count and per-100k rate are then
+  # set to missing for every state and the nation. A new season also drops the
+  # counts, but they come back lower, so it is not caught here. Until a later
+  # week shows where the counts resume, a week of 5s is left as reported
+  # (flagged as censored below)
   vax_count_signals <- vax_signals[!grepl("per_100k", vax_signals)]
   bad_days <- data %>%
     filter(signal %in% paste0("delphi_vha_", vax_count_signals), geography != "00") %>%
+    group_by(signal, geography) %>%
+    arrange(time, .by_group = TRUE) %>%
+    mutate(
+      other = if_else(value == 5, NA_real_, value),
+      before = lag(other),
+      after = lead(other)
+    ) %>%
+    fill(before, .direction = "down") %>%
+    fill(after, .direction = "up") %>%
+    mutate(broken = coalesce(value == 5 & before >= 11 & after >= before, FALSE)) %>%
     group_by(signal, time) %>%
-    filter(mean(value == 5) > 0.5) %>%
+    filter(mean(broken) > 0.5) %>%
     distinct(signal, time) %>%
     ungroup()
   if (nrow(bad_days) > 0) {
