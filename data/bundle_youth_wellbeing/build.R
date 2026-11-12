@@ -25,8 +25,10 @@
 #
 # Scope: youth only. Age bands entirely under 18 are kept, plus bands that
 # straddle 18 where the source cannot split them any finer (WISQARS/NHTSA
-# 15-24, Epic Injury 15-25). Datasets with no age dimension are kept whole and
-# carry age = 'Not stratified'.
+# 15-24, Epic Injury 15-25). Two exceptions keep a straddling 0-24 total even
+# though the source also splits it: drowning and Epic Mental Health, where 0-24
+# is the youth headline figure on the dashboard. Datasets with no age
+# dimension are kept whole and carry age = 'Not stratified'.
 #
 # Output naming: dist/<dataset>_<geography>_<demographics>.parquet
 # =============================================================================
@@ -62,6 +64,8 @@ AGE_WISQARS <- c('0-14 Years' = '0-14 years', '15-24 Years' = '15-24 years')
 AGE_NHTSA   <- c('0-14'       = '0-14 years', '15-24'       = '15-24 years')
 AGE_EPIC_I  <- c('<15 Years'  = '0-14 years', '15-25 Years' = '15-25 years')
 AGE_EPIC_C  <- c('<18 Years'  = '0-17 years')
+AGE_EPIC_MH <- c('0-9' = '0-9 years', '10-14' = '10-14 years', '15-19' = '15-19 years',
+                 '0-24' = '0-24 years', 'Overall' = 'All ages')
 AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' = '5-9 years',
                  '10-13 Years' = '10-13 years', '14-17 Years' = '14-17 years',
                  'Overall' = 'All ages')
@@ -226,6 +230,17 @@ SPEC <- bind_rows(
   # concussion data sit in the same focus area) ----
   sp('epic_concussions', 'Injury and violence', 'Concussions',
      c('epic_n_concussion', 'epic_pct_concussion', 'epic_n_ed_encounters')),
+
+  # ---- Epic Mental Health (ED visits and length of stay; not in the
+  # workbook). Each diagnosis group sits with the matching YRBSS focus area; the
+  # all-diagnosis baselines (visit count = the pct_ denominator, all-ED length
+  # of stay) are emitted under both so either page can compare against them. ----
+  sp('epic_mental_health', 'Mental health', 'Suicide and suicidal ideation',
+     c('epic_ed_n_visits_suicidal_behavior', 'epic_pct_ed_suicidal_behavior',
+       'epic_ed_los_median_suicidal_behavior', 'epic_ed_n_visits', 'epic_ed_los_median_all')),
+  sp('epic_mental_health', 'Mental health', 'General mental health measures',
+     c('epic_ed_n_visits_other', 'epic_pct_ed_other',
+       'epic_ed_los_median_other', 'epic_ed_n_visits', 'epic_ed_los_median_all')),
 
   # ---- medicaid_quality ----
   sp('medicaid', 'Substance abuse', 'Follow up for ED visits for drug/alcohol related reasons',
@@ -509,13 +524,19 @@ epic_chronic_tall <- function(file) {
   keys <- c('geography', 'time', 'age')
   # The sample size rides along as `sample_size` rather than being a measure of
   # its own, with pct_captured = sample_size as a percent of the under-18
-  # population (NA where the count or the measure was suppressed). Source
-  # suppression is applied against each measure's own denominator: obesity
-  # measures use n_patients_ob (n_patients_ob_county at county level), diabetes
-  # measures use n_patients_chronic. Using n_patients_chronic for obesity pairs
-  # a suppressed count (imputed as 5) with an unsuppressed value. Values over
-  # 100 (Epic counts can exceed the 2021 census population) are capped at 100.
-  # The suppression flag itself is not carried.
+  # population (NA where the measure itself was suppressed). Each measure is
+  # paired with its own denominator: obesity measures use n_patients_ob
+  # (n_patients_ob_county at county level), diabetes measures use
+  # n_patients_chronic. Values over 100 (Epic counts can exceed the 2021 census
+  # population) are capped at 100.
+  #
+  # Rows whose denominator is suppressed are DROPPED, not flagged. The source
+  # reports such N as "10 or fewer", imputes it as 5, and fills the rate in as
+  # 5 / 5 * 100 = 100%, so neither the rate nor pct_captured means anything.
+  # The source's suppressed_n_* flag does not catch every case (it misses N
+  # that arrived as "10 or fewer" rather than blank), so a denominator is also
+  # treated as suppressed when it is <= 10: a real count that small is never
+  # published. The denominator flag itself is not carried.
   ob_n <- grep('^n_patients_ob', names(raw), value = TRUE)
   raw %>%
     tall_flagged(epic_chronic_measures, keys, '_suppressed') %>%
@@ -528,8 +549,10 @@ epic_chronic_tall <- function(file) {
            sample_size = if_else(is_obesity, n_Obesity, n_Diabetes),
            n_patients_suppressed = if_else(is_obesity, n_suppressed_Obesity, n_suppressed_Diabetes)) %>%
     rename(fips = geography) %>%
+    filter(!is.na(sample_size), sample_size > 10,
+           coalesce(n_patients_suppressed, 0) != 1) %>%
     left_join(epic_pop, by = c('fips', 'age')) %>%
-    mutate(pct_captured = if_else(n_patients_suppressed == 1 | suppressed == 1, NA_real_,
+    mutate(pct_captured = if_else(suppressed == 1, NA_real_,
                                   pmin(sample_size / pop_2021 * 100, 100))) %>%
     select(-pop_2021, -n_patients_suppressed, -is_obesity,
            -n_Diabetes, -n_Obesity, -n_suppressed_Diabetes, -n_suppressed_Obesity) %>%
@@ -582,6 +605,74 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
   as_state() %>%
   label('epic_concussions', 'Epic Cosmos') %>%
   write_parquet('dist/epic_concussions_state_age_sex.parquet')
+
+
+# =============================================================================
+# 6b. Epic Mental Health -- ED visits for suicidal behavior and other mental
+#     health diagnoses, with ED length of stay, state, age, quarterly
+#
+#   dist/epic_mental_health_state_age_quarter.parquet
+#
+# Age bands: the source's 0-9 and 10-14 (entirely under 18) and 15-19
+# (straddles 18; no finer split), plus 0-24 -- kept as the dashboard's youth
+# headline total even though the source also splits it (see the header) --
+# and 'All ages' (the source's Overall, adults included) as a baseline. 20-24
+# on its own and the adult bands are out of scope.
+#
+# Measures per diagnosis group (suicidal_behavior, other):
+#   epic_ed_n_visits_<dx>    ED visits with the diagnosis
+#   epic_pct_ed_<dx>         those visits as a percent of all ED visits
+#                            (derived here; numerator / epic_ed_n_visits)
+#   epic_ed_los_median_<dx>  median ED length of stay (minutes), with the
+#                            source's Q1 / Q3 carried as pct_25 / pct_75
+# plus the all-diagnosis baselines epic_ed_n_visits and epic_ed_los_median_all.
+#
+# Visit counts of 10 or fewer are imputed as 5 at source and flagged. A
+# percent whose denominator (epic_ed_n_visits) is missing or suppressed is
+# dropped rather than computed from an imputed count; otherwise it carries its
+# numerator's flag. Length-of-stay cells are suppressed to NA at source (no
+# imputation), so those rows drop out with the !is.na(value) filter; a Q1 or
+# Q3 flagged suppressed in its own right is blanked even when the median
+# survives.
+# =============================================================================
+
+epic_mh_measures <- SPEC %>% filter(dataset == 'epic_mental_health') %>%
+  pull(measure) %>% unique()
+
+epic_mh <- vroom::vroom('../epic_mental_health/standard/data.csv.gz', show_col_types = FALSE,
+                        col_types = vroom::cols(geography = 'c', time = 'D', age = 'c',
+                                                .default = 'd')) %>%
+  filter(age %in% names(AGE_EPIC_MH)) %>%
+  mutate(age = unname(AGE_EPIC_MH[age]))
+
+denom_ok <- with(epic_mh, !is.na(epic_ed_n_visits) & epic_ed_n_visits > 0 &
+                   coalesce(epic_ed_n_visits_suppressed_flag, 0) != 1)
+for (dx in c('suicidal_behavior', 'other')) {
+  n <- paste0('epic_ed_n_visits_', dx)
+  epic_mh[[paste0('epic_pct_ed_', dx)]] <-
+    if_else(denom_ok, round(100 * epic_mh[[n]] / epic_mh$epic_ed_n_visits, 3), NA_real_)
+  epic_mh[[paste0('epic_pct_ed_', dx, '_suppressed_flag')]] <- epic_mh[[paste0(n, '_suppressed_flag')]]
+}
+for (dx in c('all', 'suicidal_behavior', 'other')) {
+  q <- function(stat) {
+    v <- epic_mh[[paste0('epic_ed_los_', stat, '_', dx)]]
+    if_else(coalesce(epic_mh[[paste0('epic_ed_los_', stat, '_', dx, '_suppressed_flag')]], 0) == 1,
+            NA_real_, v)
+  }
+  epic_mh[[paste0('epic_ed_los_median_', dx, '_pct_25')]] <- q('q1')
+  epic_mh[[paste0('epic_ed_los_median_', dx, '_pct_75')]] <- q('q3')
+}
+
+epic_mh %>%
+  rename_with(~ sub('_suppressed_flag$', '_suppressed', .x), ends_with('_suppressed_flag')) %>%
+  tall_flagged(epic_mh_measures, c('geography', 'time', 'age'),
+               c('_suppressed', '_pct_25', '_pct_75')) %>%
+  rename(fips = geography) %>%
+  filter(!is.na(value)) %>%
+  mutate(suppressed = as.integer(coalesce(suppressed, 0))) %>%
+  as_state() %>%
+  label('epic_mental_health', 'Epic Cosmos') %>%
+  write_parquet('dist/epic_mental_health_state_age_quarter.parquet')
 
 
 # =============================================================================
