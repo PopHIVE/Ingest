@@ -38,7 +38,6 @@ bundle_files  <- list( '../epic_resp_infections/standard/weekly.csv.gz',
                        '../wastewater/standard/data.csv.gz',
                        '../delphi_doctors_claims/standard/data.csv.gz',
                        '../delphi_hospital_claims/standard/data.csv.gz',
-                       '../delphi_nhsn/standard/data.csv.gz',
                        '../delphi_ili_fluview/standard/data.csv.gz'
 )
                  
@@ -71,8 +70,21 @@ lab_pos <- vroom::vroom('../nssp/standard/data_lab.csv.gz', show_col_types = FAL
                         col_types = vroom::cols(geography = "c")) %>%
   filter(as.character(time) > start_time)
 
+# CDC NHSN weekly hospital admissions, read from CDC's own file. COVID-19 runs
+# from 2020. Flu and RSV start with the week ending 2024-11-09, the first full
+# week after reporting became mandatory again (it was voluntary from May to
+# October 2024), which is also where this series has always started here
+nhsn_adm <- vroom::vroom('../nhsn_hospital_capacity/standard/data.csv.gz', show_col_types = FALSE,
+                         col_types = vroom::cols(geography = "c", time = "D"),
+                         col_select = c(geography, time, nhsn_adm_covid, nhsn_adm_flu, nhsn_adm_rsv)) %>%
+  filter(as.character(time) > start_time) %>%
+  mutate(across(c(nhsn_adm_covid, nhsn_adm_flu, nhsn_adm_rsv), as.numeric),
+         across(c(nhsn_adm_flu, nhsn_adm_rsv),
+                ~ if_else(time < as.Date('2024-11-09'), NA_real_, .x)))
+
 data <- c(data, list(kinsa_daily,
-                     lab_pos %>% dplyr::select(geography, time, starts_with('lab_percent_pos_'))))
+                     lab_pos %>% dplyr::select(geography, time, starts_with('lab_percent_pos_')),
+                     nhsn_adm))
 
 combined <- Reduce(
   function(a, b) merge(a, b, by = c("geography", "time"), all = TRUE),
@@ -155,13 +167,13 @@ suppressed_covid <- bind_rows(suppressed_covid, lab_suppressed('covid'))
 
 overall_trends %>%
   filter(grepl('rsv',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv','delphi_nhsn_rsv','lab_percent_pos_rsv' )) %>%
+  filter(variable %in% c('epic_pct_rsv', 'gtrends_rsv_adjusted','percent_visits_rsv', 'rate_rsv','wastewater_rsv','nhsn_adm_rsv','lab_percent_pos_rsv' )) %>%
   mutate( source = if_else(variable=='epic_pct_rsv', 'Epic Cosmos, ED',
                     if_else(variable=='gtrends_rsv_adjusted', 'Google Health Trends',
                             if_else(variable=='percent_visits_rsv', 'CDC NSSP',
                                     if_else(variable=='rate_rsv', 'CDC RespNET',
                                             if_else(variable=='wastewater_rsv', 'CDC NWSS',
-                                                    if_else(variable=='delphi_nhsn_rsv', 'CDC NHSN',
+                                                    if_else(variable=='nhsn_adm_rsv', 'CDC NHSN',
                                                             if_else(variable=='lab_percent_pos_rsv', LAB_SOURCE,
                                                                                                                                                                   NA_character_
                     )))))))
@@ -177,13 +189,13 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('flu',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','delphi_nhsn_flu' ,'delphi_hospital_flu_smooth','delphi_fluview_wili','kinsa_cough_cold_flu','lab_percent_pos_flu')) %>%
+  filter(variable %in% c('epic_pct_flu', 'percent_visits_flu', 'rate_flu','wastewater_flua','nhsn_adm_flu' ,'delphi_hospital_flu_smooth','delphi_fluview_wili','kinsa_cough_cold_flu','lab_percent_pos_flu')) %>%
   mutate( source = if_else(variable=='epic_pct_flu', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_flu', 'CDC NSSP',
                                            if_else(variable=='rate_flu', 'CDC RespNET',
                                                    if_else(variable=='delphi_hospital_flu_smooth', 'Delphi Hospital Claims',
                                                        if_else(variable=='wastewater_flua', 'CDC NWSS',
-                                                             if_else(variable=='delphi_nhsn_flu', 'CDC NHSN',
+                                                             if_else(variable=='nhsn_adm_flu', 'CDC NHSN',
                                                                    if_else(variable=='delphi_fluview_wili', 'CDC ILINet',
                                                                          if_else(variable=='kinsa_cough_cold_flu', 'Kinsa',
                                                                            if_else(variable=='lab_percent_pos_flu', LAB_SOURCE,
@@ -202,12 +214,12 @@ overall_trends %>%
 
 overall_trends %>% 
   filter(grepl('covid',variable) & !is.na(value)) %>%
-  filter(variable %in% c('epic_pct_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid','delphi_nhsn_covid','delphi_hospital_covid_smooth','delphi_doc_covid_smooth','lab_percent_pos_covid' )) %>%
+  filter(variable %in% c('epic_pct_covid', 'percent_visits_covid', 'rate_covid','wastewater_covid','nhsn_adm_covid','delphi_hospital_covid_smooth','delphi_doc_covid_smooth','lab_percent_pos_covid' )) %>%
   mutate( source = if_else(variable=='epic_pct_covid', 'Epic Cosmos, ED',
                                    if_else(variable=='percent_visits_covid', 'CDC NSSP',
                                            if_else(variable=='rate_covid', 'CDC RespNET',
                                                    if_else(variable=='wastewater_covid', 'CDC NWSS',
-                                                           if_else(variable=='delphi_nhsn_covid', 'CDC NHSN', 
+                                                           if_else(variable=='nhsn_adm_covid', 'CDC NHSN', 
                                                                    if_else(variable=='delphi_hospital_covid_smooth', 'Delphi Hospital Claims', 
                                                                            if_else(variable=='delphi_doc_covid_smooth', 'Delphi Doctor Claims' ,
                                                                              if_else(variable=='lab_percent_pos_covid', LAB_SOURCE,
@@ -231,11 +243,94 @@ overall_trends %>%
 ###################
 #nrevss_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/positive_tests.parquet')
 
-d <- vroom::vroom('../NREVSS/standard/data.csv.gz') %>%
-  rename(value = pcr_detections,
-         date = time) 
+# RSV positive tests by HHS region, from delphi_nrevss (CDC NREVSS via CMU
+# Delphi). This replaced the NREVSS source (CDC dataset 3cxc-4k8q) in Nov 2026;
+# the columns and their meaning are unchanged:
+#   value         positive RSV tests, centered 5-week average (the week, the
+#                 two before and the two after; partial windows at the ends).
+#                 CDC published this average in 3cxc-4k8q; Delphi serves the
+#                 weekly counts, so it is computed here. CDC suppresses weekly
+#                 counts of 1-4 (positives are NA while percent positive is
+#                 still reported); those weeks enter the average as 2.5, the
+#                 midpoint. CDC's old HHS file was not suppressed, so these
+#                 averages are estimates; they are within 1.3 positives of the
+#                 old values. Rows whose 5-week window contains no suppressed
+#                 week match the old file (up to CDC's rounding).
+#   suppressed_flag  1 where the 5-week window includes a filled week (for
+#                 United States: in any region), 0 otherwise. Added Nov 2026;
+#                 the old file had no such column.
+#   United States population-weighted mean of the regional values
+#   scaled_cases  value / the largest value in the file * 100
+#   epiyr, epiwk  July-June season and week of season (MMWR weeks)
+nrevss_region <- vroom::vroom('../delphi_nrevss/standard/data_region.csv.gz',
+                              show_col_types = FALSE,
+                              col_types = vroom::cols(geography = "c", time = "D"),
+                              col_select = c(geography, time, delphi_nrevss_rsv_positive_tests,
+                                             delphi_nrevss_rsv_pct_positive)) %>%
+  mutate(imputed = as.numeric(is.na(delphi_nrevss_rsv_positive_tests) &
+                                !is.na(delphi_nrevss_rsv_pct_positive)),
+         positives = if_else(imputed == 1, 2.5, delphi_nrevss_rsv_positive_tests),
+         # any week without a published count, filled or not (a week missing
+         # both positives and percent positive shortens the window instead)
+         not_reported = as.numeric(is.na(delphi_nrevss_rsv_positive_tests))) %>%
+  arrange(geography, time) %>%
+  group_by(geography) %>%
+  mutate(value = zoo::rollapply(positives, 5,
+                                function(x) if (all(is.na(x))) NA_real_ else mean(x, na.rm = TRUE),
+                                partial = TRUE, align = "center"),
+         # 1 where the 5-week window includes a week with no published count
+         # (in practice a suppressed week filled with 2.5)
+         suppressed_flag = zoo::rollapply(not_reported, 5, max, partial = TRUE, align = "center")) %>%
+  ungroup() %>%
+  mutate(level = sub("hhs_", "Region ", geography, fixed = TRUE))
 
-arrow::write_parquet(d, "dist/rsv_positive_tests.parquet")
+pop_hhs <- vroom::vroom("../../resources/pop_hhs.csv.gz", show_col_types = FALSE)
+
+if (!all(unique(nrevss_region$level) %in% pop_hhs$hhs)) {
+  stop("nrevss: HHS region(s) with no population in pop_hhs.csv.gz: ",
+       paste(setdiff(unique(nrevss_region$level), pop_hhs$hhs), collapse = ", "))
+}
+# the national value is a weighted mean of all ten regions; a week where a
+# region has no value would silently reweight it, so stop instead
+short_weeks <- nrevss_region %>% filter(!is.na(value)) %>% count(time) %>% filter(n < 10)
+if (nrow(short_weeks) > 0) {
+  stop("nrevss: ", nrow(short_weeks), " week(s) with fewer than 10 HHS regions, e.g. ",
+       format(short_weeks$time[1]))
+}
+
+nrevss_nat <- nrevss_region %>%
+  filter(!is.na(value)) %>%
+  left_join(pop_hhs, by = c("level" = "hhs")) %>%
+  group_by(time) %>%
+  summarize(value = round(sum(value * popsize / sum(popsize)), 5),
+            # 1 where any region's value used a filled week
+            suppressed_flag = max(suppressed_flag), .groups = "drop") %>%
+  mutate(level = "United States")
+
+hhs_key <- readRDS('../../resources/hhs_regions.rds') %>%
+  dplyr::select(level = Group.1, region_states = x)
+
+d <- bind_rows(nrevss_region %>% dplyr::select(level, time, value, suppressed_flag), nrevss_nat) %>%
+  filter(!is.na(value)) %>%
+  left_join(hhs_key, by = "level") %>%
+  mutate(
+    source = 'CDC NREVSS',
+    geography = if_else(level == 'United States', 'United States', region_states),
+    mmwr = MMWRweek::MMWRweek(time),
+    week = as.numeric(mmwr$MMWRweek),
+    year = as.numeric(mmwr$MMWRyear),
+    epiyr = if_else(week <= 26, year - 1, year),
+    epiyr = paste0(epiyr, '-', epiyr + 1),
+    epiwk = if_else(week <= 26, week + 52, week) - 26,
+    scaled_cases = value / max(value) * 100
+  ) %>%
+  dplyr::select(source, geography, date = time, scaled_cases, value, epiyr, epiwk, week, year,
+                suppressed_flag) %>%
+  arrange(geography, date)
+
+if (anyNA(d$geography)) stop("nrevss: HHS region with no entry in hhs_regions.rds")
+
+arrow::write_parquet(as.data.frame(d), "dist/rsv_positive_tests.parquet")
 
 #################
 #RSV testing data
@@ -914,4 +1009,103 @@ if (anyNA(gas_state[c("geography", "geography_fips", "date", "year",
 
 write_dist(gas_state, "gas_state.parquet")
 
+###############################################
+# NREVSS laboratory testing and Sleep Cycle nighttime coughs (via CMU Delphi)
+###############################################
+# Two long parquets in the same shape as gas_state: geography, geography_fips,
+# date, source, measure, value.
+#
+# nrevss_lab_testing  National weekly tests, positive tests and percent positive
+#                     for seven viruses, and CDC's state moving averages for
+#                     COVID-19 and RSV (3-week centered for tests and percent
+#                     positive, 5-week trailing for positives). `pathogen` names
+#                     the virus and `measure` the quantity, so the state averages
+#                     are their own measure levels. rsv_positive_tests above is
+#                     the HHS-region RSV series from the same source
+#                     (data_region.csv.gz). Puerto Rico is in the state file
+#                     but, as elsewhere in this bundle, is not carried.
+# sleepcycle_cough    State and national share of Sleep Cycle users who cough 2+
+#                     or 10+ times an hour while asleep, with the 90% interval as
+#                     companion columns. CC BY-NC 4.0: non-commercial use only.
+###############################################
 
+# -----------------------------------------------------------------------------
+# 1. NREVSS
+# -----------------------------------------------------------------------------
+NREVSS_PATHOGENS <- c(
+  adv = "Adenovirus", covid = "COVID-19", evrv = "Rhinovirus/Enterovirus",
+  hcov = "Seasonal coronavirus", hmpv = "Human metapneumovirus",
+  hpiv = "Parainfluenza", rsv = "RSV"
+)
+
+# Standard columns are delphi_nrevss_<virus>_<measure>; a week CDC did not
+# publish is NA there and is left out here.
+nrevss_long <- function(path) {
+  vroom::vroom(
+    file.path("..", path),
+    show_col_types = FALSE,
+    col_types = vroom::cols(geography = "c", time = "D",
+                            .default = vroom::col_double())
+  ) %>%
+    tidyr::pivot_longer(starts_with("delphi_nrevss_"),
+                        names_to = "column", values_to = "value") %>%
+    filter(!is.na(value)) %>%
+    mutate(column = sub("^delphi_nrevss_", "", column),
+           virus = sub("_.*$", "", column),
+           measure = sub("^[a-z]+_", "", column))
+}
+
+nrevss_lab <- bind_rows(
+  nrevss_long("delphi_nrevss/standard/data_nation.csv.gz"),
+  nrevss_long("delphi_nrevss/standard/data_state.csv.gz")
+) %>%
+  add_geography_names() %>%
+  mutate(source = "CDC NREVSS", pathogen = unname(NREVSS_PATHOGENS[virus])) %>%
+  dplyr::select(geography, geography_fips, date = time, source, pathogen,
+                measure, value) %>%
+  arrange(geography, pathogen, measure, date)
+
+if (anyNA(nrevss_lab[c("geography", "geography_fips", "date", "pathogen", "measure")])) {
+  stop("nrevss: NA in an index column, or a virus with no name in NREVSS_PATHOGENS.")
+}
+if (anyDuplicated(nrevss_lab[c("geography", "date", "pathogen", "measure")])) {
+  stop("nrevss: duplicate index rows in nrevss_lab_testing.")
+}
+
+write_dist(nrevss_lab, "nrevss_lab_testing.parquet")
+
+# -----------------------------------------------------------------------------
+# 2. Sleep Cycle
+#    Counties are in the standard file but are not carried here.
+# -----------------------------------------------------------------------------
+sleepcycle <- vroom::vroom(
+  "../delphi_sleepcycle/standard/data.csv.gz",
+  show_col_types = FALSE,
+  col_types = vroom::cols(geography = "c", time = "D",
+                          .default = vroom::col_double())
+) %>%
+  filter(nchar(geography) == 2)
+
+# <measure>, <measure>_lcl, <measure>_ucl -> one row per measure
+names(sleepcycle) <- sub("^delphi_sleepcycle_", "", names(sleepcycle))
+names(sleepcycle) <- sub("_plus$", "_plus_value", names(sleepcycle))
+
+sleepcycle_cough <- sleepcycle %>%
+  tidyr::pivot_longer(-c(geography, time),
+                      names_to = c("measure", ".value"),
+                      names_pattern = "^(.*_plus)_(value|lcl|ucl)$") %>%
+  filter(!is.na(value)) %>%
+  add_geography_names() %>%
+  mutate(source = "Sleep Cycle") %>%
+  dplyr::select(geography, geography_fips, date = time, source, measure,
+                value, value_lcl = lcl, value_ucl = ucl) %>%
+  arrange(geography, measure, date)
+
+if (anyNA(sleepcycle_cough[c("geography", "geography_fips", "date", "measure")])) {
+  stop("sleepcycle: NA in an index column.")
+}
+if (anyDuplicated(sleepcycle_cough[c("geography", "date", "measure")])) {
+  stop("sleepcycle: duplicate index rows in sleepcycle_cough.")
+}
+
+write_dist(sleepcycle_cough, "sleepcycle_cough.parquet")

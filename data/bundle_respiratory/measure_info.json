@@ -7,7 +7,7 @@
       "CDC NSSP": { "source_id": "percent_visits_rsv", "measure_type": "Percent", "unit": "Percent" },
       "CDC RespNET": { "source_id": "rate_rsv", "measure_type": "Incidence", "unit": "Cases per 100,000 people" },
       "CDC NWSS": { "source_id": "wastewater_rsv", "measure_type": "scaled_log_standard_deviation", "unit": "linear scaling of log standard deviations above a baseline" },
-      "CDC NHSN": { "source_id": "delphi_nhsn_rsv", "measure_type": "count", "unit": "hospitalizations" }
+      "CDC NHSN": { "source_id": "nhsn_adm_rsv", "measure_type": "count", "unit": "hospitalizations" }
     }
   },
   "bundle_respiratory/dist/flu_overall_trends.parquet|source": {
@@ -17,7 +17,7 @@
       "CDC NSSP": { "source_id": "percent_visits_flu", "measure_type": "Percent", "unit": "Percent" },
       "CDC RespNET": { "source_id": "rate_flu", "measure_type": "Incidence", "unit": "Cases per 100,000 people" },
       "CDC NWSS": { "source_id": "wastewater_flua", "measure_type": "scaled_log_standard_deviation", "unit": "linear scaling of log standard deviations above a baseline" },
-      "CDC NHSN": { "source_id": "delphi_nhsn_flu", "measure_type": "count", "unit": "hospitalizations" },
+      "CDC NHSN": { "source_id": "nhsn_adm_flu", "measure_type": "count", "unit": "hospitalizations" },
       "Delphi Hospital Claims": { "source_id": "delphi_hospital_flu_smooth", "measure_type": "percent", "unit": "Percent of new hospital admissions, 7-day average ending Saturday" },
       "CDC ILINet": { "source_id": "delphi_fluview_wili", "measure_type": "Percent", "unit": "Percent of visits" },
       "Kinsa": { "source_id": "kinsa_cough_cold_flu", "measure_type": "Prevalence", "unit": "Percent" }
@@ -30,7 +30,7 @@
       "CDC NSSP": { "source_id": "percent_visits_covid", "measure_type": "Percent", "unit": "Percent" },
       "CDC RespNET": { "source_id": "rate_covid", "measure_type": "Incidence", "unit": "Cases per 100,000 people" },
       "CDC NWSS": { "source_id": "wastewater_covid", "measure_type": "scaled_log_standard_deviation", "unit": "linear scaling of log standard deviations above a baseline" },
-      "CDC NHSN": { "source_id": "delphi_nhsn_covid", "measure_type": "count", "unit": "hospitalizations" },
+      "CDC NHSN": { "source_id": "nhsn_adm_covid", "measure_type": "count", "unit": "hospitalizations" },
       "Delphi Hospital Claims": { "source_id": "delphi_hospital_covid_smooth", "measure_type": "percent", "unit": "Percent of new hospital admissions, 7-day average ending Saturday" },
       "Delphi Doctor Claims": { "source_id": "delphi_doc_covid_smooth", "measure_type": "percent", "unit": "Percent of outpatient visits, 7-day average ending Saturday" }
     }
@@ -76,7 +76,7 @@
   },
   "bundle_respiratory/dist/rsv_positive_tests.parquet|source": {
     "short_name": "Data source",
-    "short_description": "Data source identifier; positive RSV test counts from the CDC National Respiratory and Enteric Virus Surveillance System (NREVSS)."
+    "short_description": "Data source identifier; positive RSV test counts from the CDC National Respiratory and Enteric Virus Surveillance System (NREVSS), obtained through the CMU Delphi Epidata API."
   },
   "bundle_respiratory/dist/rsv_testing_pct.parquet|source": {
     "short_name": "Data source",
@@ -247,16 +247,65 @@
     "source_id": "is_state_estimate"
   },
   "bundle_respiratory/dist/rsv_positive_tests.parquet|value": {
-    "source_id": "pcr_detections"
+    "short_name": "Positive RSV tests (5-week average)",
+    "long_name": "Positive RSV nucleic acid amplification tests, centered 5-week moving average",
+    "category": "respiratory",
+    "short_description": "Weekly positive RSV tests reported to NREVSS, averaged over 5 weeks, by HHS region.",
+    "long_description": "Weekly number of positive RSV nucleic acid amplification tests reported by NREVSS laboratories in each HHS region, as a centered 5-week moving average (the week, the two before and the two after; fewer weeks at the ends of the series). Computed in the bundle from the weekly counts in delphi_nrevss/standard/data_region.csv.gz. Weekly counts of 1-4 are suppressed by CDC and enter the average as 2.5, the midpoint of that range. The United States value is the population-weighted mean of the ten regions, not the national total.",
+    "statement": "In {location}, there were an average of {value} positive RSV tests per week.",
+    "measure_type": "Count",
+    "unit": "Positive tests",
+    "time_resolution": "Week",
+    "sources": [{ "id": "delphi_nrevss" }]
   },
   "bundle_respiratory/dist/rsv_positive_tests.parquet|scaled_cases": {
-    "source_id": "scaled_cases"
+    "short_name": "Scaled positive RSV tests",
+    "long_name": "Positive RSV tests, rescaled to 0-100",
+    "category": "respiratory",
+    "short_description": "Positive RSV tests (5-week average) divided by the largest value in the file, times 100.",
+    "measure_type": "Scaled",
+    "unit": "Scaled number (0-100)",
+    "time_resolution": "Week",
+    "sources": [{ "id": "delphi_nrevss" }]
   },
   "bundle_respiratory/dist/rsv_positive_tests.parquet|epiyr": {
-    "source_id": "epiyr"
+    "short_name": "Epidemiological year",
+    "long_name": "Epidemiological year",
+    "short_description": "RSV season, July to June, written as 'YYYY-YYYY'.",
+    "long_description": "The epidemiological year runs from MMWR week 27 (early July) to week 26 of the following calendar year. For example, 2024-2025 starts the first week of July 2024 and ends the last week of June 2025.",
+    "measure_type": "Year",
+    "unit": "Year"
   },
   "bundle_respiratory/dist/rsv_positive_tests.parquet|epiwk": {
-    "source_id": "epiwk"
+    "short_name": "Epidemiological week",
+    "long_name": "Epidemiological week",
+    "short_description": "Week of the RSV season, with week 1 in early July.",
+    "long_description": "Week of the epidemiological year: MMWR week 27 is epidemiological week 1 and MMWR week 26 of the following calendar year is week 52. Computed as MMWR week - 26 (weeks 27-53) or MMWR week + 26 (weeks 1-26), so in seasons with an MMWR week 53 (2020-2021 and 2025-2026) that week and the following week 1 both have epidemiological week 27; use date or week to tell them apart.",
+    "measure_type": "Week",
+    "unit": "Week"
+  },
+  "bundle_respiratory/dist/rsv_positive_tests.parquet|suppressed_flag": {
+    "short_name": "Suppressed flag",
+    "long_name": "Value includes a suppressed week",
+    "short_description": "1 where the 5-week average includes a week with no published count (in practice, a count CDC suppressed, filled with 2.5); 0 otherwise.",
+    "long_description": "CDC suppresses weekly positive counts of 1-4 in the NREVSS data served by Delphi; those weeks enter the 5-week average as 2.5, the midpoint. The flag is 1 where any week in a region's 5-week window was filled this way, and for United States where any region's value was. Flagged values are estimates. The CDC file used before November 2026 (3cxc-4k8q) was not suppressed.",
+    "measure_type": "Binary",
+    "unit": "0/1",
+    "sources": [{ "id": "delphi_nrevss" }]
+  },
+  "bundle_respiratory/dist/rsv_positive_tests.parquet|week": {
+    "short_name": "MMWR week",
+    "long_name": "Morbidity and Mortality Weekly Report (MMWR) week",
+    "short_description": "MMWR week number of the week ending on the date.",
+    "measure_type": "Week",
+    "unit": "Week"
+  },
+  "bundle_respiratory/dist/rsv_positive_tests.parquet|year": {
+    "short_name": "MMWR year",
+    "long_name": "Morbidity and Mortality Weekly Report (MMWR) year",
+    "short_description": "MMWR year of the week ending on the date.",
+    "measure_type": "Year",
+    "unit": "Year"
   },
   "bundle_respiratory/dist/rsv_google_dma.parquet|value": {
     "source_id": "gtrends_rsv"
@@ -327,7 +376,9 @@
     "unit": "state name",
     "categories": {
       "bundle_respiratory/dist/abcs_strep.parquet|": {},
-      "bundle_respiratory/dist/gas_state.parquet|": {}
+      "bundle_respiratory/dist/gas_state.parquet|": {},
+      "bundle_respiratory/dist/nrevss_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/sleepcycle_cough.parquet|": {}
     }
   },
   "{category}geography_fips": {
@@ -339,7 +390,9 @@
     "unit": "FIPS code",
     "categories": {
       "bundle_respiratory/dist/abcs_strep.parquet|": {},
-      "bundle_respiratory/dist/gas_state.parquet|": {}
+      "bundle_respiratory/dist/gas_state.parquet|": {},
+      "bundle_respiratory/dist/nrevss_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/sleepcycle_cough.parquet|": {}
     }
   },
   "{category}date": {
@@ -351,7 +404,9 @@
     "unit": "date",
     "categories": {
       "bundle_respiratory/dist/abcs_strep.parquet|": {},
-      "bundle_respiratory/dist/gas_state.parquet|": {}
+      "bundle_respiratory/dist/gas_state.parquet|": {},
+      "bundle_respiratory/dist/nrevss_lab_testing.parquet|": {},
+      "bundle_respiratory/dist/sleepcycle_cough.parquet|": {}
     }
   },
   "{category}year": {
@@ -667,6 +722,61 @@
       }
     ]
   },
+  "bundle_respiratory/dist/nrevss_lab_testing.parquet|source": {
+    "short_name": "Data source",
+    "short_description": "CDC NREVSS laboratory tests, obtained through the CMU Delphi Epidata API."
+  },
+  "bundle_respiratory/dist/nrevss_lab_testing.parquet|pathogen": {
+    "short_name": "Virus",
+    "short_description": "Virus tested for. States have COVID-19 and RSV only."
+  },
+  "bundle_respiratory/dist/nrevss_lab_testing.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Weekly values are national. The moving averages are CDC's and cover states.",
+    "levels": {
+      "tests": { "short_name": "Tests", "measure_type": "Count", "unit": "Tests" },
+      "positive_tests": { "short_name": "Positive tests", "measure_type": "Count", "unit": "Positive tests" },
+      "pct_positive": { "short_name": "Percent positive", "measure_type": "Percent", "unit": "Percent" },
+      "tests_3wav": { "short_name": "Tests, 3-week centered average", "measure_type": "Count", "unit": "Tests" },
+      "positive_tests_5wav": { "short_name": "Positive tests, 5-week trailing average", "measure_type": "Count", "unit": "Positive tests" },
+      "pct_positive_3wav": { "short_name": "Percent positive, 3-week centered average", "measure_type": "Percent", "unit": "Percent" }
+    }
+  },
+  "bundle_respiratory/dist/nrevss_lab_testing.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Value of the measure named in the measure column.",
+    "measure_type": "Mixed",
+    "unit": "varies by measure"
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|source": {
+    "short_name": "Data source",
+    "short_description": "Sleep Cycle app data, obtained through the CMU Delphi Epidata API. Licensed CC BY-NC 4.0, for non-commercial use only."
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|measure": {
+    "short_name": "Measure",
+    "levels": {
+      "pct_cough_2_plus": { "source_id": "delphi_sleepcycle_pct_cough_2_plus", "measure_type": "Percent", "unit": "Percent" },
+      "pct_cough_10_plus": { "source_id": "delphi_sleepcycle_pct_cough_10_plus", "measure_type": "Percent", "unit": "Percent" }
+    }
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Percent of Sleep Cycle users at or above the cough threshold named in the measure column.",
+    "measure_type": "Percent",
+    "unit": "Percent"
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|value_lcl": {
+    "short_name": "Lower bound",
+    "short_description": "Lower bound of the 90% interval.",
+    "measure_type": "Percent",
+    "unit": "Percent"
+  },
+  "bundle_respiratory/dist/sleepcycle_cough.parquet|value_ucl": {
+    "short_name": "Upper bound",
+    "short_description": "Upper bound of the 90% interval.",
+    "measure_type": "Percent",
+    "unit": "Percent"
+  },
   "_bundle": {
     "name": "bundle_respiratory",
     "sources": [
@@ -674,49 +784,50 @@
       "delphi_doctors_claims",
       "delphi_hospital_claims",
       "delphi_ili_fluview",
-      "delphi_nhsn",
+      "delphi_nrevss",
+      "delphi_sleepcycle",
       "epic_resp_infections",
       "gtrends",
       "kinsa_ili",
+      "nhsn_hospital_capacity",
       "nnds",
-      "NREVSS",
       "nssp",
       "respnet",
       "wastewater"
     ],
     "dist_files": {
       "rsv_overall_trends.parquet": {
-        "sources": ["delphi_nhsn", "epic_resp_infections", "gtrends", "nssp", "respnet", "wastewater"],
+        "sources": ["epic_resp_infections", "gtrends", "nhsn_hospital_capacity", "nssp", "respnet", "wastewater"],
         "source_files": [
           "epic_resp_infections/standard/weekly.csv.gz",
           "gtrends/standard/data.csv.gz",
           "nssp/standard/data.csv.gz",
           "respnet/standard/data.csv.gz",
           "wastewater/standard/data.csv.gz",
-          "delphi_nhsn/standard/data.csv.gz"
+          "nhsn_hospital_capacity/standard/data.csv.gz"
         ]
       },
       "flu_overall_trends.parquet": {
-        "sources": ["delphi_hospital_claims", "delphi_ili_fluview", "delphi_nhsn", "epic_resp_infections", "kinsa_ili", "nssp", "respnet", "wastewater"],
+        "sources": ["delphi_hospital_claims", "delphi_ili_fluview", "epic_resp_infections", "kinsa_ili", "nhsn_hospital_capacity", "nssp", "respnet", "wastewater"],
         "source_files": [
           "epic_resp_infections/standard/weekly.csv.gz",
           "nssp/standard/data.csv.gz",
           "respnet/standard/data.csv.gz",
           "wastewater/standard/data.csv.gz",
-          "delphi_nhsn/standard/data.csv.gz",
+          "nhsn_hospital_capacity/standard/data.csv.gz",
           "delphi_hospital_claims/standard/data.csv.gz",
           "delphi_ili_fluview/standard/data.csv.gz",
           "kinsa_ili/standard/data.csv.gz"
         ]
       },
       "covid_overall_trends.parquet": {
-        "sources": ["delphi_doctors_claims", "delphi_hospital_claims", "delphi_nhsn", "epic_resp_infections", "nssp", "respnet", "wastewater"],
+        "sources": ["delphi_doctors_claims", "delphi_hospital_claims", "epic_resp_infections", "nhsn_hospital_capacity", "nssp", "respnet", "wastewater"],
         "source_files": [
           "epic_resp_infections/standard/weekly.csv.gz",
           "nssp/standard/data.csv.gz",
           "respnet/standard/data.csv.gz",
           "wastewater/standard/data.csv.gz",
-          "delphi_nhsn/standard/data.csv.gz",
+          "nhsn_hospital_capacity/standard/data.csv.gz",
           "delphi_hospital_claims/standard/data.csv.gz",
           "delphi_doctors_claims/standard/data.csv.gz"
         ]
@@ -755,8 +866,8 @@
         "source_files": ["nssp/standard/data.csv.gz"]
       },
       "rsv_positive_tests.parquet": {
-        "sources": ["NREVSS"],
-        "source_files": ["NREVSS/standard/data.csv.gz"]
+        "sources": ["delphi_nrevss"],
+        "source_files": ["delphi_nrevss/standard/data_region.csv.gz"]
       },
       "rsv_testing_pct.parquet": {
         "sources": ["epic_resp_infections"],
@@ -804,7 +915,36 @@
           "epic_resp_infections/standard/quarterly_gas.csv.gz",
           "nnds/standard/data.csv.gz"
         ]
+      },
+      "nrevss_lab_testing.parquet": {
+        "sources": ["delphi_nrevss"],
+        "source_files": [
+          "delphi_nrevss/standard/data_nation.csv.gz",
+          "delphi_nrevss/standard/data_state.csv.gz"
+        ]
+      },
+      "sleepcycle_cough.parquet": {
+        "sources": ["delphi_sleepcycle"],
+        "source_files": ["delphi_sleepcycle/standard/data.csv.gz"]
       }
+    }
+  },
+  "_sources": {
+    "delphi_nrevss": {
+      "name": "CMU Delphi Epidata - NREVSS Respiratory Virus Laboratory Data",
+      "url": "https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/nrevss.html",
+      "organization": "Carnegie Mellon University Delphi Research Group",
+      "organization_url": "https://delphi.cmu.edu/",
+      "description": "Weekly laboratory testing data from CDC's National Respiratory and Enteric Virus Surveillance System (NREVSS), accessed through the CMU Delphi Epidata API (v5).",
+      "restrictions": "Public domain. CDC data is generally not subject to copyright restrictions. Delphi lists this source as a public-domain U.S. Government work (17 U.S.C. 105)."
+    },
+    "delphi_sleepcycle": {
+      "name": "CMU Delphi Epidata - Sleep Cycle Nocturnal Coughs",
+      "url": "https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/sleepcycle.html",
+      "organization": "Carnegie Mellon University Delphi Research Group; Sleep Cycle AB",
+      "organization_url": "https://delphi.cmu.edu/",
+      "description": "Nighttime cough data from the Sleep Cycle app, processed by the CMU Delphi Group.",
+      "restrictions": "CC BY-NC 4.0. Attribution to Sleep Cycle and the CMU Delphi Group is required, and the data may not be used for commercial purposes."
     }
   }
 }

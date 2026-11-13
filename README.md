@@ -80,6 +80,33 @@ Several bundle files changed shape so that every stratified file carries a row f
 **November 5, 2026**
 The NARMS Now human clinical files (resistance by agent and by pattern) were rebuilt from a full re-scrape of the CDC dashboard. The dashboard's responses mark a cell as "same as the previous cell", and the parser treated the first cell of each row as missing instead of carrying that value over, so a share of cells in every year was recorded as `not_tested` when the dashboard actually reported a value; about 157,000 agent cells and 279,000 pattern cells now carry values. Recent years also pick up CDC's revisions, and data now extend through the current year. The scrape moved out of the twice-weekly build into a monthly workflow that only re-pulls the years whose national totals changed.
 
+**November 13, 2026**
+Several respiratory sources changed how they are read in, mostly because Delphi is retiring its older API endpoints. No existing column in any bundle file was renamed; `rsv_positive_tests.parquet` gained a `suppressed_flag` column (see below).
+
+*NHSN hospital admissions now come directly from CDC.* The CDC NHSN hospital admissions series (COVID-19, influenza and RSV) in the respiratory and flu bundles had not updated since the week ending September 12, 2026, because Delphi stopped updating the legacy COVIDcast endpoint they were read from. They are now taken from CDC's own NHSN file (the `nhsn_hospital_capacity` source), and the `delphi_nhsn` source has been retired. In the flu bundle the series is now `nhsn_adm_flu` (previously `delphi_nhsn_flu`); its `source` label is still "CDC NHSN". The series start in the same week and cover the same geographies as before, and run through the latest week again. Earlier weeks pick up NHSN's routine revisions (for example, national COVID-19 admissions for the week ending September 12 changed from 4,095 to 4,368).
+
+*FluView (ILINet) is read from Delphi's Epidata v5 API.* It moved ahead of the retirement of the endpoint it was read from, which Delphi deprecated in October 2026. Values are unchanged apart from CDC's routine revisions, with these changes:
+- Puerto Rico and the U.S. Virgin Islands are now included.
+- Weeks in which reporting providers saw no patients (42 state-weeks) now have a missing ILI percentage instead of 0%.
+- New York, which the new API builds from New York City plus the rest of the state, differs slightly from before (by less than 0.005 percentage points of ILI).
+- Weeks a state did not report are now rows with missing values instead of absent rows.
+
+Weeks and geographies with no recent data are listed in the READMEs of the FluView and claims sources. The Delphi doctor-visit and hospital-admission claims sources were relabeled as Epidata (not COVIDcast) sources; their documentation now explains why some states and counties have stopped updating.
+
+*NREVSS laboratory data now come from Delphi.* The `NREVSS` source (CDC dataset 3cxc-4k8q, RSV only, by HHS region) was retired and replaced by `delphi_nrevss`. This source reads CDC's NREVSS data from Delphi's Epidata v5 API and covers more:
+- weekly tests, positive tests and percent positive for seven respiratory viruses, nationally and for each HHS region, from July 2019;
+- CDC's state averages for RSV and COVID-19 from February 2024.
+
+`rsv_positive_tests.parquet` in the respiratory bundle is now built from the HHS-region RSV positives in `delphi_nrevss/standard/data_region.csv.gz`. Its existing columns and geographies are unchanged: the ten HHS regions plus a population-weighted United States value. CDC's old file published a centered 5-week average of positive tests, and Delphi serves weekly counts, so the bundle now computes that average itself, along with `scaled_cases` and the epidemiological year and week. The series now starts in July 2019 instead of April 2020.
+
+Some values changed. The old CDC file was not suppressed, but the data Delphi serves hide weekly counts of 1–4. Those weeks now enter the average as 2.5, the midpoint, and a new `suppressed_flag` column is 1 wherever a value relies on one. For United States rows, the flag is 1 if any region's value does. The flag is set on 879 of 3,830 region-weeks and 173 of 383 national weeks, mostly in low, off-season weeks. Of the 3,773 rows in both files:
+- Rows not affected by suppression match the old values up to CDC's one-decimal rounding (16 differ, by at most 0.2 positive tests).
+- 747 of the 789 affected region rows changed, by at most 1.3 positive tests.
+- 150 national rows changed, by at most 0.54.
+- `scaled_cases` changed in 857 rows for the same reason.
+
+*New sources.* Two sources read from Delphi's Epidata v5 API were added: `delphi_nrevss` (above) and Sleep Cycle nighttime coughs (`delphi_sleepcycle`, licensed CC BY-NC 4.0 for non-commercial use only). The respiratory bundle gains two files, `nrevss_lab_testing.parquet` and `sleepcycle_cough.parquet`.
+
 # Guide to adding data and rebuilding the bundle
 
 ## Steps for adding new datasets
@@ -184,7 +211,7 @@ Any standard format files that are used in the bundle should be referenced in pr
     "wastewater/standard/data.csv.gz",
     "abcs/standard/data.csv.gz",
     "abcs/standard/uad.csv.gz",
-    "NREVSS/standard/data.csv.gz",
+    "delphi_nrevss/standard/data_region.csv.gz",
     "nssp/standard/data.csv.gz",
     "respnet/standard/data.csv.gz"
   ]

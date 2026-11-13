@@ -1,7 +1,7 @@
 # =============================================================================
 # Bundle: Influenza
 # Combines (flu variables only): nssp, epic_resp_infections, respnet,
-#   nhsn_hospital_capacity, delphi_nhsn, delphi_hospital_claims,
+#   nhsn_hospital_capacity, delphi_hospital_claims,
 #   delphi_ili_fluview, kinsa_ili, wastewater, fluvaxview, nis_flu_rsv, iis_vax,
 #   medicare_vax, vsd_pregnancy_vax, flu_doses_distributed,
 #   iqvia_vax_administered, cdc_cfa_rt, nchs_mortality, nchs_respiratory_deaths, nnds, plus the
@@ -23,7 +23,7 @@
 #                                      registration (USAFacts), annual, long
 #
 # Only influenza variables are carried. Where a standard file mixes viruses
-# (nssp, epic, respnet, wastewater, nhsn, delphi_nhsn, cfa_rt, nis, iis, ...)
+# (nssp, epic, respnet, wastewater, nhsn, cfa_rt, nis, iis, ...)
 # the RSV and COVID columns are dropped. "Influenza and pneumonia" mortality
 # (NCHS) is a combined cause and is labelled as such. Haemophilus influenzae
 # (nnds) is a bacterium, not influenza, and is excluded.
@@ -154,8 +154,11 @@ trend_series <- list(
        source = "CDC RespNET", total_age = TRUE),
   list(file = "wastewater/standard/data.csv.gz", col = "wastewater_flua",
        source = "CDC NWSS"),
-  list(file = "delphi_nhsn/standard/data.csv.gz", col = "delphi_nhsn_flu",
-       source = "CDC NHSN"),
+  # Starts with the week ending 2024-11-09, the first full week after reporting
+  # became mandatory again and where this series has always started here; the
+  # earlier weeks are in flu_hospital_capacity
+  list(file = "nhsn_hospital_capacity/standard/data.csv.gz", col = "nhsn_adm_flu",
+       source = "CDC NHSN", start = as.Date("2024-11-09")),
   list(file = "delphi_hospital_claims/standard/data.csv.gz",
        col = "delphi_hospital_flu_smooth", source = "Delphi Hospital Claims"),
   list(file = "delphi_ili_fluview/standard/data.csv.gz", col = "delphi_fluview_wili",
@@ -171,6 +174,7 @@ load_trend_series <- function(s, by_age = FALSE) {
   if (isTRUE(s$total_age)) d <- filter(d, age == "Total")
   d <- d %>% filter(nchar(geography) == 2)
   if (!is.null(TREND_START)) d <- filter(d, time >= TREND_START)
+  if (!is.null(s$start)) d <- filter(d, time >= s$start)
   d$suppressed_flag <- if (!is.null(s$flag)) d[[s$flag]] else 0
   d %>%
     transmute(geography, date = time, source = s$source,
