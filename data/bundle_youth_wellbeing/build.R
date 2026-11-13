@@ -116,7 +116,7 @@ tall_simple <- function(df, measures, strata) {
 # Pivot wide measure columns to tall, carrying per-measure companion columns
 # named <measure><suffix>. Each suffix becomes a column of its own, e.g.
 # '_lcl' -> lcl (callers rename to value_lcl). Measures are matched longest-first so that overlapping names
-# (pct_no_breakfast vs pct_no_breakfast_7days) resolve correctly.
+# (one measure name being a prefix of another) resolve correctly.
 tall_flagged <- function(df, measures, strata, suffixes) {
   measures <- intersect(measures, names(df))
   measures <- measures[order(-nchar(measures))]
@@ -217,7 +217,7 @@ SPEC <- bind_rows(
      c('pct_inactive_60min_5days', 'pct_no_pe_classes', 'pct_no_sports_team',
        'pct_no_daily_pe', 'pct_inactive_all_days')),
   sp('yrbss', 'Preventative health and wellness', 'Nutrition',
-     c('pct_no_breakfast', 'pct_no_breakfast_7days', 'pct_no_fruit', 'pct_no_vegetables')),
+     c('pct_no_breakfast', 'pct_breakfast_not_daily', 'pct_no_fruit', 'pct_no_vegetables')),
 
   # ---- Epic Injury (includes the opioid measures the sheet filed under Epic Chronic) ----
   sp('epic_injury', 'Injury and violence', 'Firearms',
