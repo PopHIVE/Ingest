@@ -9,7 +9,6 @@ dcf_process("delphi_sleepcycle")
 dcf_process("nhsn_hospital_capacity")
 dcf_process("gtrends")
 
-dcf_process("NREVSS")
 dcf_process("nssp")
 dcf_process("respnet")
 dcf_process("wastewater")

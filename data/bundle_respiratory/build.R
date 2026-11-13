@@ -243,11 +243,94 @@ overall_trends %>%
 ###################
 #nrevss_view <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Webslim/respiratory_diseases/rsv/positive_tests.parquet')
 
-d <- vroom::vroom('../NREVSS/standard/data.csv.gz') %>%
-  rename(value = pcr_detections,
-         date = time) 
+# RSV positive tests by HHS region, from delphi_nrevss (CDC NREVSS via CMU
+# Delphi). This replaced the NREVSS source (CDC dataset 3cxc-4k8q) in Nov 2026;
+# the columns and their meaning are unchanged:
+#   value         positive RSV tests, centered 5-week average (the week, the
+#                 two before and the two after; partial windows at the ends).
+#                 CDC published this average in 3cxc-4k8q; Delphi serves the
+#                 weekly counts, so it is computed here. CDC suppresses weekly
+#                 counts of 1-4 (positives are NA while percent positive is
+#                 still reported); those weeks enter the average as 2.5, the
+#                 midpoint. CDC's old HHS file was not suppressed, so these
+#                 averages are estimates; they are within 1.3 positives of the
+#                 old values. Rows whose 5-week window contains no suppressed
+#                 week match the old file (up to CDC's rounding).
+#   suppressed_flag  1 where the 5-week window includes a filled week (for
+#                 United States: in any region), 0 otherwise. Added Nov 2026;
+#                 the old file had no such column.
+#   United States population-weighted mean of the regional values
+#   scaled_cases  value / the largest value in the file * 100
+#   epiyr, epiwk  July-June season and week of season (MMWR weeks)
+nrevss_region <- vroom::vroom('../delphi_nrevss/standard/data_region.csv.gz',
+                              show_col_types = FALSE,
+                              col_types = vroom::cols(geography = "c", time = "D"),
+                              col_select = c(geography, time, delphi_nrevss_rsv_positive_tests,
+                                             delphi_nrevss_rsv_pct_positive)) %>%
+  mutate(imputed = as.numeric(is.na(delphi_nrevss_rsv_positive_tests) &
+                                !is.na(delphi_nrevss_rsv_pct_positive)),
+         positives = if_else(imputed == 1, 2.5, delphi_nrevss_rsv_positive_tests),
+         # any week without a published count, filled or not (a week missing
+         # both positives and percent positive shortens the window instead)
+         not_reported = as.numeric(is.na(delphi_nrevss_rsv_positive_tests))) %>%
+  arrange(geography, time) %>%
+  group_by(geography) %>%
+  mutate(value = zoo::rollapply(positives, 5,
+                                function(x) if (all(is.na(x))) NA_real_ else mean(x, na.rm = TRUE),
+                                partial = TRUE, align = "center"),
+         # 1 where the 5-week window includes a week with no published count
+         # (in practice a suppressed week filled with 2.5)
+         suppressed_flag = zoo::rollapply(not_reported, 5, max, partial = TRUE, align = "center")) %>%
+  ungroup() %>%
+  mutate(level = sub("hhs_", "Region ", geography, fixed = TRUE))
 
-arrow::write_parquet(d, "dist/rsv_positive_tests.parquet")
+pop_hhs <- vroom::vroom("../../resources/pop_hhs.csv.gz", show_col_types = FALSE)
+
+if (!all(unique(nrevss_region$level) %in% pop_hhs$hhs)) {
+  stop("nrevss: HHS region(s) with no population in pop_hhs.csv.gz: ",
+       paste(setdiff(unique(nrevss_region$level), pop_hhs$hhs), collapse = ", "))
+}
+# the national value is a weighted mean of all ten regions; a week where a
+# region has no value would silently reweight it, so stop instead
+short_weeks <- nrevss_region %>% filter(!is.na(value)) %>% count(time) %>% filter(n < 10)
+if (nrow(short_weeks) > 0) {
+  stop("nrevss: ", nrow(short_weeks), " week(s) with fewer than 10 HHS regions, e.g. ",
+       format(short_weeks$time[1]))
+}
+
+nrevss_nat <- nrevss_region %>%
+  filter(!is.na(value)) %>%
+  left_join(pop_hhs, by = c("level" = "hhs")) %>%
+  group_by(time) %>%
+  summarize(value = round(sum(value * popsize / sum(popsize)), 5),
+            # 1 where any region's value used a filled week
+            suppressed_flag = max(suppressed_flag), .groups = "drop") %>%
+  mutate(level = "United States")
+
+hhs_key <- readRDS('../../resources/hhs_regions.rds') %>%
+  dplyr::select(level = Group.1, region_states = x)
+
+d <- bind_rows(nrevss_region %>% dplyr::select(level, time, value, suppressed_flag), nrevss_nat) %>%
+  filter(!is.na(value)) %>%
+  left_join(hhs_key, by = "level") %>%
+  mutate(
+    source = 'CDC NREVSS',
+    geography = if_else(level == 'United States', 'United States', region_states),
+    mmwr = MMWRweek::MMWRweek(time),
+    week = as.numeric(mmwr$MMWRweek),
+    year = as.numeric(mmwr$MMWRyear),
+    epiyr = if_else(week <= 26, year - 1, year),
+    epiyr = paste0(epiyr, '-', epiyr + 1),
+    epiwk = if_else(week <= 26, week + 52, week) - 26,
+    scaled_cases = value / max(value) * 100
+  ) %>%
+  dplyr::select(source, geography, date = time, scaled_cases, value, epiyr, epiwk, week, year,
+                suppressed_flag) %>%
+  arrange(geography, date)
+
+if (anyNA(d$geography)) stop("nrevss: HHS region with no entry in hhs_regions.rds")
+
+arrow::write_parquet(as.data.frame(d), "dist/rsv_positive_tests.parquet")
 
 #################
 #RSV testing data
@@ -938,8 +1021,8 @@ write_dist(gas_state, "gas_state.parquet")
 #                     positive, 5-week trailing for positives). `pathogen` names
 #                     the virus and `measure` the quantity, so the state averages
 #                     are their own measure levels. rsv_positive_tests above is
-#                     the HHS-region RSV series from CDC's own file and is not
-#                     replaced by this one. Puerto Rico is in the state file
+#                     the HHS-region RSV series from the same source
+#                     (data_region.csv.gz). Puerto Rico is in the state file
 #                     but, as elsewhere in this bundle, is not carried.
 # sleepcycle_cough    State and national share of Sleep Cycle users who cough 2+
 #                     or 10+ times an hour while asleep, with the 90% interval as

@@ -14,8 +14,10 @@ process <- dcf::dcf_process_record()
 
 # The national and state series carry different signals, so each level has its
 # own signal list and its own standard file:
-# - nation: weekly CDC test counts, positive detections and percent positivity
-#   for all seven pathogens
+# - nation and HHS region: weekly CDC test counts, positive detections and
+#   percent positivity for all seven pathogens. The HHS-region RSV positives
+#   replace the retired NREVSS source (CDC dataset 3cxc-4k8q) in
+#   bundle_respiratory/dist/rsv_positive_tests.parquet
 # - state: CDC publishes state data only for RSV and SARS-CoV-2, and only as
 #   3-week centered averages (tests, percent positive) and 5-week trailing
 #   averages (positives), from 2024-02.
@@ -72,6 +74,9 @@ all <- bind_rows(
     source = "nrevss", signals = unname(nation_signals), geo_type = "nation"
   ),
   snapshot_with_retry(
+    source = "nrevss", signals = unname(nation_signals), geo_type = "hhs"
+  ),
+  snapshot_with_retry(
     source = "nrevss", signals = unname(state_signals), geo_type = "state"
   )
 ) %>%
@@ -106,8 +111,10 @@ if (!identical(process$raw_state, raw_state)) {
     col_types = vroom::cols(geo_value = "c", fill_method = "c"),
     show_col_types = FALSE
   ) %>%
-    mutate(state = toupper(geo_value)) %>%
-    left_join(state_fips_lookup, by = "state")
+    mutate(state = if_else(geo_type == "hhs", NA_character_, toupper(geo_value))) %>%
+    left_join(state_fips_lookup, by = "state") %>%
+    # HHS regions have no FIPS code; use the repo's hhs_1 ... hhs_10 convention
+    mutate(geography = if_else(geo_type == "hhs", paste0("hhs_", geo_value), geography))
 
   unmatched <- unique(data$geo_value[is.na(data$geography)])
   if (length(unmatched) > 0) {
@@ -162,9 +169,16 @@ if (!identical(process$raw_state, raw_state)) {
   }
 
   data_nation <- make_wide("nation", nation_signals)
+  data_region <- make_wide("hhs", nation_signals)
   data_state <- make_wide("state", state_signals)
 
+  if (!setequal(unique(data_region$geography), paste0("hhs_", 1:10))) {
+    stop("expected HHS regions 1-10, got: ",
+         paste(sort(unique(data_region$geography)), collapse = ", "))
+  }
+
   vroom::vroom_write(data_nation, "standard/data_nation.csv.gz", ",")
+  vroom::vroom_write(data_region, "standard/data_region.csv.gz", ",")
   vroom::vroom_write(data_state, "standard/data_state.csv.gz", ",")
 
   # record processed raw state
