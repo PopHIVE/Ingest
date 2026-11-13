@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-12T16:05:19Z",
+  "generated": "2026-11-13T15:10:56Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -16966,7 +16966,7 @@
             {
               "name": "age",
               "short_name": "Age group",
-              "description": "Age band: CDC WONDER's ten-year groups under 25 (<1, 1-4, 5-14, 15-24 years), a directly queried '0-24 years' total that overlaps those bands, plus 'All ages', the source's total over every age, adults included. Do not sum across age. County rates for <1 and 1-4 years are not available (no county population denominator at CDC WONDER).",
+              "description": "Age band: CDC WONDER's ten-year groups under 25 (<1, 1-4, 5-14, 15-24 years) and a directly queried '0-24 years' total that overlaps those bands. Do not sum across age. County rates for <1 and 1-4 years are not available (no county population denominator at CDC WONDER).",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -17090,7 +17090,7 @@
             {
               "name": "age",
               "short_name": "Age group",
-              "description": "Age band: CDC WONDER's ten-year groups under 25 (<1, 1-4, 5-14, 15-24 years), a directly queried '0-24 years' total that overlaps those bands, plus 'All ages', the source's total over every age, adults included. Do not sum across age.",
+              "description": "Age band: CDC WONDER's ten-year groups under 25 (<1, 1-4, 5-14, 15-24 years) and a directly queried '0-24 years' total that overlaps those bands. Do not sum across age.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -17299,7 +17299,7 @@
             {
               "name": "pct_captured",
               "short_name": "Percent of population captured",
-              "description": "sample_size as a percent of the 2021 census population under 18 for the same geography. NA where sample_size was suppressed. Values over 100% are capped at 100%.",
+              "description": "sample_size as a percent of the 2021 census population under 18 for the same geography. NA where the measure itself was suppressed. Values over 100% are capped at 100%.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -17307,7 +17307,7 @@
             {
               "name": "sample_size",
               "short_name": "Sample size",
-              "description": "Number of Epic Cosmos patients in the chronic disease sample (n_patients_chronic) for this geography, year and age band, used as the sample size for every measure. Counts under 10 are suppressed and imputed as 5.",
+              "description": "Number of Epic Cosmos patients in the denominator of this row's measure, for this geography, year and age band: n_patients_ob_county for obesity measures, n_patients_chronic for diabetes measures. Rows whose denominator was suppressed at source (10 or fewer patients) are dropped, so every sample_size here is a published count above 10.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -17439,7 +17439,7 @@
             {
               "name": "pct_captured",
               "short_name": "Percent of population captured",
-              "description": "sample_size as a percent of the 2021 census population under 18 for the same geography. NA where sample_size was suppressed. Values over 100% are capped at 100%.",
+              "description": "sample_size as a percent of the 2021 census population under 18 for the same geography. NA where the measure itself was suppressed. Values over 100% are capped at 100%.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -17447,7 +17447,7 @@
             {
               "name": "sample_size",
               "short_name": "Sample size",
-              "description": "Number of Epic Cosmos patients in the chronic disease sample (n_patients_chronic) for this geography, year and age band, used as the sample size for every measure. Counts under 10 are suppressed and imputed as 5.",
+              "description": "Number of Epic Cosmos patients in the denominator of this row's measure, for this geography, year and age band: n_patients_ob for obesity measures, n_patients_chronic for diabetes measures. Rows whose denominator was suppressed at source (10 or fewer patients) are dropped, so every sample_size here is a published count above 10.",
               "measure_type": "",
               "unit": "",
               "levels": {}
@@ -17866,6 +17866,152 @@
               "name": "suppressed",
               "short_name": "Suppressed flag",
               "description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            }
+          ]
+        },
+        {
+          "filename": "epic_mental_health_state_age_quarter.parquet",
+          "path": "data/bundle_youth_wellbeing/dist/epic_mental_health_state_age_quarter.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_youth_wellbeing/dist/epic_mental_health_state_age_quarter.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State name; 'United States' for the national total.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "fips",
+              "short_name": "FIPS code",
+              "description": "Geography FIPS code ('00' = national, 2-digit = state).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Last day of the calendar quarter the estimate covers (YYYY-mm-dd).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year of `time`, for convenience.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age band: the source's 0-9 and 10-14 years (entirely under 18), 15-19 years (straddles 18; no finer split), 0-24 years (the youth headline total; includes ages 18-24), plus 'All ages', the source's total over every age, adults included.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "section",
+              "short_name": "Dashboard section",
+              "description": "Dashboard page this row belongs to: Injury and violence, Substance abuse, Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "focus_area",
+              "short_name": "Focus area",
+              "description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair: the all-diagnosis baselines (epic_ed_n_visits, epic_ed_los_median_all) appear under both 'Suicide and suicidal ideation' and 'General mental health measures'.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Source",
+              "description": "Data source the row came from.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "Tall-format measure identifier; see levels for each measure's metadata.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "epic_ed_n_visits": {},
+                "epic_ed_n_visits_suicidal_behavior": {},
+                "epic_ed_n_visits_other": {},
+                "epic_pct_ed_suicidal_behavior": {
+                  "short_name": "Percent of ED visits: suicidal behavior",
+                  "long_name": "Emergency department visits for suicidal behavior as a percent of all ED visits",
+                  "short_description": "ED visits with a suicidal behavior diagnosis as a percent of all ED visits in the same state, quarter and age band.",
+                  "long_description": "Derived in this bundle as 100 * epic_ed_n_visits_suicidal_behavior / epic_ed_n_visits. Rows where the denominator (epic_ed_n_visits) is missing or suppressed are dropped rather than computed from an imputed count. When the numerator was 10 or fewer it is imputed as 5 at source and the row carries suppressed = 1.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Quarter",
+                  "sources": [
+                    {
+                      "id": "epic_cosmos"
+                    }
+                  ]
+                },
+                "epic_pct_ed_other": {
+                  "short_name": "Percent of ED visits: other mental health",
+                  "long_name": "Emergency department visits for other mental health reasons as a percent of all ED visits",
+                  "short_description": "ED visits in the Other mental health diagnosis group as a percent of all ED visits in the same state, quarter and age band.",
+                  "long_description": "Derived in this bundle as 100 * epic_ed_n_visits_other / epic_ed_n_visits. Rows where the denominator (epic_ed_n_visits) is missing or suppressed are dropped rather than computed from an imputed count. When the numerator was 10 or fewer it is imputed as 5 at source and the row carries suppressed = 1.",
+                  "measure_type": "Percent",
+                  "unit": "Percent",
+                  "time_resolution": "Quarter",
+                  "sources": [
+                    {
+                      "id": "epic_cosmos"
+                    }
+                  ]
+                },
+                "epic_ed_los_median_all": {},
+                "epic_ed_los_median_suicidal_behavior": {},
+                "epic_ed_los_median_other": {}
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Primary measure value. Units vary by measure: encounters for epic_ed_n_visits*, percent for epic_pct_ed_*, minutes for epic_ed_los_median_*. Rows flagged suppressed do NOT carry a usable value; see that column.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "pct_25",
+              "short_name": "25th percentile (Q1)",
+              "description": "For epic_ed_los_median_* only: first quartile of ED length of stay in minutes (source epic_ed_los_q1_*). NA for other measures, and NA where the source suppressed the quartile itself.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "pct_75",
+              "short_name": "75th percentile (Q3)",
+              "description": "For epic_ed_los_median_* only: third quartile of ED length of stay in minutes (source epic_ed_los_q3_*). NA for other measures, and NA where the source suppressed the quartile itself.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "suppressed",
+              "short_name": "Suppressed flag",
+              "description": "1 if the source suppressed the estimate. Visit counts of 10 or fewer are imputed as 5; epic_pct_ed_* carries its numerator's flag, and rows whose denominator (epic_ed_n_visits) was suppressed are dropped entirely. Suppressed length-of-stay cells are NA at source and are not in this file. Filter on suppressed == 0 before using value.",
               "measure_type": "",
               "unit": "",
               "levels": {}
