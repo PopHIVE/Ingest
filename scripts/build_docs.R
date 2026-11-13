@@ -18,6 +18,16 @@ library(glue)
 # the bundle render functions below can use it (a matching GITHUB_RAW_BASE is set
 # later for the manifest section).
 GH_RAW_BASE <- "https://raw.githubusercontent.com/PopHIVE/Ingest/main"
+# Browsable GitHub folder base, used for the "View on GitHub" link on each section.
+GH_TREE_BASE <- "https://github.com/PopHIVE/Ingest/tree/main/data"
+
+#' Small "View on GitHub" link to a data/<dir> folder in the repo
+make_github_folder_link <- function(dir_name) {
+  tags$p(class = "small mb-3",
+    tags$a(href = paste0(GH_TREE_BASE, "/", dir_name), target = "_blank",
+           rel = "noopener", "View on GitHub: ", tags$code(paste0("data/", dir_name)))
+  )
+}
 
 # -----------------------------------------------------------------------------
 # Configuration
@@ -574,7 +584,10 @@ make_source_links <- function(sources_info) {
         tags$a(href = src$organization_url, target = "_blank", src$organization %||% "Organization")
       )
     }
-    if (!is.null(src$location_url) && nchar(src$location_url) > 0) {
+    # Skip the location link when it just repeats the Data Source link
+    norm_url <- function(x) sub("/+$", "", sub("^https?://(www\\.)?", "", tolower(trimws(x %||% ""))))
+    if (!is.null(src$location_url) && nchar(src$location_url) > 0 &&
+        norm_url(src$location_url) != norm_url(src$url)) {
       items <- tagList(items,
         " | ",
         tags$a(href = src$location_url, target = "_blank", "API/Data Location")
@@ -637,6 +650,7 @@ make_source_section <- function(source_name, source_dir) {
   tagList(
     tags$section(id = section_id, class = "mb-5",
       tags$h2(class = "border-bottom pb-2", format_source_name(source_name)),
+      make_github_folder_link(source_name),
 
       # Description
       if (nchar(description) > 0) {
@@ -727,6 +741,7 @@ make_bundle_section <- function(bundle_name, bundle_dir) {
   tagList(
     tags$section(id = section_id, class = "mb-5",
       tags$h2(class = "border-bottom pb-2", format_bundle_name(bundle_name)),
+      make_github_folder_link(bundle_name),
 
       tags$p(class = "text-muted",
         tags$em(sprintf("Combined output bundle. Dist files: %d parquet file(s).",

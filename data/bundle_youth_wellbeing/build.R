@@ -70,7 +70,7 @@ AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' 
                  '10-13 Years' = '10-13 years', '14-17 Years' = '14-17 years',
                  'Overall' = 'All ages')
 AGE_DROWN   <- c('<1' = '<1 year', '1-4' = '1-4 years', '5-14' = '5-14 years',
-                 '15-24' = '15-24 years', '0-24' = '0-24 years', 'Overall' = 'All ages')
+                 '15-24' = '15-24 years', '0-24' = '0-24 years')
 AGE_YRBSS   <- c('14' = '14 years', '15' = '15 years', '16' = '16 years',
                  '17' = '17 years', 'Overall' = 'Overall')
 
@@ -116,7 +116,7 @@ tall_simple <- function(df, measures, strata) {
 # Pivot wide measure columns to tall, carrying per-measure companion columns
 # named <measure><suffix>. Each suffix becomes a column of its own, e.g.
 # '_lcl' -> lcl (callers rename to value_lcl). Measures are matched longest-first so that overlapping names
-# (pct_no_breakfast vs pct_no_breakfast_7days) resolve correctly.
+# (one measure name being a prefix of another) resolve correctly.
 tall_flagged <- function(df, measures, strata, suffixes) {
   measures <- intersect(measures, names(df))
   measures <- measures[order(-nchar(measures))]
@@ -217,7 +217,7 @@ SPEC <- bind_rows(
      c('pct_inactive_60min_5days', 'pct_no_pe_classes', 'pct_no_sports_team',
        'pct_no_daily_pe', 'pct_inactive_all_days')),
   sp('yrbss', 'Preventative health and wellness', 'Nutrition',
-     c('pct_no_breakfast', 'pct_no_breakfast_7days', 'pct_no_fruit', 'pct_no_vegetables')),
+     c('pct_no_breakfast', 'pct_breakfast_not_daily', 'pct_no_fruit', 'pct_no_vegetables')),
 
   # ---- Epic Injury (includes the opioid measures the sheet filed under Epic Chronic) ----
   sp('epic_injury', 'Injury and violence', 'Firearms',
@@ -1103,8 +1103,8 @@ neiss_build('data_agegroup_diagnosis.csv.gz', 'data_infant_diagnosis.csv.gz',
 # Age bands are <1, 1-4, 5-14 and 15-24 (15-24 straddles 18, as in WISQARS),
 # a true '0-24 years' band queried directly from WONDER (so it is suppressed
 # only if the whole band has 1-9 deaths; it OVERLAPS the other bands, so never
-# sum across age), plus the source's Overall row (every age, adults included)
-# as 'All ages'; older bands are dropped. At these ages the source carries only the
+# sum across age). The source's Overall row (every age, adults included) and
+# older bands are dropped. At these ages the source carries only the
 # sex = 'Overall' / race_ethnicity = 'Overall' stratum, so those columns are
 # not carried. Years are 2018-2024.
 #
