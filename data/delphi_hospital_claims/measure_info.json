@@ -1,8 +1,8 @@
 {
   "delphi_hospital_covid_smooth": {
     "id": "delphi_hospital_covid_smooth",
-    "short_name": "",
-    "long_name": "",
+    "short_name": "COVID Hospital Admissions",
+    "long_name": "Percentage of Hospital Admissions with COVID-19 Diagnosis",
     "category": "respiratory",
     "short_description": "Estimated percentage of new hospital admissions with COVID-associated diagnoses, based on claims data from health system partners, as of the week-ending Saturday",
     "long_description": "This data source is based on electronic medical records and claims data about hospital admissions, provided to Delphi by health system partners. We use this inpatient data to estimate the percentage of new hospital admissions with a COVID-associated diagnosis code in a given location. Delphi publishes daily values that are already smoothed over a 7-day window, so the value reported on each week-ending Saturday is taken as the weekly figure without further averaging",
@@ -40,17 +40,17 @@
       "organization_url": "https://delphi.cmu.edu/",
       "location": "Epidata API, claims_inpatient source",
       "location_url": "https://cmu-delphi.github.io/delphi-epidata/",
-      "description": "The Delphi inpatient claims signals estimate the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of admission. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile, and runs of non-zero days bottom out at exactly seven), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. Geography-weeks with no Saturday observation are therefore absent, which affects about 11% of county-weeks. These signals replace the retired COVIDcast hospital-admissions signals (smoothed_covid19_from_claims and smoothed_flu_from_claims), which were smoothed with a Gaussian linear smoother.",
+      "description": "The Delphi inpatient claims signals estimate the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners. CMU Delphi receives de-identified hospital admission data covering a significant fraction of United States hospitals. The signals track inpatient admissions with relevant ICD-10 diagnosis codes for COVID-19 and influenza. This signal provides near-real-time insight into severe respiratory illness at the community level based on actual hospitalizations. Data are published as daily values at national, state, and county levels with approximately 3-4 day lag from the date of admission. Those daily values are already smoothed over a trailing 7-day window (they show no weekday profile, and runs of non-zero days bottom out at exactly seven), so PopHIVE keeps the value reported on each week-ending Saturday rather than averaging the week a second time. Geography-weeks with no Saturday observation are therefore absent, which affects about 11% of county-weeks. Delphi publishes low-volume geographies only intermittently, so several states have long gaps or stopped updating; see the README in this folder for the last week available in each. These signals replace the retired COVIDcast hospital-admissions signals (smoothed_covid19_from_claims and smoothed_flu_from_claims), which were smoothed with a Gaussian linear smoother.",
       "restrictions": "CC-BY Attribution license. Data may be used with attribution to the CMU Delphi Group."
     }
   },
   "_catalog": {
-    "name": "CMU Delphi COVIDcast - Hospital Admissions",
+    "name": "CMU Delphi Epidata - Hospital Admissions (Inpatient Claims)",
     "summary": "The Delphi Hospital Admissions signal estimates the percentage of new hospital admissions with COVID-19 or influenza diagnoses based on electronic medical records and claims data from health system partners.",
     "search_terms": ["Respiratory"],
     "bucket": ["Infectious disease"],
     "files": {
-      "data.csv.gz": "Hospital admissions with respiratory virus-related diagoses"
+      "data.csv.gz": "Hospital admissions with respiratory virus-related diagnoses"
     }
   }
 }

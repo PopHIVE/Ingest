@@ -110,7 +110,7 @@ Any standard format files that are used in the bundle should be referenced in pr
     "wastewater/standard/data.csv.gz",
     "abcs/standard/data.csv.gz",
     "abcs/standard/uad.csv.gz",
-    "NREVSS/standard/data.csv.gz",
+    "delphi_nrevss/standard/data_region.csv.gz",
     "nssp/standard/data.csv.gz",
     "respnet/standard/data.csv.gz"
   ]

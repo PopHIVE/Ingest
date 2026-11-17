@@ -71,6 +71,12 @@ raw_2023 <- fetch_vintage(
   paste0("&MONTH=7&AGE=", c("0000", "0401", "0509", "1014", "1519", "2024"))
 )
 
+# The Census API returns rows in a different order on every request, so sort
+# before writing: otherwise identical data hashes differently each run, which
+# triggers a needless reprocess and a raw/ commit with no change to standard/.
+raw_2019 <- arrange(raw_2019, across(everything()))
+raw_2023 <- arrange(raw_2023, across(everything()))
+
 vroom::vroom_write(raw_2019, "raw/pep_charagegroups_2019.csv.xz", delim = ",")
 vroom::vroom_write(raw_2023, "raw/pep_charv_2023.csv.xz", delim = ",")
 

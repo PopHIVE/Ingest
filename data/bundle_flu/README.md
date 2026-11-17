@@ -20,7 +20,7 @@ Bundles name the time column **`date`**; the standard files call it `time`. `geo
 
 | Parquet | Sources | Rows | Grain |
 |---|---|---|---|
-| `flu_overall_trends.parquet` | `epic_resp_infections`, `nssp`, `respnet`, `wastewater`, `delphi_nhsn`, `delphi_hospital_claims`, `delphi_ili_fluview`, `kinsa_ili` | 66,986 | state + national, weekly, one row per `source` |
+| `flu_overall_trends.parquet` | `epic_resp_infections`, `nssp`, `respnet`, `wastewater`, `nhsn_hospital_capacity`, `delphi_hospital_claims`, `delphi_ili_fluview`, `kinsa_ili` | 66,986 | state + national, weekly, one row per `source` |
 | `flu_trends_by_age.parquet` | `epic_resp_infections`, `respnet`, `nhsn_hospital_capacity` | 164,275 | state + national, weekly, by age group |
 | `flu_ed_visits_by_county.parquet` | `nssp` | 652,491 | county, weekly |
 | `flu_hospital_capacity.parquet` | `nhsn_hospital_capacity` | 267,040 | state, national and HHS region, weekly, long by `measure` |
@@ -49,7 +49,7 @@ in the by-age file). Scaling is what makes sources with different units comparab
   filtered out. It is wired in and will appear if the source recovers.
 - Age labels are each source's own and **do not line up** (Epic and RESP-NET `"<1 Years"`,
   `"1-4 Years"`; NHSN `"0-4"`, `"5-17"`). RESP-NET is `"Total"` only. NHSN `"Unknown"` is dropped.
-- CDC NHSN appears in both files but in different units: `delphi_nhsn_flu` (overall) is a weekly
+- CDC NHSN appears in both files but in different units: `nhsn_adm_flu` (overall) is a weekly
   admissions **count** and `nhsn_adm_rate_flu` (by age) is admissions **per 100,000**. The
   absolute admissions behind both are also in `flu_hospital_capacity`.
 

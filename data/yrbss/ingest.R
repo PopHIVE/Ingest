@@ -110,7 +110,7 @@ measure_dict <- tibble::tribble(
   "QNILLICT",         "pct_ever_illicit_drug",        "Ever used select illicit drugs",   "Ever used select illicit drugs",                                                                                        "Alcohol and Other Drug Use",
   # ---- Dietary Behaviors (category: chronic) ----
   "H72",              "pct_no_breakfast",             "Did not eat breakfast",            "Did not eat breakfast (during the 7 days before the survey)",                                                           "Dietary Behaviors",
-  "QNBK7DAY",         "pct_no_breakfast_7days",       "No breakfast on all 7 days",       "Did not eat breakfast on all 7 days (before the survey)",                                                               "Dietary Behaviors",
+  "QNBK7DAY",         "pct_breakfast_not_daily",      "Did not eat breakfast every day",  "Did not eat breakfast every day (ate breakfast on fewer than 7 of the 7 days before the survey)","Dietary Behaviors",
   "QNFR0",            "pct_no_fruit",                 "Did not eat fruit",                "Did not eat fruit or drink 100% fruit juices (during the 7 days before the survey)",                                    "Dietary Behaviors",
   "QNVEG0",           "pct_no_vegetables",            "Did not eat vegetables",           "Did not eat vegetables (during the 7 days before the survey)",                                                          "Dietary Behaviors",
   # ---- Physical Activity (category: chronic) ----
