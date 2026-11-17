@@ -4,37 +4,37 @@ library(arrow)
 # read data from data source projects and write  `dist` directory
 
 all_fips <- vroom::vroom('../../resources/all_fips.csv.gz')
-medicaid_data <- vroom::vroom('../medicaid_quality/standard/data.csv.gz')
-
 ## Medicaid preventative services
-medicaid_data %>%
-  filter(geography_level == 's') %>%
-  dplyr::select(geography, time, age, sex, race_ethnicity, payer,
-                medicaid_fva_ad_rate,
-                medicaid_chl_ad_rate,
-                medicaid_ha1c_ad_rate,
-                medicaid_amm_ad_rate,
-                medicaid_cbp_ad_rate) %>%
-  pivot_longer(
-    cols         = starts_with("medicaid_"),
-    names_to     = "outcome_name",
-    names_prefix = "medicaid_",
-    values_to    = "value"
-  ) %>%
+# Adult Core Set file: long, one value per state-year-measure taken from the
+# reported population closest to non-dual Medicaid (population_match flags how
+# close). Geography is a FIPS code; state names are joined on for this bundle.
+vroom::vroom('../medicaid_quality/standard/data_adult_core_set.csv.gz',
+             col_types = vroom::cols(geography = "c", time = "c"),
+             show_col_types = FALSE) %>%
+  filter(measure %in% c("medicaid_fva_ad", "medicaid_chl_ad", "medicaid_ha1c_ad",
+                        "medicaid_amm_ad", "medicaid_cbp_ad")) %>%
+  left_join(all_fips %>% filter(nchar(geography) == 2) %>%
+              dplyr::select(geography, state_name = geography_name),
+            by = "geography") %>%
   mutate(
+    geography    = state_name,
     outcome_name = case_when(
-      outcome_name == "fva_ad_rate" ~ "Influenza Vaccine",
-      outcome_name == "chl_ad_rate" ~ "Chlamydia Screening",
-      outcome_name == "ha1c_ad_rate" ~ "Diabetes Screening",
-      outcome_name == "amm_ad_rate" ~ "Depression Screening",
-      outcome_name == "cbp_ad_rate" ~ "Cardiovascular Disease Screening"
+      measure == "medicaid_fva_ad"  ~ "Influenza Vaccine",
+      measure == "medicaid_chl_ad"  ~ "Chlamydia Screening",
+      # HA1C, AMM and CBP measure care for people already diagnosed, not
+      # screening, so they are named for what they count and do not pair
+      # with the Medicare screening rows in the combined table below.
+      measure == "medicaid_ha1c_ad" ~ "HbA1c Testing in Adults with Diabetes",
+      measure == "medicaid_amm_ad"  ~ "Antidepressant Medication Management",
+      measure == "medicaid_cbp_ad"  ~ "Controlling High Blood Pressure"
     ),
     year = lubridate::year(time),
+    age = "Total", sex = "Total", race_ethnicity = "Total",
     source = 'Medicaid'
   ) %>%
   filter(!is.na(value),
          geography %in% c(state.name, "District of Columbia")) %>%
-  dplyr::select(geography, year, age, sex, race_ethnicity, payer, outcome_name, source, value) %>%
+  dplyr::select(geography, year, age, sex, race_ethnicity, population_match, outcome_name, source, value) %>%
   arrow::write_parquet('dist/medicaid_preventative_services.parquet')
 
 

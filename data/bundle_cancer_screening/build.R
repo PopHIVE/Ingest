@@ -5,32 +5,34 @@ all_fips = vroom::vroom('../../resources/all_fips.csv.gz')
 
 
 ## Medicaid cancer screening
-medicaid_data <- vroom::vroom('../medicaid_quality/standard/data.csv.gz')
-
-medicaid_cancer <- medicaid_data %>%
-  filter(geography_level == 's') %>%
-  dplyr::select(geography, time, age, sex, race_ethnicity, payer,
-                medicaid_bcs_ad_rate,
-                medicaid_ccs_ad_rate,
-                medicaid_col_ad_rate) %>%
-  pivot_longer(
-    cols         = starts_with("medicaid_"),
-    names_to     = "outcome_name",
-    names_prefix = "medicaid_",
-    values_to    = "value"
-  ) %>%
+# Adult Core Set file: long, one value per state-year-measure taken from the
+# reported population closest to non-dual Medicaid (population_match flags how
+# close). Geography is a FIPS code; state names are joined on for this bundle.
+medicaid_cancer <- vroom::vroom('../medicaid_quality/standard/data_adult_core_set.csv.gz',
+                                col_types = vroom::cols(geography = "c", time = "c"),
+                                show_col_types = FALSE) %>%
+  filter(measure %in% c("medicaid_bcs_ad", "medicaid_ccs_ad", "medicaid_col_ad",
+                        "medicaid_col_ad_older")) %>%
+  left_join(all_fips %>% filter(nchar(geography) == 2) %>%
+              dplyr::select(geography, state_name = geography_name),
+            by = "geography") %>%
   mutate(
+    geography    = state_name,
     outcome_name = case_when(
-      outcome_name == "bcs_ad_rate" ~ "Breast Cancer Screening",
-      outcome_name == "ccs_ad_rate" ~ "Cervical Cancer Screening",
-      outcome_name == "col_ad_rate" ~ "Colorectal Cancer Screening"
+      measure == "medicaid_bcs_ad" ~ "Breast Cancer Screening",
+      measure == "medicaid_ccs_ad" ~ "Cervical Cancer Screening",
+      # CMS reports COL-AD for Medicaid in two age bands (FFY 2023: 46-49 and
+      # 50-64; FFY 2024+: 46-50 and 51-65); each is labeled with its ages.
+      measure == "medicaid_col_ad"       ~ "Colorectal Cancer Screening, Ages 46-50",
+      measure == "medicaid_col_ad_older" ~ "Colorectal Cancer Screening, Ages 51-65"
     ),
     year   = lubridate::year(time),
+    age = "Total", sex = "Total", race_ethnicity = "Total",
     source = 'Medicaid'
   ) %>%
   filter(!is.na(value),
          geography %in% c(state.name, "District of Columbia")) %>%
-  dplyr::select(geography, year, age, sex, race_ethnicity, payer, outcome_name, source, value)
+  dplyr::select(geography, year, age, sex, race_ethnicity, population_match, outcome_name, source, value)
 
 write_parquet(medicaid_cancer, './dist/medicaid_cancer_screening.parquet')
 
