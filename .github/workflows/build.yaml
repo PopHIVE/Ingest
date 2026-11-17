@@ -93,6 +93,10 @@ jobs:
         env:
           DELPHI_EPIDATA_KEY: ${{ secrets.DELPHI_EPIDATA_KEY }}
           CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+          # Read-only token for the private PopHIVE/crisis-text-line repo
+          # (fine-grained PAT, Contents: read on that repo only). Without it,
+          # crisis_text_line skips and keeps its existing standard file.
+          CTL_READ_TOKEN: ${{ secrets.CTL_READ_TOKEN }}
           # The NARMS Now scrape (2-3 h) has its own monthly workflow,
           # update_narms.yaml; here narms only re-standardizes its raw files.
           NARMS_NOW_MODE: standardize
