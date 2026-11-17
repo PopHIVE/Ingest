@@ -66,7 +66,7 @@ AGE_NHTSA   <- c('0-14'       = '0-14 years', '15-24'       = '15-24 years')
 AGE_EPIC_I  <- c('<15 Years'  = '0-14 years', '15-25 Years' = '15-25 years')
 AGE_EPIC_C  <- c('<18 Years'  = '0-17 years')
 AGE_EPIC_MH <- c('0-9' = '0-9 years', '10-14' = '10-14 years', '15-19' = '15-19 years',
-                 '0-24' = '0-24 years', 'Overall' = 'All ages')
+                 '20-24' = '20-24 years', '0-24' = '0-24 years', 'Overall' = 'All ages')
 AGE_CTL     <- c('<14' = '0-13 years', '14-17' = '14-17 years', '18-24' = '18-24 years',
                  'Overall' = 'All ages')
 AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' = '5-9 years',
@@ -97,7 +97,8 @@ EPIC_MIN_DENOM <- 100
 
 # Canonical column order; each file carries the subset that applies to it.
 COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
-               'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer', 'domain',
+               'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer',
+               'population_match', 'domain',
                'vaccine', 'product', 'diagnosis', 'forecast_day',
                'section', 'focus_area', 'source', 'measure', 'rank', 'value', 'pct_captured',               'pct_of_all', 'value_lcl', 'value_ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
                'suppressed', 'not_asked', 'low_coverage_flag', 'unstable_flag',
@@ -279,7 +280,9 @@ SPEC <- bind_rows(
        'medicaid_wcv_ch_12_17_rate', 'medicaid_wcv_ch_18_21_rate',
        'medicaid_w15_ch_rate', 'medicaid_w30_ch_rate', 'medicaid_oev_ch_rate',
        'medicaid_dev_ch_rate')),
-  sp('medicaid', 'Preventative health and wellness', 'Nutrition', 'medicaid_wcc_ch_rate'),
+  # WCC-CH's headline rate is BMI-percentile documentation, not nutrition;
+  # its nutrition-counseling sub-measure (FFY 2020+) is the Nutrition measure.
+  sp('medicaid', 'Preventative health and wellness', 'Nutrition', 'medicaid_wcc_ch_nutrition_rate'),
 
   # ---- County Health Rankings ----
   sp('chr', 'Mental health', 'General mental health measures', 'chr_disconnected_youth'),
@@ -637,10 +640,11 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 #   dist/epic_mental_health_state_age_quarter.parquet
 #
 # Age bands: the source's 0-9 and 10-14 (entirely under 18) and 15-19
-# (straddles 18; no finer split), plus 0-24 -- kept as the dashboard's youth
-# headline total even though the source also splits it (see the header) --
-# and 'All ages' (the source's Overall, adults included) as a baseline. 20-24
-# on its own and the adult bands are out of scope.
+# (straddles 18; no finer split), 20-24 (entirely adult, kept as a young-adult
+# comparison), plus 0-24 -- kept as the dashboard's youth headline total even
+# though the source also splits it (see the header) -- and 'All ages' (the
+# source's Overall, adults included) as a baseline. The 25+ adult bands are
+# out of scope.
 #
 # Measures per diagnosis group (suicidal_behavior, other):
 #   epic_ed_n_visits_<dx>    ED visits with the diagnosis
@@ -734,53 +738,47 @@ vroom::vroom('../crisis_text_line/standard/data.csv.gz', show_col_types = FALSE,
 
 
 # =============================================================================
-# 7. medicaid_quality -- Child Core Set quality measures, state, payer
+# 7. medicaid_quality -- Child Core Set quality measures, state
 #
 #   dist/medicaid_state_payer.parquet
 #
-# This source carries no demographic stratification at all: age, sex and
-# race_ethnicity are 'Total' on every row. All payer categories are kept
-# (standard/data.csv.gz: 'Medicaid', 'CHIP' and the combined 'Medicaid & CHIP';
-# the empty 'Other' category drops out with its NA values) so the dashboard can
-# offer a payer selector. A payer's rate is never filled in from another
-# payer's. The remaining dimension is domain. The requested measures are all Child
-# Core Set (_ch_) rates, so the population is children by construction; age is
-# carried through from the source. The source's age, sex and race_ethnicity
-# columns are all 'Total' today but are kept so any future stratification flows
-# through.
+# Source: standard/data_child_core_set.csv.gz, which is long and already has
+# one value per state-year-measure, taken from the reported population closest
+# to the Child Core Set target (all Medicaid + CHIP children). The
+# population_match column says how close (target / broader / narrower /
+# chip_only); it replaces the former payer column, as the source no longer
+# keeps a separate rate per payer group. The file name is unchanged so
+# existing consumers still find it.
 #
-# Each rate has 25th and 75th percentile companions (medicaid_<stem>_pct_25 /
-# _pct_75) describing the spread across states; they are carried as pct_25 /
-# pct_75. Geography arrives as state names, and the source uses both
-# 'Dist. of Col.' and 'District of Columbia' -- these are folded together.
-# Puerto Rico is dropped for consistency with the other datasets.
+# The source has no demographic stratification; age, sex and race_ethnicity
+# are set to 'Total' as before. domain is the measure's most recent CMS domain.
+# Each rate has 25th and 75th percentile companions describing the spread
+# across states (pct_25 / pct_75). Geography arrives as a FIPS code; Puerto
+# Rico and other territories are dropped for consistency with the other
+# datasets.
 # =============================================================================
 
 medicaid_measures <- SPEC %>% filter(dataset == 'medicaid') %>% pull(measure) %>% unique()
 medicaid_stems <- sub('_rate$', '', medicaid_measures)
+# Preventative-care measures are limited to FFY 2021 onward.
+medicaid_preventative <- SPEC %>%
+  filter(dataset == 'medicaid', section == 'Preventative health and wellness') %>%
+  pull(measure) %>% unique()
 
-vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE,
-             guess_max = Inf) %>%
-  filter(geography_level == 's') %>%
-  mutate(geography = if_else(geography == 'Dist. of Col.', 'District of Columbia', geography)) %>%
-  rename_with(~ sub('_rate$', '_value', .x), all_of(medicaid_measures)) %>%
-  select(geography, time, age, sex, race_ethnicity, payer, domain,
-         all_of(intersect(as.vector(outer(medicaid_stems,
-                                          c('_value', '_pct_25', '_pct_75'), paste0)),
-                          names(.)))) %>%
-  pivot_longer(
-    cols          = -c(geography, time, age, sex, race_ethnicity, payer, domain),
-    names_to      = c('measure', '.value'),
-    names_pattern = sprintf('^(%s)_(value|pct_25|pct_75)$',
-                            paste(medicaid_stems[order(-nchar(medicaid_stems))], collapse = '|'))
-  ) %>%
-  mutate(measure = paste0(measure, '_rate')) %>%
-  filter(!is.na(value)) %>%
-  # WCV replaces W34/AWC from FFY 2021; never carry it earlier.
-  filter(!(grepl('^medicaid_wcv_', measure) & substr(time, 1, 4) < '2021')) %>%
-  # inner_join to state_cw keeps only the 50 states + DC (drops Puerto Rico).
+vroom::vroom('../medicaid_quality/standard/data_child_core_set.csv.gz',
+             col_types = vroom::cols(geography = 'c', time = 'c'),
+             show_col_types = FALSE) %>%
+  filter(measure %in% medicaid_stems, !is.na(value)) %>%
+  mutate(measure = paste0(measure, '_rate'),
+         age = 'Total', sex = 'Total', race_ethnicity = 'Total') %>%
+  select(fips = geography, time, age, sex, race_ethnicity, population_match,
+         domain, measure, value, pct_25, pct_75) %>%
+  # Preventative-care measures (incl. WCV, which replaces W34/AWC from FFY
+  # 2021) are kept from 2021 onward only.
+  filter(!(measure %in% medicaid_preventative & substr(time, 1, 4) < '2021')) %>%
+  # inner_join to state_cw keeps only the 50 states + DC (drops territories).
   inner_join(state_cw %>% filter(geography_name != 'United States') %>%
-               select(fips, geography = geography_name), by = 'geography') %>%
+               select(fips, geography = geography_name), by = 'fips') %>%
   label('medicaid', 'Medicaid/CHIP Child Core Set') %>%
   write_parquet('dist/medicaid_state_payer.parquet')
 

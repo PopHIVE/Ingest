@@ -441,34 +441,37 @@ firearms_by_source_year <- firearms_by_source %>%
   ))
 
 ## Medicaid injury and overdose
-vroom::vroom('../medicaid_quality/standard/data.csv.gz') %>%
-  filter(geography_level == 's') %>%
-  dplyr::select(geography, time, age, sex, race_ethnicity, payer,
-                medicaid_oud_ad_rate,
-                medicaid_iet_ad_init_total_rate,
-                medicaid_iet_ad_engage_total_rate,
-                medicaid_fua_ad_30d_rate,
-                medicaid_cob_ad_rate) %>%
-  pivot_longer(
-    cols         = starts_with("medicaid_"),
-    names_to     = "outcome_name",
-    names_prefix = "medicaid_",
-    values_to    = "value"
-  ) %>%
+# Adult Core Set file: long, one value per state-year-measure taken from the
+# reported population closest to non-dual Medicaid (population_match flags how
+# close). Geography is a FIPS code; state names are joined on for this bundle.
+vroom::vroom('../medicaid_quality/standard/data_adult_core_set.csv.gz',
+             col_types = vroom::cols(geography = "c", time = "c"),
+             show_col_types = FALSE) %>%
+  filter(measure %in% c("medicaid_oud_ad", "medicaid_iet_ad_init_total",
+                        "medicaid_iet_ad_engage_total", "medicaid_fua_ad_30d",
+                        "medicaid_cob_ad")) %>%
+  left_join(vroom::vroom('../../resources/all_fips.csv.gz', show_col_types = FALSE) %>%
+              filter(nchar(geography) == 2) %>%
+              dplyr::select(geography, state_name = geography_name),
+            by = "geography") %>%
   mutate(
+    geography    = state_name,
     outcome_name = case_when(
-      outcome_name == "oud_ad_rate"      ~ "Opioid Use Disorder",
-      outcome_name == "iet_ad_init_total_rate"   ~ "Initiation of Substance Use Treatment",
-      outcome_name == "iet_ad_engage_total_rate" ~ "Engagement of Substance Use Treatment",
-      outcome_name == "fua_ad_30d_rate"  ~ "Follow-Up After ED Visit for Alcohol and Drug Abuse",
-      outcome_name == "cob_ad_rate"      ~ "Concurrent Use of Opioids and Benzodiazepines"
+      # OUD-AD is the share of adults with OUD who received medication for
+      # it (higher is better), not how common OUD is
+      measure == "medicaid_oud_ad"              ~ "Medication Treatment for Opioid Use Disorder",
+      measure == "medicaid_iet_ad_init_total"   ~ "Initiation of Substance Use Treatment",
+      measure == "medicaid_iet_ad_engage_total" ~ "Engagement of Substance Use Treatment",
+      measure == "medicaid_fua_ad_30d"          ~ "Follow-Up Within 30 Days After ED Visit for Substance Use",
+      measure == "medicaid_cob_ad"              ~ "Concurrent Use of Opioids and Benzodiazepines"
     ),
     year   = lubridate::year(time),
+    age = "Total", sex = "Total", race_ethnicity = "Total",
     source = 'Medicaid'
   ) %>%
   filter(!is.na(value),
          geography %in% c(state.name, "District of Columbia")) %>%
-  dplyr::select(geography, year, age, sex, race_ethnicity, payer, outcome_name, source, value) %>%
+  dplyr::select(geography, year, age, sex, race_ethnicity, population_match, outcome_name, source, value) %>%
   arrow::write_parquet('./dist/medicaid_injury_overdose.parquet')
 
 firearms_by_source_year %>%

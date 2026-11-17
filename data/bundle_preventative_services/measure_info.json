@@ -19,24 +19,24 @@
     "short_name": "Race/ethnicity",
     "short_description": "Race and ethnicity category."
   },
-  "bundle_preventative_services/dist/medicaid_preventative_services.parquet|payer": {
-    "short_name": "Payer",
-    "short_description": "Coverage/payer program of the CMS reporting population: Medicaid only, CHIP only, both (Medicaid & CHIP), or neither (Other).",
+  "bundle_preventative_services/dist/medicaid_preventative_services.parquet|population_match": {
+    "short_name": "Population match",
+    "short_description": "How the population behind the Medicaid Core Set value compares with the Core Set's target population (Child Core Set: all Medicaid and CHIP children; Adult Core Set: Medicaid enrollees who are not dually eligible for Medicare). Each state-year-measure has one value, taken from the reported population closest to the target. target = matches the target; broader = target plus small groups that are not dual eligibles (Other; CHIP for Adult measures); narrower = Child measures, only part of Medicaid + CHIP reported (e.g. Medicaid without separate CHIP); chip_only = Child measures, CHIP enrollees only; broader_incl_duals = Adult measures, a population including dual eligibles, whose care is largely paid by Medicare and so partly missing from Medicaid data. See medicaid_quality/measure_info.json (population_match).",
     "levels": {
-      "Medicaid": {},
-      "CHIP": {},
-      "Medicaid & CHIP": {},
-      "Other": {}
+      "broader": {},
+      "broader_incl_duals": {},
+      "target": {}
     }
   },
   "bundle_preventative_services/dist/medicaid_preventative_services.parquet|outcome_name": {
-    "short_name": "Preventative service",
+    "short_name": "Medicaid quality measure",
+    "short_description": "Adult Core Set measure: Influenza Vaccine (FVA-AD, adults 18-64), Chlamydia Screening (CHL-AD, sexually active women 21-24), HbA1c Testing in Adults with Diabetes (HA1C-AD, 2014-2019), Antidepressant Medication Management (AMM-AD: adults with major depression who stayed on an antidepressant for 12 weeks) and Controlling High Blood Pressure (CBP-AD: adults with hypertension whose blood pressure was controlled). The last three measure care for people already diagnosed, not screening.",
     "levels": {
-      "Depression Screening": {},
-      "Cardiovascular Disease Screening": {},
       "Influenza Vaccine": {},
       "Chlamydia Screening": {},
-      "Diabetes Screening": {}
+      "HbA1c Testing in Adults with Diabetes": {},
+      "Antidepressant Medication Management": {},
+      "Controlling High Blood Pressure": {}
     }
   },
   "bundle_preventative_services/dist/medicaid_preventative_services.parquet|source": {
@@ -253,7 +253,7 @@
     "dist_files": {
       "medicaid_preventative_services.parquet": {
         "sources": ["medicaid_quality"],
-        "source_files": ["medicaid_quality/standard/data.csv.gz"]
+        "source_files": ["medicaid_quality/standard/data_adult_core_set.csv.gz"]
       },
       "cms_preventative_services_state.parquet": {
         "sources": ["cms_mmd"],
@@ -271,7 +271,7 @@
         "sources": ["cms_mmd", "medicaid_quality"],
         "source_files": [
           "cms_mmd/standard/data_state_county_age.csv.gz",
-          "medicaid_quality/standard/data.csv.gz"
+          "medicaid_quality/standard/data_adult_core_set.csv.gz"
         ]
       }
     }
