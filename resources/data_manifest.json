@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-17T16:48:02Z",
+  "generated": "2026-11-17T20:06:32Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -17103,6 +17103,106 @@
           ]
         },
         {
+          "filename": "ctl_state_age_quarter.parquet",
+          "path": "data/bundle_youth_wellbeing/dist/ctl_state_age_quarter.parquet",
+          "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_youth_wellbeing/dist/ctl_state_age_quarter.parquet",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "State name; 'United States' for the national total.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "fips",
+              "short_name": "FIPS code",
+              "description": "Geography FIPS code ('00' = national, 2-digit = state).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Last day of the calendar quarter the estimate covers (YYYY-mm-dd).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "year",
+              "short_name": "Year",
+              "description": "Calendar year of `time`, for convenience.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "age",
+              "short_name": "Age group",
+              "description": "Age group of the texter: 0-13 years (CTL's '13 or younger'), 14-17 years, 18-24 years (young adults, kept for comparison), or 'All ages', the source's total over every conversation, adults and conversations with no age recorded included. Age is recorded for only about 4-7% of conversations, so the age-specific rows describe a small subset of texters.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "section",
+              "short_name": "Dashboard section",
+              "description": "Dashboard page this row belongs to: Mental health or Substance abuse.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "focus_area",
+              "short_name": "Focus area",
+              "description": "Topic grouping within the section: Suicide and suicidal ideation (suicide, self-harm), Bullying, General mental health measures (the other emotional and social topics), or Substances used (substance use).",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "source",
+              "short_name": "Source",
+              "description": "Data source the row came from.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            },
+            {
+              "name": "measure",
+              "short_name": "Measure",
+              "description": "Tall-format measure identifier; see levels for each measure's metadata.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {
+                "ctl_pct_abuse": {},
+                "ctl_pct_anxiety_stress": {},
+                "ctl_pct_bullying": {},
+                "ctl_pct_depression_sadness": {},
+                "ctl_pct_eating_body_image": {},
+                "ctl_pct_gender_sexual_identity": {},
+                "ctl_pct_grief": {},
+                "ctl_pct_isolation_loneliness": {},
+                "ctl_pct_relationships": {},
+                "ctl_pct_self_harm": {},
+                "ctl_pct_substance_use": {},
+                "ctl_pct_suicide": {}
+              }
+            },
+            {
+              "name": "value",
+              "short_name": "Value",
+              "description": "Percent (0-100) of Crisis Text Line conversations with at least one issue tag that were tagged with the topic. Topics overlap, so they do not sum to 100. Cells suppressed for privacy, or with no tagged conversations, are not in this file, so a series can skip quarters; do not draw a line across a missing quarter. True zeros are published but counts of 1-3 are suppressed, so in small groups (e.g. 0-13 years in a single state) the values shown lean toward exact zeros or relatively large shares.",
+              "measure_type": "",
+              "unit": "",
+              "levels": {}
+            }
+          ]
+        },
+        {
           "filename": "drowning_county_age.parquet",
           "path": "data/bundle_youth_wellbeing/dist/drowning_county_age.parquet",
           "url": "https://raw.githubusercontent.com/PopHIVE/Ingest/main/data/bundle_youth_wellbeing/dist/drowning_county_age.parquet",
@@ -27159,6 +27259,207 @@
               "description": "Native American population as a percent of the county's total 2020 Census population.",
               "measure_type": "Percent",
               "unit": "Percent"
+            }
+          ]
+        }
+      ]
+    },
+    "crisis_text_line": {
+      "name": "crisis_text_line",
+      "display_name": "Crisis Text Line",
+      "description": "Crisis Text Line is a nonprofit that provides free, 24/7, confidential text-based mental health support and crisis intervention in English and Spanish across the United States and Puerto Rico. Crisis Counselors tag each conversation with the issues discussed. CTL Data Engineering provides PopHIVE with de-identified conversation counts aggregated by month, state, age group and combination of issue tags. PopHIVE sums these to quarters, applies small-cell and complementary suppression (GaussSuppression R package), and publishes each topic's share of conversations with at least one issue tag, by state and age group, from July 2018 onward. Processing happens in a separate PopHIVE repository; only the suppressed percentages are published here. Note the data describe people who chose to contact Crisis Text Line, not the general population; age is recorded for only about 4-7% of conversations (almost none from December 2019 to March 2020) and state for about 78%; topic tags are applied by counselors, and tagging practices have changed over time. The numbers are not expected to match crisistrends.org exactly, because Crisis Trends includes conversations that are excluded from this dataset under data-sharing restrictions.",
+      "standard_files": [
+        {
+          "filename": "data.csv.gz",
+          "columns": [
+            {
+              "name": "geography",
+              "short_name": "Geography",
+              "description": "FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)",
+              "measure_type": "identifier",
+              "unit": "FIPS code"
+            },
+            {
+              "name": "time",
+              "short_name": "Time",
+              "description": "Date in MM-DD-YYYY format (Saturday for weekly data)",
+              "measure_type": "date",
+              "unit": "date"
+            },
+            {
+              "name": "age",
+              "short_name": "Age",
+              "description": "Age group of the texter: <14, 14-17, 18-24, 25-34, 35-44, 45-54, 55-64, 65+, or Overall.",
+              "measure_type": "Category",
+              "unit": "Age group"
+            },
+            {
+              "name": "ctl_pct_abuse",
+              "short_name": "Abuse",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Abuse, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_abuse_suppressed",
+              "short_name": "Abuse",
+              "description": "1 if the Abuse percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_anxiety_stress",
+              "short_name": "Anxiety / Stress",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Anxiety / Stress, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_anxiety_stress_suppressed",
+              "short_name": "Anxiety / Stress",
+              "description": "1 if the Anxiety / Stress percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_bullying",
+              "short_name": "Bullying",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Bullying, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_bullying_suppressed",
+              "short_name": "Bullying",
+              "description": "1 if the Bullying percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_depression_sadness",
+              "short_name": "Depression / Sadness",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Depression / Sadness, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_depression_sadness_suppressed",
+              "short_name": "Depression / Sadness",
+              "description": "1 if the Depression / Sadness percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_eating_body_image",
+              "short_name": "Eating / Body Image",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Eating / Body Image, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_eating_body_image_suppressed",
+              "short_name": "Eating / Body Image",
+              "description": "1 if the Eating / Body Image percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_gender_sexual_identity",
+              "short_name": "Gender / Sexual Identity",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Gender / Sexual Identity, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_gender_sexual_identity_suppressed",
+              "short_name": "Gender / Sexual Identity",
+              "description": "1 if the Gender / Sexual Identity percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_grief",
+              "short_name": "Grief",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Grief, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_grief_suppressed",
+              "short_name": "Grief",
+              "description": "1 if the Grief percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_isolation_loneliness",
+              "short_name": "Isolation / Loneliness",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Isolation / Loneliness, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_isolation_loneliness_suppressed",
+              "short_name": "Isolation / Loneliness",
+              "description": "1 if the Isolation / Loneliness percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_relationships",
+              "short_name": "Relationships",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Relationships, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_relationships_suppressed",
+              "short_name": "Relationships",
+              "description": "1 if the Relationships percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_self_harm",
+              "short_name": "Self-Harm",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Self-Harm, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_self_harm_suppressed",
+              "short_name": "Self-Harm",
+              "description": "1 if the Self-Harm percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_substance_use",
+              "short_name": "Substance Use",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Substance Use, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_substance_use_suppressed",
+              "short_name": "Substance Use",
+              "description": "1 if the Substance Use percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
+            },
+            {
+              "name": "ctl_pct_suicide",
+              "short_name": "Suicide",
+              "description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Suicide, by quarter.",
+              "measure_type": "Percent",
+              "unit": "Percent"
+            },
+            {
+              "name": "ctl_pct_suicide_suppressed",
+              "short_name": "Suicide",
+              "description": "1 if the Suicide percent was suppressed for privacy, 0 otherwise.",
+              "measure_type": "Binary",
+              "unit": "0/1"
             }
           ]
         }

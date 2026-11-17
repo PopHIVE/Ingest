@@ -91,6 +91,9 @@
                 <a class="nav-link" href="#countybuddy">Countybuddy</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="#crisis-text-line">Crisis Text Line</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="#delphi-doctors-claims">Delphi Doctors Claims</a>
               </li>
               <li class="nav-item">
@@ -10198,6 +10201,290 @@
                       <td>Native American population as a percent of the county's total 2020 Census population.</td>
                       <td>Percent</td>
                       <td>Percent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section id="crisis-text-line" class="mb-5">
+              <h2 class="border-bottom pb-2">Crisis Text Line</h2>
+              <p class="small mb-3">
+                <a href="https://github.com/PopHIVE/Ingest/tree/main/data/crisis_text_line" target="_blank" rel="noopener">
+                  View on GitHub: 
+                  <code>data/crisis_text_line</code>
+                </a>
+              </p>
+              <p class="lead">Crisis Text Line is a nonprofit that provides free, 24/7, confidential text-based mental health support and crisis intervention in English and Spanish across the United States and Puerto Rico. Crisis Counselors tag each conversation with the issues discussed. CTL Data Engineering provides PopHIVE with de-identified conversation counts aggregated by month, state, age group and combination of issue tags. PopHIVE sums these to quarters, applies small-cell and complementary suppression (GaussSuppression R package), and publishes each topic's share of conversations with at least one issue tag, by state and age group, from July 2018 onward. Processing happens in a separate PopHIVE repository; only the suppressed percentages are published here. Note the data describe people who chose to contact Crisis Text Line, not the general population; age is recorded for only about 4-7% of conversations (almost none from December 2019 to March 2020) and state for about 78%; topic tags are applied by counselors, and tagging practices have changed over time. The numbers are not expected to match crisistrends.org exactly, because Crisis Trends includes conversations that are excluded from this dataset under data-sharing restrictions.</p>
+              <h5>Sources</h5>
+              <ul class="list-unstyled">
+                <li>
+                  <a href="https://crisistrends.org" target="_blank">Data Source</a>
+                   | 
+                  <a href="https://www.crisistextline.org" target="_blank">Crisis Text Line</a>
+                </li>
+              </ul>
+              <div class="alert alert-warning">
+                <strong>Restrictions: </strong>
+                Attribution to Crisis Text Line required. Cite as: Crisis Text Line (2026). Crisis Trends. https://crisistrends.org/ (data obtained via the PopHIVE platform).
+              </div>
+              <h4 class="mt-4">Variables</h4>
+              <h5 class="mt-3">
+                <code>data.csv.gz</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>FIPS code identifier (00 = national, 2-digit = state, 5-digit = county)</td>
+                      <td>identifier</td>
+                      <td>FIPS code</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Date in MM-DD-YYYY format (Saturday for weekly data)</td>
+                      <td>date</td>
+                      <td>date</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age</td>
+                      <td>Age group of the texter: &lt;14, 14-17, 18-24, 25-34, 35-44, 45-54, 55-64, 65+, or Overall.</td>
+                      <td>Category</td>
+                      <td>Age group</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_abuse</code>
+                      </td>
+                      <td>Abuse</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Abuse, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_abuse_suppressed</code>
+                      </td>
+                      <td>Abuse</td>
+                      <td>1 if the Abuse percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_anxiety_stress</code>
+                      </td>
+                      <td>Anxiety / Stress</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Anxiety / Stress, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_anxiety_stress_suppressed</code>
+                      </td>
+                      <td>Anxiety / Stress</td>
+                      <td>1 if the Anxiety / Stress percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_bullying</code>
+                      </td>
+                      <td>Bullying</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Bullying, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_bullying_suppressed</code>
+                      </td>
+                      <td>Bullying</td>
+                      <td>1 if the Bullying percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_depression_sadness</code>
+                      </td>
+                      <td>Depression / Sadness</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Depression / Sadness, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_depression_sadness_suppressed</code>
+                      </td>
+                      <td>Depression / Sadness</td>
+                      <td>1 if the Depression / Sadness percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_eating_body_image</code>
+                      </td>
+                      <td>Eating / Body Image</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Eating / Body Image, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_eating_body_image_suppressed</code>
+                      </td>
+                      <td>Eating / Body Image</td>
+                      <td>1 if the Eating / Body Image percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_gender_sexual_identity</code>
+                      </td>
+                      <td>Gender / Sexual Identity</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Gender / Sexual Identity, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_gender_sexual_identity_suppressed</code>
+                      </td>
+                      <td>Gender / Sexual Identity</td>
+                      <td>1 if the Gender / Sexual Identity percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_grief</code>
+                      </td>
+                      <td>Grief</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Grief, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_grief_suppressed</code>
+                      </td>
+                      <td>Grief</td>
+                      <td>1 if the Grief percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_isolation_loneliness</code>
+                      </td>
+                      <td>Isolation / Loneliness</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Isolation / Loneliness, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_isolation_loneliness_suppressed</code>
+                      </td>
+                      <td>Isolation / Loneliness</td>
+                      <td>1 if the Isolation / Loneliness percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_relationships</code>
+                      </td>
+                      <td>Relationships</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Relationships, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_relationships_suppressed</code>
+                      </td>
+                      <td>Relationships</td>
+                      <td>1 if the Relationships percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_self_harm</code>
+                      </td>
+                      <td>Self-Harm</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Self-Harm, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_self_harm_suppressed</code>
+                      </td>
+                      <td>Self-Harm</td>
+                      <td>1 if the Self-Harm percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_substance_use</code>
+                      </td>
+                      <td>Substance Use</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Substance Use, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_substance_use_suppressed</code>
+                      </td>
+                      <td>Substance Use</td>
+                      <td>1 if the Substance Use percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_suicide</code>
+                      </td>
+                      <td>Suicide</td>
+                      <td>Percent of Crisis Text Line conversations with at least one issue tag that were tagged Suicide, by quarter.</td>
+                      <td>Percent</td>
+                      <td>Percent</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>ctl_pct_suicide_suppressed</code>
+                      </td>
+                      <td>Suicide</td>
+                      <td>1 if the Suicide percent was suppressed for privacy, 0 otherwise.</td>
+                      <td>Binary</td>
+                      <td>0/1</td>
                     </tr>
                   </tbody>
                 </table>
@@ -64009,7 +64296,7 @@
                 </a>
               </p>
               <p class="text-muted">
-                <em>Combined output bundle. Dist files: 21 parquet file(s).</em>
+                <em>Combined output bundle. Dist files: 22 parquet file(s).</em>
               </p>
               <p class="mb-3">
                 <strong>Data sources: </strong>
@@ -64370,6 +64657,133 @@
                       </td>
                       <td>Value</td>
                       <td>Primary measure value. Units vary by measure -- see the measure's own unit. Rows flagged suppressed or not_asked do NOT carry a usable value; see those columns.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5 class="mt-3">
+                <code>ctl_state_age_quarter.parquet</code>
+              </h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Short Name</th>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <code>geography</code>
+                      </td>
+                      <td>Geography</td>
+                      <td>State name; 'United States' for the national total.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>fips</code>
+                      </td>
+                      <td>FIPS code</td>
+                      <td>Geography FIPS code ('00' = national, 2-digit = state).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>time</code>
+                      </td>
+                      <td>Time</td>
+                      <td>Last day of the calendar quarter the estimate covers (YYYY-mm-dd).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>year</code>
+                      </td>
+                      <td>Year</td>
+                      <td>Calendar year of `time`, for convenience.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>age</code>
+                      </td>
+                      <td>Age group</td>
+                      <td>Age group of the texter: 0-13 years (CTL's '13 or younger'), 14-17 years, 18-24 years (young adults, kept for comparison), or 'All ages', the source's total over every conversation, adults and conversations with no age recorded included. Age is recorded for only about 4-7% of conversations, so the age-specific rows describe a small subset of texters.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>section</code>
+                      </td>
+                      <td>Dashboard section</td>
+                      <td>Dashboard page this row belongs to: Mental health or Substance abuse.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>focus_area</code>
+                      </td>
+                      <td>Focus area</td>
+                      <td>Topic grouping within the section: Suicide and suicidal ideation (suicide, self-harm), Bullying, General mental health measures (the other emotional and social topics), or Substances used (substance use).</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>source</code>
+                      </td>
+                      <td>Source</td>
+                      <td>Data source the row came from.</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>measure</code>
+                      </td>
+                      <td>Measure</td>
+                      <td>
+                        Tall-format measure identifier; see levels for each measure's metadata.
+                        <div class="mt-1">
+                          <small class="text-muted">
+                            <em>Values: </em>
+                          </small>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_abuse</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_anxiety_stress</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_bullying</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_depression_sadness</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_eating_body_image</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_gender_sexual_identity</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_grief</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_isolation_loneliness</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_relationships</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_self_harm</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_substance_use</span>
+                          <span class="badge bg-secondary me-1 mb-1" style="font-weight: normal;">ctl_pct_suicide</span>
+                        </div>
+                      </td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>value</code>
+                      </td>
+                      <td>Value</td>
+                      <td>Percent (0-100) of Crisis Text Line conversations with at least one issue tag that were tagged with the topic. Topics overlap, so they do not sum to 100. Cells suppressed for privacy, or with no tagged conversations, are not in this file, so a series can skip quarters; do not draw a line across a missing quarter. True zeros are published but counts of 1-3 are suppressed, so in small groups (e.g. 0-13 years in a single state) the values shown lean toward exact zeros or relatively large shares.</td>
                       <td></td>
                       <td></td>
                     </tr>
