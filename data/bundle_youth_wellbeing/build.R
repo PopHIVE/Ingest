@@ -27,7 +27,8 @@
 # straddle 18 where the source cannot split them any finer (WISQARS/NHTSA
 # 15-24, Epic Injury 15-25). Two exceptions keep a straddling 0-24 total even
 # though the source also splits it: drowning and Epic Mental Health, where 0-24
-# is the youth headline figure on the dashboard. Datasets with no age
+# is the youth headline figure on the dashboard. Crisis Text Line also keeps its
+# 18-24 band as a young-adult comparison. Datasets with no age
 # dimension are kept whole and carry age = 'Not stratified'.
 #
 # Output naming: dist/<dataset>_<geography>_<demographics>.parquet
@@ -65,7 +66,9 @@ AGE_NHTSA   <- c('0-14'       = '0-14 years', '15-24'       = '15-24 years')
 AGE_EPIC_I  <- c('<15 Years'  = '0-14 years', '15-25 Years' = '15-25 years')
 AGE_EPIC_C  <- c('<18 Years'  = '0-17 years')
 AGE_EPIC_MH <- c('0-9' = '0-9 years', '10-14' = '10-14 years', '15-19' = '15-19 years',
-                 '0-24' = '0-24 years', 'Overall' = 'All ages')
+                 '20-24' = '20-24 years', '0-24' = '0-24 years', 'Overall' = 'All ages')
+AGE_CTL     <- c('<14' = '0-13 years', '14-17' = '14-17 years', '18-24' = '18-24 years',
+                 'Overall' = 'All ages')
 AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' = '5-9 years',
                  '10-13 Years' = '10-13 years', '14-17 Years' = '14-17 years',
                  'Overall' = 'All ages')
@@ -249,6 +252,17 @@ SPEC <- bind_rows(
   sp('epic_mental_health', 'Mental health', 'General mental health measures',
      c('epic_ed_n_visits_other', 'epic_pct_ed_other',
        'epic_ed_los_median_other', 'epic_ed_n_visits', 'epic_ed_los_median_all')),
+
+  # ---- Crisis Text Line (not in the workbook) -- topic share of tagged
+  # conversations. Each topic sits with the matching YRBSS focus area. ----
+  sp('ctl', 'Mental health', 'Suicide and suicidal ideation',
+     c('ctl_pct_suicide', 'ctl_pct_self_harm')),
+  sp('ctl', 'Mental health', 'Bullying', 'ctl_pct_bullying'),
+  sp('ctl', 'Mental health', 'General mental health measures',
+     c('ctl_pct_anxiety_stress', 'ctl_pct_depression_sadness', 'ctl_pct_isolation_loneliness',
+       'ctl_pct_relationships', 'ctl_pct_grief', 'ctl_pct_eating_body_image',
+       'ctl_pct_gender_sexual_identity', 'ctl_pct_abuse')),
+  sp('ctl', 'Substance abuse', 'Substances used', 'ctl_pct_substance_use'),
 
   # ---- medicaid_quality ----
   sp('medicaid', 'Substance abuse', 'Follow up for ED visits for drug/alcohol related reasons',
@@ -626,10 +640,11 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 #   dist/epic_mental_health_state_age_quarter.parquet
 #
 # Age bands: the source's 0-9 and 10-14 (entirely under 18) and 15-19
-# (straddles 18; no finer split), plus 0-24 -- kept as the dashboard's youth
-# headline total even though the source also splits it (see the header) --
-# and 'All ages' (the source's Overall, adults included) as a baseline. 20-24
-# on its own and the adult bands are out of scope.
+# (straddles 18; no finer split), 20-24 (entirely adult, kept as a young-adult
+# comparison), plus 0-24 -- kept as the dashboard's youth headline total even
+# though the source also splits it (see the header) -- and 'All ages' (the
+# source's Overall, adults included) as a baseline. The 25+ adult bands are
+# out of scope.
 #
 # Measures per diagnosis group (suicidal_behavior, other):
 #   epic_ed_n_visits_<dx>    ED visits with the diagnosis
@@ -685,6 +700,41 @@ epic_mh %>%
   as_state() %>%
   label('epic_mental_health', 'Epic Cosmos') %>%
   write_parquet('dist/epic_mental_health_state_age_quarter.parquet')
+
+
+# =============================================================================
+# 6c. Crisis Text Line -- share of tagged conversations by topic, state, age,
+#     quarterly
+#
+#   dist/ctl_state_age_quarter.parquet
+#
+# Age bands: the source's '<14' (CTL's '13 or younger') and 14-17, both
+# entirely under 18, plus 18-24 (entirely adult, but kept as a young-adult
+# comparison, as with the 0-24 bands kept for drowning and Epic Mental Health)
+# and 'All ages' (the source's Overall, adults included) as a baseline. 25+ is
+# out of scope.
+#
+# value = percent of conversations with >= 1 issue tag that carry the topic
+# (topics overlap, so they do not sum to 100). The source suppresses small
+# cells to NA (no imputation) and leaves the percent NA where there were no
+# tagged conversations; both drop out with the !is.na(value) filter, so no
+# suppressed column is carried. Puerto Rico is dropped by as_state(). Age is
+# recorded for only ~4-7% of conversations, so the age-specific rows rest on a
+# small subset; 'All ages' covers every conversation.
+# =============================================================================
+
+ctl_measures <- SPEC %>% filter(dataset == 'ctl') %>% pull(measure) %>% unique()
+
+vroom::vroom('../crisis_text_line/standard/data.csv.gz', show_col_types = FALSE,
+             col_types = vroom::cols(geography = 'c', time = 'D', age = 'c', .default = 'd')) %>%
+  filter(age %in% names(AGE_CTL)) %>%
+  mutate(age = unname(AGE_CTL[age])) %>%
+  tall_simple(ctl_measures, c('geography', 'time', 'age')) %>%
+  rename(fips = geography) %>%
+  filter(!is.na(value)) %>%
+  as_state() %>%
+  label('ctl', 'Crisis Text Line') %>%
+  write_parquet('dist/ctl_state_age_quarter.parquet')
 
 
 # =============================================================================
