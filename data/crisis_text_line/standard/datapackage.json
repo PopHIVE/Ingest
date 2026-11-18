@@ -10,7 +10,12 @@
       "format": "csv",
       "name": "data.csv",
       "filename": "data.csv.gz",
-      "versions": {},
+      "versions": {
+        "hash": ["8db07cd6abcc6559e2091e3bdb96f052fc745da6"],
+        "author": ["anshap32 <73296024+anshap32@users.noreply.github.com>"],
+        "date": ["Tue Nov 17 14:59:34 2026 -0500"],
+        "message": ["add CTL to Ingest (#302)"]
+      },
       "source": [],
       "data_format": "wide",
       "ids": [
@@ -21,8 +26,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-17 13:20:38.064476",
-      "last_modified": "2026-11-17 13:20:39.698009",
+      "created": "2026-11-18 00:12:02.339285",
+      "last_modified": "2026-11-18 00:12:02.339285",
       "vintage": {},
       "row_count": 15741,
       "entity_count": 53,
@@ -137,7 +142,22 @@
           {
             "name": "age",
             "duplicates": 15732,
-            "info": [],
+            "info": {
+              "id": "age",
+              "short_name": "Age",
+              "long_name": "Age group of texter",
+              "category": "demographic",
+              "short_description": "Age group of the texter: <14, 14-17, 18-24, 25-34, 35-44, 45-54, 55-64, 65+, or Overall.",
+              "long_description": "Age group of the texter as recorded by Crisis Text Line ('<14' is CTL's '13 or younger'). 'Overall' covers all conversations, including the large majority with no age recorded. Conversations with no age recorded are not published as their own group.",
+              "measure_type": "Category",
+              "unit": "Age group",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "string",
             "missing": 0,
@@ -156,7 +176,23 @@
           {
             "name": "ctl_pct_abuse",
             "duplicates": 15553,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_abuse",
+              "short_name": "Crisis Text Line: % of conversations about Abuse",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Abuse",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Abuse, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Abuse, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_abuse_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Abuse.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 11384,
@@ -168,7 +204,23 @@
           {
             "name": "ctl_pct_abuse_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_abuse_suppressed",
+              "short_name": "Suppressed flag: Abuse",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Abuse",
+              "category": "behavioral_health",
+              "short_description": "1 if the Abuse percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Abuse percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_abuse is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Abuse is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -180,7 +232,23 @@
           {
             "name": "ctl_pct_anxiety_stress",
             "duplicates": 15283,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_anxiety_stress",
+              "short_name": "Crisis Text Line: % of conversations about Anxiety / Stress",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Anxiety / Stress",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Anxiety / Stress, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Anxiety / Stress, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_anxiety_stress_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Anxiety / Stress.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 9449,
@@ -192,7 +260,23 @@
           {
             "name": "ctl_pct_anxiety_stress_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_anxiety_stress_suppressed",
+              "short_name": "Suppressed flag: Anxiety / Stress",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Anxiety / Stress",
+              "category": "behavioral_health",
+              "short_description": "1 if the Anxiety / Stress percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Anxiety / Stress percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_anxiety_stress is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Anxiety / Stress is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -204,7 +288,23 @@
           {
             "name": "ctl_pct_bullying",
             "duplicates": 15548,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_bullying",
+              "short_name": "Crisis Text Line: % of conversations about Bullying",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Bullying",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Bullying, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Bullying, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_bullying_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Bullying.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 12359,
@@ -216,7 +316,23 @@
           {
             "name": "ctl_pct_bullying_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_bullying_suppressed",
+              "short_name": "Suppressed flag: Bullying",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Bullying",
+              "category": "behavioral_health",
+              "short_description": "1 if the Bullying percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Bullying percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_bullying is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Bullying is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -228,7 +344,23 @@
           {
             "name": "ctl_pct_depression_sadness",
             "duplicates": 15286,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_depression_sadness",
+              "short_name": "Crisis Text Line: % of conversations about Depression / Sadness",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Depression / Sadness",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Depression / Sadness, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Depression / Sadness, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_depression_sadness_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Depression / Sadness.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 9455,
@@ -240,7 +372,23 @@
           {
             "name": "ctl_pct_depression_sadness_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_depression_sadness_suppressed",
+              "short_name": "Suppressed flag: Depression / Sadness",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Depression / Sadness",
+              "category": "behavioral_health",
+              "short_description": "1 if the Depression / Sadness percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Depression / Sadness percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_depression_sadness is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Depression / Sadness is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -252,7 +400,23 @@
           {
             "name": "ctl_pct_eating_body_image",
             "duplicates": 15589,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_eating_body_image",
+              "short_name": "Crisis Text Line: % of conversations about Eating / Body Image",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Eating / Body Image",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Eating / Body Image, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Eating / Body Image, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_eating_body_image_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Eating / Body Image.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 12316,
@@ -264,7 +428,23 @@
           {
             "name": "ctl_pct_eating_body_image_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_eating_body_image_suppressed",
+              "short_name": "Suppressed flag: Eating / Body Image",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Eating / Body Image",
+              "category": "behavioral_health",
+              "short_description": "1 if the Eating / Body Image percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Eating / Body Image percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_eating_body_image is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Eating / Body Image is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -276,7 +456,23 @@
           {
             "name": "ctl_pct_gender_sexual_identity",
             "duplicates": 15628,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_gender_sexual_identity",
+              "short_name": "Crisis Text Line: % of conversations about Gender / Sexual Identity",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Gender / Sexual Identity",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Gender / Sexual Identity, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Gender / Sexual Identity, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_gender_sexual_identity_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Gender / Sexual Identity.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 12633,
@@ -288,7 +484,23 @@
           {
             "name": "ctl_pct_gender_sexual_identity_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_gender_sexual_identity_suppressed",
+              "short_name": "Suppressed flag: Gender / Sexual Identity",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Gender / Sexual Identity",
+              "category": "behavioral_health",
+              "short_description": "1 if the Gender / Sexual Identity percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Gender / Sexual Identity percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_gender_sexual_identity is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Gender / Sexual Identity is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -300,7 +512,23 @@
           {
             "name": "ctl_pct_grief",
             "duplicates": 15571,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_grief",
+              "short_name": "Crisis Text Line: % of conversations about Grief",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Grief",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Grief, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Grief, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_grief_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Grief.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 12030,
@@ -312,7 +540,23 @@
           {
             "name": "ctl_pct_grief_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_grief_suppressed",
+              "short_name": "Suppressed flag: Grief",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Grief",
+              "category": "behavioral_health",
+              "short_description": "1 if the Grief percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Grief percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_grief is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Grief is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -324,7 +568,23 @@
           {
             "name": "ctl_pct_isolation_loneliness",
             "duplicates": 15433,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_isolation_loneliness",
+              "short_name": "Crisis Text Line: % of conversations about Isolation / Loneliness",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Isolation / Loneliness",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Isolation / Loneliness, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Isolation / Loneliness, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_isolation_loneliness_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Isolation / Loneliness.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 9630,
@@ -336,7 +596,23 @@
           {
             "name": "ctl_pct_isolation_loneliness_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_isolation_loneliness_suppressed",
+              "short_name": "Suppressed flag: Isolation / Loneliness",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Isolation / Loneliness",
+              "category": "behavioral_health",
+              "short_description": "1 if the Isolation / Loneliness percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Isolation / Loneliness percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_isolation_loneliness is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Isolation / Loneliness is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -348,7 +624,23 @@
           {
             "name": "ctl_pct_relationships",
             "duplicates": 15372,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_relationships",
+              "short_name": "Crisis Text Line: % of conversations about Relationships",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Relationships",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Relationships, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Relationships, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_relationships_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Relationships.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 9438,
@@ -360,7 +652,23 @@
           {
             "name": "ctl_pct_relationships_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_relationships_suppressed",
+              "short_name": "Suppressed flag: Relationships",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Relationships",
+              "category": "behavioral_health",
+              "short_description": "1 if the Relationships percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Relationships percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_relationships is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Relationships is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -372,7 +680,23 @@
           {
             "name": "ctl_pct_self_harm",
             "duplicates": 15372,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_self_harm",
+              "short_name": "Crisis Text Line: % of conversations about Self-Harm",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Self-Harm",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Self-Harm, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Self-Harm, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_self_harm_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Self-Harm.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 10647,
@@ -384,7 +708,23 @@
           {
             "name": "ctl_pct_self_harm_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_self_harm_suppressed",
+              "short_name": "Suppressed flag: Self-Harm",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Self-Harm",
+              "category": "behavioral_health",
+              "short_description": "1 if the Self-Harm percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Self-Harm percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_self_harm is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Self-Harm is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -396,7 +736,23 @@
           {
             "name": "ctl_pct_substance_use",
             "duplicates": 15626,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_substance_use",
+              "short_name": "Crisis Text Line: % of conversations about Substance Use",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Substance Use",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Substance Use, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Substance Use, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_substance_use_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Substance Use.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 12530,
@@ -408,7 +764,23 @@
           {
             "name": "ctl_pct_substance_use_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_substance_use_suppressed",
+              "short_name": "Suppressed flag: Substance Use",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Substance Use",
+              "category": "behavioral_health",
+              "short_description": "1 if the Substance Use percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Substance Use percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_substance_use is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Substance Use is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -420,7 +792,23 @@
           {
             "name": "ctl_pct_suicide",
             "duplicates": 15338,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_suicide",
+              "short_name": "Crisis Text Line: % of conversations about Suicide",
+              "long_name": "Percent of tagged Crisis Text Line conversations about Suicide",
+              "category": "behavioral_health",
+              "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Suicide, by quarter.",
+              "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Suicide, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_suicide_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+              "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Suicide.",
+              "measure_type": "Percent",
+              "unit": "Percent",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "float",
             "missing": 9759,
@@ -432,7 +820,23 @@
           {
             "name": "ctl_pct_suicide_suppressed",
             "duplicates": 15739,
-            "info": [],
+            "info": {
+              "id": "ctl_pct_suicide_suppressed",
+              "short_name": "Suppressed flag: Suicide",
+              "long_name": "Suppression flag for percent of Crisis Text Line conversations about Suicide",
+              "category": "behavioral_health",
+              "short_description": "1 if the Suicide percent was suppressed for privacy, 0 otherwise.",
+              "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Suicide percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_suicide is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+              "statement": "In {location}, the suppression flag for Suicide is {value} (1 = suppressed).",
+              "measure_type": "Binary",
+              "unit": "0/1",
+              "time_resolution": "Quarter",
+              "sources": [
+                {
+                  "id": "ctl_crisistrends"
+                }
+              ]
+            },
             "time_range": [0, 32],
             "type": "integer",
             "missing": 0,
@@ -447,15 +851,463 @@
     }
   ],
   "measure_info": {
-    "example_variable": {
-      "id": "example_variable",
-      "sources": [],
-      "citations": []
+    "age": {
+      "id": "age",
+      "short_name": "Age",
+      "long_name": "Age group of texter",
+      "category": "demographic",
+      "short_description": "Age group of the texter: <14, 14-17, 18-24, 25-34, 35-44, 45-54, 55-64, 65+, or Overall.",
+      "long_description": "Age group of the texter as recorded by Crisis Text Line ('<14' is CTL's '13 or younger'). 'Overall' covers all conversations, including the large majority with no age recorded. Conversations with no age recorded are not published as their own group.",
+      "measure_type": "Category",
+      "unit": "Age group",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_abuse": {
+      "id": "ctl_pct_abuse",
+      "short_name": "Crisis Text Line: % of conversations about Abuse",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Abuse",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Abuse, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Abuse, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_abuse_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Abuse.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_anxiety_stress": {
+      "id": "ctl_pct_anxiety_stress",
+      "short_name": "Crisis Text Line: % of conversations about Anxiety / Stress",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Anxiety / Stress",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Anxiety / Stress, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Anxiety / Stress, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_anxiety_stress_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Anxiety / Stress.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_bullying": {
+      "id": "ctl_pct_bullying",
+      "short_name": "Crisis Text Line: % of conversations about Bullying",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Bullying",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Bullying, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Bullying, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_bullying_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Bullying.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_depression_sadness": {
+      "id": "ctl_pct_depression_sadness",
+      "short_name": "Crisis Text Line: % of conversations about Depression / Sadness",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Depression / Sadness",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Depression / Sadness, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Depression / Sadness, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_depression_sadness_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Depression / Sadness.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_eating_body_image": {
+      "id": "ctl_pct_eating_body_image",
+      "short_name": "Crisis Text Line: % of conversations about Eating / Body Image",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Eating / Body Image",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Eating / Body Image, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Eating / Body Image, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_eating_body_image_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Eating / Body Image.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_gender_sexual_identity": {
+      "id": "ctl_pct_gender_sexual_identity",
+      "short_name": "Crisis Text Line: % of conversations about Gender / Sexual Identity",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Gender / Sexual Identity",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Gender / Sexual Identity, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Gender / Sexual Identity, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_gender_sexual_identity_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Gender / Sexual Identity.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_grief": {
+      "id": "ctl_pct_grief",
+      "short_name": "Crisis Text Line: % of conversations about Grief",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Grief",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Grief, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Grief, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_grief_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Grief.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_isolation_loneliness": {
+      "id": "ctl_pct_isolation_loneliness",
+      "short_name": "Crisis Text Line: % of conversations about Isolation / Loneliness",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Isolation / Loneliness",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Isolation / Loneliness, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Isolation / Loneliness, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_isolation_loneliness_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Isolation / Loneliness.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_relationships": {
+      "id": "ctl_pct_relationships",
+      "short_name": "Crisis Text Line: % of conversations about Relationships",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Relationships",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Relationships, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Relationships, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_relationships_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Relationships.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_self_harm": {
+      "id": "ctl_pct_self_harm",
+      "short_name": "Crisis Text Line: % of conversations about Self-Harm",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Self-Harm",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Self-Harm, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Self-Harm, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_self_harm_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Self-Harm.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_substance_use": {
+      "id": "ctl_pct_substance_use",
+      "short_name": "Crisis Text Line: % of conversations about Substance Use",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Substance Use",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Substance Use, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Substance Use, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_substance_use_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Substance Use.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_suicide": {
+      "id": "ctl_pct_suicide",
+      "short_name": "Crisis Text Line: % of conversations about Suicide",
+      "long_name": "Percent of tagged Crisis Text Line conversations about Suicide",
+      "category": "behavioral_health",
+      "short_description": "Percent of Crisis Text Line conversations with at least one issue tag that were tagged Suicide, by quarter.",
+      "long_description": "Quarterly number of Crisis Text Line text/chat conversations tagged Suicide, divided by the number of conversations with at least one issue tag recorded, times 100, rounded to 0.1. A conversation can carry several tags and is counted once in each, so topic percentages overlap and add up to more than 100. The denominator includes conversations tagged only with topics not published here (e.g. Racism, School). 'Abuse' combines CTL's emotional, physical, sexual and unspecified abuse tags. Counts are suppressed before the percent is calculated: a specific state-by-age cell is suppressed if its topic count is below 4, and any cell is suppressed if a state or national total (all ages and/or all states) is below 25 or the tagged-conversation denominator is below 25. Additional cells are suppressed where a suppressed value could otherwise be recalculated (complementary suppression, GaussSuppression R package). True zeros are never suppressed and are published as 0. Suppressed values are NA with ctl_pct_suicide_suppressed = 1. A value is NA with the flag 0 when there were no tagged conversations in that cell (the percent is undefined). Age is recorded for only about 4-7% of conversations (varies by year), so age-specific values describe a small subset of texters; state is recorded for about 78%. Age was almost never recorded from December 2019 to March 2020, so most age-specific cells in 2020 Q1 are missing. National ('00') and 'Overall' age values include conversations with no reported state or age. CTL's tagging practices changed over time; notably, the share tagged Suicide fell through 2023 and rose sharply in 2024 Q2 in every state and age group, which likely reflects a change in tagging rather than a change in need.",
+      "statement": "In {location}, {value}% of tagged Crisis Text Line conversations in the quarter ending {time} were about Suicide.",
+      "measure_type": "Percent",
+      "unit": "Percent",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_abuse_suppressed": {
+      "id": "ctl_pct_abuse_suppressed",
+      "short_name": "Suppressed flag: Abuse",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Abuse",
+      "category": "behavioral_health",
+      "short_description": "1 if the Abuse percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Abuse percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_abuse is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Abuse is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_anxiety_stress_suppressed": {
+      "id": "ctl_pct_anxiety_stress_suppressed",
+      "short_name": "Suppressed flag: Anxiety / Stress",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Anxiety / Stress",
+      "category": "behavioral_health",
+      "short_description": "1 if the Anxiety / Stress percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Anxiety / Stress percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_anxiety_stress is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Anxiety / Stress is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_bullying_suppressed": {
+      "id": "ctl_pct_bullying_suppressed",
+      "short_name": "Suppressed flag: Bullying",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Bullying",
+      "category": "behavioral_health",
+      "short_description": "1 if the Bullying percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Bullying percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_bullying is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Bullying is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_depression_sadness_suppressed": {
+      "id": "ctl_pct_depression_sadness_suppressed",
+      "short_name": "Suppressed flag: Depression / Sadness",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Depression / Sadness",
+      "category": "behavioral_health",
+      "short_description": "1 if the Depression / Sadness percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Depression / Sadness percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_depression_sadness is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Depression / Sadness is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_eating_body_image_suppressed": {
+      "id": "ctl_pct_eating_body_image_suppressed",
+      "short_name": "Suppressed flag: Eating / Body Image",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Eating / Body Image",
+      "category": "behavioral_health",
+      "short_description": "1 if the Eating / Body Image percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Eating / Body Image percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_eating_body_image is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Eating / Body Image is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_gender_sexual_identity_suppressed": {
+      "id": "ctl_pct_gender_sexual_identity_suppressed",
+      "short_name": "Suppressed flag: Gender / Sexual Identity",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Gender / Sexual Identity",
+      "category": "behavioral_health",
+      "short_description": "1 if the Gender / Sexual Identity percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Gender / Sexual Identity percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_gender_sexual_identity is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Gender / Sexual Identity is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_grief_suppressed": {
+      "id": "ctl_pct_grief_suppressed",
+      "short_name": "Suppressed flag: Grief",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Grief",
+      "category": "behavioral_health",
+      "short_description": "1 if the Grief percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Grief percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_grief is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Grief is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_isolation_loneliness_suppressed": {
+      "id": "ctl_pct_isolation_loneliness_suppressed",
+      "short_name": "Suppressed flag: Isolation / Loneliness",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Isolation / Loneliness",
+      "category": "behavioral_health",
+      "short_description": "1 if the Isolation / Loneliness percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Isolation / Loneliness percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_isolation_loneliness is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Isolation / Loneliness is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_relationships_suppressed": {
+      "id": "ctl_pct_relationships_suppressed",
+      "short_name": "Suppressed flag: Relationships",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Relationships",
+      "category": "behavioral_health",
+      "short_description": "1 if the Relationships percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Relationships percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_relationships is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Relationships is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_self_harm_suppressed": {
+      "id": "ctl_pct_self_harm_suppressed",
+      "short_name": "Suppressed flag: Self-Harm",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Self-Harm",
+      "category": "behavioral_health",
+      "short_description": "1 if the Self-Harm percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Self-Harm percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_self_harm is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Self-Harm is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_substance_use_suppressed": {
+      "id": "ctl_pct_substance_use_suppressed",
+      "short_name": "Suppressed flag: Substance Use",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Substance Use",
+      "category": "behavioral_health",
+      "short_description": "1 if the Substance Use percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Substance Use percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_substance_use is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Substance Use is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "ctl_pct_suicide_suppressed": {
+      "id": "ctl_pct_suicide_suppressed",
+      "short_name": "Suppressed flag: Suicide",
+      "long_name": "Suppression flag for percent of Crisis Text Line conversations about Suicide",
+      "category": "behavioral_health",
+      "short_description": "1 if the Suicide percent was suppressed for privacy, 0 otherwise.",
+      "long_description": "Binary flag: 1 if Crisis Text Line suppressed the Suicide percent (because the topic count, a total, or the tagged-conversation denominator was too small to publish, or by complementary suppression); ctl_pct_suicide is then NA. Suppressed values are not imputed. 0 = not suppressed. A value can be NA with this flag 0 when there were no tagged conversations in that cell.",
+      "statement": "In {location}, the suppression flag for Suicide is {value} (1 = suppressed).",
+      "measure_type": "Binary",
+      "unit": "0/1",
+      "time_resolution": "Quarter",
+      "sources": [
+        {
+          "id": "ctl_crisistrends"
+        }
+      ]
+    },
+    "_sources": {
+      "ctl_crisistrends": {
+        "name": "Crisis Text Line Crisis Trends",
+        "url": "https://crisistrends.org",
+        "organization": "Crisis Text Line",
+        "organization_url": "https://www.crisistextline.org",
+        "location": "crisistrends_monthly_aggregate dataset, CTL Data Engineering",
+        "description": "Crisis Text Line is a nonprofit that provides free, 24/7, confidential text-based mental health support and crisis intervention in English and Spanish across the United States and Puerto Rico. Crisis Counselors tag each conversation with the issues discussed. CTL Data Engineering provides PopHIVE with de-identified conversation counts aggregated by month, state, age group and combination of issue tags. PopHIVE sums these to quarters, applies small-cell and complementary suppression (GaussSuppression R package), and publishes each topic's share of conversations with at least one issue tag, by state and age group, from July 2018 onward. Processing happens in a separate PopHIVE repository; only the suppressed percentages are published here. Note the data describe people who chose to contact Crisis Text Line, not the general population; age is recorded for only about 4-7% of conversations (almost none from December 2019 to March 2020) and state for about 78%; topic tags are applied by counselors, and tagging practices have changed over time. The numbers are not expected to match crisistrends.org exactly, because Crisis Trends includes conversations that are excluded from this dataset under data-sharing restrictions.",
+        "restrictions": "Attribution to Crisis Text Line required. Cite as: Crisis Text Line (2026). Crisis Trends. https://crisistrends.org/ (data obtained via the PopHIVE platform).",
+        "date_accessed": 2026
+      },
+      "id": "_sources"
+    },
+    "_catalog": {
+      "name": "Crisis Text Line",
+      "summary": "Crisis Text Line is a nonprofit that provides free, 24/7, confidential text-based mental health support and crisis intervention. Crisis Counselors tag each conversation with the issues discussed. This dataset presents each topic's share of conversations with at least one issue tag, by state and age group",
+      "search_terms": [
+        "Mental health",
+        "crisis text line",
+        "suicide",
+        "anxiety",
+        "depression"
+      ],
+      "bucket": [],
+      "files": {
+        "data.csv.gz": "Conversation topic share by age group"
+      },
+      "id": "_catalog"
     }
   },
   "change_report": {
     "data.csv.gz": {
-      "state": "new file"
+      "state": "unchanged"
     }
   }
 }
