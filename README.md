@@ -107,6 +107,14 @@ Some values changed. The old CDC file was not suppressed, but the data Delphi se
 
 *New sources.* Two sources read from Delphi's Epidata v5 API were added: `delphi_nrevss` (above) and Sleep Cycle nighttime coughs (`delphi_sleepcycle`, licensed CC BY-NC 4.0 for non-commercial use only). The respiratory bundle gains two files, `nrevss_lab_testing.parquet` and `sleepcycle_cough.parquet`.
 
+**November 18, 2026**
+YRBSS estimates that CDC suppressed, or that come from a question a state did not ask that year, are now left blank (missing) instead of being written as 0. The `_suppressed` and `_not_asked` flags are unchanged and still mark these cells, and no published estimate changed. Downstream:
+- `bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet` keeps the flagged rows, but their `value`, `value_lcl` and `value_ucl` are now missing (128,299 of 294,952 rows).
+- `bundle_sex_disparities/dist/yrbss_behavior_by_sex.parquet` drops rows with no value, as it does for every other source, so the 30,719 flagged rows that held 0 are gone, along with 8 `Overall` rows whose Female or Male row went with them (80,889 rows before, 51,656 after, including the new measure below). Its metadata entry for `pct_close_at_school` was also corrected: it was listed as `pct_not_close_at_school` with the opposite wording, while the values have always been the share who feel close.
+- `bundle_sti/dist/sti_youth.parquet` already blanked suppressed values and dropped not-asked rows, so it is unaffected by this change.
+
+The same update adds the YRBSS measure `pct_sad_hopeless` (felt sad or hopeless almost every day for two or more weeks), and adds the National Survey of Children's Health (`nsch`, mirrored from [PopHIVE/nsch](https://github.com/PopHIVE/nsch)) to the youth wellbeing bundle as `nsch_state_age_demographics.parquet`.
+
 # Guide to adding data and rebuilding the bundle
 
 ## Steps for adding new datasets

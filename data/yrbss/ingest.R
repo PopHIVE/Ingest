@@ -27,8 +27,10 @@
 #     standard/data_age.csv.gz        keys: geography, time, age
 #     standard/data_age_sex.csv.gz    keys: geography, time, age, sex
 #     standard/data_age_ethnicity.csv.gz  keys: geography, time, age, race_ethnicity
-#   Suppressed values, topic, and question_code are dropped from the data files
-#   and documented in measure_info.json instead.
+#   Each measure also has _suppressed and _not_asked flags. A suppressed or
+#   not-asked estimate is left missing (NA), with its flag set to 1; until
+#   November 2026 these cells were written as 0. topic and question_code are
+#   dropped from the data files and documented in measure_info.json instead.
 #
 # Question codes: CDC renumbered most H-codes when it added the 2025 survey
 #   (e.g. seat belt H8 -> H7). The codes in measure_dict are the current ones;
@@ -42,11 +44,15 @@
 #   named for the risk (pct_insufficient_sleep), so those are converted to
 #   100 - value. pct_close_at_school is the one measure kept as reported.
 #
-# Archived states: since the 2025 release the Explorer returns nothing, not
-#   even earlier years, for 14 states (AL, AK, CA, CO, FL, GA, ID, IA, KS, NE,
-#   PA, TN, TX, WY). Their history comes from the last pull made before that
-#   release (raw/yrbss_chartdata_pre2025.csv.gz) and is used only for
-#   locations with no rows in the current pull.
+# Archived states: for a time after the 2025 release the Explorer returned
+#   nothing, not even earlier years, for 14 states (AL, AK, CA, CO, FL, GA, ID,
+#   IA, KS, NE, PA, TN, TX, WY). As of November 2026 it serves them again, but
+#   with fewer questions and years than before (e.g. Alaska has no 2023). The
+#   last pull made before that release (raw/yrbss_chartdata_pre2025.csv.gz) is
+#   kept as a fallback for every question x year the current pull does not have
+#   for those 14 states; where both have an estimate, the current pull wins.
+#   Other states are not filled: what CDC dropped for them in the 2025 release
+#   was never published here and is treated as withdrawn.
 # =============================================================================
 
 library(tidyverse)
@@ -59,6 +65,11 @@ MIN_YEAR    <- 2005
 RAW_FILE     <- "raw/yrbss_chartdata.csv.gz"
 ARCHIVE_FILE <- "raw/yrbss_chartdata_pre2025.csv.gz"   # last pull before the 2025 release
 CATALOG_REF  <- "raw/yrbss_catalog_reference.csv"      # catalog wording the dictionary was checked against
+# States the Explorer dropped entirely after the 2025 release (see header).
+# Fixed list on purpose: it records a past outage and cannot be derived from
+# the current pull.
+ARCHIVE_LOCATIONS <- c("AL", "AK", "CA", "CO", "FL", "GA", "ID", "IA", "KS",
+                       "NE", "PA", "TN", "TX", "WY")
 # Measures named for the non-risk side, so the native value is kept as is
 KEEP_NATIVE  <- c("QNCLOSE2PEOPLE")
 
@@ -82,7 +93,8 @@ measure_dict <- tibble::tribble(
   "H14",              "pct_threatened_weapon_school", "Threatened with weapon at school", "Were threatened or injured with a weapon on school property",                                                           "Unintentional Injuries and Violence",
   "H23",              "pct_bullied_at_school",        "Bullied on school property",       "Were bullied on school property",                                                                                       "Unintentional Injuries and Violence",
   "H24",              "pct_bullied_electronic",       "Electronically bullied",           "Were electronically bullied",                                                                                           "Unintentional Injuries and Violence",
-  "H27",              "pct_considered_suicide",       "Seriously considered suicide",     "Seriously considered attempting suicide",                                                                               "Unintentional Injuries and Violence",
+  "H26",              "pct_sad_hopeless",             "Felt sad or hopeless",             "Felt so sad or hopeless almost every day for 2 or more weeks in a row that they stopped doing some usual activities (during the 12 months before the survey)", "Unintentional Injuries and Violence",
+  "H27",              "pct_considered_suicide",      "Seriously considered suicide",     "Seriously considered attempting suicide",                                                                               "Unintentional Injuries and Violence",
   "H28",              "pct_planned_suicide",          "Made a suicide plan",              "Made a plan about how they would attempt suicide",                                                                      "Unintentional Injuries and Violence",
   "H29",              "pct_attempted_suicide",        "Attempted suicide",                "Actually attempted suicide",                                                                                            "Unintentional Injuries and Violence",
   "H30",              "pct_injurious_suicide_attempt","Injurious suicide attempt",        "Had a suicide attempt that resulted in an injury, poisoning, or overdose that had to be treated by a doctor or nurse",   "Unintentional Injuries and Violence",
@@ -425,19 +437,25 @@ grade_to_age <- function(x) {
 raw_live <- raw_all %>%
   inner_join(select(measure_dict, question_code, slug), by = "question_code")
 
-# Archived pull, keyed by the codes in use before the 2025 release. Only
-# locations the current pull has nothing for are taken from it.
+# Archived pull, keyed by the codes in use before the 2025 release. For the
+# ARCHIVE_LOCATIONS states it fills every measure x year the current pull has
+# no rows for, so a state the Explorer serves again with a thinner history
+# keeps the estimates published before.
 archive_codes <- measure_dict %>%
   transmute(question_code = coalesce(unname(CODE_PRE2025[question_code]),
                                      question_code),
             slug)
 raw_archive <- vroom::vroom(ARCHIVE_FILE, show_col_types = FALSE,
                             col_types = vroom::cols(.default = "c")) %>%
-  filter(!LocationCode %in% unique(raw_live$LocationCode)) %>%
-  inner_join(archive_codes, by = "question_code")
+  filter(LocationCode %in% ARCHIVE_LOCATIONS) %>%
+  inner_join(archive_codes, by = "question_code") %>%
+  anti_join(distinct(raw_live, LocationCode, slug, Year),
+            by = c("LocationCode", "slug", "Year"))
 if (nrow(raw_archive) > 0) {
-  message("Using archived pre-2025 data for: ",
-          paste(sort(unique(raw_archive$LocationCode)), collapse = ", "))
+  message("Filled from the archived pre-2025 pull: ",
+          paste(capture.output(print(
+            count(distinct(raw_archive, LocationCode, slug, Year), LocationCode),
+            n = Inf)), collapse = "\n"))
 }
 
 flip_slugs <- measure_dict$slug[measure_dict$question_code %in% flip_codes]
@@ -477,9 +495,9 @@ asked_set <- raw_clean %>%
 
 # Build the full set of cells for one stratification dimension: the cross of
 # every observed key-row with every measure, annotated with value / CI / flags.
-#   suppressed = 1  -> question asked but CDC suppressed this estimate (value 0)
-#   not_asked  = 1  -> question not asked for this geography & year   (value 0)
-# All missing value / _lcl / _ucl entries are set to 0.
+#   suppressed = 1  -> question asked but CDC suppressed this estimate (value NA)
+#   not_asked  = 1  -> question not asked for this geography & year   (value NA)
+# Missing value / _lcl / _ucl entries stay NA; a 0 is a real estimate of 0%.
 build_cells <- function(sub, key_cols) {
   key_rows <- sub %>% distinct(across(all_of(key_cols)))
   tidyr::expand_grid(key_rows, slug = measure_dict$slug) %>%
@@ -491,10 +509,7 @@ build_cells <- function(sub, key_cols) {
     mutate(
       asked      = coalesce(asked, FALSE),
       not_asked  = if_else(asked, 0L, 1L),
-      suppressed = if_else(asked & is.na(value), 1L, 0L),
-      value      = coalesce(value, 0),
-      value_lcl  = coalesce(value_lcl, 0),
-      value_ucl  = coalesce(value_ucl, 0)
+      suppressed = if_else(asked & is.na(value), 1L, 0L)
     ) %>%
     select(all_of(key_cols), slug, value, value_lcl, value_ucl,
            suppressed, not_asked)
@@ -576,7 +591,7 @@ for (i in seq_len(nrow(measures))) {
     "(topic: ", m$topic, "; YRBSS question code: ", m$question_code, "). ",
     "Estimates are reported overall and stratified (separately) by sex, ",
     "race/ethnicity, and grade; grade is mapped to approximate modal ages ",
-    "(9th=14, 10th=15, 11th=16, 12th=17). Missing estimates are set to 0 and ",
+    "(9th=14, 10th=15, 11th=16, 12th=17). Missing estimates are left blank (NA) and ",
     "flagged: ", m$slug, "_suppressed = 1 marks values CDC suppressed (e.g., ",
     "small sample size), and ", m$slug, "_not_asked = 1 marks geography-years ",
     "in which the question was not asked. ",
@@ -644,11 +659,11 @@ for (i in seq_len(nrow(measures))) {
     topic             = m$topic,
     question_code     = m$question_code,
     short_description = paste0("1 if the estimate for '", m$slug,
-                               "' was suppressed by CDC and set to 0; 0 otherwise."),
+                               "' was suppressed by CDC and left blank (NA); 0 otherwise."),
     long_description  = paste0(
       "Flag indicating CDC suppression. 1 means the question was asked for this ",
       "geography and year but CDC suppressed the estimate (e.g., insufficient ",
-      "sample size), and ", m$slug, " (with its CI) was set to 0; 0 otherwise. ",
+      "sample size), and ", m$slug, " (with its CI) is NA; 0 otherwise. ",
       "Distinct from ", m$slug, "_not_asked, which marks geography-years where ",
       "the question was not asked at all."
     ),
@@ -666,11 +681,11 @@ for (i in seq_len(nrow(measures))) {
     topic             = m$topic,
     question_code     = m$question_code,
     short_description = paste0("1 if '", m$slug,
-                               "' was not asked for this geography and year and set to 0; 0 otherwise."),
+                               "' was not asked for this geography and year and left blank (NA); 0 otherwise."),
     long_description  = paste0(
       "Flag indicating the question was not asked. 1 means '", m$question_text,
       "' was not part of the YRBSS survey for this geography and year, so ", m$slug,
-      " (with its CI) was set to 0; 0 otherwise. Distinct from ", m$slug,
+      " (with its CI) is NA; 0 otherwise. Distinct from ", m$slug,
       "_suppressed, which marks estimates CDC suppressed."
     ),
     measure_type      = "Indicator",
@@ -697,12 +712,11 @@ measure_info[["_sources"]] <- list(
       "Data were accessed via the YRBS Explorer API. Estimates are provided ",
       "overall and stratified (separately, not crossed) by sex, race/ethnicity, ",
       "and grade. Estimates that CDC suppressed (e.g., small sample sizes) ",
-      "are set to 0 and flagged. State estimates are available only for ",
+      "are left blank and flagged. State estimates are available only for ",
       "jurisdictions that share data with CDC; Minnesota, Oregon, and ",
       "Washington are not included, and New York state excludes New York City. ",
-      "Alabama, Alaska, California, Colorado, Florida, Georgia, Idaho, Iowa, ",
-      "Kansas, Nebraska, Pennsylvania, Tennessee, Texas, and Wyoming are not ",
-      "in the 2025 release, so their estimates end in 2023 or earlier."
+      "Not every state takes part in every survey year or asks every question, ",
+      "so the years available differ by state and measure."
     ),
     restrictions     = "Public domain. Suggested attribution: Centers for Disease Control and Prevention (CDC). Youth Risk Behavior Surveillance System (YRBSS)."
   )

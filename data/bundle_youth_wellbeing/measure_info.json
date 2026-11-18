@@ -736,6 +736,13 @@
           }
         ]
       },
+      "pct_sad_hopeless": {
+        "sources": [
+          {
+            "id": "yrbss"
+          }
+        ]
+      },
       "pct_social_media_daily": {
         "sources": [
           {
@@ -780,11 +787,108 @@
   },
   "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|suppressed": {
     "short_name": "Suppressed flag",
-    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows have no value (NA); suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
   },
   "bundle_youth_wellbeing/dist/yrbss_state_age_demographics.parquet|not_asked": {
     "short_name": "Not asked flag",
-    "short_description": "YRBSS only. 1 if the question was not asked in that jurisdiction and year. These rows carry value = 0, which is not an estimate -- filter on not_asked == 0 before using value."
+    "short_description": "YRBSS only. 1 if the question was not asked in that jurisdiction and year. These rows have no value (NA)."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|geography": {
+    "short_name": "Geography",
+    "short_description": "State name; 'United States' for the national total."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|fips": {
+    "short_name": "FIPS code",
+    "short_description": "Geography FIPS code ('00' = national, 2-digit = state)."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|time": {
+    "short_name": "Time",
+    "short_description": "Survey year, as the last day of the year (YYYY-12-31)."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|year": {
+    "short_name": "Year",
+    "short_description": "Calendar year of `time`, for convenience."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|age": {
+    "short_name": "Age group",
+    "short_description": "Child's age: 0-5, 6-11 or 12-17 years, or '0-17 years' for all children. Many measures cover a narrower age range (named in the measure, e.g. _12_17); they appear only in the matching band and in '0-17 years', which then means all children in that measure's age range."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|sex": {
+    "short_name": "Sex",
+    "short_description": "Sex stratum. 'All' when the row is not stratified by sex."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|race": {
+    "short_name": "Race",
+    "short_description": "Non-Hispanic race, mapped onto the WISQARS scheme. 'All' when not stratified by race or for Hispanic children."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|ethnicity": {
+    "short_name": "Ethnicity",
+    "short_description": "'Hispanic' for Hispanic children of any race; 'All' otherwise."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|section": {
+    "short_name": "Dashboard section",
+    "short_description": "Dashboard page this row belongs to: Mental health, Chronic disease, Preventative health and wellness, or Social determinants of health."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|focus_area": {
+    "short_name": "Focus area",
+    "short_description": "Topic grouping within the section. A measure mapped to two section/focus_area pairs appears once per pair."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|source": {
+    "short_name": "Source",
+    "short_description": "Data source the row came from."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|measure": {
+    "short_name": "Measure",
+    "short_description": "Tall-format measure identifier; see levels for each measure's metadata.",
+    "levels": {
+      "nsch_pct_active_daily_12_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_active_daily_6_11": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_aces_2plus": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_adequately_insured": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_adhd_3_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_adult_mentor_12_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_anxiety_12_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_autism_3_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_behavior_conduct_6_11": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_bullied_12_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_bullies_others_12_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_cshcn": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_depression_12_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_depression_anxiety_12_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_flourishing_6_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_flourishing_6mo_5": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_food_sufficient_0_11": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_forgone_care": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_health_excellent_vgood": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_household_smoking": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_housing_instability_0_11": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_mh_treatment_12_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_obesity_6_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_preventive_dental_1_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_share_ideas_well_6_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_tooth_decay_1_17": { "measure_type": "Percent", "unit": "Percent" },
+      "nsch_pct_well_visit_12_17": { "measure_type": "Percent", "unit": "Percent" }
+    }
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|value": {
+    "short_name": "Value",
+    "short_description": "Weighted percent (0-100) of children. Suppressed cells (unweighted denominator under 30) and years or age bands where the question was not asked are not in this file."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|value_lcl": {
+    "short_name": "Lower confidence limit",
+    "short_description": "Lower bound of the 95% confidence interval on value."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|value_ucl": {
+    "short_name": "Upper confidence limit",
+    "short_description": "Upper bound of the 95% confidence interval on value."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|sample_size": {
+    "short_name": "Sample size",
+    "short_description": "Unweighted number of surveyed children in the estimate's denominator."
+  },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|unreliable": {
+    "short_name": "Unreliable flag",
+    "short_description": "1 if the estimate is imprecise (95% CI wider than 20 points or than 1.2x the estimate); treat as indicative only. 0 otherwise."
   },
   "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|geography": {
     "short_name": "Geography",
@@ -872,7 +976,7 @@
   },
   "bundle_youth_wellbeing/dist/epic_injury_state_age_year.parquet|suppressed": {
     "short_name": "Suppressed flag",
-    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows have no value (NA); suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
   },
   "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|geography": {
     "short_name": "Geography",
@@ -960,7 +1064,7 @@
   },
   "bundle_youth_wellbeing/dist/epic_injury_state_age_month.parquet|suppressed": {
     "short_name": "Suppressed flag",
-    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows have no value (NA); suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
   },
   "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|geography": {
     "short_name": "Geography",
@@ -1042,7 +1146,7 @@
   },
   "bundle_youth_wellbeing/dist/epic_chronic_state_age.parquet|suppressed": {
     "short_name": "Suppressed flag",
-    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows have no value (NA); suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
   },
   "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|geography": {
     "short_name": "Geography",
@@ -1128,7 +1232,7 @@
   },
   "bundle_youth_wellbeing/dist/epic_chronic_county_age.parquet|suppressed": {
     "short_name": "Suppressed flag",
-    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows carry value = 0; suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
+    "short_description": "1 if the source suppressed the estimate. Suppressed YRBSS rows have no value (NA); suppressed Epic Cosmos rows carry an imputed count of 5, which makes the derived rate meaningless and can push it into the tens of thousands per 100,000. Filter on suppressed == 0 before using value."
   },
   "bundle_youth_wellbeing/dist/epic_concussions_state_age_sex.parquet|geography": {
     "short_name": "Geography",
@@ -2308,6 +2412,7 @@
       "neiss",
       "nhtsa_crash",
       "noaa_heat_risk",
+      "nsch",
       "wisqars",
       "yrbss"
     ],
@@ -2344,6 +2449,16 @@
           "yrbss/standard/data_age.csv.gz",
           "yrbss/standard/data_age_sex.csv.gz",
           "yrbss/standard/data_age_ethnicity.csv.gz"
+        ]
+      },
+      "nsch_state_age_demographics.parquet": {
+        "sources": [
+          "nsch"
+        ],
+        "source_files": [
+          "nsch/standard/data_age.csv.gz",
+          "nsch/standard/data_age_sex.csv.gz",
+          "nsch/standard/data_age_race_ethnicity.csv.gz"
         ]
       },
       "epic_injury_state_age_year.parquet": {

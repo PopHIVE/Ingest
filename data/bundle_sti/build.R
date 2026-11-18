@@ -279,7 +279,7 @@ sti_weekly <- nnds_cum %>%
 #    ages 14-17 exist only unstratified, sex and race/ethnicity only at
 #    age == "Overall". Questions not asked in a jurisdiction-year are dropped;
 #    suppressed estimates are kept as NA with suppressed_flag = 1 (the source
-#    writes 0 for both).
+#    leaves both missing; before November 2026 it wrote 0).
 # -----------------------------------------------------------------------------
 
 yrbss_read <- function(file, strata) {
