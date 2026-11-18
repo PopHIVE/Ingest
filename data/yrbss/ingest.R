@@ -42,11 +42,12 @@
 #   named for the risk (pct_insufficient_sleep), so those are converted to
 #   100 - value. pct_close_at_school is the one measure kept as reported.
 #
-# Archived states: since the 2025 release the Explorer returns nothing, not
-#   even earlier years, for 14 states (AL, AK, CA, CO, FL, GA, ID, IA, KS, NE,
-#   PA, TN, TX, WY). Their history comes from the last pull made before that
-#   release (raw/yrbss_chartdata_pre2025.csv.gz) and is used only for
-#   locations with no rows in the current pull.
+# Archived states: for a time after the 2025 release the Explorer returned
+#   nothing, not even earlier years, for 14 states (AL, AK, CA, CO, FL, GA, ID,
+#   IA, KS, NE, PA, TN, TX, WY). As of November 2026 it serves them again. The
+#   last pull made before that release (raw/yrbss_chartdata_pre2025.csv.gz) is
+#   kept as a fallback and is used only for locations with no rows in the
+#   current pull.
 # =============================================================================
 
 library(tidyverse)
@@ -82,7 +83,8 @@ measure_dict <- tibble::tribble(
   "H14",              "pct_threatened_weapon_school", "Threatened with weapon at school", "Were threatened or injured with a weapon on school property",                                                           "Unintentional Injuries and Violence",
   "H23",              "pct_bullied_at_school",        "Bullied on school property",       "Were bullied on school property",                                                                                       "Unintentional Injuries and Violence",
   "H24",              "pct_bullied_electronic",       "Electronically bullied",           "Were electronically bullied",                                                                                           "Unintentional Injuries and Violence",
-  "H27",              "pct_considered_suicide",       "Seriously considered suicide",     "Seriously considered attempting suicide",                                                                               "Unintentional Injuries and Violence",
+  "H26",              "pct_sad_hopeless",             "Felt sad or hopeless",             "Felt so sad or hopeless almost every day for 2 or more weeks in a row that they stopped doing some usual activities (during the 12 months before the survey)", "Unintentional Injuries and Violence",
+  "H27",              "pct_considered_suicide",      "Seriously considered suicide",     "Seriously considered attempting suicide",                                                                               "Unintentional Injuries and Violence",
   "H28",              "pct_planned_suicide",          "Made a suicide plan",              "Made a plan about how they would attempt suicide",                                                                      "Unintentional Injuries and Violence",
   "H29",              "pct_attempted_suicide",        "Attempted suicide",                "Actually attempted suicide",                                                                                            "Unintentional Injuries and Violence",
   "H30",              "pct_injurious_suicide_attempt","Injurious suicide attempt",        "Had a suicide attempt that resulted in an injury, poisoning, or overdose that had to be treated by a doctor or nurse",   "Unintentional Injuries and Violence",
@@ -700,9 +702,8 @@ measure_info[["_sources"]] <- list(
       "are set to 0 and flagged. State estimates are available only for ",
       "jurisdictions that share data with CDC; Minnesota, Oregon, and ",
       "Washington are not included, and New York state excludes New York City. ",
-      "Alabama, Alaska, California, Colorado, Florida, Georgia, Idaho, Iowa, ",
-      "Kansas, Nebraska, Pennsylvania, Tennessee, Texas, and Wyoming are not ",
-      "in the 2025 release, so their estimates end in 2023 or earlier."
+      "Not every state takes part in every survey year or asks every question, ",
+      "so the years available differ by state and measure."
     ),
     restrictions     = "Public domain. Suggested attribution: Centers for Disease Control and Prevention (CDC). Youth Risk Behavior Surveillance System (YRBSS)."
   )
