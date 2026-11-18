@@ -352,11 +352,12 @@
   },
   "bundle_injury_overdose/dist/medicaid_injury_overdose.parquet|outcome_name": {
     "short_name": "Medicaid measure",
+    "short_description": "Adult Core Set measure (ages 18-64): Medication Treatment for Opioid Use Disorder (OUD-AD: share of adults with OUD who received an FDA-approved medication for it; higher is better), Initiation and Engagement of Substance Use Treatment (IET-AD, total), Follow-Up Within 30 Days After ED Visit for Substance Use (FUA-AD: ED visits for a substance use disorder or drug overdose) and Concurrent Use of Opioids and Benzodiazepines (COB-AD; lower is better).",
     "levels": {
-      "Opioid Use Disorder": {},
+      "Medication Treatment for Opioid Use Disorder": {},
       "Initiation of Substance Use Treatment": {},
       "Engagement of Substance Use Treatment": {},
-      "Follow-Up After ED Visit for Alcohol and Drug Abuse": {},
+      "Follow-Up Within 30 Days After ED Visit for Substance Use": {},
       "Concurrent Use of Opioids and Benzodiazepines": {}
     }
   },
@@ -364,16 +365,13 @@
     "short_name": "Data source",
     "levels": { "Medicaid": {} }
   },
-  "bundle_injury_overdose/dist/medicaid_injury_overdose.parquet|payer": {
-    "short_name": "Payer",
-    "short_description": "Coverage/payer program of the CMS reporting population: Medicaid only, CHIP only, both (Medicaid & CHIP), or neither (Other).",
-    "measure_type": "category",
-    "unit": "",
+  "bundle_injury_overdose/dist/medicaid_injury_overdose.parquet|population_match": {
+    "short_name": "Population match",
+    "short_description": "How the population behind the Medicaid Core Set value compares with the Core Set's target population (Child Core Set: all Medicaid and CHIP children; Adult Core Set: Medicaid enrollees who are not dually eligible for Medicare). Each state-year-measure has one value, taken from the reported population closest to the target. target = matches the target; broader = target plus small groups that are not dual eligibles (Other; CHIP for Adult measures); narrower = Child measures, only part of Medicaid + CHIP reported (e.g. Medicaid without separate CHIP); chip_only = Child measures, CHIP enrollees only; broader_incl_duals = Adult measures, a population including dual eligibles, whose care is largely paid by Medicare and so partly missing from Medicaid data. See medicaid_quality/measure_info.json (population_match).",
     "levels": {
-      "Medicaid": {},
-      "CHIP": {},
-      "Medicaid & CHIP": {},
-      "Other": {}
+      "broader": {},
+      "broader_incl_duals": {},
+      "target": {}
     }
   },
   "bundle_injury_overdose/dist/medicaid_injury_overdose.parquet|value": {
@@ -518,7 +516,7 @@
       },
       "medicaid_injury_overdose.parquet": {
         "sources": ["medicaid_quality"],
-        "source_files": ["medicaid_quality/standard/data.csv.gz"]
+        "source_files": ["medicaid_quality/standard/data_adult_core_set.csv.gz"]
       },
       "heat_risk.parquet": {
         "sources": ["noaa_heat_risk"],

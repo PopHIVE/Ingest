@@ -93,6 +93,16 @@
       "school_adol_pct_tdap_adolescent": { "short_name": "Tdap coverage, adolescents 13-17 (Alaska registry)", "source_id": "school_adol_pct_tdap", "measure_type": "Percent", "unit": "Percent" }
     }
   },
+  "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|population_match": {
+    "short_name": "Population match",
+    "short_description": "How the population behind the Medicaid Core Set value compares with the Core Set's target population (Child Core Set: all Medicaid and CHIP children; Adult Core Set: Medicaid enrollees who are not dually eligible for Medicare). Each state-year-measure has one value, taken from the reported population closest to the target. target = matches the target; broader = target plus small groups that are not dual eligibles (Other; CHIP for Adult measures); narrower = Child measures, only part of Medicaid + CHIP reported (e.g. Medicaid without separate CHIP); chip_only = Child measures, CHIP enrollees only; broader_incl_duals = Adult measures, a population including dual eligibles, whose care is largely paid by Medicare and so partly missing from Medicaid data. See medicaid_quality/measure_info.json (population_match). Blank for rows from other sources.",
+    "levels": {
+      "broader": {},
+      "chip_only": {},
+      "narrower": {},
+      "target": {}
+    }
+  },
   "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|value": {
     "id": "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|value",
     "short_name": "Value",
@@ -271,7 +281,7 @@
           "school_immunizations_adolescent"
         ],
         "source_files": [
-          "medicaid_quality/standard/data.csv.gz",
+          "medicaid_quality/standard/data_child_core_set.csv.gz",
           "nis_teen/standard/data.csv.gz",
           "school_immunizations_adolescent/standard/data.csv.gz"
         ]

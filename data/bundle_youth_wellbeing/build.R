@@ -66,7 +66,7 @@ AGE_NHTSA   <- c('0-14'       = '0-14 years', '15-24'       = '15-24 years')
 AGE_EPIC_I  <- c('<15 Years'  = '0-14 years', '15-25 Years' = '15-25 years')
 AGE_EPIC_C  <- c('<18 Years'  = '0-17 years')
 AGE_EPIC_MH <- c('0-9' = '0-9 years', '10-14' = '10-14 years', '15-19' = '15-19 years',
-                 '0-24' = '0-24 years', 'Overall' = 'All ages')
+                 '20-24' = '20-24 years', '0-24' = '0-24 years', 'Overall' = 'All ages')
 AGE_CTL     <- c('<14' = '0-13 years', '14-17' = '14-17 years', '18-24' = '18-24 years',
                  'Overall' = 'All ages')
 AGE_EPIC_CC <- c('<1 Years' = '<1 year', '1-4 Years' = '1-4 years', '5-9 Years' = '5-9 years',
@@ -76,11 +76,15 @@ AGE_DROWN   <- c('<1' = '<1 year', '1-4' = '1-4 years', '5-14' = '5-14 years',
                  '15-24' = '15-24 years', '0-24' = '0-24 years')
 AGE_YRBSS   <- c('14' = '14 years', '15' = '15 years', '16' = '16 years',
                  '17' = '17 years', 'Overall' = 'Overall')
+# NSCH 'Overall' is every child 0-17, so it is a true youth total.
+AGE_NSCH    <- c('0-5' = '0-5 years', '6-11' = '6-11 years', '12-17' = '12-17 years',
+                 'Overall' = '0-17 years')
 
-# YRBSS reports race and Hispanic ethnicity in one column; WISQARS keeps them
-# separate. Map YRBSS onto the WISQARS scheme so both use `race` / `ethnicity`.
-# The schemes are not exactly equivalent: YRBSS race levels are single-race
-# non-Hispanic, while WISQARS reports race regardless of ethnicity.
+# YRBSS and NSCH report race and Hispanic ethnicity in one column (Hispanic,
+# then non-Hispanic single races and 2+ races); WISQARS keeps them separate.
+# Map YRBSS/NSCH onto the WISQARS scheme so all use `race` / `ethnicity`.
+# The schemes are not exactly equivalent: YRBSS/NSCH race levels are
+# single-race non-Hispanic, while WISQARS reports race regardless of ethnicity.
 YRBSS_RACE <- c('AI/AN'    = 'American Indian/Alaska Native',
                 'Asian'    = 'Asian',
                 'Black'    = 'Black',
@@ -97,10 +101,11 @@ EPIC_MIN_DENOM <- 100
 
 # Canonical column order; each file carries the subset that applies to it.
 COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
-               'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer', 'domain',
+               'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer',
+               'population_match', 'domain',
                'vaccine', 'product', 'diagnosis', 'forecast_day',
                'section', 'focus_area', 'source', 'measure', 'rank', 'value', 'pct_captured',               'pct_of_all', 'value_lcl', 'value_ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
-               'suppressed', 'not_asked', 'low_coverage_flag', 'unstable_flag',
+               'suppressed', 'not_asked', 'unreliable', 'low_coverage_flag', 'unstable_flag',
                'percent_surveyed', 'survey_type')
 
 # -----------------------------------------------------------------------------
@@ -214,13 +219,41 @@ SPEC <- bind_rows(
        'pct_injurious_suicide_attempt')),
   sp('yrbss', 'Mental health', 'Bullying', c('pct_bullied_at_school', 'pct_bullied_electronic')),
   sp('yrbss', 'Mental health', 'General mental health measures',
-     c('pct_social_media_daily', 'pct_poor_mental_health', 'pct_insufficient_sleep',
-       'pct_close_at_school')),
+     c('pct_sad_hopeless', 'pct_social_media_daily', 'pct_poor_mental_health',
+       'pct_insufficient_sleep', 'pct_close_at_school')),
   sp('yrbss', 'Preventative health and wellness', 'Activity levels',
      c('pct_inactive_60min_5days', 'pct_no_pe_classes', 'pct_no_sports_team',
        'pct_no_daily_pe', 'pct_inactive_all_days')),
   sp('yrbss', 'Preventative health and wellness', 'Nutrition',
      c('pct_no_breakfast', 'pct_breakfast_not_daily', 'pct_no_fruit', 'pct_no_vegetables')),
+
+  # ---- NSCH (not in the workbook) -- parent-reported, children 0-17. Each
+  # measure sits with the matching YRBSS / CHR focus area where one exists;
+  # 'Adverse childhood experiences', 'Oral health' and 'Special health care
+  # needs' are new focus areas. ----
+  sp('nsch', 'Mental health', 'General mental health measures',
+     c('nsch_pct_flourishing_6_17', 'nsch_pct_flourishing_6mo_5',
+       'nsch_pct_depression_anxiety_12_17', 'nsch_pct_anxiety_12_17',
+       'nsch_pct_depression_12_17', 'nsch_pct_behavior_conduct_6_11',
+       'nsch_pct_adult_mentor_12_17', 'nsch_pct_share_ideas_well_6_17')),
+  sp('nsch', 'Mental health', 'Care seeking', 'nsch_pct_mh_treatment_12_17'),
+  sp('nsch', 'Mental health', 'Bullying',
+     c('nsch_pct_bullied_12_17', 'nsch_pct_bullies_others_12_17')),
+  sp('nsch', 'Chronic disease', 'Obesity', 'nsch_pct_obesity_6_17'),
+  sp('nsch', 'Chronic disease', 'Environmental health', 'nsch_pct_household_smoking'),
+  sp('nsch', 'Chronic disease', 'Special health care needs',
+     c('nsch_pct_cshcn', 'nsch_pct_adhd_3_17', 'nsch_pct_autism_3_17')),
+  sp('nsch', 'Preventative health and wellness', 'Activity levels',
+     c('nsch_pct_active_daily_6_11', 'nsch_pct_active_daily_12_17')),
+  sp('nsch', 'Preventative health and wellness', 'Preventative health',
+     c('nsch_pct_health_excellent_vgood', 'nsch_pct_well_visit_12_17')),
+  sp('nsch', 'Preventative health and wellness', 'Oral health',
+     c('nsch_pct_preventive_dental_1_17', 'nsch_pct_tooth_decay_1_17')),
+  sp('nsch', 'Social determinants of health', 'Access to care',
+     c('nsch_pct_adequately_insured', 'nsch_pct_forgone_care')),
+  sp('nsch', 'Social determinants of health', 'Poverty measures', 'nsch_pct_food_sufficient_0_11'),
+  sp('nsch', 'Social determinants of health', 'Housing', 'nsch_pct_housing_instability_0_11'),
+  sp('nsch', 'Social determinants of health', 'Adverse childhood experiences', 'nsch_pct_aces_2plus'),
 
   # ---- Epic Injury (includes the opioid measures the sheet filed under Epic Chronic) ----
   sp('epic_injury', 'Injury and violence', 'Firearms',
@@ -279,7 +312,9 @@ SPEC <- bind_rows(
        'medicaid_wcv_ch_12_17_rate', 'medicaid_wcv_ch_18_21_rate',
        'medicaid_w15_ch_rate', 'medicaid_w30_ch_rate', 'medicaid_oev_ch_rate',
        'medicaid_dev_ch_rate')),
-  sp('medicaid', 'Preventative health and wellness', 'Nutrition', 'medicaid_wcc_ch_rate'),
+  # WCC-CH's headline rate is BMI-percentile documentation, not nutrition;
+  # its nutrition-counseling sub-measure (FFY 2020+) is the Nutrition measure.
+  sp('medicaid', 'Preventative health and wellness', 'Nutrition', 'medicaid_wcc_ch_nutrition_rate'),
 
   # ---- County Health Rankings ----
   sp('chr', 'Mental health', 'General mental health measures', 'chr_disconnected_youth'),
@@ -421,18 +456,22 @@ nhtsa_tall %>%
 # YRBSS crosses one dimension at a time: single-year ages 14-17 exist only
 # unstratified, and sex / race / ethnicity exist only at age == 'Overall'.
 #
-# NOTE ON `value` FOR FLAGGED ROWS: the yrbss source writes value = 0 (not NA)
-# when a row is suppressed or the question was not asked, and that is preserved
-# here so the bundle stays faithful to the source. A large share of YRBSS rows
-# is flagged, so anything reading `value` MUST filter on
-# suppressed == 0 & not_asked == 0 or it will plot spurious zeros.
+# FLAGGED ROWS are kept, with value / value_lcl / value_ucl NA: the yrbss source
+# leaves a suppressed or not-asked estimate missing (until November 2026 it
+# wrote 0) and sets suppressed = 1 or not_asked = 1, so the dashboard can still
+# tell "suppressed" from "not asked". A large share of YRBSS rows is flagged.
 # =============================================================================
 
 yrbss_measures <- SPEC %>% filter(dataset == 'yrbss') %>% pull(measure) %>% unique()
 YRBSS_FLAGS <- c('_lcl', '_ucl', '_suppressed', '_not_asked')
 
 yrbss_read <- function(file, strata) {
-  vroom::vroom(file.path('../yrbss/standard', file), show_col_types = FALSE) %>%
+  # Explicit types: flagged cells are blank, so a sparse measure can start with
+  # hundreds of NAs and would otherwise be guessed as logical and lose values.
+  types <- c(list(geography = 'c', time = 'D', age = 'c', .default = 'd'),
+             setNames(as.list(rep('c', length(strata))), strata))
+  vroom::vroom(file.path('../yrbss/standard', file), show_col_types = FALSE,
+               col_types = do.call(vroom::cols, types)) %>%
     filter(age %in% names(AGE_YRBSS)) %>%
     mutate(age = unname(AGE_YRBSS[age])) %>%
     tall_flagged(yrbss_measures, c('geography', 'time', 'age', strata), YRBSS_FLAGS)
@@ -455,6 +494,57 @@ bind_rows(
   rename(value_lcl = lcl, value_ucl = ucl) %>%
   label('yrbss', 'CDC/YRBSS') %>%
   write_parquet('dist/yrbss_state_age_demographics.parquet')
+
+
+# =============================================================================
+# 3b. NSCH -- National Survey of Children's Health, state, age x (sex | race/ethnicity)
+#
+#   dist/nsch_state_age_demographics.parquet
+#
+# Single-year, design-based estimates (2016+). Like YRBSS, one dimension is
+# crossed at a time: age x sex and age x race/ethnicity, each with an 'Overall'
+# level that repeats the age-only rows and is dropped here.
+#
+# Many measures have their own age universe (e.g. _12_17), so they exist only
+# for the matching band plus '0-17 years' (the source's Overall), which for such
+# a measure is the estimate over its universe, not over all children 0-17.
+#
+# Unlike YRBSS, the source leaves value NA (not 0) when a cell is suppressed
+# (unweighted denominator < 30) or out of universe / not asked, so those rows
+# drop out with the !is.na(value) filter and no suppressed / not_asked column
+# is carried. `unreliable` = 1 marks a wide CI (> 20 points or > 1.2x the
+# estimate); `sample_size` is the unweighted denominator.
+# =============================================================================
+
+nsch_measures <- SPEC %>% filter(dataset == 'nsch') %>% pull(measure) %>% unique()
+
+nsch_read <- function(file, strata) {
+  types <- c(list(geography = 'c', time = 'D', age = 'c', .default = 'd'),
+             setNames(as.list(rep('c', length(strata))), strata))
+  vroom::vroom(file.path('../nsch/standard', file), show_col_types = FALSE,
+               col_types = do.call(vroom::cols, types)) %>%
+    filter(age %in% names(AGE_NSCH)) %>%
+    mutate(age = unname(AGE_NSCH[age])) %>%
+    tall_flagged(nsch_measures, c('geography', 'time', 'age', strata),
+                 c('_lcl', '_ucl', '_n', '_unreliable'))
+}
+
+bind_rows(
+  nsch_read('data_age.csv.gz', character()),
+  nsch_read('data_age_sex.csv.gz', 'sex') %>% filter(sex != 'Overall'),
+  nsch_read('data_age_race_ethnicity.csv.gz', 'race_ethnicity') %>%
+    filter(race_ethnicity != 'Overall') %>%
+    mutate(race      = replace_na(unname(YRBSS_RACE[race_ethnicity]), 'All'),
+           ethnicity = if_else(race_ethnicity == 'Hispanic', 'Hispanic', 'All')) %>%
+    select(-race_ethnicity)
+) %>%
+  filter(!is.na(value)) %>%
+  mutate(across(c(sex, race, ethnicity), ~ replace_na(.x, 'All')),
+         unreliable = as.integer(coalesce(unreliable, 0))) %>%
+  rename(fips = geography, value_lcl = lcl, value_ucl = ucl, sample_size = n) %>%
+  as_state() %>%
+  label('nsch', 'HRSA/NSCH') %>%
+  write_parquet('dist/nsch_state_age_demographics.parquet')
 
 
 # =============================================================================
@@ -637,10 +727,11 @@ vroom::vroom('../epic_concussions/standard/data.csv.gz', show_col_types = FALSE)
 #   dist/epic_mental_health_state_age_quarter.parquet
 #
 # Age bands: the source's 0-9 and 10-14 (entirely under 18) and 15-19
-# (straddles 18; no finer split), plus 0-24 -- kept as the dashboard's youth
-# headline total even though the source also splits it (see the header) --
-# and 'All ages' (the source's Overall, adults included) as a baseline. 20-24
-# on its own and the adult bands are out of scope.
+# (straddles 18; no finer split), 20-24 (entirely adult, kept as a young-adult
+# comparison), plus 0-24 -- kept as the dashboard's youth headline total even
+# though the source also splits it (see the header) -- and 'All ages' (the
+# source's Overall, adults included) as a baseline. The 25+ adult bands are
+# out of scope.
 #
 # Measures per diagnosis group (suicidal_behavior, other):
 #   epic_ed_n_visits_<dx>    ED visits with the diagnosis
@@ -734,53 +825,47 @@ vroom::vroom('../crisis_text_line/standard/data.csv.gz', show_col_types = FALSE,
 
 
 # =============================================================================
-# 7. medicaid_quality -- Child Core Set quality measures, state, payer
+# 7. medicaid_quality -- Child Core Set quality measures, state
 #
 #   dist/medicaid_state_payer.parquet
 #
-# This source carries no demographic stratification at all: age, sex and
-# race_ethnicity are 'Total' on every row. All payer categories are kept
-# (standard/data.csv.gz: 'Medicaid', 'CHIP' and the combined 'Medicaid & CHIP';
-# the empty 'Other' category drops out with its NA values) so the dashboard can
-# offer a payer selector. A payer's rate is never filled in from another
-# payer's. The remaining dimension is domain. The requested measures are all Child
-# Core Set (_ch_) rates, so the population is children by construction; age is
-# carried through from the source. The source's age, sex and race_ethnicity
-# columns are all 'Total' today but are kept so any future stratification flows
-# through.
+# Source: standard/data_child_core_set.csv.gz, which is long and already has
+# one value per state-year-measure, taken from the reported population closest
+# to the Child Core Set target (all Medicaid + CHIP children). The
+# population_match column says how close (target / broader / narrower /
+# chip_only); it replaces the former payer column, as the source no longer
+# keeps a separate rate per payer group. The file name is unchanged so
+# existing consumers still find it.
 #
-# Each rate has 25th and 75th percentile companions (medicaid_<stem>_pct_25 /
-# _pct_75) describing the spread across states; they are carried as pct_25 /
-# pct_75. Geography arrives as state names, and the source uses both
-# 'Dist. of Col.' and 'District of Columbia' -- these are folded together.
-# Puerto Rico is dropped for consistency with the other datasets.
+# The source has no demographic stratification; age, sex and race_ethnicity
+# are set to 'Total' as before. domain is the measure's most recent CMS domain.
+# Each rate has 25th and 75th percentile companions describing the spread
+# across states (pct_25 / pct_75). Geography arrives as a FIPS code; Puerto
+# Rico and other territories are dropped for consistency with the other
+# datasets.
 # =============================================================================
 
 medicaid_measures <- SPEC %>% filter(dataset == 'medicaid') %>% pull(measure) %>% unique()
 medicaid_stems <- sub('_rate$', '', medicaid_measures)
+# Preventative-care measures are limited to FFY 2021 onward.
+medicaid_preventative <- SPEC %>%
+  filter(dataset == 'medicaid', section == 'Preventative health and wellness') %>%
+  pull(measure) %>% unique()
 
-vroom::vroom('../medicaid_quality/standard/data.csv.gz', show_col_types = FALSE,
-             guess_max = Inf) %>%
-  filter(geography_level == 's') %>%
-  mutate(geography = if_else(geography == 'Dist. of Col.', 'District of Columbia', geography)) %>%
-  rename_with(~ sub('_rate$', '_value', .x), all_of(medicaid_measures)) %>%
-  select(geography, time, age, sex, race_ethnicity, payer, domain,
-         all_of(intersect(as.vector(outer(medicaid_stems,
-                                          c('_value', '_pct_25', '_pct_75'), paste0)),
-                          names(.)))) %>%
-  pivot_longer(
-    cols          = -c(geography, time, age, sex, race_ethnicity, payer, domain),
-    names_to      = c('measure', '.value'),
-    names_pattern = sprintf('^(%s)_(value|pct_25|pct_75)$',
-                            paste(medicaid_stems[order(-nchar(medicaid_stems))], collapse = '|'))
-  ) %>%
-  mutate(measure = paste0(measure, '_rate')) %>%
-  filter(!is.na(value)) %>%
-  # WCV replaces W34/AWC from FFY 2021; never carry it earlier.
-  filter(!(grepl('^medicaid_wcv_', measure) & substr(time, 1, 4) < '2021')) %>%
-  # inner_join to state_cw keeps only the 50 states + DC (drops Puerto Rico).
+vroom::vroom('../medicaid_quality/standard/data_child_core_set.csv.gz',
+             col_types = vroom::cols(geography = 'c', time = 'c'),
+             show_col_types = FALSE) %>%
+  filter(measure %in% medicaid_stems, !is.na(value)) %>%
+  mutate(measure = paste0(measure, '_rate'),
+         age = 'Total', sex = 'Total', race_ethnicity = 'Total') %>%
+  select(fips = geography, time, age, sex, race_ethnicity, population_match,
+         domain, measure, value, pct_25, pct_75) %>%
+  # Preventative-care measures (incl. WCV, which replaces W34/AWC from FFY
+  # 2021) are kept from 2021 onward only.
+  filter(!(measure %in% medicaid_preventative & substr(time, 1, 4) < '2021')) %>%
+  # inner_join to state_cw keeps only the 50 states + DC (drops territories).
   inner_join(state_cw %>% filter(geography_name != 'United States') %>%
-               select(fips, geography = geography_name), by = 'geography') %>%
+               select(fips, geography = geography_name), by = 'fips') %>%
   label('medicaid', 'Medicaid/CHIP Child Core Set') %>%
   write_parquet('dist/medicaid_state_payer.parquet')
 

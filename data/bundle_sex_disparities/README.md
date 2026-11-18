@@ -47,8 +47,9 @@ Strata columns that hold a single value in a file are left out: `age`,
 - `value` is as reported in the source's standardized file, never altered.
   Rows with no value are left out, and a missing sex row is never filled with 0.
 - `suppressed_flag = 1` means the source suppressed the value or did not ask or
-  collect it. Some sources store such values as 0 (YRBSS, NCCR), so leave
-  flagged rows out of any ratio or difference.
+  collect it. Some sources store such values as 0 (NCCR), so leave flagged
+  rows out of any ratio or difference. YRBSS leaves them blank, so its flagged
+  rows are not in the file.
 - To compare, pivot the Female and Male rows of a stratum (all columns except
   `sex`, `value` and `suppressed_flag`) and divide or subtract. The Overall row
   is the source's own both-sexes value, not a mean of the two.

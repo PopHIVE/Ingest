@@ -6,9 +6,11 @@
 # keyed by geography (FIPS) + time + measure.
 #
 # Sources:
-#   - medicaid_quality/standard/data.csv.gz
+#   - medicaid_quality/standard/data_child_core_set.csv.gz
 #       Child Core Set IMA (MenACWY + Tdap by 13; HPV series by 13) and the
-#       2014-2016 HPV measure (annual, state only)
+#       2014-2016 HPV measure (annual, state only; one value per state-year
+#       from the population closest to all Medicaid + CHIP children, flagged
+#       in population_match)
 #   - nis_teen/standard/data.csv.gz
 #       NIS-Teen coverage, ages 13-17 and 13-15 (annual, state + national)
 #   - nis_teen/standard/data_{insurance,poverty,race_ethnicity,urban}.csv.gz
@@ -40,7 +42,6 @@ MEDICAID_STEMS <- c(
   "medicaid_ima_ch_hpv",    # HPV series by 13th birthday, 2017+
   "medicaid_hpv_ch"         # standalone HPV measure, 2014-2016
 )
-MEDICAID_MEASURES <- paste0(rep(MEDICAID_STEMS, each = 3), c("_rate", "_pct_25", "_pct_75"))
 
 NIS_VALUES <- c("nis_teen_coverage", "nis_teen_coverage_lcl",
                 "nis_teen_coverage_ucl", "nis_teen_sample_size")
@@ -111,50 +112,22 @@ nis_measure <- function(vaccine, dose, sex) {
   if_else(sex == "Overall", m, paste0(m, "_", tolower(sex)))
 }
 
-# State name -> 2-digit FIPS. Territories have no name in all_fips.csv.gz.
-all_fips <- read_chr("../../resources/all_fips.csv.gz")
-state_fips_lookup <- all_fips %>%
-  filter(nchar(geography) == 2) %>%
-  mutate(geography_name = case_when(
-    !is.na(geography_name) ~ geography_name,
-    state == "AS" ~ "American Samoa",
-    state == "GU" ~ "Guam",
-    state == "MP" ~ "Northern Mariana Islands",
-    state == "PR" ~ "Puerto Rico",
-    state == "VI" ~ "U.S. Virgin Islands",
-    TRUE ~ geography_name
-  )) %>%
-  select(fips = geography, geography_name)
-
 # -----------------------------------------------------------------------------
-# 2. Medicaid Core Set (annual, state only, geography stored as state name)
+# 2. Medicaid Core Set (annual, state only, geography = FIPS)
 # -----------------------------------------------------------------------------
 
-medicaid_raw <- read_chr("../medicaid_quality/standard/data.csv.gz") %>%
-  # CMS reports Medicaid only, CHIP only and combined Medicaid & CHIP
-  # populations separately; keep the Medicaid-program rows (combined
-  # preferred, else Medicaid only) and drop the CHIP-only / Other rows.
-  filter(payer %in% c("Medicaid & CHIP", "Medicaid")) %>%
-  mutate(geography = if_else(geography == "Dist. of Col.", "District of Columbia", geography)) %>%
-  left_join(state_fips_lookup, by = c("geography" = "geography_name"))
-
-unmatched <- unique(medicaid_raw$geography[is.na(medicaid_raw$fips)])
-if (length(unmatched) > 0) {
-  warning("medicaid_quality geographies without a FIPS match (dropped): ",
-          paste(unmatched, collapse = ", "))
-}
-
-medicaid_state <- medicaid_raw %>%
-  filter(!is.na(fips)) %>%
-  select(-geography) %>%
-  rename(geography = fips) %>%
-  pivot_measures(MEDICAID_MEASURES, id_cols = c("geography", "time", "payer")) %>%
-  # one value per state-year-measure: Medicaid & CHIP where reported
-  group_by(geography, time, measure) %>%
-  arrange(payer != "Medicaid & CHIP", .by_group = TRUE) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(-payer) %>%
+# The Child Core Set file is long: one row per state-year-measure, already
+# one value per state-year (the reported population closest to all Medicaid +
+# CHIP children; population_match says how close). Its rate and 25th / 75th
+# percentiles become the bundle measures <stem>_rate / _pct_25 / _pct_75.
+medicaid_state <- read_chr("../medicaid_quality/standard/data_child_core_set.csv.gz") %>%
+  filter(measure %in% MEDICAID_STEMS) %>%
+  rename(rate = value) %>%
+  pivot_longer(c(rate, pct_25, pct_75), names_to = "stat", values_to = "value") %>%
+  mutate(measure = paste0(measure, "_", stat),
+         value = suppressWarnings(as.numeric(value))) %>%
+  filter(!is.na(value)) %>%
+  select(geography, time, measure, value, population_match) %>%
   mutate(time = year_end(time), source = "CMS Medicaid Core Set")
 
 # -----------------------------------------------------------------------------
@@ -242,7 +215,8 @@ school_state <- school_tall %>%
 # -----------------------------------------------------------------------------
 
 adolescent_vax_state <- bind_rows(medicaid_state, nis_state, school_state) %>%
-  select(geography, time, measure, value, value_lcl, value_ucl, sample_size, source) %>%
+  select(geography, time, measure, value, value_lcl, value_ucl, sample_size,
+         population_match, source) %>%
   arrange(measure, geography, time) %>%
   check_dupes("adolescent_vax_state")
 
