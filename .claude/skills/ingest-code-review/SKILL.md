@@ -62,7 +62,7 @@ Print the date of `origin/main` (`git log -1 --format='%h %cd' origin/main`). If
 - Working tree: `git diff --name-status <base>` plus `git ls-files --others --exclude-standard data/`.
 - Commit or branch: `git diff --name-status <base>...<head>`.
 
-Group the paths: code (`ingest.R`, `build.R`), metadata (`measure_info.json`, `process.json`), `standard/`, `dist/`, `raw/`, generated (`datapackage.json`, `docs/`, `resources/*.json`, `file_log.json`, `report.json.gz`, `status.md`), and anything else. The folders to review are every touched `data/<dir>`.
+Group the paths: code (`ingest.R`, `build.R`), metadata (`measure_info.json`, `process.json`), `standard/`, `dist/`, `raw/`, generated (`datapackage.json`, `docs/`, `resources/*.json`, `file_log.json`, `report.json.gz`, `status.md`), and anything else. The folders to review are every touched `data/<dir>`, including the ones unrelated to the stated change. Do not narrow the review to the folders the PR title names: a local `dcf_build()` that was stopped part way leaves truncated or failed-run files in folders nobody meant to touch, and that is where they hide. If there are too many folders to run 6b on all of them, run it on every folder that 6a flags, every folder with a changed `standard/` or `dist/` file, and say which ones were skipped.
 
 ### 4. Check the PR itself
 
@@ -82,13 +82,40 @@ Read every changed hunk of `ingest.R` and `build.R` in full, with enough of the 
 
 ### 6. Run the checks
 
+#### 6a. Whole-diff data checks (run first, on every review)
+
+```
+py -I "${CLAUDE_SKILL_DIR}/scripts/check_data_changes.py" --base <base> --head <head>
+```
+
+(`python3` in place of `py -I` off Windows.) This checks **every** file the diff touches, not only the folders the PR is about, and reads them from git objects, so it needs no checkout. It catches the damage a killed or failed local run leaves behind, which the per-folder checks miss when that folder is outside the stated change:
+
+| Check | Catches |
+|---|---|
+| `archive` | `.gz`/`.xz` that fail to decompress to the end, parquet with a broken footer: a truncated write or download |
+| `file-size` | files over 50 MB (warning over 25 MB) |
+| `raw-file` | large uncompressed files under `raw/`, and ones without a final newline (a partial download) |
+| `failed-run` | `process.json` whose new `last_status` records a failed run |
+| `local-path` | `C:/Users/...` paths in `process.json` state keys: dcf was run with an absolute path, so CI will never match the state |
+| `crlf-hash` | `process.json` hashes taken on a CRLF (Windows autocrlf) checkout, so every CI run looks like a change |
+| `row-drop` | `datapackage.json` `row_count` down more than 20%, or to 0 |
+| `scope` | more than 5 data folders touched: usually the output of a full local `dcf_build()` |
+
+Run it on a committed head. For working-tree changes that are not committed, it cannot see them: `review_checks.R` (`S05`) decompresses every changed standard and dist file in full, which covers truncation in the folders it is run on, so run 6b on every touched folder.
+
+Every `ERROR` here is a `FAIL` in the report and goes at the top of Findings. A truncated file, a failed-run `process.json` or a partial raw download means the PR must not merge as is: the fix is to restore those paths from the base (`git checkout <base> -- <paths>`) and leave regeneration to the scheduled CI build. A `scope` warning means asking the author to revert every folder unrelated to the change. A PR made only of reverts gets the state checks as warnings.
+
+Folders flagged here are in scope for 6b even when the PR is about something else.
+
+#### 6b. Per-folder checks
+
 ```
 Rscript "${CLAUDE_SKILL_DIR}/scripts/review_checks.R" data/<dir> [data/<dir> ...] --base <base> [--head <ref>]
 ```
 
-The scripts are in `.claude/skills/ingest-code-review/scripts/`. Use `Rscript` from the PATH (on Windows it may be `C:\Program Files\R\R-x.y.z\bin\Rscript.exe`). For a folder audit pass `--base none`. `--files a.csv.gz,b.parquet` limits a run to those files, which is useful when confirming one finding.
+The scripts are in `.claude/skills/ingest-code-review/scripts/`. `S05` fully decompresses each changed `.gz` and checks each parquet footer, so it reports a truncated file directly instead of leaving it to show up as a `C04` row loss. Use `Rscript` from the PATH (on Windows it may be `C:\Program Files\R\R-x.y.z\bin\Rscript.exe`). For a folder audit pass `--base none`. `--files a.csv.gz,b.parquet` limits a run to those files, which is useful when confirming one finding.
 
-The output starts with a header line, then for each folder a `@@ <dir> kind=... head=... base=...` line, the findings, and a `== SUMMARY` line with the counts. `ENV FAIL | <reason>` means the script could not run (missing R package, unknown ref, base and head the same commit). Stop and tell the user. `FAIL X00` means one check stopped with an R error. The rest of the output is still valid, and the report must say which check did not finish.
+The output starts with a header line, then for each folder a `@@ <dir> kind=... head=... base=...` line, the findings, and a `== SUMMARY` line with the counts. `check_data_changes.py` prints `ERROR`/`WARNING [check] path: message` lines and a count, and exits 1 when it found an error; a Python traceback means it did not finish, which the report must say. For `review_checks.R`, `ENV FAIL | <reason>` means the script could not run (missing R package, unknown ref, base and head the same commit). Stop and tell the user. `FAIL X00` means one check stopped with an R error. The rest of the output is still valid, and the report must say which check did not finish.
 
 Each finding is `<LEVEL> <ID> <path>[:<column>] | <message> | <details>`.
 

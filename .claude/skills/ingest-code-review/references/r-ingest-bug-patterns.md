@@ -96,6 +96,13 @@ Most of these have reached main. The commit is given where there is one. For eve
 - Cue: `tryCatch(` around `download.file(`.
 - Question: after a failure, can stale data be published as current?
 
+**Downloading straight onto the published file.** `data/county_health_rankings/ingest.R` downloaded into `standard/` directly. A local build stopped mid-transfer left the first 1.5 MB of a 21 MB `data_county.csv.gz`, which vroom read as 9,661 rows instead of 50,270 with only a parsing warning, and it was committed in #306. A failed download (HTTP 404) deletes the existing file the same way. `dcf_download_cdc` likewise leaves a partial `raw/<id>.csv` behind when it fails (#306 committed a 56 MB BRFSS one).
+- Cue: `download.file(url, dest` or `curl_download(` where `dest` is in `standard/` or is the file the script later reads.
+- Question: does the download go to a temporary `.part` file that is renamed into place only after it finishes (`tmp <- tempfile("download-", tmpdir = "standard", fileext = ".part")`, then `file.rename(tmp, dest)`, with `unlink(tmp)` in `finally`), and is the size or row count checked before the state is recorded?
+
+**A failed or killed local run committed.** A `process.json` whose `last_status.success` is false, logs with `C:/Users/...` paths, state keys that are absolute paths (dcf run from another directory), and hashes taken on a CRLF checkout all mean the PR carries local run state that CI will never match. If many unrelated folders changed, the author probably ran a full `dcf_build()` locally.
+- Question: was every non-code file in the diff meant to be there? Restore anything else from the base and leave regeneration to CI.
+
 **Code changed but the data did not.** An ingest skips processing when the raw data is unchanged, so a PR that edits `ingest.R` and shows no change in `standard/` was probably not re-run. For a bundle, `build.R` changes do not trigger a rebuild at all: it needs `dcf::dcf_process("<bundle>", clear_state = TRUE)`.
 
 **Bundle `source_files` not updated.** dcf never derives it from `build.R`. A file that `build.R` reads but `process.json` does not list will not trigger a rebuild when it changes.

@@ -9,7 +9,7 @@ Use these rows, in this order, for the coverage table in the report. "Who decide
 | # | SOP item | Checks | What to do | Who decides |
 |---|---|---|---|---|
 | 1 | Added with dcf, folder has `ingest.R`, `process.json`, `measure_info.json` | S01, S03 | Confirm the folder was made with `dcf::dcf_add_source()` or `dcf_add_bundle()`, one script per folder | script |
-| 2 | Code runs with no warnings or errors | S02, S04, B11 | Read `last_status` in `process.json`. The ingest is not re-run here, so ask the author whether they ran it line by line. A code change with no change in `standard/` or `dist/` means it was not re-run | author |
+| 2 | Code runs with no warnings or errors | S02, S04, B11, `check_data_changes.py` (failed-run, archive, raw-file) | Read `last_status` in `process.json`. The ingest is not re-run here, so ask the author whether they ran it line by line. A code change with no change in `standard/` or `dist/` means it was not re-run | author |
 | 3 | Missing and suppressed counts match between raw and standard | R01, R02, R04 | Reconcile the tallies with the recipe below | skill |
 | 4 | All dates present for all strata, imputed values carry a flag | D06, D07 | Confirm gaps are real (seasonal, source started later). Any imputed value needs a suppression flag column | skill |
 | 5 | Age categories fit the project | D09 | Read the levels against CLAUDE.md. To see what the bundle uses, run the script on the bundle with `--base none` and read its `B00` and `B07` lines | person |
@@ -18,9 +18,9 @@ Use these rows, in this order, for the coverage table in the report. "Who decide
 | 8 | Percentages per 100, not per 1 | M08 | Confirm against the raw values | script |
 | 9 | Plots: gaps, outliers, jumps | D06, `render_plots.R` | Hand over the html paths and the `HUMAN D06` lines. Do not interpret the plots | person |
 | 10 | `measure_info.json`: descriptions, units, source, restrictions | M01-M05, M08, M10 | Read every new or changed entry | skill, person for wording |
-| 11 | `process.json` properly formatted | S01, S02, S04, S09 | | script |
+| 11 | `process.json` properly formatted | S01, S02, S04, S09, `check_data_changes.py` (local-path, crlf-hash) | | script |
 | 12 | First `_sources` description covers the whole source | M06 | Read it | skill |
-| 13 | Large raw data or proprietary data kept out of Ingest | S06 | The script warns at 50 MB of raw data in a folder, or 10 MB added. Ask about redistribution rights when raw files are added | person |
+| 13 | Large raw data or proprietary data kept out of Ingest | S06, `check_data_changes.py` (file-size, raw-file) | The script warns at 50 MB of raw data in a folder, or 10 MB added. Ask about redistribution rights when raw files are added | person |
 | 14 | Branch and PR, squash merge, branch deleted | steps 2 and 4 of the skill | A PR number means the work is on a branch. With no PR, check the current branch is not main. Remind the author to squash and delete the branch | person |
 | 15 | General logic reviewed | step 5 of the skill, `r-ingest-bug-patterns.md` | Read the changed code | skill |
 | 16 | Datasets feeding pophive.org checked | C07, C01-C05 on `dist/` | Any `dist/` change, and any source listed in a bundle's `source_files`, feeds the site. Review the bundle too. Remind the author to look at the site after the merge | skill, author |
@@ -40,7 +40,7 @@ Structure and run state
 | S02 | last recorded run failed, or its log has warnings or errors |
 | S03 | no `dcf_process_record()`, state never written back, or state written before the last output |
 | S04 | md5 in `process.json` differs from a data file (changed without a recorded run), `measure_info.json` edited after the last run (INFO), or `ingest.R` changed while every standard file is identical. For bundles, also lists source files changed since the last build |
-| S05 | file is not `.csv.gz`, not really gzip, tab-delimited, has no rows, cannot be read, or the folder has no data files |
+| S05 | file is not `.csv.gz`, not really gzip, gzip stream truncated or corrupt, parquet footer broken, tab-delimited, has no rows, cannot be read, or the folder has no data files |
 | S06 | raw data size (warns at 50 MB in the folder or 10 MB added), raw files added |
 | S08 | conflict or duplicate copies (`file 2.csv.gz`, `(1)`, `.orig`) |
 | S09 | absolute paths in the recorded state |

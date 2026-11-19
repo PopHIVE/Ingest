@@ -333,6 +333,34 @@ SEP_NUM <- "^-?[0-9]{1,3}(,[0-9]{3})+(\\.[0-9]+)?$|^-?[0-9]+(\\.[0-9]+)? ?%$"
 # -----------------------------------------------------------------------------
 # Reading
 # -----------------------------------------------------------------------------
+# Integrity of a compressed file. A streaming gzfile() read and vroom both
+# accept a truncated gzip stream without an error (vroom only warns about
+# parsing), so the whole stream is decompressed in memory, which does fail.
+# Returns NA when the file is intact, otherwise the reason.
+gz_truncated <- function(path) {
+  size <- file.size(path)
+  if (is.na(size) || size == 0) return("empty file")
+  if (size > 300 * 1024^2) return(NA_character_)  # too large to hold; other checks still read it
+  tryCatch({
+    memDecompress(readBin(path, "raw", size), type = "gzip")
+    NA_character_
+  }, error = function(e) conditionMessage(e), warning = function(w) conditionMessage(w))
+}
+
+parquet_truncated <- function(path) {
+  size <- file.size(path)
+  if (is.na(size) || size < 12) return("file is shorter than a parquet header and footer")
+  con <- file(path, "rb"); on.exit(close(con))
+  head <- readBin(con, "raw", 4)
+  seek(con, size - 8)
+  tail <- readBin(con, "raw", 8)
+  if (!identical(rawToChar(head), "PAR1") || !identical(rawToChar(tail[5:8]), "PAR1"))
+    return("missing PAR1 magic bytes at the start or end")
+  footer <- readBin(tail[1:4], "integer", size = 4, endian = "little")
+  if (footer <= 0 || footer > size - 12) return(paste("invalid footer length", footer))
+  NA_character_
+}
+
 # Every table is held as character columns. For parquet the stored types are
 # kept in $types so numeric columns do not have to be guessed.
 read_table <- function(path) {
@@ -1947,6 +1975,7 @@ review_dir <- function(dir_arg) {
   std_rels <- character()
   any_changed <- FALSE
   value_cols <- character()
+  s05_bad <- character()
   for (rel in data_files) {
     readable <- grepl(if (kind == "bundle") "\\.parquet$" else "\\.csv\\.gz$|\\.csv$|\\.parquet$", rel)
     if (kind != "bundle" && !grepl("\\.csv\\.gz$", rel)) {
@@ -1956,7 +1985,18 @@ review_dir <- function(dir_arg) {
     p <- fetch("head", rel)
     if (grepl("\\.gz$", rel)) {
       magic <- readBin(p, "raw", 2)
-      if (!identical(as.integer(magic), c(31L, 139L))) emit("FAIL", "S05", rel, "file is named .gz but is not gzip-compressed")
+      if (!identical(as.integer(magic), c(31L, 139L))) {
+        emit("FAIL", "S05", rel, "file is named .gz but is not gzip-compressed")
+      } else {
+        why <- gz_truncated(p)
+        if (!is.na(why)) s05_bad <- c(s05_bad, rel)
+        if (!is.na(why)) emit("FAIL", "S05", rel, "gzip stream is truncated or corrupt (a killed run or partial download); vroom reads such a file as a shorter table with only a parsing warning", why)
+      }
+    }
+    if (grepl("\\.parquet$", rel)) {
+      why <- parquet_truncated(p)
+      if (!is.na(why)) s05_bad <- c(s05_bad, rel)
+      if (!is.na(why)) emit("FAIL", "S05", rel, "parquet file is truncated or corrupt", why)
     }
     is_new <- !rel %in% base_files$path
     unchanged <- !is_new && same_as_base(rel)
@@ -2028,7 +2068,8 @@ review_dir <- function(dir_arg) {
     after <- sum(vapply(c("FAIL", "WARN", "ASK"), function(x) get(x, COUNT), 0L))
     if (unchanged && after == before) emit("PASS", "C05", rel, "identical to base, nothing new from the measure_info change")
     if (!unchanged && isTRUE(ran)) {
-      raised <- unique(vapply(Filter(function(x) x$sev %in% c("FAIL", "WARN", "ASK"), acc$l), function(x) x$id, ""))
+      raised <- unique(c(vapply(Filter(function(x) x$sev %in% c("FAIL", "WARN", "ASK"), acc$l), function(x) x$id, ""),
+                         if (rel %in% s05_bad) "S05"))
       clean <- setdiff(if (kind == "bundle") DIST_IDS else STD_IDS, raised)
       if (length(clean)) emit("PASS", if (kind == "bundle") "B00" else "D00", rel, "checks that raised nothing on this file", paste(clean, collapse = ", "))
     }
