@@ -305,9 +305,11 @@ SPEC <- bind_rows(
   # (end FFY 2020) are replaced by the combined WCV (FFY 2021+).
   sp('medicaid', 'Chronic disease', 'Asthma', 'medicaid_amr_ch_rate'),
   sp('medicaid', 'Chronic disease', 'Lead testing', 'medicaid_lsc_ch_rate'),
-  # medicaid_ppc_ch_rate holds the PPC2-CH prenatal rate (under age 21,
-  # FFY 2024+), renamed -- see section 7.
-  sp('medicaid', 'Preventative health and wellness', 'Pregnancy', 'medicaid_ppc_ch_rate'),
+  # Prenatal care timeliness: CMS replaced PPC-CH (all ages, through FFY 2023)
+  # with PPC2-CH (women under 21) from FFY 2024. Both are kept, under their
+  # own names, since the populations differ.
+  sp('medicaid', 'Preventative health and wellness', 'Pregnancy',
+     c('medicaid_ppc_ch_rate', 'medicaid_ppc2_ch_prenatal_rate')),
   sp('medicaid', 'Preventative health and wellness', 'Contraception', 'medicaid_ccp_ch_rate'),
   sp('medicaid', 'Preventative health and wellness', 'Preventative health',
      c('medicaid_ima_ch_rate', 'medicaid_wcv_ch_rate', 'medicaid_wcv_ch_3_11_rate',
@@ -854,19 +856,10 @@ medicaid_preventative <- SPEC %>%
   filter(dataset == 'medicaid', section == 'Preventative health and wellness') %>%
   pull(measure) %>% unique()
 
-# Renamed measures: source stem -> bundle stem. CMS replaced PPC-CH (Timeliness
-# of Prenatal Care, all ages, through FFY 2023) with PPC2-CH (Prenatal and
-# Postpartum Care: Under Age 21) from FFY 2024. The bundle keeps the name
-# medicaid_ppc_ch_rate but fills it with the PPC2-CH prenatal rate only, so it
-# covers FFY 2024+ and women under 21; the all-ages PPC-CH values are dropped.
-MEDICAID_RENAME <- c(medicaid_ppc2_ch_prenatal = 'medicaid_ppc_ch')
-
 vroom::vroom('../medicaid_quality/standard/data_child_core_set.csv.gz',
              col_types = vroom::cols(geography = 'c', time = 'c'),
              show_col_types = FALSE) %>%
-  filter(measure %in% c(setdiff(medicaid_stems, MEDICAID_RENAME), names(MEDICAID_RENAME)),
-         !is.na(value)) %>%
-  mutate(measure = coalesce(unname(MEDICAID_RENAME[measure]), measure)) %>%
+  filter(measure %in% medicaid_stems, !is.na(value)) %>%
   mutate(measure = paste0(measure, '_rate'),
          age = 'Total', sex = 'Total', race_ethnicity = 'Total') %>%
   select(fips = geography, time, age, sex, race_ethnicity, population_match,
