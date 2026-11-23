@@ -478,6 +478,59 @@ make_bundle_variable_row <- function(col_name, var_info) {
   )
 }
 
+#' Resolve the levels of a long-format (tall) column in a source CSV file
+#' Returns a named list (level value -> resolved measure info) restricted to the
+#' values that actually occur in the file. A level's info comes from the
+#' measure_info entry named by its source_id, else an entry with the level's own
+#' name, else the level object itself.
+resolve_source_levels <- function(filepath, col, levels_info, measure_info) {
+  if (is.null(levels_info) || length(levels_info) == 0) return(NULL)
+  present <- tryCatch(
+    unique(as.character(vroom::vroom(filepath, col_select = tidyselect::all_of(col),
+                                     show_col_types = FALSE, altrep = FALSE)[[1]])),
+    error = function(e) names(levels_info)
+  )
+  lvls <- names(levels_info)[names(levels_info) %in% present]
+  # Values in the file that have no levels entry are still listed
+  lvls <- c(lvls, sort(setdiff(present[!is.na(present)], names(levels_info))))
+  out <- lapply(lvls, function(lvl) {
+    lvl_obj <- levels_info[[lvl]] %||% list()
+    ref <- lvl_obj$source_id %||% lvl
+    info <- measure_info[[ref]] %||% lvl_obj
+    if (!is.list(info)) info <- list()
+    info
+  })
+  names(out) <- lvls
+  out
+}
+
+#' Generate a collapsible table describing each level of a long-format column
+make_levels_table <- function(col, resolved_levels) {
+  if (is.null(resolved_levels) || length(resolved_levels) == 0) return(NULL)
+  rows <- lapply(names(resolved_levels), function(lvl) {
+    make_variable_row(lvl, resolved_levels[[lvl]])
+  })
+  tags$details(class = "mb-3",
+    tags$summary(
+      "Values of ", tags$code(col), " (", length(resolved_levels), " measures)"
+    ),
+    tags$div(class = "table-responsive mt-2",
+      tags$table(class = "table table-striped table-sm",
+        tags$thead(
+          tags$tr(
+            tags$th("Value"),
+            tags$th("Short Name"),
+            tags$th("Description"),
+            tags$th("Type"),
+            tags$th("Unit")
+          )
+        ),
+        tags$tbody(rows)
+      )
+    )
+  )
+}
+
 #' Generate HTML for a data file section (source CSV files)
 make_file_section <- function(filepath, measure_info) {
   filename <- basename(filepath)
@@ -485,10 +538,16 @@ make_file_section <- function(filepath, measure_info) {
 
   if (length(columns) == 0) return(NULL)
 
+  level_tables <- list()
   rows <- lapply(columns, function(col) {
     var_info <- get_variable_info(measure_info, col)
     if (is.null(var_info)) {
       var_info <- list(short_name = col, description = "", measure_type = "", unit = "")
+    }
+    if (!is.null(var_info$levels)) {
+      level_tables[[col]] <<- make_levels_table(
+        col, resolve_source_levels(filepath, col, var_info$levels, measure_info)
+      )
     }
     make_variable_row(col, var_info)
   })
@@ -508,7 +567,8 @@ make_file_section <- function(filepath, measure_info) {
         ),
         tags$tbody(rows)
       )
-    )
+    ),
+    unname(level_tables)
   )
 }
 
@@ -1037,7 +1097,7 @@ make_manifest_source_file_entry <- function(filepath, measure_info) {
       )
     }
 
-    list(
+    entry <- list(
       name = col,
       short_name = var_info$short_name %||% col,
       description = var_info$short_description %||% var_info$description %||%
@@ -1045,6 +1105,20 @@ make_manifest_source_file_entry <- function(filepath, measure_info) {
       measure_type = var_info$measure_type %||% "",
       unit = var_info$unit %||% ""
     )
+    # Long-format columns: describe each value that occurs in the file
+    if (!is.null(var_info$levels)) {
+      entry$levels <- lapply(
+        resolve_source_levels(filepath, col, var_info$levels, measure_info),
+        function(info) list(
+          short_name = info$short_name %||% "",
+          description = info$short_description %||% info$description %||%
+                        info$long_description %||% "",
+          measure_type = info$measure_type %||% "",
+          unit = info$unit %||% ""
+        )
+      )
+    }
+    entry
   })
 
   list(
