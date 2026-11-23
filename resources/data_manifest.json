@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-22T15:06:12Z",
+  "generated": "2026-11-23T10:20:45Z",
   "repository": "PopHIVE/Ingest",
   "github_raw_base": "https://raw.githubusercontent.com/PopHIVE/Ingest/main",
   "bundles": {
@@ -18577,14 +18577,26 @@
             {
               "name": "population_match",
               "short_name": "Population match",
-              "description": "How the population behind the Medicaid Core Set value compares with the Core Set's target population (Child Core Set: all Medicaid and CHIP children; Adult Core Set: Medicaid enrollees who are not dually eligible for Medicare). Each state-year-measure has one value, taken from the reported population closest to the target. target = matches the target; broader = target plus small groups that are not dual eligibles (Other; CHIP for Adult measures); narrower = Child measures, only part of Medicaid + CHIP reported (e.g. Medicaid without separate CHIP); chip_only = Child measures, CHIP enrollees only; broader_incl_duals = Adult measures, a population including dual eligibles, whose care is largely paid by Medicare and so partly missing from Medicaid data. See medicaid_quality/measure_info.json (population_match).",
+              "description": "How the population behind each Medicaid value compares with the Child Core Set target population: all children in Medicaid and CHIP. States choose which population to report, so each state-year-measure value comes from the reported population closest to the target.",
               "measure_type": "",
               "unit": "",
               "levels": {
-                "broader": {},
-                "chip_only": {},
-                "narrower": {},
-                "target": {}
+                "target": {
+                  "short_name": "Target population",
+                  "short_description": "The state reported the measure for all Medicaid and CHIP children, the Child Core Set target."
+                },
+                "broader": {
+                  "short_name": "Broader than target",
+                  "short_description": "The state reported all Medicaid and CHIP children plus small 'Other' populations; close to the target."
+                },
+                "narrower": {
+                  "short_name": "Narrower than target",
+                  "short_description": "The state reported only part of Medicaid and CHIP (e.g. Medicaid without separate CHIP, or Medicaid only). In states with no separate CHIP, or whose CHIP is a Medicaid expansion, this is the full target population."
+                },
+                "chip_only": {
+                  "short_name": "CHIP only",
+                  "short_description": "The state reported the measure only for CHIP enrollees, with no Medicaid population. CHIP covers children in families with incomes above Medicaid limits, so these are the least comparable with target values."
+                }
               }
             },
             {
@@ -18697,6 +18709,17 @@
                   ]
                 },
                 "medicaid_ppc_ch_rate": {
+                  "source_id": "medicaid_ppc_ch_rate",
+                  "category": "maternal and child health",
+                  "sources": [
+                    {
+                      "id": "medicaid_quality_cms"
+                    }
+                  ]
+                },
+                "medicaid_ppc2_ch_prenatal_rate": {
+                  "source_id": "medicaid_ppc2_ch_prenatal_rate",
+                  "category": "maternal and child health",
                   "sources": [
                     {
                       "id": "medicaid_quality_cms"
