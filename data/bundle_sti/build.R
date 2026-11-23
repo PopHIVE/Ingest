@@ -192,7 +192,8 @@ medicaid_state <- bind_rows(
   filter(!is.na(value)) %>%
   select(geography, time, measure, value, population_match,
          methodology, methodology_change, data_quality_note) %>%
-  mutate(source = "CMS Medicaid Core Set")
+  mutate(source = "CMS Medicaid Core Set",
+         methodology_change = as.integer(methodology_change))
 
 # -----------------------------------------------------------------------------
 # 4. CMS Mapping Medicare Disparities (annual, national + state + county).

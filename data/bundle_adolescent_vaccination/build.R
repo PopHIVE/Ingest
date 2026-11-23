@@ -129,7 +129,8 @@ medicaid_state <- read_chr("../medicaid_quality/standard/data_child_core_set.csv
   filter(!is.na(value)) %>%
   select(geography, time, measure, value, population_match,
          methodology, methodology_change, data_quality_note) %>%
-  mutate(time = year_end(time), source = "CMS Medicaid Core Set")
+  mutate(time = year_end(time), source = "CMS Medicaid Core Set",
+         methodology_change = as.integer(methodology_change))
 
 # -----------------------------------------------------------------------------
 # 3. NIS-Teen (annual, state + national; pooled demographic files)

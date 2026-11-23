@@ -374,10 +374,27 @@ if (!identical(process$raw_state, raw_state)) {
     )) %>%
     select(geography, state_name)
 
+  # State names -> FIPS, once, for everything downstream (all_fips has no names
+  # for the territories, so they are filled in from the abbreviation above; CMS
+  # also writes "Dist. of Col." and "Virgin Islands" in some years). A name
+  # that does not match is reported rather than silently left without a FIPS.
+  data1 <- data1 %>%
+    mutate(state = case_when(
+      state == "Dist. of Col."  ~ "District of Columbia",
+      state == "Virgin Islands" ~ "U.S. Virgin Islands",
+      TRUE ~ state
+    )) %>%
+    left_join(state_fips_lookup, by = c("state" = "state_name"))
+  unmatched_states <- sort(unique(data1$state[is.na(data1$geography)]))
+  if (length(unmatched_states) > 0) {
+    warning("medicaid_quality: state names with no FIPS code (rows kept with ",
+            "missing geography): ", paste(unmatched_states, collapse = ", "))
+  }
+
   # ---------------------------------------------------------------------------
   # Data-quality notes: state-year-measures with a documented reporting problem
   # ---------------------------------------------------------------------------
-  # Keyed on state, FFY and CMS measure abbreviation, so a note covers every
+  # Keyed on state FIPS, FFY and CMS measure abbreviation, so a note covers every
   # rate of the measure (e.g. all WCV-CH age bands) and every population the
   # state reported. Written to the Core Set files as `data_quality_note`
   # (blank = nothing documented). Codes:
@@ -398,23 +415,45 @@ if (!identical(process$raw_state, raw_state)) {
   #     confirm the FFY 2024 values are too low.
   #   * Wyoming AMR-CH, FFY 2022: "Omitted denominator Steps 2 ... and 3.2".
   quality_notes_curated <- tribble(
-    ~state,          ~time_year,      ~measure_abbr, ~data_quality_note,
-    "West Virginia", c("2023", "2024"), "W30-CH",    "state_data_undercount",
-    "West Virginia", c("2023", "2024"), "WCV-CH",    "state_data_undercount",
-    "Wyoming",       "2022",            "AMR-CH",    "specification_deviation"
+    ~geography, ~time_year,         ~measure_abbr, ~data_quality_note,
+    "54",       c("2023", "2024"), "W30-CH",      "state_data_undercount",   # West Virginia
+    "54",       c("2023", "2024"), "WCV-CH",      "state_data_undercount",   # West Virginia
+    "56",       "2022",            "AMR-CH",      "specification_deviation"  # Wyoming
   ) %>%
     unnest(time_year)
-  # Comment-derived: states granted CMS's one-year exemption from including FFS
-  # enrollees (Pennsylvania FFY 2024-2025 at the time of writing). The comment
-  # sits on the separate Medicaid / CHIP rows, not on the combined row that
-  # may be kept, hence the state-year-measure key.
+  # Comment-derived: states CMS exempted from including fee-for-service (FFS)
+  # enrollees for a year, so the rate covers managed-care members only. CMS
+  # words this several ways ("one-year exemption from reporting this measure
+  # for the FFS population", "CMS-approved exemption for the fee-for-service
+  # population", "Fee-for-Service only members are excluded due to CMS
+  # exemption", ...), so a comment counts when one sentence mentions both an
+  # exemption and FFS / fee-for-service. Exemptions about other groups (plan
+  # switchers, separate CHIP) do not count. The comment sits on the separate
+  # Medicaid / CHIP rows, not on the combined row that may be kept, hence the
+  # state-year-measure key.
+  ffs_exempt_pattern <- paste0(
+    "exempt[^.]*(\\bFFS\\b|fee[- ]for[- ]service)|",
+    "(\\bFFS\\b|fee[- ]for[- ]service)[^.]*exempt")
   quality_notes_ffs <- data1 %>%
-    filter(grepl("exemption from reporting this measure for the FFS population",
-                 state_comments, ignore.case = TRUE)) %>%
-    distinct(state, time_year, measure_abbr) %>%
+    filter(grepl(ffs_exempt_pattern, state_comments, ignore.case = TRUE)) %>%
+    distinct(geography, time_year, measure_abbr) %>%
     mutate(data_quality_note = "ffs_excluded")
+  ffs_years <- quality_notes_ffs %>% count(geography, time_year)
+  message("medicaid_quality: ffs_excluded state-years (measures): ",
+          paste0(ffs_years$geography, " ", ffs_years$time_year, " (", ffs_years$n, ")",
+                 collapse = ", "))
+  # So a new CMS wording shows up in the run log instead of being missed:
+  # list exemption sentences that were not classified as FFS exemptions.
+  other_exempt <- unique(regmatches(
+    data1$state_comments,
+    regexpr("[^.]*exempt[^.]*", data1$state_comments, ignore.case = TRUE)))
+  other_exempt <- other_exempt[!grepl(ffs_exempt_pattern, other_exempt, ignore.case = TRUE)]
+  if (length(other_exempt) > 0) {
+    message("medicaid_quality: ", length(other_exempt), " other exemption wordings ",
+            "in CMS comments, not flagged (check none is an FFS exemption):\n",
+            paste0("  ", trimws(other_exempt), collapse = "\n"))
+  }
   quality_notes <- bind_rows(quality_notes_curated, quality_notes_ffs) %>%
-    left_join(state_fips_lookup, by = c("state" = "state_name")) %>%
     transmute(geography, time = paste0(time_year, "-12-31"), measure_abbr,
               data_quality_note) %>%
     group_by(geography, time, measure_abbr) %>%
@@ -423,14 +462,6 @@ if (!identical(process$raw_state, raw_state)) {
 
   #creating wide format
   data_long <- data1 %>%
-    # state names -> FIPS (all_fips has no names for the territories, so fill
-    # them in from the abbreviation; CMS also uses "Dist. of Col." in some years)
-    mutate(state = case_when(
-      state == "Dist. of Col."  ~ "District of Columbia",
-      state == "Virgin Islands" ~ "U.S. Virgin Islands",
-      TRUE ~ state
-    )) %>%
-    left_join(state_fips_lookup, by = c("state" = "state_name")) %>%
     mutate(
       time            = paste0(time_year, "-12-31"),   # annual: YYYY-12-31
       geography_level = "s",
@@ -744,10 +775,9 @@ if (!identical(process$raw_state, raw_state)) {
       # that does not (Administrative / EHR / ECDS) since the last year it
       # reported the measure (not necessarily the previous FFY -- e.g. Kentucky
       # CIS-CH: Hybrid in FFY 2022, nothing in 2023, Administrative in 2024).
-      # Across states such switches move the rate a median 4.5 points down
-      # (Hybrid -> Administrative) or 6.6 points up (the reverse), against
-      # 0.2 points for unchanged methods; Administrative <-> ECDS switches make
-      # no systematic difference and are not flagged. NA for a state's first
+      # Medical record review usually finds more services, so such switches
+      # tend to move the rate (sizes in README.md); Administrative <-> ECDS
+      # switches showed no systematic effect and are not flagged. NA for a state's first
       # reported year and for survey measures (CAHPS, NCI) or unreported methods.
       mutate(uses_mrr = case_when(
         grepl("Hybrid", methodology)                             ~ TRUE,

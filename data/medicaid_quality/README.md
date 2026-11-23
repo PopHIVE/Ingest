@@ -101,7 +101,7 @@ systematic effect and are not flagged.
 |------|-------|--------|
 | `state_data_undercount` | West Virginia W30-CH, WCV-CH, FFY 2023-2024 | Hand-curated: rates fell to about a third when calculated in the state warehouse and recovered in FFY 2025; the state reported a warehouse logic error; plan rates in WV's EQR report confirm |
 | `specification_deviation` | Wyoming AMR-CH, FFY 2022 | Hand-curated: state reported omitting two denominator steps |
-| `ffs_excluded` | AZ, MA, NE, NH, NM, NY, PA (FFY 2024-2025) | Automatic: CMS comment "one-year exemption from reporting this measure for the FFS population" |
+| `ffs_excluded` | AZ, FL, LA, MA, MO, NE, NH, NJ, NM, NY, PA, RI, WA, WV (FFY 2024-2025) | Automatic: a CMS comment sentence that mentions both an exemption and FFS / fee-for-service (e.g. "one-year exemption from reporting this measure for the FFS population", "CMS-approved exemption for the fee-for-service population"). The ingest log lists the matches and any other exemption wordings it did not flag |
 
 Not flagged row by row, but worth knowing: Alaska notes possible
 underreporting from timely-filing lag on many measures (FFY 2021-2025), and
