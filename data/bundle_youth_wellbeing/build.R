@@ -305,7 +305,11 @@ SPEC <- bind_rows(
   # (end FFY 2020) are replaced by the combined WCV (FFY 2021+).
   sp('medicaid', 'Chronic disease', 'Asthma', 'medicaid_amr_ch_rate'),
   sp('medicaid', 'Chronic disease', 'Lead testing', 'medicaid_lsc_ch_rate'),
-  sp('medicaid', 'Preventative health and wellness', 'Pregnancy', 'medicaid_ppc_ch_rate'),
+  # Prenatal care timeliness: CMS replaced PPC-CH (all ages, through FFY 2023)
+  # with PPC2-CH (women under 21) from FFY 2024. Both are kept, under their
+  # own names, since the populations differ.
+  sp('medicaid', 'Preventative health and wellness', 'Pregnancy',
+     c('medicaid_ppc_ch_rate', 'medicaid_ppc2_ch_prenatal_rate')),
   sp('medicaid', 'Preventative health and wellness', 'Contraception', 'medicaid_ccp_ch_rate'),
   sp('medicaid', 'Preventative health and wellness', 'Preventative health',
      c('medicaid_ima_ch_rate', 'medicaid_wcv_ch_rate', 'medicaid_wcv_ch_3_11_rate',
