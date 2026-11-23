@@ -123,7 +123,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-08-18 13:25:51.176746",
-      "last_modified": "2026-11-23 12:47:01.509493",
+      "last_modified": "2026-11-23 14:33:15.068077",
       "vintage": {},
       "row_count": 162805,
       "entity_count": 3237,
@@ -3666,7 +3666,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-08-20 12:57:37.149799",
-      "last_modified": "2026-11-23 12:47:01.519543",
+      "last_modified": "2026-11-23 14:33:15.073986",
       "vintage": {},
       "row_count": 687,
       "entity_count": 1,
@@ -3898,14 +3898,15 @@
       "sha512": "ecaa7c570523b4b81e68f4d1aac9309e957ad99005f4d5eec1ca3bc7a43e808d2afa41d4d7aca02b96bac3cd43721311d1396a664f58f4f34afd349007c1bb0d"
     },
     {
-      "bytes": 45294,
+      "bytes": 45853,
       "encoding": "windows-1252",
-      "md5": "4c679425778ed8fc5c85ca9487c7bb8c",
+      "md5": "5dd5d015acc9b9bea431ccd36e2cbbfb",
       "format": "parquet",
       "name": "maternal_state",
       "filename": "maternal_state.parquet",
       "versions": {
         "hash": [
+          "0a0a1002e6ac54eb3a374b5a397dcf7c417c6c51",
           "439e10ecc46efc52950e8c19037c5209ad4d26cd",
           "26c6ecb7fd434ec152b30bd5dba8b0f3977634d9",
           "a512f2ac24d647f71ed0bed274aed9fbfb39c222",
@@ -3939,6 +3940,7 @@
         ],
         "author": [
           "scratch <scratch@local>",
+          "scratch <scratch@local>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
@@ -3970,6 +3972,7 @@
           "Callie Annas <callie.annas@yale.edu>"
         ],
         "date": [
+          "Mon Nov 23 12:54:20 2026 -0500",
           "Mon Nov 23 12:25:39 2026 -0500",
           "Tue Nov 17 18:52:05 2026 -0500",
           "Tue Nov 17 10:06:51 2026 -0500",
@@ -4002,6 +4005,7 @@
           "Mon Jun 29 11:42:18 2026 -0400"
         ],
         "message": [
+          "medicaid_quality: address review findings",
           "medicaid_quality: add methodology and data-quality flags",
           "update medicaid (#303)",
           "Revert",
@@ -4045,7 +4049,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-08-18 13:25:51.188089",
-      "last_modified": "2026-11-23 12:47:01.44313",
+      "last_modified": "2026-11-23 14:33:15.022614",
       "vintage": {},
       "row_count": 6015,
       "entity_count": 55,
@@ -4522,6 +4526,22 @@
             }
           },
           {
+            "name": "methodology_group",
+            "duplicates": 6012,
+            "info": {
+              "short_name": "Method group: with or without chart review",
+              "short_description": "Whether the Medicaid rate used medical record (chart) review: with_chart_review = Hybrid, alone or combined; without_chart_review = Administrative, ECDS or EHR only; no_group = surveys (CAHPS, NCI), Other or not reported. Rates in the two groups are not directly comparable. See medicaid_quality/measure_info.json (methodology_group).",
+              "id": "methodology_group"
+            },
+            "time_range": [7, 12],
+            "type": "string",
+            "missing": 3802,
+            "table": {
+              "with_chart_review": 670,
+              "without_chart_review": 1543
+            }
+          },
+          {
             "name": "methodology_change",
             "duplicates": 6012,
             "info": {
@@ -4554,7 +4574,7 @@
           }
         ]
       },
-      "sha512": "63eeadeca74fae6212c33f3d50ffa8a1e6dbac4c8add317ce14aec8fc08411b7c4efa8d279ecf603873a5c36eedfec7486db124cbe2c36745f97673452d5e571"
+      "sha512": "068534a622b83096af45e56d9fde4b67f778fc45f678396cb869afde298919f46e145864016c4df01d62761bd5d562d3caedcde74c1644fabef8accf6ac25a39"
     }
   ],
   "measure_info": {
@@ -5055,6 +5075,11 @@
       "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
       "id": "bundle_maternal_health/dist/maternal_state.parquet|methodology"
     },
+    "bundle_maternal_health/dist/maternal_state.parquet|methodology_group": {
+      "short_name": "Method group: with or without chart review",
+      "short_description": "Whether the Medicaid rate used medical record (chart) review: with_chart_review = Hybrid, alone or combined; without_chart_review = Administrative, ECDS or EHR only; no_group = surveys (CAHPS, NCI), Other or not reported. Rates in the two groups are not directly comparable. See medicaid_quality/measure_info.json (methodology_group).",
+      "id": "bundle_maternal_health/dist/maternal_state.parquet|methodology_group"
+    },
     "bundle_maternal_health/dist/maternal_state.parquet|methodology_change": {
       "short_name": "Method switched to or from medical record review",
       "short_description": "1 if the state switched between a Hybrid method and one without medical record review since it last reported the measure, which can shift the rate by several points regardless of care; 0 if not; blank for a state's first reported year and for survey measures. See medicaid_quality/measure_info.json (methodology_change).",
@@ -5216,53 +5241,7 @@
       "state": "unchanged"
     },
     "maternal_state.parquet": {
-      "state": "changed",
-      "variables": {
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "time": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "measure": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "value": {
-          "status": "present",
-          "same_type": true
-        },
-        "population_match": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "methodology": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "methodology_change": {
-          "status": "present",
-          "same_type": false
-        },
-        "data_quality_note": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        }
-      }
+      "state": "unchanged"
     }
   }
 }

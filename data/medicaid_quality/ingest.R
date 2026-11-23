@@ -770,25 +770,29 @@ if (!identical(process$raw_state, raw_state)) {
                    names_to = c("measure", ".value"),
                    names_pattern = "^(.*)_(rate|pct_25|pct_75|population_match|methodology|cmsabbr)$") %>%
       filter(!is.na(rate)) %>%
-      # methodology_change: 1 if the state moved between a method that uses
-      # medical-record review (Hybrid, incl. "Administrative & Hybrid") and one
-      # that does not (Administrative / EHR / ECDS) since the last year it
-      # reported the measure (not necessarily the previous FFY -- e.g. Kentucky
-      # CIS-CH: Hybrid in FFY 2022, nothing in 2023, Administrative in 2024).
-      # Medical record review usually finds more services, so such switches
-      # tend to move the rate (sizes in README.md); Administrative <-> ECDS
-      # switches showed no systematic effect and are not flagged. NA for a state's first
-      # reported year and for survey measures (CAHPS, NCI) or unreported methods.
-      mutate(uses_mrr = case_when(
-        grepl("Hybrid", methodology)                             ~ TRUE,
-        grepl("Administrative|Electronic", methodology)          ~ FALSE,
-        TRUE                                                     ~ NA)) %>%
+      # methodology_group: whether the rate used medical-record (chart) review.
+      #   with_chart_review    Hybrid, alone or combined with other methods
+      #   without_chart_review Administrative, ECDS or EHR, without Hybrid
+      #   no_group             surveys (CAHPS, NCI), "Other", not reported
+      # Chart review usually finds more services than claims alone, so rates
+      # in the two groups are not directly comparable (sizes in README.md).
+      # Administrative and ECDS / EHR share a group because switches between
+      # them showed no systematic effect.
+      # methodology_change: 1 if the group changed since the last year the
+      # state reported the measure (not necessarily the previous FFY -- e.g.
+      # Kentucky CIS-CH: Hybrid in FFY 2022, nothing in 2023, Administrative in
+      # 2024), 0 if not. NA for a state's first reported year and for no_group.
+      mutate(methodology_group = case_when(
+        grepl("Hybrid", methodology)                    ~ "with_chart_review",
+        grepl("Administrative|Electronic", methodology) ~ "without_chart_review",
+        TRUE                                            ~ "no_group"),
+        grp = na_if(methodology_group, "no_group")) %>%
       group_by(geography, measure) %>%
       arrange(time, .by_group = TRUE) %>%
-      mutate(prev_mrr = lag(uses_mrr)) %>%
-      fill(prev_mrr, .direction = "down") %>%
+      mutate(prev_grp = lag(grp)) %>%
+      fill(prev_grp, .direction = "down") %>%
       ungroup() %>%
-      mutate(methodology_change = as.integer(uses_mrr != prev_mrr)) %>%
+      mutate(methodology_change = as.integer(grp != prev_grp)) %>%
       left_join(quality_notes, by = c("geography", "time", "cmsabbr" = "measure_abbr")) %>%
       # In FFY 2014 CMS used domain labels it later dropped (e.g. Behavioral
       # Health vs Behavioral Health Care from 2015); label every year with the
@@ -799,8 +803,8 @@ if (!identical(process$raw_state, raw_state)) {
       ungroup() %>%
       left_join(measure_direction, by = "measure") %>%
       select(geography, time, domain, measure, measure_type, value = rate,
-             pct_25, pct_75, population_match, methodology, methodology_change,
-             data_quality_note) %>%
+             pct_25, pct_75, population_match, methodology, methodology_group,
+             methodology_change, data_quality_note) %>%
       arrange(geography, time, measure)
   }
 

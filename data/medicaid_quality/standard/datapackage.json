@@ -4,32 +4,40 @@
   "licenses": [],
   "resources": [
     {
-      "bytes": 246779,
+      "bytes": 251625,
       "encoding": "windows-1252",
-      "md5": "c6df13f724bea37217061ddac0bd6a4d",
+      "md5": "a2398ba83da3874c680546d87c5dfc60",
       "format": "csv",
       "name": "data_adult_core_set.csv",
       "filename": "data_adult_core_set.csv.gz",
       "versions": {
         "hash": [
+          "0a0a1002e6ac54eb3a374b5a397dcf7c417c6c51",
+          "439e10ecc46efc52950e8c19037c5209ad4d26cd",
           "26c6ecb7fd434ec152b30bd5dba8b0f3977634d9",
           "a512f2ac24d647f71ed0bed274aed9fbfb39c222",
           "e9cb5360db44346738f8444a033addcc53c81cc5",
           "2942ec8328fd61da314b9d00c4eb86628db95681"
         ],
         "author": [
+          "scratch <scratch@local>",
+          "scratch <scratch@local>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "scratch <scratch@local>"
         ],
         "date": [
+          "Mon Nov 23 12:54:20 2026 -0500",
+          "Mon Nov 23 12:25:39 2026 -0500",
           "Tue Nov 17 18:52:05 2026 -0500",
           "Tue Nov 17 10:06:51 2026 -0500",
           "Tue Nov 17 09:43:30 2026 -0500",
           "Mon Nov 9 13:58:48 2026 -0500"
         ],
         "message": [
+          "medicaid_quality: address review findings",
+          "medicaid_quality: add methodology and data-quality flags",
           "update medicaid (#303)",
           "Revert",
           "Fix medicaid (#300)",
@@ -47,7 +55,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-11-23 09:23:56.278681",
-      "last_modified": "2026-11-23 12:03:04.891918",
+      "last_modified": "2026-11-23 13:50:37.914051",
       "vintage": {},
       "row_count": 19487,
       "entity_count": 54,
@@ -1157,7 +1165,7 @@
               "long_name": "Data-collection method the state reported for the measure",
               "category": "access",
               "short_description": "How the state calculated the rate, as reported to CMS (e.g. Administrative, Hybrid, ECDS, CAHPS 5.1H).",
-              "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_change.",
+              "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_group and methodology_change.",
               "measure_type": "Category",
               "unit": "Category",
               "time_resolution": "Year",
@@ -1191,6 +1199,34 @@
             }
           },
           {
+            "name": "methodology_group",
+            "duplicates": 19484,
+            "info": {
+              "id": "methodology_group",
+              "short_name": "Method group: with or without chart review",
+              "long_name": "Whether the rate used medical record (chart) review",
+              "category": "access",
+              "short_description": "with_chart_review, without_chart_review or no_group, grouped from methodology.",
+              "long_description": "Groups the CMS methodology by whether medical records were reviewed. with_chart_review = Hybrid, alone or combined with other methods. without_chart_review = Administrative, ECDS or Electronic Health Records, without Hybrid. no_group = surveys (CAHPS, NCI), Other or not reported. Chart review usually finds more services than claims alone, so rates in the two groups are not directly comparable. Administrative and ECDS share a group because switching between them showed no systematic effect on rates.",
+              "measure_type": "Category",
+              "unit": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "medicaid_quality_cms"
+                }
+              ]
+            },
+            "time_range": [0, 11],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "no_group": 2851,
+              "with_chart_review": 1497,
+              "without_chart_review": 15139
+            }
+          },
+          {
             "name": "methodology_change",
             "duplicates": 19484,
             "info": {
@@ -1199,7 +1235,7 @@
               "long_name": "Change in use of medical record review since the state's last reported year",
               "category": "access",
               "short_description": "1 if the state switched between a Hybrid method (with medical record review) and one without since it last reported the measure; 0 if not.",
-              "long_description": "Compares the row's methodology with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between Hybrid (including Administrative & Hybrid) and Administrative, EHR or ECDS; 0 = no such change. Blank for the state's first reported year and for survey measures. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
+              "long_description": "Compares the row's methodology_group with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between with_chart_review and without_chart_review; 0 = same group. Blank for the state's first reported year and for no_group rows. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
               "measure_type": "Category",
               "unit": "Category",
               "time_resolution": "Year",
@@ -1226,7 +1262,7 @@
               "long_name": "Documented reporting problem for the state, year and measure",
               "category": "access",
               "short_description": "A code naming a documented reporting problem that makes the rate less comparable; blank if none is documented.",
-              "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, New Mexico and Pennsylvania in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
+              "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, Pennsylvania and Rhode Island in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
               "measure_type": "Category",
               "unit": "Category",
               "time_resolution": "Year",
@@ -1240,41 +1276,49 @@
             "type": "string",
             "missing": 0,
             "table": {
-              "ffs_excluded": 143,
-              "NA": 19344
+              "ffs_excluded": 246,
+              "NA": 19241
             }
           }
         ]
       },
-      "sha512": "c2e4928be98a57911c343c7821202185eb9a28264d64d1309fd35062f51ddc87197a60ae8f6aea48a736ca31b69ad27915256411cbe4c61363e9dcdf946a0f27"
+      "sha512": "7f4aa02b3d9ed2f4a35bf97ccf743895556146405c1dd1d4f95fb4e60f289b79921f05100511d679e4d3f29931d8ec854dc6e284e9c2fac9b5e9c76593d2c2d2"
     },
     {
-      "bytes": 286110,
+      "bytes": 291254,
       "encoding": "windows-1252",
-      "md5": "7a614d7f21e86e8a98d1ebf4bb9253e4",
+      "md5": "24921efc2858543e71bc1549106dc944",
       "format": "csv",
       "name": "data_child_core_set.csv",
       "filename": "data_child_core_set.csv.gz",
       "versions": {
         "hash": [
+          "0a0a1002e6ac54eb3a374b5a397dcf7c417c6c51",
+          "439e10ecc46efc52950e8c19037c5209ad4d26cd",
           "26c6ecb7fd434ec152b30bd5dba8b0f3977634d9",
           "a512f2ac24d647f71ed0bed274aed9fbfb39c222",
           "e9cb5360db44346738f8444a033addcc53c81cc5",
           "2942ec8328fd61da314b9d00c4eb86628db95681"
         ],
         "author": [
+          "scratch <scratch@local>",
+          "scratch <scratch@local>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "scratch <scratch@local>"
         ],
         "date": [
+          "Mon Nov 23 12:54:20 2026 -0500",
+          "Mon Nov 23 12:25:39 2026 -0500",
           "Tue Nov 17 18:52:05 2026 -0500",
           "Tue Nov 17 10:06:51 2026 -0500",
           "Tue Nov 17 09:43:30 2026 -0500",
           "Mon Nov 9 13:58:48 2026 -0500"
         ],
         "message": [
+          "medicaid_quality: address review findings",
+          "medicaid_quality: add methodology and data-quality flags",
           "update medicaid (#303)",
           "Revert",
           "Fix medicaid (#300)",
@@ -1292,7 +1336,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-11-23 09:23:56.278681",
-      "last_modified": "2026-11-23 12:03:04.253836",
+      "last_modified": "2026-11-23 13:50:36.874828",
       "vintage": {},
       "row_count": 22893,
       "entity_count": 54,
@@ -2428,7 +2472,7 @@
               "long_name": "Data-collection method the state reported for the measure",
               "category": "access",
               "short_description": "How the state calculated the rate, as reported to CMS (e.g. Administrative, Hybrid, ECDS, CAHPS 5.1H).",
-              "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_change.",
+              "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_group and methodology_change.",
               "measure_type": "Category",
               "unit": "Category",
               "time_resolution": "Year",
@@ -2460,6 +2504,34 @@
             }
           },
           {
+            "name": "methodology_group",
+            "duplicates": 22890,
+            "info": {
+              "id": "methodology_group",
+              "short_name": "Method group: with or without chart review",
+              "long_name": "Whether the rate used medical record (chart) review",
+              "category": "access",
+              "short_description": "with_chart_review, without_chart_review or no_group, grouped from methodology.",
+              "long_description": "Groups the CMS methodology by whether medical records were reviewed. with_chart_review = Hybrid, alone or combined with other methods. without_chart_review = Administrative, ECDS or Electronic Health Records, without Hybrid. no_group = surveys (CAHPS, NCI), Other or not reported. Chart review usually finds more services than claims alone, so rates in the two groups are not directly comparable. Administrative and ECDS share a group because switching between them showed no systematic effect on rates.",
+              "measure_type": "Category",
+              "unit": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "medicaid_quality_cms"
+                }
+              ]
+            },
+            "time_range": [0, 11],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "no_group": 2521,
+              "with_chart_review": 3173,
+              "without_chart_review": 17199
+            }
+          },
+          {
             "name": "methodology_change",
             "duplicates": 22890,
             "info": {
@@ -2468,7 +2540,7 @@
               "long_name": "Change in use of medical record review since the state's last reported year",
               "category": "access",
               "short_description": "1 if the state switched between a Hybrid method (with medical record review) and one without since it last reported the measure; 0 if not.",
-              "long_description": "Compares the row's methodology with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between Hybrid (including Administrative & Hybrid) and Administrative, EHR or ECDS; 0 = no such change. Blank for the state's first reported year and for survey measures. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
+              "long_description": "Compares the row's methodology_group with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between with_chart_review and without_chart_review; 0 = same group. Blank for the state's first reported year and for no_group rows. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
               "measure_type": "Category",
               "unit": "Category",
               "time_resolution": "Year",
@@ -2495,7 +2567,7 @@
               "long_name": "Documented reporting problem for the state, year and measure",
               "category": "access",
               "short_description": "A code naming a documented reporting problem that makes the rate less comparable; blank if none is documented.",
-              "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, New Mexico and Pennsylvania in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
+              "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, Pennsylvania and Rhode Island in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
               "measure_type": "Category",
               "unit": "Category",
               "time_resolution": "Year",
@@ -2509,15 +2581,15 @@
             "type": "string",
             "missing": 0,
             "table": {
-              "ffs_excluded": 326,
-              "NA": 22552,
+              "ffs_excluded": 523,
+              "NA": 22355,
               "specification_deviation": 3,
               "state_data_undercount": 12
             }
           }
         ]
       },
-      "sha512": "4206bc4715dc3dfd7c0e96f34ee46301a7649228064a257a2fbab2909882f8359d05789f274e4dc6e66ba12c932a2d083e6e7ef2c445221c00f8d06ed598cabd"
+      "sha512": "d3804de37df9fcb208c9dbd865fa88cd36b9b05f6b1d12783eed9eadef301a12ea38edb350fa89adbefbdba7326a4434b73c79456d5cf3fa1a057df56aaa2cf2"
     }
   ],
   "measure_info": {
@@ -7592,7 +7664,24 @@
       "long_name": "Data-collection method the state reported for the measure",
       "category": "access",
       "short_description": "How the state calculated the rate, as reported to CMS (e.g. Administrative, Hybrid, ECDS, CAHPS 5.1H).",
-      "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_change.",
+      "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_group and methodology_change.",
+      "measure_type": "Category",
+      "unit": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "medicaid_quality_cms"
+        }
+      ],
+      "citations": []
+    },
+    "methodology_group": {
+      "id": "methodology_group",
+      "short_name": "Method group: with or without chart review",
+      "long_name": "Whether the rate used medical record (chart) review",
+      "category": "access",
+      "short_description": "with_chart_review, without_chart_review or no_group, grouped from methodology.",
+      "long_description": "Groups the CMS methodology by whether medical records were reviewed. with_chart_review = Hybrid, alone or combined with other methods. without_chart_review = Administrative, ECDS or Electronic Health Records, without Hybrid. no_group = surveys (CAHPS, NCI), Other or not reported. Chart review usually finds more services than claims alone, so rates in the two groups are not directly comparable. Administrative and ECDS share a group because switching between them showed no systematic effect on rates.",
       "measure_type": "Category",
       "unit": "Category",
       "time_resolution": "Year",
@@ -7609,7 +7698,7 @@
       "long_name": "Change in use of medical record review since the state's last reported year",
       "category": "access",
       "short_description": "1 if the state switched between a Hybrid method (with medical record review) and one without since it last reported the measure; 0 if not.",
-      "long_description": "Compares the row's methodology with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between Hybrid (including Administrative & Hybrid) and Administrative, EHR or ECDS; 0 = no such change. Blank for the state's first reported year and for survey measures. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
+      "long_description": "Compares the row's methodology_group with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between with_chart_review and without_chart_review; 0 = same group. Blank for the state's first reported year and for no_group rows. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
       "measure_type": "Category",
       "unit": "Category",
       "time_resolution": "Year",
@@ -7626,7 +7715,7 @@
       "long_name": "Documented reporting problem for the state, year and measure",
       "category": "access",
       "short_description": "A code naming a documented reporting problem that makes the rate less comparable; blank if none is documented.",
-      "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, New Mexico and Pennsylvania in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
+      "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, Pennsylvania and Rhode Island in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
       "measure_type": "Category",
       "unit": "Category",
       "time_resolution": "Year",
@@ -7662,7 +7751,7 @@
         "organization_url": "https://www.medicaid.gov",
         "location": "Medicaid.gov Open Data – Quality Measures datasets (2014–2025)",
         "location_url": "https://data.medicaid.gov/datasets?theme%5B0%5D=Quality",
-        "description": "Annual state-level rates for the Medicaid and CHIP Child Core Set and Adult Core Set health care quality measures, published by CMS on data.medicaid.gov for federal fiscal years (FFY) 2014-2025. The rates come from Mathematica's analysis of state reports in the Quality Measure Reporting (QMR) system, CDC WONDER data and National Core Indicators survey data, and from AHRQ and CMS analysis of the AHRQ CAHPS Database. Measures cover behavioral health, primary and preventive care, maternal and perinatal health, dental and oral health, care of acute and chronic conditions, experience of care, and long-term services and supports. Reporting is voluntary, so not all states report every measure each year. State rates that CMS marks as non-numeric are missing: DS (suppressed for small cell sizes), # (denominator under 30 or too few survey respondents), NR (not reported by the state for that population), NPR (state rates not publicly reported by CMS, e.g. depression screening, CDF) and NA (zero denominator). For each measure and year CMS also gives the 25th and 75th percentiles of the rates reported by states (from FFY 2016 as bottom and top quartiles, which are put in percentile order here). Each distinct CMS rate definition (age band, sub-measure, survey item or follow-up window) is kept as a separate measure, and measures CMS re-abbreviated are continued as one series (FUA/FUM-AD to FUA-AD and FUM-AD; first-15-months well-child visits under W30-CH as W15-CH; NCIDDS-AD to NCIIDD-AD). Files: data_child_core_set.csv.gz (Child Core Set measures) and data_adult_core_set.csv.gz (Adult Core Set measures), each long, with one row per state, year and measure and one value per measure chosen by the population hierarchy below. Population hierarchy: states choose which population to report each measure for (Medicaid, CHIP, dual eligibles and other groups, alone or combined), so each value is taken from the reported population closest to a target population, preferring a non-suppressed value. Child Core Set target: all Medicaid and CHIP children; order of preference: Medicaid plus all CHIP, then with Other populations added, then Medicaid missing one CHIP component, then Medicaid only, then CHIP only. Adult Core Set target: Medicaid (Title XIX) enrollees who are not dually eligible for Medicare; order of preference: Medicaid only, then with small non-dual additions (CHIP or Other), then populations that include dual eligibles. Dual eligibles are avoided because Medicare is their primary payer, so much of their care does not appear in Medicaid data. Narrower populations are kept and flagged rather than dropped because in states whose CHIP is a Medicaid expansion, or that have no separate CHIP, they are the whole target. The population_match column records which case applies.",
+        "description": "Annual state-level rates for the Medicaid and CHIP Child Core Set and Adult Core Set health care quality measures, published by CMS on data.medicaid.gov for federal fiscal years (FFY) 2014-2025. The rates come from Mathematica's analysis of state reports in the Quality Measure Reporting (QMR) system, CDC WONDER data and National Core Indicators survey data, and from AHRQ and CMS analysis of the AHRQ CAHPS Database. Measures cover behavioral health, primary and preventive care, maternal and perinatal health, dental and oral health, care of acute and chronic conditions, experience of care, and long-term services and supports. Reporting is voluntary, so not all states report every measure each year. For each measure and year CMS also gives the 25th and 75th percentiles of the rates reported by states (from FFY 2016 as bottom and top quartiles, which are put in percentile order here). Each distinct CMS rate definition (age band, sub-measure, survey item or follow-up window) is kept as a separate measure, and measures CMS re-abbreviated are continued as one series (FUA/FUM-AD to FUA-AD and FUM-AD; first-15-months well-child visits under W30-CH as W15-CH; NCIDDS-AD to NCIIDD-AD). Data are broken into adult and child core sets. Each dataset is long, with one row per state, year and measure and one value per measure chosen by the population hierarchy below. Population hierarchy: states choose which population to report each measure for (Medicaid, CHIP, dual eligibles and other groups, alone or combined), so each value is taken from the reported population closest to a target population, preferring a non-suppressed value. Child Core Set target: all Medicaid and CHIP children; order of preference: Medicaid plus all CHIP, then with Other populations added, then Medicaid missing one CHIP component, then Medicaid only, then CHIP only. Adult Core Set target: Medicaid (Title XIX) enrollees who are not dually eligible for Medicare; order of preference: Medicaid only, then with small non-dual additions (CHIP or Other), then populations that include dual eligibles. Dual eligibles are avoided because Medicare is their primary payer, so much of their care does not appear in Medicaid data. Narrower populations are kept and flagged rather than dropped because in states whose CHIP is a Medicaid expansion, or that have no separate CHIP, they are the whole target. The population_match column records which case applies.",
         "restrictions": "Public domain. CMS/Medicaid.gov data is generally not subject to copyright restrictions.",
         "date_accessed": 2026
       },
@@ -7730,7 +7819,7 @@
         "measure_type": {
           "status": "present",
           "same_type": true,
-          "added_levels": "NA",
+          "added_levels": [],
           "dropped_levels": []
         },
         "value": {
@@ -7752,13 +7841,23 @@
           "dropped_levels": []
         },
         "methodology": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology_group": {
           "status": "added"
         },
         "methodology_change": {
-          "status": "added"
+          "status": "present",
+          "same_type": true
         },
         "data_quality_note": {
-          "status": "added"
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
         }
       }
     },
@@ -7792,7 +7891,7 @@
         "measure_type": {
           "status": "present",
           "same_type": true,
-          "added_levels": "NA",
+          "added_levels": [],
           "dropped_levels": []
         },
         "value": {
@@ -7814,13 +7913,23 @@
           "dropped_levels": []
         },
         "methodology": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology_group": {
           "status": "added"
         },
         "methodology_change": {
-          "status": "added"
+          "status": "present",
+          "same_type": true
         },
         "data_quality_note": {
-          "status": "added"
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
         }
       }
     }

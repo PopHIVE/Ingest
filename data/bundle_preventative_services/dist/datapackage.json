@@ -71,7 +71,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-08-14 11:08:33.550982",
-      "last_modified": "2026-11-23 12:47:27.25713",
+      "last_modified": "2026-11-23 14:33:34.035244",
       "vintage": {},
       "row_count": 44567,
       "entity_count": 52,
@@ -430,7 +430,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-08-14 11:08:33.55298",
-      "last_modified": "2026-11-23 12:47:16.241146",
+      "last_modified": "2026-11-23 14:33:26.056549",
       "vintage": {},
       "row_count": 21528,
       "entity_count": 52,
@@ -786,7 +786,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-08-14 11:08:33.554914",
-      "last_modified": "2026-11-23 12:47:10.224525",
+      "last_modified": "2026-11-23 14:33:21.860163",
       "vintage": {},
       "row_count": 7488,
       "entity_count": 52,
@@ -1129,7 +1129,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-08-14 11:08:33.555912",
-      "last_modified": "2026-11-23 12:47:27.32247",
+      "last_modified": "2026-11-23 14:33:34.100193",
       "vintage": {},
       "row_count": 1248,
       "entity_count": 52,
@@ -1389,14 +1389,15 @@
       "sha512": "4e7f56b724a954b519944480753a22bdf850337b8999a7df13471bf91470b4756a96c682fe1c7b1ee26d77c0719389dcf4cd7095e6e14bf7ccb7a3f2bb62c8a2"
     },
     {
-      "bytes": 11306,
+      "bytes": 12048,
       "encoding": "IBM420_ltr",
-      "md5": "9883fb8186f0b4e1b9d5ae59a617bb16",
+      "md5": "8fa6a7979f8f5ec09b8dce7c3df30cec",
       "format": "parquet",
       "name": "medicaid_preventative_services",
       "filename": "medicaid_preventative_services.parquet",
       "versions": {
         "hash": [
+          "0a0a1002e6ac54eb3a374b5a397dcf7c417c6c51",
           "439e10ecc46efc52950e8c19037c5209ad4d26cd",
           "26c6ecb7fd434ec152b30bd5dba8b0f3977634d9",
           "a512f2ac24d647f71ed0bed274aed9fbfb39c222",
@@ -1413,6 +1414,7 @@
         ],
         "author": [
           "scratch <scratch@local>",
+          "scratch <scratch@local>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
           "anshap32 <73296024+anshap32@users.noreply.github.com>",
@@ -1427,6 +1429,7 @@
           "coa7 <callie.annas@yale.edu>"
         ],
         "date": [
+          "Mon Nov 23 12:54:20 2026 -0500",
           "Mon Nov 23 12:25:39 2026 -0500",
           "Tue Nov 17 18:52:05 2026 -0500",
           "Tue Nov 17 10:06:51 2026 -0500",
@@ -1442,6 +1445,7 @@
           "Thu Apr 2 12:21:13 2026 -0400"
         ],
         "message": [
+          "medicaid_quality: address review findings",
           "medicaid_quality: add methodology and data-quality flags",
           "update medicaid (#303)",
           "Revert",
@@ -1468,7 +1472,7 @@
       "time": "time",
       "profile": "data-resource",
       "created": "2026-08-14 11:08:33.563086",
-      "last_modified": "2026-11-23 12:47:07.958021",
+      "last_modified": "2026-11-23 14:33:20.252447",
       "vintage": {},
       "row_count": 1657,
       "entity_count": 51,
@@ -1653,6 +1657,23 @@
             }
           },
           {
+            "name": "methodology_group",
+            "duplicates": 1654,
+            "info": {
+              "short_name": "Method group: with or without chart review",
+              "short_description": "Whether the Medicaid rate used medical record (chart) review: with_chart_review = Hybrid, alone or combined; without_chart_review = Administrative, ECDS or EHR only; no_group = surveys (CAHPS, NCI), Other or not reported. Rates in the two groups are not directly comparable. See medicaid_quality/measure_info.json (methodology_group).",
+              "id": "methodology_group"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "no_group": 123,
+              "with_chart_review": 418,
+              "without_chart_review": 1116
+            }
+          },
+          {
             "name": "methodology_change",
             "duplicates": 1654,
             "info": {
@@ -1767,7 +1788,7 @@
           }
         ]
       },
-      "sha512": "83646cf9b0b3551c19362cda9648103e31385aa002036df2b31d0ea027f977320dda0e2cc09d5afd06e12f5581b17fd53c972dd44323190e5d7a9a4968d55653"
+      "sha512": "50809a04f16ef38950963e3a6802441a996a41b096a56b04562a6d84e892e93bda4822857ea9c64a5842c5a658feeb1bc27f86905fc0da42b7c8e451e9fa61ec"
     }
   ],
   "measure_info": {
@@ -1816,6 +1837,11 @@
       "short_name": "CMS data-collection method",
       "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
       "id": "bundle_preventative_services/dist/medicaid_preventative_services.parquet|methodology"
+    },
+    "bundle_preventative_services/dist/medicaid_preventative_services.parquet|methodology_group": {
+      "short_name": "Method group: with or without chart review",
+      "short_description": "Whether the Medicaid rate used medical record (chart) review: with_chart_review = Hybrid, alone or combined; without_chart_review = Administrative, ECDS or EHR only; no_group = surveys (CAHPS, NCI), Other or not reported. Rates in the two groups are not directly comparable. See medicaid_quality/measure_info.json (methodology_group).",
+      "id": "bundle_preventative_services/dist/medicaid_preventative_services.parquet|methodology_group"
     },
     "bundle_preventative_services/dist/medicaid_preventative_services.parquet|methodology_change": {
       "short_name": "Method switched to or from medical record review",
@@ -2253,75 +2279,7 @@
       "state": "unchanged"
     },
     "medicaid_preventative_services.parquet": {
-      "state": "changed",
-      "variables": {
-        "geography": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "year": {
-          "status": "present",
-          "same_type": true
-        },
-        "age": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "sex": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "race_ethnicity": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "population_match": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "methodology": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "methodology_change": {
-          "status": "present",
-          "same_type": true
-        },
-        "data_quality_note": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "outcome_name": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "source": {
-          "status": "present",
-          "same_type": true,
-          "added_levels": [],
-          "dropped_levels": []
-        },
-        "value": {
-          "status": "present",
-          "same_type": true
-        }
-      }
+      "state": "unchanged"
     }
   }
 }

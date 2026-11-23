@@ -168,7 +168,7 @@ medicaid_long <- bind_rows(
          value = suppressWarnings(as.numeric(value))) %>%
   filter(!is.na(value)) %>%
   select(geography, time, measure, value, population_match,
-         methodology, methodology_change, data_quality_note) %>%
+         methodology, methodology_group, methodology_change, data_quality_note) %>%
   mutate(methodology_change = as.integer(methodology_change))
 
 # -----------------------------------------------------------------------------

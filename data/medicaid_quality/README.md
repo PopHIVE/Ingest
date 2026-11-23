@@ -23,7 +23,7 @@ dcf_process("medicaid_quality", "..")
 
 Both files are long, with columns `geography`, `time`, `domain`, `measure`,
 `measure_type`, `value` (the state rate), `pct_25`, `pct_75`,
-`population_match`, `methodology`, `methodology_change` and
+`population_match`, `methodology`, `methodology_group`, `methodology_change` and
 `data_quality_note` (see [Data-quality columns](#data-quality-columns)). Each `measure` (e.g. `medicaid_bcs_ad`) is documented by the
 `measure_info.json` entry of the same name with `_rate` appended
 (`medicaid_bcs_ad_rate`). A row exists only where the state reported a value.
@@ -84,18 +84,27 @@ the target (documented in `measure_info.json` under `population_match`):
 Two kinds of flag mark values that may not be comparable with other years or
 states. Neither changes `value`.
 
-**Method changes (`methodology`, `methodology_change`).** `methodology` is
-CMS's data-collection method for the row. `methodology_change` is `1` when the
-state switched between a Hybrid method (claims plus medical record review) and
-one without (Administrative, EHR, ECDS) since the last year it reported the
-measure. Across states, Hybrid -> Administrative lowers rates by a median 4.5
-points and the reverse raises them by 6.6 (unchanged methods: +0.2). Example:
-Kentucky CIS-CH and IMA-CH moved from Hybrid (FFY 2022) to Administrative (FFY
-2024) and CIS-CH fell from 64 to 19. Administrative <-> ECDS switches show no
-systematic effect and are not flagged.
+**Method changes (`methodology`, `methodology_group`, `methodology_change`).**
+`methodology` is CMS's data-collection method for the row. `methodology_group`
+groups it by whether medical records were reviewed:
+
+| `methodology_group` | CMS methodology |
+|---------------------|-----------------|
+| `with_chart_review` | Hybrid (claims plus medical record review), alone or combined with other methods |
+| `without_chart_review` | Administrative, ECDS or Electronic Health Records, without Hybrid |
+| `no_group` | surveys (CAHPS, NCI), Other, not reported |
+
+`methodology_change` is `1` when the group changed since the last year the
+state reported the measure (not necessarily the previous FFY), `0` when it did
+not, and blank for a state's first reported year and for `no_group` rows.
+Across states, Hybrid -> Administrative lowers rates by a median 4.5 points and
+the reverse raises them by 6.6 (unchanged methods: +0.2). Example: Kentucky
+CIS-CH and IMA-CH moved from Hybrid (FFY 2022) to Administrative (FFY 2024) and
+CIS-CH fell from 64 to 19. Administrative and ECDS share a group because
+switches between them show no systematic effect.
 
 **Documented problems (`data_quality_note`).** Set in `ingest.R`
-(`quality_notes`), keyed on state, FFY and CMS measure abbreviation:
+(`quality_notes`), keyed on state FIPS, FFY and CMS measure abbreviation:
 
 | Code | Cases | Source |
 |------|-------|--------|
