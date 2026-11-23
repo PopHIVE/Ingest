@@ -122,8 +122,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:00.435285",
-      "last_modified": "2026-11-18 00:12:00.435285",
+      "created": "2026-08-18 13:25:51.176746",
+      "last_modified": "2026-11-23 12:06:55.661291",
       "vintage": {},
       "row_count": 162805,
       "entity_count": 3237,
@@ -3665,8 +3665,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:00.435285",
-      "last_modified": "2026-11-18 00:12:00.435285",
+      "created": "2026-08-20 12:57:37.149799",
+      "last_modified": "2026-11-23 12:06:55.669607",
       "vintage": {},
       "row_count": 687,
       "entity_count": 1,
@@ -3898,9 +3898,9 @@
       "sha512": "ecaa7c570523b4b81e68f4d1aac9309e957ad99005f4d5eec1ca3bc7a43e808d2afa41d4d7aca02b96bac3cd43721311d1396a664f58f4f34afd349007c1bb0d"
     },
     {
-      "bytes": 43616,
+      "bytes": 45265,
       "encoding": "windows-1252",
-      "md5": "09af7745fb4bc448613b3e7b86a6841c",
+      "md5": "28f514244a1ed1e7312e583f0331d050",
       "format": "parquet",
       "name": "maternal_state",
       "filename": "maternal_state.parquet",
@@ -4040,8 +4040,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:00.435285",
-      "last_modified": "2026-11-18 00:12:00.435285",
+      "created": "2026-08-18 13:25:51.188089",
+      "last_modified": "2026-11-23 12:06:55.598549",
       "vintage": {},
       "row_count": 6015,
       "entity_count": 55,
@@ -4499,10 +4499,58 @@
               "narrower": 885,
               "target": 905
             }
+          },
+          {
+            "name": "methodology",
+            "duplicates": 6011,
+            "info": {
+              "short_name": "CMS data-collection method",
+              "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
+              "id": "methodology"
+            },
+            "time_range": [7, 12],
+            "type": "string",
+            "missing": 3802,
+            "table": {
+              "Administrative": 1543,
+              "Administrative & Hybrid": 79,
+              "Hybrid": 591
+            }
+          },
+          {
+            "name": "methodology_change",
+            "duplicates": 6012,
+            "info": {
+              "short_name": "Method switched to or from medical record review",
+              "short_description": "1 if the state switched between a Hybrid method and one without medical record review since it last reported the measure, which can shift the rate by several points regardless of care; 0 if not; blank for a state's first reported year and for survey measures. See medicaid_quality/measure_info.json (methodology_change).",
+              "id": "methodology_change"
+            },
+            "time_range": [8, 12],
+            "type": "string",
+            "missing": 4135,
+            "table": {
+              "0": 1831,
+              "1": 49
+            }
+          },
+          {
+            "name": "data_quality_note",
+            "duplicates": 6013,
+            "info": {
+              "short_name": "Documented data-quality problem",
+              "short_description": "Code for a documented reporting problem: state_data_undercount = the state's calculation undercounted, rate too low; specification_deviation = the state departed from the CMS specification; ffs_excluded = fee-for-service enrollees left out under a one-year CMS exemption. Blank if none is documented. See medicaid_quality/measure_info.json (data_quality_note).",
+              "id": "data_quality_note"
+            },
+            "time_range": [5, 12],
+            "type": "string",
+            "missing": 6012,
+            "table": {
+              "ffs_excluded": 3
+            }
           }
         ]
       },
-      "sha512": "6cad3da73776ddbf19c07e4cf9c9f6bbff70c693df3f8e157943ab2b1aa32c8edaff0b944edb4b56afac5be9c41b018bbd56293cd03f454d671e6afb90bb5f54"
+      "sha512": "c689a1c6e355c4a048ff94b5c5aca3460f34bf23cc9517c18de0aaf34f33d9ee3bf4fbf95cec8690a1cc25b329f915d3d4bce386c5ee8896ce3d78208971c091"
     }
   ],
   "measure_info": {
@@ -4998,6 +5046,21 @@
       },
       "id": "bundle_maternal_health/dist/maternal_state.parquet|population_match"
     },
+    "bundle_maternal_health/dist/maternal_state.parquet|methodology": {
+      "short_name": "CMS data-collection method",
+      "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
+      "id": "bundle_maternal_health/dist/maternal_state.parquet|methodology"
+    },
+    "bundle_maternal_health/dist/maternal_state.parquet|methodology_change": {
+      "short_name": "Method switched to or from medical record review",
+      "short_description": "1 if the state switched between a Hybrid method and one without medical record review since it last reported the measure, which can shift the rate by several points regardless of care; 0 if not; blank for a state's first reported year and for survey measures. See medicaid_quality/measure_info.json (methodology_change).",
+      "id": "bundle_maternal_health/dist/maternal_state.parquet|methodology_change"
+    },
+    "bundle_maternal_health/dist/maternal_state.parquet|data_quality_note": {
+      "short_name": "Documented data-quality problem",
+      "short_description": "Code for a documented reporting problem: state_data_undercount = the state's calculation undercounted, rate too low; specification_deviation = the state departed from the CMS specification; ffs_excluded = fee-for-service enrollees left out under a one-year CMS exemption. Blank if none is documented. See medicaid_quality/measure_info.json (data_quality_note).",
+      "id": "bundle_maternal_health/dist/maternal_state.parquet|data_quality_note"
+    },
     "bundle_maternal_health/dist/maternal_state.parquet|value": {
       "id": "bundle_maternal_health/dist/maternal_state.parquet|value",
       "short_name": "Value (state)",
@@ -5149,7 +5212,46 @@
       "state": "unchanged"
     },
     "maternal_state.parquet": {
-      "state": "unchanged"
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "time": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "measure": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "value": {
+          "status": "present",
+          "same_type": true
+        },
+        "population_match": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology": {
+          "status": "added"
+        },
+        "methodology_change": {
+          "status": "added"
+        },
+        "data_quality_note": {
+          "status": "added"
+        }
+      }
     }
   }
 }

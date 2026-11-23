@@ -127,7 +127,8 @@ medicaid_state <- read_chr("../medicaid_quality/standard/data_child_core_set.csv
   mutate(measure = paste0(measure, "_", stat),
          value = suppressWarnings(as.numeric(value))) %>%
   filter(!is.na(value)) %>%
-  select(geography, time, measure, value, population_match) %>%
+  select(geography, time, measure, value, population_match,
+         methodology, methodology_change, data_quality_note) %>%
   mutate(time = year_end(time), source = "CMS Medicaid Core Set")
 
 # -----------------------------------------------------------------------------
@@ -216,7 +217,8 @@ school_state <- school_tall %>%
 
 adolescent_vax_state <- bind_rows(medicaid_state, nis_state, school_state) %>%
   select(geography, time, measure, value, value_lcl, value_ucl, sample_size,
-         population_match, source) %>%
+         population_match, methodology, methodology_change, data_quality_note,
+         source) %>%
   arrange(measure, geography, time) %>%
   check_dupes("adolescent_vax_state")
 

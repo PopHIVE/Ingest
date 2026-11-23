@@ -9,7 +9,9 @@ all_fips <- vroom::vroom('../../resources/all_fips.csv.gz')
 # reported population closest to non-dual Medicaid (population_match flags how
 # close). Geography is a FIPS code; state names are joined on for this bundle.
 vroom::vroom('../medicaid_quality/standard/data_adult_core_set.csv.gz',
-             col_types = vroom::cols(geography = "c", time = "c"),
+             col_types = vroom::cols(geography = "c", time = "c",
+                                     methodology = "c", methodology_change = "i",
+                                     data_quality_note = "c"),
              show_col_types = FALSE) %>%
   filter(measure %in% c("medicaid_fva_ad", "medicaid_chl_ad", "medicaid_ha1c_ad",
                         "medicaid_amm_ad", "medicaid_cbp_ad")) %>%
@@ -34,7 +36,9 @@ vroom::vroom('../medicaid_quality/standard/data_adult_core_set.csv.gz',
   ) %>%
   filter(!is.na(value),
          geography %in% c(state.name, "District of Columbia")) %>%
-  dplyr::select(geography, year, age, sex, race_ethnicity, population_match, outcome_name, source, value) %>%
+  dplyr::select(geography, year, age, sex, race_ethnicity, population_match,
+                methodology, methodology_change, data_quality_note,
+                outcome_name, source, value) %>%
   arrow::write_parquet('dist/medicaid_preventative_services.parquet')
 
 

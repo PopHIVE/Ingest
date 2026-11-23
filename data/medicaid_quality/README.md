@@ -22,8 +22,9 @@ dcf_process("medicaid_quality", "..")
 | `standard/data_adult_core_set.csv.gz` | state, year, measure | Adult Core Set (`_ad`) measures; the row closest to the Adult target population (below) |
 
 Both files are long, with columns `geography`, `time`, `domain`, `measure`,
-`measure_type`, `value` (the state rate), `pct_25`, `pct_75` and
-`population_match`. Each `measure` (e.g. `medicaid_bcs_ad`) is documented by the
+`measure_type`, `value` (the state rate), `pct_25`, `pct_75`,
+`population_match`, `methodology`, `methodology_change` and
+`data_quality_note` (see [Data-quality columns](#data-quality-columns)). Each `measure` (e.g. `medicaid_bcs_ad`) is documented by the
 `measure_info.json` entry of the same name with `_rate` appended
 (`medicaid_bcs_ad_rate`). A row exists only where the state reported a value.
 In FFY 2014 CMS used some domain labels it later dropped (e.g. Behavioral
@@ -77,3 +78,32 @@ the target (documented in `measure_info.json` under `population_match`):
 | `narrower` | Child measures: only part of Medicaid + CHIP was reported |
 | `chip_only` | Child measures: only CHIP enrollees were reported (no Medicaid). Least comparable with `target`: CHIP covers higher-income children whose rates can differ systematically. |
 | `broader_incl_duals` | Adult measures: the state reported only a population that includes dual eligibles. These rows are kept, but Medicare pays first for duals, so much of their care is missing from Medicaid data and the rate may understate care received. |
+
+## Data-quality columns
+
+Two kinds of flag mark values that may not be comparable with other years or
+states. Neither changes `value`.
+
+**Method changes (`methodology`, `methodology_change`).** `methodology` is
+CMS's data-collection method for the row. `methodology_change` is `1` when the
+state switched between a Hybrid method (claims plus medical record review) and
+one without (Administrative, EHR, ECDS) since the last year it reported the
+measure. Across states, Hybrid -> Administrative lowers rates by a median 4.5
+points and the reverse raises them by 6.6 (unchanged methods: +0.2). Example:
+Kentucky CIS-CH and IMA-CH moved from Hybrid (FFY 2022) to Administrative (FFY
+2024) and CIS-CH fell from 64 to 19. Administrative <-> ECDS switches show no
+systematic effect and are not flagged.
+
+**Documented problems (`data_quality_note`).** Set in `ingest.R`
+(`quality_notes`), keyed on state, FFY and CMS measure abbreviation:
+
+| Code | Cases | Source |
+|------|-------|--------|
+| `state_data_undercount` | West Virginia W30-CH, WCV-CH, FFY 2023-2024 | Hand-curated: rates fell to about a third when calculated in the state warehouse and recovered in FFY 2025; the state reported a warehouse logic error; plan rates in WV's EQR report confirm |
+| `specification_deviation` | Wyoming AMR-CH, FFY 2022 | Hand-curated: state reported omitting two denominator steps |
+| `ffs_excluded` | AZ, MA, NE, NH, NM, NY, PA (FFY 2024-2025) | Automatic: CMS comment "one-year exemption from reporting this measure for the FFS population" |
+
+Not flagged row by row, but worth knowing: Alaska notes possible
+underreporting from timely-filing lag on many measures (FFY 2021-2025), and
+Virginia warns that FFY 2024 trends should be read with caution due to
+methodological changes.

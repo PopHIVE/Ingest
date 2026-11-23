@@ -94,8 +94,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:11:59.986285",
-      "last_modified": "2026-11-18 00:11:59.986285",
+      "created": "2026-08-14 11:08:26.046272",
+      "last_modified": "2026-11-23 12:11:46.030247",
       "vintage": {},
       "row_count": 22146,
       "entity_count": 52,
@@ -461,8 +461,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:11:59.986285",
-      "last_modified": "2026-11-18 00:11:59.986285",
+      "created": "2026-08-14 11:08:26.047873",
+      "last_modified": "2026-11-23 12:11:37.972721",
       "vintage": {},
       "row_count": 8424,
       "entity_count": 52,
@@ -825,8 +825,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:11:59.986285",
-      "last_modified": "2026-11-18 00:11:59.986285",
+      "created": "2026-08-14 11:08:26.047873",
+      "last_modified": "2026-11-23 12:11:33.658546",
       "vintage": {},
       "row_count": 3744,
       "entity_count": 52,
@@ -1184,8 +1184,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:11:59.986285",
-      "last_modified": "2026-11-18 00:11:59.986285",
+      "created": "2026-08-14 11:08:26.047873",
+      "last_modified": "2026-11-23 12:11:46.082251",
       "vintage": {},
       "row_count": 468,
       "entity_count": 52,
@@ -1425,9 +1425,9 @@
       "sha512": "72a16173171994571875a484a84c40e4d2253dea8b5fa5f388bf195be1ee7c1afb991226685162bdcef7ec07f260904a599abcab7c33ecadb22551702cb80042"
     },
     {
-      "bytes": 7680,
+      "bytes": 9402,
       "encoding": "windows-1252",
-      "md5": "7a3a44023995dffb6c5cccce26cca02d",
+      "md5": "fe210980c787a09b95db08b08f752e51",
       "format": "parquet",
       "name": "medicaid_cancer_screening",
       "filename": "medicaid_cancer_screening.parquet",
@@ -1539,8 +1539,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:11:59.989285",
-      "last_modified": "2026-11-18 00:11:59.989285",
+      "created": "2026-08-14 11:08:26.066647",
+      "last_modified": "2026-11-23 12:11:31.855028",
       "vintage": {},
       "row_count": 1232,
       "entity_count": 50,
@@ -1700,6 +1700,60 @@
             }
           },
           {
+            "name": "methodology",
+            "duplicates": 1223,
+            "info": {
+              "short_name": "CMS data-collection method",
+              "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
+              "id": "methodology"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Administrative": 821,
+              "Administrative & Electronic Clinical Data Systems (ECDS)": 7,
+              "Administrative & Electronic Health Records": 8,
+              "Administrative & Hybrid": 71,
+              "Administrative, Electronic Health Records, & Hybrid": 2,
+              "Administrative, Hybrid, & Electronic Clinical Data Systems (ECDS)": 2,
+              "Electronic Clinical Data Systems (ECDS)": 139,
+              "Electronic Health Records": 1,
+              "Hybrid": 181
+            }
+          },
+          {
+            "name": "methodology_change",
+            "duplicates": 1229,
+            "info": {
+              "short_name": "Method switched to or from medical record review",
+              "short_description": "1 if the state switched between a Hybrid method and one without medical record review since it last reported the measure, which can shift the rate by several points regardless of care; 0 if not; blank for a state's first reported year and for survey measures. See medicaid_quality/measure_info.json (methodology_change).",
+              "id": "methodology_change"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 186,
+            "mean": 0.045889,
+            "sd": 0.209345,
+            "min": 0,
+            "max": 1
+          },
+          {
+            "name": "data_quality_note",
+            "duplicates": 1231,
+            "info": {
+              "short_name": "Documented data-quality problem",
+              "short_description": "Code for a documented reporting problem: state_data_undercount = the state's calculation undercounted, rate too low; specification_deviation = the state departed from the CMS specification; ffs_excluded = fee-for-service enrollees left out under a one-year CMS exemption. Blank if none is documented. See medicaid_quality/measure_info.json (data_quality_note).",
+              "id": "data_quality_note"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 1232,
+            "table": {
+              "1": 0
+            }
+          },
+          {
             "name": "outcome_name",
             "duplicates": 1228,
             "info": {
@@ -1783,7 +1837,7 @@
           }
         ]
       },
-      "sha512": "03a0144504c5124c7de5e8777b065e05abb36d9028e04583478bdedf16932da786bfd4b15b78bd8bf53580cfbe79ade7a9a77bc9abe973addc82557d003ef8e3"
+      "sha512": "b7af1e1811603f8b45aa7b85d11a57e05926789b58c56be01b89e71ad4bd0d87bab5e53809bae156dbc39270a898927e23620586917ae37559667190fdbcdb0c"
     },
     {
       "bytes": 1378462,
@@ -1848,8 +1902,8 @@
       "id_length": 13,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:11:59.999285",
-      "last_modified": "2026-11-18 00:11:59.999285",
+      "created": "2026-09-04 15:15:58.829754",
+      "last_modified": "2026-11-23 12:11:47.934298",
       "vintage": {},
       "row_count": 68040,
       "entity_count": 1,
@@ -2762,6 +2816,21 @@
         }
       },
       "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|population_match"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|methodology": {
+      "short_name": "CMS data-collection method",
+      "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|methodology"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|methodology_change": {
+      "short_name": "Method switched to or from medical record review",
+      "short_description": "1 if the state switched between a Hybrid method and one without medical record review since it last reported the measure, which can shift the rate by several points regardless of care; 0 if not; blank for a state's first reported year and for survey measures. See medicaid_quality/measure_info.json (methodology_change).",
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|methodology_change"
+    },
+    "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|data_quality_note": {
+      "short_name": "Documented data-quality problem",
+      "short_description": "Code for a documented reporting problem: state_data_undercount = the state's calculation undercounted, rate too low; specification_deviation = the state departed from the CMS specification; ffs_excluded = fee-for-service enrollees left out under a one-year CMS exemption. Blank if none is documented. See medicaid_quality/measure_info.json (data_quality_note).",
+      "id": "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|data_quality_note"
     },
     "bundle_cancer_screening/dist/medicaid_cancer_screening.parquet|outcome_name": {
       "short_name": "Cancer screening measure",
@@ -3855,7 +3924,74 @@
       "state": "unchanged"
     },
     "medicaid_cancer_screening.parquet": {
-      "state": "unchanged"
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "year": {
+          "status": "present",
+          "same_type": true
+        },
+        "age": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "sex": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "race_ethnicity": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "population_match": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology_change": {
+          "status": "present",
+          "same_type": true
+        },
+        "data_quality_note": {
+          "status": "present",
+          "same_type": false,
+          "added_levels": null
+        },
+        "outcome_name": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "source": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "value": {
+          "status": "present",
+          "same_type": true
+        }
+      }
     },
     "nccr_incidence.parquet": {
       "state": "unchanged"

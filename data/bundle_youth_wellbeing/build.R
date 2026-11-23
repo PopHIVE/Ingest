@@ -102,7 +102,8 @@ EPIC_MIN_DENOM <- 100
 # Canonical column order; each file carries the subset that applies to it.
 COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
                'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer',
-               'population_match', 'domain',
+               'population_match', 'methodology', 'methodology_change',
+               'data_quality_note', 'domain',
                'vaccine', 'product', 'diagnosis', 'forecast_day',
                'section', 'focus_area', 'source', 'measure', 'rank', 'value', 'pct_captured',               'pct_of_all', 'value_lcl', 'value_ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
                'suppressed', 'not_asked', 'unreliable', 'low_coverage_flag', 'unstable_flag',
@@ -857,12 +858,15 @@ medicaid_preventative <- SPEC %>%
   pull(measure) %>% unique()
 
 vroom::vroom('../medicaid_quality/standard/data_child_core_set.csv.gz',
-             col_types = vroom::cols(geography = 'c', time = 'c'),
+             col_types = vroom::cols(geography = 'c', time = 'c',
+                                     methodology = 'c', methodology_change = 'i',
+                                     data_quality_note = 'c'),
              show_col_types = FALSE) %>%
   filter(measure %in% medicaid_stems, !is.na(value)) %>%
   mutate(measure = paste0(measure, '_rate'),
          age = 'Total', sex = 'Total', race_ethnicity = 'Total') %>%
   select(fips = geography, time, age, sex, race_ethnicity, population_match,
+         methodology, methodology_change, data_quality_note,
          domain, measure, value, pct_25, pct_75) %>%
   # Preventative-care measures (incl. WCV, which replaces W34/AWC from FFY
   # 2021) are kept from 2021 onward only.

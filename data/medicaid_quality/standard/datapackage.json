@@ -4,9 +4,9 @@
   "licenses": [],
   "resources": [
     {
-      "bytes": 226171,
+      "bytes": 246779,
       "encoding": "windows-1252",
-      "md5": "76295e397e7472e738c72e7862385228",
+      "md5": "c6df13f724bea37217061ddac0bd6a4d",
       "format": "csv",
       "name": "data_adult_core_set.csv",
       "filename": "data_adult_core_set.csv.gz",
@@ -46,8 +46,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:02.752285",
-      "last_modified": "2026-11-18 00:12:02.752285",
+      "created": "2026-11-23 09:23:56.278681",
+      "last_modified": "2026-11-23 12:03:04.891918",
       "vintage": {},
       "row_count": 19487,
       "entity_count": 54,
@@ -1032,10 +1032,11 @@
             },
             "time_range": [0, 11],
             "type": "string",
-            "missing": 34,
+            "missing": 0,
             "table": {
               "Higher rates are better": 17175,
-              "Lower rates are better": 2278
+              "Lower rates are better": 2278,
+              "NA": 34
             }
           },
           {
@@ -1146,15 +1147,111 @@
               "broader_incl_duals": 6551,
               "target": 7806
             }
+          },
+          {
+            "name": "methodology",
+            "duplicates": 19470,
+            "info": {
+              "id": "methodology",
+              "short_name": "CMS data-collection method",
+              "long_name": "Data-collection method the state reported for the measure",
+              "category": "access",
+              "short_description": "How the state calculated the rate, as reported to CMS (e.g. Administrative, Hybrid, ECDS, CAHPS 5.1H).",
+              "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_change.",
+              "measure_type": "Category",
+              "unit": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "medicaid_quality_cms"
+                }
+              ]
+            },
+            "time_range": [0, 11],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Administrative": 14745,
+              "Administrative & Electronic Clinical Data Systems (ECDS)": 7,
+              "Administrative & Electronic Health Records": 44,
+              "Administrative & Hybrid": 277,
+              "Administrative, Electronic Health Records, & Hybrid": 4,
+              "Administrative, Hybrid, & Electronic Clinical Data Systems (ECDS)": 2,
+              "Administrative, Hybrid, & Electronic Health Records": 1,
+              "CAHPS 5.0H": 112,
+              "CAHPS 5.1": 58,
+              "CAHPS 5.1 & CAHPS 5.1H": 222,
+              "CAHPS 5.1H": 1903,
+              "Electronic Clinical Data Systems (ECDS)": 328,
+              "Electronic Health Records": 15,
+              "Hybrid": 1212,
+              "Hybrid & Electronic Health Records": 1,
+              "NAM CAHPS": 141,
+              "NCI In-Person Survey": 415
+            }
+          },
+          {
+            "name": "methodology_change",
+            "duplicates": 19484,
+            "info": {
+              "id": "methodology_change",
+              "short_name": "Method switched to or from medical record review",
+              "long_name": "Change in use of medical record review since the state's last reported year",
+              "category": "access",
+              "short_description": "1 if the state switched between a Hybrid method (with medical record review) and one without since it last reported the measure; 0 if not.",
+              "long_description": "Compares the row's methodology with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between Hybrid (including Administrative & Hybrid) and Administrative, EHR or ECDS; 0 = no such change. Blank for the state's first reported year and for survey measures. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
+              "measure_type": "Category",
+              "unit": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "medicaid_quality_cms"
+                }
+              ]
+            },
+            "time_range": [1, 11],
+            "type": "integer",
+            "missing": 6071,
+            "mean": 0.010808,
+            "sd": 0.103402,
+            "min": 0,
+            "max": 1
+          },
+          {
+            "name": "data_quality_note",
+            "duplicates": 19485,
+            "info": {
+              "id": "data_quality_note",
+              "short_name": "Documented data-quality problem",
+              "long_name": "Documented reporting problem for the state, year and measure",
+              "category": "access",
+              "short_description": "A code naming a documented reporting problem that makes the rate less comparable; blank if none is documented.",
+              "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, New Mexico and Pennsylvania in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
+              "measure_type": "Category",
+              "unit": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "medicaid_quality_cms"
+                }
+              ]
+            },
+            "time_range": [0, 11],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "ffs_excluded": 143,
+              "NA": 19344
+            }
           }
         ]
       },
-      "sha512": "4151dcc5c80d8926669dcd7acf197248280908f268ae622f4d7a001c39150d64cf59ac235485a362b7d78b628021e35e8aabc1202ecc08e015c7460d4034c68b"
+      "sha512": "c2e4928be98a57911c343c7821202185eb9a28264d64d1309fd35062f51ddc87197a60ae8f6aea48a736ca31b69ad27915256411cbe4c61363e9dcdf946a0f27"
     },
     {
-      "bytes": 262211,
+      "bytes": 286110,
       "encoding": "windows-1252",
-      "md5": "b3fda394b991755a72bfb4781d8432af",
+      "md5": "7a614d7f21e86e8a98d1ebf4bb9253e4",
       "format": "csv",
       "name": "data_child_core_set.csv",
       "filename": "data_child_core_set.csv.gz",
@@ -1194,8 +1291,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:02.753285",
-      "last_modified": "2026-11-18 00:12:02.753285",
+      "created": "2026-11-23 09:23:56.278681",
+      "last_modified": "2026-11-23 12:03:04.253836",
       "vintage": {},
       "row_count": 22893,
       "entity_count": 54,
@@ -2205,10 +2302,11 @@
             },
             "time_range": [0, 11],
             "type": "string",
-            "missing": 51,
+            "missing": 0,
             "table": {
               "Higher rates are better": 21441,
-              "Lower rates are better": 1401
+              "Lower rates are better": 1401,
+              "NA": 51
             }
           },
           {
@@ -2320,10 +2418,106 @@
               "narrower": 9193,
               "target": 13300
             }
+          },
+          {
+            "name": "methodology",
+            "duplicates": 22878,
+            "info": {
+              "id": "methodology",
+              "short_name": "CMS data-collection method",
+              "long_name": "Data-collection method the state reported for the measure",
+              "category": "access",
+              "short_description": "How the state calculated the rate, as reported to CMS (e.g. Administrative, Hybrid, ECDS, CAHPS 5.1H).",
+              "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_change.",
+              "measure_type": "Category",
+              "unit": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "medicaid_quality_cms"
+                }
+              ]
+            },
+            "time_range": [0, 11],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Administrative": 16491,
+              "Administrative & Electronic Clinical Data Systems (ECDS)": 18,
+              "Administrative & Electronic Health Records": 11,
+              "Administrative & Hybrid": 828,
+              "Administrative, Electronic Health Records, & Hybrid": 7,
+              "Administrative, Hybrid, & Electronic Clinical Data Systems (ECDS)": 18,
+              "CAHPS 5.1": 58,
+              "CAHPS 5.1 & CAHPS 5.1H": 428,
+              "CAHPS 5.1 and CAHPS 5.1H": 8,
+              "CAHPS 5.1H": 2026,
+              "Electronic Clinical Data Systems (ECDS)": 665,
+              "Electronic Health Records": 10,
+              "Electronic Health Records & Electronic Clinical Data Systems (ECDS)": 4,
+              "Hybrid": 2320,
+              "Other": 1
+            }
+          },
+          {
+            "name": "methodology_change",
+            "duplicates": 22890,
+            "info": {
+              "id": "methodology_change",
+              "short_name": "Method switched to or from medical record review",
+              "long_name": "Change in use of medical record review since the state's last reported year",
+              "category": "access",
+              "short_description": "1 if the state switched between a Hybrid method (with medical record review) and one without since it last reported the measure; 0 if not.",
+              "long_description": "Compares the row's methodology with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between Hybrid (including Administrative & Hybrid) and Administrative, EHR or ECDS; 0 = no such change. Blank for the state's first reported year and for survey measures. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
+              "measure_type": "Category",
+              "unit": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "medicaid_quality_cms"
+                }
+              ]
+            },
+            "time_range": [1, 11],
+            "type": "integer",
+            "missing": 6816,
+            "mean": 0.024507,
+            "sd": 0.154622,
+            "min": 0,
+            "max": 1
+          },
+          {
+            "name": "data_quality_note",
+            "duplicates": 22889,
+            "info": {
+              "id": "data_quality_note",
+              "short_name": "Documented data-quality problem",
+              "long_name": "Documented reporting problem for the state, year and measure",
+              "category": "access",
+              "short_description": "A code naming a documented reporting problem that makes the rate less comparable; blank if none is documented.",
+              "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, New Mexico and Pennsylvania in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
+              "measure_type": "Category",
+              "unit": "Category",
+              "time_resolution": "Year",
+              "sources": [
+                {
+                  "id": "medicaid_quality_cms"
+                }
+              ]
+            },
+            "time_range": [0, 11],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "ffs_excluded": 326,
+              "NA": 22552,
+              "specification_deviation": 3,
+              "state_data_undercount": 12
+            }
           }
         ]
       },
-      "sha512": "3c588136089166d3b20505883a9885d2473579cf96104d71120f1ab2e0f32f92c2b0133fa6010e0209d964240c455e22ee7d915e1a279f67741895afecbf988a"
+      "sha512": "4206bc4715dc3dfd7c0e96f34ee46301a7649228064a257a2fbab2909882f8359d05789f274e4dc6e66ba12c932a2d083e6e7ef2c445221c00f8d06ed598cabd"
     }
   ],
   "measure_info": {
@@ -7392,6 +7586,57 @@
       ],
       "citations": []
     },
+    "methodology": {
+      "id": "methodology",
+      "short_name": "CMS data-collection method",
+      "long_name": "Data-collection method the state reported for the measure",
+      "category": "access",
+      "short_description": "How the state calculated the rate, as reported to CMS (e.g. Administrative, Hybrid, ECDS, CAHPS 5.1H).",
+      "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_change.",
+      "measure_type": "Category",
+      "unit": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "medicaid_quality_cms"
+        }
+      ],
+      "citations": []
+    },
+    "methodology_change": {
+      "id": "methodology_change",
+      "short_name": "Method switched to or from medical record review",
+      "long_name": "Change in use of medical record review since the state's last reported year",
+      "category": "access",
+      "short_description": "1 if the state switched between a Hybrid method (with medical record review) and one without since it last reported the measure; 0 if not.",
+      "long_description": "Compares the row's methodology with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between Hybrid (including Administrative & Hybrid) and Administrative, EHR or ECDS; 0 = no such change. Blank for the state's first reported year and for survey measures. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
+      "measure_type": "Category",
+      "unit": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "medicaid_quality_cms"
+        }
+      ],
+      "citations": []
+    },
+    "data_quality_note": {
+      "id": "data_quality_note",
+      "short_name": "Documented data-quality problem",
+      "long_name": "Documented reporting problem for the state, year and measure",
+      "category": "access",
+      "short_description": "A code naming a documented reporting problem that makes the rate less comparable; blank if none is documented.",
+      "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, New Mexico and Pennsylvania in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
+      "measure_type": "Category",
+      "unit": "Category",
+      "time_resolution": "Year",
+      "sources": [
+        {
+          "id": "medicaid_quality_cms"
+        }
+      ],
+      "citations": []
+    },
     "domain": {
       "id": "domain",
       "short_name": "CMS Core Set domain",
@@ -7456,10 +7701,128 @@
   },
   "change_report": {
     "data_adult_core_set.csv.gz": {
-      "state": "unchanged"
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "time": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "domain": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "measure": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "measure_type": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": "NA",
+          "dropped_levels": []
+        },
+        "value": {
+          "status": "present",
+          "same_type": true
+        },
+        "pct_25": {
+          "status": "present",
+          "same_type": true
+        },
+        "pct_75": {
+          "status": "present",
+          "same_type": true
+        },
+        "population_match": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology": {
+          "status": "added"
+        },
+        "methodology_change": {
+          "status": "added"
+        },
+        "data_quality_note": {
+          "status": "added"
+        }
+      }
     },
     "data_child_core_set.csv.gz": {
-      "state": "unchanged"
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "time": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "domain": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "measure": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "measure_type": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": "NA",
+          "dropped_levels": []
+        },
+        "value": {
+          "status": "present",
+          "same_type": true
+        },
+        "pct_25": {
+          "status": "present",
+          "same_type": true
+        },
+        "pct_75": {
+          "status": "present",
+          "same_type": true
+        },
+        "population_match": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology": {
+          "status": "added"
+        },
+        "methodology_change": {
+          "status": "added"
+        },
+        "data_quality_note": {
+          "status": "added"
+        }
+      }
     }
   }
 }

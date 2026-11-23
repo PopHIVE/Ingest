@@ -167,7 +167,8 @@ medicaid_long <- bind_rows(
   mutate(measure = unname(MEDICAID_MEASURES[measure]),
          value = suppressWarnings(as.numeric(value))) %>%
   filter(!is.na(value)) %>%
-  select(geography, time, measure, value, population_match)
+  select(geography, time, measure, value, population_match,
+         methodology, methodology_change, data_quality_note)
 
 # -----------------------------------------------------------------------------
 # 5. CDC WONDER natality — state + national + county; Overall demographic

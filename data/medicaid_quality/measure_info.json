@@ -3619,6 +3619,45 @@
     "sources": [{ "id": "medicaid_quality_cms" }],
     "citations": []
   },
+  "methodology": {
+    "id": "methodology",
+    "short_name": "CMS data-collection method",
+    "long_name": "Data-collection method the state reported for the measure",
+    "category": "access",
+    "short_description": "How the state calculated the rate, as reported to CMS (e.g. Administrative, Hybrid, ECDS, CAHPS 5.1H).",
+    "long_description": "The CMS methodology field for the row the value comes from. Administrative = claims and encounter data only. Hybrid = claims plus medical record review, which usually finds more services and gives higher rates. ECDS / Electronic Health Records = electronic clinical data. CAHPS and NCI are surveys. Rates calculated with different methods are not fully comparable; see methodology_change.",
+    "measure_type": "Category",
+    "unit": "Category",
+    "time_resolution": "Year",
+    "sources": [{ "id": "medicaid_quality_cms" }],
+    "citations": []
+  },
+  "methodology_change": {
+    "id": "methodology_change",
+    "short_name": "Method switched to or from medical record review",
+    "long_name": "Change in use of medical record review since the state's last reported year",
+    "category": "access",
+    "short_description": "1 if the state switched between a Hybrid method (with medical record review) and one without since it last reported the measure; 0 if not.",
+    "long_description": "Compares the row's methodology with the state's most recent earlier year for the same measure, which may not be the previous year. 1 = moved between Hybrid (including Administrative & Hybrid) and Administrative, EHR or ECDS; 0 = no such change. Blank for the state's first reported year and for survey measures. Hybrid to Administrative switches lower rates by a median of about 4.5 points, and the reverse raises them by about 6.6, so a change in the rate in a flagged year may reflect the method rather than care. Switches between Administrative and ECDS are not flagged.",
+    "measure_type": "Category",
+    "unit": "Category",
+    "time_resolution": "Year",
+    "sources": [{ "id": "medicaid_quality_cms" }],
+    "citations": []
+  },
+  "data_quality_note": {
+    "id": "data_quality_note",
+    "short_name": "Documented data-quality problem",
+    "long_name": "Documented reporting problem for the state, year and measure",
+    "category": "access",
+    "short_description": "A code naming a documented reporting problem that makes the rate less comparable; blank if none is documented.",
+    "long_description": "Codes: \"state_data_undercount\" = the state's own calculation undercounted the numerator, so the rate is too low (West Virginia W30-CH and WCV-CH, FFY 2023-2024, calculated in a state data warehouse whose logic the state later reported was undercounting). \"specification_deviation\" = the state reported departing from the CMS specification in a way that changes who is counted (Wyoming AMR-CH, FFY 2022, two denominator steps omitted). \"ffs_excluded\" = the state had a one-year CMS exemption from including fee-for-service enrollees, so the rate covers managed-care members only (taken from CMS's state comments; e.g. Arizona, New Hampshire, New Mexico and Pennsylvania in FFY 2024). A blank does not mean the rate has no problems, only that none is documented here.",
+    "measure_type": "Category",
+    "unit": "Category",
+    "time_resolution": "Year",
+    "sources": [{ "id": "medicaid_quality_cms" }],
+    "citations": []
+  },
   "domain": {
     "id": "domain",
     "short_name": "CMS Core Set domain",

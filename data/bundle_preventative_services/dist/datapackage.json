@@ -70,8 +70,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:00.441285",
-      "last_modified": "2026-11-18 00:12:00.441285",
+      "created": "2026-08-14 11:08:33.550982",
+      "last_modified": "2026-11-23 12:13:45.895172",
       "vintage": {},
       "row_count": 44567,
       "entity_count": 52,
@@ -429,8 +429,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:00.442285",
-      "last_modified": "2026-11-18 00:12:00.442285",
+      "created": "2026-08-14 11:08:33.55298",
+      "last_modified": "2026-11-23 12:13:26.941273",
       "vintage": {},
       "row_count": 21528,
       "entity_count": 52,
@@ -785,8 +785,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:00.442285",
-      "last_modified": "2026-11-18 00:12:00.442285",
+      "created": "2026-08-14 11:08:33.554914",
+      "last_modified": "2026-11-23 12:13:18.419407",
       "vintage": {},
       "row_count": 7488,
       "entity_count": 52,
@@ -1128,8 +1128,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:00.442285",
-      "last_modified": "2026-11-18 00:12:00.442285",
+      "created": "2026-08-14 11:08:33.555912",
+      "last_modified": "2026-11-23 12:13:46.034321",
       "vintage": {},
       "row_count": 1248,
       "entity_count": 52,
@@ -1389,9 +1389,9 @@
       "sha512": "4e7f56b724a954b519944480753a22bdf850337b8999a7df13471bf91470b4756a96c682fe1c7b1ee26d77c0719389dcf4cd7095e6e14bf7ccb7a3f2bb62c8a2"
     },
     {
-      "bytes": 9324,
+      "bytes": 11300,
       "encoding": "IBM420_ltr",
-      "md5": "a73a9803c2f954c070597a9fad1436a7",
+      "md5": "dbfdb4bd1bec6f0af27efabc3e3b9a05",
       "format": "parquet",
       "name": "medicaid_preventative_services",
       "filename": "medicaid_preventative_services.parquet",
@@ -1463,8 +1463,8 @@
       "id_length": 0,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:12:00.442285",
-      "last_modified": "2026-11-18 00:12:00.442285",
+      "created": "2026-08-14 11:08:33.563086",
+      "last_modified": "2026-11-23 12:13:15.230595",
       "vintage": {},
       "row_count": 1657,
       "entity_count": 51,
@@ -1625,6 +1625,61 @@
             }
           },
           {
+            "name": "methodology",
+            "duplicates": 1647,
+            "info": {
+              "short_name": "CMS data-collection method",
+              "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
+              "id": "methodology"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 0,
+            "table": {
+              "Administrative": 1100,
+              "Administrative & Electronic Health Records": 9,
+              "Administrative & Hybrid": 59,
+              "Administrative, Electronic Health Records, & Hybrid": 2,
+              "Administrative, Hybrid, & Electronic Health Records": 1,
+              "CAHPS 5.0H": 28,
+              "CAHPS 5.1": 1,
+              "CAHPS 5.1H": 94,
+              "Electronic Health Records": 7,
+              "Hybrid": 356
+            }
+          },
+          {
+            "name": "methodology_change",
+            "duplicates": 1654,
+            "info": {
+              "short_name": "Method switched to or from medical record review",
+              "short_description": "1 if the state switched between a Hybrid method and one without medical record review since it last reported the measure, which can shift the rate by several points regardless of care; 0 if not; blank for a state's first reported year and for survey measures. See medicaid_quality/measure_info.json (methodology_change).",
+              "id": "methodology_change"
+            },
+            "time_range": [-1, -1],
+            "type": "integer",
+            "missing": 314,
+            "mean": 0.025316,
+            "sd": 0.157143,
+            "min": 0,
+            "max": 1
+          },
+          {
+            "name": "data_quality_note",
+            "duplicates": 1655,
+            "info": {
+              "short_name": "Documented data-quality problem",
+              "short_description": "Code for a documented reporting problem: state_data_undercount = the state's calculation undercounted, rate too low; specification_deviation = the state departed from the CMS specification; ffs_excluded = fee-for-service enrollees left out under a one-year CMS exemption. Blank if none is documented. See medicaid_quality/measure_info.json (data_quality_note).",
+              "id": "data_quality_note"
+            },
+            "time_range": [-1, -1],
+            "type": "string",
+            "missing": 1652,
+            "table": {
+              "ffs_excluded": 5
+            }
+          },
+          {
             "name": "outcome_name",
             "duplicates": 1652,
             "info": {
@@ -1708,7 +1763,7 @@
           }
         ]
       },
-      "sha512": "933d799b0e13ef1024b2fa9f19a8a3c19c6e4a57e111482da8463419b5ae2537f6e5602931d0ee780dbd5c0262cd26bd76bece944b72bd6b334b92a374377f75"
+      "sha512": "4b7b44cd70f341508a8c64ed80a792dc7af9ddb8779d94cafe400f4fd0acbf4540893730e8c115c32749ced7c1d45386ead2f56e90d7d3e8d6d671c16008f027"
     }
   ],
   "measure_info": {
@@ -1752,6 +1807,21 @@
         }
       },
       "id": "bundle_preventative_services/dist/medicaid_preventative_services.parquet|population_match"
+    },
+    "bundle_preventative_services/dist/medicaid_preventative_services.parquet|methodology": {
+      "short_name": "CMS data-collection method",
+      "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
+      "id": "bundle_preventative_services/dist/medicaid_preventative_services.parquet|methodology"
+    },
+    "bundle_preventative_services/dist/medicaid_preventative_services.parquet|methodology_change": {
+      "short_name": "Method switched to or from medical record review",
+      "short_description": "1 if the state switched between a Hybrid method and one without medical record review since it last reported the measure, which can shift the rate by several points regardless of care; 0 if not; blank for a state's first reported year and for survey measures. See medicaid_quality/measure_info.json (methodology_change).",
+      "id": "bundle_preventative_services/dist/medicaid_preventative_services.parquet|methodology_change"
+    },
+    "bundle_preventative_services/dist/medicaid_preventative_services.parquet|data_quality_note": {
+      "short_name": "Documented data-quality problem",
+      "short_description": "Code for a documented reporting problem: state_data_undercount = the state's calculation undercounted, rate too low; specification_deviation = the state departed from the CMS specification; ffs_excluded = fee-for-service enrollees left out under a one-year CMS exemption. Blank if none is documented. See medicaid_quality/measure_info.json (data_quality_note).",
+      "id": "bundle_preventative_services/dist/medicaid_preventative_services.parquet|data_quality_note"
     },
     "bundle_preventative_services/dist/medicaid_preventative_services.parquet|outcome_name": {
       "short_name": "Medicaid quality measure",
@@ -2179,7 +2249,74 @@
       "state": "unchanged"
     },
     "medicaid_preventative_services.parquet": {
-      "state": "unchanged"
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "year": {
+          "status": "present",
+          "same_type": true
+        },
+        "age": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "sex": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "race_ethnicity": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "population_match": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology_change": {
+          "status": "present",
+          "same_type": true
+        },
+        "data_quality_note": {
+          "status": "present",
+          "same_type": false,
+          "added_levels": "ffs_excluded"
+        },
+        "outcome_name": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "source": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "value": {
+          "status": "present",
+          "same_type": true
+        }
+      }
     }
   }
 }

@@ -190,7 +190,8 @@ medicaid_state <- bind_rows(
   mutate(measure = paste0(measure, "_", stat),
          value = suppressWarnings(as.numeric(value))) %>%
   filter(!is.na(value)) %>%
-  select(geography, time, measure, value, population_match) %>%
+  select(geography, time, measure, value, population_match,
+         methodology, methodology_change, data_quality_note) %>%
   mutate(source = "CMS Medicaid Core Set")
 
 # -----------------------------------------------------------------------------

@@ -374,6 +374,53 @@ if (!identical(process$raw_state, raw_state)) {
     )) %>%
     select(geography, state_name)
 
+  # ---------------------------------------------------------------------------
+  # Data-quality notes: state-year-measures with a documented reporting problem
+  # ---------------------------------------------------------------------------
+  # Keyed on state, FFY and CMS measure abbreviation, so a note covers every
+  # rate of the measure (e.g. all WCV-CH age bands) and every population the
+  # state reported. Written to the Core Set files as `data_quality_note`
+  # (blank = nothing documented). Codes:
+  #   state_data_undercount   the state's own calculation undercounted the
+  #                           numerator; the rate is too low
+  #   specification_deviation the state reported a deviation from the CMS
+  #                           specification that changes the denominator
+  #   ffs_excluded            fee-for-service enrollees left out (one-year CMS
+  #                           exemption); managed-care members only
+  # Hand-curated cases, each checked against CMS's state-specific comments and
+  # the rate series:
+  #   * West Virginia W30-CH / WCV-CH, FFY 2023-2024: calculated in the state's
+  #     data warehouse (EDS) instead of the MCOs' HEDIS systems; rates fell to
+  #     roughly a third (W30 rate 2: 71 -> 24) and recovered in FFY 2025 when
+  #     MCO systems were used again. The FFY 2025 comment reports a taxonomy
+  #     logic error in the warehouse that undercounts the numerator. The plan
+  #     rates in the state's EQR technical report (MY 2023: 60.6 / 76.8)
+  #     confirm the FFY 2024 values are too low.
+  #   * Wyoming AMR-CH, FFY 2022: "Omitted denominator Steps 2 ... and 3.2".
+  quality_notes_curated <- tribble(
+    ~state,          ~time_year,      ~measure_abbr, ~data_quality_note,
+    "West Virginia", c("2023", "2024"), "W30-CH",    "state_data_undercount",
+    "West Virginia", c("2023", "2024"), "WCV-CH",    "state_data_undercount",
+    "Wyoming",       "2022",            "AMR-CH",    "specification_deviation"
+  ) %>%
+    unnest(time_year)
+  # Comment-derived: states granted CMS's one-year exemption from including FFS
+  # enrollees (Pennsylvania FFY 2024-2025 at the time of writing). The comment
+  # sits on the separate Medicaid / CHIP rows, not on the combined row that
+  # may be kept, hence the state-year-measure key.
+  quality_notes_ffs <- data1 %>%
+    filter(grepl("exemption from reporting this measure for the FFS population",
+                 state_comments, ignore.case = TRUE)) %>%
+    distinct(state, time_year, measure_abbr) %>%
+    mutate(data_quality_note = "ffs_excluded")
+  quality_notes <- bind_rows(quality_notes_curated, quality_notes_ffs) %>%
+    left_join(state_fips_lookup, by = c("state" = "state_name")) %>%
+    transmute(geography, time = paste0(time_year, "-12-31"), measure_abbr,
+              data_quality_note) %>%
+    group_by(geography, time, measure_abbr) %>%
+    summarize(data_quality_note = paste(sort(unique(data_quality_note)), collapse = ";"),
+              .groups = "drop")
+
   #creating wide format
   data_long <- data1 %>%
     # state names -> FIPS (all_fips has no names for the territories, so fill
@@ -605,7 +652,7 @@ if (!identical(process$raw_state, raw_state)) {
     add_population_match() %>%
     select(geography, geography_level, time, age, sex, race_ethnicity,
            payer, domain, measure_abbr, measure_info, measure_clean, sub_metric, sub_extra,
-           population, pop_tier, pop_extra, population_match,
+           population, pop_tier, pop_extra, population_match, methodology,
            measure_type, pct_inverted,
            row_id, value, pct25, pct75) %>%
     pivot_longer(cols = c(value, pct25, pct75), names_to = "stat", values_to = "val") %>%
@@ -625,9 +672,11 @@ if (!identical(process$raw_state, raw_state)) {
   # rate, and the rate / pct_25 / pct_75 are then all taken from that same row
   # (same population), never mixed across rows. `keys` has no payer, so the
   # pick is made across all populations a state reported.
-  # flag_match = TRUE adds a <measure>_population_match column per measure
-  # recording how the chosen row relates to the target population (the Core
-  # Set files then pivot these wide columns into long format).
+  # flag_match = TRUE adds, per measure, <measure>_population_match (how the
+  # chosen row relates to the target population), <measure>_methodology (the
+  # chosen row's CMS data-collection method) and <measure>_cmsabbr (its CMS
+  # abbreviation, used to attach data-quality notes); the Core Set files then
+  # pivot these wide columns into long format.
   widen_measures <- function(d, keys = c("geography", "time", "domain"),
                              flag_match = FALSE, label = "") {
     d <- warn_collapsed(d) %>%
@@ -643,16 +692,19 @@ if (!identical(process$raw_state, raw_state)) {
       filter(row_id %in% winners$row_id) %>%
       select(-measure_abbr, -measure_info, -population, -row_id,
              -base_var, -rate_missing, -pop_tier, -pop_extra, -population_match,
-             -measure_type, -pct_inverted,
+             -methodology, -measure_type, -pct_inverted,
              -any_of(setdiff("payer", keys))) %>%
       pivot_wider(names_from = var_name, values_from = val) %>%
       mutate(across(starts_with("medicaid_"), as.numeric))
     if (flag_match) {
       flags <- winners %>%
-        transmute(across(all_of(keys)),
-                  flag_name = paste0(base_var, "_population_match"),
-                  population_match) %>%
-        pivot_wider(names_from = flag_name, values_from = population_match)
+        transmute(across(all_of(keys)), base_var,
+                  population_match, methodology, cmsabbr = measure_abbr) %>%
+        pivot_longer(c(population_match, methodology, cmsabbr),
+                     names_to = "flag", values_to = "flag_val") %>%
+        mutate(flag_name = paste0(base_var, "_", flag)) %>%
+        select(-base_var, -flag) %>%
+        pivot_wider(names_from = flag_name, values_from = flag_val)
       wide <- wide %>%
         left_join(flags, by = keys) %>%
         # keep each measure's rate / pct_25 / pct_75 / flag together
@@ -685,8 +737,29 @@ if (!identical(process$raw_state, raw_state)) {
                      label = label) %>%
       pivot_longer(starts_with("medicaid_"),
                    names_to = c("measure", ".value"),
-                   names_pattern = "^(.*)_(rate|pct_25|pct_75|population_match)$") %>%
+                   names_pattern = "^(.*)_(rate|pct_25|pct_75|population_match|methodology|cmsabbr)$") %>%
       filter(!is.na(rate)) %>%
+      # methodology_change: 1 if the state moved between a method that uses
+      # medical-record review (Hybrid, incl. "Administrative & Hybrid") and one
+      # that does not (Administrative / EHR / ECDS) since the last year it
+      # reported the measure (not necessarily the previous FFY -- e.g. Kentucky
+      # CIS-CH: Hybrid in FFY 2022, nothing in 2023, Administrative in 2024).
+      # Across states such switches move the rate a median 4.5 points down
+      # (Hybrid -> Administrative) or 6.6 points up (the reverse), against
+      # 0.2 points for unchanged methods; Administrative <-> ECDS switches make
+      # no systematic difference and are not flagged. NA for a state's first
+      # reported year and for survey measures (CAHPS, NCI) or unreported methods.
+      mutate(uses_mrr = case_when(
+        grepl("Hybrid", methodology)                             ~ TRUE,
+        grepl("Administrative|Electronic", methodology)          ~ FALSE,
+        TRUE                                                     ~ NA)) %>%
+      group_by(geography, measure) %>%
+      arrange(time, .by_group = TRUE) %>%
+      mutate(prev_mrr = lag(uses_mrr)) %>%
+      fill(prev_mrr, .direction = "down") %>%
+      ungroup() %>%
+      mutate(methodology_change = as.integer(uses_mrr != prev_mrr)) %>%
+      left_join(quality_notes, by = c("geography", "time", "cmsabbr" = "measure_abbr")) %>%
       # In FFY 2014 CMS used domain labels it later dropped (e.g. Behavioral
       # Health vs Behavioral Health Care from 2015); label every year with the
       # measure's most recent domain
@@ -696,7 +769,8 @@ if (!identical(process$raw_state, raw_state)) {
       ungroup() %>%
       left_join(measure_direction, by = "measure") %>%
       select(geography, time, domain, measure, measure_type, value = rate,
-             pct_25, pct_75, population_match) %>%
+             pct_25, pct_75, population_match, methodology, methodology_change,
+             data_quality_note) %>%
       arrange(geography, time, measure)
   }
 

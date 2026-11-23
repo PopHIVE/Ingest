@@ -71,8 +71,8 @@
       "id_length": 5,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:11:59.955285",
-      "last_modified": "2026-11-18 00:11:59.955285",
+      "created": "2026-10-12 09:16:36.739756",
+      "last_modified": "2026-11-23 12:05:00.785023",
       "vintage": {},
       "row_count": 13638,
       "entity_count": 527,
@@ -1090,9 +1090,9 @@
       "sha512": "793e419cae033581241a0fe287c20ab2f30632df4c7ea57d028426c23141ff9bacb4ed73c30c092f8bdb9207a5af011b77368f4e40249032f30b1613fc286399"
     },
     {
-      "bytes": 140093,
+      "bytes": 144306,
       "encoding": "windows-1252",
-      "md5": "4ba9495cd825e6e53608deca46465e44",
+      "md5": "87c6abfad45a48eccdd3e57188fd7a44",
       "format": "parquet",
       "name": "adolescent_vax_demographics",
       "filename": "adolescent_vax_demographics.parquet",
@@ -1152,8 +1152,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:11:59.956285",
-      "last_modified": "2026-11-18 00:11:59.956285",
+      "created": "2026-10-12 09:16:36.739756",
+      "last_modified": "2026-11-23 12:05:00.823204",
       "vintage": {},
       "row_count": 22476,
       "entity_count": 55,
@@ -2373,12 +2373,12 @@
           }
         ]
       },
-      "sha512": "34be1fcb9ab77959e3715c5e949d5da24329c72fe5ee2019297acd2481892d3ee5ae8ee9dba281b529592ff46ed922d9728a885c1a216755770690d4324181c9"
+      "sha512": "0b566aa101983e7b196d487f0e770bc34f3376169239e4d97e4e6dac37c2d6b09ffd623d0d85af54b63cdfaca0b655fd645a2646db76f89fc17e61a7e9a689be"
     },
     {
-      "bytes": 101265,
+      "bytes": 103376,
       "encoding": "windows-1252",
-      "md5": "1f0c7371551a8c50fe007bccee2c3a4c",
+      "md5": "dfe9735a443dced72183cffea43b23ab",
       "format": "parquet",
       "name": "adolescent_vax_state",
       "filename": "adolescent_vax_state.parquet",
@@ -2454,8 +2454,8 @@
       "id_length": 2,
       "time": "time",
       "profile": "data-resource",
-      "created": "2026-11-18 00:11:59.956285",
-      "last_modified": "2026-11-18 00:11:59.956285",
+      "created": "2026-10-12 09:16:36.749706",
+      "last_modified": "2026-11-23 12:05:00.765478",
       "vintage": {},
       "row_count": 17707,
       "entity_count": 55,
@@ -4422,6 +4422,58 @@
             }
           },
           {
+            "name": "methodology",
+            "duplicates": 17699,
+            "info": {
+              "short_name": "CMS data-collection method",
+              "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
+              "id": "methodology"
+            },
+            "time_range": [0, 11],
+            "type": "string",
+            "missing": 14518,
+            "table": {
+              "Administrative": 1326,
+              "Administrative & Electronic Clinical Data Systems (ECDS)": 18,
+              "Administrative & Hybrid": 498,
+              "Administrative, Hybrid, & Electronic Clinical Data Systems (ECDS)": 18,
+              "Electronic Clinical Data Systems (ECDS)": 18,
+              "Hybrid": 1308,
+              "Other": 3
+            }
+          },
+          {
+            "name": "methodology_change",
+            "duplicates": 17704,
+            "info": {
+              "short_name": "Method switched to or from medical record review",
+              "short_description": "1 if the state switched between a Hybrid method and one without medical record review since it last reported the measure, which can shift the rate by several points regardless of care; 0 if not; blank for a state's first reported year and for survey measures. See medicaid_quality/measure_info.json (methodology_change).",
+              "id": "methodology_change"
+            },
+            "time_range": [1, 11],
+            "type": "string",
+            "missing": 14959,
+            "table": {
+              "0": 2535,
+              "1": 213
+            }
+          },
+          {
+            "name": "data_quality_note",
+            "duplicates": 17705,
+            "info": {
+              "short_name": "Documented data-quality problem",
+              "short_description": "Code for a documented reporting problem: state_data_undercount = the state's calculation undercounted, rate too low; specification_deviation = the state departed from the CMS specification; ffs_excluded = fee-for-service enrollees left out under a one-year CMS exemption. Blank if none is documented. See medicaid_quality/measure_info.json (data_quality_note).",
+              "id": "data_quality_note"
+            },
+            "time_range": [10, 11],
+            "type": "string",
+            "missing": 17671,
+            "table": {
+              "ffs_excluded": 36
+            }
+          },
+          {
             "name": "source",
             "duplicates": 17704,
             "info": {
@@ -4451,7 +4503,7 @@
           }
         ]
       },
-      "sha512": "bd9bbe603c8170650ba8c4056313361b8637d3a33a96e021618b3afaa6547655742a72abd6ac0d3113190f2d961a8665f5e67654021b5ef42cad6089e0d323e0"
+      "sha512": "9522d004469d01e6cc23c4f4e5af4d4c1ea41b77f947f67f63b4e91a6abc70258162b8c8856b6fc6260dfeb2d500a94b1b5aad805b7f45cb5d3431087ac5f3b3"
     }
   ],
   "measure_info": {
@@ -6188,6 +6240,21 @@
       },
       "id": "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|population_match"
     },
+    "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|methodology": {
+      "short_name": "CMS data-collection method",
+      "short_description": "How the state calculated the Medicaid rate, as reported to CMS: Administrative = claims and encounters only; Hybrid = claims plus medical record review, which usually gives higher rates; ECDS / EHR = electronic clinical data; CAHPS / NCI = surveys. See medicaid_quality/measure_info.json (methodology).",
+      "id": "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|methodology"
+    },
+    "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|methodology_change": {
+      "short_name": "Method switched to or from medical record review",
+      "short_description": "1 if the state switched between a Hybrid method and one without medical record review since it last reported the measure, which can shift the rate by several points regardless of care; 0 if not; blank for a state's first reported year and for survey measures. See medicaid_quality/measure_info.json (methodology_change).",
+      "id": "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|methodology_change"
+    },
+    "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|data_quality_note": {
+      "short_name": "Documented data-quality problem",
+      "short_description": "Code for a documented reporting problem: state_data_undercount = the state's calculation undercounted, rate too low; specification_deviation = the state departed from the CMS specification; ffs_excluded = fee-for-service enrollees left out under a one-year CMS exemption. Blank if none is documented. See medicaid_quality/measure_info.json (data_quality_note).",
+      "id": "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|data_quality_note"
+    },
     "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|value": {
       "id": "bundle_adolescent_vaccination/dist/adolescent_vax_state.parquet|value",
       "short_name": "Value",
@@ -7626,10 +7693,127 @@
       "state": "unchanged"
     },
     "adolescent_vax_demographics.parquet": {
-      "state": "unchanged"
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "time": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "survey_years": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "stratum_type": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "stratum": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "measure": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "value": {
+          "status": "present",
+          "same_type": true
+        },
+        "value_lcl": {
+          "status": "present",
+          "same_type": true
+        },
+        "value_ucl": {
+          "status": "present",
+          "same_type": true
+        },
+        "sample_size": {
+          "status": "present",
+          "same_type": true
+        },
+        "source": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        }
+      }
     },
     "adolescent_vax_state.parquet": {
-      "state": "unchanged"
+      "state": "changed",
+      "variables": {
+        "geography": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "time": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "measure": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "value": {
+          "status": "present",
+          "same_type": true
+        },
+        "value_lcl": {
+          "status": "present",
+          "same_type": true
+        },
+        "value_ucl": {
+          "status": "present",
+          "same_type": true
+        },
+        "sample_size": {
+          "status": "present",
+          "same_type": true
+        },
+        "population_match": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        },
+        "methodology": {
+          "status": "added"
+        },
+        "methodology_change": {
+          "status": "added"
+        },
+        "data_quality_note": {
+          "status": "added"
+        },
+        "source": {
+          "status": "present",
+          "same_type": true,
+          "added_levels": [],
+          "dropped_levels": []
+        }
+      }
     }
   }
 }
