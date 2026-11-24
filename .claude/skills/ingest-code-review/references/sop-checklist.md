@@ -17,7 +17,7 @@ Use these rows, in this order, for the coverage table in the report. "Who decide
 | 7 | Other categories (race/ethnicity, income) consistent with other datasets | D09 | Read the levels against Conventions and against the bundle, as for row 5. `D09` lists only the usual demographic columns, so read other category columns from the file | person |
 | 8 | Percentages per 100, not per 1 | M08 | Confirm against the raw values | script |
 | 9 | Plots: gaps, outliers, jumps | D06, `render_plots.R` | Hand over the html paths and the `HUMAN D06` lines. Do not interpret the plots | person |
-| 10 | `measure_info.json`: descriptions, units, source, restrictions | M01-M05, M08, M10 | Read every new or changed entry | skill, person for wording |
+| 10 | `measure_info.json`: descriptions, units, source, restrictions | M01-M05, M08, M10 | Read every new or changed entry and trace each statement to the source's own documentation (step 8 of the skill). A statement that cannot be traced is a finding. The item cannot pass on plausible wording alone | skill, person for wording |
 | 11 | `process.json` properly formatted | S01, S02, S04, S09, `check_data_changes.py` (local-path, crlf-hash) | | script |
 | 12 | First `_sources` description covers the whole source | M06 | Read it | skill |
 | 13 | Large raw data or proprietary data kept out of Ingest | S06, `check_data_changes.py` (file-size, raw-file) | The script warns at 50 MB of raw data in a folder, or 10 MB added. Ask about redistribution rights when raw files are added | person |

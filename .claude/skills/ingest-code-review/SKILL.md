@@ -143,7 +143,18 @@ For a source with raw files, reconcile the `R01` tallies: apply the row filters 
 
 ### 8. Read the metadata
 
-Read the `measure_info.json` diff. For each new or changed entry, check that the description says what the column is, that the unit matches the range of the values (the `D00` and `B00` lines print the ranges), and that `measure_type` is right. Read the first `_sources` description (`M06`): it is the only one shown on the site, so it has to cover every file in the folder. Check `restrictions` against the wording in CLAUDE.md. Flag text that reads as machine-written or states things the source documentation does not.
+Read the `measure_info.json` diff. For each new or changed entry, check that the description says what the column is, that the unit matches the range of the values (the `D00` and `B00` lines print the ranges), and that `measure_type` is right. Read the first `_sources` description (`M06`): it is the only one shown on the site, so it has to cover every file in the folder. Check `restrictions` against the wording in CLAUDE.md.
+
+Everything in `measure_info.json` has to come from the source, not from a guess. For each new or changed entry, find where the source itself states the definition, the unit, the measure type, the time resolution and the population or denominator. Places to look, in this order:
+
+- the metadata file dcf saves next to a CDC download (`raw/<dataset-id>.json`: dataset description and column descriptions)
+- the source's data dictionary, codebook or technical notes, at the `url` and `location_url` given in `_sources`
+- column headers and footnotes in the raw file
+- documentation the author links in the PR
+
+Do the same for the `_sources` description and the `restrictions` text. Compare them with the source's own "about" and terms-of-use pages.
+
+A statement you cannot find in any of these is a finding: quote the sentence and say it is not in the source documentation. This covers definitions that only restate the column name, units worked out from the size of the values, qualifiers the source does not use, and descriptions copied from a similar measure in another source. Do not judge an entry by whether it sounds plausible, and do not suggest replacement wording from your own knowledge of the topic. If the documentation is not in the repo and not at the URLs given, ask the author for it. Also flag text that reads as machine-written.
 
 ### 9. Bundles
 
