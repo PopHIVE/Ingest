@@ -121,3 +121,46 @@ arrow::write_parquet(wapo_counties, "dist/wapo_vax_counties.parquet")
 # Washington Post school vaccination data - school level
 wapo_schools <- vroom::vroom('../schoolvax_washpost/standard/data_schools.csv.gz')
 arrow::write_parquet(wapo_schools, "dist/wapo_vax_schools.parquet")
+
+############################################################
+# Epic Cosmos birth vaccines (Vitamin K, RSV immunization, HepB) - state, annual
+# Two population bases, kept as separate files:
+#   data.csv.gz           - all patients with birthing parent information (upper bound)
+#   data_cpt_birth.csv.gz - subset with a billed birth encounter CPT code (lower bound)
+vroom::vroom('../epic_birth_vaccines/standard/data.csv.gz',
+             col_types = vroom::cols(geography = 'c')) %>%
+  arrow::write_parquet("dist/epic_birth_vaccines.parquet")
+
+vroom::vroom('../epic_birth_vaccines/standard/data_cpt_birth.csv.gz',
+             col_types = vroom::cols(geography = 'c')) %>%
+  arrow::write_parquet("dist/epic_birth_vaccines_cpt_birth.parquet")
+
+# Long version of both files for the MCP server: one row per
+# geography / time / measure, with the measure's own suppression flag.
+# Measures from data_cpt_birth.csv.gz get a `_cpt_birth` suffix.
+epic_birth_long <- function(file, suffix) {
+  d <- vroom::vroom(file, col_types = vroom::cols(geography = 'c'),
+                    show_col_types = FALSE)
+  measures <- setdiff(grep('_suppressed_flag$', names(d), value = TRUE,
+                           invert = TRUE), c('geography', 'time'))
+  missing_flag <- setdiff(paste0(measures, '_suppressed_flag'), names(d))
+  if (length(missing_flag)) stop('no suppression flag for: ', paste(missing_flag, collapse = ', '))
+  bind_rows(lapply(measures, function(m) {
+    tibble(geography = d$geography, time = d$time,
+           measure = paste0(m, suffix),
+           value = d[[m]],
+           suppressed_flag = d[[paste0(m, '_suppressed_flag')]])
+  }))
+}
+
+bind_rows(
+  epic_birth_long('../epic_birth_vaccines/standard/data.csv.gz', ''),
+  epic_birth_long('../epic_birth_vaccines/standard/data_cpt_birth.csv.gz', '_cpt_birth')
+) %>%
+  # Drop missing cells. The only ones are RSV before 2023 (nirsevimab not yet
+  # approved), where the measure did not exist.
+  filter(!is.na(value)) %>%
+  mutate(source = 'Epic Cosmos') %>%
+  dplyr::select(geography, time, source, measure, value, suppressed_flag) %>%
+  arrange(measure, geography, time) %>%
+  arrow::write_parquet("dist/epic_birth_vaccines_long.parquet")
