@@ -834,6 +834,10 @@ validate_standard_file("data/source_name/standard/data.csv.gz")
 Rscript scripts/build_docs.R
 ```
 
+### Reviewing a pull request
+
+Before a PR is merged, run the `ingest-code-review` skill on it (`/ingest-code-review <PR number>`, files in `.claude/skills/ingest-code-review/`). It checks the change against the QC SOP with read-only checks and reports what a person still has to look at.
+
 ---
 
 ## Validating a New Dataset (Visual QA Report)
