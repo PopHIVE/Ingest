@@ -870,6 +870,10 @@
       "nsch_pct_well_visit_12_17": { "measure_type": "Percent", "unit": "Percent" }
     }
   },
+  "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|measure_stem": {
+    "short_name": "Measure stem",
+    "short_description": "The measure name without its age-range suffix (e.g. nsch_pct_behavior_conduct for nsch_pct_behavior_conduct_6_11). Names with no age suffix are unchanged."
+  },
   "bundle_youth_wellbeing/dist/nsch_state_age_demographics.parquet|value": {
     "short_name": "Value",
     "short_description": "Weighted percent (0-100) of children. Suppressed cells (unweighted denominator under 30) and years or age bands where the question was not asked are not in this file."
@@ -2428,10 +2432,12 @@
     "sources": [
       "bundle_childhood_immunizations",
       "county_health_rankings",
+      "crisis_text_line",
       "drowning",
       "epic_chronic",
       "epic_concussions",
       "epic_injury",
+      "epic_mental_health",
       "medicaid_quality",
       "neiss",
       "nhtsa_crash",
@@ -2613,6 +2619,22 @@
         ],
         "source_files": [
           "drowning/standard/data_county.csv.gz"
+        ]
+      },
+      "epic_mental_health_state_age_quarter.parquet": {
+        "sources": [
+          "epic_mental_health"
+        ],
+        "source_files": [
+          "epic_mental_health/standard/data.csv.gz"
+        ]
+      },
+      "ctl_state_age_quarter.parquet": {
+        "sources": [
+          "crisis_text_line"
+        ],
+        "source_files": [
+          "crisis_text_line/standard/data.csv.gz"
         ]
       }
     }

@@ -76,9 +76,9 @@ AGE_DROWN   <- c('<1' = '<1 year', '1-4' = '1-4 years', '5-14' = '5-14 years',
                  '15-24' = '15-24 years', '0-24' = '0-24 years')
 AGE_YRBSS   <- c('14' = '14 years', '15' = '15 years', '16' = '16 years',
                  '17' = '17 years', 'Overall' = 'Overall')
-# NSCH source age levels kept. They are NOT mapped by a fixed lookup: each
-# measure's own age range bounds its labels -- see nsch_age() in section 3b.
-AGE_NSCH    <- c('0-5', '6-11', '12-17', 'Overall')
+# NSCH ages arrive already cut to each measure's own age range ('3-5',
+# '3-17', '6mo-5', ...; see nsch/ingest.R), so they only gain ' years'.
+nsch_age_label <- function(age) if_else(age == '6mo-5', '6 months-5 years', paste0(age, ' years'))
 
 # YRBSS and NSCH report race and Hispanic ethnicity in one column (Hispanic,
 # then non-Hispanic single races and 2+ races); WISQARS keeps them separate.
@@ -104,7 +104,7 @@ COL_ORDER <- c('geography', 'fips', 'state', 'time', 'year',
                'age', 'sex', 'race', 'ethnicity', 'race_ethnicity', 'payer',
                'population_match', 'domain',
                'vaccine', 'product', 'diagnosis', 'forecast_day',
-               'section', 'focus_area', 'source', 'measure', 'rank', 'value', 'pct_captured',               'pct_of_all', 'value_lcl', 'value_ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
+               'section', 'focus_area', 'source', 'measure', 'measure_stem', 'rank', 'value', 'pct_captured',               'pct_of_all', 'value_lcl', 'value_ucl', 'pct_25', 'pct_75', 'sample_size', 'n_sampled',
                'suppressed', 'not_asked', 'unreliable', 'low_coverage_flag', 'unstable_flag',
                'percent_surveyed', 'survey_type')
 
@@ -509,50 +509,30 @@ bind_rows(
 # crossed at a time: age x sex and age x race/ethnicity, each with an 'Overall'
 # level that repeats the age-only rows and is dropped here.
 #
-# Many measures have their own age universe, named by the _<lo>_<hi> suffix
-# (e.g. _6_17; _6mo_5 = 6 months-5 years; no suffix = 0-17). The source's
-# 'Overall' is the estimate over that universe, not over all children 0-17, and
-# its bands are populated only where they overlap it. So age labels are clipped
-# to the universe: 'Overall' for nsch_pct_flourishing_6_17 becomes '6-17 years',
-# the 0-5 band of nsch_pct_adhd_3_17 becomes '3-5 years', and so on. Where the
-# universe sits inside one source band (_12_17, _6_11, _6mo_5) 'Overall' is an
-# exact copy of that band's row and is dropped.
+# Many measures have their own age range, named by the _<lo>_<hi> suffix
+# (e.g. _6_17; _6mo_5 = 6 months-5 years; no suffix = 0-17). nsch/ingest.R
+# already labels each row with its band cut to that range ('6-17' for the
+# total of nsch_pct_flourishing_6_17, '3-5' for the youngest band of
+# nsch_pct_adhd_3_17, ...); here ' years' is appended.
 #
-# Unlike YRBSS, the source leaves value NA (not 0) when a cell is suppressed
-# (unweighted denominator < 30) or out of universe / not asked, so those rows
-# drop out with the !is.na(value) filter and no suppressed / not_asked column
-# is carried. `unreliable` = 1 marks a wide CI (> 20 points or > 1.2x the
-# estimate); `sample_size` is the unweighted denominator.
+# The source files are already long (one row per stratum x measure). Cells a
+# measure does not cover have no row; suppressed cells (unweighted denominator
+# < 30) have value NA and drop out with the !is.na(value) filter, so no
+# suppressed column is carried. `unreliable` = 1 marks a wide CI (> 20 points
+# or > 1.2x the estimate); `sample_size` is the unweighted denominator.
 # =============================================================================
 
 nsch_measures <- SPEC %>% filter(dataset == 'nsch') %>% pull(measure) %>% unique()
 
 nsch_read <- function(file, strata) {
-  types <- c(list(geography = 'c', time = 'D', age = 'c', .default = 'd'),
+  types <- c(list(geography = 'c', time = 'D', age = 'c', measure = 'c', .default = 'd'),
              setNames(as.list(rep('c', length(strata))), strata))
   vroom::vroom(file.path('../nsch/standard', file), show_col_types = FALSE,
                col_types = do.call(vroom::cols, types)) %>%
-    filter(age %in% AGE_NSCH) %>%
-    tall_flagged(nsch_measures, c('geography', 'time', 'age', strata),
-                 c('_lcl', '_ucl', '_n', '_unreliable'))
-}
-
-# Relabel source ages ('0-5', '6-11', '12-17', 'Overall') to the overlap of the
-# band with the measure's universe, in years (0.5 = 6 months). 'Overall' rows
-# are dropped where the universe lies inside a single source band.
-nsch_age <- function(df) {
-  m <- stringr::str_match(df$measure, '_(\\d+|6mo)_(\\d+)$')
-  u_lo <- coalesce(suppressWarnings(as.numeric(if_else(m[, 2] == '6mo', '0.5', m[, 2]))), 0)
-  u_hi <- coalesce(as.numeric(m[, 3]), 17)
-  src  <- if_else(df$age == 'Overall', '0-17', df$age)
-  lo   <- pmax(as.numeric(sub('-.*', '', src)), u_lo)
-  hi   <- pmin(as.numeric(sub('.*-', '', src)), u_hi)
-  one_band <- (u_lo >= 0 & u_hi <= 5) | (u_lo >= 6 & u_hi <= 11) | (u_lo >= 12 & u_hi <= 17)
-  stopifnot(all(lo <= hi))
-  keep <- !(df$age == 'Overall' & one_band)
-  df %>%
-    mutate(age = paste0(if_else(lo == 0.5, '6 months', as.character(lo)), '-', hi, ' years')) %>%
-    filter(keep)
+    filter(measure %in% nsch_measures) %>%
+    mutate(age = nsch_age_label(age)) %>%
+    select(all_of(c('geography', 'time', 'age', strata, 'measure', 'value',
+                    'value_lcl', 'value_ucl', 'sample_size', 'unreliable')))
 }
 
 bind_rows(
@@ -565,10 +545,12 @@ bind_rows(
     select(-race_ethnicity)
 ) %>%
   filter(!is.na(value)) %>%
-  nsch_age() %>%
   mutate(across(c(sex, race, ethnicity), ~ replace_na(.x, 'All')),
-         unreliable = as.integer(coalesce(unreliable, 0))) %>%
-  rename(fips = geography, value_lcl = lcl, value_ucl = ucl, sample_size = n) %>%
+         unreliable = as.integer(coalesce(unreliable, 0)),
+         # measure without its age-range suffix, e.g. nsch_pct_behavior_conduct_6_11
+         # -> nsch_pct_behavior_conduct; names with no suffix are unchanged
+         measure_stem = sub('_(\\d+|6mo)_\\d+$', '', measure)) %>%
+  rename(fips = geography) %>%
   as_state() %>%
   label('nsch', 'HRSA/NSCH') %>%
   write_parquet('dist/nsch_state_age_demographics.parquet')
