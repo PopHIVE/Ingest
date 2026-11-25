@@ -205,7 +205,7 @@ flowchart LR
     end
     subgraph delphi_sleepcycle["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/delphi_sleepcycle" target="_blank" rel="noreferrer">delphi_sleepcycle</a></strong>`"]
         direction LR
-        n45["`data.csv.gz<br/><br/><ul><li><code>type_changed: geography</code></li></ul>`"]:::warn
+        n45["`data.csv.gz`"]:::pass
     end
     subgraph drowning["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/drowning" target="_blank" rel="noreferrer">drowning</a></strong>`"]
         direction LR
@@ -310,9 +310,9 @@ flowchart LR
     end
     subgraph measles_jhu["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/measles_jhu" target="_blank" rel="noreferrer">measles_jhu</a></strong>`"]
         direction LR
-        n87["`data_county.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li></ul>`"]:::warn
+        n87["`data_county.csv.gz`"]:::pass
         n88["`data_state.csv.gz`"]:::pass
-        n89["`data.csv.gz<br/><br/><ul><li><code>geography_dropped</code></li></ul>`"]:::warn
+        n89["`data.csv.gz`"]:::pass
     end
     subgraph medicaid_quality["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/medicaid_quality" target="_blank" rel="noreferrer">medicaid_quality</a></strong>`"]
         direction LR
@@ -414,9 +414,9 @@ flowchart LR
     end
     subgraph nsch["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nsch" target="_blank" rel="noreferrer">nsch</a></strong>`"]
         direction LR
-        n140["`data_age_race_ethnicity.csv.gz<br/><br/><ul><li><code>missing_info: age, race_ethnicity</code></li></ul>`"]:::warn
-        n141["`data_age_sex.csv.gz<br/><br/><ul><li><code>missing_info: age, sex</code></li></ul>`"]:::warn
-        n142["`data_age.csv.gz<br/><br/><ul><li><code>missing_info: age</code></li></ul>`"]:::warn
+        n140["`data_age_race_ethnicity.csv.gz<br/><br/><ul><li><code>missing_info: race_ethnicity</code></li></ul>`"]:::warn
+        n141["`data_age_sex.csv.gz<br/><br/><ul><li><code>missing_info: sex</code></li></ul>`"]:::warn
+        n142["`data_age.csv.gz`"]:::pass
     end
     subgraph nssp["`<strong><a href="https://github.com/PopHIVE/Ingest/tree/main/data/nssp" target="_blank" rel="noreferrer">nssp</a></strong>`"]
         direction LR
